@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.Web", "SFA.DAS.ProviderCommitments.Web\SFA.DAS.ProviderCommitments.Web.csproj", "{EFB01A4E-6D2C-4E5F-A5A6-223DA0E8788D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{06CFA98C-E19F-4891-8F87-0D08320DCE2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderCommitments.Web.Tests", "SFA.DAS.ProviderCommitments.Web.Tests\SFA.DAS.ProviderCommitments.Web.Tests.csproj", "{A1431895-4699-4428-856F-60AE8D4CDC03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{EFB01A4E-6D2C-4E5F-A5A6-223DA0E8788D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFB01A4E-6D2C-4E5F-A5A6-223DA0E8788D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFB01A4E-6D2C-4E5F-A5A6-223DA0E8788D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1431895-4699-4428-856F-60AE8D4CDC03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1431895-4699-4428-856F-60AE8D4CDC03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1431895-4699-4428-856F-60AE8D4CDC03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1431895-4699-4428-856F-60AE8D4CDC03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1431895-4699-4428-856F-60AE8D4CDC03} = {06CFA98C-E19F-4891-8F87-0D08320DCE2F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A9252CA-9F94-4D6C-8B47-22FC25C7030A}
