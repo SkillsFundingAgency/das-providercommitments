@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.ProviderCommitments.DependencyResolution;
+using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments
 {
@@ -59,6 +61,11 @@ namespace SFA.DAS.ProviderCommitments
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        public void ConfigureContainer(Registry registry)
+        {
+            IoC.Initialize(registry);
         }
     }
 }
