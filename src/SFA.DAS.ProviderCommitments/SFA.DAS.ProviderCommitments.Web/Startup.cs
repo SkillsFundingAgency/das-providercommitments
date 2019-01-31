@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Web.Configuration;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments
@@ -33,6 +32,23 @@ namespace SFA.DAS.ProviderCommitments
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddOptions();
+            services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
+
+            var authenticationSettings = Configuration.GetSection("AuthenticationSettings").Get<AuthenticationSettings>();
+
+            services.AddAuthentication(sharedOptions =>
+                    {
+                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                    })
+                    .AddWsFederation(options =>
+                    {
+                        options.MetadataAddress = authenticationSettings.MetadataAddress;
+                        options.Wtrealm = authenticationSettings.Wtrealm;
+                        options.Events.OnSecurityTokenValidated = context => Task.CompletedTask;
+                    });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -54,6 +70,8 @@ namespace SFA.DAS.ProviderCommitments
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

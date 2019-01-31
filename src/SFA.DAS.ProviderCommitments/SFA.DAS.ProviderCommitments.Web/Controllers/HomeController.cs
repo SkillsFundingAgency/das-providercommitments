@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Models;
 
@@ -15,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Controllers
             return View();
         }
 
+        //[Authorize]
         public IActionResult Privacy()
         {
             return View();
