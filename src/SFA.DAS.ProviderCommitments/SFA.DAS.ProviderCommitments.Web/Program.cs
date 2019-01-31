@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using NLog.Web;
 using StructureMap.AspNetCore;
 
-namespace SFA.DAS.ProviderCommitments
+namespace SFA.DAS.ProviderCommitments.Web
 {
     public class Program
     {
@@ -16,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureKestrel(options => options.AddServerHeader = false)
                 .UseStartup<Startup>()
-                .UseStructureMap();
+                .UseStructureMap()
+                .UseNLog();
     }
 }

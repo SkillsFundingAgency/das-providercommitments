@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.ProviderCommitments.DependencyResolution;
+using NLog.Web;
 using SFA.DAS.ProviderCommitments.Web.Configuration;
+using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using StructureMap;
 
-namespace SFA.DAS.ProviderCommitments
+namespace SFA.DAS.ProviderCommitments.Web
 {
     public class Startup
     {
@@ -66,6 +67,8 @@ namespace SFA.DAS.ProviderCommitments
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            env.ConfigureNLog("nlog.config");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -1,6 +1,6 @@
 ﻿using StructureMap;
 
-namespace SFA.DAS.ProviderCommitments.DependencyResolution
+namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
     public static class IoC
     {

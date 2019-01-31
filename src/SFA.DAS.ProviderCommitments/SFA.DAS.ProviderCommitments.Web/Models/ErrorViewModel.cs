@@ -1,6 +1,4 @@
-using System;
-
-namespace SFA.DAS.ProviderCommitments.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class ErrorViewModel
     {
