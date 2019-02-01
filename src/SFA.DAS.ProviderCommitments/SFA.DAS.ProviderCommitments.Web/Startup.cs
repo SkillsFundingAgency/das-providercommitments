@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NLog.Web;
-using SFA.DAS.ProviderCommitments.Web.Configuration;
-using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
-using StructureMap;
+using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -36,20 +35,20 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddOptions();
             services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
 
-            var authenticationSettings = Configuration.GetSection("AuthenticationSettings").Get<AuthenticationSettings>();
+            var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>().Value;
 
             services.AddAuthentication(sharedOptions =>
-                    {
-                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                    })
-                    .AddWsFederation(options =>
-                    {
-                        options.MetadataAddress = authenticationSettings.MetadataAddress;
-                        options.Wtrealm = authenticationSettings.Wtrealm;
-                        options.Events.OnSecurityTokenValidated = context => Task.CompletedTask;
-                    });
+                {
+                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                })
+                .AddWsFederation(options =>
+                {
+                    options.MetadataAddress = authenticationSettings.MetadataAddress;
+                    options.Wtrealm = authenticationSettings.Wtrealm;
+                    options.Events.OnSecurityTokenValidated = context => Task.CompletedTask;
+                });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -82,11 +81,6 @@ namespace SFA.DAS.ProviderCommitments.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-
-        public void ConfigureContainer(Registry registry)
-        {
-            IoC.Initialize(registry);
         }
     }
 }

@@ -1,0 +1,14 @@
+2019-02-01 09:17:57.0465 Info Message Template Auto Format enabled
+2019-02-01 09:17:57.0791 Info Loading assembly: NLog.Web.AspNetCore
+2019-02-01 09:17:57.2152 Info Adding target File Target[allfile]
+2019-02-01 09:17:57.2193 Info Adding target Null Target[blackhole]
+2019-02-01 09:17:57.2193 Info Configured from an XML element in c:\code\sfa\das-providercommitments\src\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.Web\nlog.config...
+2019-02-01 09:17:57.2611 Info Found 27 configuration items
+2019-02-01 09:18:26.9418 Info Shutting down logging...
+2019-02-01 09:18:26.9971 Info Logger has been shut down.
+2019-02-01 09:19:49.8452 Info Message Template Auto Format enabled
+2019-02-01 09:19:49.8701 Info Loading assembly: NLog.Web.AspNetCore
+2019-02-01 09:19:50.0375 Info Adding target File Target[allfile]
+2019-02-01 09:19:50.0375 Info Adding target Null Target[blackhole]
+2019-02-01 09:19:50.0771 Info Configured from an XML element in c:\code\sfa\das-providercommitments\src\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.Web\nlog.config...
+2019-02-01 09:19:50.1225 Info Found 27 configuration items
