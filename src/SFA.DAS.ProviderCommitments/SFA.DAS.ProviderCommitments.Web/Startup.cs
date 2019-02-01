@@ -1,15 +1,14 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NLog.Web;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Web.AppStart;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -35,22 +34,17 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddOptions();
             services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
 
-            var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>().Value;
+            var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>();
 
-            services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                })
-                .AddWsFederation(options =>
-                {
-                    options.MetadataAddress = authenticationSettings.MetadataAddress;
-                    options.Wtrealm = authenticationSettings.Wtrealm;
-                    options.Events.OnSecurityTokenValidated = context => Task.CompletedTask;
-                });
+            services.AddProviderIdamsAuthentication(authenticationSettings);
+            
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
+                .AddControllersAsServices()
+                .AddSessionStateTempDataProvider()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //todo: app insights key
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
