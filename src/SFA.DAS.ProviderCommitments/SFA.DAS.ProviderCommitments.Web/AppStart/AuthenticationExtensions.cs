@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +22,19 @@ namespace SFA.DAS.ProviderCommitments.Web.AppStart
                 {
                     options.MetadataAddress = configuration.Value.MetadataAddress;
                     options.Wtrealm = configuration.Value.Wtrealm;
-                    options.Events.OnSecurityTokenValidated = context => Task.CompletedTask;
+                    options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
                 }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+        }
+
+        private static Task OnSecurityTokenValidated(SecurityTokenValidatedContext context)
+        {
+            var claims = context.Principal.Claims;
+
+            //todo: need to capture these values in the database via the api
+            var ukprn = claims.FirstOrDefault(claim => claim.Type == (ProviderClaims.Ukprn))?.Value;
+            //...etc.
+
+            return Task.CompletedTask;
         }
     }
 }
