@@ -12,3 +12,15 @@
 2019-02-01 09:19:50.0375 Info Adding target Null Target[blackhole]
 2019-02-01 09:19:50.0771 Info Configured from an XML element in c:\code\sfa\das-providercommitments\src\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.Web\nlog.config...
 2019-02-01 09:19:50.1225 Info Found 27 configuration items
+2019-02-01 10:11:25.1689 Info Message Template Auto Format enabled
+2019-02-01 10:11:25.1900 Info Loading assembly: NLog.Web.AspNetCore
+2019-02-01 10:11:25.3092 Info Adding target File Target[allfile]
+2019-02-01 10:11:25.3177 Info Adding target Null Target[blackhole]
+2019-02-01 10:11:25.3328 Info Configured from an XML element in c:\code\sfa\das-providercommitments\src\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.Web\nlog.config...
+2019-02-01 10:11:25.3762 Info Found 27 configuration items
+2019-02-01 10:12:31.2653 Info Message Template Auto Format enabled
+2019-02-01 10:12:31.2918 Info Loading assembly: NLog.Web.AspNetCore
+2019-02-01 10:12:31.4029 Info Adding target File Target[allfile]
+2019-02-01 10:12:31.4104 Info Adding target Null Target[blackhole]
+2019-02-01 10:12:31.4275 Info Configured from an XML element in c:\code\sfa\das-providercommitments\src\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.Web\nlog.config...
+2019-02-01 10:12:31.4631 Info Found 27 configuration items
