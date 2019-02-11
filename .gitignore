@@ -261,3 +261,5 @@ src/Tools/**/*.*
 src/Tools/PhantomJS/tools/phantomjs/ChangeLog
 *.ncrunchsolution
 *.ncrunchproject
+
+**/internal-nlog.txt
