@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.ProviderCommitments.Configuration;
 
-namespace SFA.DAS.ProviderCommitments.Web.AppStart
+namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {

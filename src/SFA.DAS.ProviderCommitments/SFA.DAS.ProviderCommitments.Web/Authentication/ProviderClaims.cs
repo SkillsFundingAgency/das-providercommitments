@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.AppStart
+﻿namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class ProviderClaims
     {
