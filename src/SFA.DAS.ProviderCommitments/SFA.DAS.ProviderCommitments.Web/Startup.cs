@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.Options;
 using NLog.Web;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
+using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -22,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -37,7 +40,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>();
 
             services.AddProviderIdamsAuthentication(authenticationSettings);
-            
 
             services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
                 .AddControllersAsServices()
@@ -45,6 +47,10 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //todo: app insights key
+
+
+            var container = CreateStructureMapContainer(services);
+            return container.GetInstance<IServiceProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +81,18 @@ namespace SFA.DAS.ProviderCommitments.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static Container CreateStructureMapContainer(IServiceCollection services)
+        {
+            var container = new Container();
+            container.Configure(config =>
+            {
+                config.AddRegistry(new DefaultRegistry());
+                config.Populate(services);
+            });
+
+            return container;
         }
     }
 }
