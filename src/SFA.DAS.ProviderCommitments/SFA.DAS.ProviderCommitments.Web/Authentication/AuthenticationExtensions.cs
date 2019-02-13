@@ -23,7 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                     options.MetadataAddress = configuration.Value.MetadataAddress;
                     options.Wtrealm = configuration.Value.Wtrealm;
                     options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
-                }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+                    options.RemoteSignOutPath = "/Home/Signout";
+                    options.Events.OnRemoteSignOut = OnRemoteSignOut;
+                })
+                .AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
         }
 
         private static Task OnSecurityTokenValidated(SecurityTokenValidatedContext context)
@@ -34,6 +37,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             var ukprn = claims.FirstOrDefault(claim => claim.Type == (ProviderClaims.Ukprn))?.Value;
             //...etc.
 
+            return Task.CompletedTask;
+        }
+
+        private static Task OnRemoteSignOut(RemoteSignOutContext context)
+        {
+            // It doesn't look like we need to do anything here; calling AddCookie ends up adding CookieAuthenticationHandler
+            // which has code in HandleSignOutAsync to delete the cookie.
             return Task.CompletedTask;
         }
     }
