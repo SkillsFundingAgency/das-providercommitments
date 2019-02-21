@@ -8,12 +8,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class EditApprenticeshipViewModel
     {
-        public EditApprenticeshipViewModel(string startMonthYear)
+        public EditApprenticeshipViewModel()
         {
             BirthDate = new DateModel();    
-            StartDate = new MonthYearModel(startMonthYear);
             FinishDate = new DateModel();
-            Courses = new List<SelectListItem>();
         }
 
         public Guid ReservationId { get; set; }
@@ -60,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseName { get; set; }
 
         [Display(Name = "Planned training start date")]
-        public MonthYearModel StartDate { get; }
+        public MonthYearModel StartDate { get; set; }
 
         [Required]
         [Display(Name = "Month")]
@@ -81,6 +79,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Display(Name = "Year")]
         public int FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
 
-        public List<SelectListItem> Courses { get; set; }
+        public bool IsPaidForByTransfer {get; set;}
+
+        public Course[] Courses { get; set; }
     }
 }

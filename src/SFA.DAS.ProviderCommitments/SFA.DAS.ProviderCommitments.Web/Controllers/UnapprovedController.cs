@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -24,19 +25,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> Index(Guid reservationId, string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId, string startMonthYear, string courseCode)
+        public async Task<IActionResult> Index(EditApprenticeshipRequest request)
         {
-            var getEmployerTask = GetEmployerIfRequired(employerAccountPublicHashedId, employerAccountLegalEntityPublicHashedId);
-            var getTrainingCourseTask = GetTrainingCourseIfRequired(courseCode);
-
-            await Task.WhenAll(getEmployerTask, getTrainingCourseTask);
-
-            var model = new EditApprenticeshipViewModel(startMonthYear)
+            if (!ModelState.IsValid)
             {
-                ReservationId = reservationId,
-                CourseCode = courseCode,
+                return BadRequest(ModelState);
+            }
+
+            var getEmployerTask = GetEmployerIfRequired(
+                request.EmployerAccountPublicHashedId, 
+                request.EmployerAccountLegalEntityPublicHashedId);
+
+            var getTrainingCourseTask = GetTrainingCourseIfRequired(request.CourseCode);
+
+            var getCoursesTask = GetCourses();
+
+            await Task.WhenAll(getEmployerTask, getTrainingCourseTask, getCoursesTask);
+
+            var model = new EditApprenticeshipViewModel
+            {
+                StartDate = new MonthYearModel(request.StartMonthYear),
+                ReservationId = request.ReservationId,
+                CourseCode = request.CourseCode,
                 CourseName = getTrainingCourseTask.Result?.CourseName,
-                Employer = getEmployerTask.Result?.EmployerName
+                Employer = getEmployerTask.Result?.EmployerName,
+                Courses = getCoursesTask.Result
             };
 
             return View(model);
@@ -64,6 +77,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return _mediator.Send(new GetTrainingCourseRequest { CourseCode = trainingCode});
+        }
+
+        private Task<Course[]> GetCourses()
+        {
+            return Task.FromResult(new Course[]
+            {
+                new Course("0001", "Basic appreciation of silence"),
+                new Course("0002", "Advanced understanding of darkness"),
+            });
         }
     }
 }

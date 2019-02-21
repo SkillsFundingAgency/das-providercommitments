@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -44,10 +45,10 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
+                .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //todo: app insights key
-
 
             var container = CreateStructureMapContainer(services);
             return container.GetInstance<IServiceProvider>();
