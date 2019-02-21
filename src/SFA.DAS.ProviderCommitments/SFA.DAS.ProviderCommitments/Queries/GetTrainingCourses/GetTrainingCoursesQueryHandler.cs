@@ -20,16 +20,12 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 
         public async Task<GetTrainingCoursesQueryResponse> Handle(GetTrainingCoursesQueryRequest message, CancellationToken cancellationToken)
         {
-            IEnumerable<ITrainingCourse> courses;
             var standardsTask = _apprenticeshipInfoService.GetStandardsAsync();
-            if (!message.IncludeFrameworks)
-            {
-                courses = (await standardsTask).Standards;
-            }
-            else
+            IEnumerable<ITrainingCourse> courses = (await standardsTask).Standards;
+            if (message.IncludeFrameworks)
             {
                 var getFrameworksTask = _apprenticeshipInfoService.GetFrameworksAsync();
-                courses = (await standardsTask).Standards.Union((await getFrameworksTask).Frameworks.Cast<ITrainingCourse>());
+                courses = courses.Union((await getFrameworksTask).Frameworks);
             }
 
             var result = new GetTrainingCoursesQueryResponse();
