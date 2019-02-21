@@ -18,13 +18,13 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
 
         private Mock<IApprenticeshipInfoService> _apprenticeshipInfoServiceWrapper;
 
-        private List<Standard> _standards;
-        private List<Framework> _frameworks;
+        private Standard[] _standards;
+        private Framework[] _frameworks;
 
         [SetUp]
         public void Arrange()
         {
-            _standards = new List<Standard>
+            _standards = new Standard[1]
             {
                 new Standard
                 {
@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                     EffectiveTo = new DateTime(2016,12,31)
                 }
             };
-            _frameworks = new List<Framework>
+            _frameworks = new Framework[1]
             {
                 new Framework
                 {
@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Count, result.TrainingCourses.Count);
+            Assert.AreEqual(_standards.Length, result.TrainingCourses.Count);
             Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
         }
 
@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Count + _frameworks.Count, result.TrainingCourses.Count);
+            Assert.AreEqual(_standards.Length + _frameworks.Length, result.TrainingCourses.Count);
             Assert.IsTrue(result.TrainingCourses.Any(x => x is Standard));
             Assert.IsTrue(result.TrainingCourses.Any(x => x is Framework));
         }

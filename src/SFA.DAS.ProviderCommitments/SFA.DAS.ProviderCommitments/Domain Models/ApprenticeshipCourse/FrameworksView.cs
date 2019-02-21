@@ -6,6 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse
     public class FrameworksView
     {
         public DateTime CreatedDate { get; set; }
-        public List<Framework> Frameworks { get; set; }
+        public Framework[] Frameworks { get; set; }
     }
 }

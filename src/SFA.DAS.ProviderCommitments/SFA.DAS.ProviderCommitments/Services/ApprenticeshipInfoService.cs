@@ -1,13 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Domain_Models;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Apprenticeships.Api.Client;
-using SFA.DAS.Apprenticeships.Api.Types;
-using Framework = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.Framework;
-using Provider = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.Provider;
-using Standard = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.Standard;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {
@@ -33,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Services
                 {
                     var api = new StandardApiClient(_configuration.BaseUrl);
 
-                    var standards = (await api.GetAllAsync()).OrderBy(x => x.Title).ToList();
+                    var standards = (await api.GetAllAsync()).OrderBy(x => x.Title).ToArray();
 
                     await _cache.SetCustomValueAsync(StandardsKey, _mapper.MapFrom(standards));
                 }
@@ -47,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Services
                 {
                     var api = new FrameworkApiClient(_configuration.BaseUrl);
 
-                    var frameworks = (await api.GetAllAsync()).OrderBy(x => x.Title).ToList();
+                    var frameworks = (await api.GetAllAsync()).OrderBy(x => x.Title).ToArray();
 
                     await _cache.SetCustomValueAsync(FrameworksKey, _mapper.MapFrom(frameworks));
                 }

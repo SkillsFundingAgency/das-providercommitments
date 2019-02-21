@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Mappers.ApprenticeshipInfoServiceMap
                 }
             };
 
-            _act = () => _mapper.MapFrom(new List<FrameworkSummary> { TestHelper.Clone(_framework) });
+            _act = () => _mapper.MapFrom(new FrameworkSummary[] { TestHelper.Clone(_framework) });
         }
 
         [Test]

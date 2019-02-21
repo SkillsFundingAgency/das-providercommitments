@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Mappers.ApprenticeshipInfoServiceMap
             };
 
             //copy the payload to guard against handler modifications
-            _act = () => _mapper.MapFrom(new List<StandardSummary> { TestHelper.Clone(_standard) });
+            _act = () => _mapper.MapFrom(new StandardSummary[] { TestHelper.Clone(_standard) });
         }
 
         [Test]

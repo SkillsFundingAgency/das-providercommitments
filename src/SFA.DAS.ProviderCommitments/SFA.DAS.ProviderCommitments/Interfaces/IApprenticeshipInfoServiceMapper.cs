@@ -6,8 +6,8 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
 {
     public interface IApprenticeshipInfoServiceMapper
     {
-        FrameworksView MapFrom(List<FrameworkSummary> frameworks);
+        FrameworksView MapFrom(FrameworkSummary[] frameworks);
         ProvidersView MapFrom(Apprenticeships.Api.Types.Providers.Provider provider);
-        StandardsView MapFrom(List<StandardSummary> standards);
+        StandardsView MapFrom(StandardSummary[] standards);
     }
 }

@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Mappers
             _currentDateTime = currentDateTime;
         }
 
-        public FrameworksView MapFrom(List<FrameworkSummary> frameworks)
+        public FrameworksView MapFrom(FrameworkSummary[] frameworks)
         {
             return new FrameworksView
             {
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Mappers
                     EffectiveFrom = x.EffectiveFrom,
                     EffectiveTo = x.EffectiveTo,
                     FundingPeriods = MapFundingPeriods(x.FundingPeriods)
-                }).ToList()
+                }).ToArray()
             };
         }
 
@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Mappers
             };
         }
 
-        public StandardsView MapFrom(List<StandardSummary> standards)
+        public StandardsView MapFrom(StandardSummary[] standards)
         {
             return new StandardsView
             {
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Mappers
                     EffectiveFrom = x.EffectiveFrom,
                     EffectiveTo = x.LastDateForNewStarts,
                     FundingPeriods = MapFundingPeriods(x.FundingPeriods)
-                }).ToList()
+                }).ToArray()
             };
         }
 
