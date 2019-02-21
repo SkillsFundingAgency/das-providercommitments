@@ -100,7 +100,7 @@
                             },
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                "value": "[reference('api-app-insights').outputs.InstrumentationKey.value]"
+                                "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
                             }
                         ]
                     },
