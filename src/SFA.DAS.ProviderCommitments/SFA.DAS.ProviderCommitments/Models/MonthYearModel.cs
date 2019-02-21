@@ -4,49 +4,18 @@ namespace SFA.DAS.ProviderCommitments.Models
 {
     public class MonthYearModel : DateModel
     {
-        private readonly int _fixedDay;
-
-        public MonthYearModel(string monthYear) : this(monthYear, DayAlignment.StartOfMonth)
+        public MonthYearModel(string monthYear)
         {
-            // just call other constructor
-        }
-
-        public MonthYearModel(string monthYear, int fixedDay) : this(monthYear, fixedDay, DayAlignment.Fixed)
-        {
-        }
-
-        public MonthYearModel(string monthYear, DayAlignment dayAlignment): this(monthYear, 1, dayAlignment)
-        {
-        }
-
-        private MonthYearModel(string monthYear, int fixedDay, DayAlignment dayAlignment)
-        {
-            _fixedDay = fixedDay;
-            DayAlignment = dayAlignment;
             SetFromMonthYear(monthYear);
         }
 
-        public string MonthYear => $"{Month:D2}{Year:D4}";
-
-        public DayAlignment DayAlignment { get; set; }
-
         public override int Day
         {
-            get => DetermineDay();
-            set => throw new InvalidOperationException($"Cannot set the day on a month-year structure. The day has been fixed at {base.Day}");
+            get => 1; // always use first day of month
+            set => throw new InvalidOperationException("Cannot set the day on a month-year value");
         }
 
-        private int DetermineDay()
-        {
-            switch (DayAlignment)
-            {
-                case DayAlignment.Fixed: return _fixedDay;
-                case DayAlignment.StartOfMonth: return 1;
-                case DayAlignment.EndOfMonth: return DateTime.DaysInMonth(Year, Month);
-            }
-
-            throw new InvalidOperationException($"The value of for Day Alignment {DayAlignment} is not supported");
-        }
+        public string MonthYear => $"{Month:D2}{Year:D4}";
 
         private void SetFromMonthYear(string monthYear)
         {
@@ -69,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Models
 
             Year = int.Parse(monthYear.Substring(monthLength));
             Month = int.Parse(monthYear.Substring(0, monthLength));
-
+            
             if (!IsValid)
             {
                 throw new ArgumentException($"Either the month year {monthYear} is not valid or the day {Day} is not valid for this month.");

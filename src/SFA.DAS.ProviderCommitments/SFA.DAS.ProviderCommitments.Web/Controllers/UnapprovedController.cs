@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
@@ -10,27 +11,30 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    public class ApprenticeshipsController : Controller
+    [Route("{providerId}/unapproved")]
+    [Authorize()]
+    public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
 
-        public ApprenticeshipsController(IMediator mediator)
+        public UnapprovedController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int reservationId, string employerId, string startMonthYear, string trainingCode)
+        [Route("add-apprentice")]
+        public async Task<IActionResult> Index(Guid reservationId, string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId, string startMonthYear, string courseCode)
         {
-            var getEmployerTask = GetEmployerIfRequired(employerId);
-            var getTrainingCourseTask = GetTrainingCourseIfRequired(trainingCode);
+            var getEmployerTask = GetEmployerIfRequired(employerAccountPublicHashedId, employerAccountLegalEntityPublicHashedId);
+            var getTrainingCourseTask = GetTrainingCourseIfRequired(courseCode);
 
             await Task.WhenAll(getEmployerTask, getTrainingCourseTask);
 
             var model = new EditApprenticeshipViewModel(startMonthYear)
             {
                 ReservationId = reservationId,
-                CourseCode = trainingCode,
+                CourseCode = courseCode,
                 CourseName = getTrainingCourseTask.Result?.CourseName,
                 Employer = getEmployerTask.Result?.EmployerName
             };
@@ -38,14 +42,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
         
-        private Task<GetEmployerResponse>  GetEmployerIfRequired(string employerId)
+        private Task<GetEmployerResponse>  GetEmployerIfRequired(string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId)
         {
-            if (string.IsNullOrWhiteSpace(employerId))
+            if (string.IsNullOrWhiteSpace(employerAccountPublicHashedId))
             {
                 return Task.FromResult((GetEmployerResponse) null);
             }
 
-            return _mediator.Send(new GetEmployerRequest {EmployerId = employerId});
+            return _mediator.Send(new GetEmployerRequest
+            {
+                EmployerAccountPublicHashedId = employerAccountPublicHashedId,
+                EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId
+            });
         }
 
         private Task<GetTrainingCourseResponse> GetTrainingCourseIfRequired(string trainingCode)

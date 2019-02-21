@@ -54,55 +54,5 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
 
             Assert.Throws<InvalidOperationException>(() => dt.Day = 1);
         }
-
-        [Test]
-        public void Day_WithDayAlignmentSetToStartOfMonth_ShouldAlwaysBe1()
-        {
-            const int expectedDay = 1;
-
-            for (int i = 1; i < 13; i++)
-            {
-                var dt = new MonthYearModel($"{i:D2}2019", DayAlignment.StartOfMonth);
-                var actualDay = dt.Day;
-
-                Assert.AreEqual(expectedDay, actualDay);
-            }
-        }
-
-        [Test]
-        public void Day_WithDayAlignmentSetToEndOfMonth_ShouldAlwaysBeEndOfMonth()
-        {
-            int[] daysOfMonth = new[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-            for (int i = 1; i < 13; i++)
-            {
-                var dt = new MonthYearModel($"{i:D2}2019", DayAlignment.EndOfMonth);
-                var actualDay = dt.Day;
-
-                Assert.AreEqual(daysOfMonth[i-1], actualDay);
-            }
-        }
-
-        [Test]
-        public void Day_WithDayAlignmentSetToValidFixed_ShouldAlwaysBeFixed()
-        {
-            const int expectedDay = 10;
-            for (int i = 1; i < 13; i++)
-            {
-                var dt = new MonthYearModel($"{i:D2}2019", expectedDay);
-                var actualDay = dt.Day;
-                Assert.AreEqual(expectedDay, actualDay);
-            }
-        }
-
-        [Test]
-        public void Day_WithDayAlignmentSetToEndOfMonth_ShouldBeEndOfMonthEvenForALeapYear()
-        {
-            var dt = new MonthYearModel($"022020", DayAlignment.EndOfMonth);
-            var actualDay = dt.Day;
-            const int expectedFebDaysInLeapYear = 29;
-
-            Assert.AreEqual(expectedFebDaysInLeapYear, actualDay);
-        }
     }
 }
