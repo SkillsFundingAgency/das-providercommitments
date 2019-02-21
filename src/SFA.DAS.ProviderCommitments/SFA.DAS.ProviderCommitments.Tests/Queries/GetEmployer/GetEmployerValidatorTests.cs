@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetEmployer
             // arrange
             var request = new GetEmployerRequest
             {
-                EmployerId = employerId
+                EmployerAccountPublicHashedId = employerId
             };
 
             var validator = new GetEmployerValidator();

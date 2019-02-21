@@ -20,7 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
 
             return Task.FromResult(new GetEmployerResponse
             {
-                EmployerId = request.EmployerId,
+                EmployerAccountPublicHashedId = request.EmployerAccountPublicHashedId,
+                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
                 EmployerName = "** Temp Place Holder **"
             });
         }

@@ -43,15 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
 
         [TestCase(2019, 1, 1, true)]
         [TestCase(2019, 12, 31, true)]
-        [TestCase(-1, 12, 31, false)]
-        [TestCase(2019, -1, 31, false)]
-        [TestCase(2019, 12, -1, false)]
-        [TestCase(0, 12, 31, false)]
-        [TestCase(2019, 0, 31, false)]
-        [TestCase(2019, 12, 0, false)]
-        [TestCase(MaxYearSupportedByDateTime+1, 12, 31, false)]
-        [TestCase(2019, 13, 31, false)]
-        [TestCase(2019, 12, 32, false)]
+        [TestCase(2019, 02, 29, false)]
+        [TestCase(2019, 06, 31, false)]
         public void IsValid_WithSpecifiedYearMonthDay_ShouldSetIsValidCorrectly(int year, int month, int day, bool expectedIsValid)
         {
             // arrange
@@ -66,6 +59,35 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
 
             // assert
             Assert.AreEqual(expectedIsValid, actualIsValid);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(32)]
+        public void Day_SetToInvalidValue_ShouldThrowOutOfRangeException(int day)
+        {
+            var dt = new DateModel();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Day = day);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(13)]
+        public void Month_SetToInvalidValue_ShouldThrowOutOfRangeException(int month)
+        {
+            var dt = new DateModel();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Month = month);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        public void Year_SetToInvalidValue_ShouldThrowOutOfRangeException(int year)
+        {
+            var dt = new DateModel();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Year = year);
         }
 
     }

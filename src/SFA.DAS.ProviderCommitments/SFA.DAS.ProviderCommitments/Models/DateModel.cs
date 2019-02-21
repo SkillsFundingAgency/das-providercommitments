@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Models
 
         public DateTime Date => _currentValue ?? (DateTime) (_currentValue = new DateTime(Year, Month, Day));
 
-        public bool IsValid => Day <= DateTime.DaysInMonth(Year, Month);
+        public bool IsValid => IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) && Day <= DateTime.DaysInMonth(Year, Month);
 
         private void AssertIsValid(string property, int value, Func<int, bool> validator)
         {

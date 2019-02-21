@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             Courses = new List<SelectListItem>();
         }
 
-        public long ReservationId { get; set; }
+        public Guid ReservationId { get; set; }
 
         [Required]
         [Display(Name = "Employer")]
