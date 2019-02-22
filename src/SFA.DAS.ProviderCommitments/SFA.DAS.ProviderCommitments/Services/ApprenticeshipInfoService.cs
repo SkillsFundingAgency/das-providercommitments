@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {
@@ -12,17 +13,17 @@ namespace SFA.DAS.ProviderCommitments.Services
             private const string FrameworksKey = "Frameworks";
 
             private readonly ICache _cache;
-            private readonly IApprenticeshipInfoServiceConfiguration _configuration;
+            private readonly ApprenticeshipInfoServiceConfiguration _configuration;
             private readonly IApprenticeshipInfoServiceMapper _mapper;
 
-            public ApprenticeshipInfoService(ICache cache, IApprenticeshipInfoServiceConfiguration configuration, IApprenticeshipInfoServiceMapper mapper)
+            public ApprenticeshipInfoService(ICache cache, ApprenticeshipInfoServiceConfiguration configuration, IApprenticeshipInfoServiceMapper mapper)
             {
                 _cache = cache;
                 _configuration = configuration;
                 _mapper = mapper;
-            }
+        }
 
-            public async Task<StandardsView> GetStandardsAsync(bool refreshCache = false)
+        public async Task<StandardsView> GetStandardsAsync(bool refreshCache = false)
             {
                 if (!await _cache.ExistsAsync(StandardsKey) || refreshCache)
                 {

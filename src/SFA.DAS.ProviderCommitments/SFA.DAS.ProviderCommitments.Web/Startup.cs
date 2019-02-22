@@ -37,6 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddOptions();
             services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
+            services.Configure<ApprenticeshipInfoServiceConfiguration>(Configuration.GetSection("ApprenticeshipInfoServiceConfiguration"));
 
             var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>();
 

@@ -5,6 +5,6 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {
     public sealed class GetTrainingCoursesQueryResponse
     {
-        public List<ITrainingCourse> TrainingCourses { get; set; }
+        public ICourse[] TrainingCourses { get; set; }
     }
 }

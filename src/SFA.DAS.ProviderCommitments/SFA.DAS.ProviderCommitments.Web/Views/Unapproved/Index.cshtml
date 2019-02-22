@@ -72,7 +72,7 @@
 
                 @Html.ValidationMessageFor(m => m.CourseCode, "Choose a training course for this apprentice", new { id = "error-message-" + Html.IdFor(m => m.CourseCode), @class = "error-message" })
 
-                <select asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "Code", "Name"))"></select>
+                <select asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "Id", "Title"))"></select>
             </div>
 
         </div>

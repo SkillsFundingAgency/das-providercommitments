@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length, result.TrainingCourses.Count);
+            Assert.AreEqual(_standards.Length, result.TrainingCourses.Length);
             Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
         }
 
@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length + _frameworks.Length, result.TrainingCourses.Count);
+            Assert.AreEqual(_standards.Length + _frameworks.Length, result.TrainingCourses.Length);
             Assert.IsTrue(result.TrainingCourses.Any(x => x is Standard));
             Assert.IsTrue(result.TrainingCourses.Any(x => x is Framework));
         }
@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = new DateTime(2016, 06, 01)
             }, new CancellationToken());
 
-            Assert.AreEqual(1, result.TrainingCourses.Count);
+            Assert.AreEqual(1, result.TrainingCourses.Length);
             Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
         }
 
@@ -109,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(2, result.TrainingCourses.Count);
+            Assert.AreEqual(2, result.TrainingCourses.Length);
         }
     }
 }
