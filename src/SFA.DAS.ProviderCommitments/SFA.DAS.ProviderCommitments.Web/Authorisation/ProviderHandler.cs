@@ -43,14 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
                     context.Fail();
                     return Task.CompletedTask;
                 }
-
-                context.Succeed(requirement);
-                return Task.CompletedTask;
             }
-
-
             context.Succeed(requirement);
-
             return Task.CompletedTask;
         }
     }
