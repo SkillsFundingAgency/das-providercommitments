@@ -12,7 +12,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [Authorize()]
+    [Authorize(Policy = "ProviderMatch")]
     public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
