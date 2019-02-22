@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -44,7 +45,14 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddProviderIdamsAuthentication(authenticationSettings);
 
-            services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
+            services.AddMvc(options =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireProviderInRouteMatchesProviderInClaims()
+                        .Build();
+
+                    options.Filters.Add(new AuthorizeFilter(policy));
+                })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
