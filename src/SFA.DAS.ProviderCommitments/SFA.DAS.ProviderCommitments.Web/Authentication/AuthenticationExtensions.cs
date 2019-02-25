@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {
-        public static void AddProviderIdamsAuthentication(this IServiceCollection services, IOptions<AuthenticationSettings> configuration)
+        public static void AddProviderIdamsAuthentication(this IServiceCollection services, AuthenticationSettings configuration)
         {
             services.AddAuthentication(sharedOptions =>
                 {
@@ -20,8 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                 })
                 .AddWsFederation(options =>
                 {
-                    options.MetadataAddress = configuration.Value.MetadataAddress;
-                    options.Wtrealm = configuration.Value.Wtrealm;
+                    options.MetadataAddress = configuration.MetadataAddress;
+                    options.Wtrealm = configuration.Wtrealm;
                     options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
                 }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
         }
