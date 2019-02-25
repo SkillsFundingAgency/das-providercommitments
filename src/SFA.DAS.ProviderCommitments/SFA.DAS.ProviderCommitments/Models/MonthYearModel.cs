@@ -7,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Models
     {
         public MonthYearModel(string monthYear)
         {
+            SourceValue = monthYear;
             SetFromMonthYear(monthYear);
         }
 
@@ -17,6 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Models
         }
 
         public string MonthYear => $"{Month:D2}{Year:D4}";
+        public string SourceValue { get; }
 
         private void SetFromMonthYear(string monthYear)
         {
