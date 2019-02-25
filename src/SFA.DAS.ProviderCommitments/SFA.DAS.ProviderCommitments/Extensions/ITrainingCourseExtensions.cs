@@ -6,17 +6,17 @@ namespace SFA.DAS.ProviderCommitments.Extensions
 {
     public static class ITrainingCourseExtensions
     {
-        public static bool IsActiveOn(this ITrainingCourse course, DateTime date)
+        public static bool IsActiveOn(this ICourse course, DateTime date)
         {
             return GetStatusOn(course.EffectiveFrom, course.EffectiveTo, date) == TrainingCourseStatus.Active;
         }
 
-        public static TrainingCourseStatus GetStatusOn(this ITrainingCourse course, DateTime date)
+        public static TrainingCourseStatus GetStatusOn(this ICourse course, DateTime date)
         {
             return GetStatusOn(course.EffectiveFrom, course.EffectiveTo, date);
         }
 
-        public static int FundingCapOn(this ITrainingCourse course, DateTime date)
+        public static int FundingCapOn(this ICourse course, DateTime date)
         {
             //todo: would probably be better to return int? null or throw if out of range
             if (!course.IsActiveOn(date))

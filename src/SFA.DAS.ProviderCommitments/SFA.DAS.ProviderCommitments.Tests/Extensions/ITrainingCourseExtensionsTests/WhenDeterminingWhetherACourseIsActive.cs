@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Extensions.ITrainingCourseExtensions
         public void ThenIfWithinCourseEffectiveRangeThenIsActive(DateTime? courseStart, DateTime? courseEnd, DateTime effectiveDate, bool expectIsActive)
         {
             //Arrange
-            var course = new Mock<ITrainingCourse>();
+            var course = new Mock<ICourse>();
             course.SetupGet(x => x.EffectiveFrom).Returns(courseStart);
             course.SetupGet(x => x.EffectiveTo).Returns(courseEnd);
 

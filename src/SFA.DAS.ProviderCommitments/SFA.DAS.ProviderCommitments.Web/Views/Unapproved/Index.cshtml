@@ -1,0 +1,94 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Extensions;
+@model SFA.DAS.ProviderCommitments.Web.Models.EditApprenticeshipViewModel
+
+@{
+    ViewData["Title"] = "Apprentice";
+}
+
+
+<div>
+    <form id="editApprenticeship" method="post" action="@Url.Action("Index")">
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.Employer, "error")">
+
+            <label asp-for="Employer"></label>
+
+            <span>@Model.Employer</span>
+
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "error")">
+
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" />
+
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.LastName, "error")">
+
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" />
+
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.BirthDate, "error")">
+            <label asp-for="BirthDate"></label>
+            <div>
+                For example, 31 3 1980
+            </div>
+            <div>
+                <input asp-for="BirthDay" />
+                <input asp-for="BirthMonth" />
+                <input asp-for="BirthYear" />
+            </div>
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.UniqueLearnerNumber, "error")">
+            <div>
+                <label asp-for="UniqueLearnerNumber"></label>
+                <input asp-for="UniqueLearnerNumber"/>
+            </div>
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.CourseName, "error")">
+            <div>
+                <label asp-for="CourseName"></label>
+            </div>
+            
+            <div class="form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "error")">
+                <hr />
+                <label class="form-label-bold" for="TrainingCode">Apprenticeship training course</label>
+
+                @if (Model.IsPaidForByTransfer)
+                {
+                    <span class="form-hint">Start typing in the name of the apprenticeship standard or choose an option from the list</span>
+                }
+                else
+                {
+                    <span class="form-hint">Start typing in the name of the course or choose an option from the list</span>
+                }
+                
+                <span asp-validation-for="CourseCode"></span>
+
+                @Html.ValidationMessageFor(m => m.CourseCode, "Choose a training course for this apprentice", new { id = "error-message-" + Html.IdFor(m => m.CourseCode), @class = "error-message" })
+
+                <select asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "Id", "Title"))"></select>
+            </div>
+
+        </div>
+
+        <div class="form-group @Html.AddClassIfPropertyInError(x => x.StartDate, "error")">
+            <label asp-for="StartDate" ></label>
+            <div>
+                For example, 2 2019
+            </div>
+            <div>
+                <input asp-for="StartMonth"/>
+                <input asp-for="StartYear"/>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+

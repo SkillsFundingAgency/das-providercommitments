@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse
 {
-    public class Framework : ITrainingCourse
+    public class Framework : ICourse
     {
         public int FrameworkCode { get; set; }
         public string FrameworkName { get; set; }

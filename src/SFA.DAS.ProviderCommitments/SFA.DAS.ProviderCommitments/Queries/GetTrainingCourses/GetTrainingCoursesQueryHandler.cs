@@ -30,15 +30,15 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 
             var result = new GetTrainingCoursesQueryResponse
             {
-                TrainingCourses = courses.OrderBy(m => m.Title).ToList()
+                TrainingCourses = courses.OrderBy(m => m.Title).ToArray()
             };
 
             return result;
         }
 
-        private Task<IEnumerable<ITrainingCourse>> GetAllRequiredCourses(bool getFramework, CancellationToken cancellationToken)
+        private Task<IEnumerable<ICourse>> GetAllRequiredCourses(bool getFramework, CancellationToken cancellationToken)
         {
-            var tasks = new List<Task<IEnumerable<ITrainingCourse>>> {GetStandards(cancellationToken)};
+            var tasks = new List<Task<IEnumerable<ICourse>>> {GetStandards(cancellationToken)};
 
             if (getFramework)
             {
@@ -49,22 +49,24 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
                     .ContinueWith(allTasks => allTasks.Result.SelectMany(task => task), cancellationToken);
         }
 
-        private async Task<IEnumerable<ITrainingCourse>> GetStandards(CancellationToken cancellationToken)
+        private async Task<IEnumerable<ICourse>> GetStandards(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 throw new OperationCanceledException();
             }
+
             var results = await _apprenticeshipInfoService.GetStandardsAsync();
             return results.Standards;
         }
 
-        private async Task<IEnumerable<ITrainingCourse>> GetFramework(CancellationToken cancellationToken)
+        private async Task<IEnumerable<ICourse>> GetFramework(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 throw new OperationCanceledException();
             }
+
             var results = await _apprenticeshipInfoService.GetFrameworksAsync();
             return results.Frameworks;
         }

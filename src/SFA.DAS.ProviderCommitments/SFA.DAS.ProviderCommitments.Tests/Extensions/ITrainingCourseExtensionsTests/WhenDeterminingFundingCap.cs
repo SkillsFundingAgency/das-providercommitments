@@ -10,12 +10,12 @@ namespace SFA.DAS.ProviderCommitments.Tests.Extensions.ITrainingCourseExtensions
     [TestFixture]
     public class WhenDeterminingFundingCap
     {
-        private Mock<ITrainingCourse> _course;
+        private Mock<ICourse> _course;
 
         [SetUp]
         public void Arrange()
         {
-            _course = new Mock<ITrainingCourse>();
+            _course = new Mock<ICourse>();
             _course.Setup(x => x.EffectiveFrom).Returns(new DateTime(2018, 03, 01));
             _course.Setup(x => x.EffectiveTo).Returns(new DateTime(2019, 03, 31));
             _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>

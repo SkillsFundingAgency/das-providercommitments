@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Extensions.ITrainingCourseExtensions
         public void ThenTheCourseEffectiveDatesAreUsedToDetermineTheStatus(DateTime? courseStart, DateTime? courseEnd, DateTime effectiveDate, TrainingCourseStatus expectStatus)
         {
             //Arrange
-            var course = new Mock<ITrainingCourse>();
+            var course = new Mock<ICourse>();
             course.SetupGet(x => x.EffectiveFrom).Returns(courseStart);
             course.SetupGet(x => x.EffectiveTo).Returns(courseEnd);
 
