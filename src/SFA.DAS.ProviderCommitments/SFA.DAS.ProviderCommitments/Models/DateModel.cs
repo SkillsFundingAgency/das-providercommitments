@@ -58,7 +58,9 @@ namespace SFA.DAS.ProviderCommitments.Models
             }
         }
 
-        public DateTime Date => _currentValue ?? (DateTime) (_currentValue = new DateTime(Year, Month, Day));
+
+        public DateTime? Date => _currentValue ?? (_currentValue = IsValid ? new DateTime(Year, Month, Day): (DateTime ?)null );
+
 
         public bool IsValid => IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) && Day <= DateTime.DaysInMonth(Year, Month);
 
@@ -76,6 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Models
         {
             return day > 0 && day <= 31;
         }
+
 
         private bool IsValidMonth(int month)
         {

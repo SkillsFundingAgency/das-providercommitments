@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace SFA.DAS.ProviderCommitments.Models
 {
@@ -6,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Models
     {
         public MonthYearModel(string monthYear)
         {
+            SourceValue = monthYear;
             SetFromMonthYear(monthYear);
         }
 
@@ -16,12 +18,12 @@ namespace SFA.DAS.ProviderCommitments.Models
         }
 
         public string MonthYear => $"{Month:D2}{Year:D4}";
+        public string SourceValue { get; }
 
         private void SetFromMonthYear(string monthYear)
         {
             int mmyyyyLength = "MMYYYY".Length;
             int myyyyLength = "MYYYY".Length;
-
             if (string.IsNullOrWhiteSpace(monthYear))
             {
                 return;

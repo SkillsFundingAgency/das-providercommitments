@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
+using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
+using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -20,6 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 
             For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
             For<IMediator>().Use<Mediator>();
+            For<ICache>().Use<InMemoryCache>().Singleton();
+            For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
         }
     }
 }

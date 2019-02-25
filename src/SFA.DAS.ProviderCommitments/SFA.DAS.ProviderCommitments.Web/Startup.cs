@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddOptions();
             services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
+            services.Configure<ApprenticeshipInfoServiceConfiguration>(Configuration.GetSection("ApprenticeshipInfoServiceConfiguration"));
 
             var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>();
 
@@ -55,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
+                .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
                 
             ConfigureAuthorization(services);

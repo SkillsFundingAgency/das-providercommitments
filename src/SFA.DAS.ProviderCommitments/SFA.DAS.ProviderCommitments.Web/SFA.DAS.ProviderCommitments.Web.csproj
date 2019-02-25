@@ -12,6 +12,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.1.3" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.8.1" />
@@ -34,7 +35,7 @@
     <Folder Include="AppStart\" />
     <Folder Include="Assets\" />
   </ItemGroup>
-
+   
 
   <ItemGroup>
     <Content Update="Views\Unapproved\Index.cshtml">

@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
 
         [TestCase("012019")]
         [TestCase("12019")]
-        public void Constructor_WithValidYearMonth_ShouldNotThrowException(string validMonthYear)
+       public void Constructor_WithValidYearMonth_ShouldNotThrowException(string validMonthYear)
         {
             var dt = new MonthYearModel(validMonthYear);
 
