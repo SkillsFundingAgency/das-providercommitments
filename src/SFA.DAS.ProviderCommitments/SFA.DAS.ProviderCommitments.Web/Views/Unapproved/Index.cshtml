@@ -65,11 +65,11 @@
                 </fieldset>
             </div>
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.UniqueLearnerNumber, "govuk-form-group--error")">
-                <label asp-for="UniqueLearnerNumber" class="govuk-label">Unique learner number (ULN)</label>
+                <label asp-for="UniqueLearnerNumber" class="govuk-label govuk-!-font-weight-bold>Unique learner number (ULN)</label>
                 <input asp-for="UniqueLearnerNumber" class="govuk-input" />
             </div>
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
-                <label asp-for="CourseCode" class="govuk-label">Apprenticeship training course</label>
+                <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
                 <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
                 <select class="govuk-select" asp-for="CourseCode" asp-items="Model.Courses" aria-describedby="course-name-hint"></select>
             </div>
