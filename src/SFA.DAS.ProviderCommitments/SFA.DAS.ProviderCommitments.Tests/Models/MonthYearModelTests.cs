@@ -26,29 +26,25 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
         [TestCase("000000")]
         [TestCase("132019")]
         [TestCase("120000")]
-        public void Constructor_WithInvalidYearMonthElementValues_ShouldSetIsValidToFalse(string invalidMonthYear)
+        public void Constructor_WithInvalidYearMonthElementValues_ShouldThrowOutOfRangeException(string invalidMonthYear)
         {
-            var dt = new MonthYearModel(invalidMonthYear);
-
-            Assert.IsFalse(dt.IsValid);
+            Assert.Throws<ArgumentOutOfRangeException>(() => new MonthYearModel(invalidMonthYear));
         }
 
         [TestCase("apples")]
         [TestCase("1211111")]
-        public void Constructor_WithUnrecogniseableYearMonth_ShouldSetIsValidToFalse(string invalidMonthYear)
+        public void Constructor_WithUnrecogniseableYearMonth_ShouldThrowInvalidArgumentException(string invalidMonthYear)
         {
-            var dt = new MonthYearModel(invalidMonthYear);
-
-            Assert.IsFalse(dt.IsValid);
+            Assert.Throws<ArgumentException>(() => new MonthYearModel(invalidMonthYear));
         }
 
         [TestCase("012019")]
         [TestCase("12019")]
-        public void Constructor_WithValidYearMonth_ShouldSetIsValidToTrue(string validMonthYear)
+       public void Constructor_WithValidYearMonth_ShouldNotThrowException(string validMonthYear)
         {
             var dt = new MonthYearModel(validMonthYear);
 
-            Assert.IsTrue(dt.IsValid);
+            Assert.Pass("Completed without exception");
         }
 
         [Test]

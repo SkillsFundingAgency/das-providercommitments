@@ -1,17 +1,21 @@
 ﻿using System;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NLog.Web;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -43,16 +47,36 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddProviderIdamsAuthentication(authenticationSettings);
 
-            services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); })
+            services.AddMvc(options =>
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireProviderInRouteMatchesProviderInClaims()
+                        .Build();
+
+                    options.Filters.Add(new AuthorizeFilter(policy));
+                })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
                 .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                
+            ConfigureAuthorization(services);
 
             //todo: app insights key
 
             var container = CreateStructureMapContainer(services);
             return container.GetInstance<IServiceProvider>();
+        }
+
+        private static void ConfigureAuthorization(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ProviderMatch", policy => policy.Requirements.Add(new ProviderRequirement()));
+            });
+
+            services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
+            services.AddTransient<IAuthorizationHandler, ProviderHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -7,7 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Models
     {
         public MonthYearModel(string monthYear)
         {
-            SourceValue = monthYear;
             SetFromMonthYear(monthYear);
         }
 
@@ -19,35 +18,30 @@ namespace SFA.DAS.ProviderCommitments.Models
 
         public string MonthYear => $"{Month:D2}{Year:D4}";
 
-        public string SourceValue { get; }
-
         private void SetFromMonthYear(string monthYear)
         {
+            int mmyyyyLength = "MMYYYY".Length;
+            int myyyyLength = "MYYYY".Length;
             if (string.IsNullOrWhiteSpace(monthYear))
             {
                 return;
             }
 
-            int mmyyyyLength = "MMYYYY".Length;
-            int myyyyLength = "MYYYY".Length;
-
-            if (monthYear.Length == myyyyLength || monthYear.Length == mmyyyyLength)
+            if (monthYear.Length < myyyyLength ||
+                monthYear.Length > mmyyyyLength ||
+                !int.TryParse(monthYear, out _))
             {
-                var monthLength = monthYear.Length - "YYYY".Length;
-
-                SetValueIfValid(monthYear.Substring(monthLength), IsValidYear, year => Year = year);
-                SetValueIfValid(monthYear.Substring(0, monthLength), IsValidMonth, month => Month = month);
+                throw new ArgumentException("The month and year must be in the format mmyyyy or myyyy", nameof(monthYear));
             }
-        }
 
-        private void SetValueIfValid(string s, Func<int, bool> validator, Action<int> setter)
-        {
-            if (int.TryParse(s, out var intValue))
+            var monthLength = monthYear.Length == myyyyLength ? 1 : 2;
+
+            Year = int.Parse(monthYear.Substring(monthLength));
+            Month = int.Parse(monthYear.Substring(0, monthLength));
+            
+            if (!IsValid)
             {
-                if (validator(intValue))
-                {
-                    setter(intValue);
-                }
+                throw new ArgumentException($"Either the month year {monthYear} is not valid or the day {Day} is not valid for this month.");
             }
         }
     }

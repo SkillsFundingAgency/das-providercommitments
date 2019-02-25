@@ -35,5 +35,12 @@
     <Folder Include="AppStart\" />
     <Folder Include="Assets\" />
   </ItemGroup>
+   
+
+  <ItemGroup>
+    <Content Update="Views\Unapproved\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
