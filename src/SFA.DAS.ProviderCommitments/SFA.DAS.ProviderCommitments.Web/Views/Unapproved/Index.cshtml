@@ -71,7 +71,8 @@
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
                 <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
                 <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
-                <select class="govuk-select" asp-for="CourseCode" asp-items="Model.Courses" aria-describedby="course-name-hint"></select>
+                @Html.ValidationMessageFor(m => m.CourseCode, "Choose a training course for this apprentice", new { id = "error-message-" + Html.IdFor(m => m.CourseCode), @class = "error-message" })
+                <select class="govuk-select" asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "Id", "Title"))" aria-describedby="course-name-hint"></select>
             </div>
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
