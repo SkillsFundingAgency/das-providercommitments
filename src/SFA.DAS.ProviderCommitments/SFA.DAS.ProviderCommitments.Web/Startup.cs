@@ -39,11 +39,11 @@ namespace SFA.DAS.ProviderCommitments.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddOptions();
-            services.Configure<AuthenticationSettings>(Configuration.GetSection("AuthenticationSettings"));
-            services.Configure<ApprenticeshipInfoServiceConfiguration>(Configuration.GetSection("ApprenticeshipInfoServiceConfiguration"));
+            services.AddDasConfigurationSections(Configuration);
 
-            var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>();
+            var authenticationSettingsSection = Configuration.GetSection("SFA.DAS.ProviderCommitments:AuthenticationSettings");
+
+            var authenticationSettings = authenticationSettingsSection.Get<AuthenticationSettings>();
 
             services.AddProviderIdamsAuthentication(authenticationSettings);
 
@@ -65,6 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             //todo: app insights key
 
             var container = CreateStructureMapContainer(services);
+
             return container.GetInstance<IServiceProvider>();
         }
 
@@ -109,12 +110,19 @@ namespace SFA.DAS.ProviderCommitments.Web
             });
         }
 
+        public void ConfigureContainer(Registry registry)
+        {
+            registry.IncludeRegistry<DefaultRegistry>();
+            registry.IncludeRegistry<ConfigurationRegistry>();
+        }
+
         private static Container CreateStructureMapContainer(IServiceCollection services)
         {
             var container = new Container();
             container.Configure(config =>
             {
-                config.AddRegistry(new DefaultRegistry());
+                config.AddRegistry<DefaultRegistry>();
+                config.AddRegistry<ConfigurationRegistry>();
                 config.Populate(services);
             });
 
