@@ -64,7 +64,8 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(32)]
-        public void Day_SetToInvalidValue_ShouldThrowOutOfRangeException(int day)
+        [TestCase(null)]
+        public void Day_SetToInvalidValue_ShouldThrowOutOfRangeException(int? day)
         {
             var dt = new DateModel();
 
@@ -74,7 +75,8 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(13)]
-        public void Month_SetToInvalidValue_ShouldThrowOutOfRangeException(int month)
+        [TestCase(null)]
+        public void Month_SetToInvalidValue_ShouldThrowOutOfRangeException(int? month)
         {
             var dt = new DateModel();
 
@@ -83,7 +85,8 @@ namespace SFA.DAS.ProviderCommitments.Tests.Models
 
         [TestCase(-1)]
         [TestCase(0)]
-        public void Year_SetToInvalidValue_ShouldThrowOutOfRangeException(int year)
+        [TestCase(null)]
+        public void Year_SetToInvalidValue_ShouldThrowOutOfRangeException(int? year)
         {
             var dt = new DateModel();
 

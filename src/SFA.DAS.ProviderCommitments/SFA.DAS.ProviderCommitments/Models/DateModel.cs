@@ -11,9 +11,9 @@ namespace SFA.DAS.ProviderCommitments.Models
     public class DateModel
     {
         private DateTime? _currentValue;
-        private int _day;
-        private int _month;
-        private int _year;
+        private int? _day;
+        private int? _month;
+        private int? _year;
 
         public DateModel()
         {
@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Models
             _year = dateTime.Year;
         }
 
-        public virtual int Day
+        public virtual int? Day
         {
             get => _day;
             set
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Models
             }
         }
 
-        public int Month
+        public int? Month
         {
             get => _month;
             set
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Models
             }
         }
 
-        public int Year
+        public int? Year
         {
             get => _year;
             set
@@ -58,13 +58,11 @@ namespace SFA.DAS.ProviderCommitments.Models
             }
         }
 
+        public DateTime? Date => _currentValue ?? (_currentValue = IsValid ? new DateTime(Year.Value, Month.Value, Day.Value): (DateTime ?)null );
 
-        public DateTime? Date => _currentValue ?? (_currentValue = IsValid ? new DateTime(Year, Month, Day): (DateTime ?)null );
+        public bool IsValid => IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) && Day <= DateTime.DaysInMonth(Year.Value, Month.Value);
 
-
-        public bool IsValid => IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) && Day <= DateTime.DaysInMonth(Year, Month);
-
-        private void AssertIsValid(string property, int value, Func<int, bool> validator)
+        private void AssertIsValid(string property, int? value, Func<int?, bool> validator)
         {
             var isValid = validator(value);
 
@@ -74,23 +72,22 @@ namespace SFA.DAS.ProviderCommitments.Models
             }
         }
 
-        private bool IsValidDay(int day)
+        private bool IsValidDay(int? day)
         {
-            return day > 0 && day <= 31;
+            return day.HasValue && day > 0 && day <= 31;
         }
 
-
-        private bool IsValidMonth(int month)
+        private bool IsValidMonth(int? month)
         {
-            return month > 0 && month <= 12;
+            return month.HasValue && month > 0 && month <= 12;
         }
 
-        private bool IsValidYear(int year)
+        private bool IsValidYear(int? year)
         {
-            return year >= DateTime.MinValue.Year && year <= DateTime.MaxValue.Year;
+            return year.HasValue && year >= DateTime.MinValue.Year && year <= DateTime.MaxValue.Year;
         }
 
-        private void SetIfDifferent(int currentValue, int newValue, Action<int> change)
+        private void SetIfDifferent(int? currentValue, int? newValue, Action<int?> change)
         {
             if (currentValue != newValue)
             {

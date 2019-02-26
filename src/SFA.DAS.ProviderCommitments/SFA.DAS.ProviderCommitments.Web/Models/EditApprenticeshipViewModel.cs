@@ -38,15 +38,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Required]
         [Display(Name = "Day")]
-        public int BirthDay { get => BirthDate.Day ; set => BirthDate.Day = value; }
+        public int? BirthDay { get => BirthDate.Day ; set => BirthDate.Day = value; }
 
         [Required]
         [Display(Name = "Month")]
-        public int BirthMonth { get => BirthDate.Month; set => BirthDate.Month = value; }
+        public int? BirthMonth { get => BirthDate.Month; set => BirthDate.Month = value; }
 
         [Required]
         [Display(Name = "Year")]
-        public int BirthYear { get => BirthDate.Year; set => BirthDate.Year = value; }
+        public int? BirthYear { get => BirthDate.Year; set => BirthDate.Year = value; }
 
         [Required]
         [Display(Name = "Unique Learner Number (ULN)")]
@@ -63,22 +63,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Required]
         [Display(Name = "Month")]
-        public int StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
+        public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
 
         [Required]
         [Display(Name = "Year")]
-        public int StartYear { get => StartDate.Year; set => StartDate.Year = value; }
+        public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
         [Display(Name = "Projected finish date")]
         public DateModel FinishDate { get; }
 
         [Required]
         [Display(Name = "Month")]
-        public int FinishMonth { get => FinishDate.Month; set => FinishDate.Month = value; }
+        public int? FinishMonth { get => FinishDate.Month; set => FinishDate.Month = value; }
 
         [Required]
         [Display(Name = "Year")]
-        public int FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
+        public int? FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
         
         public bool IsPaidForByTransfer { get; set; }
 

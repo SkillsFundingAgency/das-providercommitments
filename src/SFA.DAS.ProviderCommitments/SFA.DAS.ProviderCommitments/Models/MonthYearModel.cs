@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Models
             SetFromMonthYear(monthYear);
         }
 
-        public override int Day
+        public override int? Day
         {
             get => 1; // always use first day of month
             set => throw new InvalidOperationException("Cannot set the day on a month-year value");
