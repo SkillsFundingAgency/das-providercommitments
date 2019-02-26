@@ -16,8 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Requests;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    //[Authorize()]
-    [AllowAnonymous]
+    [Authorize()]
     public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
