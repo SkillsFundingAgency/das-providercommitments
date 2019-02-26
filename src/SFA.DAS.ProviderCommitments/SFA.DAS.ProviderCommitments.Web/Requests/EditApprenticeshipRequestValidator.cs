@@ -10,8 +10,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Requests
             RuleFor(model => model.ReservationId).NotEmpty();
             RuleFor(model => model.EmployerAccountPublicHashedId).NotEmpty();
             RuleFor(model => model.EmployerAccountLegalEntityPublicHashedId).NotEmpty();
-            RuleFor(model => model.StartMonthYear).NotNull();
-            RuleFor(model => model.StartMonthYear).Must(monthYear => new MonthYearModel(monthYear).IsValid).WithMessage("{PropertyName} is invalid");
+            RuleFor(model => model.StartMonthYear)
+                .Must(monthYear => new MonthYearModel(monthYear).IsValid)
+                .When(model => !string.IsNullOrWhiteSpace(model.StartMonthYear))
+                .WithMessage("{PropertyName} is invalid");
         }
     }
 }
