@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog.Extensions.Logging;
 using NLog.Web;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -81,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -96,6 +98,8 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             env.ConfigureNLog("nlog.config");
 
+            loggerFactory.AddNLog();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -108,6 +112,10 @@ namespace SFA.DAS.ProviderCommitments.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var logger = loggerFactory.CreateLogger(nameof(Startup));
+            logger.Log(LogLevel.Information, "Application start up configure is complete");
+
         }
 
         public void ConfigureContainer(Registry registry)
