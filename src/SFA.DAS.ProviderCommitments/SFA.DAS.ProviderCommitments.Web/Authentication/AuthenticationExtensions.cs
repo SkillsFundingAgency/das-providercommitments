@@ -20,7 +20,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                 })
                 .AddWsFederation(options =>
                 {
+                    // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
+                    // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
                     options.MetadataAddress = configuration.MetadataAddress;
+                    // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
                     options.Wtrealm = configuration.Wtrealm;
                     options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
                 }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
