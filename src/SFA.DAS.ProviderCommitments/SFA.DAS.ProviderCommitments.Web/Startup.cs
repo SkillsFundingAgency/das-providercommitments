@@ -63,9 +63,6 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
                 
             ConfigureAuthorization(services);
-
-            //todo: app insights key
-
         }
 
         private static void ConfigureAuthorization(IServiceCollection services)

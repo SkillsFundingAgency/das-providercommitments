@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .ConfigureKestrel(options => options.AddServerHeader = false)
                 .UseStructureMap()
                 .UseStartup<Startup>()
+                .UseApplicationInsights()
                 .UseNLog();
     }
 }
