@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {
-        public static void AddProviderIdamsAuthentication(this IServiceCollection services, IOptions<AuthenticationSettings> configuration)
+        public static void AddProviderIdamsAuthentication(this IServiceCollection services, AuthenticationSettings configuration)
         {
             services.AddAuthentication(sharedOptions =>
                 {
@@ -20,8 +20,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                 })
                 .AddWsFederation(options =>
                 {
-                    options.MetadataAddress = configuration.Value.MetadataAddress;
-                    options.Wtrealm = configuration.Value.Wtrealm;
+                    // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
+                    // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
+                    options.MetadataAddress = configuration.MetadataAddress;
+                    // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
+                    options.Wtrealm = configuration.Wtrealm;
                     options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
                 }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
         }
