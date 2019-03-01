@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -66,9 +66,6 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             //todo: app insights key
 
-            var container = CreateStructureMapContainer(services);
-
-            return container.GetInstance<IServiceProvider>();
         }
 
         private static void ConfigureAuthorization(IServiceCollection services)
@@ -120,21 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
         public void ConfigureContainer(Registry registry)
         {
-            registry.IncludeRegistry<DefaultRegistry>();
-            registry.IncludeRegistry<ConfigurationRegistry>();
-        }
-
-        private static Container CreateStructureMapContainer(IServiceCollection services)
-        {
-            var container = new Container();
-            container.Configure(config =>
-            {
-                config.AddRegistry<DefaultRegistry>();
-                config.AddRegistry<ConfigurationRegistry>();
-                config.Populate(services);
-            });
-
-            return container;
+            IoC.Initialize(registry);
         }
     }
 }
