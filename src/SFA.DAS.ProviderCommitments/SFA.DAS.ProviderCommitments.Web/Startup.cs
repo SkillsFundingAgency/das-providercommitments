@@ -118,6 +118,12 @@ namespace SFA.DAS.ProviderCommitments.Web
 
         }
 
+        public void ConfigureContainer(Registry registry)
+        {
+            registry.IncludeRegistry<DefaultRegistry>();
+            registry.IncludeRegistry<ConfigurationRegistry>();
+        }
+
         private static Container CreateStructureMapContainer(IServiceCollection services)
         {
             var container = new Container();
