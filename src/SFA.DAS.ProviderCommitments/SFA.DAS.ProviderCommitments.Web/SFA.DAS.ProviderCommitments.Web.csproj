@@ -42,7 +42,7 @@
     <Content Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="Views\Unapproved\Index.cshtml">
+    <Content Update="Views\Unapproved\AddDraftApprenticeship.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>

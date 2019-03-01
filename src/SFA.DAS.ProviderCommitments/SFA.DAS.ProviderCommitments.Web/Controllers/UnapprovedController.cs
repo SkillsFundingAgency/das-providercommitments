@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> Index(EditApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await Task.WhenAll(getEmployerTask, getTrainingCourseTask, getCoursesTask);
 
-            var model = new EditApprenticeshipViewModel
+            var model = new AddDraftApprenticeshipViewModel
             {
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
@@ -55,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             };
             return View(model);
         }
-        
+
         private Task<GetEmployerResponse>  GetEmployerIfRequired(string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId)
         {
             if (string.IsNullOrWhiteSpace(employerAccountPublicHashedId))

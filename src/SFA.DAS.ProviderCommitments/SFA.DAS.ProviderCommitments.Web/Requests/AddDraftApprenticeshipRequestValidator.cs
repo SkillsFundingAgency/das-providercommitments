@@ -3,9 +3,9 @@ using SFA.DAS.ProviderCommitments.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {
-    public class EditApprenticeshipRequestValidator : AbstractValidator<EditApprenticeshipRequest>
+    public class AddDraftApprenticeshipRequestValidator : AbstractValidator<AddDraftApprenticeshipRequest>
     {
-        public EditApprenticeshipRequestValidator()
+        public AddDraftApprenticeshipRequestValidator()
         {
             RuleFor(model => model.ReservationId).NotEmpty();
             RuleFor(model => model.EmployerAccountPublicHashedId).NotEmpty();

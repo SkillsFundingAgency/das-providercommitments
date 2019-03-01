@@ -1,9 +1,8 @@
 ﻿using System;
-using SFA.DAS.ProviderCommitments.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {
-    public class EditApprenticeshipRequest
+    public class AddDraftApprenticeshipRequest
     {
         public Guid ReservationId { get; set; }
         public string EmployerAccountPublicHashedId { get; set; }
