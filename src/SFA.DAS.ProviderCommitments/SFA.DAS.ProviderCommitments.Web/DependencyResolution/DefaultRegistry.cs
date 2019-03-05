@@ -30,8 +30,6 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IMediator>().Use<Mediator>();
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
-            For<ICommitmentsApiClient>().Use<CommitmentsApiClient>().Singleton();
-            For<IRestHttpClient>().Use<CommitmentsRestHttpClient>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
         }
     }

@@ -4,7 +4,9 @@ using SFA.DAS.Authorization;
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {
     /// <summary>
-    ///     For each model property that 
+    ///     Provide access to the current <see cref="IAuthorizationContext"/> which
+    ///     will provides access to the "un-hashed" values that can be un-hashed from
+    ///     the current request.
     /// </summary>
     public class AuthorizationContextProvider : IAuthorizationContextProvider
     {

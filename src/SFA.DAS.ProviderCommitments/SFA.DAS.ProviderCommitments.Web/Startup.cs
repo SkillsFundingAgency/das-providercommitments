@@ -20,6 +20,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using StructureMap;
+using AuthorizationModelBinderProvider = SFA.DAS.ProviderCommitments.Web.RouteValues.AuthorizationModelBinderProvider;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {

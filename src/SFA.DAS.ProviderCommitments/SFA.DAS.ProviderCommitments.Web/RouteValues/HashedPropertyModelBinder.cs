@@ -6,9 +6,9 @@ using SFA.DAS.ProviderCommitments.Services.Temp;
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {
     /// <summary>
-    ///     Will inspect the current action context for a named input property and if it finds it will use the
-    ///     supplied hashing service to un-hash this value and place the resultant un-hashed value into the
-    ///     <see cref="IAuthorizationContext"/> using the name specified in <see cref="RouteValueAuthorizationKeyPair"/>.
+    ///     Will inspect the current action context for a named input property and if it finds such a property
+    ///     it will use the supplied hashing service to un-hash this value and place the resultant un-hashed value
+    ///     into the <see cref="IAuthorizationContext"/> using the name specified in <see cref="RouteValueAuthorizationKeyPair"/>.
     /// </summary>
     public abstract class HashedPropertyModelBinder : IHashedPropertyModelBinder
     {
