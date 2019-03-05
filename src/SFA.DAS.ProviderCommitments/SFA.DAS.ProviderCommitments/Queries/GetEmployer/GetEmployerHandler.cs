@@ -2,28 +2,33 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
 {
     public class GetEmployerHandler : IRequestHandler<GetEmployerRequest, GetEmployerResponse>
     {
         private readonly IValidator<GetEmployerRequest> _validator;
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public GetEmployerHandler(IValidator<GetEmployerRequest> validator)
+        public GetEmployerHandler(IValidator<GetEmployerRequest> validator, ICommitmentsApiClient commitmentsApiClient)
         {
             _validator = validator;
+            _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public Task<GetEmployerResponse> Handle(GetEmployerRequest request, CancellationToken cancellationToken)
+        public async Task<GetEmployerResponse> Handle(GetEmployerRequest request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request);
 
-            return Task.FromResult(new GetEmployerResponse
+            var legalEntity = await _commitmentsApiClient.GetLegalEntity(request.EmployerAccountLegalEntityId);
+
+            return new GetEmployerResponse
             {
-                EmployerAccountPublicHashedId = request.EmployerAccountPublicHashedId,
-                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
-                EmployerName = "** Temp Place Holder **"
-            });
+                AccountLegalEntityId = request.EmployerAccountLegalEntityId,
+                AccountName = legalEntity.AccountName,
+                LegalEntityName = legalEntity.LegalEntityName
+            };
         }
     }
 }

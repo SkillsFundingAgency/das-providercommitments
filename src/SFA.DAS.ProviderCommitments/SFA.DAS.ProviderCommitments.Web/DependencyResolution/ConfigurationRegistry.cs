@@ -12,6 +12,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             AddConfiguration<AuthenticationSettings>("AuthenticationSettings");
             AddConfiguration<ApprenticeshipInfoServiceConfiguration>("ApprenticeshipInfoServiceConfiguration");
+            AddConfiguration<PublicAccountIdHashingConfiguration>("PublicAccountIdHashingConfiguration");
+            AddConfiguration<PublicAccountLegalEntityIdHashingConfiguration>("PublicAccountLegalEntityIdHashingConfiguration");
         }
 
         private void AddConfiguration<T>(string name) where T : class

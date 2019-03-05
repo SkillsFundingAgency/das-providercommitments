@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
@@ -22,6 +23,7 @@ using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -49,19 +51,22 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddProviderIdamsAuthentication(authenticationSettings);
 
-            services.AddMvc(options =>
+            var mvcBuilder = services.AddMvc(options =>
                 {
                     var policy = new AuthorizationPolicyBuilder()
                         .RequireProviderInRouteMatchesProviderInClaims()
                         .Build();
 
                     options.Filters.Add(new AuthorizeFilter(policy));
+
+                    options.ModelBinderProviders.Insert(0, new AuthorizationModelBinderProvider());
                 })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
                 .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-                
+             
+                        
             ConfigureAuthorization(services);
         }
 
@@ -115,6 +120,8 @@ namespace SFA.DAS.ProviderCommitments.Web
         public void ConfigureContainer(Registry registry)
         {
             IoC.Initialize(registry);
+            registry.IncludeRegistry<HashingRegistry>();
+                config.AddRegistry<HashingRegistry>();
         }
     }
 }
