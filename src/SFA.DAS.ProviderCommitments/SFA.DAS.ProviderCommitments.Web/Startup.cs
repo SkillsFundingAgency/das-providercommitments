@@ -19,8 +19,8 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using StructureMap;
-using AuthorizationModelBinderProvider = SFA.DAS.ProviderCommitments.Web.RouteValues.AuthorizationModelBinderProvider;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
                     options.Filters.Add(new AuthorizeFilter(policy));
 
-                    options.ModelBinderProviders.Insert(0, new AuthorizationModelBinderProvider());
+                    options.ModelBinderProviders.Insert(0, new UnhashingModelBinderProvider());
                 })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
@@ -118,11 +118,19 @@ namespace SFA.DAS.ProviderCommitments.Web
 
         }
 
-        public void ConfigureContainer(Registry registry)
+        private static Container CreateStructureMapContainer(IServiceCollection services)
         {
-            IoC.Initialize(registry);
-            registry.IncludeRegistry<HashingRegistry>();
+            var container = new Container();
+            container.Configure(config =>
+            {
+                config.AddRegistry<DefaultRegistry>();
+                config.AddRegistry<CommitmentsApiRegistry>();
+                config.AddRegistry<ConfigurationRegistry>();
                 config.AddRegistry<HashingRegistry>();
+                config.Populate(services);
+            });
+
+            return container;
         }
     }
 }

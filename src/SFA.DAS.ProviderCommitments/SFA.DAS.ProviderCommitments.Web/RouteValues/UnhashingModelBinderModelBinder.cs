@@ -6,11 +6,11 @@ using SFA.DAS.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {
-    public class AuthorizationModelBinder : IModelBinder
+    public class UnhashingModelBinder : IModelBinder
     {
         private readonly IAuthorizationContextProvider _authorizationContextProvider;
 
-        public AuthorizationModelBinder(IAuthorizationContextProvider authorizationContextProvider)
+        public UnhashingModelBinder(IAuthorizationContextProvider authorizationContextProvider)
         {
             _authorizationContextProvider = authorizationContextProvider;
         }
