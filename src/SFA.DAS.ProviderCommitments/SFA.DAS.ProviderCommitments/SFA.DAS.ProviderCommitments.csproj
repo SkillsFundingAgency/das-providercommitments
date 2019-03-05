@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.98" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.98" />

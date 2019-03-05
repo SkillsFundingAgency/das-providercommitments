@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             };
             return View(model);
         }
+
+
+        [HttpPost]
+        [Route("add-apprentice")]
+        public Task<IActionResult> AddDraftApprenticeshipPost(AddDraftApprenticeshipViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private Task<GetEmployerResponse>  GetEmployerIfRequired(string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId)
         {
