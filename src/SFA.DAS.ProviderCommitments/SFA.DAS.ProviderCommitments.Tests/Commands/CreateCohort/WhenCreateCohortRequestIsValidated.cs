@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 namespace SFA.DAS.ProviderCommitments.Tests.Commands.CreateCohort
 {
     [TestFixture]
-    public class WhenIValidateCreateCohortRequest
+    public class WhenCreateCohortRequestIsValidated
     {
         private CreateCohortValidator _validator;
         private CreateCohortRequest _validRequest;
