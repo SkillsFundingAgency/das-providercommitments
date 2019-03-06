@@ -20,7 +20,6 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
         public async Task<GetEmployerResponse> Handle(GetEmployerRequest request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request);
-
             var legalEntity = await _commitmentsApiClient.GetLegalEntity(request.EmployerAccountLegalEntityId);
 
             return new GetEmployerResponse

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Configuration;
+﻿using Microsoft.Extensions.Options;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Services;
 using StructureMap;
 
@@ -16,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             For<IPublicAccountIdHashingService>().Use("", ctx =>
             {
-                var config = ctx.GetInstance<PublicAccountIdHashingConfiguration>();
+                var config = ctx.GetInstance<IOptions<PublicAccountIdHashingConfiguration>>().Value;
                 return new PublicAccountIdHashingService(config);
             }).Singleton();
         }
@@ -25,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             For<IPublicAccountLegalEntityIdHashingService>().Use("", ctx =>
             {
-                var config = ctx.GetInstance<PublicAccountLegalEntityIdHashingConfiguration>();
+                var config = ctx.GetInstance<IOptions<PublicAccountLegalEntityIdHashingConfiguration>>().Value;
                 return new PublicAccountLegalEntityIdHashingService(config);
             }).Singleton();
         }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Apprenticeships.Api.Client;
@@ -16,10 +17,10 @@ namespace SFA.DAS.ProviderCommitments.Services
             private readonly ApprenticeshipInfoServiceConfiguration _configuration;
             private readonly IApprenticeshipInfoServiceMapper _mapper;
 
-            public ApprenticeshipInfoService(ICache cache, ApprenticeshipInfoServiceConfiguration configuration, IApprenticeshipInfoServiceMapper mapper)
+            public ApprenticeshipInfoService(ICache cache, IOptions<ApprenticeshipInfoServiceConfiguration> configuration, IApprenticeshipInfoServiceMapper mapper)
             {
                 _cache = cache;
-                _configuration = configuration;
+                _configuration = configuration.Value;
                 _mapper = mapper;
         }
 

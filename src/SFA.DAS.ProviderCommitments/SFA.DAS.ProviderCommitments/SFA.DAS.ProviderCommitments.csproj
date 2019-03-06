@@ -19,7 +19,7 @@
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.98" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.98" />
     <PackageReference Include="SFA.DAS.Authorization" Version="3.0.6" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.958" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.1010" />
     <PackageReference Include="SFA.DAS.Providers.Api.Client" Version="0.11.98" />
     <PackageReference Include="FluentValidation" Version="8.1.3" />
     <PackageReference Include="MediatR" Version="6.0.0" />
