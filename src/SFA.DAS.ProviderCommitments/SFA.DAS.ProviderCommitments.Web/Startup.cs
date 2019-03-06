@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;

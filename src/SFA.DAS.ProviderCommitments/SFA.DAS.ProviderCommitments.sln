@@ -9,9 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{06CFA98C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.Web.Tests", "SFA.DAS.ProviderCommitments.Web.Tests\SFA.DAS.ProviderCommitments.Web.Tests.csproj", "{A1431895-4699-4428-856F-60AE8D4CDC03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderCommitments", "SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj", "{A9681024-4F96-4C54-88EA-A4D7D4447915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments", "SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj", "{A9681024-4F96-4C54-88EA-A4D7D4447915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderCommitments.Tests", "SFA.DAS.ProviderCommitments.Tests\SFA.DAS.ProviderCommitments.Tests.csproj", "{02DA01B9-F980-4810-A532-9CA14CB9EA7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.Tests", "SFA.DAS.ProviderCommitments.Tests\SFA.DAS.ProviderCommitments.Tests.csproj", "{02DA01B9-F980-4810-A532-9CA14CB9EA7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderCommitments.ModelBinding", "SFA.DAS.ProviderCommitments.ModelBinding\SFA.DAS.ProviderCommitments.ModelBinding.csproj", "{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderCommitments.HashingTemp", "SFA.DAS.ProviderCommitments.HashingTemp\SFA.DAS.ProviderCommitments.HashingTemp.csproj", "{FA9A0B3D-D375-4466-915D-4A748A45C0D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,14 @@ Global
 		{02DA01B9-F980-4810-A532-9CA14CB9EA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02DA01B9-F980-4810-A532-9CA14CB9EA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02DA01B9-F980-4810-A532-9CA14CB9EA7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

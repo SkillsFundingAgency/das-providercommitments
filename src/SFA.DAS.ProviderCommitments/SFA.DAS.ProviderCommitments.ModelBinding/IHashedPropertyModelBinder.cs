@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization;
+using SFA.DAS.ProviderCommitments.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {
@@ -9,6 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.RouteValues
     /// </summary>
     public interface IHashedPropertyModelBinder
     {
-        void BindModel(ActionContext context, AuthorizationContext authorizationContext);
+        void BindModel(ActionContext context, IAuthorizationContext authorizationContext);
     }
 }

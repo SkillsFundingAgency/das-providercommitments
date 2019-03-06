@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using SFA.DAS.Authorization;
+using SFA.DAS.ProviderCommitments.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {

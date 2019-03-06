@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization;
+using SFA.DAS.ProviderCommitments.ModelBinding;
 using SFA.DAS.ProviderCommitments.Services.Temp;
 
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.RouteValues
             _mapping = mapping;
        }
 
-        public void BindModel(ActionContext actionContext, AuthorizationContext authorizationContext)
+        public void BindModel(ActionContext actionContext, IAuthorizationContext authorizationContext)
         {
             if (TryGetHashedValueFromRouteData(actionContext, out var hashedId) 
                 || TryGetHashedValueFromQueryParams(actionContext, out hashedId))

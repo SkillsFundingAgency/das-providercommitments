@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
-using SFA.DAS.Authorization;
+using SFA.DAS.ProviderCommitments.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.RouteValues
 {
