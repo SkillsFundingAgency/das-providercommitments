@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Configuration;
+﻿using Microsoft.Extensions.Options;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.HashingTemp;
 using SFA.DAS.ProviderCommitments.Services;
 using StructureMap;
