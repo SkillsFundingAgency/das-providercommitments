@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             For<IPublicAccountIdHashingService>().Use("", ctx =>
             {
-                var config = ctx.GetInstance<IOptions<PublicAccountIdHashingConfiguration>>().Value;
+                var config = ctx.GetInstance<PublicAccountIdHashingConfiguration>();
                 return new PublicAccountIdHashingService(config);
             }).Singleton();
         }
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             For<IPublicAccountLegalEntityIdHashingService>().Use("", ctx =>
             {
-                var config = ctx.GetInstance<IOptions<PublicAccountLegalEntityIdHashingConfiguration>>().Value;
+                var config = ctx.GetInstance<PublicAccountLegalEntityIdHashingConfiguration>();
                 return new PublicAccountLegalEntityIdHashingService(config);
             }).Singleton();
         }

@@ -22,19 +22,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
     public static class IServiceCollectionExtensions
     {
-        private const string Key = "SFA.DAS.ProviderCommitments";
+        //private const string Key = "SFA.DAS.ProviderCommitments";
 
-        public static IServiceCollection AddDasConfigurationSections(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
-            
-            services.Configure<ApprenticeshipInfoServiceConfiguration>(configuration.GetSection($"{Key}:ApprenticeshipInfoServiceConfiguration"));
-            services.Configure<AuthenticationSettings>(configuration.GetSection($"{Key}:AuthenticationSettings"));
-            services.Configure<PublicAccountIdHashingConfiguration>(configuration.GetSection($"{Key}:PublicAccountIdHashingConfiguration"));
-            services.Configure<PublicAccountLegalEntityIdHashingConfiguration>(configuration.GetSection($"{Key}:PublicAccountLegalEntityIdHashingConfiguration"));
-            services.Configure<AzureActiveDirectoryClientConfiguration>(configuration.GetSection($"{Key}:CommitmentsClientApiConfiguration"));
-            return services;
-        }
+        //public static IServiceCollection AddDasConfigurationSections(this IServiceCollection services, IConfiguration configuration)
+        //{
+        //    services.AddOptions();
+
+        //    services.Configure<ApprenticeshipInfoServiceConfiguration>(configuration.GetSection($"{Key}:ApprenticeshipInfoServiceConfiguration"));
+        //    services.Configure<AuthenticationSettings>(configuration.GetSection($"{Key}:AuthenticationSettings"));
+        //    services.Configure<PublicAccountIdHashingConfiguration>(configuration.GetSection($"{Key}:PublicAccountIdHashingConfiguration"));
+        //    services.Configure<PublicAccountLegalEntityIdHashingConfiguration>(configuration.GetSection($"{Key}:PublicAccountLegalEntityIdHashingConfiguration"));
+        //    services.Configure<CommitmentsClientApiConfiguration>(configuration.GetSection($"{Key}:CommitmentsClientApi"));
+        //    return services;
+        //}
 
         public static IServiceCollection AddDasAuthorization(this IServiceCollection services)
         {

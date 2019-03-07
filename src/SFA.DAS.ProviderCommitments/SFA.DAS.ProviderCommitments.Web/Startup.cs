@@ -36,8 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 })
-                .AddDasConfigurationSections(Configuration)
-                .AddProviderIdamsAuthentication()
+                .AddProviderIdamsAuthentication(Configuration)
                 .AddDasAuthorization()
                 .AddMvc(options =>
                 {

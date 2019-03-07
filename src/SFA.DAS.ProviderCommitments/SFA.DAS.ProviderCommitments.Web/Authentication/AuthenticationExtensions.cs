@@ -2,17 +2,17 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {
-        public static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services)
+        public static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            var authenticationSettings = services.BuildServiceProvider().GetService<IOptions<AuthenticationSettings>>().Value;
+            var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
 
             services.AddAuthentication(sharedOptions =>
                 {
