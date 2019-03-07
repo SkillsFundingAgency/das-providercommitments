@@ -7,12 +7,10 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
     {
         public static void Initialize(Registry registry)
         {
-            registry.IncludeRegistry<CommitmentsApiRegistry>();
-            registry.IncludeRegistry<MediatorRegistry>();
-            registry.IncludeRegistry<HashingRegistry>();
-
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<CommitmentsApiRegistry>();
+            registry.IncludeRegistry<ConfigurationRegistry>();
+            registry.IncludeRegistry<MediatorRegistry>();
             registry.IncludeRegistry<HashingRegistry>();
         }
     }

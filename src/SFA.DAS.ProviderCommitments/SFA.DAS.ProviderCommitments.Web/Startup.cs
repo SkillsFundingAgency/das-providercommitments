@@ -86,8 +86,5 @@ namespace SFA.DAS.ProviderCommitments.Web
             logger.Log(LogLevel.Information, "Application start up configure is complete");
 
         }
-        public void ConfigureContainer(Registry registry)
-        {
-            IoC.Initialize(registry);
     }
 }
