@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using SFA.DAS.ProviderCommitments.Services.Temp;
+using SFA.DAS.ProviderCommitments.HashingTemp;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {

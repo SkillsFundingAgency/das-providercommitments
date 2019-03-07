@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.Services.Temp;
+using SFA.DAS.ProviderCommitments.HashingTemp;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {

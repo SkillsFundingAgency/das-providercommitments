@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using FluentValidation;
-using MediatR;
-using SFA.DAS.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
-using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
 using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.Infrastructure;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Services;
-using SFA.DAS.ProviderCommitments.Web.Authorisation;
-using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution

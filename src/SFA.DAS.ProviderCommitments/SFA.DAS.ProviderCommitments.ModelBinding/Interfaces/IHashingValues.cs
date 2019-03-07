@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.ModelBinding
+﻿namespace SFA.DAS.ProviderCommitments.ModelBinding.Interfaces
 {
-    public interface IAuthorizationContext
+    public interface IHashingValues
     {
         T Get<T>(string key);
 

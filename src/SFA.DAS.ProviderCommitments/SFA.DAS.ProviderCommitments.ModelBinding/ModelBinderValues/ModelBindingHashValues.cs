@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.ModelBinding
+namespace SFA.DAS.ProviderCommitments.ModelBinding.ModelBinderValues
 {
-    public class AuthorizationContext : IAuthorizationContext
+    public class ModelBindingHashValues : IHashingValues
     {
         private readonly Dictionary<string, object> _data = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding
         {
             if (!_data.TryGetValue(key, out var value))
             {
-                throw new KeyNotFoundException($"The key '{key}' was not present in the authorization context");
+                throw new KeyNotFoundException($"The key '{key}' was not present in the model bind values obtained from the request");
             }
 
             return (T)value;

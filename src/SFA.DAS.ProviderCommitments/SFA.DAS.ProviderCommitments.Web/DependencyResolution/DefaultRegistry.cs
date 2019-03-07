@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using SFA.DAS.Authorization;
 using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
+using SFA.DAS.ProviderCommitments.ModelBinding.ModelBinderValues;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IMediator>().Use<Mediator>();
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
-            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
+            For<IHashingContextProvider>().Use<ModelBindingHashValuesProvider>();
         }
     }
 }

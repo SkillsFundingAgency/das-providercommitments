@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 
-using SFA.DAS.ProviderCommitments.ModelBinding;
-
-namespace SFA.DAS.ProviderCommitments.Web.RouteValues
+namespace SFA.DAS.ProviderCommitments.ModelBinding.ModelBinder
 {
     public class UnhashingModelBinder : IModelBinder
     {
-        private readonly IAuthorizationContextProvider _authorizationContextProvider;
+        private readonly IHashingContextProvider _hashingContextProvider;
 
-        public UnhashingModelBinder(IAuthorizationContextProvider authorizationContextProvider)
+        public UnhashingModelBinder(IHashingContextProvider hashingContextProvider)
         {
-            _authorizationContextProvider = authorizationContextProvider;
+            _hashingContextProvider = hashingContextProvider;
         }
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var authorizationContext = _authorizationContextProvider.GetAuthorizationContext();
+            var authorizationContext = _hashingContextProvider.GetAuthorizationContext();
 
             var model = Activator.CreateInstance(bindingContext.ModelType);
 

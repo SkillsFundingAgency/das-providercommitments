@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderCommitments.ModelBinding;
-using SFA.DAS.ProviderCommitments.Services.Temp;
+using SFA.DAS.ProviderCommitments.HashingTemp;
+using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Web.RouteValues
+namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
 {
     /// <summary>
     ///     Will inspect the current action context for a named input property and if it finds such a property
     ///     it will use the supplied hashing service to un-hash this value and place the resultant un-hashed value
-    ///     into the <see cref="IAuthorizationContext"/> using the name specified in <see cref="RouteValueAuthorizationKeyPair"/>.
+    ///     into the <see cref="IHashingValues"/> using the name specified in <see cref="RouteValueAuthorizationKeyPair"/>.
     /// </summary>
     public abstract class HashedPropertyModelBinder : IHashedPropertyModelBinder
     {
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.RouteValues
             _mapping = mapping;
        }
 
-        public void BindModel(ActionContext actionContext, IAuthorizationContext authorizationContext)
+        public void BindModel(ActionContext actionContext, IHashingValues modelBindingHashValues)
         {
             if (TryGetHashedValueFromRouteData(actionContext, out var hashedId) 
                 || TryGetHashedValueFromQueryParams(actionContext, out hashedId))
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.RouteValues
                     throw new UnauthorizedAccessException();
                 }
 
-                authorizationContext.Set(_mapping.AuthorizationContextValueKey, id);
+                modelBindingHashValues.Set(_mapping.AuthorizationContextValueKey, id);
             }
         }
 

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using HashidsNet;
 
-namespace SFA.DAS.ProviderCommitments.Services.Temp
+namespace SFA.DAS.ProviderCommitments.HashingTemp
 {
     public class HashingService : IHashingService
     {

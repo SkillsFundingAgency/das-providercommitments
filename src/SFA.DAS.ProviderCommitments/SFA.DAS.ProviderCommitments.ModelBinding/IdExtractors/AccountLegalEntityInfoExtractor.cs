@@ -1,12 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Services;
-using SFA.DAS.ProviderCommitments.Services.Temp;
+﻿using SFA.DAS.ProviderCommitments.HashingTemp;
 
-namespace SFA.DAS.ProviderCommitments.Web.RouteValues
+namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
 {
     public class AccountLegalEntityInfoExtractor : HashedPropertyModelBinder
     {
         public AccountLegalEntityInfoExtractor(IHashingService publicAccountLegalEntityIdHashingService) : 
-            base(publicAccountLegalEntityIdHashingService, RouteValues.AccountLegalEntityPublicHashedId)
+            base(publicAccountLegalEntityIdHashingService, RouteValueKeys.AccountLegalEntityPublicHashedId)
         {
             // just call base    
         }
