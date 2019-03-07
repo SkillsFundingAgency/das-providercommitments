@@ -63,7 +63,6 @@
                 <label asp-for="UniqueLearnerNumber" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
                 <input asp-for="UniqueLearnerNumber" class="govuk-input govuk-!-width-three-quarters" />
             </div>
-            @*
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
                 <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
                 <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
@@ -71,7 +70,6 @@
                     <option>Please select an option</option>
                 </select>
             </div>
-            *@
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
