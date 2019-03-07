@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
 
@@ -79,7 +77,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Required]
         [Display(Name = "Year")]
         public int? FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
-        
+
+        [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
+        public int? Price { get; set; }
+
+        [Display(Name = "Reference (optional)")]
+        public string Reference { get; set; }
+
         public bool IsPaidForByTransfer { get; set; }
 
         public ICourse[] Courses { get; set; }
