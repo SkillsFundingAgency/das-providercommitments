@@ -123,16 +123,16 @@
                 <span id="price-hint" class="govuk-hint">
                     Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
                 </span>
-                <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Price" class="govuk-input govuk-input--width-4" />
+                <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Price" class="govuk-input govuk-input--width-5" />
             </div>
 
-            <div class="govuk-character-count" data-module="character-count" data-maxlength="200">
+            <div class="govuk-character-count" data-module="character-count" data-maxlength="20">
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
                     <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
                     <span id="reference-hint" class="govuk-hint">
                         Add a reference, such as employee number or location - this won’t be seen by the employer
                     </span>
-                    <input asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
+                    <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
                 </div>
             </div>
 
