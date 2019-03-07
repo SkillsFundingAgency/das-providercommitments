@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             IncludeRegistry<CommitmentsApiClientRegistry>();
             For<ICommitmentsApiClientFactory>().Use("", x =>
             {
-                var config = x.GetInstance<AzureActiveDirectoryClientConfiguration>();
+                var config = x.GetInstance<CommitmentsClientApiConfiguration>();
                 return new CommitmentsApiClientFactory(config);
             });
         }

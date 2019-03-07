@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.ProviderCommitments.Interfaces;
-
-namespace SFA.DAS.ProviderCommitments.Configuration
+﻿namespace SFA.DAS.ProviderCommitments.Configuration
 {
     public class ApprenticeshipInfoServiceConfiguration 
     {

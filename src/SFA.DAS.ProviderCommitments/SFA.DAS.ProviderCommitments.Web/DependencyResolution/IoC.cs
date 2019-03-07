@@ -8,6 +8,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         public static void Initialize(Registry registry)
         {
             registry.IncludeRegistry<DefaultRegistry>();
+
+            registry.IncludeRegistry<ConfigurationRegistry>();
             registry.IncludeRegistry<CommitmentsApiRegistry>();
             registry.IncludeRegistry<ConfigurationRegistry>();
             registry.IncludeRegistry<MediatorRegistry>();
