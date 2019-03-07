@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Security.AccessControl;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
@@ -30,6 +32,40 @@ namespace SFA.DAS.ProviderCommitments.ModelBindingTests
             Assert.IsTrue(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
             Assert.AreEqual(456, fixtures.UnhashedValues[RouteValueKeys.AccountId.AuthorizationContextValueKey]);
         }
+
+        [Test]
+        public void BindModel_WithoutRouteAccountId_ShouldNotSetValueInHash()
+        {
+            // Arrange
+            const long expectedAccountId = 456;
+            const string hashedAccountId = "ABC123";
+
+            var fixtures = new AccountIdInfoExtractorTestFixtures()
+                .SetUnhashValue(hashedAccountId, expectedAccountId);
+
+            // Act
+            fixtures.RunValueExtractor();
+
+            // Assert
+            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
+        }
+
+        [Test]
+        public void BindModel_WithRouteAccountIdThatCanNotBeUnhashed_ShouldThrowUnauthorizedAccessException()
+        {
+            // Arrange
+            const string hashedAccountId = "ABC123";
+
+            var fixtures = new AccountIdInfoExtractorTestFixtures()
+                .SetUnhashableValue(hashedAccountId)
+                .WithHashedAccountIdInRoute(hashedAccountId);
+
+            // Act
+            Assert.Throws<UnauthorizedAccessException>(() => fixtures.RunValueExtractor());
+
+            // Assert
+            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
+        }
     }
 
     public class AccountIdInfoExtractorTestFixtures
@@ -40,7 +76,8 @@ namespace SFA.DAS.ProviderCommitments.ModelBindingTests
             HashingValuesMock = new Mock<IHashingValues>();
             ActionContext = new ActionContext
             {
-                RouteData = new RouteData()
+                RouteData = new RouteData(),
+                HttpContext =  new DefaultHttpContext()
             };
 
             UnhashedValues = new Dictionary<string, long>();
@@ -70,6 +107,15 @@ namespace SFA.DAS.ProviderCommitments.ModelBindingTests
         public AccountIdInfoExtractorTestFixtures WithRouteValue(string name, string hash)
         {
             ActionContext.RouteData.Values.Add(name, hash);
+
+            return this;
+        }
+
+        public AccountIdInfoExtractorTestFixtures SetUnhashableValue(string hash)
+        {
+            long discardedValue;
+            HashingServiceMock.Setup(hs => hs.TryDecodeValue(hash, out discardedValue)).Returns(false);
+            HashingServiceMock.Setup(hs => hs.DecodeValue(hash)).Throws<InvalidOperationException>();
 
             return this;
         }
