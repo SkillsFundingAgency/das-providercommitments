@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.ProviderCommitments.Services.Temp
+namespace SFA.DAS.ProviderCommitments.HashingTemp
 {
     public interface IHashingService
     {

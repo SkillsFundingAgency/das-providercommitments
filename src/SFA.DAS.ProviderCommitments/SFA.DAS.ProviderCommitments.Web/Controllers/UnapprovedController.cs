@@ -3,13 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using SFA.DAS.ProviderCommitments.Web.RouteValues.AccountProviders;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(AccountLegalEntityProvidersRouteValues duff, AddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(UnhashedAccountLegalEntity duff, AddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {

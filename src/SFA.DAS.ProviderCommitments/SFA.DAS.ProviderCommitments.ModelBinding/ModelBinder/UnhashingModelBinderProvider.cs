@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using SFA.DAS.Authorization;
+using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
+using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.RouteValues
+namespace SFA.DAS.ProviderCommitments.ModelBinding.ModelBinder
 {
     /// <summary>
     ///     Returns a model provider that can provide un-hashed values to a model.
@@ -11,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.RouteValues
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
-            if (typeof(IAuthorizationContextModel).IsAssignableFrom(context.Metadata.ModelType))
+            if (context.Metadata.ModelType.GetCustomAttribute(typeof(UnhashAttribute)) != null)
             {
                 return new BinderTypeModelBinder(typeof(UnhashingModelBinder));
             }

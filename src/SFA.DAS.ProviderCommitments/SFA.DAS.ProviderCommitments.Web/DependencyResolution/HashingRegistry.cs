@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.Services;
+﻿using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.HashingTemp;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -9,26 +8,22 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
     {
         public HashingRegistry()
         {
-            RegisterPublicAccountIdHashingService();
-            RegisterPublicAccountLegalEntityIdHashingService();
+            Policies.Add<InjectHashingServiceByName>();
+
+            RegisterNamedHashingService<PublicAccountIdHashingConfiguration>(HashingServiceNames.PublicAccountIdHashingService);
+            RegisterNamedHashingService<PublicAccountLegalEntityIdHashingConfiguration>(HashingServiceNames.PublicAccountLegalEntityIdHashingService);
         }
 
-        private void RegisterPublicAccountIdHashingService()
+        private void RegisterNamedHashingService<TConfigurationType>(string name) where TConfigurationType : HashingConfiguration
         {
-            For<IPublicAccountIdHashingService>().Use("", ctx =>
-            {
-                var config = ctx.GetInstance<PublicAccountIdHashingConfiguration>();
-                return new PublicAccountIdHashingService(config);
-            }).Singleton();
-        }
-
-        private void RegisterPublicAccountLegalEntityIdHashingService()
-        {
-            For<IPublicAccountLegalEntityIdHashingService>().Use("", ctx =>
-            {
-                var config = ctx.GetInstance<PublicAccountLegalEntityIdHashingConfiguration>();
-                return new PublicAccountLegalEntityIdHashingService(config);
-            }).Singleton();
+            For<IHashingService>()
+                .Add("", ctx =>
+                {
+                    var config = ctx.GetInstance<TConfigurationType>();
+                    return new HashingService(config.Alphabet, config.Salt);
+                })
+                .Named(name)
+                .Singleton();
         }
     }
 }
