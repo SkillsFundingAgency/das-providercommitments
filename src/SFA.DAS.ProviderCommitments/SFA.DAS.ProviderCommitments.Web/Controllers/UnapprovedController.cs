@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(UnhashedAccountLegalEntity duff, AddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {

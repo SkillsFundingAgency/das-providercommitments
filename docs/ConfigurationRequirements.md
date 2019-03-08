@@ -16,8 +16,7 @@
 | Client  | [![NuGet Badge](https://buildstats.info/nuget/SFA.DAS.Account.Api.Client)](https://www.nuget.org/packages/SFA.DAS.Account.Api.Client)  |
 
 
+### Configuration Requirements
 
-
-## See Also
-* [Configuration Requirements](docs/ConfigurationRequirements.md "Configuration Requirements")
-* [Using Hashes in Controller Methods](docs/UnhashingModelBinding.md "Unhashing Model Binding")
+* SFA.DAS.ProviderCommitments_v1.0
+* SFA.DAS.ProviderUrlHelper_1.0
