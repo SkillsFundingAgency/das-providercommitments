@@ -51,6 +51,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddSessionStateTempDataProvider()
                 .AddFluentValidation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHealthChecks();
         }
         public void ConfigureContainer(Registry registry)
         {
@@ -79,7 +81,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
-                }); 
+                })
+                .UseHealthChecks("/health-check"); 
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             logger.Log(LogLevel.Information, "Application start up configure is complete");
