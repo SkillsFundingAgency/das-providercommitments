@@ -3,6 +3,6 @@
     public static class RouteValueKeys
     {
         public static RouteValueAuthorizationKeyPair AccountId = new RouteValueAuthorizationKeyPair("EmployerAccountPublicHashedId", "AccountId");
-        public static RouteValueAuthorizationKeyPair AccountLegalEntityPublicHashedId =  new RouteValueAuthorizationKeyPair("EmployerAccountLegalEntityPublicHashedId", "AccountLegalEntityId");
+        public static RouteValueAuthorizationKeyPair AccountLegalEntityId =  new RouteValueAuthorizationKeyPair("EmployerAccountLegalEntityPublicHashedId", "AccountLegalEntityId");
     }
 }

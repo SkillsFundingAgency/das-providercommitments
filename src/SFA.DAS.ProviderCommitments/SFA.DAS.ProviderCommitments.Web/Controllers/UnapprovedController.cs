@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
+using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -54,14 +54,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
-        private Task<GetEmployerResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
+        private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
         {
             if (!accountLegalEntityId.HasValue)
             {
-                return Task.FromResult((GetEmployerResponse) null);
+                return Task.FromResult((GetAccountLegalEntityResponse) null);
             }
 
-            return _mediator.Send(new GetEmployerRequest
+            return _mediator.Send(new GetAccountLegalEntityRequest
             {
                 EmployerAccountLegalEntityId = accountLegalEntityId.Value
             });

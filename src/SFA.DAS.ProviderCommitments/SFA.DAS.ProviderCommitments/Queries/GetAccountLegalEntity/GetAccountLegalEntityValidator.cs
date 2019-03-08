@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
+namespace SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity
 {
-    public class GetEmployerValidator : AbstractValidator<GetEmployerRequest>
+    public class GetAccountLegalEntityValidator : AbstractValidator<GetAccountLegalEntityRequest>
     {
-        public GetEmployerValidator()
+        public GetAccountLegalEntityValidator()
         {
             RuleFor(request => request.EmployerAccountLegalEntityId).GreaterThan(0).WithMessage(request => $"{nameof(request.EmployerAccountLegalEntityId)} must be supplied and be a positive integer");
         }

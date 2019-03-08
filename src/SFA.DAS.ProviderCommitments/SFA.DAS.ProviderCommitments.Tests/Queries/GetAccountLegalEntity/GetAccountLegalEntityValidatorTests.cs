@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
+﻿using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 
-namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetEmployer
+namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetAccountLegalEntity
 {
     [TestFixture]
-    public class GetEmployerValidatorTests
+    public class GetAccountLegalEntityValidatorTests
     {
         [TestCase(-1, false)]
         [TestCase(0, false)]
@@ -15,12 +12,12 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetEmployer
         public void Valid_WithSpecifiedInput_ReturnsExpectedResults(long employerId, bool expectedIsValid)
         {
             // arrange
-            var request = new GetEmployerRequest
+            var request = new GetAccountLegalEntityRequest
             {
                 EmployerAccountLegalEntityId = employerId
             };
 
-            var validator = new GetEmployerValidator();
+            var validator = new GetAccountLegalEntityValidator();
 
             var validationResult = validator.Validate(request);
 
