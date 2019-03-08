@@ -2,8 +2,8 @@
 {
     public class GetEmployerResponse
     {
-        public string EmployerAccountPublicHashedId { get; set; }
-        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-        public string EmployerName { get; set; }
+        public long AccountLegalEntityId { get; set; }
+        public string AccountName { get; set; }
+        public string LegalEntityName { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.ProviderCommitments.Configuration;
 using StructureMap;
 
@@ -10,8 +11,11 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 
         public ConfigurationRegistry()
         {
-            AddConfiguration<AuthenticationSettings>("AuthenticationSettings");
-            AddConfiguration<ApprenticeshipInfoServiceConfiguration>("ApprenticeshipInfoServiceConfiguration");
+            AddConfiguration<AuthenticationSettings>(ProviderCommitmentsConfigurationKeys.AuthenticationSettings);
+            AddConfiguration<ApprenticeshipInfoServiceConfiguration>(ProviderCommitmentsConfigurationKeys.ApprenticeshipInfoServiceConfiguration);
+            AddConfiguration<PublicAccountIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountIdHashingConfiguration);
+            AddConfiguration<PublicAccountLegalEntityIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountLegalEntityIdHashingConfiguration);
+            AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
         }
 
         private void AddConfiguration<T>(string name) where T : class
@@ -22,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         private static T GetInstance<T>(IContext context, string name)
         {
             var configuration = context.GetInstance<IConfiguration>();
-            var configSection = configuration.GetSection($"SFA.DAS.ProviderCommitments:{name}");
+            var configSection = configuration.GetSection(name);
             var t = configSection.Get<T>();
             return t;
         }

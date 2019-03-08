@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
     {
         public GetEmployerValidator()
         {
-            RuleFor(request => request.EmployerAccountPublicHashedId).NotEmpty().WithMessage("EmployerAccountPublicHashedId must be supplied and not be empty");
+            RuleFor(request => request.EmployerAccountLegalEntityId).GreaterThan(0).WithMessage(request => $"{nameof(request.EmployerAccountLegalEntityId)} must be supplied and be a positive integer");
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
@@ -26,15 +26,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(UnhashedAccountLegalEntity duff, AddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var getEmployerTask = GetEmployerIfRequired(
-                request.EmployerAccountPublicHashedId,
-                request.EmployerAccountLegalEntityPublicHashedId);
+                request.AccountLegalEntity.AccountLegalEntityId);
 
             var getTrainingCourseTask = GetTrainingCourseIfRequired(request.CourseCode);
 
@@ -48,32 +48,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode,
                 CourseName = getTrainingCourseTask.Result?.CourseName,
-                Employer = getEmployerTask.Result?.EmployerName,
+                Employer = getEmployerTask.Result?.LegalEntityName,
                 Courses = getCoursesTask.Result
             };
             return View(model);
         }
 
-
-        [HttpPost]
-        [Route("add-apprentice")]
-        public Task<IActionResult> AddDraftApprenticeshipPost(AddDraftApprenticeshipViewModel model)
+        private Task<GetEmployerResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
         {
-            throw new NotImplementedException();
-        }
-
-
-        private Task<GetEmployerResponse>  GetEmployerIfRequired(string employerAccountPublicHashedId, string employerAccountLegalEntityPublicHashedId)
-        {
-            if (string.IsNullOrWhiteSpace(employerAccountPublicHashedId))
+            if (!accountLegalEntityId.HasValue)
             {
                 return Task.FromResult((GetEmployerResponse) null);
             }
 
             return _mediator.Send(new GetEmployerRequest
             {
-                EmployerAccountPublicHashedId = employerAccountPublicHashedId,
-                EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId
+                EmployerAccountLegalEntityId = accountLegalEntityId.Value
             });
         }
 
@@ -86,6 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return _mediator.Send(new GetTrainingCourseRequest { CourseCode = trainingCode});
         }
+
         private async Task<ICourse[]> GetCourses()
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });

@@ -9,16 +9,15 @@ namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetEmployer
     [TestFixture]
     public class GetEmployerValidatorTests
     {
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        [TestCase("   ", false)]
-        [TestCase("1234", true)]
-        public void Valid_WithSpecifiedInput_ReturnsExpectedResults(string employerId, bool expectedIsValid)
+        [TestCase(-1, false)]
+        [TestCase(0, false)]
+        [TestCase(1234, true)]
+        public void Valid_WithSpecifiedInput_ReturnsExpectedResults(long employerId, bool expectedIsValid)
         {
             // arrange
             var request = new GetEmployerRequest
             {
-                EmployerAccountPublicHashedId = employerId
+                EmployerAccountLegalEntityId = employerId
             };
 
             var validator = new GetEmployerValidator();
