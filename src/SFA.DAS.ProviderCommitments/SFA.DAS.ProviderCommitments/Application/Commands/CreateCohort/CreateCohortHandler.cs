@@ -63,6 +63,6 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
                     ReservationId = source.ReservationId
                 }
             };
-        }
+        }       
     }
 }

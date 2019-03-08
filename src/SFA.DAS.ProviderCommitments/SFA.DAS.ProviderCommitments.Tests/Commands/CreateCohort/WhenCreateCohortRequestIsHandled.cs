@@ -14,86 +14,129 @@ namespace SFA.DAS.ProviderCommitments.Tests.Commands.CreateCohort
     [TestFixture]
     public class WhenCreateCohortRequestIsHandled
     {
-        private CreateCohortHandler _handler;
-        private CreateCohortRequest _request;
-        private CreateCohortRequest _requestClone;
-        private CommitmentsV2.Api.Types.CreateCohortResponse _apiResponse;
-        private Mock<IValidator<CreateCohortRequest>> _validator;
-        private ValidationResult _validationResult;
-        private Mock<ICommitmentsApiClient> _apiClient;
-        private Func<Task<CreateCohortResponse>> _act;
-
+        private CreateCohortHandlerFixture _fixture;
+        
         [SetUp]
         public void Arrange()
         {
-            var fixture = new Fixture();
-
-            _request = fixture.Create<CreateCohortRequest>();
-            _requestClone = TestHelper.Clone(_request);
-
-            _validationResult = new ValidationResult();
-            _validator = new Mock<IValidator<CreateCohortRequest>>();
-            _validator.Setup(x => x.Validate(It.IsAny<CreateCohortRequest>()))
-                .Returns(_validationResult);
-
-            _apiResponse = fixture.Create<CommitmentsV2.Api.Types.CreateCohortResponse>();
-            _apiClient = new Mock<ICommitmentsApiClient>();
-            _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.CreateCohortRequest>()))
-                .ReturnsAsync(_apiResponse);
-
-            _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object);
-
-            _act = () => _handler.Handle(_requestClone, CancellationToken.None);
+            _fixture = new CreateCohortHandlerFixture();
         }
-
+        
         [Test]
-        public void ThenTheRequestIsValidated()
+        public async Task ThenTheRequestIsValidated()
         {
-            _act();
-            _validator.Verify(x => x.Validate(It.Is<CreateCohortRequest>(r => r ==_requestClone)));
+            await _fixture.Act();
+            _fixture.VerifyRequestWasValidated();
         }
 
         [Test]
         public void ThenIfTheRequestIsInvalidThenAnExceptionIsThrown()
         {
-            _validationResult.Errors.Add(new ValidationFailure("Test", "TestError"));
-            Assert.ThrowsAsync<ValidationException>(() => _act());
+            _fixture.SetupValidationFailure();
+            Assert.ThrowsAsync<ValidationException>(() => _fixture.Act());
         }
 
         [Test]
-        public void ThenTheCohortIsCreated()
+        public async Task ThenTheCohortIsCreated()
         {
-            _act();
-            _apiClient.Verify(x =>
-                x.CreateCohort(It.Is<CommitmentsV2.Api.Types.CreateCohortRequest>(r =>
-                    r.Cohort.ProviderId == _requestClone.ProviderId
-                    && r.Cohort.EmployerAccountId == _requestClone.EmployerAccountId
-                    && r.Cohort.LegalEntityId == _requestClone.LegalEntityId
-                    && r.DraftApprenticeship.ReservationId == _requestClone.ReservationId
-                    && r.DraftApprenticeship.FirstName == _requestClone.FirstName
-                    && r.DraftApprenticeship.LastName == _requestClone.LastName
-                    && r.DraftApprenticeship.DateOfBirth == _requestClone.DateOfBirth
-                    && r.DraftApprenticeship.ULN == _requestClone.UniqueLearnerNumber
-                    && r.DraftApprenticeship.CourseCode == _requestClone.CourseCode
-                    && r.DraftApprenticeship.Cost == _requestClone.Cost
-                    && r.DraftApprenticeship.StartDate == _requestClone.StartDate
-                    && r.DraftApprenticeship.EndDate == _requestClone.EndDate
-                    && r.DraftApprenticeship.OriginatorReference == _requestClone.OriginatorReference
-                )));
+            await _fixture.Act();
+            _fixture.VerifyCohortWasCreated();
         }
 
         [Test]
         public async Task ThenTheCohortIdIsReturned()
         {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.CohortId, result.CohortId);
+            await _fixture.Act();
+            _fixture.VerifyCohortIdWasReturned();
         }
 
         [Test]
         public async Task ThenTheCohortReferenceIsReturned()
         {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.CohortReference, result.CohortReference);
+            await _fixture.Act();
+            _fixture.VerifyCohortReferenceWasReturned();
+        }
+        
+        private class CreateCohortHandlerFixture
+        {
+            private readonly CreateCohortHandler _handler;
+            private readonly CreateCohortRequest _request;
+            private readonly CreateCohortRequest _requestClone;
+            private CreateCohortResponse _result;
+            private readonly CommitmentsV2.Api.Types.CreateCohortResponse _apiResponse;
+            private readonly Mock<IValidator<CreateCohortRequest>> _validator;
+            private readonly ValidationResult _validationResult;
+            private readonly Mock<ICommitmentsApiClient> _apiClient;
+            
+            public CreateCohortHandlerFixture()
+            {
+                var autoFixture = new Fixture();
+
+                _request = autoFixture.Create<CreateCohortRequest>();
+                _requestClone = TestHelper.Clone(_request);
+
+                _validationResult = new ValidationResult();
+                _validator = new Mock<IValidator<CreateCohortRequest>>();
+                _validator.Setup(x => x.Validate(It.IsAny<CreateCohortRequest>()))
+                    .Returns(_validationResult);
+
+                _apiResponse = autoFixture.Create<CommitmentsV2.Api.Types.CreateCohortResponse>();
+                _apiClient = new Mock<ICommitmentsApiClient>();
+                _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.CreateCohortRequest>()))
+                    .ReturnsAsync(_apiResponse);
+
+                _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object);
+            }
+
+            public async Task Act()
+            {
+                _result = await _handler.Handle(_requestClone, CancellationToken.None);
+            }
+
+            public CreateCohortHandlerFixture VerifyRequestWasValidated()
+            {
+                _validator.Verify(x => x.Validate(It.Is<CreateCohortRequest>(r => r ==_requestClone)));
+                return this;
+            }
+
+            public CreateCohortHandlerFixture SetupValidationFailure()
+            {
+                _validationResult.Errors.Add(new ValidationFailure("Test", "TestError"));
+                return this;
+            }
+
+            public CreateCohortHandlerFixture VerifyCohortWasCreated()
+            {
+                _apiClient.Verify(x =>
+                    x.CreateCohort(It.Is<CommitmentsV2.Api.Types.CreateCohortRequest>(r =>
+                        r.Cohort.ProviderId == _request.ProviderId
+                        && r.Cohort.EmployerAccountId == _request.EmployerAccountId
+                        && r.Cohort.LegalEntityId == _request.LegalEntityId
+                        && r.DraftApprenticeship.ReservationId == _request.ReservationId
+                        && r.DraftApprenticeship.FirstName == _request.FirstName
+                        && r.DraftApprenticeship.LastName == _request.LastName
+                        && r.DraftApprenticeship.DateOfBirth == _request.DateOfBirth
+                        && r.DraftApprenticeship.ULN == _request.UniqueLearnerNumber
+                        && r.DraftApprenticeship.CourseCode == _request.CourseCode
+                        && r.DraftApprenticeship.Cost == _request.Cost
+                        && r.DraftApprenticeship.StartDate == _request.StartDate
+                        && r.DraftApprenticeship.EndDate == _request.EndDate
+                        && r.DraftApprenticeship.OriginatorReference == _request.OriginatorReference
+                    )));
+                return this;
+            }
+
+            public CreateCohortHandlerFixture VerifyCohortIdWasReturned()
+            {
+                Assert.AreEqual(_apiResponse.CohortId, _result.CohortId);
+                return this;
+            }
+            
+            public CreateCohortHandlerFixture VerifyCohortReferenceWasReturned()
+            {
+                Assert.AreEqual(_apiResponse.CohortReference, _result.CohortReference);
+                return this;
+            }
         }
     }
 }
