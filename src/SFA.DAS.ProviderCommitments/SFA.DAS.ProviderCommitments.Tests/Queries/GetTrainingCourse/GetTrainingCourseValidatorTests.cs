@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Queries.GetEmployer;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 
 namespace SFA.DAS.ProviderCommitments.Tests.Queries.GetTrainingCourse

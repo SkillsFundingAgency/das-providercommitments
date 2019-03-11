@@ -4,25 +4,25 @@ using FluentValidation;
 using MediatR;
 using SFA.DAS.CommitmentsV2.Api.Client;
 
-namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
+namespace SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity
 {
-    public class GetEmployerHandler : IRequestHandler<GetEmployerRequest, GetEmployerResponse>
+    public class GetAccountLegalEntityHandler : IRequestHandler<GetAccountLegalEntityRequest, GetAccountLegalEntityResponse>
     {
-        private readonly IValidator<GetEmployerRequest> _validator;
+        private readonly IValidator<GetAccountLegalEntityRequest> _validator;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public GetEmployerHandler(IValidator<GetEmployerRequest> validator, ICommitmentsApiClient commitmentsApiClient)
+        public GetAccountLegalEntityHandler(IValidator<GetAccountLegalEntityRequest> validator, ICommitmentsApiClient commitmentsApiClient)
         {
             _validator = validator;
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<GetEmployerResponse> Handle(GetEmployerRequest request, CancellationToken cancellationToken)
+        public async Task<GetAccountLegalEntityResponse> Handle(GetAccountLegalEntityRequest request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request);
             var legalEntity = await _commitmentsApiClient.GetLegalEntity(request.EmployerAccountLegalEntityId);
 
-            return new GetEmployerResponse
+            return new GetAccountLegalEntityResponse
             {
                 AccountLegalEntityId = request.EmployerAccountLegalEntityId,
                 AccountName = legalEntity.AccountName,

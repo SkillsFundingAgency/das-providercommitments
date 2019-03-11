@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Queries.GetEmployer
+﻿namespace SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity
 {
-    public class GetEmployerResponse
+    public class GetAccountLegalEntityResponse
     {
         public long AccountLegalEntityId { get; set; }
         public string AccountName { get; set; }
