@@ -1,5 +1,5 @@
 using System;
-using System.Globalization;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.ProviderCommitments.Models
 {
@@ -11,6 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Models
             SetFromMonthYear(monthYear);
         }
 
+        [JsonIgnore]
         public override int? Day
         {
             get => 1; // always use first day of month

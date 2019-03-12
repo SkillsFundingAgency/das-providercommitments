@@ -10,10 +10,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public AddDraftApprenticeshipViewModel()
         {
             BirthDate = new DateModel(); 
-            FinishDate = new DateModel();
+            FinishDate = new MonthYearModel("");
+            StartDate = new MonthYearModel("");
         }
 
         public Guid ReservationId { get; set; }
+        public long EmployerAccountId { get; set; }
+        public string LegalEntityId { get; set; }
+        public int ProviderId { get; set; }
 
         [Required]
         [Display(Name = "Employer")]
@@ -68,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
         [Display(Name = "Projected finish date")]
-        public DateModel FinishDate { get; }
+        public MonthYearModel FinishDate { get; }
 
         [Required]
         [Display(Name = "Month")]
@@ -79,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
 
         [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
-        public int? Price { get; set; }
+        public int? Cost { get; set; }
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
