@@ -108,9 +108,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             {
                 _apiClient.Verify(x =>
                     x.CreateCohort(It.Is<CommitmentsV2.Api.Types.CreateCohortRequest>(r =>
-                        r.Cohort.ProviderId == _request.ProviderId
-                        && r.Cohort.EmployerAccountId == _request.EmployerAccountId
-                        && r.Cohort.LegalEntityId == _request.LegalEntityId
+                        r.ProviderId == _request.ProviderId
+                        && r.AccountLegalEntityId == _request.AccountLegalEntityId
                         && r.DraftApprenticeship.ReservationId == _request.ReservationId
                         && r.DraftApprenticeship.FirstName == _request.FirstName
                         && r.DraftApprenticeship.LastName == _request.LastName

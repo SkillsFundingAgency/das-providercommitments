@@ -5,8 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
 {
     public class CreateCohortRequest : IRequest<CreateCohortResponse>
     {
-        public long EmployerAccountId { get; set; }
-        public string LegalEntityId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public int ProviderId { get; set; }
         public Guid ReservationId { get; set; }
         public string FirstName { get; set; }

@@ -43,13 +43,9 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         {
             return new CommitmentsV2.Api.Types.CreateCohortRequest
             {  
-                Cohort = new CommitmentsV2.Api.Types.CreateCohortRequest.NewCohort
-                {
-                    EmployerAccountId = source.EmployerAccountId,
-                    LegalEntityId = source.LegalEntityId,
-                    ProviderId = source.ProviderId,
-                },
-                DraftApprenticeship = new CommitmentsV2.Api.Types.CreateCohortRequest.NewDraftApprenticeship
+                AccountLegalEntityId = source.AccountLegalEntityId,
+                ProviderId = source.ProviderId,
+                DraftApprenticeship = new CommitmentsV2.Api.Types.CreateCohortRequest.DraftApprenticeshipDetails
                 {
                     FirstName = source.FirstName,
                     LastName = source.LastName,

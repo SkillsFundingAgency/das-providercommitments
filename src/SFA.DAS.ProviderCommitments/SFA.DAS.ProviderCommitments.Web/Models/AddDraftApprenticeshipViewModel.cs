@@ -15,9 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         }
 
         public Guid ReservationId { get; set; }
-        public long EmployerAccountId { get; set; }
-        public string LegalEntityId { get; set; }
         public int ProviderId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
 
         [Required]
         [Display(Name = "Employer")]

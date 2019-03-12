@@ -21,6 +21,8 @@
             <dd class="das-definition-list__definition">@Model.Employer</dd>
         </dl>
         <form id="addApprenticeship" novalidate method="post" action="@Url.Action("AddDraftApprenticeship")">
+            @Html.HiddenFor(x => x.ReservationId)
+            @Html.HiddenFor(x => x.AccountLegalEntityPublicHashedId)
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -145,7 +147,7 @@
 
             <div class="govuk-inset-text">
                 <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
-                <p class="govuk-body">If you have chosen an apprenticeship standard, we'll ask the employer to confirm the  <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice.  We'll do this before the end of the apprenticeship.</p>
+                <p class="govuk-body">If you have chosen an apprenticeship standard, we'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
                 <p class="govuk-body">
                     Apprenticeship frameworks have different assessment arrangements and don't need end-point assessments.
                 </p>

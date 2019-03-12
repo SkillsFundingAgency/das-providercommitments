@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
     <PackageReference Include="CompareNETObjects" Version="4.58.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
