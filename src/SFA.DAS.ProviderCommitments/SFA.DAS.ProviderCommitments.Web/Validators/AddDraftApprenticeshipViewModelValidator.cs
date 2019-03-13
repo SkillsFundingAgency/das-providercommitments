@@ -8,6 +8,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         public AddDraftApprenticeshipViewModelValidator()
         {
             //Example validation rules for testing
+            //RuleFor(x => x.FirstName).NotEmpty();
+            //RuleFor(x => x.LastName).NotEmpty();
             //RuleFor(x => x.BirthDate).Must(y => y.IsValid).WithMessage("That date is not valid").When(z => z.BirthDate.HasValue);
             //RuleFor(x => x.StartDate).Must(y => y.IsValid).WithMessage("That date is not valid").When(z => z.StartDate.HasValue);
             //RuleFor(x => x.FinishDate).Must(y => y.IsValid).WithMessage("That date is not valid").When(z => z.FinishDate.HasValue);

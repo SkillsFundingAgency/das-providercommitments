@@ -45,28 +45,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var getEmployerTask =
-                GetEmployerIfRequired(
-                    _publicAccountLegalEntityIdHashingService.DecodeValue(request
-                        .EmployerAccountLegalEntityPublicHashedId));
-
-
-            var getTrainingCourseTask = GetTrainingCourseIfRequired(request.CourseCode);
-
-            var getCoursesTask = GetCourses();
-
-            await Task.WhenAll(getEmployerTask, getTrainingCourseTask, getCoursesTask);
-
             var model = new AddDraftApprenticeshipViewModel
             {
                 AccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
-                CourseCode = request.CourseCode,
-                CourseName = getTrainingCourseTask.Result?.CourseName,
-                Employer = getEmployerTask.Result?.LegalEntityName,
-                Courses = getCoursesTask.Result
+                CourseCode = request.CourseCode
             };
+
+            await AddEmployerAndCoursesToModel(model);
+
             return View(model);
         }
 
@@ -76,29 +64,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var getEmployerTask =
-                    GetEmployerIfRequired(
-                        _publicAccountLegalEntityIdHashingService.DecodeValue(model
-                            .AccountLegalEntityPublicHashedId));
-
-
-                var getCoursesTask = GetCourses();
-
-                await Task.WhenAll(getEmployerTask, getCoursesTask);
-
-                model.Employer = getEmployerTask.Result?.LegalEntityName;
-                model.Courses = getCoursesTask.Result;
-
+                await AddEmployerAndCoursesToModel(model);
                 return View(model);
             }
 
             var request = _createCohortRequestMapper.Map(model);
             var response = await _mediator.Send(request);
 
-
             var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
             return Redirect(url);
+        }
+
+        private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
+        {
+            var getEmployerTask =
+                GetEmployerIfRequired(
+                    _publicAccountLegalEntityIdHashingService.DecodeValue(model
+                        .AccountLegalEntityPublicHashedId));
+
+            var getCoursesTask = GetCourses();
+
+            await Task.WhenAll(getEmployerTask, getCoursesTask);
+
+            model.Employer = getEmployerTask.Result?.LegalEntityName;
+            model.Courses = getCoursesTask.Result;
         }
 
         private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
