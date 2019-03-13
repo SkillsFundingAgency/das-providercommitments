@@ -65,32 +65,33 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Models
         [TestCase(0)]
         [TestCase(32)]
         [TestCase(null)]
-        public void Day_SetToInvalidValue_ShouldThrowOutOfRangeException(int? day)
+        public void Day_SetToInvalidValue_ShouldNotBeValid(int? day)
         {
             var dt = new DateModel();
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Day = day);
+            dt.Day = day;
+            Assert.IsFalse(dt.IsValid);
         }
 
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(13)]
         [TestCase(null)]
-        public void Month_SetToInvalidValue_ShouldThrowOutOfRangeException(int? month)
+        public void Month_SetToInvalidValue_ShouldNotBeValid(int? month)
         {
             var dt = new DateModel();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Month = month);
+            dt.Month = month;
+            Assert.IsFalse(dt.IsValid);
         }
 
         [TestCase(-1)]
         [TestCase(0)]
         [TestCase(null)]
-        public void Year_SetToInvalidValue_ShouldThrowOutOfRangeException(int? year)
+        public void Year_SetToInvalidValue_ShouldNotBeValid(int? year)
         {
             var dt = new DateModel();
-
-            Assert.Throws<ArgumentOutOfRangeException>(() => dt.Year = year);
+            dt.Year = year;
+            Assert.IsFalse(dt.IsValid);
         }
 
     }

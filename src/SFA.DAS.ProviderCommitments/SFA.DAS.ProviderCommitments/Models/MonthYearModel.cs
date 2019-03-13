@@ -21,6 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Models
         public string MonthYear => $"{Month:D2}{Year:D4}";
         public string SourceValue { get; }
 
+        public override bool HasValue => Month.HasValue || Year.HasValue;
+
         private void SetFromMonthYear(string monthYear)
         {
             int mmyyyyLength = "MMYYYY".Length;

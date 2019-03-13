@@ -26,9 +26,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Models
         [TestCase("000000")]
         [TestCase("132019")]
         [TestCase("120000")]
-        public void Constructor_WithInvalidYearMonthElementValues_ShouldThrowOutOfRangeException(string invalidMonthYear)
+        public void Constructor_WithInvalidYearMonthElementValues_ShouldThrowArgumentException(string invalidMonthYear)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new MonthYearModel(invalidMonthYear));
+            Assert.Throws<ArgumentException>(() => new MonthYearModel(invalidMonthYear));
         }
 
         [TestCase("apples")]

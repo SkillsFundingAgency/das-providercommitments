@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.HashingTemp;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
@@ -70,30 +66,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        public IActionResult AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                var getEmployerTask =
-                    GetEmployerIfRequired(
-                        _publicAccountLegalEntityIdHashingService.DecodeValue(model
-                            .AccountLegalEntityPublicHashedId));
+            //if (!ModelState.IsValid)
+            //{
+            //    var getEmployerTask =
+            //        GetEmployerIfRequired(
+            //            _publicAccountLegalEntityIdHashingService.DecodeValue(model
+            //                .AccountLegalEntityPublicHashedId));
 
                
-                var getCoursesTask = GetCourses();
+            //    var getCoursesTask = GetCourses();
 
-                await Task.WhenAll(getEmployerTask,  getCoursesTask);
+            //    await Task.WhenAll(getEmployerTask,  getCoursesTask);
 
-                model.Employer = getEmployerTask.Result?.LegalEntityName;
-                model.Courses = getCoursesTask.Result;
+            //    model.Employer = getEmployerTask.Result?.LegalEntityName;
+            //    model.Courses = getCoursesTask.Result;
 
-                return View(model);
-            }
+            //    return View(model);
+            //}
 
             //var request = _createCohortRequestMapper.Map(model.ProviderId, model);
             //var response = await _mediator.Send(request);
 
-            throw new NotImplementedException("CreateCohort not implemented, but validation succeeded");
+            throw new NotImplementedException();
             
         }
 
