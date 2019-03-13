@@ -12,6 +12,7 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -22,12 +23,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IHashingService _publicAccountLegalEntityIdHashingService;
         private readonly ICreateCohortRequestMapper _createCohortRequestMapper;
+        private readonly ILinkGenerator _urlHelper;
 
-        public UnapprovedController(IMediator mediator, IHashingService publicAccountLegalEntityIdHashingService, ICreateCohortRequestMapper _createCohortRequestMapper)
+        public UnapprovedController(IMediator mediator,
+            IHashingService publicAccountLegalEntityIdHashingService,
+            ICreateCohortRequestMapper createCohortRequestMapper,
+            ILinkGenerator urlHelper)
         {
             _mediator = mediator;
             _publicAccountLegalEntityIdHashingService = publicAccountLegalEntityIdHashingService;
-            this._createCohortRequestMapper = _createCohortRequestMapper;
+            _createCohortRequestMapper = createCohortRequestMapper;
+            _urlHelper = urlHelper;
         }
 
         [HttpGet]
@@ -66,31 +72,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add-apprentice")]
-        public IActionResult AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    var getEmployerTask =
-            //        GetEmployerIfRequired(
-            //            _publicAccountLegalEntityIdHashingService.DecodeValue(model
-            //                .AccountLegalEntityPublicHashedId));
+            if (!ModelState.IsValid)
+            {
+                var getEmployerTask =
+                    GetEmployerIfRequired(
+                        _publicAccountLegalEntityIdHashingService.DecodeValue(model
+                            .AccountLegalEntityPublicHashedId));
 
-               
-            //    var getCoursesTask = GetCourses();
 
-            //    await Task.WhenAll(getEmployerTask,  getCoursesTask);
+                var getCoursesTask = GetCourses();
 
-            //    model.Employer = getEmployerTask.Result?.LegalEntityName;
-            //    model.Courses = getCoursesTask.Result;
+                await Task.WhenAll(getEmployerTask, getCoursesTask);
 
-            //    return View(model);
-            //}
+                model.Employer = getEmployerTask.Result?.LegalEntityName;
+                model.Courses = getCoursesTask.Result;
 
-            //var request = _createCohortRequestMapper.Map(model.ProviderId, model);
-            //var response = await _mediator.Send(request);
+                return View(model);
+            }
 
-            throw new NotImplementedException();
-            
+            var request = _createCohortRequestMapper.Map(model);
+            var response = await _mediator.Send(request);
+
+
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
