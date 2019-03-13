@@ -5,9 +5,9 @@ using SFA.DAS.ProviderCommitments.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class EditApprenticeshipViewModel
+    public class AddDraftApprenticeshipViewModel
     {
-        public EditApprenticeshipViewModel()
+        public AddDraftApprenticeshipViewModel()
         {
             BirthDate = new DateModel(); 
             FinishDate = new DateModel();
@@ -83,8 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
-
-        public bool IsPaidForByTransfer { get; set; }
 
         public ICourse[] Courses { get; set; }
     }

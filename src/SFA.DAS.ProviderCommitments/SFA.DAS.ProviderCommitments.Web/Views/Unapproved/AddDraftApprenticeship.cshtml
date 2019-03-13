@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Extensions;
-@model SFA.DAS.ProviderCommitments.Web.Models.EditApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
 
 @{
     ViewData["Title"] = "Apprenticeships";
@@ -16,18 +16,25 @@
                 <li>the data matches the individualised learner record (ILR) data you send us</li>
             </ul>
         </div>
-        @*<dl class="das-definition-list">
+        <dl class="das-definition-list">
             <dt class="das-definition-list__title">Employer</dt>
             <dd class="das-definition-list__definition">@Model.Employer</dd>
-        </dl>*@
-        <form id="editApprenticeship" novalidate method="post" action="@Url.Action("Index")">
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
-                <label asp-for="FirstName" class="govuk-label govuk-!-font-weight-bold">First name</label>
-                <input asp-for="FirstName" class="govuk-input govuk-!-width-three-quarters" />
-            </div>
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
-                <label asp-for="LastName" class="govuk-label govuk-!-font-weight-bold">Last name</label>
-                <input asp-for="LastName" class="govuk-input govuk-!-width-three-quarters" />
+        </dl>
+        <form id="addApprenticeship" novalidate method="post" action="@Url.Action("AddDraftApprenticeship")">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Apprentice name
+                    </legend>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
+                        <label asp-for="FirstName" class="govuk-label">First name</label>
+                        <input asp-for="FirstName" class="govuk-input" />
+                    </div>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
+                        <label asp-for="LastName" class="govuk-label">Last name</label>
+                        <input asp-for="LastName" class="govuk-input" />
+                    </div>
+                </fieldset>
             </div>
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.BirthDate, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset" aria-describedby="dob-hint" role="group">
