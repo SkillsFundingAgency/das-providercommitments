@@ -33,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _day;
             set
             {
-                //AssertIsValid(nameof(Day), value, IsValidDay);
                 SetIfDifferent(_day, value, newValue => _day = newValue);
             }
         }
@@ -43,7 +42,6 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _month;
             set
             {
-                //AssertIsValid(nameof(Month), value, IsValidMonth);
                 SetIfDifferent(_month, value, newValue => _month = newValue);
             }
         }
@@ -53,7 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _year;
             set
             {
-                //AssertIsValid(nameof(Year), value, IsValidYear);
                 SetIfDifferent(_year, value, newValue => _year = newValue);
             }
         }
