@@ -110,16 +110,16 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                     x.CreateCohort(It.Is<CommitmentsV2.Api.Types.CreateCohortRequest>(r =>
                         r.ProviderId == _request.ProviderId
                         && r.AccountLegalEntityId == _request.AccountLegalEntityId
-                        && r.DraftApprenticeship.ReservationId == _request.ReservationId
-                        && r.DraftApprenticeship.FirstName == _request.FirstName
-                        && r.DraftApprenticeship.LastName == _request.LastName
-                        && r.DraftApprenticeship.DateOfBirth == _request.DateOfBirth
-                        && r.DraftApprenticeship.ULN == _request.UniqueLearnerNumber
-                        && r.DraftApprenticeship.CourseCode == _request.CourseCode
-                        && r.DraftApprenticeship.Cost == _request.Cost
-                        && r.DraftApprenticeship.StartDate == _request.StartDate
-                        && r.DraftApprenticeship.EndDate == _request.EndDate
-                        && r.DraftApprenticeship.OriginatorReference == _request.OriginatorReference
+                        && r.ReservationId == _request.ReservationId
+                        && r.FirstName == _request.FirstName
+                        && r.LastName == _request.LastName
+                        && r.DateOfBirth == _request.DateOfBirth
+                        && r.ULN == _request.UniqueLearnerNumber
+                        && r.CourseCode == _request.CourseCode
+                        && r.Cost == _request.Cost
+                        && r.StartDate == _request.StartDate
+                        && r.EndDate == _request.EndDate
+                        && r.OriginatorReference == _request.OriginatorReference
                     )));
                 return this;
             }
