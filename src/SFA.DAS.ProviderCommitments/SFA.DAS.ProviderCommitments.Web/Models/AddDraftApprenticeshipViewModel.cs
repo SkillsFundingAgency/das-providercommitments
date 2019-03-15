@@ -1,13 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using FluentValidation.Attributes;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Web.Validators;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    [Validator(typeof(AddDraftApprenticeshipViewModelValidator))]
     public class AddDraftApprenticeshipViewModel
     {
         public AddDraftApprenticeshipViewModel()
