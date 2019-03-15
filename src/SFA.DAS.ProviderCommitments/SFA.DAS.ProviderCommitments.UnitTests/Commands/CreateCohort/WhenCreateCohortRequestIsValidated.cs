@@ -18,8 +18,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             _validRequest = new CreateCohortRequest
             {
                 ProviderId = 123,
-                EmployerAccountId = 456,
-                LegalEntityId = "789"
+                AccountLegalEntityId = 456,
+                ReservationId = Guid.NewGuid()
             };
 
             _validator = new CreateCohortValidator();
@@ -42,17 +42,18 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
         }
 
         [Test]
-        public void ThenEmployerAccountIdIsRequired()
+        public void ThenReservationIdIsRequired()
         {
-            _validRequest.EmployerAccountId = 0;
+            _validRequest.ReservationId = Guid.Empty;
             var result = _act();
             Assert.IsFalse(result.IsValid);
         }
 
+
         [Test]
-        public void ThenLegalEntityIdIsRequired()
+        public void ThenEmployerAccountIdIsRequired()
         {
-            _validRequest.LegalEntityId = string.Empty;
+            _validRequest.AccountLegalEntityId = 0;
             var result = _act();
             Assert.IsFalse(result.IsValid);
         }

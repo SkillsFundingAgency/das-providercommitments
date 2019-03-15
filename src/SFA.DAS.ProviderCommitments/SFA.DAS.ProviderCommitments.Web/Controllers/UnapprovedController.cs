@@ -1,15 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
+using SFA.DAS.ProviderCommitments.HashingTemp;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -18,10 +21,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IHashingService _publicAccountLegalEntityIdHashingService;
+        private readonly ICreateCohortRequestMapper _createCohortRequestMapper;
+        private readonly ILinkGenerator _urlHelper;
 
-        public UnapprovedController(IMediator mediator)
+        public UnapprovedController(IMediator mediator,
+            IHashingService publicAccountLegalEntityIdHashingService,
+            ICreateCohortRequestMapper createCohortRequestMapper,
+            ILinkGenerator urlHelper)
         {
             _mediator = mediator;
+            _publicAccountLegalEntityIdHashingService = publicAccountLegalEntityIdHashingService;
+            _createCohortRequestMapper = createCohortRequestMapper;
+            _urlHelper = urlHelper;
         }
 
         [HttpGet]
@@ -33,25 +45,50 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var getEmployerTask = GetEmployerIfRequired(
-                request.AccountLegalEntity.AccountLegalEntityId);
+            var model = new AddDraftApprenticeshipViewModel
+            {
+                AccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
+                StartDate = new MonthYearModel(request.StartMonthYear),
+                ReservationId = request.ReservationId,
+                CourseCode = request.CourseCode
+            };
 
-            var getTrainingCourseTask = GetTrainingCourseIfRequired(request.CourseCode);
+            await AddEmployerAndCoursesToModel(model);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add-apprentice")]
+        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await AddEmployerAndCoursesToModel(model);
+                return View(model);
+            }
+
+            var request = _createCohortRequestMapper.Map(model);
+            var response = await _mediator.Send(request);
+
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
+        }
+
+        private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
+        {
+            var getEmployerTask =
+                GetEmployerIfRequired(
+                    _publicAccountLegalEntityIdHashingService.DecodeValue(model
+                        .AccountLegalEntityPublicHashedId));
 
             var getCoursesTask = GetCourses();
 
-            await Task.WhenAll(getEmployerTask, getTrainingCourseTask, getCoursesTask);
+            await Task.WhenAll(getEmployerTask, getCoursesTask);
 
-            var model = new AddDraftApprenticeshipViewModel
-            {
-                StartDate = new MonthYearModel(request.StartMonthYear),
-                ReservationId = request.ReservationId,
-                CourseCode = request.CourseCode,
-                CourseName = getTrainingCourseTask.Result?.CourseName,
-                Employer = getEmployerTask.Result?.LegalEntityName,
-                Courses = getCoursesTask.Result
-            };
-            return View(model);
+            model.Employer = getEmployerTask.Result?.LegalEntityName;
+            model.Courses = getCoursesTask.Result;
         }
 
         private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)

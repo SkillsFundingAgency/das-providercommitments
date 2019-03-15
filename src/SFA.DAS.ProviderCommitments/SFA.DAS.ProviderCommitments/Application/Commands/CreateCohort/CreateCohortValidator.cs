@@ -7,8 +7,8 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public CreateCohortValidator()
         {
             RuleFor(x => x.ProviderId).NotEmpty();
-            RuleFor(x => x.EmployerAccountId).NotEmpty();
-            RuleFor(x => x.LegalEntityId).NotEmpty();
+            RuleFor(x => x.AccountLegalEntityId).NotEmpty();
+            RuleFor(x => x.ReservationId).NotEmpty();
         }
     }
 }

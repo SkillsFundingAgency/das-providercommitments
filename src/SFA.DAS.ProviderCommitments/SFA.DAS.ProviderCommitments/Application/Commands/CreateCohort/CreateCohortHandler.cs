@@ -43,25 +43,18 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         {
             return new CommitmentsV2.Api.Types.CreateCohortRequest
             {  
-                Cohort = new CommitmentsV2.Api.Types.CreateCohortRequest.NewCohort
-                {
-                    EmployerAccountId = source.EmployerAccountId,
-                    LegalEntityId = source.LegalEntityId,
-                    ProviderId = source.ProviderId,
-                },
-                DraftApprenticeship = new CommitmentsV2.Api.Types.CreateCohortRequest.NewDraftApprenticeship
-                {
-                    FirstName = source.FirstName,
-                    LastName = source.LastName,
-                    DateOfBirth = source.DateOfBirth,
-                    ULN = source.UniqueLearnerNumber,
-                    CourseCode = source.CourseCode,
-                    Cost = source.Cost,
-                    StartDate = source.StartDate,
-                    EndDate = source.EndDate,
-                    OriginatorReference = source.OriginatorReference,
-                    ReservationId = source.ReservationId
-                }
+                AccountLegalEntityId = source.AccountLegalEntityId,
+                ProviderId = source.ProviderId,
+                FirstName = source.FirstName,
+                LastName = source.LastName,
+                DateOfBirth = source.DateOfBirth,
+                ULN = source.UniqueLearnerNumber,
+                CourseCode = source.CourseCode,
+                Cost = source.Cost,
+                StartDate = source.StartDate,
+                EndDate = source.EndDate,
+                OriginatorReference = source.OriginatorReference,
+                ReservationId = source.ReservationId
             };
         }       
     }

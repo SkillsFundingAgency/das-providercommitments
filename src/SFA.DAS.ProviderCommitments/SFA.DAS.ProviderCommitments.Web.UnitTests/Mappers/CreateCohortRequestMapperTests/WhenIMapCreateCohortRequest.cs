@@ -1,7 +1,9 @@
 ﻿using System;
 using AutoFixture;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.HashingTemp;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -12,17 +14,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
     {
         private CreateCohortRequestMapper _mapper;
         private AddDraftApprenticeshipViewModel _source;
+        private Mock<IHashingService> _publicAccountLegalEntityIdHashingService;
+        private long _accountLegalEntityId;
         private Func<CreateCohortRequest> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
+
+            _accountLegalEntityId = fixture.Create<long>();
+            _publicAccountLegalEntityIdHashingService = new Mock<IHashingService>();
+            _publicAccountLegalEntityIdHashingService.Setup(x => x.DecodeValue(It.IsAny<string>())).Returns(_accountLegalEntityId);
+
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
 
-            _mapper = new CreateCohortRequestMapper();
+            _mapper = new CreateCohortRequestMapper(_publicAccountLegalEntityIdHashingService.Object);
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)
@@ -37,7 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
 
             _act = () => _mapper.Map(TestHelper.Clone(_source));
         }
-
 
         [Test]
         public void ThenReservationIdIsMappedCorrectly()
@@ -59,7 +67,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var result = _act();
             Assert.AreEqual(_source.BirthDate.Date, result.DateOfBirth);
         }
-
 
         [Test]
         public void ThenUniqueLearnerNumberIsMappedCorrectly()
@@ -104,17 +111,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
-        public void ThenEmployerAccountIdIsMappedCorrectly()
+        public void ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.EmployerAccountId, result.EmployerAccountId);
+            Assert.AreEqual(_accountLegalEntityId, result.AccountLegalEntityId);
         }
-        [Test]
-        public void ThenLegalEntityIdIsMappedCorrectly()
-        {
-            var result = _act();
-            Assert.AreEqual(_source.LegalEntityId, result.LegalEntityId);
-        }
+
         [Test]
         public void ThenProviderIdIsMappedCorrectly()
         {
