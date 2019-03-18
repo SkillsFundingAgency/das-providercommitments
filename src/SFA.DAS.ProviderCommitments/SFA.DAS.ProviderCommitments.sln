@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.ModelBinding", "SFA.DAS.ProviderCommitments.ModelBinding\SFA.DAS.ProviderCommitments.ModelBinding.csproj", "{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.HashingTemp", "SFA.DAS.ProviderCommitments.HashingTemp\SFA.DAS.ProviderCommitments.HashingTemp.csproj", "{FA9A0B3D-D375-4466-915D-4A748A45C0D4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.ModelBinding.UnitTests", "SFA.DAS.ProviderCommitments.ModelBinding.UnitTests\SFA.DAS.ProviderCommitments.ModelBinding.UnitTests.csproj", "{20779A91-E22D-4983-ADAC-07AF8B73EA67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.UnitTests", "SFA.DAS.ProviderCommitments.UnitTests\SFA.DAS.ProviderCommitments.UnitTests.csproj", "{0DA46020-5529-4113-BB53-F4102FBC516A}"
@@ -37,10 +35,6 @@ Global
 		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA9A0B3D-D375-4466-915D-4A748A45C0D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Release|Any CPU.ActiveCfg = Release|Any CPU

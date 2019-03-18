@@ -7,10 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ProviderCommitments.HashingTemp\SFA.DAS.ProviderCommitments.HashingTemp.csproj" />
+    <PackageReference Include="SFA.DAS.HashingService" Version="1.0.183" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.HashingTemp;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
@@ -21,17 +21,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IHashingService _publicAccountLegalEntityIdHashingService;
         private readonly ICreateCohortRequestMapper _createCohortRequestMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public UnapprovedController(IMediator mediator,
-            IHashingService publicAccountLegalEntityIdHashingService,
             ICreateCohortRequestMapper createCohortRequestMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
-            _publicAccountLegalEntityIdHashingService = publicAccountLegalEntityIdHashingService;
             _createCohortRequestMapper = createCohortRequestMapper;
             _urlHelper = urlHelper;
         }
@@ -47,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                AccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
+                AccountLegalEntity = request.AccountLegalEntity,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode
@@ -79,9 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
         {
             var getEmployerTask =
-                GetEmployerIfRequired(
-                    _publicAccountLegalEntityIdHashingService.DecodeValue(model
-                        .AccountLegalEntityPublicHashedId));
+                GetEmployerIfRequired(model.AccountLegalEntity.AccountLegalEntityId);
 
             var getCoursesTask = GetCourses();
 
