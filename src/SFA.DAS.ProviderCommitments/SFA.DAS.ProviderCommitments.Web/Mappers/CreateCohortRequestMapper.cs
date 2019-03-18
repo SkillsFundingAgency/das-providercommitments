@@ -1,23 +1,16 @@
-﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+﻿using SFA.DAS.HashingService;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class CreateCohortRequestMapper : ICreateCohortRequestMapper
     {
-        private readonly IHashingService _publicAccountLegalEntityIdHashingService;
-
-        public CreateCohortRequestMapper(IHashingService publicAccountLegalEntityIdHashingService)
-        {
-            _publicAccountLegalEntityIdHashingService = publicAccountLegalEntityIdHashingService;
-        }
-
         public CreateCohortRequest Map(AddDraftApprenticeshipViewModel source)
         {
             return new CreateCohortRequest
             {
-                AccountLegalEntityId = _publicAccountLegalEntityIdHashingService.DecodeValue(source.AccountLegalEntityPublicHashedId),
+                AccountLegalEntityId = source.AccountLegalEntity.AccountLegalEntityId ?? 0,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,

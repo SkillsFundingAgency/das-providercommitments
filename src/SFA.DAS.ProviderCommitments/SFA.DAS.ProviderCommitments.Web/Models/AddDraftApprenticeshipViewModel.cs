@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -16,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         public Guid ReservationId { get; set; }
         public int ProviderId { get; set; }
-        public string AccountLegalEntityPublicHashedId { get; set; }
+        public AccountLegalEntity AccountLegalEntity { get; set; }
 
         [Display(Name = "Employer")]
         [MaxLength(100)]

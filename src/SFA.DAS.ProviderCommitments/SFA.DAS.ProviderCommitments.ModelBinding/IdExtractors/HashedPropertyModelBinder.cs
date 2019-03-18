@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
@@ -8,12 +8,12 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
     /// <summary>
     ///     Will inspect the current action context for a named input property and if it finds such a property
     ///     it will use the supplied hashing service to un-hash this value and place the resultant un-hashed value
-    ///     into the <see cref="IHashingValues"/> using the name specified in <see cref="RouteValueAuthorizationKeyPair"/>.
+    ///     into the <see cref="IHashingValues"/> using the name specified in <see cref="RouteValueKeyPair"/>.
     /// </summary>
     public abstract class HashedPropertyModelBinder : IHashedPropertyModelBinder
     {
         private readonly IHashingService _hashingService;
-        private readonly RouteValueAuthorizationKeyPair _mapping;
+        private readonly RouteValueKeyPair _mapping;
 
         /// <summary>
         ///     Constructor.
@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
         /// <param name="hashingService">
         ///     The hashing service that will be used to un-hash the hashed value if found in the incoming request.
         /// </param>
-        protected HashedPropertyModelBinder(IHashingService hashingService, RouteValueAuthorizationKeyPair mapping)
+        protected HashedPropertyModelBinder(IHashingService hashingService, RouteValueKeyPair mapping)
         {
             _hashingService = hashingService;
             _mapping = mapping;
@@ -37,7 +37,8 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors
                     throw new UnauthorizedAccessException();
                 }
 
-                modelBindingHashValues.Set(_mapping.AuthorizationContextValueKey, id);
+                modelBindingHashValues.Set(_mapping.UnhashedValueKey, id);
+                modelBindingHashValues.Set(_mapping.HashedValueKey, hashedId);
             }
         }
 

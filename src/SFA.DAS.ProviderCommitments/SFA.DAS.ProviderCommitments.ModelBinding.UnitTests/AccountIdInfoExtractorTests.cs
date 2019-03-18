@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.ModelBinding.IdExtractors;
 using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 
@@ -28,8 +28,8 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.UnitTests
             fixtures.RunValueExtractor();
 
             // Assert
-            Assert.IsTrue(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
-            Assert.AreEqual(456, fixtures.UnhashedValues[RouteValueKeys.AccountId.AuthorizationContextValueKey]);
+            Assert.IsTrue(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.UnhashedValueKey));
+            Assert.AreEqual(456, fixtures.UnhashedValues[RouteValueKeys.AccountId.UnhashedValueKey]);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.UnitTests
             fixtures.RunValueExtractor();
 
             // Assert
-            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
+            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.UnhashedValueKey));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.UnitTests
             Assert.Throws<UnauthorizedAccessException>(() => fixtures.RunValueExtractor());
 
             // Assert
-            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.AuthorizationContextValueKey));
+            Assert.IsFalse(fixtures.UnhashedValues.ContainsKey(RouteValueKeys.AccountId.UnhashedValueKey));
         }
     }
 

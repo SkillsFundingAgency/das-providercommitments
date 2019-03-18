@@ -1,5 +1,8 @@
 ﻿namespace SFA.DAS.ProviderCommitments.ModelBinding.Interfaces
 {
+    /// <summary>
+    ///     This is a property bag of the hashed values that have been collected from the in-bound request.
+    /// </summary>
     public interface IHashingValues
     {
         T Get<T>(string key);

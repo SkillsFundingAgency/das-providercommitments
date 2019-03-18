@@ -6,8 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -45,7 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
         {
             private readonly UnapprovedController _controller;
             private readonly Mock<IMediator> _mediator;
-            private readonly Mock<IHashingService> _hashingService;
             private readonly Mock<ICreateCohortRequestMapper> _mapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
             private readonly AddDraftApprenticeshipViewModel _model;
@@ -60,14 +60,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
                 var autoFixture = new Fixture();
 
                 _mediator = new Mock<IMediator>();
-                _hashingService = new Mock<IHashingService>();
                 _mapper = new Mock<ICreateCohortRequestMapper>();
                 _linkGenerator = new Mock<ILinkGenerator>();
 
                 _model = new AddDraftApprenticeshipViewModel
                 {
                     ProviderId = autoFixture.Create<int>(),
-                    AccountLegalEntityPublicHashedId = autoFixture.Create<string>(),
+                    AccountLegalEntity = autoFixture.Create<AccountLegalEntity>(),
                     ReservationId = autoFixture.Create<Guid>()
                 };
 
@@ -89,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
                     .Callback((string value) => _linkGeneratorParameter = value);
                     
                 
-                _controller = new UnapprovedController(_mediator.Object, _hashingService.Object, _mapper.Object, _linkGenerator.Object);
+                _controller = new UnapprovedController(_mediator.Object, _mapper.Object, _linkGenerator.Object);
             }
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()

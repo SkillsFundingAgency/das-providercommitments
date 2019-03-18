@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.ModelBinder
 
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var authorizationContext = _hashingContextProvider.GetAuthorizationContext();
+            var authorizationContext = _hashingContextProvider.GetHashingContext();
 
             var model = Activator.CreateInstance(bindingContext.ModelType);
 

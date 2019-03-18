@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ProviderCommitments.HashingTemp;
+﻿using SFA.DAS.HashingService;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {
