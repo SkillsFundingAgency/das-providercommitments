@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
@@ -66,11 +68,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = _createCohortRequestMapper.Map(model);
-            var response = await _mediator.Send(request);
 
-            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            return Redirect(url);
+            try
+            {
+                var response = await _mediator.Send(request);
+
+                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+                return Redirect(url);
+            }
+            catch (CommitmentsApiModelException ex)
+            {
+                foreach(var error in ex.Errors)
+                {
+                    ModelState.AddModelError(error.Field, error.Message);
+                }
+                ModelState.AddModelError("rubbish", "Rubbish Error");
+
+                await AddEmployerAndCoursesToModel(model);
+                return View(model);
+
+            }
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)

@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
 
         public async Task<CreateCohortResponse> Handle(CreateCohortRequest request, CancellationToken cancellationToken)
         {
-            ValidateAndThrow(request);
+            //ValidateAndThrow(request);
 
             var apiResult = await _apiClient.CreateCohort(Map(request));
 
@@ -39,11 +39,11 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
             }
         }
 
-        private static CommitmentsV2.Api.Types.CreateCohortRequest Map(CreateCohortRequest source)
+        private static CommitmentsV2.Api.Types.Requests.CreateCohortRequest Map(CreateCohortRequest source)
         {
-            return new CommitmentsV2.Api.Types.CreateCohortRequest
+            return new CommitmentsV2.Api.Types.Requests.CreateCohortRequest
             {  
-                AccountLegalEntityId = source.AccountLegalEntityId,
+                AccountLegalEntityId = 123, //source.AccountLegalEntityId,
                 ProviderId = source.ProviderId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,

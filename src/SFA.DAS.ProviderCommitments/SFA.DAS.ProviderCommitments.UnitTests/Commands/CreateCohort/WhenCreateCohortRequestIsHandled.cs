@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             private readonly CreateCohortRequest _request;
             private readonly CreateCohortRequest _requestClone;
             private CreateCohortResponse _result;
-            private readonly CommitmentsV2.Api.Types.CreateCohortResponse _apiResponse;
+            private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _apiResponse;
             private readonly Mock<IValidator<CreateCohortRequest>> _validator;
             private readonly ValidationResult _validationResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
@@ -79,9 +79,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                 _validator.Setup(x => x.Validate(It.IsAny<CreateCohortRequest>()))
                     .Returns(_validationResult);
 
-                _apiResponse = autoFixture.Create<CommitmentsV2.Api.Types.CreateCohortResponse>();
+                _apiResponse = autoFixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
                 _apiClient = new Mock<ICommitmentsApiClient>();
-                _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.CreateCohortRequest>()))
+                _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(_apiResponse);
 
                 _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object);
@@ -107,7 +107,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             public CreateCohortHandlerFixture VerifyCohortWasCreated()
             {
                 _apiClient.Verify(x =>
-                    x.CreateCohort(It.Is<CommitmentsV2.Api.Types.CreateCohortRequest>(r =>
+                    x.CreateCohort(It.Is<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(r =>
                         r.ProviderId == _request.ProviderId
                         && r.AccountLegalEntityId == _request.AccountLegalEntityId
                         && r.ReservationId == _request.ReservationId
@@ -120,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                         && r.StartDate == _request.StartDate
                         && r.EndDate == _request.EndDate
                         && r.OriginatorReference == _request.OriginatorReference
-                    )));
+                    ), It.IsAny<CancellationToken>()));
                 return this;
             }
 
