@@ -1,27 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {
     public sealed class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>
     {
-        private readonly IApprenticeshipInfoService _apprenticeshipInfoService;
+        private readonly ITrainingProgrammeApiClient _trainingProgrammeApiClient;
 
-        public GetTrainingCoursesQueryHandler(IApprenticeshipInfoService apprenticeshipInfoService)
+
+        public GetTrainingCoursesQueryHandler(
+            ITrainingProgrammeApiClient trainingProgrammeApiClient)
         {
-            _apprenticeshipInfoService = apprenticeshipInfoService;
+            _trainingProgrammeApiClient = trainingProgrammeApiClient;
         }
 
         public async Task<GetTrainingCoursesQueryResponse> Handle(GetTrainingCoursesQueryRequest message, CancellationToken cancellationToken)
         {
-            var courses = await GetAllRequiredCourses(message.IncludeFrameworks, cancellationToken);
+            var courses = (IEnumerable<ITrainingProgramme>)(await _trainingProgrammeApiClient.GetTrainingProgrammes());
+
+            if (!message.IncludeFrameworks)
+            {
+                courses = courses.Where(course => course.ProgrammeType != ProgrammeType.Framework);
+            }
 
             if (message.EffectiveDate.HasValue)
             {
@@ -30,45 +35,10 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 
             var result = new GetTrainingCoursesQueryResponse
             {
-                TrainingCourses = courses.OrderBy(m => m.Title).ToArray()
+                TrainingProgrammes = courses.OrderBy(m => m.Title).ToArray()
             };
 
             return result;
-        }
-
-        private Task<IEnumerable<ICourse>> GetAllRequiredCourses(bool getFramework, CancellationToken cancellationToken)
-        {
-            var tasks = new List<Task<IEnumerable<ICourse>>> {GetStandards(cancellationToken)};
-
-            if (getFramework)
-            {
-                tasks.Add(GetFramework(cancellationToken));
-            }
-
-            return Task.WhenAll(tasks)
-                    .ContinueWith(allTasks => allTasks.Result.SelectMany(task => task), cancellationToken);
-        }
-
-        private async Task<IEnumerable<ICourse>> GetStandards(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                throw new OperationCanceledException();
-            }
-
-            var results = await _apprenticeshipInfoService.GetStandardsAsync();
-            return results.Standards;
-        }
-
-        private async Task<IEnumerable<ICourse>> GetFramework(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                throw new OperationCanceledException();
-            }
-
-            var results = await _apprenticeshipInfoService.GetFrameworksAsync();
-            return results.Frameworks;
         }
     }
 }

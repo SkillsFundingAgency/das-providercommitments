@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
@@ -16,48 +18,30 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
     {
         private GetTrainingCoursesQueryHandler _handler;
 
-        private Mock<IApprenticeshipInfoService> _apprenticeshipInfoServiceWrapper;
-
-        private Standard[] _standards;
-        private Framework[] _frameworks;
+        private Mock<ITrainingProgrammeApiClient> _trainingProgrammeApiClientMock;
 
         [SetUp]
         public void Arrange()
         {
-            _standards = new Standard[1]
-            {
-                new Standard
-                {
-                    EffectiveFrom = new DateTime(2016,01,01),
-                    EffectiveTo = new DateTime(2016,12,31)
-                }
-            };
-            _frameworks = new Framework[1]
-            {
-                new Framework
-                {
-                    EffectiveFrom = new DateTime(2017,01,01),
-                    EffectiveTo = new DateTime(2017,12,31)
-                }
-            };
+            _trainingProgrammeApiClientMock = new Mock<ITrainingProgrammeApiClient>();
 
-            _apprenticeshipInfoServiceWrapper = new Mock<IApprenticeshipInfoService>();
-
-            _apprenticeshipInfoServiceWrapper.Setup(x => x.GetFrameworksAsync(It.IsAny<bool>()))
-                .ReturnsAsync(new FrameworksView
+            _trainingProgrammeApiClientMock
+                .Setup(x => x.GetTrainingProgrammes())
+                .ReturnsAsync(new List<ITrainingProgramme>
                 {
-                    CreatedDate = DateTime.UtcNow,
-                    Frameworks = _frameworks
-                });
+                    new Framework
+                    {
+                        EffectiveFrom = new DateTime(2017,01,01),
+                        EffectiveTo = new DateTime(2017,12,31)
+                    },
+                    new Standard
+                    {
+                        EffectiveFrom = new DateTime(2016,01,01),
+                        EffectiveTo = new DateTime(2016,12,31)
+                    }
+                    });
 
-            _apprenticeshipInfoServiceWrapper.Setup(x => x.GetStandardsAsync(It.IsAny<bool>()))
-                .ReturnsAsync(new StandardsView
-                {
-                    CreationDate = DateTime.UtcNow.Date,
-                    Standards = _standards
-                });
-
-            _handler = new GetTrainingCoursesQueryHandler(_apprenticeshipInfoServiceWrapper.Object);
+            _handler = new GetTrainingCoursesQueryHandler(_trainingProgrammeApiClientMock.Object);
         }
 
         [Test]
@@ -69,8 +53,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length, result.TrainingCourses.Length);
-            Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
+            Assert.IsTrue(result.TrainingProgrammes.Any(x => x.ProgrammeType == ProgrammeType.Standard));
+            Assert.IsFalse(result.TrainingProgrammes.Any(x => x.ProgrammeType == ProgrammeType.Framework));
         }
 
         [Test]
@@ -82,9 +66,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length + _frameworks.Length, result.TrainingCourses.Length);
-            Assert.IsTrue(result.TrainingCourses.Any(x => x is Standard));
-            Assert.IsTrue(result.TrainingCourses.Any(x => x is Framework));
+            Assert.IsTrue(result.TrainingProgrammes.Any(x => x.ProgrammeType == ProgrammeType.Standard));
+            Assert.IsTrue(result.TrainingProgrammes.Any(x => x.ProgrammeType == ProgrammeType.Framework));
         }
 
         [Test]
@@ -96,8 +79,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = new DateTime(2016, 06, 01)
             }, new CancellationToken());
 
-            Assert.AreEqual(1, result.TrainingCourses.Length);
-            Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
+            Assert.AreEqual(1, result.TrainingProgrammes.Length);
+            Assert.IsInstanceOf<Standard>(result.TrainingProgrammes[0]);
         }
 
         [Test]
@@ -109,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(2, result.TrainingCourses.Length);
+            Assert.AreEqual(2, result.TrainingProgrammes.Length);
         }
     }
 }

@@ -53,7 +53,9 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHealthChecks();
+            services.AddMemoryCache();
         }
+
         public void ConfigureContainer(Registry registry)
         {
             IoC.Initialize(registry);

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
@@ -76,6 +77,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
 
-        public ICourse[] Courses { get; set; }
+        public ITrainingProgramme[] Courses { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -102,21 +103,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
-        private Task<GetTrainingCourseResponse> GetTrainingCourseIfRequired(string trainingCode)
-        {
-            if (string.IsNullOrWhiteSpace(trainingCode))
-            {
-                return Task.FromResult((GetTrainingCourseResponse)null);
-            }
-
-            return _mediator.Send(new GetTrainingCourseRequest { CourseCode = trainingCode});
-        }
-
-        private async Task<ICourse[]> GetCourses()
+        private async Task<ITrainingProgramme[]> GetCourses()
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
 
-            return result.TrainingCourses;
+            return result.TrainingProgrammes;
         }
     }
 }

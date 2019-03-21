@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Extensions;
 
@@ -10,12 +12,12 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
     [TestFixture]
     public class WhenDeterminingFundingCap
     {
-        private Mock<ICourse> _course;
+        private Mock<ITrainingProgramme> _course;
 
         [SetUp]
         public void Arrange()
         {
-            _course = new Mock<ICourse>();
+            _course = new Mock<ITrainingProgramme>();
             _course.Setup(x => x.EffectiveFrom).Returns(new DateTime(2018, 03, 01));
             _course.Setup(x => x.EffectiveTo).Returns(new DateTime(2019, 03, 31));
             _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>

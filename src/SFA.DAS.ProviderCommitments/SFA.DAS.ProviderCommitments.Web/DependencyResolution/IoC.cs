@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ConfigurationRegistry>();
             registry.IncludeRegistry<MediatorRegistry>();
             registry.IncludeRegistry<HashingRegistry>();
+            registry.IncludeRegistry<TrainingProgrammeRegistry>();
             registry.IncludeRegistry<AutoConfigurationRegistry>();
         }
     }
