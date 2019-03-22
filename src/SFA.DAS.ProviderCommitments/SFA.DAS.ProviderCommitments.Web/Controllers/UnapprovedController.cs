@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
@@ -68,27 +68,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = _createCohortRequestMapper.Map(model);
+            request.UserId = User.Upn();
+            var response = await _mediator.Send(request);
 
-            try
-            {
-                var response = await _mediator.Send(request);
-
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                return Redirect(url);
-            }
-            catch (CommitmentsApiModelException ex)
-            {
-                foreach(var error in ex.Errors)
-                {
-                    ModelState.AddModelError(error.Field, error.Message);
-                }
-                ModelState.AddModelError("rubbish", "Rubbish Error");
-
-                await AddEmployerAndCoursesToModel(model);
-                return View(model);
-
-            }
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
