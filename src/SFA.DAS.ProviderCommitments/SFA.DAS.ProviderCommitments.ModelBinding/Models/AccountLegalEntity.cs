@@ -6,6 +6,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.Models
 
     public class AccountLegalEntity 
     {
+        [Required]
         public long? AccountLegalEntityId { get; set; }
 
         public string HashedAccountLegalEntityId { get; set; }
