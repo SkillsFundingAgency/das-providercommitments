@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.WindowsAzure.Storage;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -61,6 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add-apprentice")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
+            // TODO this will probably need to be removed later (once validation is moved to API)
             if (!ModelState.IsValid)
             {
                 await AddEmployerAndCoursesToModel(model);
@@ -69,11 +73,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var request = _createCohortRequestMapper.Map(model);
             request.UserId = User.Upn();
-            var response = await _mediator.Send(request);
 
-            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            return Redirect(url);
+            try
+            {
+                var response = await _mediator.Send(request);
+
+                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+                return Redirect(url);
+            }
+            catch (CommitmentsApiModelException ex)
+            {
+               ModelState.AddModelExceptionErrors(ex);
+
+                await AddEmployerAndCoursesToModel(model);
+                return View(model);
+            }
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
