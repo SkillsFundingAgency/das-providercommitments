@@ -7,17 +7,17 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" model="@Html.ViewData.ModelState" />
         <h1 class="govuk-heading-xl">Add apprentice details</h1>
         <div class="govuk-inset-text">
-            <p class="govuk-body">You must add the apprentice’s first and last names - fill in as many other fields as you can. You'll be able to return later to make changes or add more information.    </p>
+            <p class="govuk-body">You must add the apprentice’s first and last names - fill in as many other fields as you can. You'll be able to return later to make changes or add more information. </p>
             <p class="govuk-body">You can only receive payments for this apprentice if:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>all the fields have been completed - either by yourself or the employer</li>
                 <li>the data matches the individualised learner record (ILR) data you send us</li>
             </ul>
-            @Html.ValidationSummary()
-
         </div>
+
         <dl class="das-definition-list">
             <dt class="das-definition-list__title">Employer</dt>
             <dd class="das-definition-list__definition">@Model.Employer</dd>
@@ -32,10 +32,12 @@
                     </legend>
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
                         <label asp-for="FirstName" class="govuk-label">First name</label>
+                        @Html.ValidationMessageFor(m => m.FirstName, null, new { @class="govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName) })
                         <input asp-for="FirstName" class="govuk-input" />
                     </div>
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
                         <label asp-for="LastName" class="govuk-label">Last name</label>
+                        @Html.ValidationMessageFor(m => m.LastName, null, new { @class="govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName) })
                         <input asp-for="LastName" class="govuk-input" />
                     </div>
                 </fieldset>
