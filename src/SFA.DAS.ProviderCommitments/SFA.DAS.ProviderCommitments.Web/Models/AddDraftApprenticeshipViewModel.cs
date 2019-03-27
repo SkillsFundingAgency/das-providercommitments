@@ -8,7 +8,6 @@ using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    [Validator(typeof(AddDraftApprenticeshipViewModelValidator))]
     public class AddDraftApprenticeshipViewModel
     {
         public AddDraftApprenticeshipViewModel()

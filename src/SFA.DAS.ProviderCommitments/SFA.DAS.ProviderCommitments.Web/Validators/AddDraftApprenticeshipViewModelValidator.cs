@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Requests
+namespace SFA.DAS.ProviderCommitments.Web.Validators
 {
     public class AddDraftApprenticeshipViewModelValidator : AbstractValidator<AddDraftApprenticeshipViewModel>
     {

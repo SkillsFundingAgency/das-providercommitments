@@ -12,6 +12,9 @@ using SFA.DAS.ProviderCommitments.ModelBinding.ModelBinder;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.Validators;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -49,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
-                .AddFluentValidation()
+                .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHealthChecks();
