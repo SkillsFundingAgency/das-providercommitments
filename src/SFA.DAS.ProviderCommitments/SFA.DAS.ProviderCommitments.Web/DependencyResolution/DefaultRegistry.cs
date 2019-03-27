@@ -22,12 +22,11 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
                 scan =>
                 {
                     scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith(ServiceName));
-                    scan.ConnectImplementationsToTypesClosing(typeof(IValidator<>));
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
-            For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
-            For<IMediator>().Use<Mediator>();
+            //For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
+            //For<IMediator>().Use<Mediator>();
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<IHashingContextProvider>().Use<ModelBindingHashValuesProvider>();

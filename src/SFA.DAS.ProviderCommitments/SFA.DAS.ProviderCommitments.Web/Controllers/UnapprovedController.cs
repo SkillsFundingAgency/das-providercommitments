@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,11 +80,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             catch (CommitmentsApiModelException ex)
             {
-               ModelState.AddModelExceptionErrors(ex);
+               ModelState.AddModelExceptionErrors(ex, MapFieldNames);
 
                 await AddEmployerAndCoursesToModel(model);
                 return View(model);
             }
+        }
+
+        private string MapFieldNames(string input)
+        {
+            if (input.Equals("uln", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return nameof(AddDraftApprenticeshipViewModel.UniqueLearnerNumber);
+            }
+
+            return input;
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
