@@ -38,8 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)
                 .With(x => x.BirthYear, birthDate?.Year)
-                .With(x => x.FinishMonth, endDate?.Month)
-                .With(x => x.FinishYear, endDate?.Year)
+                .With(x => x.EndMonth, endDate?.Month)
+                .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
                 .Without(x => x.StartDate)
@@ -67,21 +67,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         public void ThenDateOfBirthIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.BirthDate.Date, result.DateOfBirth);
+            Assert.AreEqual(_source.DateOfBirth.Date, result.DateOfBirth);
         }
 
         [Test]
         public void ThenUniqueLearnerNumberIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.UniqueLearnerNumber, result.UniqueLearnerNumber);
+            Assert.AreEqual(_source.Uln, result.UniqueLearnerNumber);
         }
 
         [Test]
         public void ThenCourseCodeIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.CourseCode, result.CourseCode);
+            Assert.AreEqual(_source.TrainingCode, result.CourseCode);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         public void ThenEndDateIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.FinishDate.Date, result.EndDate);
+            Assert.AreEqual(_source.EndDate.Date, result.EndDate);
         }
 
         [Test]

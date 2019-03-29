@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         public void Validate_DoB_ShouldBeValidated(int? day, int? month, int? year, bool expectedValid)
         {
             var model = new AddDraftApprenticeshipViewModel {BirthDay = day, BirthMonth = month, BirthYear = year};
-            AssertValidationResult(request => request.BirthDate, model, expectedValid);
+            AssertValidationResult(request => request.DateOfBirth, model, expectedValid);
         }
 
         [TestCase(12, 2000, true)]
@@ -40,8 +40,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase(null, null, true)]
         public void Validate_FinishDate_ShouldBeValidated(int? month, int? year, bool expectedValid)
         {
-            var model = new AddDraftApprenticeshipViewModel { FinishMonth = month, FinishYear = year };
-            AssertValidationResult(request => request.FinishDate, model, expectedValid);
+            var model = new AddDraftApprenticeshipViewModel { EndMonth = month, EndYear = year };
+            AssertValidationResult(request => request.EndDate, model, expectedValid);
         }
         private void AssertValidationResult<T>(Expression<Func<AddDraftApprenticeshipViewModel, T>> property, AddDraftApprenticeshipViewModel instance, bool expectedValid)
         {
