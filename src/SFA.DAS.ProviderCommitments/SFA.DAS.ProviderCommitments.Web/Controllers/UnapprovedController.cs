@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -48,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 AccountLegalEntity = request.AccountLegalEntity,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
-                CourseCode = request.CourseCode
+                TrainingCode = request.CourseCode
             };
 
             await AddEmployerAndCoursesToModel(model);
@@ -80,21 +78,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             catch (CommitmentsApiModelException ex)
             {
-               ModelState.AddModelExceptionErrors(ex, MapFieldNames);
+                ModelState.AddModelExceptionErrors(ex);
 
                 await AddEmployerAndCoursesToModel(model);
                 return View(model);
             }
-        }
-
-        private string MapFieldNames(string input)
-        {
-            if (input.Equals("uln", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return nameof(AddDraftApprenticeshipViewModel.UniqueLearnerNumber);
-            }
-
-            return input;
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
@@ -121,16 +109,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 EmployerAccountLegalEntityId = accountLegalEntityId.Value
             });
-        }
-
-        private Task<GetTrainingCourseResponse> GetTrainingCourseIfRequired(string trainingCode)
-        {
-            if (string.IsNullOrWhiteSpace(trainingCode))
-            {
-                return Task.FromResult((GetTrainingCourseResponse)null);
-            }
-
-            return _mediator.Send(new GetTrainingCourseRequest { CourseCode = trainingCode});
         }
 
         private async Task<ICourse[]> GetCourses()

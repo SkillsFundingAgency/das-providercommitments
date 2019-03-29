@@ -1,10 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using FluentValidation.Attributes;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -12,8 +10,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public AddDraftApprenticeshipViewModel()
         {
-            BirthDate = new DateModel(); 
-            FinishDate = new MonthYearModel("");
+            DateOfBirth = new DateModel(); 
+            EndDate = new MonthYearModel("");
             StartDate = new MonthYearModel("");
         }
 
@@ -26,33 +24,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Employer { get; set; }
 
         [Display(Name = "First Name")]
-        [MaxLength(100)]
         public string FirstName { get; set; }
 
         [Display(Name = "Last Name")]
-        [MaxLength(100)]
         public string LastName { get; set; }
 
         [Display(Name = "Date of birth")]
         [DataType(DataType.Date)]
-        public DateModel BirthDate { get; }
+        public DateModel DateOfBirth { get; }
 
         [Display(Name = "Day")]
-        public int? BirthDay { get => BirthDate.Day ; set => BirthDate.Day = value; }
+        public int? BirthDay { get => DateOfBirth.Day ; set => DateOfBirth.Day = value; }
 
         [Display(Name = "Month")]
-        public int? BirthMonth { get => BirthDate.Month; set => BirthDate.Month = value; }
+        public int? BirthMonth { get => DateOfBirth.Month; set => DateOfBirth.Month = value; }
 
         [Display(Name = "Year")]
-        public int? BirthYear { get => BirthDate.Year; set => BirthDate.Year = value; }
+        public int? BirthYear { get => DateOfBirth.Year; set => DateOfBirth.Year = value; }
 
         [Display(Name = "Unique Learner Number (ULN)")]
-        public string UniqueLearnerNumber { get; set; }
+        public string Uln { get; set; }
 
-        public string CourseCode { get; set; }
-
-        [Display(Name = "Apprenticeship course")]
-        public string CourseName { get; set; }
+        public string TrainingCode { get; set; }
 
         [Display(Name = "Planned training start date")]
         public MonthYearModel StartDate { get; set; }
@@ -64,13 +57,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
         [Display(Name = "Projected finish date")]
-        public MonthYearModel FinishDate { get; }
+        public MonthYearModel EndDate { get; }
 
         [Display(Name = "Month")]
-        public int? FinishMonth { get => FinishDate.Month; set => FinishDate.Month = value; }
+        public int? EndMonth { get => EndDate.Month; set => EndDate.Month = value; }
 
         [Display(Name = "Year")]
-        public int? FinishYear { get => FinishDate.Year; set => FinishDate.Year = value; }
+        public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
 
         [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
         public int? Cost { get; set; }

@@ -15,12 +15,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
-                DateOfBirth = source.BirthDate.Date,
-                UniqueLearnerNumber = source.UniqueLearnerNumber,
-                CourseCode = source.CourseCode,
+                DateOfBirth = source.DateOfBirth.Date,
+                UniqueLearnerNumber = source.Uln,
+                CourseCode = source.TrainingCode,
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,
-                EndDate = source.FinishDate.Date,
+                EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference
             };
         }
