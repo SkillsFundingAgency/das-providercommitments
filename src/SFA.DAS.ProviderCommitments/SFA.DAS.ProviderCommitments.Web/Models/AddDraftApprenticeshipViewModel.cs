@@ -24,11 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Employer { get; set; }
 
         [Display(Name = "First Name")]
-        [MaxLength(100)]
         public string FirstName { get; set; }
 
         [Display(Name = "Last Name")]
-        [MaxLength(100)]
         public string LastName { get; set; }
 
         [Display(Name = "Date of birth")]
