@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.FeatureDefinition
             {
                 EndPoints = fd.Endpoints,
                 Name = fd.Name,
-                IsEnabled = featureConfig.EnabledFeatures.Contains(fd.Name, StringComparer.OrdinalIgnoreCase)
+                IsEnabled = featureConfig.IsFeatureEnabled(fd.Name)
             });
 
             var featuresCache = new FeaturesCache(features);

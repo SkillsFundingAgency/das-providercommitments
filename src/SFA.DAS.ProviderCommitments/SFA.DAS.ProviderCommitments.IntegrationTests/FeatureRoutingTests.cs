@@ -1,7 +1,9 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Configuration;
@@ -44,7 +46,20 @@ namespace SFA.DAS.ProviderCommitments.IntegrationTests
         }
     }
 
-    public class FeatureRoutingTestFixtures : WebApplicationFactory<Startup>
+    public class StartupWithoutAuthorization : Startup
+    {
+        public StartupWithoutAuthorization(IConfiguration configuration) : base(configuration)
+        {
+            // just call base
+        }
+
+        protected override void ConfigureAuthorization(MvcOptions options)
+        {
+            // do nothing
+        }
+    }
+
+    public class FeatureRoutingTestFixtures : WebApplicationFactory<StartupWithoutAuthorization>
     {
 
         public FeatureRoutingTestFixtures()
@@ -90,6 +105,11 @@ namespace SFA.DAS.ProviderCommitments.IntegrationTests
 
                 services.BuildServiceProvider();
             });
+        }
+
+        protected override IWebHostBuilder CreateWebHostBuilder()
+        {
+            return base.CreateWebHostBuilder();
         }
 
         private T[] CopyAndAppend<T>(T[] existingArray, T newInstance) 

@@ -1,4 +1,6 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.FeatureDefinition;
+﻿using System;
+using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.FeatureDefinition;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Configuration
@@ -24,5 +26,10 @@ namespace SFA.DAS.ProviderCommitments.Configuration
 
         public string[] EnabledFeatures { get; set; }
         public FeatureDefinition[] FeatureDefinitions { get; set; }
+
+        public bool IsFeatureEnabled(string name)
+        {
+            return EnabledFeatures != null && EnabledFeatures.Contains(name, StringComparer.OrdinalIgnoreCase);
+        }
     }
 }
