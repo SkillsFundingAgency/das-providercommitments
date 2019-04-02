@@ -16,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<PublicAccountIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountIdHashingConfiguration);
             AddConfiguration<PublicAccountLegalEntityIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountLegalEntityIdHashingConfiguration);
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
+            AddConfiguration<FeatureConfiguration>(ProviderCommitmentsConfigurationKeys.FeatureConfiguration);
         }
 
         private void AddConfiguration<T>(string name) where T : class
