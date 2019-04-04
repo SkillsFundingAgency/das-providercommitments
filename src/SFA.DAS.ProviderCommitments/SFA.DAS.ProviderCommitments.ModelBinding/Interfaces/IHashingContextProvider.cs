@@ -2,6 +2,6 @@
 {
     public interface IHashingContextProvider
     {
-        IHashingValues GetAuthorizationContext();
+        IHashingValues GetHashingContext();
     }
 }

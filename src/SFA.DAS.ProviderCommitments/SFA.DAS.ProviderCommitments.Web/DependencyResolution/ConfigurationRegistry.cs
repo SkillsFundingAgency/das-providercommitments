@@ -16,6 +16,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<PublicAccountIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountIdHashingConfiguration);
             AddConfiguration<PublicAccountLegalEntityIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountLegalEntityIdHashingConfiguration);
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
+
+            For<FeatureConfiguration>().Use(c => SetFeatureConfiguration(c)).Singleton();
         }
 
         private void AddConfiguration<T>(string name) where T : class
@@ -23,12 +25,26 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<T>().Use(c => GetInstance<T>(c, name)).Singleton();
         }
 
-        private static T GetInstance<T>(IContext context, string name)
+        private T GetInstance<T>(IContext context, string name)
         {
             var configuration = context.GetInstance<IConfiguration>();
             var configSection = configuration.GetSection(name);
             var t = configSection.Get<T>();
             return t;
+        }
+
+        private FeatureConfiguration SetFeatureConfiguration(IContext context)
+        {
+            var enabledFeatures = GetInstance<string[]>(context, ProviderCommitmentsConfigurationKeys.FeatureEnabledConfiguration);
+            var featureDefinition = GetInstance<FeatureDefinition[]>(context, ProviderCommitmentsConfigurationKeys.FeatureDefinitionsConfiguration);
+
+            var featureConfiguration = new FeatureConfiguration
+            {
+                EnabledFeatures = enabledFeatures,
+                FeatureDefinitions = featureDefinition
+            };
+
+            return featureConfiguration;
         }
     }
 }

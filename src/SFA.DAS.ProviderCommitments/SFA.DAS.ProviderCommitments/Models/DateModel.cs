@@ -33,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _day;
             set
             {
-                AssertIsValid(nameof(Day), value, IsValidDay);
                 SetIfDifferent(_day, value, newValue => _day = newValue);
             }
         }
@@ -43,7 +42,6 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _month;
             set
             {
-                AssertIsValid(nameof(Month), value, IsValidMonth);
                 SetIfDifferent(_month, value, newValue => _month = newValue);
             }
         }
@@ -53,24 +51,17 @@ namespace SFA.DAS.ProviderCommitments.Models
             get => _year;
             set
             {
-                AssertIsValid(nameof(Year), value, IsValidYear);
                 SetIfDifferent(_year, value, newValue => _year = newValue);
             }
         }
 
-        public DateTime? Date => _currentValue ?? (_currentValue = IsValid ? new DateTime(Year.Value, Month.Value, Day.Value): (DateTime ?)null );
+        public DateTime? Date => _currentValue ?? (_currentValue =
+                                     IsValid ? new DateTime(Year.Value, Month.Value, Day.Value) : (DateTime?) null);
 
-        public bool IsValid => IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) && Day <= DateTime.DaysInMonth(Year.Value, Month.Value);
+        public bool IsValid => HasValue && (IsValidDay(Day) && IsValidMonth(Month) && IsValidYear(Year) &&
+                                            Day <= DateTime.DaysInMonth(Year.Value, Month.Value));
 
-        private void AssertIsValid(string property, int? value, Func<int?, bool> validator)
-        {
-            var isValid = validator(value);
-
-            if (!isValid)
-            {
-                throw new ArgumentOutOfRangeException(property, $"The value {value} is out of range");
-            }
-        }
+        public virtual bool HasValue => Day.HasValue || Month.HasValue || Year.HasValue;
 
         private bool IsValidDay(int? day)
         {

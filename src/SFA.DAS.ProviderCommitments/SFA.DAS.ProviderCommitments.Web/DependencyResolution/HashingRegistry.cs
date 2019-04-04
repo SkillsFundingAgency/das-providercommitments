@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+﻿using SFA.DAS.HashingService;
+using SFA.DAS.ProviderCommitments.Configuration;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
                 .Add("", ctx =>
                 {
                     var config = ctx.GetInstance<TConfigurationType>();
-                    return new HashingService(config.Alphabet, config.Salt);
+                    return new HashingService.HashingService(config.Alphabet, config.Salt);
                 })
                 .Named(name)
                 .Singleton();

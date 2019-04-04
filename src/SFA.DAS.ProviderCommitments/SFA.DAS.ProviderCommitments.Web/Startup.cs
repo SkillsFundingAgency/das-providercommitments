@@ -40,11 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddDasAuthorization()
                 .AddMvc(options =>
                 {
-                    var policy = new AuthorizationPolicyBuilder()
-                        .RequireProviderInRouteMatchesProviderInClaims()
-                        .Build();
-
-                    options.Filters.Add(new AuthorizeFilter(policy));
+                    ConfigureAuthorization(options);
                     options.ModelBinderProviders.Insert(0, new UnhashingModelBinderProvider());
                 })
                 .AddControllersAsServices()
@@ -54,6 +50,19 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services.AddHealthChecks();
         }
+
+        /// <summary>
+        ///     Override in integration tests to override authorization behaviour.
+        /// </summary>
+        protected virtual void ConfigureAuthorization(MvcOptions options)
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireProviderInRouteMatchesProviderInClaims()
+                .Build();
+
+            options.Filters.Add(new AuthorizeFilter(policy));
+        }
+
         public void ConfigureContainer(Registry registry)
         {
             IoC.Initialize(registry);
@@ -73,6 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 app.UseHsts();
             }
             app.UseHttpsRedirection()
+                .UseFeatureToggles()
                 .UseStaticFiles()
                 .UseCookiePolicy()
                 .UseAuthentication()

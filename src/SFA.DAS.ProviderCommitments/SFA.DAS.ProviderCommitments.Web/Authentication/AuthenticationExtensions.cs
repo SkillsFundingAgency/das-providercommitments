@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
@@ -38,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
 
             //todo: need to capture these values in the database via the api
             var ukprn = claims.FirstOrDefault(claim => claim.Type == (ProviderClaims.Ukprn))?.Value;
-            //...etc.
+           
 
             return Task.CompletedTask;
         }

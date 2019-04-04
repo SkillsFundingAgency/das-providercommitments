@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.DependencyResolution;
+﻿using SFA.DAS.AutoConfiguration.DependencyResolution;
+using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -14,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ConfigurationRegistry>();
             registry.IncludeRegistry<MediatorRegistry>();
             registry.IncludeRegistry<HashingRegistry>();
+            registry.IncludeRegistry<AutoConfigurationRegistry>();
         }
     }
 }

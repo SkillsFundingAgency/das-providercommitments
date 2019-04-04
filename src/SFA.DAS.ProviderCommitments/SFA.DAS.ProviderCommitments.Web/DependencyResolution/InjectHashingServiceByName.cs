@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using SFA.DAS.ProviderCommitments.HashingTemp;
+using SFA.DAS.HashingService;
 using StructureMap;
 using StructureMap.Pipeline;
 

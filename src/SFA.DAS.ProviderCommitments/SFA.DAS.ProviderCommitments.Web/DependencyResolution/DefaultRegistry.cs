@@ -1,10 +1,13 @@
 ﻿using FluentValidation;
 using MediatR;
+using SFA.DAS.AutoConfiguration;
+using SFA.DAS.AutoConfiguration.DependencyResolution;
 using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
 using SFA.DAS.ProviderCommitments.ModelBinding.ModelBinderValues;
+using SFA.DAS.ProviderUrlHelper;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -28,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<IHashingContextProvider>().Use<ModelBindingHashValuesProvider>();
+            For<ILinkGenerator>().Use<LinkGenerator>();
         }
     }
 }

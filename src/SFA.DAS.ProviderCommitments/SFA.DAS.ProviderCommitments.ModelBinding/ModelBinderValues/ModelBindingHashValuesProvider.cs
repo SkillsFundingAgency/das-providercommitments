@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.ModelBinding.ModelBinderValues
             _hashedPropertyModelBinders = hashedPropertyModelBinders;
         }
 
-        public IHashingValues GetAuthorizationContext()
+        public IHashingValues GetHashingContext()
         {
             var authorizationContext = new ModelBindingHashValues();
 
