@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;

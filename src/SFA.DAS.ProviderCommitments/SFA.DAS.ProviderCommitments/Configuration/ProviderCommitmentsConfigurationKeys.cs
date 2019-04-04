@@ -8,5 +8,7 @@
         public static string PublicAccountIdHashingConfiguration = $"{ProviderCommitments}:PublicAccountIdHashingConfiguration";
         public static string PublicAccountLegalEntityIdHashingConfiguration = $"{ProviderCommitments}:PublicAccountLegalEntityIdHashingConfiguration";
         public static string CommitmentsClientApiConfiguration = $"{ProviderCommitments}:CommitmentsClientApi";
+        public static string FeatureEnabledConfiguration = $"{ProviderCommitments}:Features:Enabled";
+        public static string FeatureDefinitionsConfiguration = $"{ProviderCommitments}:Features:Definitions";
     }
 }
