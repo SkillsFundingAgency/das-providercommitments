@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 AccountLegalEntity = request.AccountLegalEntity,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
-                TrainingCode = request.CourseCode
+                CourseCode = request.CourseCode
             };
 
             await AddEmployerAndCoursesToModel(model);
