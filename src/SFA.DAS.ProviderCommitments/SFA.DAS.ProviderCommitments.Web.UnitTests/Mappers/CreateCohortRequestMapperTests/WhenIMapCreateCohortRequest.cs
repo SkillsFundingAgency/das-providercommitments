@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         public void ThenCourseCodeIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.TrainingCode, result.CourseCode);
+            Assert.AreEqual(_source.CourseCode, result.CourseCode);
         }
 
         [Test]

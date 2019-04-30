@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 LastName = source.LastName,
                 DateOfBirth = source.DateOfBirth.Date,
                 UniqueLearnerNumber = source.Uln,
-                CourseCode = source.TrainingCode,
+                CourseCode = source.CourseCode,
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
