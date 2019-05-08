@@ -1,11 +1,15 @@
-﻿using SFA.DAS.Authorization;
+﻿using Microsoft.Extensions.Configuration;
+using SFA.DAS.Authorization;
 using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap;
+using StructureMap.Building.Interception;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -29,6 +33,12 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<ILinkGenerator>().Use<LinkGenerator>();
+            Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
+        }
+        
+        private void Toggle<TPluginType, TConcreteType>(string configurationKey) where TConcreteType : TPluginType
+        {
+            For<TPluginType>().InterceptWith(new FuncInterceptor<TPluginType>((c, o) => c.GetInstance<IConfiguration>().GetValue<bool>(configurationKey) ? c.GetInstance<TConcreteType>() : o));
         }
     }
 }
