@@ -8,12 +8,10 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ProviderCommitments.ModelBinding.ModelBinder;
+using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using StructureMap;
 
@@ -44,7 +42,6 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMvc(options =>
                 {
                     ConfigureAuthorization(options);
-                    options.ModelBinderProviders.Insert(0, new UnhashingModelBinderProvider());
                 })
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
@@ -64,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .Build();
 
             options.Filters.Add(new AuthorizeFilter(policy));
+            options.AddAuthorization();
         }
 
         public void ConfigureContainer(Registry registry)
@@ -80,11 +78,13 @@ namespace SFA.DAS.ProviderCommitments.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection()
+            app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
+                .UseUnauthorizedAccessExceptionHandler()
+                .UseHttpsRedirection()
                 .UseFeatureToggles()
                 .UseStaticFiles()
                 .UseCookiePolicy()

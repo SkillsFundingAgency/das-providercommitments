@@ -21,6 +21,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
+    <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="4.1.1" />
+    <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="4.1.1" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.1095" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.1" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
@@ -32,7 +34,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ProviderCommitments.ModelBinding\SFA.DAS.ProviderCommitments.ModelBinding.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj" />
   </ItemGroup>
 
@@ -40,7 +41,6 @@
   <ItemGroup>
     <Folder Include="AppStart\" />
     <Folder Include="Assets\" />
-    <Folder Include="RouteValues\" />
   </ItemGroup>
    
 

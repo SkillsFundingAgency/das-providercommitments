@@ -1,9 +1,7 @@
 ﻿using System;
 using AutoFixture;
-using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -27,14 +25,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
+            var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
             _mapper = new CreateCohortRequestMapper();
-            var accountLegalEntity = fixture.Build<AccountLegalEntity>()
-                .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
-                .Create();
 
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
-                .With(x => x.AccountLegalEntity, accountLegalEntity)
+                .With(x => x.AccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
+                .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)
                 .With(x => x.BirthYear, birthDate?.Year)

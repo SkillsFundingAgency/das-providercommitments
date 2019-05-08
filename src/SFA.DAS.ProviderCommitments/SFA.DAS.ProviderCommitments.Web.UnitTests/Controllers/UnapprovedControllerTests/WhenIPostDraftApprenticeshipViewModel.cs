@@ -6,9 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.HashingService;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -66,7 +64,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
                 _model = new AddDraftApprenticeshipViewModel
                 {
                     ProviderId = autoFixture.Create<int>(),
-                    AccountLegalEntity = autoFixture.Create<AccountLegalEntity>(),
+                    AccountLegalEntityPublicHashedId = autoFixture.Create<string>(),
+                    AccountLegalEntityId = autoFixture.Create<long>(),
                     ReservationId = autoFixture.Create<Guid>()
                 };
 

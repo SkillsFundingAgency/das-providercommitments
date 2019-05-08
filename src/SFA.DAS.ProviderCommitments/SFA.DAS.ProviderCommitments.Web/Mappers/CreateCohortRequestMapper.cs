@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             return new CreateCohortRequest
             {
-                AccountLegalEntityId = source.AccountLegalEntity.AccountLegalEntityId ?? 0,
+                AccountLegalEntityId = source.AccountLegalEntityId ?? 0,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,

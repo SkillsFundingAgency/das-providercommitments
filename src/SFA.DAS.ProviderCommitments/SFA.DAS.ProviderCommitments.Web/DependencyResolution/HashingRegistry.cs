@@ -1,5 +1,4 @@
-﻿using SFA.DAS.HashingService;
-using SFA.DAS.ProviderCommitments.Configuration;
+﻿using SFA.DAS.ProviderCommitments.Services;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -8,22 +7,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
     {
         public HashingRegistry()
         {
-            Policies.Add<InjectHashingServiceByName>();
-
-            RegisterNamedHashingService<PublicAccountIdHashingConfiguration>(HashingServiceNames.PublicAccountIdHashingService);
-            RegisterNamedHashingService<PublicAccountLegalEntityIdHashingConfiguration>(HashingServiceNames.PublicAccountLegalEntityIdHashingService);
-        }
-
-        private void RegisterNamedHashingService<TConfigurationType>(string name) where TConfigurationType : HashingConfiguration
-        {
-            For<IHashingService>()
-                .Add("", ctx =>
-                {
-                    var config = ctx.GetInstance<TConfigurationType>();
-                    return new HashingService.HashingService(config.Alphabet, config.Salt);
-                })
-                .Named(name)
-                .Singleton();
+            For<IPublicAccountIdHashingService>().Use<PublicAccountIdHashingService>();
+            For<IPublicAccountLegalEntityIdHashingService>().Use<PublicAccountLegalEntityIdHashingService>();
         }
     }
 }
