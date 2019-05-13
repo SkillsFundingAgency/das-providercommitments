@@ -1,5 +1,4 @@
-﻿using SFA.DAS.HashingService;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers

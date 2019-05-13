@@ -23,7 +23,8 @@
             <dd class="das-definition-list__definition">@Model.Employer</dd>
         </dl>
         <form id="addApprenticeship" novalidate method="post" action="@Url.Action("AddDraftApprenticeship")">
-            @Html.HiddenFor(x => x.ReservationId)
+            @Html.HiddenFor(m => m.ReservationId)
+            @Html.HiddenFor(m => m.AccountLegalEntityPublicHashedId)
             @Html.Hidden("EmployerAccountLegalEntityPublicHashedId", Model.AccountLegalEntityPublicHashedId)
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

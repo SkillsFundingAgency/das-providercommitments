@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
@@ -12,7 +13,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static IWebHostBuilder ConfigureDasAppConfiguration(this IWebHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureAppConfiguration(c => c
-                .AddAzureTableStorage("SFA.DAS.ProviderCommitments"));
+                .AddAzureTableStorage(
+                    ProviderCommitmentsConfigurationKeys.Encoding,
+                    ProviderCommitmentsConfigurationKeys.ProviderCommitments));
         }
     }
 

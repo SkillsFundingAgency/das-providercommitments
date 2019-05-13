@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Authorization;
 using SFA.DAS.Authorization.ProviderPermissions;
-using SFA.DAS.ProviderCommitments.Services;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
@@ -12,13 +12,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
     public class AuthorizationContextProvider : IAuthorizationContextProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IPublicAccountLegalEntityIdHashingService _publicAccountLegalEntityIdHashingService;
+        private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
 
-        public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IPublicAccountLegalEntityIdHashingService publicAccountLegalEntityIdHashingService, IAuthenticationService authenticationService)
+        public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
         {
             _httpContextAccessor = httpContextAccessor;
-            _publicAccountLegalEntityIdHashingService = publicAccountLegalEntityIdHashingService;
+            _encodingService = encodingService;
             _authenticationService = authenticationService;
         }
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
                 return null;
             }
             
-            if (!_publicAccountLegalEntityIdHashingService.TryDecodeValue(accountLegalEntityPublicHashedId, out var accountLegalEntityId))
+            if (!_encodingService.TryDecode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId, out var accountLegalEntityId))
             {
                 throw new UnauthorizedAccessException();
             }
