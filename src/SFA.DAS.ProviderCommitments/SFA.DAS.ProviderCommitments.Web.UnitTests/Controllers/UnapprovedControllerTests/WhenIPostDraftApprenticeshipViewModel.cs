@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
                 _model = new AddDraftApprenticeshipViewModel
                 {
                     ProviderId = autoFixture.Create<int>(),
-                    AccountLegalEntityPublicHashedId = autoFixture.Create<string>(),
+                    EmployerAccountLegalEntityPublicHashedId = autoFixture.Create<string>(),
                     AccountLegalEntityId = autoFixture.Create<long>(),
                     ReservationId = autoFixture.Create<Guid>()
                 };

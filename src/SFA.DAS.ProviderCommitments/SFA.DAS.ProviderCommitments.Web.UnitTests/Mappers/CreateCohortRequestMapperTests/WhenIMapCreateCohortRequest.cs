@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             _mapper = new CreateCohortRequestMapper();
 
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
-                .With(x => x.AccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
+                .With(x => x.EmployerAccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
                 .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)

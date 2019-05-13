@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int ProviderId { get; set; }
         
         [Required]
-        public string AccountLegalEntityPublicHashedId { get; set; }
+        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         
         [Required]
         public long? AccountLegalEntityId { get; set; }
