@@ -1,12 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 using SFA.DAS.Authorization;
 using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorisation
@@ -29,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             var authorizationContext = new AuthorizationContext();
             var accountLegalEntityId = GetAccountLegalEntityId();
             var ukprn = GetUkrpn();
-
+            
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
             
             return authorizationContext;

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.Authorization.ProviderPermissions;
@@ -46,6 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = new AddDraftApprenticeshipViewModel
             {
                 AccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode
