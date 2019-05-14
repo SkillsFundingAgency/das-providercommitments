@@ -1,18 +1,17 @@
-﻿using SFA.DAS.HashingService;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestMapper : ICreateCohortRequestMapper
+    public class AddDraftApprenticeshipRequestMapper : IAddDraftApprenticeshipRequestMapper
     {
-        public CreateCohortRequest Map(AddDraftApprenticeshipViewModel source)
+        public AddDraftApprenticeshipToCohortRequest Map(AddDraftApprenticeshipViewModel source)
         {
-            return new CreateCohortRequest
+            return new AddDraftApprenticeshipToCohortRequest
             {
-                AccountLegalEntityId = source.AccountLegalEntity.AccountLegalEntityId ?? 0,
+                CohortId = source.Cohort.CohortId.Value,
                 ProviderId = source.ProviderId,
-                ReservationId = source.ReservationId.Value,
+                ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 DateOfBirth = source.DateOfBirth.Date,

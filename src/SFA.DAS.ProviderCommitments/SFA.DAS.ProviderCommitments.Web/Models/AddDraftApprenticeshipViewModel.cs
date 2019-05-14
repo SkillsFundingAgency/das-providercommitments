@@ -15,9 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             StartDate = new MonthYearModel("");
         }
 
-        public Guid ReservationId { get; set; }
+        public Guid? ReservationId { get; set; }
         public int ProviderId { get; set; }
         public AccountLegalEntity AccountLegalEntity { get; set; }
+        public Cohort Cohort { get; set; }
 
         [Display(Name = "Employer")]
         [MaxLength(100)]
