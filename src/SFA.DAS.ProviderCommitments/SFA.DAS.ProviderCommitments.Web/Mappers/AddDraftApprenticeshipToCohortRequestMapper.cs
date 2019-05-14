@@ -3,7 +3,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class AddDraftApprenticeshipRequestMapper : IAddDraftApprenticeshipRequestMapper
+    public class AddDraftApprenticeshipToCohortRequestMapper : IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest>
     {
         public AddDraftApprenticeshipToCohortRequest Map(AddDraftApprenticeshipViewModel source)
         {

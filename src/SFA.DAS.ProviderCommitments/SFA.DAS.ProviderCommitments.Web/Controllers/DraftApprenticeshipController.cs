@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
+using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -23,17 +24,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IProviderCommitmentsService _providerCommitmentsService;
-        private readonly IAddDraftApprenticeshipRequestMapper _addDraftApprenticeshipRequestMapper;
+        private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest> _addDraftApprenticeshipToCohortRequestMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public DraftApprenticeshipController(IMediator mediator,
             IProviderCommitmentsService providerCommitmentsService,
-            IAddDraftApprenticeshipRequestMapper addDraftApprenticeshipRequestMapper,
+            IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest> addDraftApprenticeshipToCohortRequestMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
             _providerCommitmentsService = providerCommitmentsService;
-            _addDraftApprenticeshipRequestMapper = addDraftApprenticeshipRequestMapper;
+            _addDraftApprenticeshipToCohortRequestMapper = addDraftApprenticeshipToCohortRequestMapper;
             _urlHelper = urlHelper;
         }
 
@@ -84,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            var request = _addDraftApprenticeshipRequestMapper.Map(model);
+            var request = _addDraftApprenticeshipToCohortRequestMapper.Map(model);
             request.UserId = User.Upn();
 
             try
