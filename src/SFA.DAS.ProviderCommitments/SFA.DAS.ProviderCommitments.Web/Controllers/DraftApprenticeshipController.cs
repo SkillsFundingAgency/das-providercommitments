@@ -11,7 +11,6 @@ using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
@@ -42,6 +41,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add-apprentice")]
         public async Task<IActionResult> AddDraftApprenticeship(Cohort cohort)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var model = new AddDraftApprenticeshipViewModel
             {
                 Cohort = cohort,
@@ -73,7 +77,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return View(model);
         }
-
 
         [HttpPost]
         [Route("add-apprentice")]
