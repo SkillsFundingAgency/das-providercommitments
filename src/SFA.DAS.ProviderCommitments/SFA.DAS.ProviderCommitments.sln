@@ -9,10 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{06CFA98C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments", "SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj", "{A9681024-4F96-4C54-88EA-A4D7D4447915}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.ModelBinding", "SFA.DAS.ProviderCommitments.ModelBinding\SFA.DAS.ProviderCommitments.ModelBinding.csproj", "{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.ModelBinding.UnitTests", "SFA.DAS.ProviderCommitments.ModelBinding.UnitTests\SFA.DAS.ProviderCommitments.ModelBinding.UnitTests.csproj", "{20779A91-E22D-4983-ADAC-07AF8B73EA67}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.UnitTests", "SFA.DAS.ProviderCommitments.UnitTests\SFA.DAS.ProviderCommitments.UnitTests.csproj", "{0DA46020-5529-4113-BB53-F4102FBC516A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderCommitments.Web.UnitTests", "SFA.DAS.ProviderCommitments.Web.UnitTests\SFA.DAS.ProviderCommitments.Web.UnitTests.csproj", "{BADDFA64-442A-48B7-9B49-A564221C1771}"
@@ -33,14 +29,6 @@ Global
 		{A9681024-4F96-4C54-88EA-A4D7D4447915}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9681024-4F96-4C54-88EA-A4D7D4447915}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9681024-4F96-4C54-88EA-A4D7D4447915}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90B3C652-BB2C-4C2D-9226-519FD5DB8A93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20779A91-E22D-4983-ADAC-07AF8B73EA67}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0DA46020-5529-4113-BB53-F4102FBC516A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0DA46020-5529-4113-BB53-F4102FBC516A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA46020-5529-4113-BB53-F4102FBC516A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -58,7 +46,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{20779A91-E22D-4983-ADAC-07AF8B73EA67} = {06CFA98C-E19F-4891-8F87-0D08320DCE2F}
 		{0DA46020-5529-4113-BB53-F4102FBC516A} = {06CFA98C-E19F-4891-8F87-0D08320DCE2F}
 		{BADDFA64-442A-48B7-9B49-A564221C1771} = {06CFA98C-E19F-4891-8F87-0D08320DCE2F}
 		{1DD86D29-50F7-4B95-A5BD-C76C24EDDF0B} = {06CFA98C-E19F-4891-8F87-0D08320DCE2F}

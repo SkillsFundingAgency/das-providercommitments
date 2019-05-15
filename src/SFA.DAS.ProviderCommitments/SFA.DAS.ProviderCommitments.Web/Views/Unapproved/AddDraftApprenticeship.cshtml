@@ -24,7 +24,7 @@
         </dl>
         <form id="addApprenticeship" novalidate method="post" action="@Url.Action("AddDraftApprenticeship")">
             @Html.HiddenFor(x => x.ReservationId)
-            @Html.Hidden("EmployerAccountLegalEntityPublicHashedId", Model.AccountLegalEntity.HashedAccountLegalEntityId)
+            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">

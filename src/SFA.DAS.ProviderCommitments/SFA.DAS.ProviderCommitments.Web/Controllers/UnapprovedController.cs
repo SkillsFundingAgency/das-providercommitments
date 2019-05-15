@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Authorization.Mvc;
+using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
@@ -16,7 +17,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [Authorize()]
+    [DasAuthorize(ProviderOperation.CreateCohort)]
     public class UnapprovedController : Controller
     {
         private readonly IMediator _mediator;
@@ -43,7 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                AccountLegalEntity = request.AccountLegalEntity,
+                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode
@@ -88,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
         {
             var getEmployerTask =
-                GetEmployerIfRequired(model.AccountLegalEntity.AccountLegalEntityId);
+                GetEmployerIfRequired(model.AccountLegalEntityId);
 
             var getCoursesTask = GetCourses();
 
