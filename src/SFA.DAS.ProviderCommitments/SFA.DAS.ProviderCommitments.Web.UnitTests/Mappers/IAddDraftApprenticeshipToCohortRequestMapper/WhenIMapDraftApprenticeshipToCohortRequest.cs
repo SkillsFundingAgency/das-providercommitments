@@ -27,12 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.IAddDraftApprentices
 
             _mapper = new AddDraftApprenticeshipToCohortRequestMapper();
 
-            var cohort = fixture.Build<Cohort>()
-                .With(x=>x.CohortId, _cohortId)
-                .Create();
-
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
-                .With(x=>x.Cohort, cohort)
+                .With(x=>x.CohortId, _cohortId)
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)
                 .With(x => x.BirthYear, birthDate?.Year)

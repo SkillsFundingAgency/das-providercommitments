@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Configuration;
 using StructureMap;
 
@@ -13,9 +14,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             AddConfiguration<AuthenticationSettings>(ProviderCommitmentsConfigurationKeys.AuthenticationSettings);
             AddConfiguration<ApprenticeshipInfoServiceConfiguration>(ProviderCommitmentsConfigurationKeys.ApprenticeshipInfoServiceConfiguration);
-            AddConfiguration<PublicAccountIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountIdHashingConfiguration);
-            AddConfiguration<PublicAccountLegalEntityIdHashingConfiguration>(ProviderCommitmentsConfigurationKeys.PublicAccountLegalEntityIdHashingConfiguration);
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
+            AddConfiguration<EncodingConfig>(ProviderCommitmentsConfigurationKeys.Encoding);
 
             For<FeatureConfiguration>().Use(c => SetFeatureConfiguration(c)).Singleton();
         }

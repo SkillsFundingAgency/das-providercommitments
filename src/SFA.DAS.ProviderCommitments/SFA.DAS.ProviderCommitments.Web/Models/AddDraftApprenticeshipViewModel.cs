@@ -1,12 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using SFA.DAS.Authorization;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class AddDraftApprenticeshipViewModel
+    public class AddDraftApprenticeshipViewModel : IAuthorizationContextModel
     {
         public AddDraftApprenticeshipViewModel()
         {
@@ -17,8 +17,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         public Guid? ReservationId { get; set; }
         public int ProviderId { get; set; }
-        public AccountLegalEntity AccountLegalEntity { get; set; }
-        public Cohort Cohort { get; set; }
+        
+        [Required]
+        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+        
+        [Required]
+        public long? AccountLegalEntityId { get; set; }
+
+        //[Required]
+        public string CohortPublicHashedId { get; set; }
+
+        //[Required]
+        public long? CohortId { get; set; }
 
         [Display(Name = "Employer")]
         [MaxLength(100)]

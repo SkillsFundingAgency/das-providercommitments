@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             return new AddDraftApprenticeshipToCohortRequest
             {
-                CohortId = source.Cohort.CohortId.Value,
+                CohortId = source.CohortId.Value,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,

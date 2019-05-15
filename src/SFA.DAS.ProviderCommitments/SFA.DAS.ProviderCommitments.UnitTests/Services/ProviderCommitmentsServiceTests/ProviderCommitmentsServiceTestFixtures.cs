@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Services;
 
@@ -13,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
             var autoFixture = new Fixture();
 
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();  
-            HashingServiceMock = new Mock<IPublicAccountLegalEntityIdHashingService>();
+            HashingServiceMock = new Mock<IEncodingService>();
             CohortApiDetail = new CohortApiDetails {AccountLegalEntityId = 1, CohortId = 2, LegalEntityName = "LEN"};
             AddDraftApprenticeshipToCohortRequest = autoFixture.Build<AddDraftApprenticeshipToCohortRequest>().Create();
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         public AddDraftApprenticeshipToCohortRequest AddDraftApprenticeshipToCohortRequest { get; }
         public CohortApiDetails CohortApiDetail { get; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClientMock { get; }
-        public Mock<IPublicAccountLegalEntityIdHashingService> HashingServiceMock{ get; }
+        public Mock<IEncodingService> HashingServiceMock{ get; }
 
         public ProviderCommitmentsService Sut;
 
@@ -36,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
 
         public ProviderCommitmentsServiceTestFixtures SetupHashingToEncodeByAddingXs()
         {
-            HashingServiceMock.Setup(x => x.HashValue(It.IsAny<long>())).Returns((long id) => $"X{id}X");
+            HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), It.IsAny<EncodingType>())).Returns((long id, EncodingType encodingType) => $"X{id}X");
             return this;
         }
     }

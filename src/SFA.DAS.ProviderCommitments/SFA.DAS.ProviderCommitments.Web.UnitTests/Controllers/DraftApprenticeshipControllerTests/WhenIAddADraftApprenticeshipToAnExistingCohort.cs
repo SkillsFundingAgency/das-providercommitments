@@ -118,7 +118,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _cohort = autoFixture.Build<Cohort>().Create();
                 _createAddDraftApprenticeshipToCohortRequest = new AddDraftApprenticeshipToCohortRequest();
                 _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
-                    .With(x => x.Cohort, _cohort)
+                    .With(x => x.CohortId, _cohort.CohortId)
+                    .With(x => x.CohortPublicHashedId, _cohort.HashedCohortId)
                     .With(x => x.StartMonthYear, "012019")
                     .Create();
 
@@ -130,7 +131,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _model = new AddDraftApprenticeshipViewModel
                 {
                     ProviderId = autoFixture.Create<int>(),
-                    Cohort = _cohort
+                    CohortId = _cohort.CohortId,
+                    CohortPublicHashedId = _cohort.HashedCohortId
                 };
 
                 _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>() { new ErrorDetail("Name", "Cannot be more than..." )});
@@ -192,7 +194,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
-                Assert.AreEqual(_cohort, model.Cohort);
+                Assert.AreEqual(_cohort.CohortId, model.CohortId);
+                Assert.AreEqual(_cohort.HashedCohortId, model.CohortPublicHashedId);
                 Assert.IsNull(model.ReservationId);
 
                 return this;
@@ -204,7 +207,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
-                Assert.AreEqual(_cohort, model.Cohort);
+                Assert.AreEqual(_cohort.CohortId, model.CohortId);
+                Assert.AreEqual(_cohort.HashedCohortId, model.CohortPublicHashedId);
                 Assert.IsNotNull(model.ReservationId);
                 Assert.AreEqual(_reservationsAddDraftApprenticeshipRequest.ReservationId, model.ReservationId);
 
@@ -249,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             public AddDraftApprenticeshipToCohortTestFixture VerifyRedirectedBackToCohortDetailsPage()
             {
                 var redirectResult = (RedirectResult)_actionResult;
-                Assert.AreEqual($"{_model.ProviderId}/apprentices/{_model.Cohort.HashedCohortId}/Details", redirectResult.Url);
+                Assert.AreEqual($"{_model.ProviderId}/apprentices/{_model.CohortPublicHashedId}/Details", redirectResult.Url);
 
                 return this;
             }

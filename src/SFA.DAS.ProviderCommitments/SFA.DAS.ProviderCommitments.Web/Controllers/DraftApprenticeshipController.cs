@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.ModelBinding.Models;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
@@ -48,7 +47,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                Cohort = cohort,
+                CohortPublicHashedId = cohort.HashedCohortId,
+                CohortId = cohort.CohortId
             };
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -67,7 +67,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                Cohort = request.Cohort,
+                CohortPublicHashedId = request.CohortPublicHashedId,
+                CohortId = request.CohortId,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode
@@ -94,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             try
             {
                 await _providerCommitmentsService.AddDraftApprenticeshipToCohort(request);
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.Cohort.HashedCohortId}/Details";
+                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortPublicHashedId}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
                 return Redirect(url);
             }
@@ -108,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task AddLegalEntityAndCoursesToModel(AddDraftApprenticeshipViewModel model)
         {
-            var getCohortDetail = _providerCommitmentsService.GetCohortDetail(model.Cohort.CohortId.Value);
+            var getCohortDetail = _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
             var getCoursesTask = GetCourses();
 
             await Task.WhenAll(getCohortDetail, getCoursesTask);
@@ -116,12 +117,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var cohortDetail = getCohortDetail.Result;
 
             model.Employer = cohortDetail.LegalEntityName;
-            model.AccountLegalEntity = new AccountLegalEntity
-            {
-                AccountLegalEntityId = cohortDetail.AccountLegalEntityId,
-                HashedAccountLegalEntityId = cohortDetail.HashedCohortId
-            };
-
             model.Courses = getCoursesTask.Result;
         }
 

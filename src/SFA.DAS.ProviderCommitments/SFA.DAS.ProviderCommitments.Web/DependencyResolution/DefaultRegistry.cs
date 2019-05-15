@@ -1,14 +1,15 @@
-﻿using FluentValidation;
-using MediatR;
-using SFA.DAS.AutoConfiguration;
-using SFA.DAS.AutoConfiguration.DependencyResolution;
+﻿using Microsoft.Extensions.Configuration;
+using SFA.DAS.Authorization;
 using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.ModelBinding.Interfaces;
-using SFA.DAS.ProviderCommitments.ModelBinding.ModelBinderValues;
+using SFA.DAS.ProviderCommitments.Services;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap;
+using StructureMap.Building.Interception;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -27,10 +28,17 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 
             //For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
             //For<IMediator>().Use<Mediator>();
+            For<IAuthenticationService>().Use<AuthenticationService>();
+            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
-            For<IHashingContextProvider>().Use<ModelBindingHashValuesProvider>();
             For<ILinkGenerator>().Use<LinkGenerator>();
+            Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
+        }
+        
+        private void Toggle<TPluginType, TConcreteType>(string configurationKey) where TConcreteType : TPluginType
+        {
+            For<TPluginType>().InterceptWith(new FuncInterceptor<TPluginType>((c, o) => c.GetInstance<IConfiguration>().GetValue<bool>(configurationKey) ? c.GetInstance<TConcreteType>() : o));
         }
     }
 }

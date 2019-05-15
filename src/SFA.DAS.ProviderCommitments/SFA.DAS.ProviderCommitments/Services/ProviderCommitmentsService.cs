@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
@@ -9,9 +10,9 @@ namespace SFA.DAS.ProviderCommitments.Services
     public class ProviderCommitmentsService : IProviderCommitmentsService
     {
         private readonly ICommitmentsApiClient _client;
-        private readonly IPublicAccountLegalEntityIdHashingService _hashingService;
+        private readonly IEncodingService _hashingService;
 
-        public ProviderCommitmentsService(ICommitmentsApiClient client, IPublicAccountLegalEntityIdHashingService hashingService)
+        public ProviderCommitmentsService(ICommitmentsApiClient client, IEncodingService hashingService)
         {
             _client = client;
             _hashingService = hashingService;
@@ -24,9 +25,9 @@ namespace SFA.DAS.ProviderCommitments.Services
 
             return Task.FromResult(new CohortDetails
             {
-                CohortId = result.CohortId, HashedCohortId = _hashingService.HashValue(result.CohortId),
+                CohortId = result.CohortId, HashedCohortId = _hashingService.Encode(result.CohortId, EncodingType.CohortReference),
                 AccountLegalEntityId = result.AccountLegalEntityId,
-                HashedAccountLegalEntityId = _hashingService.HashValue(result.AccountLegalEntityId),
+                HashedAccountLegalEntityId = _hashingService.Encode(result.AccountLegalEntityId, EncodingType.AccountLegalEntityId),
                 LegalEntityName = result.LegalEntityName
             });
         }

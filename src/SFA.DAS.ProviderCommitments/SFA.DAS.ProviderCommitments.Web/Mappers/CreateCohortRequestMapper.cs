@@ -1,5 +1,4 @@
-﻿using SFA.DAS.HashingService;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
@@ -10,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             return new CreateCohortRequest
             {
-                AccountLegalEntityId = source.AccountLegalEntity.AccountLegalEntityId ?? 0,
+                AccountLegalEntityId = source.AccountLegalEntityId ?? 0,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId.Value,
                 FirstName = source.FirstName,
