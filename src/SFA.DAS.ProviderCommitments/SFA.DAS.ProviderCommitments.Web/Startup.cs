@@ -43,6 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 {
                     ConfigureAuthorization(options);
                 })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
                 .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>())

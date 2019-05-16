@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
+        private const string CohortIdContextKey = "CohortId";
 
         public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
         {
@@ -27,9 +28,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             var authorizationContext = new AuthorizationContext();
             var accountLegalEntityId = GetAccountLegalEntityId();
             var ukprn = GetUkrpn();
-            
+            var cohortId = GetCohortId();
+
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
-            
+            if(cohortId != null)
+                authorizationContext.Set(CohortIdContextKey, cohortId);
+
             return authorizationContext;
         }
 
@@ -46,6 +50,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             }
 
             return accountLegalEntityId;
+        }
+
+        private long? GetCohortId()
+        {
+            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortPublicHashedId, out var cohortPublicHashedId))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(cohortPublicHashedId, EncodingType.PublicAccountLegalEntityId, out var cohortId))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return cohortId;
         }
 
         private long? GetUkrpn()
@@ -80,11 +99,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             {
                 value = queryStringValue;
             }
-            else if (_httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
+            else if (_httpContextAccessor.HttpContext.Request.HasFormContentType)
             {
-                value = formValue;
+                if (_httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
+                {
+                    value = formValue;
+                }
             }
-            else
+
+            if(String.IsNullOrWhiteSpace(value))
             {
                 return false;
             }

@@ -18,22 +18,22 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         public async Task ShouldMapValuesFromApiCallAndAddHashValues()
         {
             _fixture.SetupGetCohortDetailsReturnValue(_fixture.CohortApiDetail)
-                .SetupHashingToEncodeByAddingXs();
+                .SetupHashingToEncodeInput();
 
            var result = await _fixture.Sut.GetCohortDetail(123);
             
             Assert.AreEqual(_fixture.CohortApiDetail.CohortId, result.CohortId);
             Assert.AreEqual(_fixture.CohortApiDetail.AccountLegalEntityId, result.AccountLegalEntityId);
             Assert.AreEqual(_fixture.CohortApiDetail.LegalEntityName, result.LegalEntityName);
-            Assert.AreEqual($"X{_fixture.CohortApiDetail.CohortId}X", result.HashedCohortId);
-            Assert.AreEqual($"X{_fixture.CohortApiDetail.AccountLegalEntityId}X", result.HashedAccountLegalEntityId);
+            Assert.AreEqual($"CRX{_fixture.CohortApiDetail.CohortId}X", result.HashedCohortId);
+            Assert.AreEqual($"ALEX{_fixture.CohortApiDetail.AccountLegalEntityId}X", result.HashedAccountLegalEntityId);
         }
 
         [Test]
         public async Task ShouldCallClientApiWithCorrectParameter()
         {
             _fixture.SetupGetCohortDetailsReturnValue(_fixture.CohortApiDetail)
-                .SetupHashingToEncodeByAddingXs();
+                .SetupHashingToEncodeInput();
 
             await _fixture.Sut.GetCohortDetail(123);
 

@@ -35,9 +35,10 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
             return this;
         }
 
-        public ProviderCommitmentsServiceTestFixtures SetupHashingToEncodeByAddingXs()
+        public ProviderCommitmentsServiceTestFixtures SetupHashingToEncodeInput()
         {
-            HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), It.IsAny<EncodingType>())).Returns((long id, EncodingType encodingType) => $"X{id}X");
+            HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns((long id, EncodingType encodingType) => $"ALEX{id}X");
+            HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long id, EncodingType encodingType) => $"CRX{id}X");
             return this;
         }
     }

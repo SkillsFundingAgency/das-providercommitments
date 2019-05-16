@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;

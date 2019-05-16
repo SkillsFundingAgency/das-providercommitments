@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SFA.DAS.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class Cohort
+    public class Cohort : IAuthorizationContextModel
     {
         [Required]
         public long? CohortId { get; set; }
 
         [Required]
-        public string HashedCohortId { get; set; }
+        public string CohortPublicHashedId { get; set; }
     }
 }

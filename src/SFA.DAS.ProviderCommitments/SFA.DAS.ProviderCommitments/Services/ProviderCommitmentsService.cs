@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Services
             {
                 CohortId = result.CohortId, HashedCohortId = _hashingService.Encode(result.CohortId, EncodingType.CohortReference),
                 AccountLegalEntityId = result.AccountLegalEntityId,
-                HashedAccountLegalEntityId = _hashingService.Encode(result.AccountLegalEntityId, EncodingType.AccountLegalEntityId),
+                HashedAccountLegalEntityId = _hashingService.Encode(result.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 LegalEntityName = result.LegalEntityName
             });
         }

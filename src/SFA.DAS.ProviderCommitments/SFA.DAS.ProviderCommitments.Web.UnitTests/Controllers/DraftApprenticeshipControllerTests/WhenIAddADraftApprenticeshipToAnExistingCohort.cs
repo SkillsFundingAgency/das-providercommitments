@@ -119,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _createAddDraftApprenticeshipToCohortRequest = new AddDraftApprenticeshipToCohortRequest();
                 _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
                     .With(x => x.CohortId, _cohort.CohortId)
-                    .With(x => x.CohortPublicHashedId, _cohort.HashedCohortId)
+                    .With(x => x.CohortPublicHashedId, _cohort.CohortPublicHashedId)
                     .With(x => x.StartMonthYear, "012019")
                     .Create();
 
@@ -132,7 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 {
                     ProviderId = autoFixture.Create<int>(),
                     CohortId = _cohort.CohortId,
-                    CohortPublicHashedId = _cohort.HashedCohortId
+                    CohortPublicHashedId = _cohort.CohortPublicHashedId
                 };
 
                 _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>() { new ErrorDetail("Name", "Cannot be more than..." )});
@@ -195,7 +195,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
                 Assert.AreEqual(_cohort.CohortId, model.CohortId);
-                Assert.AreEqual(_cohort.HashedCohortId, model.CohortPublicHashedId);
+                Assert.AreEqual(_cohort.CohortPublicHashedId, model.CohortPublicHashedId);
                 Assert.IsNull(model.ReservationId);
 
                 return this;
@@ -208,7 +208,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
                 Assert.AreEqual(_cohort.CohortId, model.CohortId);
-                Assert.AreEqual(_cohort.HashedCohortId, model.CohortPublicHashedId);
+                Assert.AreEqual(_cohort.CohortPublicHashedId, model.CohortPublicHashedId);
                 Assert.IsNotNull(model.ReservationId);
                 Assert.AreEqual(_reservationsAddDraftApprenticeshipRequest.ReservationId, model.ReservationId);
 

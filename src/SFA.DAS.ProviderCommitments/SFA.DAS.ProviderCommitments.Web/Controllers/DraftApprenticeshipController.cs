@@ -2,6 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -16,7 +19,23 @@ using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("{providerId}/unapproved/{HashedCohortId}")]
+    public class RequireQueryParameterAttribute : ActionMethodSelectorAttribute
+    {
+        public RequireQueryParameterAttribute(string valueName)
+        {
+            ValueName = valueName;
+        }
+        public string ValueName { get; private set; }
+        public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action)
+        {
+            return routeContext.HttpContext.Request.Query.ContainsKey(ValueName);
+        }
+    }
+
+
+
+
+    [Route("{providerId}/unapproved/{cohortPublicHashedId}")]
     [Authorize()]
     public class DraftApprenticeshipController : Controller
     {
@@ -47,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                CohortPublicHashedId = cohort.HashedCohortId,
+                CohortPublicHashedId = cohort.CohortPublicHashedId,
                 CohortId = cohort.CohortId
             };
 
@@ -58,6 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
+        [RequireQueryParameter("ReservationId")]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
@@ -76,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await AddLegalEntityAndCoursesToModel(model);
 
-            return View(model);
+            return View("AddDraftApprenticeship", model);
         }
 
         [HttpPost]
