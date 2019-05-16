@@ -2,9 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.AspNetCore.Routing;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -12,6 +9,7 @@ using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
@@ -19,21 +17,6 @@ using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    public class RequireQueryParameterAttribute : ActionMethodSelectorAttribute
-    {
-        public RequireQueryParameterAttribute(string valueName)
-        {
-            ValueName = valueName;
-        }
-        public string ValueName { get; private set; }
-        public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action)
-        {
-            return routeContext.HttpContext.Request.Query.ContainsKey(ValueName);
-        }
-    }
-
-
-
 
     [Route("{providerId}/unapproved/{cohortPublicHashedId}")]
     [Authorize()]
@@ -139,20 +122,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.Employer = cohortDetail.LegalEntityName;
             model.Courses = getCoursesTask.Result;
         }
-
-        private Task<GetAccountLegalEntityResponse> GetLegalEntity(long? accountLegalEntityId)
-        {
-            if (!accountLegalEntityId.HasValue)
-            {
-                return Task.FromResult((GetAccountLegalEntityResponse)null);
-            }
-
-            return _mediator.Send(new GetAccountLegalEntityRequest
-            {
-                EmployerAccountLegalEntityId = accountLegalEntityId.Value
-            });
-        }
-
 
         private async Task<ICourse[]> GetCourses()
         {

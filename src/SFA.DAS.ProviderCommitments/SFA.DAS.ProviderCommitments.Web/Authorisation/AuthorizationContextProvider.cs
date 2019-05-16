@@ -6,6 +6,7 @@ using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using static System.String;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorisation
 {
@@ -31,8 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             var cohortId = GetCohortId();
 
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
-            if(cohortId != null)
-                authorizationContext.Set(CohortIdContextKey, cohortId);
+            authorizationContext.Set(CohortIdContextKey, cohortId);
 
             return authorizationContext;
         }
@@ -107,7 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
                 }
             }
 
-            if(String.IsNullOrWhiteSpace(value))
+            if(IsNullOrWhiteSpace(value))
             {
                 return false;
             }
