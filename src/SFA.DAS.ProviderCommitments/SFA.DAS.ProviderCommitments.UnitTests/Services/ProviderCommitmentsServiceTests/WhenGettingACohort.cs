@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
@@ -37,8 +39,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
 
             await _fixture.Sut.GetCohortDetail(123);
 
-            //TODO uncomment line once API is updated
-            //_fixture.CommitmentsApiClientMock.Verify(x=>x.GetCohortDetail(123), Times.Once);
+            _fixture.CommitmentsApiClientMock.Verify(x=>x.GetCohort(123, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

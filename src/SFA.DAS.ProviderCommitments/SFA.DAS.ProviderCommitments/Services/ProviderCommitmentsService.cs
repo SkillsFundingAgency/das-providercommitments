@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -17,19 +18,17 @@ namespace SFA.DAS.ProviderCommitments.Services
             _client = client;
             _hashingService = hashingService;
         }
-        public Task<CohortDetails> GetCohortDetail(long cohortId)
+        public async Task<CohortDetails> GetCohortDetail(long cohortId)
         {
-            // TODO Call the API endpoint
-            //var result = await _client.GetCohort(cohortId);
-            var result = new CohortApiDetails { AccountLegalEntityId = 1, CohortId = 2, LegalEntityName = "LEN"};
-
-            return Task.FromResult(new CohortDetails
+            var result = await _client.GetCohort(cohortId, CancellationToken.None);
+            
+            return new CohortDetails
             {
                 CohortId = result.CohortId, HashedCohortId = _hashingService.Encode(result.CohortId, EncodingType.CohortReference),
                 AccountLegalEntityId = result.AccountLegalEntityId,
                 HashedAccountLegalEntityId = _hashingService.Encode(result.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 LegalEntityName = result.LegalEntityName
-            });
+            };
         }
 
         public Task AddDraftApprenticeshipToCohort(AddDraftApprenticeshipToCohortRequest request)
