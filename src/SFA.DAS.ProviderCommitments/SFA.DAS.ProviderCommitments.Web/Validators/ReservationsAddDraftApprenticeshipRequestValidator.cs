@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         public ReservationsAddDraftApprenticeshipRequestValidator()
         {
             RuleFor(model => model.CohortId).NotEmpty();
-            RuleFor(model => model.CohortPublicHashedId).NotEmpty();
+            RuleFor(model => model.CohortReference).NotEmpty();
             RuleFor(model => model.StartMonthYear)
                 .Must(monthYear => new MonthYearModel(monthYear).IsValid)
                 .When(model => !string.IsNullOrWhiteSpace(model.StartMonthYear))

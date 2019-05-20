@@ -18,7 +18,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
 
-    [Route("{providerId}/unapproved/{cohortPublicHashedId}")]
+    [Route("{providerId}/unapproved/{cohortReference}")]
     [Authorize()]
     public class DraftApprenticeshipController : Controller
     {
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                CohortPublicHashedId = nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId,
+                CohortReference = nonReservationsAddDraftApprenticeshipRequest.CohortReference,
                 CohortId = nonReservationsAddDraftApprenticeshipRequest.CohortId
             };
 
@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                CohortPublicHashedId = request.CohortPublicHashedId,
+                CohortReference = request.CohortReference,
                 CohortId = request.CohortId,
                 StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             try
             {
                 await _providerCommitmentsService.AddDraftApprenticeshipToCohort(request);
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortPublicHashedId}/Details";
+                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
                 return Redirect(url);
             }
