@@ -41,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddDasAuthorization()
                 .AddMvc(options =>
                 {
+                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     ConfigureAuthorization(options);
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
