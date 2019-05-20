@@ -1,12 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using SFA.DAS.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {
-    public class AddDraftApprenticeshipRequest : IAuthorizationContextModel
+    public class CreateCohortWithDraftApprenticeshipRequest : IAuthorizationContextModel
     {
-        [Required]
         public Guid? ReservationId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }

@@ -18,13 +18,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
     [DasAuthorize(ProviderOperation.CreateCohort)]
-    public class UnapprovedController : Controller
+    public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
         private readonly ICreateCohortRequestMapper _createCohortRequestMapper;
         private readonly ILinkGenerator _urlHelper;
 
-        public UnapprovedController(IMediator mediator,
+        public CreateCohortWithDraftApprenticeshipController(IMediator mediator,
             ICreateCohortRequestMapper createCohortRequestMapper,
             ILinkGenerator urlHelper)
         {
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {

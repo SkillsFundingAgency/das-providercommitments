@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public class AddDraftApprenticeshipToCohortTestFixture
         {
-            private readonly Cohort _cohort;
+            private readonly NonReservationsAddDraftApprenticeshipRequest _nonReservationsAddDraftApprenticeshipRequest;
             private readonly DraftApprenticeshipController _controller;
             private readonly GetTrainingCoursesQueryResponse _courseResponse;
             private readonly Mock<IMediator> _mediator;
@@ -115,11 +115,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             {
                 var autoFixture = new Fixture();
 
-                _cohort = autoFixture.Build<Cohort>().Create();
+                _nonReservationsAddDraftApprenticeshipRequest = autoFixture.Build<NonReservationsAddDraftApprenticeshipRequest>().Create();
                 _createAddDraftApprenticeshipToCohortRequest = new AddDraftApprenticeshipToCohortRequest();
                 _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
-                    .With(x => x.CohortId, _cohort.CohortId)
-                    .With(x => x.CohortPublicHashedId, _cohort.CohortPublicHashedId)
+                    .With(x => x.CohortId, _nonReservationsAddDraftApprenticeshipRequest.CohortId)
+                    .With(x => x.CohortPublicHashedId, _nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId)
                     .With(x => x.StartMonthYear, "012019")
                     .Create();
 
@@ -131,8 +131,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _model = new AddDraftApprenticeshipViewModel
                 {
                     ProviderId = autoFixture.Create<int>(),
-                    CohortId = _cohort.CohortId,
-                    CohortPublicHashedId = _cohort.CohortPublicHashedId
+                    CohortId = _nonReservationsAddDraftApprenticeshipRequest.CohortId,
+                    CohortPublicHashedId = _nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId
                 };
 
                 _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>() { new ErrorDetail("Name", "Cannot be more than..." )});
@@ -157,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             public async Task<AddDraftApprenticeshipToCohortTestFixture> AddDraftApprenticeshipWithoutReservation()
             {
-                _actionResult = await _controller.AddDraftApprenticeship(_cohort);
+                _actionResult = await _controller.AddDraftApprenticeship(_nonReservationsAddDraftApprenticeshipRequest);
                 return this;
             }
 
@@ -194,8 +194,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
-                Assert.AreEqual(_cohort.CohortId, model.CohortId);
-                Assert.AreEqual(_cohort.CohortPublicHashedId, model.CohortPublicHashedId);
+                Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortId, model.CohortId);
+                Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId, model.CohortPublicHashedId);
                 Assert.IsNull(model.ReservationId);
 
                 return this;
@@ -207,8 +207,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
 
                 var model = ((ViewResult)_actionResult).Model as AddDraftApprenticeshipViewModel;
-                Assert.AreEqual(_cohort.CohortId, model.CohortId);
-                Assert.AreEqual(_cohort.CohortPublicHashedId, model.CohortPublicHashedId);
+                Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortId, model.CohortId);
+                Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId, model.CohortPublicHashedId);
                 Assert.IsNotNull(model.ReservationId);
                 Assert.AreEqual(_reservationsAddDraftApprenticeshipRequest.ReservationId, model.ReservationId);
 
@@ -228,7 +228,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             public AddDraftApprenticeshipToCohortTestFixture VerifyCohortDetailsWasCalledWithCorrectId()
             {
-                _providerCommitmentsService.Verify(x => x.GetCohortDetail(_cohort.CohortId.Value), Times.Once);
+                _providerCommitmentsService.Verify(x => x.GetCohortDetail(_nonReservationsAddDraftApprenticeshipRequest.CohortId.Value), Times.Once);
                 return this;
             }
 

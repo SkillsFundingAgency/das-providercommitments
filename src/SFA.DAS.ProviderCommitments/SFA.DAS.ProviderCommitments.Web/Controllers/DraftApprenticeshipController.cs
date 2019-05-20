@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public async Task<IActionResult> AddDraftApprenticeship(Cohort cohort)
+        public async Task<IActionResult> AddDraftApprenticeship(NonReservationsAddDraftApprenticeshipRequest nonReservationsAddDraftApprenticeshipRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -49,8 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
-                CohortPublicHashedId = cohort.CohortPublicHashedId,
-                CohortId = cohort.CohortId
+                CohortPublicHashedId = nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId,
+                CohortId = nonReservationsAddDraftApprenticeshipRequest.CohortId
             };
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await AddLegalEntityAndCoursesToModel(model);
 
-            return View("AddDraftApprenticeship", model);
+            return View(model);
         }
 
         [HttpPost]
