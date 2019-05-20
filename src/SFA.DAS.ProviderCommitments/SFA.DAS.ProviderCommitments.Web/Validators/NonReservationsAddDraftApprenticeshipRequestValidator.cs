@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         public NonReservationsAddDraftApprenticeshipRequestValidator()
         {
             RuleFor(model => model.CohortId).NotEmpty();
-            RuleFor(model => model.CohortPublicHashedId).NotEmpty();
+            RuleFor(model => model.CohortReference).NotEmpty();
         }
     }
 }

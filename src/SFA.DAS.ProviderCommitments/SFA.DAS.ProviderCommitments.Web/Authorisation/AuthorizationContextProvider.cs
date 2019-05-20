@@ -54,12 +54,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
 
         private long? GetCohortId()
         {
-            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortPublicHashedId, out var cohortPublicHashedId))
+            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortReference, out var cohortReference))
             {
                 return null;
             }
 
-            if (!_encodingService.TryDecode(cohortPublicHashedId, EncodingType.PublicAccountLegalEntityId, out var cohortId))
+            if (!_encodingService.TryDecode(cohortReference, EncodingType.PublicAccountLegalEntityId, out var cohortId))
             {
                 throw new UnauthorizedAccessException();
             }

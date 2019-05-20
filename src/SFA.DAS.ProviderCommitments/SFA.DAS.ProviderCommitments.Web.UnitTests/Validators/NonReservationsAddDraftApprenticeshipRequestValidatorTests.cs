@@ -23,10 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("XYZ", true)]
-        public void Validate_CohortPublicHashedId_ShouldBeValidated(string cohortPublicHashedId, bool expectedValid)
+        public void Validate_CohortReference_ShouldBeValidated(string cohortReference, bool expectedValid)
         {
-            var model = new NonReservationsAddDraftApprenticeshipRequest { CohortPublicHashedId = cohortPublicHashedId };
-            AssertValidationResult(request => request.CohortPublicHashedId, model, expectedValid);
+            var model = new NonReservationsAddDraftApprenticeshipRequest { CohortReference = cohortReference };
+            AssertValidationResult(request => request.CohortReference, model, expectedValid);
         }
 
 
