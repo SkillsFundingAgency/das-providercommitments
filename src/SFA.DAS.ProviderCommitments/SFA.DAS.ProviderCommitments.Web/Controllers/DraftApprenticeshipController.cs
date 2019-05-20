@@ -110,6 +110,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("edit-apprentice")]
+        public async Task<IActionResult> EditDraftApprenticeship(NonReservationsAddDraftApprenticeshipRequest nonReservationsAddDraftApprenticeshipRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = new AddDraftApprenticeshipViewModel
+            {
+                CohortPublicHashedId = nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId,
+                CohortId = nonReservationsAddDraftApprenticeshipRequest.CohortId
+            };
+
+            await AddLegalEntityAndCoursesToModel(model);
+
+            return View(model);
+        }
+
+
         private async Task AddLegalEntityAndCoursesToModel(AddDraftApprenticeshipViewModel model)
         {
             var getCohortDetail = _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
