@@ -121,7 +121,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value, request.DraftApprenticeshipId.Value));
+            var imodel = await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value, request.DraftApprenticeshipId.Value);
+            var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(imodel);
             model.Courses = await GetCourses();
 
             return View(model);

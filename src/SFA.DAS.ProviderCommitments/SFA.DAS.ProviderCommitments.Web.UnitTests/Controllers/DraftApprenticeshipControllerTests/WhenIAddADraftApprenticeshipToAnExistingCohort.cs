@@ -6,12 +6,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     [TestFixture]
     public class WhenIAddADraftApprenticeshipToAnExistingCohort
     {
-        private AddDraftApprenticeshipToCohortTestFixture _fixture;
+        private DraftApprenticeshipControllerTestFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new AddDraftApprenticeshipToCohortTestFixture();
+            _fixture = new DraftApprenticeshipControllerTestFixture();
         }
 
         [Test]
