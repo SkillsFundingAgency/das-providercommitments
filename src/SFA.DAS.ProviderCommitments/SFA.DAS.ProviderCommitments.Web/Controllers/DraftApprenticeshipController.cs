@@ -7,7 +7,6 @@ using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
-using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -25,16 +24,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IProviderCommitmentsService _providerCommitmentsService;
         private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest> _addDraftApprenticeshipToCohortRequestMapper;
+        private readonly IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public DraftApprenticeshipController(IMediator mediator,
             IProviderCommitmentsService providerCommitmentsService,
             IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest> addDraftApprenticeshipToCohortRequestMapper,
+            IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
             _providerCommitmentsService = providerCommitmentsService;
             _addDraftApprenticeshipToCohortRequestMapper = addDraftApprenticeshipToCohortRequestMapper;
+            _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
             _urlHelper = urlHelper;
         }
 
@@ -111,21 +113,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("edit-apprentice")]
-        public async Task<IActionResult> EditDraftApprenticeship(NonReservationsAddDraftApprenticeshipRequest nonReservationsAddDraftApprenticeshipRequest)
+        [Route("edit-apprentice/{DraftApprenticeshipHashedId}")]
+        public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var model = new AddDraftApprenticeshipViewModel
-            {
-                CohortPublicHashedId = nonReservationsAddDraftApprenticeshipRequest.CohortPublicHashedId,
-                CohortId = nonReservationsAddDraftApprenticeshipRequest.CohortId
-            };
-
-            await AddLegalEntityAndCoursesToModel(model);
+            var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value, request.DraftApprenticeshipId.Value));
+            model.Courses = await GetCourses();
 
             return View(model);
         }

@@ -103,6 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             private readonly GetTrainingCoursesQueryResponse _courseResponse;
             private readonly Mock<IMediator> _mediator;
             private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest>> _mapper;
+            private readonly Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>> _editMapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
             private readonly Mock<IProviderCommitmentsService> _providerCommitmentsService;
             private readonly AddDraftApprenticeshipViewModel _model;
@@ -144,6 +145,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest>>();
                 _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>())).Returns(_createAddDraftApprenticeshipToCohortRequest);
 
+                _editMapper = new Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>>();
+
                 _linkGenerator = new Mock<ILinkGenerator>();
                 _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                     .Returns<string>(input => input);
@@ -152,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _providerCommitmentsService.Setup(x => x.GetCohortDetail(It.IsAny<long>()))
                     .ReturnsAsync(autoFixture.Build<CohortDetails>().Create());
                 
-                _controller = new DraftApprenticeshipController(_mediator.Object, _providerCommitmentsService.Object, _mapper.Object, _linkGenerator.Object);
+                _controller = new DraftApprenticeshipController(_mediator.Object, _providerCommitmentsService.Object, _mapper.Object, _editMapper.Object, _linkGenerator.Object);
             }
 
             public async Task<AddDraftApprenticeshipToCohortTestFixture> AddDraftApprenticeshipWithoutReservation()

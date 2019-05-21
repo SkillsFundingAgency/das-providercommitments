@@ -1,6 +1,4 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Extensions;
-@using SFA.DAS.ProviderCommitments.Web.Models
-@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
 
 @{
     ViewData["Title"] = "Apprenticeships";
@@ -9,9 +7,8 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-        <h1 class="govuk-heading-xl">Add apprentice details</h1>
+        <h1 class="govuk-heading-xl">Edit apprentice details</h1>
         <div class="govuk-inset-text">
-            <p class="govuk-body">You must add the apprentice’s first and last names - fill in as many other fields as you can. You'll be able to return later to make changes or add more information. </p>
             <p class="govuk-body">You can only receive payments for this apprentice if:</p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>all the fields have been completed - either by yourself or the employer</li>
@@ -23,13 +20,10 @@
             <dt class="das-definition-list__title">Employer</dt>
             <dd class="das-definition-list__definition">@Model.Employer</dd>
         </dl>
-        <form id="addApprenticeship" novalidate method="post" action="@Url.Action("AddDraftApprenticeship")">
+        <form id="addApprenticeship" novalidate method="post" action="@Url.Action("UpdateDraftApprenticeship")">
             @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-
             <partial name="DraftApprenticeship" for="@Model" />
-
-            <button type="submit" class="govuk-button">Add</button>
+            <button type="submit" class="govuk-button">Save</button>
             <div><a class="govuk-body govuk-link" href="">Cancel</a></div>
         </form>
 

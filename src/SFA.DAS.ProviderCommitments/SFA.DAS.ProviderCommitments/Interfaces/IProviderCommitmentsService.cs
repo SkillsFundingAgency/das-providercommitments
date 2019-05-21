@@ -8,5 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
     {
         Task<CohortDetails> GetCohortDetail(long cohortId);
         Task AddDraftApprenticeshipToCohort(AddDraftApprenticeshipToCohortRequest request);
+        Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId);
     }
 }

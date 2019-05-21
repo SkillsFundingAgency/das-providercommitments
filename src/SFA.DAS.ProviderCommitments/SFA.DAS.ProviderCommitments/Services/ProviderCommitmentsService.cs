@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
@@ -18,13 +19,15 @@ namespace SFA.DAS.ProviderCommitments.Services
             _client = client;
             _hashingService = hashingService;
         }
+
         public async Task<CohortDetails> GetCohortDetail(long cohortId)
         {
             var result = await _client.GetCohort(cohortId, CancellationToken.None);
-            
+
             return new CohortDetails
             {
-                CohortId = result.CohortId, HashedCohortId = _hashingService.Encode(result.CohortId, EncodingType.CohortReference),
+                CohortId = result.CohortId,
+                HashedCohortId = _hashingService.Encode(result.CohortId, EncodingType.CohortReference),
                 AccountLegalEntityId = result.AccountLegalEntityId,
                 HashedAccountLegalEntityId = _hashingService.Encode(result.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 LegalEntityName = result.LegalEntityName
@@ -36,6 +39,32 @@ namespace SFA.DAS.ProviderCommitments.Services
             // TODO Call API Endpoint
             //return _client.AddDraftApprenticeshipToCohort(request);
             return Task.CompletedTask;
+        }
+
+        public Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId)
+        {
+            // TODO Call API Endpoint
+            //var _client.GetDraftApprenticeship(cohortId, draftApprenticeshipId);
+            // Map to EditDraftApprenticeshipDetails
+            return Task.FromResult(new EditDraftApprenticeshipDetails
+            {
+                DraftApprenticeshipId = draftApprenticeshipId,
+                DraftApprenticeshipHashedId =
+                    _hashingService.Encode(draftApprenticeshipId, EncodingType.ApprenticeshipId),
+                CohortId = cohortId,
+                CohortReference = _hashingService.Encode(cohortId, EncodingType.CohortReference),
+                LegalEntityName = "LEN For Editing",
+                ReservationId = null,
+                FirstName = "First",
+                LastName = "Last",
+                DateOfBirth = DateTime.Today.AddYears(-30),
+                UniqueLearnerNumber = "01234567899",
+                CourseCode = "174",
+                Cost = 1000,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                OriginatorReference = null
+            });
         }
     }
 }

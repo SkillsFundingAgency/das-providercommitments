@@ -16,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
         private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
         private const string CohortIdContextKey = "CohortId";
+        private const string DraftApprenticeshipIdContextKey = "DraftApprenticeshipId";
 
         public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
         {
@@ -30,9 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             var accountLegalEntityId = GetAccountLegalEntityId();
             var ukprn = GetUkrpn();
             var cohortId = GetCohortId();
+            var draftApprenticeshipId = GetDraftApprenticeshipId();
 
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
             authorizationContext.Set(CohortIdContextKey, cohortId);
+            authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
 
             return authorizationContext;
         }
@@ -59,12 +62,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
                 return null;
             }
 
-            if (!_encodingService.TryDecode(cohortReference, EncodingType.PublicAccountLegalEntityId, out var cohortId))
+            if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
             {
                 throw new UnauthorizedAccessException();
             }
 
             return cohortId;
+        }
+
+        private long? GetDraftApprenticeshipId()
+        {
+            if (!TryGetValueFromHttpContext(RouteValueKeys.DraftApprenticeshipId, out var draftApprenticeshipHashedId))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(draftApprenticeshipHashedId, EncodingType.ApprenticeshipId, out var draftApprenticeshipId))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return draftApprenticeshipId;
         }
 
         private long? GetUkrpn()
