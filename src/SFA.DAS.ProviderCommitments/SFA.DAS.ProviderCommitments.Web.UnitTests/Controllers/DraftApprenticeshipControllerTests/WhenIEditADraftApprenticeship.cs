@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
     [TestFixture]
-    public class WhenIAddADraftApprenticeshipToAnExistingCohort
+    public class WhenIEditADraftApprenticeship
     {
         private AddDraftApprenticeshipToCohortTestFixture _fixture;
 
