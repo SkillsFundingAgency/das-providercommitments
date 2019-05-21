@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
                 return null;
             }
 
-            if (!_encodingService.TryDecode(cohortReference, EncodingType.PublicAccountLegalEntityId, out var cohortId))
+            if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
             {
                 throw new UnauthorizedAccessException();
             }
