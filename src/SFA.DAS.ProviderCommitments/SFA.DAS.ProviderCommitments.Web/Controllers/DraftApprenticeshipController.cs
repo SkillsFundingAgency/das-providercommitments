@@ -123,13 +123,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var imodel = await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value, request.DraftApprenticeshipId.Value);
             var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(imodel);
-            model.Courses = await GetCourses();
+
+            await AddLegalEntityAndCoursesToModel(model);
 
             return View(model);
         }
 
-
-        private async Task AddLegalEntityAndCoursesToModel(AddDraftApprenticeshipViewModel model)
+        private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
             var getCohortDetail = _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
             var getCoursesTask = GetCourses();

@@ -41,30 +41,28 @@ namespace SFA.DAS.ProviderCommitments.Services
             return Task.CompletedTask;
         }
 
-        public Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId)
+        public async Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId)
         {
-            // TODO Call API Endpoint
-            //var _client.GetDraftApprenticeship(cohortId, draftApprenticeshipId);
-            // Map to EditDraftApprenticeshipDetails
-            return Task.FromResult(new EditDraftApprenticeshipDetails
+            var result = await _client.GetDraftApprenticeship(cohortId, draftApprenticeshipId);
+
+            return new EditDraftApprenticeshipDetails
             {
-                DraftApprenticeshipId = draftApprenticeshipId,
+                DraftApprenticeshipId = result.Id,
                 DraftApprenticeshipHashedId =
-                    _hashingService.Encode(draftApprenticeshipId, EncodingType.ApprenticeshipId),
+                    _hashingService.Encode(result.Id, EncodingType.ApprenticeshipId),
                 CohortId = cohortId,
                 CohortReference = _hashingService.Encode(cohortId, EncodingType.CohortReference),
-                LegalEntityName = "LEN For Editing",
-                ReservationId = null,
-                FirstName = "First",
-                LastName = "Last",
-                DateOfBirth = DateTime.Today.AddYears(-30),
-                UniqueLearnerNumber = "01234567899",
-                CourseCode = "174",
-                Cost = 1000,
-                StartDate = DateTime.Today,
-                EndDate = DateTime.Today.AddYears(1),
-                OriginatorReference = null
-            });
+                ReservationId = result.ReservationId,
+                FirstName = result.FirstName,
+                LastName = result.LastName,
+                DateOfBirth = result.DateOfBirth,
+                UniqueLearnerNumber = result.Uln,
+                CourseCode = result.CourseCode,
+                Cost = result.Cost,
+                StartDate = result.StartDate,
+                EndDate = result.EndDate,
+                OriginatorReference = result.Reference
+            };
         }
     }
 }

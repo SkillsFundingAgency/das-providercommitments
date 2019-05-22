@@ -9,7 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Models.ApiModels
         public long CohortId { get; set; }
         public int ProviderId { get; set; }
         public string CohortReference { get; set; }
-        public string LegalEntityName { get; set; }
         public Guid? ReservationId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
