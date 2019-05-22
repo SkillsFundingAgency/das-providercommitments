@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
@@ -48,8 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Services
             return new EditDraftApprenticeshipDetails
             {
                 DraftApprenticeshipId = result.Id,
-                DraftApprenticeshipHashedId =
-                    _hashingService.Encode(result.Id, EncodingType.ApprenticeshipId),
+                DraftApprenticeshipHashedId = _hashingService.Encode(result.Id, EncodingType.ApprenticeshipId),
                 CohortId = cohortId,
                 CohortReference = _hashingService.Encode(cohortId, EncodingType.CohortReference),
                 ReservationId = result.ReservationId,
@@ -63,6 +63,11 @@ namespace SFA.DAS.ProviderCommitments.Services
                 EndDate = result.EndDate,
                 OriginatorReference = result.Reference
             };
+        }
+
+        public Task UpdateDraftApprenticeship(long cohortId, long draftApprenticeshipId, UpdateDraftApprenticeshipRequest updateRequest)
+        {
+            return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
     }
 }
