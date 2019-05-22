@@ -66,7 +66,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.VerifyEditViewWasReturnedAndHasErrors()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
-
         }
     }
 }
