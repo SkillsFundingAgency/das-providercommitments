@@ -52,6 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _editDraftApprenticeshipDetails = autoFixture.Build<EditDraftApprenticeshipDetails>().Create();
             _createAddDraftApprenticeshipToCohortRequest = new AddDraftApprenticeshipToCohortRequest();
             _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest();
+            _editDraftApprenticeshipViewModel = new EditDraftApprenticeshipViewModel();
 
             _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
                 .With(x => x.CohortId, _nonReservationsAddDraftApprenticeshipRequest.CohortId)

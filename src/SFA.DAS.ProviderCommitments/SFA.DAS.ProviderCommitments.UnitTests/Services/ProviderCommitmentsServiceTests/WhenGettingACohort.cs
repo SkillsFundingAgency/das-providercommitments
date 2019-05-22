@@ -25,10 +25,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
            var result = await _fixture.Sut.GetCohortDetail(123);
             
             Assert.AreEqual(_fixture.CohortApiDetail.CohortId, result.CohortId);
-            Assert.AreEqual(_fixture.CohortApiDetail.AccountLegalEntityId, result.AccountLegalEntityId);
             Assert.AreEqual(_fixture.CohortApiDetail.LegalEntityName, result.LegalEntityName);
             Assert.AreEqual($"CRX{_fixture.CohortApiDetail.CohortId}X", result.HashedCohortId);
-            Assert.AreEqual($"ALEX{_fixture.CohortApiDetail.AccountLegalEntityId}X", result.HashedAccountLegalEntityId);
         }
 
         [Test]

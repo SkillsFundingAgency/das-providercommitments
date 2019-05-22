@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
 
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();  
             HashingServiceMock = new Mock<IEncodingService>();
-            CohortApiDetail = new GetCohortResponse {AccountLegalEntityId = 1, CohortId = 2, LegalEntityName = "LEN"};
+            CohortApiDetail = new GetCohortResponse {CohortId = 2, LegalEntityName = "LEN"};
             AddDraftApprenticeshipToCohortRequest = autoFixture.Build<AddDraftApprenticeshipToCohortRequest>().Create();
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
 

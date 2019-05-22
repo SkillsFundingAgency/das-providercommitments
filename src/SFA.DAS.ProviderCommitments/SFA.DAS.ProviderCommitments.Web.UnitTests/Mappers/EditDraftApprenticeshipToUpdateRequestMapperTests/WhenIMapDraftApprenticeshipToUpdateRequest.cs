@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         public void ThenOriginatorReferenceIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.Reference, result.ProviderReference);
+            Assert.AreEqual(_source.Reference, result.Reference);
         }
 
     }
