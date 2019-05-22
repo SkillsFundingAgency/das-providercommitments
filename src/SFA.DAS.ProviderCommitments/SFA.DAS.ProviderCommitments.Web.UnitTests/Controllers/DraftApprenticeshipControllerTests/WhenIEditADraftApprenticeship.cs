@@ -39,5 +39,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.EditDraftApprenticeship();
             _fixture.VerifyWeGetABadRequestResponse();
         }
+
+        [Test]
+        public async Task AndWhenSavingTheDraftApprenticeIsSuccessful()
+        {
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
+                .VerifyApiUpdateMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenSavingFailsItShouldReturnTheViewWithModelAndErrors()
+        {
+
+            _fixture.SetupUpdatingToThrowCommitmentsApiException();
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyEditViewWasReturnedAndHasErrors()
+                .VerifyCohortDetailsWasCalledWithCorrectId()
+                .VerifyGetCoursesWasCalled();
+        }
+
+        [Test]
+        public async Task AndWhenSavingFailsDueToModelBindingItShouldReturnTheViewWithModelAndErrors()
+        {
+            _fixture.SetupModelStateToBeInvalid();
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyEditViewWasReturnedAndHasErrors()
+                .VerifyCohortDetailsWasCalledWithCorrectId()
+                .VerifyGetCoursesWasCalled();
+
+        }
     }
 }

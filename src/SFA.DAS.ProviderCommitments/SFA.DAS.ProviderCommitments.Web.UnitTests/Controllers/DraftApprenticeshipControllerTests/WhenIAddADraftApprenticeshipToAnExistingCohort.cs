@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task IfCalledDirectlyFromProvideApprenticeshipServiceItShouldReturnAddDraftApprenticeshipViewWithCohortButWithoutAReservationId()
         {
             await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyViewHasCohortButWithoutAReservationId();
+            _fixture.VerifyAddViewHasCohortButWithoutAReservationId();
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task IfCalledViaReservationsItShouldReturnAddDraftApprenticeshipViewWithCohortAndWithAReservationId()
         {
             await _fixture.AddDraftApprenticeshipWithReservation();
-            _fixture.VerifyViewHasCohortWithAReservationId()
+            _fixture.VerifyAddViewHasCohortWithAReservationId()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
         }
@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenSavingTheApprenticeToCohortIsSuccessful()
         {
-            await _fixture.PostDraftApprenticeship();
+            await _fixture.PostToAddDraftApprenticeship();
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectedBackToCohortDetailsPage();
@@ -60,9 +60,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenSavingFailsItShouldReturnTheViewWithModelAndErrors()
         {
 
-            _fixture.SetupSaveToThrowCommitmentsApiException();
-            await _fixture.PostDraftApprenticeship();
-            _fixture.VerifyViewWasReturnedAndHasErrors()
+            _fixture.SetupAddingToThrowCommitmentsApiException();
+            await _fixture.PostToAddDraftApprenticeship();
+            _fixture.VerifyAddViewWasReturnedAndHasErrors()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
         }
@@ -72,8 +72,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
 
             _fixture.SetupModelStateToBeInvalid();
-            await _fixture.PostDraftApprenticeship();
-            _fixture.VerifyViewWasReturnedAndHasErrors()
+            await _fixture.PostToAddDraftApprenticeship();
+            _fixture.VerifyAddViewWasReturnedAndHasErrors()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
         }

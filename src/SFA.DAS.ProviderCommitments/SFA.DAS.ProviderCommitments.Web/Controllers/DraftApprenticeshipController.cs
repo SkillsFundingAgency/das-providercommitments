@@ -144,6 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var updateRequest = _updateDraftApprenticeshipRequestMapper.Map(model);
+            // TODO Check if UserId is needed here
             //updateRequest.UserId = User.Upn();
 
             try
