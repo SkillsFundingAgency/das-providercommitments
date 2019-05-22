@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
                 CohortId = source.CohortId,
                 CohortReference = source.CohortReference,
-                //ProviderId = source.ProviderId,
+                ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,

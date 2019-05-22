@@ -32,7 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.VerifyGetDraftApprenticeshipReceivesCorrectParameters();
         }
 
-
         [Test]
         public async Task IfCalledWithAnInvalidRequestShouldGetBadResponseReturned()
         {

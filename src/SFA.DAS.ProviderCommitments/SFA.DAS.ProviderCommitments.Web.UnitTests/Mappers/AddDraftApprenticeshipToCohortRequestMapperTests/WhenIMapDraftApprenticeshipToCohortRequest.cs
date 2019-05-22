@@ -5,12 +5,12 @@ using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.IAddDraftApprenticeshipToCohortRequestMapper
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticeshipToCohortRequestMapperTests
 {
     [TestFixture]
     public class WhenIMapDraftApprenticeshipToCohortRequest
     {
-        private AddDraftApprenticeshipToCohortRequestMapper _mapper;
+        private Web.Mappers.AddDraftApprenticeshipToCohortRequestMapper _mapper;
         private AddDraftApprenticeshipViewModel _source;
         private Func<AddDraftApprenticeshipToCohortRequest> _act;
         private long _cohortId;
