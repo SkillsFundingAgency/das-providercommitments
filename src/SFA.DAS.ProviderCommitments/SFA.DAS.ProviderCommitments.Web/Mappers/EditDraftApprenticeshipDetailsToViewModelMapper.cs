@@ -6,10 +6,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class EditDraftApprenticeshipDetailsToViewModelMapper : IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>
     {
-        public EditDraftApprenticeshipViewModel Map(EditDraftApprenticeshipDetails source)
-        {
-
-            return new EditDraftApprenticeshipViewModel(source.DateOfBirth, source.StartDate, source.EndDate)
+        public EditDraftApprenticeshipViewModel Map(EditDraftApprenticeshipDetails source) =>
+            new EditDraftApprenticeshipViewModel(source.DateOfBirth, source.StartDate, source.EndDate)
             {
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
@@ -24,6 +22,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Cost = source.Cost,
                 Reference = source.OriginatorReference
             };
-        }
     }
 }

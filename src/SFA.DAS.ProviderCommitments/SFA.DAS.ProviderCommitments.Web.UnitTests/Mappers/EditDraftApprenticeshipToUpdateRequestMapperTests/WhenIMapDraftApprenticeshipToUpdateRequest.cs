@@ -102,6 +102,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var result = _act();
             Assert.AreEqual(_source.Reference, result.Reference);
         }
-
     }
 }

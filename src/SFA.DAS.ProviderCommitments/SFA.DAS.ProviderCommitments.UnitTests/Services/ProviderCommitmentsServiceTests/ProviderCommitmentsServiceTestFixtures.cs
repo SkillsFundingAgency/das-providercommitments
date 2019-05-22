@@ -44,7 +44,6 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
             return this;
         }
 
-
         public ProviderCommitmentsServiceTestFixtures SetupHashingToEncodeInput()
         {
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns((long id, EncodingType encodingType) => $"ALEX{id}X");

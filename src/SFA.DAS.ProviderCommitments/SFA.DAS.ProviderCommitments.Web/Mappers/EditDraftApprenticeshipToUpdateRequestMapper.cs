@@ -6,9 +6,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class EditDraftApprenticeshipToUpdateRequestMapper : IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>
     {
-        public UpdateDraftApprenticeshipRequest Map(EditDraftApprenticeshipViewModel source)
-        {
-            return new UpdateDraftApprenticeshipRequest
+        public UpdateDraftApprenticeshipRequest Map(EditDraftApprenticeshipViewModel source) =>
+            new UpdateDraftApprenticeshipRequest
             {
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
@@ -21,6 +20,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference
             };
-        }
     }
 }

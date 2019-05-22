@@ -254,7 +254,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-
         public DraftApprenticeshipControllerTestFixture VerifyCohortDetailsWasCalledWithCorrectId()
         {
             _providerCommitmentsService.Verify(
@@ -295,7 +294,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
         {
             var redirectResult = (RedirectResult) _actionResult;
@@ -309,6 +307,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Assert.IsInstanceOf<BadRequestObjectResult>(_actionResult);
             return this;
         }
-
     }
 }

@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         {
         }
 
-        public EditDraftApprenticeshipViewModel() : base()
+        public EditDraftApprenticeshipViewModel()
         {
         }
 

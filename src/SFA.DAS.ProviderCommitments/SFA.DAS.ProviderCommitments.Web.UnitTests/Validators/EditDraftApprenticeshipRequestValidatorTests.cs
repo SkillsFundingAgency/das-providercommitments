@@ -46,7 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             AssertValidationResult(request => request.DraftApprenticeshipHashedId, model, expectedValid);
         }
 
-
         private void AssertValidationResult<T>(Expression<Func<EditDraftApprenticeshipRequest, T>> property, EditDraftApprenticeshipRequest instance, bool expectedValid)
         {
             var validator = new EditDraftApprenticeshipRequestValidator();
