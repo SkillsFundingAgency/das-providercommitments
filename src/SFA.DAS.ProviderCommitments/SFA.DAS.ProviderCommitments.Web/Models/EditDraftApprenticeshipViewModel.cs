@@ -15,6 +15,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         public string DraftApprenticeshipHashedId { get; set; }
         public long? DraftApprenticeshipId { get; set; }
-
     }
 }

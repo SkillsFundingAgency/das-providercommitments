@@ -7,7 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class DraftApprenticeshipViewModel
     {
-
         public DraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate) : base()
         {
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
@@ -22,9 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             EndDate = new MonthYearModel("");
         }
 
-
         public int ProviderId { get; set; }
-
         public string CohortReference { get; set; }
         public long? CohortId { get; set; }
 

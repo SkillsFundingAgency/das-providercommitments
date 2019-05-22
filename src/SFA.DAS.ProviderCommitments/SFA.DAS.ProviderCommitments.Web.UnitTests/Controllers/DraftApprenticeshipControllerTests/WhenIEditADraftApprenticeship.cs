@@ -15,7 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        [Ignore("Test Fixture problem")]
         public async Task ShouldReturnEditDraftApprenticeshipView()
         {
             _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();
@@ -24,7 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        [Ignore("Test Fixture problem")]
         public async Task ShouldPassCohortIdAndDraftApprenticeshipIdToGetDraftApprenticeshipOnProviderCommitmentsService()
         {
             _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();
