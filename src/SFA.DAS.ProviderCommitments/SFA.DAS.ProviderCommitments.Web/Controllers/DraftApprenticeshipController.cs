@@ -18,7 +18,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
 
-    [Route("{providerId}/unapproved/{cohortReference}")]
+    [Route("{providerId}/unapproved/{cohortReference}/apprentices")]
     [Authorize()]
     public class DraftApprenticeshipController : Controller
     {
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-apprentice")]
+        [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(NonReservationsAddDraftApprenticeshipRequest nonReservationsAddDraftApprenticeshipRequest)
         {
             if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-apprentice")]
+        [Route("add")]
         [RequireQueryParameter("ReservationId")]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add-apprentice")]
+        [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             if (!ModelState.IsValid)
@@ -117,7 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("edit-apprentice/{DraftApprenticeshipHashedId}")]
+        [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
@@ -134,7 +134,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("edit-apprentice/{DraftApprenticeshipHashedId}")]
+        [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
         {
             if (!ModelState.IsValid)
@@ -144,7 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var updateRequest = _updateDraftApprenticeshipRequestMapper.Map(model);
-            // TODO Check if UserId is needed here
+            // TODO Is UserId is needed here - Who updated the record is recorded in the old V1 APIm (do we need to mirror this in here?)
             //updateRequest.UserId = User.Upn();
 
             try
