@@ -144,8 +144,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var updateRequest = _updateDraftApprenticeshipRequestMapper.Map(model);
-            // TODO Is UserId is needed here - Who updated the record is recorded in the old V1 APIm (do we need to mirror this in here?)
-            //updateRequest.UserId = User.Upn();
 
             try
             {
