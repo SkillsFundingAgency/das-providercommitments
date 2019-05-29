@@ -32,11 +32,9 @@ namespace SFA.DAS.ProviderCommitments.Services
             };
         }
 
-        public Task AddDraftApprenticeshipToCohort(AddDraftApprenticeshipToCohortRequest request)
+        public Task AddDraftApprenticeshipToCohort(long cohortId, AddDraftApprenticeshipRequest request)
         {
-            // TODO Call API Endpoint
-            //return _client.AddDraftApprenticeshipToCohort(request);
-            return Task.CompletedTask;
+            return _client.AddDraftApprenticeship(cohortId, request);
         }
 
         public async Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId)

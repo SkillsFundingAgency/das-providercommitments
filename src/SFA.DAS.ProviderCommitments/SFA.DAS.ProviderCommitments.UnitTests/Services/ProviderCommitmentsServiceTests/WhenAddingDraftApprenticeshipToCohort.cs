@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
@@ -17,10 +19,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         [Test]
         public async Task IfShouldPassRequestToApiCall()
         {
-            await _fixture.Sut.AddDraftApprenticeshipToCohort(_fixture.AddDraftApprenticeshipToCohortRequest);
+            await _fixture.Sut.AddDraftApprenticeshipToCohort(_fixture.CohortId, _fixture.AddDraftApprenticeshipRequest);
 
-            // TODO remove comment when API is updated
-            //_fixture.CommitmentsApiClientMock.Verify(x=>x.AddDraftApprenticeshipToCohort(_fixture.AddDraftApprenticeshipToCohortRequest), Times.Once);
+            _fixture.CommitmentsApiClientMock.Verify(x=>x.AddDraftApprenticeship(_fixture.CohortId, _fixture.AddDraftApprenticeshipRequest, CancellationToken.None), Times.Once);
         }
     }
 }

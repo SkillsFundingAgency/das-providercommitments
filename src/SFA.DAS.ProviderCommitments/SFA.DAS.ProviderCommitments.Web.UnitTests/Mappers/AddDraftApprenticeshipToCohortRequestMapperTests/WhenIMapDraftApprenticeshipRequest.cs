@@ -1,18 +1,18 @@
 ﻿using System;
 using AutoFixture;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Models.ApiModels;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticeshipToCohortRequestMapperTests
 {
     [TestFixture]
-    public class WhenIMapDraftApprenticeshipToCohortRequest
+    public class WhenIMapDraftApprenticeshipRequest
     {
-        private Web.Mappers.AddDraftApprenticeshipToCohortRequestMapper _mapper;
+        private Web.Mappers.AddDraftApprenticeshipRequestMapper _mapper;
         private AddDraftApprenticeshipViewModel _source;
-        private Func<AddDraftApprenticeshipToCohortRequest> _act;
+        private Func<AddDraftApprenticeshipRequest> _act;
         private long _cohortId;
 
         [SetUp]
@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
             var endDate = fixture.Create<DateTime?>();
             _cohortId = fixture.Create<long>();
 
-            _mapper = new AddDraftApprenticeshipToCohortRequestMapper();
+            _mapper = new AddDraftApprenticeshipRequestMapper();
 
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
                 .With(x=>x.CohortId, _cohortId)
@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         public void ThenUniqueLearnerNumberIsMappedCorrectly()
         {
             var result = _act();
-            Assert.AreEqual(_source.Uln, result.UniqueLearnerNumber);
+            Assert.AreEqual(_source.Uln, result.Uln);
         }
 
         [Test]
@@ -104,13 +104,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         {
             var result = _act();
             Assert.AreEqual(_source.Reference, result.OriginatorReference);
-        }
-
-        [Test]
-        public void ThenCohortIdIsMappedCorrectly()
-        {
-            var result = _act();
-            Assert.AreEqual(_cohortId, result.CohortId);
         }
 
         [Test]

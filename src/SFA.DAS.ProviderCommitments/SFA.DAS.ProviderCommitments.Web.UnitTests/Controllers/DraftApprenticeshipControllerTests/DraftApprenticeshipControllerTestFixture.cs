@@ -29,14 +29,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly DraftApprenticeshipController _controller;
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
         private readonly Mock<IMediator> _mediator;
-        private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest>> _mapper;
+        private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>> _mapper;
         private readonly Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>> _editMapper;
         private readonly Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>> _updateMapper;
         private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<IProviderCommitmentsService> _providerCommitmentsService;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
-        private readonly AddDraftApprenticeshipToCohortRequest _createAddDraftApprenticeshipToCohortRequest;
+        private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
         private readonly UpdateDraftApprenticeshipRequest _updateDraftApprenticeshipRequest;
         private readonly ReservationsAddDraftApprenticeshipRequest _reservationsAddDraftApprenticeshipRequest;
         private IActionResult _actionResult;
@@ -71,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
                 .Create();
 
-            _createAddDraftApprenticeshipToCohortRequest = new AddDraftApprenticeshipToCohortRequest();
+            _createAddDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest();
             _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest();
 
             _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
@@ -108,9 +108,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_courseResponse);
 
-            _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipToCohortRequest>>();
+            _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>>();
             _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>()))
-                .Returns(_createAddDraftApprenticeshipToCohortRequest);
+                .Returns(_createAddDraftApprenticeshipRequest);
 
             _editMapper = new Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>>();
             _editMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipDetails>()))
@@ -172,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsApiException()
         {
             _providerCommitmentsService
-                .Setup(x => x.AddDraftApprenticeshipToCohort(It.IsAny<AddDraftApprenticeshipToCohortRequest>()))
+                .Setup(x => x.AddDraftApprenticeshipToCohort(It.IsAny<long>(), It.IsAny<AddDraftApprenticeshipRequest>()))
                 .ThrowsAsync(_apiModelException);
             return this;
         }
@@ -283,7 +283,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyApiAddMethodIsCalled()
         {
             _providerCommitmentsService.Verify(
-                x => x.AddDraftApprenticeshipToCohort(_createAddDraftApprenticeshipToCohortRequest), Times.Once);
+                x => x.AddDraftApprenticeshipToCohort(_addModel.CohortId.Value, _createAddDraftApprenticeshipRequest), Times.Once);
             return this;
         }
 
