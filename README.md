@@ -16,6 +16,13 @@
 | Client  | [![NuGet Badge](https://buildstats.info/nuget/SFA.DAS.Account.Api.Client)](https://www.nuget.org/packages/SFA.DAS.Account.Api.Client)  |
 
 
+## Getting Started
+
+* Clone das-providercommimtments repo
+* Open das-providercommitments solution
+* Obtain cloud config
+* Start Storage Emulator
+* Start (run under kestrel)
 
 
 ## See Also
