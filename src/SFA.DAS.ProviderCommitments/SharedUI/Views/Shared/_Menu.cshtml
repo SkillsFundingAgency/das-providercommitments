@@ -1,11 +1,7 @@
 ﻿@model NavigationSection
 @using SFA.DAS.ProviderUrlHelper.Core
 @using SharedUI
-
-@using  SharedUI.Extensions;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-
 
 @{
 
@@ -20,7 +16,7 @@
             : NavigationSection.Home;
         
 
-        <div id="floating-menu-prov">
+        <div id="floating-menu-prov" style="background-color:#f47738">
             <div id="floating-menu">
                 <div class="js-float">
                     <p>Your training provider account</p>
@@ -40,8 +36,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <div class="grid-row">
             <div class="column-full">
