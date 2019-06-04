@@ -1,0 +1,76 @@
+﻿@model NavigationSection
+@using SFA.DAS.ProviderUrlHelper.Core
+@using SharedUI
+
+@using  SharedUI.Extensions;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+
+@{
+
+    //@if (Context.User.Identity.IsAuthenticated && !(ViewBag?.HideNavBar ?? false))
+    @if(true)
+    {
+        //var providerId = int.Parse(User.Identity.GetClaim("http://schemas.portal.com/ukprn"));
+
+        var providerId = 10005077; //temp for testing!
+        var selected = ViewData.ContainsKey(ViewDataKeys.SelectedNavigationSection)
+            ? (NavigationSection) ViewData[ViewDataKeys.SelectedNavigationSection]
+            : NavigationSection.Home;
+        
+
+        <div id="floating-menu-prov">
+            <div id="floating-menu">
+                <div class="js-float">
+                    <p>Your training provider account</p>
+                    <div class="user-menu logged-in">
+                        <ul id="service-info-list" role="navigation">
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink("/")" class="link-user-profile">@Context.User.Identity.Name</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink("/notification-settings")" class="link-user-profile">Notification settings</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink("/signout")">Sign out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="grid-row">
+            <div class="column-full">
+                <div class="header-organisation" role="navigation">
+                    <nav class="header-inner">
+                        <ul role="menubar" id="global-nav-links">
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink("/account")" role="menuitem" class="@(selected == NavigationSection.Home ? "selected" : "")">Home</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/cohorts")" role="menuitem" class="@(selected == NavigationSection.YourCohorts ? "selected" : "")">Your cohorts</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ReservationsLink($"{providerId}/reservations/manage")" role="menuitem" class="@(selected == NavigationSection.Reservations ? "selected" : "")">Manage funding</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/apprentices/manage/all")" role="menuitem" class="@(selected == NavigationSection.ManageApprentices ? "selected" : "")">Manage your apprentices</a>
+                            </li>
+                            <li>
+                                <a href="@Url.RecruitLink($"{providerId}")" roleitem="menuitem" class="@(selected == NavigationSection.Recruit ? "selected" : "")">Recruit apprentices</a>
+                            </li>
+                            <li>
+                                <a href="@Url.ProviderApprenticeshipServiceLink($"/{providerId}/agreements")" role="menuitem" class="@(selected == NavigationSection.Agreements ? "selected" : "")">Organisations and agreements</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    }
+
+}

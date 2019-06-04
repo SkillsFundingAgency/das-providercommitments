@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
@@ -31,6 +32,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _mediator = mediator;
             _createCohortRequestMapper = createCohortRequestMapper;
             _urlHelper = urlHelper;
+        }
+
+        //temp for testing - set nav section
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            ViewData[SharedUI.ViewDataKeys.SelectedNavigationSection] = SharedUI.NavigationSection.YourCohorts;
+            base.OnActionExecuting(context);
         }
 
         [HttpGet]
