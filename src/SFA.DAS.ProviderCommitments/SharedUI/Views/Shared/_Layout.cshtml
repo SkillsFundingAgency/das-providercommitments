@@ -1,4 +1,5 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using SFA.DAS.ProviderUrlHelper.Core
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
@@ -48,8 +49,8 @@
                 </a>
             </div>
             <div class="govuk-header__content">
-
-                <a asp-controller="Home" asp-action="Index" class="govuk-header__link govuk-header__link--service-name">
+                
+                <a href="@Url.ProviderApprenticeshipServiceLink("/")" class="govuk-header__link govuk-header__link--service-name">
                     Commitments
                 </a>
 
