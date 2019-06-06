@@ -13,7 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
 using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWithDraftApprenticeshipControllerTests
 {
     [TestFixture]
     public class WhenIPostDraftApprenticeshipViewModel
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
 
         private class UnapprovedControllerTestFixture
         {
-            private readonly UnapprovedController _controller;
+            private readonly CreateCohortWithDraftApprenticeshipController _controller;
             private readonly Mock<IMediator> _mediator;
             private readonly Mock<ICreateCohortRequestMapper> _mapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
@@ -87,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.UnapprovedContro
                     .Callback((string value) => _linkGeneratorParameter = value);
                     
                 
-                _controller = new UnapprovedController(_mediator.Object, _mapper.Object, _linkGenerator.Object);
+                _controller = new CreateCohortWithDraftApprenticeshipController(_mediator.Object, _mapper.Object, _linkGenerator.Object);
             }
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()

@@ -6,6 +6,7 @@ using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using static System.String;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorisation
 {
@@ -14,6 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
+        private const string CohortIdContextKey = "CohortId";
+        private const string DraftApprenticeshipIdContextKey = "DraftApprenticeshipId";
 
         public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
         {
@@ -27,9 +30,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             var authorizationContext = new AuthorizationContext();
             var accountLegalEntityId = GetAccountLegalEntityId();
             var ukprn = GetUkrpn();
-            
+            var cohortId = GetCohortId();
+            var draftApprenticeshipId = GetDraftApprenticeshipId();
+
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
-            
+            authorizationContext.Set(CohortIdContextKey, cohortId);
+            authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
+
             return authorizationContext;
         }
 
@@ -46,6 +53,36 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             }
 
             return accountLegalEntityId;
+        }
+
+        private long? GetCohortId()
+        {
+            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortReference, out var cohortReference))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return cohortId;
+        }
+
+        private long? GetDraftApprenticeshipId()
+        {
+            if (!TryGetValueFromHttpContext(RouteValueKeys.DraftApprenticeshipId, out var draftApprenticeshipHashedId))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(draftApprenticeshipHashedId, EncodingType.ApprenticeshipId, out var draftApprenticeshipId))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return draftApprenticeshipId;
         }
 
         private long? GetUkrpn()
@@ -80,11 +117,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorisation
             {
                 value = queryStringValue;
             }
-            else if (_httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
+            else if (_httpContextAccessor.HttpContext.Request.HasFormContentType)
             {
-                value = formValue;
+                if (_httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
+                {
+                    value = formValue;
+                }
             }
-            else
+
+            if(IsNullOrWhiteSpace(value))
             {
                 return false;
             }

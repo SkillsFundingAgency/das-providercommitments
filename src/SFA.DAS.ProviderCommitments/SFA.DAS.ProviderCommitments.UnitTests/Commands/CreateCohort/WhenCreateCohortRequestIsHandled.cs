@@ -114,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                         && r.FirstName == _request.FirstName
                         && r.LastName == _request.LastName
                         && r.DateOfBirth == _request.DateOfBirth
-                        && r.ULN == _request.UniqueLearnerNumber
+                        && r.Uln == _request.UniqueLearnerNumber
                         && r.CourseCode == _request.CourseCode
                         && r.Cost == _request.Cost
                         && r.StartDate == _request.StartDate

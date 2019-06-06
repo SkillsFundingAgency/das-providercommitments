@@ -1,21 +1,21 @@
-﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestMapper : ICreateCohortRequestMapper
+    public class AddDraftApprenticeshipRequestMapper : IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>
     {
-        public CreateCohortRequest Map(AddDraftApprenticeshipViewModel source)
+        public AddDraftApprenticeshipRequest Map(AddDraftApprenticeshipViewModel source)
         {
-            return new CreateCohortRequest
+            return new AddDraftApprenticeshipRequest
             {
-                AccountLegalEntityId = source.AccountLegalEntityId ?? 0,
                 ProviderId = source.ProviderId,
-                ReservationId = source.ReservationId.Value,
+                ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 DateOfBirth = source.DateOfBirth.Date,
-                UniqueLearnerNumber = source.Uln,
+                Uln = source.Uln,
                 CourseCode = source.CourseCode,
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,

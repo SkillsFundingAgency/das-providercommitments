@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorisation;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -66,6 +65,62 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
 
             Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
+
+        [Test]
+        public void GetAuthorizationContext_WhenCohortIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithCohortId()
+        {
+            _fixture.SetValidCohortId();
+
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.AreEqual(_fixture.CohortId, authorizationContext.Get<long?>("CohortId"));
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenCohortIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetInvalidCohort();
+
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenCohortIdDoesNotExist_ThenShouldReturnNull()
+        {
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.IsNull(authorizationContext.Get<long?>("CohortId"));
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenDraftApprenticeshipIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithDraftApprenticeshipId()
+        {
+            _fixture.SetValidDraftApprenticeshipId();
+
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.AreEqual(_fixture.DraftApprenticeshiptId, authorizationContext.Get<long?>("DraftApprenticeshipId"));
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenDraftApprenticeshipIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetInvalidCohort();
+
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenDraftApprenticeshipIdDoesNotExist_ThenShouldReturnNull()
+        {
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.IsNull(authorizationContext.Get<long?>("CohortId"));
+        }
     }
 
     public class AuthorizationContextProviderTestsFixture
@@ -79,6 +134,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
         public long AccountLegalEntityId { get; set; }
         public long Ukprn { get; set; }
         public string UkprnClaimValue { get; set; }
+        public long CohortId { get; set; }
+        public string CohortReference { get; set; }
+        public long DraftApprenticeshiptId { get; set; }
+        public string DraftApprenticeshiptHashedId { get; set; }
+
 
         public AuthorizationContextProviderTestsFixture()
         {
@@ -127,6 +187,68 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
             RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
             EncodingService.Setup(h => h.TryDecode(AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId, out accountLegalEntityId)).Returns(false);
             
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetValidCohortId()
+        {
+            CohortReference = "CDE";
+            CohortId = 345;
+
+            var routeData = new RouteData();
+            var cohortId = CohortId;
+
+            routeData.Values[RouteValueKeys.CohortReference] = CohortReference;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(true);
+
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetInvalidCohort()
+        {
+            CohortReference = "BBB";
+
+            var routeData = new RouteData();
+            var cohortId = CohortId;
+
+            routeData.Values[RouteValueKeys.CohortReference] = CohortReference;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(false);
+
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetValidDraftApprenticeshipId()
+        {
+            DraftApprenticeshiptHashedId = "CDE";
+            DraftApprenticeshiptId = 345;
+
+            var routeData = new RouteData();
+            var id = DraftApprenticeshiptId;
+
+            routeData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshiptHashedId;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            EncodingService.Setup(h => h.TryDecode(DraftApprenticeshiptHashedId, EncodingType.ApprenticeshipId, out id)).Returns(true);
+
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetInvalidDraftApprenticeship()
+        {
+            DraftApprenticeshiptHashedId = "BBB";
+
+            var routeData = new RouteData();
+            var id = DraftApprenticeshiptId;
+
+            routeData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshiptHashedId;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            EncodingService.Setup(h => h.TryDecode(DraftApprenticeshiptHashedId, EncodingType.ApprenticeshipId, out id)).Returns(false);
+
             return this;
         }
 

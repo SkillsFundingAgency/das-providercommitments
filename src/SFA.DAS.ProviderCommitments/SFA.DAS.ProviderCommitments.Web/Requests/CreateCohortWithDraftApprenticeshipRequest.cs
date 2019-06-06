@@ -3,9 +3,9 @@ using SFA.DAS.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {
-    public class AddDraftApprenticeshipRequest : IAuthorizationContextModel
+    public class CreateCohortWithDraftApprenticeshipRequest : IAuthorizationContextModel
     {
-        public Guid ReservationId { get; set; }
+        public Guid? ReservationId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string StartMonthYear { get; set; }

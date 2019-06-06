@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 DateOfBirth = source.DateOfBirth,
-                ULN = source.UniqueLearnerNumber,
+                Uln = source.UniqueLearnerNumber,
                 CourseCode = source.CourseCode,
                 Cost = source.Cost,
                 StartDate = source.StartDate,
