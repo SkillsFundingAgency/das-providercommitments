@@ -25,7 +25,8 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.1462" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.1" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-    <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.747" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.2" />
+    <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
 	<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
@@ -34,7 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj" />
-    <ProjectReference Include="..\SharedUI\SharedUI.csproj" />
   </ItemGroup>
 
 

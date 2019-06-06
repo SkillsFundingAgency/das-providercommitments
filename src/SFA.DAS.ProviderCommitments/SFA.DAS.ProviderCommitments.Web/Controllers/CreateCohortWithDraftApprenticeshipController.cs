@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.Authorization.ProviderPermissions;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.Provider.Shared.UI;
+using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
@@ -19,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
     [DasAuthorize(ProviderOperation.CreateCohort)]
+    [SetNavigationSection(NavigationSection.YourCohorts)]
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
@@ -32,13 +34,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _mediator = mediator;
             _createCohortRequestMapper = createCohortRequestMapper;
             _urlHelper = urlHelper;
-        }
-
-        //temp for testing - set nav section
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            ViewData[SharedUI.ViewDataKeys.SelectedNavigationSection] = SharedUI.NavigationSection.YourCohorts;
-            base.OnActionExecuting(context);
         }
 
         [HttpGet]

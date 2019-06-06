@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Provider.Shared.UI.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
+    [HideNavigationBar]
     public class ErrorController : Controller
     {
         [Route("error")]
