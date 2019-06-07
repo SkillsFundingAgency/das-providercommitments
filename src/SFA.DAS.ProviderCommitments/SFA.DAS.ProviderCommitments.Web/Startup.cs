@@ -69,8 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             options.AddAuthorization();
         }
 
-
-
         public void ConfigureContainer(Registry registry)
         {
             IoC.Initialize(registry);
