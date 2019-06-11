@@ -47,32 +47,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
         private long? GetAccountLegalEntityId()
         {
-            if (!TryGetValueFromHttpContext(RouteValueKeys.AccountLegalEntityPublicHashedId, out var accountLegalEntityPublicHashedId))
-            {
-                return null;
-            }
-            
-            if (!_encodingService.TryDecode(accountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId, out var accountLegalEntityId))
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            return accountLegalEntityId;
+            return GetAndDecodeValueIfExists(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
         }
 
         private long? GetDraftApprenticeshipId()
         {
-            if (!TryGetValueFromHttpContext(RouteValueKeys.DraftApprenticeshipId, out var draftApprenticeshipHashedId))
-            {
-                return null;
-            }
-
-            if (!_encodingService.TryDecode(draftApprenticeshipHashedId, EncodingType.ApprenticeshipId, out var draftApprenticeshipId))
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            return draftApprenticeshipId;
+            return GetAndDecodeValueIfExists(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
         }
 
         private long? GetUkrpn()
@@ -136,6 +116,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             }
 
             return true;
+        }
+
+        private long? GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
+        {
+            // The value in the context is optional but if there is a value then it should be valid (i.e. it should be decodable
+            // using the specified encoder type).
+            if (!TryGetValueFromHttpContext(keyName, out var encodedValue))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(encodedValue, encodedType, out var id))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return id;
         }
     }
 }
