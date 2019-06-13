@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.Authorization.ProviderPermissions;
+using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Models;

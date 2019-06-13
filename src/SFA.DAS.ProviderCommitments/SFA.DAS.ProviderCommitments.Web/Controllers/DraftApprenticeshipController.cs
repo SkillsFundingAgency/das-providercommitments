@@ -2,11 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;

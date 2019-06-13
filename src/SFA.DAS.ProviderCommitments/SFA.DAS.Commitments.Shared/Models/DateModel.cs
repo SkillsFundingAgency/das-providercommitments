@@ -1,6 +1,6 @@
 using System;
 
-namespace SFA.DAS.ProviderCommitments.Models
+namespace SFA.DAS.Commitments.Shared.Models
 {
     /// <summary>
     ///     Encapsulates a date whilst exposing separate day, month and year properties that can be set independently.
