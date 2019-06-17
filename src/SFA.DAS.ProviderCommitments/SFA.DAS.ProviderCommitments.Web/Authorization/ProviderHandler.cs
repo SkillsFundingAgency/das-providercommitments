@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorisation
+namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     /// <summary>
     ///     If the current route contains a {ProviderId} parameter (case is not sensitive) then this handler
