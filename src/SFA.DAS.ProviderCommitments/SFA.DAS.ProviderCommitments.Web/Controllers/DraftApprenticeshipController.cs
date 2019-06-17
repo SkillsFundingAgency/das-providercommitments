@@ -7,6 +7,7 @@ using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Models.ApiModels;
@@ -19,7 +20,6 @@ using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-
     [Route("{providerId}/unapproved/{cohortReference}/apprentices")]
     [DasAuthorize(CommitmentOperation.AccessCohort)]
     public class DraftApprenticeshipController : Controller
@@ -69,6 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
+        [DasAuthorize(ProviderFeature.Reservations)]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)

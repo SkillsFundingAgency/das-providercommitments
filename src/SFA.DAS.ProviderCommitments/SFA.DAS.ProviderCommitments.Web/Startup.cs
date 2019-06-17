@@ -87,7 +87,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
                 .UseUnauthorizedAccessExceptionHandler()
                 .UseHttpsRedirection()
-                .UseFeatureToggles()
                 .UseStaticFiles()
                 .UseCookiePolicy()
                 .UseAuthentication()
