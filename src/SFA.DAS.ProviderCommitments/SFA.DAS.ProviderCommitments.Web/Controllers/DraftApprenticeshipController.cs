@@ -166,20 +166,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
-            var getCohortDetail = _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
-            var getCoursesTask = GetCourses();
-
-            await Task.WhenAll(getCohortDetail, getCoursesTask);
-
-            var cohortDetail = getCohortDetail.Result;
+            var cohortDetail = await _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
+            var courses = await GetCourses(cohortDetail);
 
             model.Employer = cohortDetail.LegalEntityName;
-            model.Courses = getCoursesTask.Result;
+            model.Courses = courses;
         }
 
-        private async Task<ICourse[]> GetCourses()
+        private async Task<ICourse[]> GetCourses(CohortDetails cohortDetails)
         {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
+            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer });
 
             return result.TrainingCourses;
         }
