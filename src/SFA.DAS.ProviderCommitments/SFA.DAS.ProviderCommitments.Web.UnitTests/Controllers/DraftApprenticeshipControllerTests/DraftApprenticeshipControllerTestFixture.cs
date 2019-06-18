@@ -191,6 +191,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture SetupCohortTransferFundedStatus(bool isFundedByTransfer)
+        {
+            _providerCommitmentsService
+                .Setup(pcs => pcs.GetCohortDetail(_cohortId))
+                .ReturnsAsync(new CohortDetails {CohortId = _cohortId, IsFundedByTransfer = isFundedByTransfer });
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyAddViewHasCohortButWithoutAReservationId()
         {
             Assert.IsInstanceOf<ViewResult>(_actionResult);
@@ -305,6 +313,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyWeGetABadRequestResponse()
         {
             Assert.IsInstanceOf<BadRequestObjectResult>(_actionResult);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyWhetherFrameworkCourseWereRequested(bool expectFrameworkCoursesToBeRequested)
+        {
+            _mediator
+                .Verify(m => m.Send(
+                    It.Is<GetTrainingCoursesQueryRequest>(request => request.IncludeFrameworks == expectFrameworkCoursesToBeRequested),
+                    It.IsAny<CancellationToken>()), 
+                 Times.Once);
             return this;
         }
     }
