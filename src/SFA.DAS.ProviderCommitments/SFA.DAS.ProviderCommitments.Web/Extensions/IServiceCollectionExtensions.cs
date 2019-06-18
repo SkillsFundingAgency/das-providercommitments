@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {

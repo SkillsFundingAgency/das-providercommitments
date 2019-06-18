@@ -5,7 +5,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap;
@@ -28,11 +28,11 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 
             //For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
             //For<IMediator>().Use<Mediator>();
-            For<IAuthenticationService>().Use<AuthenticationService>();
-            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
+            For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
+            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>().Singleton();
             For<ICache>().Use<InMemoryCache>().Singleton();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
-            For<ILinkGenerator>().Use<LinkGenerator>();
+            For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
         

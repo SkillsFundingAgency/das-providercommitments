@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {

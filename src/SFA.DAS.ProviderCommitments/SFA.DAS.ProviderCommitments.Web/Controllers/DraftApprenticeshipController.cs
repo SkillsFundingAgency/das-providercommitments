@@ -2,6 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Authorization.CommitmentPermissions;
+using SFA.DAS.Authorization.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
@@ -19,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
 
     [Route("{providerId}/unapproved/{cohortReference}/apprentices")]
-    [Authorize()]
+    [DasAuthorize(CommitmentOperation.AccessCohort)]
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;

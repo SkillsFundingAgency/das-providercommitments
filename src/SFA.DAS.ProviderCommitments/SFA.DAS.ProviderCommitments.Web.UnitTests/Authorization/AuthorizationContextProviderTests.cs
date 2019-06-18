@@ -9,10 +9,10 @@ using NUnit.Framework;
 using SFA.DAS.Authorization;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorisation;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 {
     [TestFixture]
     [Parallelizable]
@@ -66,6 +66,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
             Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
 
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndCohortIsValid_ThenShouldSetCohortId()
+        {
+            _fixture
+                .SetValidCohortId()
+                .SetValidUkprn();
+
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.AreEqual(_fixture.CohortId, authorizationContext.Get<long?>("CohortId"));
+        }
+        
         [Test]
         public void GetAuthorizationContext_WhenCohortIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithCohortId()
         {
@@ -133,9 +145,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
         public string AccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long Ukprn { get; set; }
-        public string UkprnClaimValue { get; set; }
         public long CohortId { get; set; }
         public string CohortReference { get; set; }
+        public string UkprnClaimValue { get; set; }
         public long DraftApprenticeshiptId { get; set; }
         public string DraftApprenticeshiptHashedId { get; set; }
 
@@ -274,6 +286,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorisation
             AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(true);
             AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
             
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetInvalidCohortId()
+        {
+            CohortReference = "ABC";
+            CohortId = 123;
+
+            var routeData = new RouteData();
+            var cohortId = CohortId;
+
+            routeData.Values[RouteValueKeys.CohortReference] = CohortReference;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(false);
+
             return this;
         }
 
