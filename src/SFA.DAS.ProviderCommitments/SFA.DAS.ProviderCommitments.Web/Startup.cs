@@ -39,6 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddProviderIdamsAuthentication(Configuration)
                 .AddDasAuthorization()
+                .AddMemoryCache()
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());

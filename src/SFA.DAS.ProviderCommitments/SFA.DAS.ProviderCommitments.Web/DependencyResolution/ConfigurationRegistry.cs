@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.ProviderFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.Encoding;
@@ -14,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ApprenticeshipInfoServiceConfiguration>(ProviderCommitmentsConfigurationKeys.ApprenticeshipInfoServiceConfiguration);
             AddConfiguration<AuthenticationSettings>(ProviderCommitmentsConfigurationKeys.AuthenticationSettings);
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
+            AddConfiguration<CommitmentPermissionsApiClientConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
             AddConfiguration<EncodingConfig>(ProviderCommitmentsConfigurationKeys.Encoding);
             AddConfiguration<ProviderFeaturesConfiguration>(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
         }

@@ -35,13 +35,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var draftApprenticeshipId = GetDraftApprenticeshipId();
             var ukprn = GetUkrpn();
             var userEmail = GetUserEmail();
+            
+            if (cohortId != null)
+            {
+                authorizationContext.Set(CohortIdContextKey, cohortId);
+            }
 
-            authorizationContext.AddProviderFeatureValues(ukprn, userEmail);
-            authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
-            authorizationContext.Set(CohortIdContextKey, cohortId);
-            authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
+            if (draftApprenticeshipId != null)
+            {
+                authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
+            }
 
-            if (ukprn.HasValue)
+            if (ukprn != null && userEmail != null)
+            {
+                authorizationContext.AddProviderFeatureValues(ukprn, userEmail);
+            }
+            
+            if (accountLegalEntityId != null && ukprn != null)
+            {
+                authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
+            }
+            
+            if (cohortId != null && ukprn != null)
             {
                 authorizationContext.AddCommitmentPermissionValues(cohortId, Party.Provider, ukprn.Value);
             }

@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsNull(authorizationContext.Get<long?>("CohortId"));
+            Assert.IsFalse(authorizationContext.TryGet<long>("CohortId", out var cohortId));
         }
 
         [Test]
