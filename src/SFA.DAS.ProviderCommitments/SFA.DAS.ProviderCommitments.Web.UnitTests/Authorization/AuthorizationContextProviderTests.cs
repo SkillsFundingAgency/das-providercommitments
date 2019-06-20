@@ -25,36 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             _fixture = new AuthorizationContextProviderTestsFixture();
         }
-        
-        [Test]
-        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithAccountLegalEntityId()
-        {
-            _fixture.SetValidAccountLegalEntityId();
-            
-            var authorizationContext = _fixture.GetAuthorizationContext();
-            
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.AccountLegalEntityId, authorizationContext.Get<long?>("AccountLegalEntityId"));
-        }
-        
-        [Test]
-        public void GetAuthorizationContext_WhenAccountLegalEntityIdDoesNotExist_ThenShouldReturnAuthorizationContextWithoutAccountLegalEntityId()
-        {
-            _fixture.SetUnauthenticatedUser();
-            
-            var authorizationContext = _fixture.GetAuthorizationContext();
-            
-            Assert.IsNotNull(authorizationContext);
-            Assert.IsNull(authorizationContext.Get<long?>("AccountLegalEntityId"));
-        }
-        
-        [Test]
-        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
-        {
-            _fixture.SetInvalidAccountLegalEntityId();
-            
-            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
-        }
 
         [Test]
         public void GetAuthorizationContext_WhenCohortIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithCohortId()
@@ -81,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsFalse(authorizationContext.TryGet<long>("CohortId", out var cohortId));
+            Assert.IsFalse(authorizationContext.TryGet("CohortId", out long cohortId));
         }
 
         [Test]
@@ -109,18 +79,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsNull(authorizationContext.Get<long?>("DraftApprenticeshipId"));
+            Assert.IsFalse(authorizationContext.TryGet("DraftApprenticeshipId", out long draftApprenticeshipId));
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnExistsAndIsValid_ThenShouldReturnAuthorizationContextWithUkprn()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnExistsAndIsValidAndUserEmailExists_ThenShouldReturnAuthorizationContextWithUkprnAndUserEmail()
         {
-            _fixture.SetValidUkprn().SetValidUserEmail();
+            _fixture.SetValidUkprn()
+                .SetUserEmail();
             
             var authorizationContext = _fixture.GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
             Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
+            Assert.AreEqual(_fixture.UserEmail, authorizationContext.Get<string>("UserEmail"));
+        }
+        
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetAuthenticatedUser();
+            
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
+        }
+        
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetInvalidUkprn();
+
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
         
         [Test]
@@ -131,34 +119,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
-            Assert.IsNull(authorizationContext.Get<long?>("Ukprn"));
+            Assert.IsFalse(authorizationContext.TryGet("Ukprn", out long ukprn));
+            Assert.IsFalse(authorizationContext.TryGet("UserEmail", out string userEmail));
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUserEmailDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
         {
-            _fixture.SetValidUserEmail();
-
-            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
-        }
-        
-        [Test]
-        public void GetAuthorizationContext_WhenUkprnExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
-        {
-            _fixture.SetInvalidUkprn();
-
-            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
-        }
-        
-        [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUserEmailExists_ThenShouldReturnAuthorizationContextWithUserEmail()
-        {
-            _fixture.SetValidUkprn().SetValidUserEmail();
+            _fixture.SetAuthenticatedUser();
             
-            var authorizationContext = _fixture.GetAuthorizationContext();
-            
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.UserEmail, authorizationContext.Get<string>("UserEmail"));
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
         
         [Test]
@@ -169,14 +139,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
-            Assert.IsNull(authorizationContext.Get<string>("UserEmail"));
+            Assert.IsFalse(authorizationContext.TryGet("UserEmail", out string userEmail));
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUserEmailDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsValidAndUkprnExistsAndIsValid_ThenShouldReturnAuthorizationContextWithAccountLegalEntityIdAndUkprn()
         {
-            _fixture.SetValidUkprn();
-
+            _fixture.SetUserEmail()
+                .SetValidAccountLegalEntityId()
+                .SetValidUkprn();
+            
+            var authorizationContext = _fixture.GetAuthorizationContext();
+            
+            Assert.IsNotNull(authorizationContext);
+            Assert.AreEqual(_fixture.AccountLegalEntityId, authorizationContext.Get<long?>("AccountLegalEntityId"));
+            Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
+        }
+        
+        [Test]
+        public void GetAuthorizationContext_WhenAccountLegalEntityIdDoesNotExist_ThenShouldReturnAuthorizationContextWithoutAccountLegalEntityId()
+        {
+            var authorizationContext = _fixture.GetAuthorizationContext();
+            
+            Assert.IsNotNull(authorizationContext);
+            Assert.IsFalse(authorizationContext.TryGet("AccountLegalEntityId", out long accountLegalEntityId));
+        }
+        
+        [Test]
+        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetInvalidAccountLegalEntityId();
+            
             Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
     }
@@ -216,6 +209,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public IAuthorizationContext GetAuthorizationContext()
         {
             return AuthorizationContextProvider.GetAuthorizationContext();
+        }
+
+        public AuthorizationContextProviderTestsFixture SetAuthenticatedUser()
+        {
+            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(true);
+            
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetUnauthenticatedUser()
+        {
+            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(false);
+            
+            return this;
         }
 
         public AuthorizationContextProviderTestsFixture SetValidAccountLegalEntityId()
@@ -311,13 +318,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             return this;
         }
 
-        public AuthorizationContextProviderTestsFixture SetUnauthenticatedUser()
-        {
-            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(false);
-            
-            return this;
-        }
-
         public AuthorizationContextProviderTestsFixture SetValidUkprn()
         {
             Ukprn = 456;
@@ -343,7 +343,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             return this;
         }
 
-        public AuthorizationContextProviderTestsFixture SetValidUserEmail()
+        public AuthorizationContextProviderTestsFixture SetUserEmail()
         {
             UserEmail = "foo@bar.com";
             
