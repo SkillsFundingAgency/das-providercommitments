@@ -21,9 +21,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
-    <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="0.7.1" />
-    <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="0.7.1" />
-    <PackageReference Include="SFA.DAS.Authorization.CommitmentPermissions" Version="0.7.1" />
+    <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="5.3.1" />
+    <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="5.3.1" />
+    <PackageReference Include="SFA.DAS.Authorization.CommitmentPermissions" Version="5.3.1" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.1507" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="2.1.1507" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.1" />

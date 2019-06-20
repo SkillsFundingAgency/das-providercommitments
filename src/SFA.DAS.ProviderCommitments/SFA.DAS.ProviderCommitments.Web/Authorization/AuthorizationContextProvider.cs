@@ -1,9 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Authorization;
-using SFA.DAS.Authorization.ProviderFeatures;
-using SFA.DAS.Authorization.ProviderPermissions;
+using SFA.DAS.Authorization.CommitmentPermissions.Context;
+using SFA.DAS.Authorization.Context;
+using SFA.DAS.Authorization.ProviderFeatures.Context;
+using SFA.DAS.Authorization.ProviderPermissions.Context;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -48,17 +49,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (ukprn != null && userEmail != null)
             {
-                authorizationContext.AddProviderFeatureValues(ukprn, userEmail);
+                authorizationContext.AddProviderFeatureValues(ukprn.Value, userEmail);
             }
             
             if (accountLegalEntityId != null && ukprn != null)
             {
-                authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
+                authorizationContext.AddProviderPermissionValues(accountLegalEntityId.Value, ukprn.Value);
             }
             
             if (cohortId != null && ukprn != null)
             {
-                authorizationContext.AddCommitmentPermissionValues(cohortId, Party.Provider, ukprn.Value);
+                authorizationContext.AddCommitmentPermissionValues(cohortId.Value, Party.Provider, ukprn.Value);
             }
 
             return authorizationContext;

@@ -1,7 +1,7 @@
-﻿using SFA.DAS.Authorization;
-using SFA.DAS.Authorization.ProviderFeatures;
-using SFA.DAS.Authorization.CommitmentPermissions;
-using SFA.DAS.Authorization.ProviderPermissions;
+﻿using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution;
+using SFA.DAS.Authorization.DependencyResolution;
+using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution;
+using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
