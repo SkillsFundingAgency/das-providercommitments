@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Authorization.CommitmentPermissions;
-using SFA.DAS.Authorization.CommitmentPermissions.Client;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using StructureMap;

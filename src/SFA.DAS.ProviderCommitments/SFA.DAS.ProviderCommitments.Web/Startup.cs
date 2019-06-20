@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Authorization.Mvc;
+using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -39,6 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddProviderIdamsAuthentication(Configuration)
                 .AddDasAuthorization()
+                .AddMemoryCache()
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -87,7 +88,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
                 .UseUnauthorizedAccessExceptionHandler()
                 .UseHttpsRedirection()
-                .UseFeatureToggles()
                 .UseStaticFiles()
                 .UseCookiePolicy()
                 .UseAuthentication()
