@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.Authorization;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {

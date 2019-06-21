@@ -1,8 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Authorization;
-using SFA.DAS.Authorization.ProviderPermissions;
+using SFA.DAS.Authorization.CommitmentPermissions.Context;
+using SFA.DAS.Authorization.Context;
+using SFA.DAS.Authorization.ProviderFeatures.Context;
+using SFA.DAS.Authorization.ProviderPermissions.Context;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -12,11 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     public class AuthorizationContextProvider : IAuthorizationContextProvider
     {
+        private const string CohortIdContextKey = "CohortId";
+        private const string DraftApprenticeshipIdContextKey = "DraftApprenticeshipId";
+        
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
-        private const string CohortIdContextKey = "CohortId";
-        private const string DraftApprenticeshipIdContextKey = "DraftApprenticeshipId";
 
         public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
         {
@@ -29,17 +32,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
         {
             var authorizationContext = new AuthorizationContext();
             var accountLegalEntityId = GetAccountLegalEntityId();
-            var ukprn = GetUkrpn();
             var cohortId = GetCohortId();
             var draftApprenticeshipId = GetDraftApprenticeshipId();
-
-            authorizationContext.AddProviderPermissionValues(accountLegalEntityId, ukprn);
-            authorizationContext.Set(CohortIdContextKey, cohortId);
-            authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
-
-            if (ukprn.HasValue)
+            var ukprn = GetUkrpn();
+            var userEmail = GetUserEmail();
+            
+            if (cohortId != null)
             {
-                authorizationContext.AddCommitmentPermissionValues(cohortId, Party.Provider, ukprn.Value);
+                authorizationContext.Set(CohortIdContextKey, cohortId);
+            }
+
+            if (draftApprenticeshipId != null)
+            {
+                authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
+            }
+
+            if (ukprn != null && userEmail != null)
+            {
+                authorizationContext.AddProviderFeatureValues(ukprn.Value, userEmail);
+            }
+            
+            if (accountLegalEntityId != null && ukprn != null)
+            {
+                authorizationContext.AddProviderPermissionValues(accountLegalEntityId.Value, ukprn.Value);
+            }
+            
+            if (cohortId != null && ukprn != null)
+            {
+                authorizationContext.AddCommitmentPermissionValues(cohortId.Value, Party.Provider, ukprn.Value);
             }
 
             return authorizationContext;
@@ -48,6 +68,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
         private long? GetAccountLegalEntityId()
         {
             return GetAndDecodeValueIfExists(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+        }
+
+        private long? GetCohortId()
+        {
+            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortReference, out var cohortReference))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
+            {
+                throw new UnauthorizedAccessException($"Cannot decode cohort reference {cohortReference}");
+            }
+
+            return cohortId;
         }
 
         private long? GetDraftApprenticeshipId()
@@ -75,19 +110,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return ukprn;
         }
 
-        private long? GetCohortId()
+        private string GetUserEmail()
         {
-            if (!TryGetValueFromHttpContext(RouteValueKeys.CohortReference, out var cohortReference))
+            if (!_authenticationService.IsUserAuthenticated())
             {
                 return null;
             }
 
-            if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
+            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
             {
-                throw new UnauthorizedAccessException($"Cannot decode cohort reference {cohortReference}");
+                throw new UnauthorizedAccessException();
             }
 
-            return cohortId;
+            return userEmail;
         }
 
         private bool TryGetValueFromHttpContext(string key, out string value)
@@ -102,15 +137,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             {
                 value = queryStringValue;
             }
-            else if (_httpContextAccessor.HttpContext.Request.HasFormContentType)
+            else if (_httpContextAccessor.HttpContext.Request.HasFormContentType && _httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
             {
-                if (_httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
-                {
-                    value = formValue;
-                }
+                value = formValue;
             }
 
-            if(String.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return false;
             }

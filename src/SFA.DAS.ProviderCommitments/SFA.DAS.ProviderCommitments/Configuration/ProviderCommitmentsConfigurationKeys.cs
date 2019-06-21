@@ -7,7 +7,6 @@
         public static string AuthenticationSettings = $"{ProviderCommitments}:AuthenticationSettings";
         public static string ApprenticeshipInfoServiceConfiguration = $"{ProviderCommitments}:ApprenticeshipInfoServiceConfiguration";
         public static string CommitmentsClientApiConfiguration = $"{ProviderCommitments}:CommitmentsClientApi";
-        public static string FeatureEnabledConfiguration = $"{ProviderCommitments}:Features:Enabled";
-        public static string FeatureDefinitionsConfiguration = $"{ProviderCommitments}:Features:Definitions";
+        public static string FeaturesConfiguration = $"{ProviderCommitments}:Features";
     }
 }

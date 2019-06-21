@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using SFA.DAS.Authorization;
-using SFA.DAS.ProviderApprenticeshipsService.Infrastructure.Caching;
+using SFA.DAS.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
@@ -29,8 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             //For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
             //For<IMediator>().Use<Mediator>();
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
-            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>().Singleton();
-            For<ICache>().Use<InMemoryCache>().Singleton();
+            For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");

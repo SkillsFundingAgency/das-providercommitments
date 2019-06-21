@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization.Mvc;
-using SFA.DAS.Authorization.ProviderPermissions;
+using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
@@ -19,7 +20,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [DasAuthorize(ProviderOperation.CreateCohort)]
+    [DasAuthorize(ProviderFeature.Reservations, ProviderOperation.CreateCohort)]
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;

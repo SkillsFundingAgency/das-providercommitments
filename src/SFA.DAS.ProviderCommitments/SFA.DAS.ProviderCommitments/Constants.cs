@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.ProviderCommitments
+﻿namespace SFA.DAS.ProviderCommitments
 {
     public static class Constants
     {

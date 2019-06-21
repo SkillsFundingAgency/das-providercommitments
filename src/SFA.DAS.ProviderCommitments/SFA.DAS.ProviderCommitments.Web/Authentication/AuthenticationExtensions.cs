@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
