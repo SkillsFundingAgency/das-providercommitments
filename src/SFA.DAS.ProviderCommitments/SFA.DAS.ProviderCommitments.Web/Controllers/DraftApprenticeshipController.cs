@@ -7,12 +7,9 @@ using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
-using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -168,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
-            var cohortDetail = await _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
+            var cohortDetail = await _commitmentsService.GetCohortDetail(model.CohortId.Value);
             var courses = await GetCourses(cohortDetail);
 
             model.Employer = cohortDetail.LegalEntityName;
