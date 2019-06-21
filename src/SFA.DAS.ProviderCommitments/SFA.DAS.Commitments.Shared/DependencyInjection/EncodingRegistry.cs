@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Encoding;
 using StructureMap;
 
-namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
+namespace SFA.DAS.Commitments.Shared.DependencyInjection
 {
     public class EncodingRegistry : Registry
     {
