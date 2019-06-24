@@ -17,6 +17,8 @@ namespace SFA.DAS.Commitments.Shared.DependencyInjection
                 });
 
             For<ICommitmentsService>().Use<CommitmentsService>().Singleton();
+
+            IncludeRegistry<CommitmentsSharedConfigurationRegistry>();
             IncludeRegistry<ApprenticeshipInfoServiceRegistry>();
             IncludeRegistry<CommitmentsApiClientRegistry>();
             IncludeRegistry<EncodingRegistry>();

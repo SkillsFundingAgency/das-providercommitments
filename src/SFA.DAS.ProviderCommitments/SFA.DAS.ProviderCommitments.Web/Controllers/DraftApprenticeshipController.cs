@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Authorization.Mvc.Attributes;

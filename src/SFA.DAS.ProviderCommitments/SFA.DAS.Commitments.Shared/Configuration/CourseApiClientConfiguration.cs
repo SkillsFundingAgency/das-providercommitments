@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.Commitments.Shared.Configuration
+﻿namespace SFA.DAS.Commitments.Shared.Configuration
 {
     public class CourseApiClientConfiguration
     {

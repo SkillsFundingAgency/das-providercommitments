@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.Commitments.Shared.Configuration;
@@ -7,11 +8,11 @@ using StructureMap;
 
 namespace SFA.DAS.Commitments.Shared.DependencyInjection
 {
-    public class ConfigurationRegistry : Registry
+    public class CommitmentsSharedConfigurationRegistry : Registry
     {
-        public ConfigurationRegistry()
+        public CommitmentsSharedConfigurationRegistry()
         {
-            AddConfiguration<CourseApiClientConfiguration>(ConfigurationKeys.CourseApiClientConfiguration);
+            AddConfiguration<CourseApiClientConfiguration>(ConfigurationKeys.CourseApiConfigKey);
         }
 
         private void AddConfiguration<T>(string key) where T : class
