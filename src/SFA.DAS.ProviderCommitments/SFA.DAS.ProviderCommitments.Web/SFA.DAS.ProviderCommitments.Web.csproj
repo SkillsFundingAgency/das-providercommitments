@@ -28,7 +28,8 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="2.1.1507" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.1" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-    <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.687" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.5" />
+    <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
 	<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
@@ -45,6 +46,16 @@
     <Folder Include="Assets\" />
     <Folder Include="RouteValues\" />
     <Folder Include="Views\Unapproved\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="SFA.DAS.Provider.Shared.UI">
+      <HintPath>..\..\..\..\das-shared-packages\SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI\bin\Debug\netstandard2.0\SFA.DAS.Provider.Shared.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Provider.Shared.UI.Views">
+      <HintPath>..\..\..\..\das-shared-packages\SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI\bin\Debug\netstandard2.0\SFA.DAS.Provider.Shared.UI.Views.dll</HintPath>
+    </Reference>
   </ItemGroup>
    
 
