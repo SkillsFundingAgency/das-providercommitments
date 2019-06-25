@@ -4,7 +4,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Mappers;
 using FundingPeriod = SFA.DAS.Apprenticeships.Api.Types.FundingPeriod;
