@@ -1,17 +1,15 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Apprenticeships.Api.Client;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.Commitments.Shared.Models;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Models;
+using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -26,21 +24,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ICommitmentsService _commitmentsService;
+        private readonly IProviderCommitmentsService _providerCommitmentsService;
         private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> _addDraftApprenticeshipToCohortRequestMapper;
         private readonly IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public DraftApprenticeshipController(IMediator mediator,
-            ICommitmentsService commitmentsService,
+            IProviderCommitmentsService providerCommitmentsService,
             IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> addDraftApprenticeshipToCohortRequestMapper,
             IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
-            _commitmentsService = commitmentsService;
+            _providerCommitmentsService = providerCommitmentsService;
             _addDraftApprenticeshipToCohortRequestMapper = addDraftApprenticeshipToCohortRequestMapper;
             _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
             _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
@@ -107,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             try
             {
-                await _commitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
+                await _providerCommitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
                 var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
                 return Redirect(url);
@@ -130,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-                await _commitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value,
+                await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value,
                     request.DraftApprenticeshipId.Value));
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -152,7 +150,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             try
             {
-                await _commitmentsService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
+                await _providerCommitmentsService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
                 var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
                 return Redirect(url);
@@ -167,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
         {
-            var cohortDetail = await _commitmentsService.GetCohortDetail(model.CohortId.Value);
+            var cohortDetail = await _providerCommitmentsService.GetCohortDetail(model.CohortId.Value);
             var courses = await GetCourses(cohortDetail);
 
             model.Employer = cohortDetail.LegalEntityName;
