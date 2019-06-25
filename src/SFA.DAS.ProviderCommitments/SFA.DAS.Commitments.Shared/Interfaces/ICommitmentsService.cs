@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.ProviderCommitments.Models;
 
-namespace SFA.DAS.ProviderCommitments.Interfaces
+namespace SFA.DAS.Commitments.Shared.Interfaces
 {
-    public interface IProviderCommitmentsService
+    public interface ICommitmentsService
     {
         Task<CohortDetails> GetCohortDetail(long cohortId);
         Task AddDraftApprenticeshipToCohort(long cohortId, AddDraftApprenticeshipRequest request);

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+﻿using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
+using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {

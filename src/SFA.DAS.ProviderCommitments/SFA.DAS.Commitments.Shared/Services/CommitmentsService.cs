@@ -1,19 +1,19 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Models;
 
-namespace SFA.DAS.ProviderCommitments.Services
+namespace SFA.DAS.Commitments.Shared.Services
 {
-    public class ProviderCommitmentsService : IProviderCommitmentsService
+    public class CommitmentsService : ICommitmentsService
     {
         private readonly ICommitmentsApiClient _client;
         private readonly IEncodingService _hashingService;
 
-        public ProviderCommitmentsService(ICommitmentsApiClient client, IEncodingService hashingService)
+        public CommitmentsService(ICommitmentsApiClient client, IEncodingService hashingService)
         {
             _client = client;
             _hashingService = hashingService;
