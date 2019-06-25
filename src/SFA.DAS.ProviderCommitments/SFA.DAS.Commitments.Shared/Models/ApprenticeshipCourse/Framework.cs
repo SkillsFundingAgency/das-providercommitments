@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse
+namespace SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse
 {
     public class Framework : ICourse
     {
