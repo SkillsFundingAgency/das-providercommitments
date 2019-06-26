@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -29,13 +32,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
         private readonly ILinkGenerator _urlHelper;
+        private readonly ILogger<DraftApprenticeshipController> _logger;
 
         public DraftApprenticeshipController(IMediator mediator,
             IProviderCommitmentsService providerCommitmentsService,
             IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> addDraftApprenticeshipToCohortRequestMapper,
             IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
-            ILinkGenerator urlHelper)
+            ILinkGenerator urlHelper,
+            ILogger<DraftApprenticeshipController> logger)
         {
             _mediator = mediator;
             _providerCommitmentsService = providerCommitmentsService;
@@ -43,6 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
             _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
             _urlHelper = urlHelper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -94,6 +100,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
+            LogModelState($"Entered {nameof(AddDraftApprenticeship)}");
+
             if (!ModelState.IsValid)
             {
                 await AddLegalEntityAndCoursesToModel(model);
@@ -108,10 +116,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _providerCommitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
                 var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+                _logger.Log(LogLevel.Debug, $"Redirecting to URL:{url}");
                 return Redirect(url);
             }
             catch (CommitmentsApiModelException ex)
             {
+                _logger.Log(LogLevel.Debug, $"Encountered exception {ex.GetType().Name} - {ex.Message} - {ex.StackTrace}");
                 ModelState.AddModelExceptionErrors(ex);
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
@@ -161,6 +171,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
             }
+        }
+
+        private void LogModelState(string message)
+        {
+            var sb = new StringBuilder();
+
+            sb.Append(message);
+            sb.AppendLine($" ModelState:IsValid {ModelState.IsValid} ModelState.ErrorCount: {ModelState.ErrorCount} (invalid properties listed below)");
+
+            foreach (var state in ModelState.Where(s => s.Value.Errors.Count > 0))
+            {
+                sb.Append($"Name: {state.Key}");
+                sb.Append($" Count: {state.Value.Errors.Count}");
+                foreach (var error in state.Value.Errors)
+                {
+                    sb.Append($"{error.ErrorMessage} : {error.Exception}");
+                }
+            }
+
+            _logger.Log(LogLevel.Debug, sb.ToString());
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)

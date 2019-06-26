@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.Provider.Shared.UI;
-using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Models;
@@ -63,7 +61,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add-apprentice")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            // TODO this will probably need to be removed later (once validation is moved to API)
             if (!ModelState.IsValid)
             {
                 await AddEmployerAndCoursesToModel(model);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -129,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .ReturnsAsync(autoFixture.Build<CohortDetails>().Create());
 
             _controller = new DraftApprenticeshipController(_mediator.Object, _providerCommitmentsService.Object,
-                _mapper.Object, _editMapper.Object, _updateMapper.Object, _linkGenerator.Object);
+                _mapper.Object, _editMapper.Object, _updateMapper.Object, _linkGenerator.Object, Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithoutReservation()
