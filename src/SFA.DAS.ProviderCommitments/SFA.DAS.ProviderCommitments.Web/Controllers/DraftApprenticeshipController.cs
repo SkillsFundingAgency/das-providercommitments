@@ -9,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -128,7 +127,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-                await _providerCommitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value,
+                await _providerCommitmentsService.GetDraftApprenticeshipForCohort(
+                    request.ProviderId,
+                    request.CohortId.Value,
                     request.DraftApprenticeshipId.Value));
 
             await AddLegalEntityAndCoursesToModel(model);

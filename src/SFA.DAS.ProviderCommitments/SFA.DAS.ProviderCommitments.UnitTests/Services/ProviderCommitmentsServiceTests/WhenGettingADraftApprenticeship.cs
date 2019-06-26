@@ -21,11 +21,13 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         [Test]
         public async Task ShouldMapValuesFromApiCallAndAddHashValues()
         {
-            var cohortId = 1;
+            var providerId = 1;
+            var cohortId = 2;
             var apprenticeshipId = 123;
 
-            var result = await _fixture.Sut.GetDraftApprenticeshipForCohort(cohortId, apprenticeshipId);
+            var result = await _fixture.Sut.GetDraftApprenticeshipForCohort(providerId, cohortId, apprenticeshipId);
 
+            Assert.AreEqual(providerId, result.ProviderId);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.Id, result.DraftApprenticeshipId);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.FirstName, result.FirstName);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.LastName, result.LastName);
@@ -45,9 +47,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         [Test]
         public async Task ShouldCallClientApiWithCorrectParameters()
         {
-            await _fixture.Sut.GetDraftApprenticeshipForCohort(1, 123);
+            await _fixture.Sut.GetDraftApprenticeshipForCohort(1, 2, 123);
 
-            _fixture.CommitmentsApiClientMock.Verify(x => x.GetDraftApprenticeship(1, 123, It.IsAny<CancellationToken>()), Times.Once);
+            _fixture.CommitmentsApiClientMock.Verify(x => x.GetDraftApprenticeship(2, 123, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
