@@ -11,7 +11,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Models.ApiModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -165,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupProviderCommitmentServiceToReturnADraftApprentice()
         {
             _providerCommitmentsService
-                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
+                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<int>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
             return this;
         }
 
@@ -236,7 +235,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyGetDraftApprenticeshipReceivesCorrectParameters()
         {
-            _providerCommitmentsService.Verify(x=>x.GetDraftApprenticeshipForCohort(_editDraftApprenticeshipRequest.CohortId.Value, _editDraftApprenticeshipRequest.DraftApprenticeshipId.Value));
+            _providerCommitmentsService.Verify(x=>x.GetDraftApprenticeshipForCohort(_editDraftApprenticeshipRequest.ProviderId, _editDraftApprenticeshipRequest.CohortId.Value, _editDraftApprenticeshipRequest.DraftApprenticeshipId.Value));
             return this;
         }
 

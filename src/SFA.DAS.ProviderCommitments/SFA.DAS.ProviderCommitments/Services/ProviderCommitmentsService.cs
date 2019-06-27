@@ -5,7 +5,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Models;
-using SFA.DAS.ProviderCommitments.Models.ApiModels;
 
 namespace SFA.DAS.ProviderCommitments.Services
 {
@@ -38,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Services
             return _client.AddDraftApprenticeship(cohortId, request);
         }
 
-        public async Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId)
+        public async Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(int providerId, long cohortId, long draftApprenticeshipId)
         {
             var result = await _client.GetDraftApprenticeship(cohortId, draftApprenticeshipId);
 
@@ -47,6 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Services
                 DraftApprenticeshipId = result.Id,
                 DraftApprenticeshipHashedId = _hashingService.Encode(result.Id, EncodingType.ApprenticeshipId),
                 CohortId = cohortId,
+                ProviderId = providerId,
                 CohortReference = _hashingService.Encode(cohortId, EncodingType.CohortReference),
                 ReservationId = result.ReservationId,
                 FirstName = result.FirstName,
