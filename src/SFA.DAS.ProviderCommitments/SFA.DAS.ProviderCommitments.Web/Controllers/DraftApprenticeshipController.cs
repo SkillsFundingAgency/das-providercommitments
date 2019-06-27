@@ -127,6 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             catch (CommitmentsApiModelException ex)
             {
                 _logger.Log(LogLevel.Warning, $"Encountered exception {ex.GetType().Name} - {ex.Message} - {ex.StackTrace}");
+                _logger.Log(LogLevel.Warning, string.Join("\n", ex.Errors.SelectMany(e => $"{e.Field}-{e.Message}")));
                 ModelState.AddModelExceptionErrors(ex);
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
