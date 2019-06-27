@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
@@ -126,8 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             catch (CommitmentsApiModelException ex)
             {
-                _logger.Log(LogLevel.Warning, $"Encountered exception {ex.GetType().Name} - {ex.Message} - {ex.StackTrace}");
-                _logger.Log(LogLevel.Warning, string.Join("\n", ex.Errors.SelectMany(e => $"{e.Field}-{e.Message}")));
+                LogModelValidationException(ex);
                 ModelState.AddModelExceptionErrors(ex);
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
@@ -180,6 +180,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ModelState.AddModelExceptionErrors(ex);
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
+            }
+        }
+
+        private void LogModelValidationException(CommitmentsApiModelException ex)
+        {
+            try
+            {
+                _logger.Log(LogLevel.Warning,
+                    $"Encountered exception {ex.GetType().Name} (errors={ex.Errors?.Count ?? -1}) - {ex.Message} - {ex.StackTrace}");
+
+                if (ex.Errors != null)
+                {
+                    var sb = new StringBuilder();
+
+                    foreach (var error in ex.Errors)
+                    {
+                        sb.AppendLine($"{error?.Field}:{error?.Message}");
+                    }
+
+                    _logger.Log(LogLevel.Warning, sb.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to dump log messages {e.GetType()} - {e.Message}");
             }
         }
 
