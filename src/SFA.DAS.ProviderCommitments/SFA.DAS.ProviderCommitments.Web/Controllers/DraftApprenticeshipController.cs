@@ -49,12 +49,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
             _urlHelper = urlHelper;
             _logger = logger;
+            _logger.Log(LogLevel.Warning, $"Constructor: Log-Debug?:{_logger.IsEnabled(LogLevel.Debug)}");
         }
 
         [HttpGet]
         [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(NonReservationsAddDraftApprenticeshipRequest nonReservationsAddDraftApprenticeshipRequest)
         {
+            LogModelState($"Entered GET {nameof(AddDraftApprenticeship)} (NonReservationsAddDraftApprenticeshipRequest)");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -77,6 +80,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.Reservations)]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
+            LogModelState($"Entered GET {nameof(AddDraftApprenticeship)} (ReservationsAddDraftApprenticeshipRequest)");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -100,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            LogModelState($"Entered {nameof(AddDraftApprenticeship)}");
+            LogModelState($"Entered POST {nameof(AddDraftApprenticeship)}");
 
             if (!ModelState.IsValid)
             {
@@ -116,12 +121,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _providerCommitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
                 var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
                 var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                _logger.Log(LogLevel.Debug, $"Redirecting to URL:{url}");
+                _logger.Log(LogLevel.Warning, $"Redirecting to URL:{url}");
                 return Redirect(url);
             }
             catch (CommitmentsApiModelException ex)
             {
-                _logger.Log(LogLevel.Debug, $"Encountered exception {ex.GetType().Name} - {ex.Message} - {ex.StackTrace}");
+                _logger.Log(LogLevel.Warning, $"Encountered exception {ex.GetType().Name} - {ex.Message} - {ex.StackTrace}");
                 ModelState.AddModelExceptionErrors(ex);
                 await AddLegalEntityAndCoursesToModel(model);
                 return View(model);
@@ -132,6 +137,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
+            LogModelState($"Entered GET {nameof(EditDraftApprenticeship)}");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -150,6 +157,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
         {
+            LogModelState($"Entered POST {nameof(EditDraftApprenticeship)}");
+
             if (!ModelState.IsValid)
             {
                 await AddLegalEntityAndCoursesToModel(model);
@@ -190,7 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 }
             }
 
-            _logger.Log(LogLevel.Debug, sb.ToString());
+            _logger.Log(LogLevel.Warning, sb.ToString());
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
