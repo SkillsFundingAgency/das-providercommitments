@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using Framework = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.Framework;
-using FundingPeriod = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.FundingPeriod;
-using Standard = SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse.Standard;
+using Framework = SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse.Framework;
+using FundingPeriod = SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse.FundingPeriod;
+using Standard = SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse.Standard;
 
 namespace SFA.DAS.ProviderCommitments.Mappers
 {

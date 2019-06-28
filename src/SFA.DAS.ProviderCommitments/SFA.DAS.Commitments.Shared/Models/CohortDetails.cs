@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ProviderCommitments.Models
+﻿namespace SFA.DAS.Commitments.Shared.Models
 {
     public class CohortDetails
     {

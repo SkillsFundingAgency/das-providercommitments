@@ -3,6 +3,7 @@ using SFA.DAS.Authorization.DependencyResolution;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
+using SFA.DAS.Commitments.Shared.DependencyInjection;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 
@@ -17,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<CommitmentsApiRegistry>();
             registry.IncludeRegistry<CommitmentPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<ConfigurationRegistry>();
-            registry.IncludeRegistry<EncodingRegistry>();
+            registry.IncludeRegistry<CommitmentsSharedRegistry>();
             registry.IncludeRegistry<MediatorRegistry>();
             registry.IncludeRegistry<ProviderFeaturesAuthorizationRegistry>();
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
