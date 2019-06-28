@@ -130,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-                await _commitmentsService.GetDraftApprenticeshipForCohort(request.CohortId.Value,
+                await _commitmentsService.GetDraftApprenticeshipForCohort(
                     request.ProviderId,
                     request.CohortId.Value,
                     request.DraftApprenticeshipId.Value));
