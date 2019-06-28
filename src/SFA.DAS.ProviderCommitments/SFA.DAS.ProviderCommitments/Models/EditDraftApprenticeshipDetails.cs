@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Commitments.Shared.Models
+namespace SFA.DAS.ProviderCommitments.Models
 {
     public class EditDraftApprenticeshipDetails
     {

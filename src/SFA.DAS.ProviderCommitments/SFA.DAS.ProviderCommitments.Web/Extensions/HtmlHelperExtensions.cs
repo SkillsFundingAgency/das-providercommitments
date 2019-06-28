@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
-namespace SFA.DAS.Commitments.Shared.Extensions
+namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class HtmlHelperExtensions
     {
