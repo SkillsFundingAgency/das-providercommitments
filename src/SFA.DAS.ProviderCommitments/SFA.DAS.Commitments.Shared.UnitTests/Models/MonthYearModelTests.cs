@@ -1,6 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Models;
+using SFA.DAS.Commitments.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Models
 {

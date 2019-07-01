@@ -11,12 +11,13 @@
 
   <ItemGroup>
     <Folder Include="Application\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="6.0.0" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.98" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.98" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.199" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.199" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="5.3.5" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="2.1.1507" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="2.1.1507" />
@@ -26,5 +27,9 @@
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Commitments.Shared\SFA.DAS.Commitments.Shared.csproj" />
   </ItemGroup>
 </Project>
