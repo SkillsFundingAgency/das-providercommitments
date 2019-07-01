@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var authorizationResult = new AuthorizationResult();
             var service = authorizationContext.Get<string>(AuthorizationContextKeys.Service);
             
-            if (service != "DAA")
+            if (service != ServiceValues.DAA)
             {
                 authorizationResult.AddError(new ServiceNotAuthorized());
             }
