@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoFixture;
 using NUnit.Framework;
-using SFA.DAS.Commitments.Shared.Models;
+using SFA.DAS.ProviderCommitments.Models;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
