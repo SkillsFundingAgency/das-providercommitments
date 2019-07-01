@@ -4,6 +4,7 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 
 namespace SFA.DAS.Commitments.Shared.Services
@@ -35,6 +36,11 @@ namespace SFA.DAS.Commitments.Shared.Services
         public Task AddDraftApprenticeshipToCohort(long cohortId, AddDraftApprenticeshipRequest request)
         {
             return _client.AddDraftApprenticeship(cohortId, request);
+        }
+
+        public Task<CreateCohortResponse> CreateCohort(CreateCohortRequest request)
+        {
+            return _client.CreateCohort(request, CancellationToken.None);
         }
 
         public async Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(int providerId, long cohortId, long draftApprenticeshipId)
