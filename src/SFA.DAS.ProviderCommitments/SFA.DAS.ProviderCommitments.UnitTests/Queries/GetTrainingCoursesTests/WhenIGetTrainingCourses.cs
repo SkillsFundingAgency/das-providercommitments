@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 
