@@ -14,9 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     public class AuthorizationContextProvider : IAuthorizationContextProvider
     {
-        private const string CohortIdContextKey = "CohortId";
-        private const string DraftApprenticeshipIdContextKey = "DraftApprenticeshipId";
-        
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEncodingService _encodingService;
         private readonly IAuthenticationService _authenticationService;
@@ -34,17 +31,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var accountLegalEntityId = GetAccountLegalEntityId();
             var cohortId = GetCohortId();
             var draftApprenticeshipId = GetDraftApprenticeshipId();
+            var service = GetService();
             var ukprn = GetUkrpn();
             var userEmail = GetUserEmail();
             
             if (cohortId != null)
             {
-                authorizationContext.Set(CohortIdContextKey, cohortId);
+                authorizationContext.Set(AuthorizationContextKeys.CohortId, cohortId);
             }
 
             if (draftApprenticeshipId != null)
             {
-                authorizationContext.Set(DraftApprenticeshipIdContextKey, draftApprenticeshipId);
+                authorizationContext.Set(AuthorizationContextKeys.DraftApprenticeshipId, draftApprenticeshipId);
+            }
+
+            if (service != null)
+            {
+                authorizationContext.Set(AuthorizationContextKeys.Service, service);
             }
 
             if (ukprn != null && userEmail != null)
@@ -67,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
         private long? GetAccountLegalEntityId()
         {
-            return GetAndDecodeValueIfExists(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+            return FindAndDecodeValue(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
         }
 
         private long? GetCohortId()
@@ -87,7 +90,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
         private long? GetDraftApprenticeshipId()
         {
-            return GetAndDecodeValueIfExists(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
+            return FindAndDecodeValue(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
+        }
+
+        private string GetService()
+        {
+            if (!_authenticationService.IsUserAuthenticated())
+            {
+                return null;
+            }
+
+            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Service, out var service))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return service;
         }
 
         private long? GetUkrpn()
@@ -125,6 +143,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return userEmail;
         }
 
+        private long? FindAndDecodeValue(string key, EncodingType encodingType)
+        {
+            if (!TryGetValueFromHttpContext(key, out var encodedValue))
+            {
+                return null;
+            }
+
+            if (!_encodingService.TryDecode(encodedValue, encodingType, out var value))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            return value;
+        }
+
         private bool TryGetValueFromHttpContext(string key, out string value)
         {
             value = null;
@@ -148,23 +181,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             }
 
             return true;
-        }
-
-        private long? GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
-        {
-            // The value in the context is optional but if there is a value then it should be valid (i.e. it should be decodable
-            // using the specified encoder type).
-            if (!TryGetValueFromHttpContext(keyName, out var encodedValue))
-            {
-                return null;
-            }
-
-            if (!_encodingService.TryDecode(encodedValue, encodedType, out var id))
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            return id;
         }
     }
 }
