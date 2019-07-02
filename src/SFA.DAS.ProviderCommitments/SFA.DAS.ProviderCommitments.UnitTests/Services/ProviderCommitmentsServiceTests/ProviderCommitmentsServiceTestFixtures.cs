@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using AutoFixture;
 using Moq;
-using SFA.DAS.Commitments.Shared.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -23,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
             AddDraftApprenticeshipRequest = autoFixture.Build<AddDraftApprenticeshipRequest>().Create();
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
 
-            Sut = new CommitmentsService(CommitmentsApiClientMock.Object, HashingServiceMock.Object);
+            Sut = new ProviderCommitmentsService(CommitmentsApiClientMock.Object, HashingServiceMock.Object);
         }
 
         public long CohortId { get; }
@@ -33,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         public Mock<ICommitmentsApiClient> CommitmentsApiClientMock { get; }
         public Mock<IEncodingService> HashingServiceMock{ get; }
 
-        public CommitmentsService Sut;
+        public ProviderCommitmentsService Sut;
 
         public ProviderCommitmentsServiceTestFixtures SetupGetCohortDetailsReturnValue(GetCohortResponse retVal)
         {

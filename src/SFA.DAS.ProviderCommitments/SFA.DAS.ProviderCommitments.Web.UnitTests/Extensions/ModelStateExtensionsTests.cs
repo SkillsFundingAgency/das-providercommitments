@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NUnit.Framework;
-using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 {
