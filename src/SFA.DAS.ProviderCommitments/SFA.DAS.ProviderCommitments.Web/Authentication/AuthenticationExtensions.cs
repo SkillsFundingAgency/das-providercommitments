@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,24 +13,47 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
     {
         public static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
-
-            services.AddAuthentication(sharedOptions =>
+            services.AddAuthentication(options =>
                 {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddWsFederation(options =>
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
-                    // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
-                    // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
-                    options.MetadataAddress = authenticationSettings.MetadataAddress;
-                    // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
-                    options.Wtrealm = authenticationSettings.Wtrealm;
-                    options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
-                }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.Authority = "https://localhost:44381/";
+                    options.ClientId = "openIdConnectClient";
+                    //RedirectUri = "https://127.0.0.1:44347/signin-oidc",
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("idams");
+                    options.ResponseType = "id_token";
+                    options.UseTokenLifetime = false;
+                    options.RequireHttpsMetadata = false;
+                });
+
             return services;
+
+            //var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
+
+            //services.AddAuthentication(sharedOptions =>
+            //    {
+            //        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+            //    })
+            //    .AddWsFederation(options =>
+            //    {
+            //        // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
+            //        // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
+            //        options.MetadataAddress = authenticationSettings.MetadataAddress;
+            //        // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
+            //        options.Wtrealm = authenticationSettings.Wtrealm;
+            //        options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
+            //    }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+            //return services;
         }
 
         private static Task OnSecurityTokenValidated(SecurityTokenValidatedContext context)
