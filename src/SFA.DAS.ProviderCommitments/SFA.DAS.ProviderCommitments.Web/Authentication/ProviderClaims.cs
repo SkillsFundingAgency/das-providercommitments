@@ -7,5 +7,6 @@
         public static readonly string Name = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
         public static readonly string Email = "http://schemas.portal.com/mail";
         public static readonly string Ukprn = "http://schemas.portal.com/ukprn";
+        public static readonly string Service = "http://schemas.portal.com/service";
     }
 }

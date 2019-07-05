@@ -27,18 +27,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenCohortIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithCohortId()
+        public void GetAuthorizationContext_WhenValidCohortIdExists_ThenShouldReturnAuthorizationContextWithCohortId()
         {
-            _fixture.SetValidCohortId();
-
-            var authorizationContext = _fixture.GetAuthorizationContext();
-
+            var authorizationContext = _fixture.SetValidCohortId().GetAuthorizationContext();
+            
             Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.CohortId, authorizationContext.Get<long?>("CohortId"));
+            Assert.IsTrue(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId));
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenCohortIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenInvalidCohortIdExists_ThenShouldThrowUnauthorizedAccessException()
         {
             _fixture.SetInvalidCohortId();
 
@@ -51,22 +49,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsFalse(authorizationContext.TryGet("CohortId", out long cohortId));
+            Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId));
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenDraftApprenticeshipIdExistsAndIsValid_ThenShouldReturnAuthorizationContextWithDraftApprenticeshipId()
+        public void GetAuthorizationContext_WhenValidDraftApprenticeshipIdExists_ThenShouldReturnAuthorizationContextWithDraftApprenticeshipId()
         {
-            _fixture.SetValidDraftApprenticeshipId();
-
-            var authorizationContext = _fixture.GetAuthorizationContext();
+            var authorizationContext = _fixture.SetValidDraftApprenticeshipId().GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.DraftApprenticeshipId, authorizationContext.Get<long?>("DraftApprenticeshipId"));
+            Assert.AreEqual(_fixture.DraftApprenticeshipId, authorizationContext.Get<long?>(AuthorizationContextKeys.DraftApprenticeshipId));
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenDraftApprenticeshipIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenInvalidDraftApprenticeshipIdExists_ThenShouldThrowUnauthorizedAccessException()
         {
             _fixture.SetInvalidDraftApprenticeship();
 
@@ -79,16 +75,47 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsFalse(authorizationContext.TryGet("DraftApprenticeshipId", out long draftApprenticeshipId));
+            Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.DraftApprenticeshipId, out long draftApprenticeshipId));
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServiceExists_ThenShouldReturnAuthorizationContextWithService()
+        {
+            var authorizationContext = _fixture.SetAuthenticatedUser()
+                .SetService()
+                .SetUserEmail()
+                .SetValidUkprn()
+                .GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.AreEqual(_fixture.Service, authorizationContext.Get<string>(AuthorizationContextKeys.Service));
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServiceDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
+        {
+            _fixture.SetAuthenticatedUser();
+
+            Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
+        }
+
+        [Test]
+        public void GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutService()
+        {
+            var authorizationContext = _fixture.GetAuthorizationContext();
+
+            Assert.IsNotNull(authorizationContext);
+            Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.Service, out long service));
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnExistsAndIsValidAndUserEmailExists_ThenShouldReturnAuthorizationContextWithUkprnAndUserEmail()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndValidUkprnExistsAndUserEmailExists_ThenShouldReturnAuthorizationContextWithUkprnAndUserEmail()
         {
-            _fixture.SetValidUkprn()
-                .SetUserEmail();
-            
-            var authorizationContext = _fixture.GetAuthorizationContext();
+            var authorizationContext = _fixture.SetAuthenticatedUser()
+                .SetService()
+                .SetUserEmail()
+                .SetValidUkprn()
+                .GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
             Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
@@ -104,15 +131,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndInvalidUkprnExists_ThenShouldThrowUnauthorizedAccessException()
         {
-            _fixture.SetInvalidUkprn();
+            _fixture.SetAuthenticatedUser().SetInvalidUkprn();
 
             Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsNotAuthenticated_ThenShouldReturnAuthorizationContextWithoutUkprn()
+        public void GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutUkprn()
         {
             _fixture.SetUnauthenticatedUser();
             
@@ -132,24 +159,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenUserIsNotAuthenticated_ThenShouldReturnAuthorizationContextWithoutUserEmail()
+        public void GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutUserEmail()
         {
-            _fixture.SetUnauthenticatedUser();
-            
-            var authorizationContext = _fixture.GetAuthorizationContext();
+            var authorizationContext = _fixture.SetUnauthenticatedUser().GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
             Assert.IsFalse(authorizationContext.TryGet("UserEmail", out string userEmail));
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsValidAndUkprnExistsAndIsValid_ThenShouldReturnAuthorizationContextWithAccountLegalEntityIdAndUkprn()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndValidAccountLegalEntityIdExistsAndValidUkprnExists_ThenShouldReturnAuthorizationContextWithAccountLegalEntityIdAndUkprn()
         {
-            _fixture.SetUserEmail()
+            var authorizationContext = _fixture.SetAuthenticatedUser()
+                .SetService()
+                .SetUserEmail()
                 .SetValidAccountLegalEntityId()
-                .SetValidUkprn();
-            
-            var authorizationContext = _fixture.GetAuthorizationContext();
+                .SetValidUkprn()
+                .GetAuthorizationContext();
             
             Assert.IsNotNull(authorizationContext);
             Assert.AreEqual(_fixture.AccountLegalEntityId, authorizationContext.Get<long?>("AccountLegalEntityId"));
@@ -166,7 +192,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
         
         [Test]
-        public void GetAuthorizationContext_WhenAccountLegalEntityIdExistsAndIsInvalid_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenInvalidAccountLegalEntityIdExists_ThenShouldThrowUnauthorizedAccessException()
         {
             _fixture.SetInvalidAccountLegalEntityId();
             
@@ -176,34 +202,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 
     public class AuthorizationContextProviderTestsFixture
     {
-        public IAuthorizationContextProvider AuthorizationContextProvider { get; set; }
-        public Mock<IHttpContextAccessor> HttpContextAccessor { get; set; }
+        public RouteData RouteData { get; set; }
         public Mock<IRoutingFeature> RoutingFeature { get; set; }
+        public Mock<IHttpContextAccessor> HttpContextAccessor { get; set; }
         public Mock<IEncodingService> EncodingService { get; set; }
         public Mock<IAuthenticationService> AuthenticationService { get; set; }
+        public AuthorizationContextProvider AuthorizationContextProvider { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long CohortId { get; set; }
         public string CohortReference { get; set; }
         public long DraftApprenticeshipId { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
+        public string Service { get; set; }
         public long Ukprn { get; set; }
         public string UkprnClaimValue { get; set; }
         public string UserEmail { get; set; }
 
-
         public AuthorizationContextProviderTestsFixture()
         {
-            HttpContextAccessor = new Mock<IHttpContextAccessor>();
+            RouteData = new RouteData();
             RoutingFeature = new Mock<IRoutingFeature>();
+            HttpContextAccessor = new Mock<IHttpContextAccessor>();
             EncodingService = new Mock<IEncodingService>();
             AuthenticationService = new Mock<IAuthenticationService>();
+            AuthorizationContextProvider = new AuthorizationContextProvider(HttpContextAccessor.Object, EncodingService.Object, AuthenticationService.Object);
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             HttpContextAccessor.Setup(c => c.HttpContext.Features[typeof(IRoutingFeature)]).Returns(RoutingFeature.Object);
-            RoutingFeature.Setup(f => f.RouteData).Returns(new RouteData());
             HttpContextAccessor.Setup(c => c.HttpContext.Request.Query).Returns(new QueryCollection());
             HttpContextAccessor.Setup(c => c.HttpContext.Request.Form).Returns(new FormCollection(new Dictionary<string, StringValues>()));
-            
-            AuthorizationContextProvider = new AuthorizationContextProvider(HttpContextAccessor.Object, EncodingService.Object, AuthenticationService.Object);
         }
 
         public IAuthorizationContext GetAuthorizationContext()
@@ -229,13 +257,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             AccountLegalEntityPublicHashedId = "ABC";
             AccountLegalEntityId = 123;
-
-            var routeData = new RouteData();
+            
             var accountLegalEntityId = AccountLegalEntityId;
             
-            routeData.Values[RouteValueKeys.AccountLegalEntityPublicHashedId] = AccountLegalEntityPublicHashedId;
+            RouteData.Values[RouteValueKeys.AccountLegalEntityPublicHashedId] = AccountLegalEntityPublicHashedId;
             
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             EncodingService.Setup(h => h.TryDecode(AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId, out accountLegalEntityId)).Returns(true);
             
             return this;
@@ -244,13 +271,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public AuthorizationContextProviderTestsFixture SetInvalidAccountLegalEntityId()
         {
             AccountLegalEntityPublicHashedId = "AAA";
-
-            var routeData = new RouteData();
+            
             var accountLegalEntityId = 0L;
             
-            routeData.Values[RouteValueKeys.AccountLegalEntityPublicHashedId] = AccountLegalEntityPublicHashedId;
+            RouteData.Values[RouteValueKeys.AccountLegalEntityPublicHashedId] = AccountLegalEntityPublicHashedId;
             
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             EncodingService.Setup(h => h.TryDecode(AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId, out accountLegalEntityId)).Returns(false);
             
             return this;
@@ -260,14 +286,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             CohortReference = "CDE";
             CohortId = 345;
-
-            var routeData = new RouteData();
+            
             var cohortId = CohortId;
 
-            routeData.Values[RouteValueKeys.CohortReference] = CohortReference;
+            RouteData.Values[RouteValueKeys.CohortReference] = CohortReference;
 
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(true);
+
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetInvalidCohortId()
+        {
+            CohortReference = "BBB";
+            
+            var cohortId = CohortId;
+
+            RouteData.Values[RouteValueKeys.CohortReference] = CohortReference;
+
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
+            EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(false);
 
             return this;
         }
@@ -276,13 +315,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             DraftApprenticeshipHashedId = "CDE";
             DraftApprenticeshipId = 345;
-
-            var routeData = new RouteData();
+            
             var id = DraftApprenticeshipId;
 
-            routeData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshipHashedId;
+            RouteData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshipHashedId;
 
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             EncodingService.Setup(h => h.TryDecode(DraftApprenticeshipHashedId, EncodingType.ApprenticeshipId, out id)).Returns(true);
 
             return this;
@@ -291,29 +329,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public AuthorizationContextProviderTestsFixture SetInvalidDraftApprenticeship()
         {
             DraftApprenticeshipHashedId = "BBB";
-
-            var routeData = new RouteData();
+            
             var id = DraftApprenticeshipId;
 
-            routeData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshipHashedId;
+            RouteData.Values[RouteValueKeys.DraftApprenticeshipId] = DraftApprenticeshipHashedId;
 
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
+            RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
             EncodingService.Setup(h => h.TryDecode(DraftApprenticeshipHashedId, EncodingType.ApprenticeshipId, out id)).Returns(false);
-
-            return this;
-        }
-
-        public AuthorizationContextProviderTestsFixture SetInvalidCohortId()
-        {
-            CohortReference = "BBB";
-
-            var routeData = new RouteData();
-            var cohortId = CohortId;
-
-            routeData.Values[RouteValueKeys.CohortReference] = CohortReference;
-
-            RoutingFeature.Setup(f => f.RouteData).Returns(routeData);
-            EncodingService.Setup(h => h.TryDecode(CohortReference, EncodingType.CohortReference, out cohortId)).Returns(false);
 
             return this;
         }
@@ -325,7 +347,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var ukprnClaimValue = UkprnClaimValue;
             
-            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(true);
             AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
             
             return this;
@@ -337,8 +358,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var ukprnClaimValue = UkprnClaimValue;
             
-            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(true);
             AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
+            
+            return this;
+        }
+
+        public AuthorizationContextProviderTestsFixture SetService()
+        {
+            Service = "DAA";
+            
+            var service = Service;
+            
+            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Service, out service)).Returns(true);
             
             return this;
         }
@@ -349,7 +380,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var userEmailClaimValue = UserEmail;
             
-            AuthenticationService.Setup(a => a.IsUserAuthenticated()).Returns(true);
             AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Email, out userEmailClaimValue)).Returns(true);
             
             return this;

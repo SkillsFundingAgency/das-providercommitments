@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SFA.DAS.Authorization.Context;
+using SFA.DAS.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
@@ -25,8 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
-            //For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
-            //For<IMediator>().Use<Mediator>();
+            For<IAuthorizationHandler>().Add<ServiceAuthorizationHandler>();
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
