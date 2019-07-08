@@ -27,7 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.Authority = "https://localhost:44381/";
                     options.ClientId = "openIdConnectClient";
-                    //RedirectUri = "https://127.0.0.1:44347/signin-oidc",
                     options.Scope.Add("openid");
                     options.Scope.Add("idams");
                     options.ResponseType = "id_token";
