@@ -10,6 +10,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
     [TestFixture()]
     public class NonReservationsAddDraftApprenticeshipRequestValidatorTests
     {
+        [TestCase(0, false)]
+        [TestCase(1, true)]
+        public void Validate_ProviderId_ShouldBeValidated(int providerId, bool expectedValid)
+        {
+            var model = new NonReservationsAddDraftApprenticeshipRequest { ProviderId = providerId };
+            AssertValidationResult(request => request.ProviderId, model, expectedValid);
+        }
+        
         [TestCase(null, false)]
         [TestCase(1, true)]
         public void Validate_CohortId_ShouldBeValidated(int? cohortId, bool expectedValid)
