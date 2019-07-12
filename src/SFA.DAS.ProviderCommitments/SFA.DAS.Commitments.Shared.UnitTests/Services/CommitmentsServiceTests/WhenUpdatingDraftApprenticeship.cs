@@ -4,17 +4,18 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
+namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
+    [Parallelizable]
     public class WhenUpdatingDraftApprenticeship
     {
-        private ProviderCommitmentsServiceTestFixtures _fixture;
+        private CommitmentsServiceTestFixtures _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new ProviderCommitmentsServiceTestFixtures();
+            _fixture = new CommitmentsServiceTestFixtures();
         }
 
         [Test]

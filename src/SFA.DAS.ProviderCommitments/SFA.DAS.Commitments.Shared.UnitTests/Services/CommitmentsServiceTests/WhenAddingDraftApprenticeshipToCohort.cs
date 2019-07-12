@@ -3,17 +3,17 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
+namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
     public class WhenAddingDraftApprenticeshipToCohort
     {
-        private ProviderCommitmentsServiceTestFixtures _fixture;
+        private CommitmentsServiceTestFixtures _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new ProviderCommitmentsServiceTestFixtures();
+            _fixture = new CommitmentsServiceTestFixtures();
         }
 
         [Test]
