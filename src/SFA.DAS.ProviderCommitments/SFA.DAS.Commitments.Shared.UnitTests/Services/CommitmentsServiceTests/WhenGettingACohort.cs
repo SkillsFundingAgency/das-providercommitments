@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
+    [Parallelizable]
     public class WhenGettingACohort
     {
         private CommitmentsServiceTestFixtures _fixture;

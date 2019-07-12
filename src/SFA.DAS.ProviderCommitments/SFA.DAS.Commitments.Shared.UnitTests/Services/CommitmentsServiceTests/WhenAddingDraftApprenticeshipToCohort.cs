@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
+    [Parallelizable]
     public class WhenAddingDraftApprenticeshipToCohort
     {
         private CommitmentsServiceTestFixtures _fixture;
