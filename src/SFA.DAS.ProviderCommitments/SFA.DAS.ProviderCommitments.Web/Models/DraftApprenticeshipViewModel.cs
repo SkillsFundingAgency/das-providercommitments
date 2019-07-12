@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             EndDate = new MonthYearModel("");
         }
 
-        public int ProviderId { get; set; }
+        public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public long? CohortId { get; set; }
 

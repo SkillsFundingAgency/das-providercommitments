@@ -11,6 +11,7 @@ using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -162,10 +163,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture SetupProviderIdOnEditRequest(long providerId)
+        {
+            _editDraftApprenticeshipRequest.ProviderId = providerId;
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture SetupProviderCommitmentServiceToReturnADraftApprentice()
         {
             _providerCommitmentsService
-                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<int>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
+                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
             return this;
         }
 
@@ -234,9 +241,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyEditDraftApprenticeshipViewModelHasProviderIdSet()
+        {
+            Assert.IsInstanceOf<EditDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
+            var model = ((ViewResult)_actionResult).Model as EditDraftApprenticeshipViewModel;
+            Assert.AreEqual(_editDraftApprenticeshipRequest.ProviderId, model.ProviderId);
+
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyGetDraftApprenticeshipReceivesCorrectParameters()
         {
-            _providerCommitmentsService.Verify(x=>x.GetDraftApprenticeshipForCohort(_editDraftApprenticeshipRequest.ProviderId, _editDraftApprenticeshipRequest.CohortId.Value, _editDraftApprenticeshipRequest.DraftApprenticeshipId.Value));
+            _providerCommitmentsService.Verify(x=>x.GetDraftApprenticeshipForCohort(_editDraftApprenticeshipRequest.CohortId.Value, _editDraftApprenticeshipRequest.DraftApprenticeshipId.Value));
             return this;
         }
 

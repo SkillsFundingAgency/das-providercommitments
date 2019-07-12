@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using StructureMap;
@@ -14,7 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<ICommitmentsApiClientFactory>().Use("", x =>
             {
                 var config = x.GetInstance<CommitmentsClientApiConfiguration>();
-                return new CommitmentsApiClientFactory(config);
+                var loggerFactory = x.GetInstance<ILoggerFactory>();
+                return new CommitmentsApiClientFactory(config, loggerFactory);
             }).Singleton();
         }
     }
