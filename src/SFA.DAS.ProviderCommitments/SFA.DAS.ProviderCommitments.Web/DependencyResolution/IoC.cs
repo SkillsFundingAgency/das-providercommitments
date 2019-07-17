@@ -4,6 +4,7 @@ using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
 using SFA.DAS.Commitments.Shared.DependencyInjection;
+using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 
