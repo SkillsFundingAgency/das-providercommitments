@@ -61,6 +61,15 @@ steps:
     TargetFolder: '$(build.artifactstagingdirectory)/publish'
     OverWrite: true
 
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.ProviderCommitments/SFA.DAS.Commitments.Shared/SFA.DAS.Commitments.Shared.csproj
+    packDirectory: '$(build.artifactstagingdirectory)/publish'
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.NuGetVersionV2
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   inputs:

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
-    <PackageReference Include="CompareNETObjects" Version="4.58.0" />
+    <PackageReference Include="CompareNETObjects" Version="4.59.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Moq" Version="4.10.1" />
@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="3.0.15" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="3.0.15" />
+    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
   </ItemGroup>
 
   <ItemGroup>
