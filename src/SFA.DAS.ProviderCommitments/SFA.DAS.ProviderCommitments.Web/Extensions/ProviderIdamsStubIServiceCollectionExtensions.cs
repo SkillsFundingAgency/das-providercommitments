@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.Authority = "https://localhost:44381/";
+                    options.Authority = "https://das-at-pidams-as.azurewebsites.net/";
                     options.ClientId = "openIdConnectClient";
                     options.Scope.Add("openid");
                     options.Scope.Add("idams");
