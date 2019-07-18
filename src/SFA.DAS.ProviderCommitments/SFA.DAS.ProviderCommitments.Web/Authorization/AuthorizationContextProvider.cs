@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Authorization.CommitmentPermissions.Context;
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var accountLegalEntityId = GetAccountLegalEntityId();
             var cohortId = GetCohortId();
             var draftApprenticeshipId = GetDraftApprenticeshipId();
-            var service = GetService();
+            var service = GetServices();
             var ukprn = GetUkrpn();
             var userEmail = GetUserEmail();
             
@@ -93,14 +94,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return FindAndDecodeValue(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
         }
 
-        private string GetService()
+        private IList<string> GetServices()
         {
             if (!_authenticationService.IsUserAuthenticated())
             {
                 return null;
             }
 
-            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Service, out var service))
+            if (!_authenticationService.TryGetUserClaimValues(ProviderClaims.Service, out var service))
             {
                 throw new UnauthorizedAccessException();
             }
@@ -115,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                 return null;
             }
 
-            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))
+            if (!_authenticationService.TryGetFirstUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))
             {
                 throw new UnauthorizedAccessException();
             }
@@ -135,7 +136,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                 return null;
             }
 
-            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
+            if (!_authenticationService.TryGetFirstUserClaimValue(ProviderClaims.Email, out var userEmail))
             {
                 throw new UnauthorizedAccessException();
             }

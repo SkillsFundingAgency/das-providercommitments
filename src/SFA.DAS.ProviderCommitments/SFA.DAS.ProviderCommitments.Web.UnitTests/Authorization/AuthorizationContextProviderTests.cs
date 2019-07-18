@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Routing;
@@ -88,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.Service, authorizationContext.Get<string>(AuthorizationContextKeys.Service));
+            Assert.IsTrue(authorizationContext.Get<IList<string>>(AuthorizationContextKeys.Service).Any(x => x == _fixture.Service));
         }
 
         [Test]
@@ -347,7 +350,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var ukprnClaimValue = UkprnClaimValue;
             
-            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
+            AuthenticationService.Setup(a => a.TryGetFirstUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
             
             return this;
         }
@@ -358,7 +361,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var ukprnClaimValue = UkprnClaimValue;
             
-            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
+            AuthenticationService.Setup(a => a.TryGetFirstUserClaimValue(ProviderClaims.Ukprn, out ukprnClaimValue)).Returns(true);
             
             return this;
         }
@@ -366,10 +369,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public AuthorizationContextProviderTestsFixture SetService()
         {
             Service = "DAA";
-            
-            var service = Service;
-            
-            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Service, out service)).Returns(true);
+
+            IList<string> services = new List<string> {"ARA", Service};
+
+            AuthenticationService.Setup(a => a.TryGetUserClaimValues(ProviderClaims.Service, out services)).Returns(true);
             
             return this;
         }
@@ -380,7 +383,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             
             var userEmailClaimValue = UserEmail;
             
-            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Email, out userEmailClaimValue)).Returns(true);
+            AuthenticationService.Setup(a => a.TryGetFirstUserClaimValue(ProviderClaims.Email, out userEmailClaimValue)).Returns(true);
             
             return this;
         }

@@ -61,15 +61,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 
         public ServiceAuthorizationHandlerTestsFixture SetValidServiceValue()
         {
-            AuthorizationContext.Set("Service", "DAA");
+            AuthorizationContext.Set("Service", new List<string> { "DAA" });
             
             return this;
         }
 
         public ServiceAuthorizationHandlerTestsFixture SetInvalidServiceValue()
         {
-            AuthorizationContext.Set("Service", "Foobar");
-            
+            AuthorizationContext.Set("Service", new List<string> { "Foobar" });
+
             return this;
         }
     }

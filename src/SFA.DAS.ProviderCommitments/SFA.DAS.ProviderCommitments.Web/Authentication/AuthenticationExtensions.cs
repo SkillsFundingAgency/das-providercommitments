@@ -16,26 +16,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
         {
             var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
 
-            //services.UseProviderIdamsStubAuthentication();
+            services.UseProviderIdamsStubAuthentication();
 
-            //return services;
-
-            services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                })
-                .AddWsFederation(options =>
-                {
-                    // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
-                    // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
-                    options.MetadataAddress = authenticationSettings.MetadataAddress;
-                    // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
-                    options.Wtrealm = authenticationSettings.Wtrealm;
-                    options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
-                }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
             return services;
+
+            //services.AddAuthentication(sharedOptions =>
+            //    {
+            //        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+            //    })
+            //    .AddWsFederation(options =>
+            //    {
+            //        // See: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/ws-federation?view=aspnetcore-2.2
+            //        // This is the AAD tenant's "Federation Metadata Document" found on the app registrations blade
+            //        options.MetadataAddress = authenticationSettings.MetadataAddress;
+            //        // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
+            //        options.Wtrealm = authenticationSettings.Wtrealm;
+            //        options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
+            //    }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+            //return services;
         }
 
         private static Task OnSecurityTokenValidated(SecurityTokenValidatedContext context)
