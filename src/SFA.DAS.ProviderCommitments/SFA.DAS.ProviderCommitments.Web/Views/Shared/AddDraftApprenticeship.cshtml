@@ -28,7 +28,13 @@
             <partial name="DraftApprenticeship" for="@Model" />
 
             <button type="submit" class="govuk-button">Add</button>
-            <div><a class="govuk-body govuk-link" href="">Cancel</a></div>
+            
+            @if (Model.CohortReference != null)
+            {
+                <p class="govuk-body govuk-!-margin-bottom-0">
+                    <a class="govuk-body govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/details")">Cancel</a>
+                </p>
+            }
         </form>
 
     </div>
