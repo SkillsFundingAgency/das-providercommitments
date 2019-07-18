@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
@@ -26,6 +28,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             value = exists ? claim.Value : null;
 
             return exists;
+        }
+        
+        public bool TryGetUserClaimValues(string key, out IEnumerable<string> values)
+        {
+            var claimsIdentity = (ClaimsIdentity)_httpContextAccessor.HttpContext.User.Identity;
+            var claims = claimsIdentity.FindAll(key);
+
+            values = claims.Select(c => c.Value).ToList();
+
+            return values.Any();
         }
     }
 }

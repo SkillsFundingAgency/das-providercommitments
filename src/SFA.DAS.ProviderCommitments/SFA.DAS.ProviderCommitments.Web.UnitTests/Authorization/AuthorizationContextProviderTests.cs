@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Routing;
@@ -79,20 +80,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServiceExists_ThenShouldReturnAuthorizationContextWithService()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServicesExist_ThenShouldReturnAuthorizationContextWithServices()
         {
             var authorizationContext = _fixture.SetAuthenticatedUser()
-                .SetService()
+                .SetServices()
                 .SetUserEmail()
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.Service, authorizationContext.Get<string>(AuthorizationContextKeys.Service));
+            Assert.AreEqual(_fixture.Services, authorizationContext.Get<IEnumerable<string>>(AuthorizationContextKeys.Services));
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServiceDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndServicesDoNotExist_ThenShouldThrowUnauthorizedAccessException()
         {
             _fixture.SetAuthenticatedUser();
 
@@ -100,19 +101,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
 
         [Test]
-        public void GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutService()
+        public void GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutServices()
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
             Assert.IsNotNull(authorizationContext);
-            Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.Service, out long service));
+            Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.Services, out long services));
         }
         
         [Test]
         public void GetAuthorizationContext_WhenUserIsAuthenticatedAndValidUkprnExistsAndUserEmailExists_ThenShouldReturnAuthorizationContextWithUkprnAndUserEmail()
         {
             var authorizationContext = _fixture.SetAuthenticatedUser()
-                .SetService()
+                .SetServices()
                 .SetUserEmail()
                 .SetValidUkprn()
                 .GetAuthorizationContext();
@@ -171,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public void GetAuthorizationContext_WhenUserIsAuthenticatedAndValidAccountLegalEntityIdExistsAndValidUkprnExists_ThenShouldReturnAuthorizationContextWithAccountLegalEntityIdAndUkprn()
         {
             var authorizationContext = _fixture.SetAuthenticatedUser()
-                .SetService()
+                .SetServices()
                 .SetUserEmail()
                 .SetValidAccountLegalEntityId()
                 .SetValidUkprn()
@@ -214,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public string CohortReference { get; set; }
         public long DraftApprenticeshipId { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
-        public string Service { get; set; }
+        public List<string> Services { get; set; }
         public long Ukprn { get; set; }
         public string UkprnClaimValue { get; set; }
         public string UserEmail { get; set; }
@@ -363,13 +364,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             return this;
         }
 
-        public AuthorizationContextProviderTestsFixture SetService()
+        public AuthorizationContextProviderTestsFixture SetServices()
         {
-            Service = "DAA";
+            Services = new List<string>
+            {
+                "ARA",
+                "DAA"
+            };
             
-            var service = Service;
+            var services = Services.AsEnumerable();
             
-            AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Service, out service)).Returns(true);
+            AuthenticationService.Setup(a => a.TryGetUserClaimValues(ProviderClaims.Service, out services)).Returns(true);
             
             return this;
         }
