@@ -4,6 +4,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
     {
         public const string CohortId = "CohortId";
         public const string DraftApprenticeshipId = "DraftApprenticeshipId";
-        public const string Service = "Service";
+        public const string Services = "Services";
     }
 }

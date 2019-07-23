@@ -21,18 +21,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
 
         [Test]
-        public async Task GetAuthorizationResult_WhenServiceValueIsValid_ThenShouldReturnAuthorizedAuthorizationResult()
+        public async Task GetAuthorizationResult_WhenServiceIsValid_ThenShouldReturnAuthorizedAuthorizationResult()
         {
-            var authorizationResult = await _fixture.SetValidServiceValue().Handle();
+            var authorizationResult = await _fixture.SetValidServices().Handle();
             
             Assert.IsNotNull(authorizationResult);
             Assert.IsTrue(authorizationResult.IsAuthorized);
         }
 
         [Test]
-        public async Task GetAuthorizationResult_WhenServiceValueIsInvalid_ThenShouldReturnUnauthorizedAuthorizationResult()
+        public async Task GetAuthorizationResult_WhenServiceIsInvalid_ThenShouldReturnUnauthorizedAuthorizationResult()
         {
-            var authorizationResult = await _fixture.SetInvalidServiceValue().Handle();
+            var authorizationResult = await _fixture.SetInvalidServices().Handle();
             
             Assert.IsNotNull(authorizationResult);
             Assert.IsFalse(authorizationResult.IsAuthorized);
@@ -59,16 +59,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             return ServiceAuthorizationHandler.GetAuthorizationResult(Options, AuthorizationContext);
         }
 
-        public ServiceAuthorizationHandlerTestsFixture SetValidServiceValue()
+        public ServiceAuthorizationHandlerTestsFixture SetValidServices()
         {
-            AuthorizationContext.Set("Service", "DAA");
+            AuthorizationContext.Set("Services", new List<string> { "ARA", "DAA" });
             
             return this;
         }
 
-        public ServiceAuthorizationHandlerTestsFixture SetInvalidServiceValue()
+        public ServiceAuthorizationHandlerTestsFixture SetInvalidServices()
         {
-            AuthorizationContext.Set("Service", "Foobar");
+            AuthorizationContext.Set("Services", new List<string> { "Foo", "Bar" });
             
             return this;
         }
