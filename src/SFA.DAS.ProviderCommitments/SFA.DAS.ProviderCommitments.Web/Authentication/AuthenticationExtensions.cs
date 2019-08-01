@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ProviderCommitments.Configuration;
@@ -28,7 +29,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                     // This is the app's "App ID URI" found in the app registration's Settings > Properties blade.
                     options.Wtrealm = authenticationSettings.Wtrealm;
                     options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
-                }).AddCookie(options => { options.ReturnUrlParameter = "/Home/Index"; });
+                }).AddCookie(options =>
+                {
+                    options.CookieManager = new ChunkingCookieManager {ChunkSize = 3000};
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.ReturnUrlParameter = "/Home/Index";
+                });
             return services;
         }
 

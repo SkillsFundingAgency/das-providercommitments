@@ -59,6 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
+                ProviderId = nonReservationsAddDraftApprenticeshipRequest.ProviderId,
                 CohortReference = nonReservationsAddDraftApprenticeshipRequest.CohortReference,
                 CohortId = nonReservationsAddDraftApprenticeshipRequest.CohortId
             };
@@ -81,6 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var model = new AddDraftApprenticeshipViewModel
             {
+                ProviderId = request.ProviderId,
                 CohortReference = request.CohortReference,
                 CohortId = request.CohortId,
                 StartDate = new MonthYearModel(request.StartMonthYear),

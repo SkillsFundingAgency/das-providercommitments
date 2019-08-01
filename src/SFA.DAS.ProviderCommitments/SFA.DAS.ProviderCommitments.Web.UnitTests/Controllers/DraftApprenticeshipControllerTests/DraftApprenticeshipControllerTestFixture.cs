@@ -59,6 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _draftApprenticeshipHashedId = autoFixture.Create<string>();
 
             _nonReservationsAddDraftApprenticeshipRequest = autoFixture.Build<NonReservationsAddDraftApprenticeshipRequest>()
+                .With(x => x.ProviderId, _providerId)
                 .With(x => x.CohortId, _cohortId)
                 .With(x => x.CohortReference, _cohortReference)
                 .Create();
@@ -76,6 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest();
 
             _reservationsAddDraftApprenticeshipRequest = autoFixture.Build<ReservationsAddDraftApprenticeshipRequest>()
+                .With(x => x.ProviderId, _providerId)
                 .With(x => x.CohortId, _cohortId)
                 .With(x => x.CohortReference, _nonReservationsAddDraftApprenticeshipRequest.CohortReference)
                 .With(x => x.StartMonthYear, "012019")
@@ -212,6 +214,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult) _actionResult).Model);
 
             var model = ((ViewResult) _actionResult).Model as AddDraftApprenticeshipViewModel;
+            Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.ProviderId, model.ProviderId);
             Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortId, model.CohortId);
             Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortReference, model.CohortReference);
             Assert.IsNull(model.ReservationId);
@@ -225,6 +228,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult) _actionResult).Model);
 
             var model = ((ViewResult) _actionResult).Model as AddDraftApprenticeshipViewModel;
+            Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.ProviderId, model.ProviderId);
             Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortId, model.CohortId);
             Assert.AreEqual(_nonReservationsAddDraftApprenticeshipRequest.CohortReference, model.CohortReference);
             Assert.IsNotNull(model.ReservationId);
