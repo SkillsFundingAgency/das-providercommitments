@@ -14,6 +14,7 @@ using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using StructureMap;
 
@@ -39,6 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 })
+                .AddDasHealthChecks()
                 .AddProviderIdamsAuthentication(Configuration)
                 .AddDasAuthorization()
                 .AddMemoryCache()
@@ -92,6 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseUnauthorizedAccessExceptionHandler()
                 .UseHttpsRedirection()
                 .UseStaticFiles()
+                .UseDasHealthChecks()
                 .UseCookiePolicy()
                 .UseAuthentication()
                 .UseMvc(routes =>

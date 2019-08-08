@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Authorization.CommitmentPermissions.Context;
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var accountLegalEntityId = GetAccountLegalEntityId();
             var cohortId = GetCohortId();
             var draftApprenticeshipId = GetDraftApprenticeshipId();
-            var service = GetService();
+            var services = GetServices();
             var ukprn = GetUkrpn();
             var userEmail = GetUserEmail();
             
@@ -45,9 +46,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                 authorizationContext.Set(AuthorizationContextKeys.DraftApprenticeshipId, draftApprenticeshipId);
             }
 
-            if (service != null)
+            if (services != null)
             {
-                authorizationContext.Set(AuthorizationContextKeys.Service, service);
+                authorizationContext.Set(AuthorizationContextKeys.Services, services);
             }
 
             if (ukprn != null && userEmail != null)
@@ -93,19 +94,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return FindAndDecodeValue(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
         }
 
-        private string GetService()
+        private IEnumerable<string> GetServices()
         {
             if (!_authenticationService.IsUserAuthenticated())
             {
                 return null;
             }
 
-            if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Service, out var service))
+            if (!_authenticationService.TryGetUserClaimValues(ProviderClaims.Service, out var services))
             {
                 throw new UnauthorizedAccessException();
             }
 
-            return service;
+            return services;
         }
 
         private long? GetUkrpn()
