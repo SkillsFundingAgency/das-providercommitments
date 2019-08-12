@@ -1,15 +1,40 @@
-﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using System;
+using System.Threading;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading.Tasks;
+using SFA.DAS.Apprenticeships.Api.Types.Exceptions;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class CreateCohortRequestMapper : ICreateCohortRequestMapper
     {
-        public CreateCohortRequest Map(AddDraftApprenticeshipViewModel source)
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
+
+        public CreateCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient)
         {
+            _commitmentsApiClient = commitmentsApiClient;
+        }
+        public async Task<CreateCohortRequest> MapAsync(AddDraftApprenticeshipViewModel source)
+        {
+            if (source.AccountLegalEntityId is null)
+            {
+                throw new InvalidOperationException("AccountLegalEntity cannot be null");
+            }
+
+            var accountLegalEntity =
+                await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId.Value, CancellationToken.None);
+
+            if (accountLegalEntity is null)
+            {
+                throw new EntityNotFoundException($"AccountLegalEntity {source.AccountLegalEntityId} not found", null);
+            }
+
             return new CreateCohortRequest
             {
-                AccountLegalEntityId = source.AccountLegalEntityId ?? 0,
+                AccountId = accountLegalEntity.AccountId,
+                AccountLegalEntityId = source.AccountLegalEntityId.Value,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId.Value,
                 FirstName = source.FirstName,

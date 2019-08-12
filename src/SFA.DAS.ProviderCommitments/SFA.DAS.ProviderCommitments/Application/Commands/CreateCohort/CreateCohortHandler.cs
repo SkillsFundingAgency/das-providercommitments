@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         {
             return new CommitmentsV2.Api.Types.Requests.CreateCohortRequest
             {  
-                UserId = source.UserId,
+                AccountId = source.AccountId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 ProviderId = source.ProviderId,
                 FirstName = source.FirstName,
