@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_encodingService.TryDecode(cohortReference, EncodingType.CohortReference, out var cohortId))
             {
-                throw new UnauthorizedAccessException($"Cannot decode cohort reference {cohortReference}");
+                throw new UnauthorizedAccessException($"Failed to decode '{RouteValueKeys.CohortReference}' value '{cohortReference}' using encoding type '{EncodingType.CohortReference}'");
             }
 
             return cohortId;
@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_authenticationService.TryGetUserClaimValues(ProviderClaims.Service, out var services))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Service}'");
             }
 
             return services;
@@ -118,12 +118,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Ukprn}'");
             }
 
             if (!long.TryParse(ukprnClaimValue, out var ukprn))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException($"Failed to parse value '{ukprnClaimValue}' for claim '{ProviderClaims.Ukprn}'");
             }
 
             return ukprn;
@@ -138,7 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Email}'");
             }
 
             return userEmail;
@@ -153,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_encodingService.TryDecode(encodedValue, encodingType, out var value))
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException($"Failed to decode '{key}' value '{encodedValue}' using encoding type '{encodingType}'");
             }
 
             return value;
