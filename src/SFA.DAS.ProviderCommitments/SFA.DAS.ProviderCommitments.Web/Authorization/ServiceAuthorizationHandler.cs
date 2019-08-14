@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     public class ServiceAuthorizationHandler : IAuthorizationHandler
     {
-        public string Prefix => "ProviderCommitments.";
+        public string Prefix => "Service.";
 
         public Task<AuthorizationResult> GetAuthorizationResult(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext)
         {
