@@ -3,17 +3,18 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
+namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
+    [Parallelizable]
     public class WhenGettingACohort
     {
-        private ProviderCommitmentsServiceTestFixtures _fixture;
+        private CommitmentsServiceTestFixtures _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new ProviderCommitmentsServiceTestFixtures();
+            _fixture = new CommitmentsServiceTestFixtures();
         }
 
         [Test]
@@ -27,6 +28,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
             Assert.AreEqual(_fixture.CohortApiDetail.CohortId, result.CohortId);
             Assert.AreEqual(_fixture.CohortApiDetail.LegalEntityName, result.LegalEntityName);
             Assert.AreEqual($"CRX{_fixture.CohortApiDetail.CohortId}X", result.HashedCohortId);
+            Assert.AreEqual(_fixture.CohortApiDetail.IsFundedByTransfer, result.IsFundedByTransfer);
+            Assert.AreEqual(_fixture.CohortApiDetail.ProviderName, result.ProviderName);
+            Assert.AreEqual(_fixture.CohortApiDetail.WithParty, result.WithParty);
         }
 
         [Test]

@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
     {
         public string UserId { get; set; }
         public long AccountLegalEntityId { get; set; }
-        public int ProviderId { get; set; }
+        public long ProviderId { get; set; }
         public Guid ReservationId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
