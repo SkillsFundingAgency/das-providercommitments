@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Commitments.Shared.Interfaces;
 
@@ -13,7 +14,7 @@ namespace SFA.DAS.Commitments.Shared.Services
             _serviceProvider = serviceProvider;
         }
 
-        public T Map<T>(object source) where T : class
+        public Task<T> Map<T>(object source) where T : class
         {
             var sourceType = source.GetType();
             var destinationType = typeof(T);
@@ -35,7 +36,7 @@ namespace SFA.DAS.Commitments.Shared.Services
             var mapMethod = mapper.GetType().GetMethod(nameof(IMapper<T, T>.Map));
             var result = mapMethod.Invoke(mapper, new[] { source });
 
-            return result as T;
+            return result as Task<T>;
         }
     }
 }

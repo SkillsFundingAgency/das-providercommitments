@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
@@ -24,7 +25,7 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.ModelMapperTests
             _destination = new TestMappingDestination();
 
             _mockMapper = new Mock<IMapper<TestMappingSource, TestMappingDestination>>();
-            _mockMapper.Setup(x => x.Map(It.IsAny<TestMappingSource>())).Returns(_destination);
+            _mockMapper.Setup(x => x.Map(It.IsAny<TestMappingSource>())).Returns(Task.FromResult(_destination));
 
             _mockServiceProvider = new Mock<IServiceProvider>();
             _mockServiceProvider.Setup(x => x.GetService(It.IsAny<Type>())).Returns(_mockMapper.Object);

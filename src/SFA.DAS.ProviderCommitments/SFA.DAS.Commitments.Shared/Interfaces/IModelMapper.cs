@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.Commitments.Shared.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace SFA.DAS.Commitments.Shared.Interfaces
 {
     public interface IModelMapper
     {
-        T Map<T>(object source) where T : class;
+        Task<T> Map<T>(object source) where T : class;
     }
 }
