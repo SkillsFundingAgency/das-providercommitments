@@ -9,8 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.Provider.Shared.UI;
-using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -49,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     ConfigureAuthorization(options);
                 })
-                .SetDefaultNavigationSection(NavigationSection.YourCohorts)
+                .AddNavigationBarSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
