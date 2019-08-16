@@ -71,8 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            var request = _createCohortRequestMapper.Map(model);
-            request.UserId = User.Upn();
+            var request = await _createCohortRequestMapper.MapAsync(model);
 
             try
             {

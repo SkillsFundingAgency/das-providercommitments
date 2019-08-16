@@ -1,10 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public interface ICreateCohortRequestMapper
     {
-        CreateCohortRequest Map(AddDraftApprenticeshipViewModel source);
+        Task<CreateCohortRequest> MapAsync(AddDraftApprenticeshipViewModel source);
     }
 }

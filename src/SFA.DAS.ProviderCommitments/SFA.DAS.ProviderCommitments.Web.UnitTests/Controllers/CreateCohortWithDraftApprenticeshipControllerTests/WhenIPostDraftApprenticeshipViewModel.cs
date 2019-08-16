@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                 };
 
                 _createCohortRequest = new CreateCohortRequest();
-                _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>())).Returns(_createCohortRequest);
+                _mapper.Setup(x => x.MapAsync(It.IsAny<AddDraftApprenticeshipViewModel>())).ReturnsAsync(_createCohortRequest);
 
                 _createCohortResponse = new CreateCohortResponse
                 {
@@ -99,7 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
             public UnapprovedControllerTestFixture VerifyCohortCreated()
             {
                 //1. Verify that the viewmodel submitted was mapped
-                _mapper.Verify(x => x.Map(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)), Times.Once);
+                _mapper.Verify(x => x.MapAsync(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)), Times.Once);
                 //2. Verify that the mapper result (request) was sent
                 _mediator.Verify(x => x.Send(It.Is<CreateCohortRequest>(r => r == _createCohortRequest), It.IsAny<CancellationToken>()), Times.Once);
                 return this;
