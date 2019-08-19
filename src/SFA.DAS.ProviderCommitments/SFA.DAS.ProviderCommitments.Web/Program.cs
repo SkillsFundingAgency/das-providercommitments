@@ -16,10 +16,9 @@ namespace SFA.DAS.ProviderCommitments.Web
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureDasAppConfiguration()
-                .ConfigureKestrel(options => options.AddServerHeader = false)
-                .UseStructureMap()
-                .UseStartup<Startup>()
                 .UseApplicationInsights()
-                .UseNLog();
+                .UseNLog()
+                .UseStructureMap()
+                .UseStartup<Startup>();
     }
 }
