@@ -3,17 +3,18 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
+namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
     [TestFixture]
+    [Parallelizable]
     public class WhenGettingADraftApprenticeship
     {
-        private ProviderCommitmentsServiceTestFixtures _fixture;
+        private CommitmentsServiceTestFixtures _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new ProviderCommitmentsServiceTestFixtures();
+            _fixture = new CommitmentsServiceTestFixtures();
             _fixture.SetupGetDraftApprenticeshipReturnValue(_fixture.GetDraftApprenticeshipResponse)
                 .SetupHashingToEncodeInput();
         }
@@ -21,13 +22,11 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         [Test]
         public async Task ShouldMapValuesFromApiCallAndAddHashValues()
         {
-            var providerId = 1;
             var cohortId = 2;
             var apprenticeshipId = 123;
 
-            var result = await _fixture.Sut.GetDraftApprenticeshipForCohort(providerId, cohortId, apprenticeshipId);
+            var result = await _fixture.Sut.GetDraftApprenticeshipForCohort(cohortId, apprenticeshipId);
 
-            Assert.AreEqual(providerId, result.ProviderId);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.Id, result.DraftApprenticeshipId);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.FirstName, result.FirstName);
             Assert.AreEqual(_fixture.GetDraftApprenticeshipResponse.LastName, result.LastName);
@@ -47,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
         [Test]
         public async Task ShouldCallClientApiWithCorrectParameters()
         {
-            await _fixture.Sut.GetDraftApprenticeshipForCohort(1, 2, 123);
+            await _fixture.Sut.GetDraftApprenticeshipForCohort(2, 123);
 
             _fixture.CommitmentsApiClientMock.Verify(x => x.GetDraftApprenticeship(2, 123, It.IsAny<CancellationToken>()), Times.Once);
         }

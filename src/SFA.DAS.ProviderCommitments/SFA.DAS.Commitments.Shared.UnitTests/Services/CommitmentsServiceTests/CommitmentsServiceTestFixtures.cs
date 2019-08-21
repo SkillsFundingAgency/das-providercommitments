@@ -5,20 +5,20 @@ using SFA.DAS.Commitments.Shared.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Services;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServiceTests
+namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
-    public class ProviderCommitmentsServiceTestFixtures
+    public class CommitmentsServiceTestFixtures
     {
-        public ProviderCommitmentsServiceTestFixtures()
+        public CommitmentsServiceTestFixtures()
         {
             var autoFixture = new Fixture();
 
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();  
             HashingServiceMock = new Mock<IEncodingService>();
-            CohortApiDetail = new GetCohortResponse {CohortId = 2, LegalEntityName = "LEN"};
+            CohortApiDetail = new GetCohortResponse {CohortId = 2, LegalEntityName = "LEN", ProviderName = "ProviderName", IsFundedByTransfer = true, WithParty = Party.Employer};
             CohortId = autoFixture.Create<long>();
             AddDraftApprenticeshipRequest = autoFixture.Build<AddDraftApprenticeshipRequest>().Create();
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
@@ -35,24 +35,25 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services.ProviderCommitmentsServ
 
         public CommitmentsService Sut;
 
-        public ProviderCommitmentsServiceTestFixtures SetupGetCohortDetailsReturnValue(GetCohortResponse retVal)
+        public CommitmentsServiceTestFixtures SetupGetCohortDetailsReturnValue(GetCohortResponse retVal)
         {
             CommitmentsApiClientMock.Setup(x=>x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(retVal);
             return this;
         }
 
-        public ProviderCommitmentsServiceTestFixtures SetupGetDraftApprenticeshipReturnValue(GetDraftApprenticeshipResponse retVal)
+        public CommitmentsServiceTestFixtures SetupGetDraftApprenticeshipReturnValue(GetDraftApprenticeshipResponse retVal)
         {
             CommitmentsApiClientMock.Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(retVal);
             return this;
         }
 
-        public ProviderCommitmentsServiceTestFixtures SetupHashingToEncodeInput()
+        public CommitmentsServiceTestFixtures SetupHashingToEncodeInput()
         {
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns((long id, EncodingType encodingType) => $"ALEX{id}X");
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long id, EncodingType encodingType) => $"CRX{id}X");
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId)).Returns((long id, EncodingType encodingType) => $"AX{id}X");
             return this;
         }
+
     }
 }

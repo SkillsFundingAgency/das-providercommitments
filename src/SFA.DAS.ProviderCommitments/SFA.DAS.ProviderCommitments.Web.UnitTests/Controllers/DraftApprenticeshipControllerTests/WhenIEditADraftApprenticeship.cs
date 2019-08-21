@@ -23,6 +23,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public async Task ShouldSetProviderIdOnViewModel()
+        {
+            _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice().SetupProviderIdOnEditRequest(123);
+            await _fixture.EditDraftApprenticeship();
+            _fixture.VerifyEditDraftApprenticeshipViewModelHasProviderIdSet();
+        }
+
+        [Test]
         public async Task ShouldPassCohortIdAndDraftApprenticeshipIdToGetDraftApprenticeshipOnProviderCommitmentsService()
         {
             _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();

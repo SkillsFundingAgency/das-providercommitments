@@ -7,7 +7,8 @@ namespace SFA.DAS.Commitments.Shared.Models
         public long DraftApprenticeshipId { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public long CohortId { get; set; }
-        public int ProviderId { get; set; }
+        public long EmployerAccountId { get; set; }
+        public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public Guid? ReservationId { get; set; }
         public string FirstName { get; set; }
