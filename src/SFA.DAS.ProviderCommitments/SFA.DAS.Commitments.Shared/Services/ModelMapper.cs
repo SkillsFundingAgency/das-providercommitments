@@ -22,21 +22,17 @@ namespace SFA.DAS.Commitments.Shared.Services
             Type[] typeArgs = { sourceType, destinationType };
             var mapperType = typeof(IMapper<,>).MakeGenericType(typeArgs);
 
-            object mapper;
-
-            try
+            var mapper = _serviceProvider.GetService(mapperType);
+            
+            if(mapper == null)
             {
-                mapper = _serviceProvider.GetRequiredService(mapperType);
-            }
-            catch (InvalidOperationException e)
-            {
-                throw new InvalidOperationException($"Unable to locate implementation of IMapper<{sourceType.Name},{destinationType.Name}>", e);
+                throw new InvalidOperationException($"Unable to locate implementation of IMapper<{sourceType.Name},{destinationType.Name}>");
             }
 
             var mapMethod = mapper.GetType().GetMethod(nameof(IMapper<T, T>.Map));
             var result = mapMethod.Invoke(mapper, new[] { source });
 
-            return result as Task<T>;
+            return (Task<T>)result;
         }
     }
 }
