@@ -15,6 +15,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="4.1.72" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.1" />
+    <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
   </ItemGroup>
 
