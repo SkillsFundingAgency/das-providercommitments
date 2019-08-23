@@ -8,7 +8,6 @@ using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.Commitments.Shared.Models;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
@@ -180,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.Courses = courses;
         }
 
-        private async Task<ICourse[]> GetCourses(CohortDetails cohortDetails)
+        private async Task<ITrainingProgramme[]> GetCourses(CohortDetails cohortDetails)
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer });
 
