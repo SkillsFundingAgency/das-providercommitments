@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {
     public sealed class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>
     {
-        private ITrainingProgrammeApiClient _trainingProgrammeApiClient;
+        private readonly ITrainingProgrammeApiClient _trainingProgrammeApiClient;
 
         public GetTrainingCoursesQueryHandler(ITrainingProgrammeApiClient trainingProgrammeApiClient)
         {
