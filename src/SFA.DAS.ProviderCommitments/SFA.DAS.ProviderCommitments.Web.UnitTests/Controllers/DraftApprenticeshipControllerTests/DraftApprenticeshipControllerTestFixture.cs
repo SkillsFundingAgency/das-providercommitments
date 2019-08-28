@@ -113,15 +113,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>>();
             _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>()))
-                .Returns(_createAddDraftApprenticeshipRequest);
+                .Returns(Task.FromResult(_createAddDraftApprenticeshipRequest));
 
             _editMapper = new Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>>();
             _editMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipDetails>()))
-                .Returns(_editModel);
+                .Returns(Task.FromResult(_editModel));
 
             _updateMapper = new Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>>();
             _updateMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipViewModel>()))
-                .Returns(_updateDraftApprenticeshipRequest);
+                .Returns(Task.FromResult(_updateDraftApprenticeshipRequest));
 
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))

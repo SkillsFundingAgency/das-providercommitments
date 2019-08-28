@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Commitments.Shared.Interfaces;
+﻿using System.Threading.Tasks;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -6,9 +7,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class AddDraftApprenticeshipRequestMapper : IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>
     {
-        public AddDraftApprenticeshipRequest Map(AddDraftApprenticeshipViewModel source)
+        public Task<AddDraftApprenticeshipRequest> Map(AddDraftApprenticeshipViewModel source)
         {
-            return new AddDraftApprenticeshipRequest
+            return Task.FromResult(new AddDraftApprenticeshipRequest
             {
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
@@ -21,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference
-            };
+            });
         }
     }
 }
