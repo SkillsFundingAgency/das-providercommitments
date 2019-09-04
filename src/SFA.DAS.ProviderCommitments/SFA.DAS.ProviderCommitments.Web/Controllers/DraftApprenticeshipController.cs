@@ -104,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            var request = _addDraftApprenticeshipToCohortRequestMapper.Map(model);
+            var request = await _addDraftApprenticeshipToCohortRequestMapper.Map(model);
             request.UserId = User.Upn();
 
             try
@@ -131,7 +131,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var model = _editDraftApprenticeshipDetailsToViewModelMapper.Map(
+            var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(
                 await _commitmentsService.GetDraftApprenticeshipForCohort(
                     request.CohortId.Value,
                     request.DraftApprenticeshipId.Value));
@@ -153,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            var updateRequest = _updateDraftApprenticeshipRequestMapper.Map(model);
+            var updateRequest = await _updateDraftApprenticeshipRequestMapper.Map(model);
 
             try
             {
