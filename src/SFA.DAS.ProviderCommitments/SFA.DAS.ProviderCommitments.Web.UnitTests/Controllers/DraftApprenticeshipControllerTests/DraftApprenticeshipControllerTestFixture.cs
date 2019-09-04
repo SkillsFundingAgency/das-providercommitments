@@ -6,9 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.Commitments.Shared.Models;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
@@ -85,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _courseResponse = new GetTrainingCoursesQueryResponse
             {
-                TrainingCourses = new ICourse[0]
+                TrainingCourses = new ITrainingProgramme[0]
             };
 
             _addModel = new AddDraftApprenticeshipViewModel
