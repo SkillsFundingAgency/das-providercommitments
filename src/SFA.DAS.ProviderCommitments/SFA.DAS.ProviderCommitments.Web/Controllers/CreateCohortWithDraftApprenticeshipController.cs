@@ -39,13 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add-apprentice")]
-        public IActionResult AddDraftApprenticeshipRedirect(CreateCohortWithDraftApprenticeshipRequest request)
-        {
-            return RedirectToRoute("ApprenticeV2", request);
-        }
-
-        [HttpGet]
-        [Route("add/apprentice", Name = "ApprenticeV2")]
+        [Route("add/apprentice")]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
@@ -68,6 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
+        [Route("add-apprentice")]
         [Route("add/apprentice")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
