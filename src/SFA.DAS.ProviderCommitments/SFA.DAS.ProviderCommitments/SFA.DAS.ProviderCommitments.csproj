@@ -10,14 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Application\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="6.0.0" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.199" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.199" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.203" />
+    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.203" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="5.6.7" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.142" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="4.1.142" />
