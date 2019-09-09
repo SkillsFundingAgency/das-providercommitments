@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
@@ -13,11 +13,11 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {
     public sealed class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>
     {
-        private readonly IApprenticeshipInfoService _apprenticeshipInfoService;
+        private readonly ITrainingProgrammeApiClient _trainingProgrammeApiClient;
 
-        public GetTrainingCoursesQueryHandler(IApprenticeshipInfoService apprenticeshipInfoService)
+        public GetTrainingCoursesQueryHandler(ITrainingProgrammeApiClient trainingProgrammeApiClient)
         {
-            _apprenticeshipInfoService = apprenticeshipInfoService;
+            _trainingProgrammeApiClient = trainingProgrammeApiClient;
         }
 
         public async Task<GetTrainingCoursesQueryResponse> Handle(GetTrainingCoursesQueryRequest message, CancellationToken cancellationToken)
@@ -37,9 +37,9 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
             return result;
         }
 
-        private Task<IEnumerable<ICourse>> GetAllRequiredCourses(bool getFramework, CancellationToken cancellationToken)
+        private Task<IEnumerable<ITrainingProgramme>> GetAllRequiredCourses(bool getFramework, CancellationToken cancellationToken)
         {
-            var tasks = new List<Task<IEnumerable<ICourse>>> {GetStandards(cancellationToken)};
+            var tasks = new List<Task<IEnumerable<ITrainingProgramme>>> {GetStandards(cancellationToken)};
 
             if (getFramework)
             {
@@ -50,26 +50,26 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
                     .ContinueWith(allTasks => allTasks.Result.SelectMany(task => task), cancellationToken);
         }
 
-        private async Task<IEnumerable<ICourse>> GetStandards(CancellationToken cancellationToken)
+        private async Task<IEnumerable<ITrainingProgramme>> GetStandards(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 throw new OperationCanceledException();
             }
 
-            var results = await _apprenticeshipInfoService.GetStandardsAsync();
-            return results.Standards;
+            var results = await _trainingProgrammeApiClient.GetStandardTrainingProgrammes();
+            return results;
         }
 
-        private async Task<IEnumerable<ICourse>> GetFramework(CancellationToken cancellationToken)
+        private async Task<IEnumerable<ITrainingProgramme>> GetFramework(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 throw new OperationCanceledException();
             }
 
-            var results = await _apprenticeshipInfoService.GetFrameworksAsync();
-            return results.Frameworks;
+            var results = await _trainingProgrammeApiClient.GetFrameworkTrainingProgrammes();
+            return results;
         }
     }
 }

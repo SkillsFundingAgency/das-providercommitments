@@ -1,10 +1,9 @@
-﻿using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
-using SFA.DAS.ProviderCommitments.Domain_Models.ApprenticeshipCourse;
+﻿using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {
     public sealed class GetTrainingCoursesQueryResponse
     {
-        public ICourse[] TrainingCourses { get; set; }
+        public ITrainingProgramme[] TrainingCourses { get; set; }
     }
 }

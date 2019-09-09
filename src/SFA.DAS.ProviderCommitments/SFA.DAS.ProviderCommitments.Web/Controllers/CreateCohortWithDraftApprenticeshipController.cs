@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Commitments.Shared.Models;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
@@ -118,7 +118,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
-        private async Task<ICourse[]> GetCourses()
+        private async Task<ITrainingProgramme[]> GetCourses()
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
 

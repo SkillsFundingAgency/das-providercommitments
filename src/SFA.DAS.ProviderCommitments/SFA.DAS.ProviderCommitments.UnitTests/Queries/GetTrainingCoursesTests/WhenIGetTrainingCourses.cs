@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 
@@ -15,48 +17,44 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
     {
         private GetTrainingCoursesQueryHandler _handler;
 
-        private Mock<IApprenticeshipInfoService> _apprenticeshipInfoServiceWrapper;
+        private Mock<ITrainingProgrammeApiClient> _iTrainingProgrammeApiClient;
 
         private Standard[] _standards;
         private Framework[] _frameworks;
-
         [SetUp]
         public void Arrange()
         {
-            _standards = new Standard[1]
+
+            var standard = new Standard
             {
-                new Standard
-                {
-                    EffectiveFrom = new DateTime(2016,01,01),
-                    EffectiveTo = new DateTime(2016,12,31)
-                }
-            };
-            _frameworks = new Framework[1]
-            {
-                new Framework
-                {
-                    EffectiveFrom = new DateTime(2017,01,01),
-                    EffectiveTo = new DateTime(2017,12,31)
-                }
+                EffectiveFrom = new DateTime(2016, 01, 01),
+                EffectiveTo = new DateTime(2016, 12, 31)
             };
 
-            _apprenticeshipInfoServiceWrapper = new Mock<IApprenticeshipInfoService>();
+            var framework = new Framework
+            {
+                EffectiveFrom = new DateTime(2017, 01, 01),
+                EffectiveTo = new DateTime(2017, 12, 31)
+            };
 
-            _apprenticeshipInfoServiceWrapper.Setup(x => x.GetFrameworksAsync(It.IsAny<bool>()))
-                .ReturnsAsync(new FrameworksView
+            _standards = new Standard[1] {standard};
+            _frameworks = new Framework[1] {framework};
+
+            _iTrainingProgrammeApiClient = new Mock<ITrainingProgrammeApiClient>();
+            
+            _iTrainingProgrammeApiClient.Setup(x => x.GetFrameworkTrainingProgrammes())
+                .ReturnsAsync(new List<Framework>
                 {
-                    CreatedDate = DateTime.UtcNow,
-                    Frameworks = _frameworks
+                    framework
                 });
 
-            _apprenticeshipInfoServiceWrapper.Setup(x => x.GetStandardsAsync(It.IsAny<bool>()))
-                .ReturnsAsync(new StandardsView
+            _iTrainingProgrammeApiClient.Setup(x => x.GetStandardTrainingProgrammes())
+                .ReturnsAsync(new List<Standard>
                 {
-                    CreationDate = DateTime.UtcNow.Date,
-                    Standards = _standards
+                    standard
                 });
 
-            _handler = new GetTrainingCoursesQueryHandler(_apprenticeshipInfoServiceWrapper.Object);
+            _handler = new GetTrainingCoursesQueryHandler(_iTrainingProgrammeApiClient.Object);
         }
 
         [Test]

@@ -1,7 +1,8 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Commitments.Shared.Models.ApprenticeshipCourse;
+using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtensionsTests
@@ -17,11 +18,11 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         [TestCase(null, null, "2016-06-01", true, Description = "Within date range, with no defined course effective dates")]
         [TestCase("2016-01-01", "2016-12-01", "2015-06-01", false, Description = "Outside (before) date range")]
         [TestCase("2016-01-01", "2016-12-01", "2017-06-01", false, Description = "Outside (after) date range")]
-        public void ThenIfWithinCourseEffectiveRangeThenIsActive(DateTime? courseStart, DateTime? courseEnd, DateTime effectiveDate, bool expectIsActive)
+        public void ThenIfWithinCourseEffectiveRangeThenIsActive(DateTime? trainingProgrammeStart, DateTime? courseEnd, DateTime effectiveDate, bool expectIsActive)
         {
             //Arrange
-            var course = new Mock<ICourse>();
-            course.SetupGet(x => x.EffectiveFrom).Returns(courseStart);
+            var course = new Mock<ITrainingProgramme>();
+            course.SetupGet(x => x.EffectiveFrom).Returns(trainingProgrammeStart);
             course.SetupGet(x => x.EffectiveTo).Returns(courseEnd);
 
             //Act
