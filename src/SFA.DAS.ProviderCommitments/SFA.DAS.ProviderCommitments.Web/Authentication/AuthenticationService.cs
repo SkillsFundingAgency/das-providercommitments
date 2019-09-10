@@ -13,7 +13,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
+        public string UserId => GetUserClaimAsString(ProviderClaims.Upn);
+        public string UserName => GetUserClaimAsString(ProviderClaims.Name);
+        public string UserEmail => GetUserClaimAsString(ProviderClaims.Email);
+
         public bool IsUserAuthenticated()
         {
             return _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
@@ -38,6 +42,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             values = claims.Select(c => c.Value).ToList();
 
             return values.Any();
+        }
+
+        private string GetUserClaimAsString(string claim)
+        {
+            if (IsUserAuthenticated() && TryGetUserClaimValue(claim, out var value))
+            {
+                return value;
+            }
+            return null;
         }
     }
 }

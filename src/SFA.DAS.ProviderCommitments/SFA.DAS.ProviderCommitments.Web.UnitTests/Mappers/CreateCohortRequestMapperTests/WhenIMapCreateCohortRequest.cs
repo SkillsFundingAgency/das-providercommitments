@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .Without(x => x.Courses)
                 .Create();
 
-            _act = () => _mapper.MapAsync(TestHelper.Clone(_source));
+            _act = () => _mapper.Map(TestHelper.Clone(_source));
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
-        public async Task AndWhenTheAccountLegalEntityIdIsNullThenShouldThrowInvalidOperationException()
+        public void AndWhenTheAccountLegalEntityIdIsNullThenShouldThrowInvalidOperationException()
         {
             _source.AccountLegalEntityId = null;
 
@@ -153,14 +153,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
-        public async Task AndWhenTheAccountLegalEntityIsNotFoundThenShouldThrowInvalidOperationException()
+        public void AndWhenTheAccountLegalEntityIsNotFoundThenShouldThrowInvalidOperationException()
         {
             _mockCommitmentsApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((AccountLegalEntityResponse) null);
 
             Assert.ThrowsAsync<EntityNotFoundException>(() => _act());
         }
-
-
     }
 }

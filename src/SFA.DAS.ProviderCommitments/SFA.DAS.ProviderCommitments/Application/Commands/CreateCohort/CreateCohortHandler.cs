@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
@@ -10,18 +11,24 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
     {
         private readonly IValidator<CreateCohortRequest> _validator;
         private readonly ICommitmentsApiClient _apiClient;
+        private readonly IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest> _mapper;
 
-        public CreateCohortHandler(IValidator<CreateCohortRequest> validator, ICommitmentsApiClient apiClient)
+        public CreateCohortHandler(
+            IValidator<CreateCohortRequest> validator, 
+            ICommitmentsApiClient apiClient,
+            IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest> mapper)
         {
             _validator = validator;
             _apiClient = apiClient;
+            _mapper = mapper;
         }
 
         public async Task<CreateCohortResponse> Handle(CreateCohortRequest request, CancellationToken cancellationToken)
         {
             ValidateAndThrow(request);
 
-            var apiResult = await _apiClient.CreateCohort(Map(request), cancellationToken);
+            var apiRequest = await _mapper.Map(request).ConfigureAwait(false);
+            var apiResult = await _apiClient.CreateCohort(apiRequest, cancellationToken).ConfigureAwait(false);
 
             return new CreateCohortResponse
             {
@@ -38,25 +45,5 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
                 throw new ValidationException(validationResult.Errors);
             }
         }
-
-        private static CommitmentsV2.Api.Types.Requests.CreateCohortRequest Map(CreateCohortRequest source)
-        {
-            return new CommitmentsV2.Api.Types.Requests.CreateCohortRequest
-            {  
-                AccountId = source.AccountId,
-                AccountLegalEntityId = source.AccountLegalEntityId,
-                ProviderId = source.ProviderId,
-                FirstName = source.FirstName,
-                LastName = source.LastName,
-                DateOfBirth = source.DateOfBirth,
-                Uln = source.UniqueLearnerNumber,
-                CourseCode = source.CourseCode,
-                Cost = source.Cost,
-                StartDate = source.StartDate,
-                EndDate = source.EndDate,
-                OriginatorReference = source.OriginatorReference,
-                ReservationId = source.ReservationId
-            };
-        }       
     }
 }
