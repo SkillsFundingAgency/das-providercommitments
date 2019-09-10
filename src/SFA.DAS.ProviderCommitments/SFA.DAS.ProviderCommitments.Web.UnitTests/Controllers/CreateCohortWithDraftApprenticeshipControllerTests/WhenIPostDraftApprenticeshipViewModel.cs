@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -44,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
         {
             private readonly CreateCohortWithDraftApprenticeshipController _controller;
             private readonly Mock<IMediator> _mediator;
-            private readonly Mock<ICreateCohortRequestMapper> _mapper;
+            private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>> _mapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
             private readonly AddDraftApprenticeshipViewModel _model;
             private readonly CreateCohortRequest _createCohortRequest;
@@ -58,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                 var autoFixture = new Fixture();
 
                 _mediator = new Mock<IMediator>();
-                _mapper = new Mock<ICreateCohortRequestMapper>();
+                _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>>();
                 _linkGenerator = new Mock<ILinkGenerator>();
 
                 _model = new AddDraftApprenticeshipViewModel
@@ -70,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                 };
 
                 _createCohortRequest = new CreateCohortRequest();
-                _mapper.Setup(x => x.MapAsync(It.IsAny<AddDraftApprenticeshipViewModel>())).ReturnsAsync(_createCohortRequest);
+                _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>())).ReturnsAsync(_createCohortRequest);
 
                 _createCohortResponse = new CreateCohortResponse
                 {
@@ -99,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
             public UnapprovedControllerTestFixture VerifyCohortCreated()
             {
                 //1. Verify that the viewmodel submitted was mapped
-                _mapper.Verify(x => x.MapAsync(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)), Times.Once);
+                _mapper.Verify(x => x.Map(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)), Times.Once);
                 //2. Verify that the mapper result (request) was sent
                 _mediator.Verify(x => x.Send(It.Is<CreateCohortRequest>(r => r == _createCohortRequest), It.IsAny<CancellationToken>()), Times.Once);
                 return this;

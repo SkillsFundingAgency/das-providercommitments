@@ -4,11 +4,12 @@ using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 using SFA.DAS.Apprenticeships.Api.Types.Exceptions;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestMapper : ICreateCohortRequestMapper
+    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
@@ -16,7 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
-        public async Task<CreateCohortRequest> MapAsync(AddDraftApprenticeshipViewModel source)
+
+        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
         {
             if (source.AccountLegalEntityId is null)
             {
