@@ -5,6 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
@@ -60,13 +61,16 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
         {
             private readonly CreateCohortHandler _handler;
             private readonly CreateCohortRequest _request;
+            private readonly CommitmentsV2.Api.Types.Requests.CreateCohortRequest _apiRequest;
             private readonly CreateCohortRequest _requestClone;
             private CreateCohortResponse _result;
             private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _apiResponse;
             private readonly Mock<IValidator<CreateCohortRequest>> _validator;
             private readonly ValidationResult _validationResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
-            
+            private readonly Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>> _mapper;
+
+
             public CreateCohortHandlerFixture()
             {
                 var autoFixture = new Fixture();
@@ -84,7 +88,12 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                 _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(_apiResponse);
 
-                _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object);
+                _mapper = new Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>>();
+
+                _apiRequest = autoFixture.Create<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>();
+                _mapper.Setup(m => m.Map(_requestClone))
+                    .ReturnsAsync(_apiRequest);
+                _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object, _mapper.Object);
             }
 
             public async Task Act()
@@ -108,18 +117,18 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             {
                 _apiClient.Verify(x =>
                     x.CreateCohort(It.Is<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(r =>
-                        r.ProviderId == _request.ProviderId
-                        && r.AccountLegalEntityId == _request.AccountLegalEntityId
-                        && r.ReservationId == _request.ReservationId
-                        && r.FirstName == _request.FirstName
-                        && r.LastName == _request.LastName
-                        && r.DateOfBirth == _request.DateOfBirth
-                        && r.Uln == _request.UniqueLearnerNumber
-                        && r.CourseCode == _request.CourseCode
-                        && r.Cost == _request.Cost
-                        && r.StartDate == _request.StartDate
-                        && r.EndDate == _request.EndDate
-                        && r.OriginatorReference == _request.OriginatorReference
+                        r.ProviderId == _apiRequest.ProviderId
+                        && r.AccountLegalEntityId == _apiRequest.AccountLegalEntityId
+                        && r.ReservationId == _apiRequest.ReservationId
+                        && r.FirstName == _apiRequest.FirstName
+                        && r.LastName == _apiRequest.LastName
+                        && r.DateOfBirth == _apiRequest.DateOfBirth
+                        && r.Uln == _apiRequest.Uln
+                        && r.CourseCode == _apiRequest.CourseCode
+                        && r.Cost == _apiRequest.Cost
+                        && r.StartDate == _apiRequest.StartDate
+                        && r.EndDate == _apiRequest.EndDate
+                        && r.OriginatorReference == _apiRequest.OriginatorReference
                     ), It.IsAny<CancellationToken>()));
                 return this;
             }

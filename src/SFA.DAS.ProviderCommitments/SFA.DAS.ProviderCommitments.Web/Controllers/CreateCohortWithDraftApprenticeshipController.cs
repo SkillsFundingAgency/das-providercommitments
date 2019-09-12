@@ -5,10 +5,12 @@ using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.Commitments.Shared.Extensions;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
@@ -25,11 +27,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ICreateCohortRequestMapper _createCohortRequestMapper;
+        private readonly IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest> _createCohortRequestMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public CreateCohortWithDraftApprenticeshipController(IMediator mediator,
-            ICreateCohortRequestMapper createCohortRequestMapper,
+            IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest> createCohortRequestMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
@@ -71,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            var request = await _createCohortRequestMapper.MapAsync(model);
+            var request = await _createCohortRequestMapper.Map(model);
 
             try
             {
