@@ -11,7 +11,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -23,7 +22,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [DasAuthorize(ProviderFeature.Reservations, ProviderOperation.CreateCohort)]
+    [DasAuthorize(ProviderOperation.CreateCohort)]
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
