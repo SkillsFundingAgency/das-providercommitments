@@ -60,11 +60,11 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services
         }
 
         [Test]
-        public async Task IsAgreementSigned_WithTransferAgreementFeatureAndWithMultipleSignedAgreements_ItShouldReturnTrue()
+        public async Task IsAgreementSigned_WithoutAnyAgreementFeaturesAndWithMultipleSignedAgreements_ItShouldReturnTrue()
         {
             var f = new EmployerAgreementServiceTestsFixture().SetUpSignedAgreementWithVersion(1).SetUpSignedAgreementWithVersion(2);
 
-            var result = await f.Sut.IsAgreementSigned(f.AccountId, f.AccountLegalEntityId, AgreementFeature.Transfers);
+            var result = await f.Sut.IsAgreementSigned(f.AccountId, f.AccountLegalEntityId);
             Assert.IsTrue(result);
         }
 
