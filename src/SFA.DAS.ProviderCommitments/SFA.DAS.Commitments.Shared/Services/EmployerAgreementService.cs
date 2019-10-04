@@ -25,36 +25,31 @@ namespace SFA.DAS.Commitments.Shared.Services
             _agreementUnlocks = new Dictionary<AgreementFeature, int> { { AgreementFeature.Transfers, 2 } };
         }
 
-
-        public async Task<bool> IsAgreementSigned(long accountId, long accountLegalEntityId, params AgreementFeature[] requiredFeatures)
+        public async Task<bool> IsAgreementSigned(long accountId, long accountLegalEntityId,  params AgreementFeature[] requiredFeatures)
         {
             var hashedAccountId = _encodingService.Encode(accountId, EncodingType.AccountId);
             var legalEntity = await _accountApiClient.GetLegalEntity(hashedAccountId, accountLegalEntityId);
 
-            //Determine the latest signed agreement version
-            var latestSignedVersion = legalEntity.Agreements
-                .Where(x => x.Status == EmployerAgreementStatus.Signed)
-                .Max(y => y.TemplateVersionNumber);
+            var signedAgreements = legalEntity.Agreements
+                .Where(x => x.Status == EmployerAgreementStatus.Signed).ToList();
 
-            //No agreement signed
-            if (latestSignedVersion == 0)
+            if (!signedAgreements.Any())
             {
                 return false;
             }
 
-            //No features beyond basic
+            //No extended features required
             if (requiredFeatures.Length == 0)
             {
                 return true;
             }
 
-            //Evaluate requirements
-            foreach (var requiredFeature in requiredFeatures)
+            var latestSignedVersion = signedAgreements.Max(x => x.TemplateVersionNumber);
+
+            // If any required feature exceeds this agreement version return false 
+            if (requiredFeatures.Any(f => latestSignedVersion < _agreementUnlocks[f]))
             {
-                if (latestSignedVersion < _agreementUnlocks[requiredFeature])
-                {
-                    return false; //A feature is required that has not been unlocked
-                }
+                return false;
             }
 
             return true; //All requirements met
