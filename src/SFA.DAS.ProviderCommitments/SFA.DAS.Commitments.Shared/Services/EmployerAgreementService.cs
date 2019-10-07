@@ -27,6 +27,16 @@ namespace SFA.DAS.Commitments.Shared.Services
 
         public async Task<bool> IsAgreementSigned(long accountId, long accountLegalEntityId,  params AgreementFeature[] requiredFeatures)
         {
+            bool AreAllRequiredFeaturesPresentInSignedAgreement(int signedAgreement)
+            {
+                if (requiredFeatures.Any(f => signedAgreement < _agreementUnlocks[f]))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
             var hashedAccountId = _encodingService.Encode(accountId, EncodingType.AccountId);
             var legalEntity = await _accountApiClient.GetLegalEntity(hashedAccountId, accountLegalEntityId);
 
@@ -44,15 +54,7 @@ namespace SFA.DAS.Commitments.Shared.Services
                 return true;
             }
 
-            var latestSignedVersion = signedAgreements.Max(x => x.TemplateVersionNumber);
-
-            // If any required feature exceeds this agreement version return false 
-            if (requiredFeatures.Any(f => latestSignedVersion < _agreementUnlocks[f]))
-            {
-                return false;
-            }
-
-            return true; //All requirements met
+            return AreAllRequiredFeaturesPresentInSignedAgreement(signedAgreements.Max(x => x.TemplateVersionNumber));
         }
     }
 }
