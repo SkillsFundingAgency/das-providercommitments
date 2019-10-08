@@ -31,6 +31,9 @@
         },
         "keyVaultCertificateName": {
             "type": "string"
+        },
+        "cdnUrl": {
+          "type": "string"
         }
     },
     "variables": {
@@ -101,6 +104,10 @@
                             {
                                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                 "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
+                            },
+                            {
+                              "name": "Cdn:Url",
+                              "value": "[parameters('cdnUrl')]"
                             }
                         ]
                     },
