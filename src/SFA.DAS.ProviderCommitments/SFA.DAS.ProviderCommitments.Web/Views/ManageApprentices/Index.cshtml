@@ -4,7 +4,15 @@
     ViewData["Title"] = "Manage Your Apprentices";
 }
 
+<h1 class="heading-xlarge">Manage your apprentices</h1>
+
 @if (!Model.AnyApprenticeships)
 {
-    //TODO style and content for the story goes here
+    <div class="grid-row">
+        <div class="column-full">
+            <div class="panel panel-border-wide alert-default">
+                <p>Your apprentices will appear here once you and the employer approve their details.</p>
+            </div>
+        </div>
+    </div>
 }
