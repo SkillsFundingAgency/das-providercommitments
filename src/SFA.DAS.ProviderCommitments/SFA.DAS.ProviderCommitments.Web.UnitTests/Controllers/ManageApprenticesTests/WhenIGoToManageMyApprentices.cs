@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -9,11 +12,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
     public class WhenIGoToManageMyApprentices
     {
         private ManageApprenticesController _controller;
+        private Mock<ICommitmentsService> _commitmentsService;
 
         [SetUp]
         public void Arrange()
         {
-            _controller = new ManageApprenticesController();
+            _commitmentsService = new Mock<ICommitmentsService>();
+            _controller = new ManageApprenticesController(_commitmentsService.Object);
         }
 
         [Test]
