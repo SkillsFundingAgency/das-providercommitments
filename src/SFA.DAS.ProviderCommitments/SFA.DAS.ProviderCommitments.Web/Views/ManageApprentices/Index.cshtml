@@ -12,5 +12,55 @@
         <p>Your apprentices will appear here once you and the employer approve their details.</p>
     </div>
 }
+else
+{
+    <table class="tableResponsive provider-list-view">
+        <thead>
+            <tr>
+                <th>Apprentice name</th>
+                <th>ULN</th>
+                <th>Employer</th>
+                <th>Apprenticeship training course</th>
+                <th>Planned start date</th>
+                <th>Planned end date</th>
+                <th>Status</th>
+                <th>Alerts</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var apprenticeships in Model.Apprenticeships)
+            {
+            <tr>
+                <td>
+                    @apprenticeships.ApprenticeName
+                </td>
+                <td>
+                    @apprenticeships.Uln
+                </td>
+                <td>
+                    @apprenticeships.EmployerName
+                </td>
+                <td>
+                    @apprenticeships.CourseName
+                </td>
+                <td>
+                    @apprenticeships.PlannedStartDate
+                </td>
+                <td>
+                    @apprenticeships.PlannedEndDateTime
+                </td>
+                <td>
+                    @apprenticeships.Status
+                </td>
+                <td>
+                    @apprenticeships.Alerts
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
 
 
