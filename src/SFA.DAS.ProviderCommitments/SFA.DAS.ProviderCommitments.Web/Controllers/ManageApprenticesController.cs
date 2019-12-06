@@ -4,7 +4,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("{providerId}/apprentices/manageV2")]
+    [Route("V2/{providerId}/apprentices/manage")]
     public class ManageApprenticesController : Controller
     {
         [Route("all")]
