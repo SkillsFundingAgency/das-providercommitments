@@ -7,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [Route("{providerId}/apprentices/manageV2")]
     public class ManageApprenticesController : Controller
     {
+        [Route("all")]
         public IActionResult Index(long providerId)
         {
             if (!ModelState.IsValid)
