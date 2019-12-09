@@ -14,50 +14,48 @@
 }
 else
 {
-    <table class="tableResponsive provider-list-view">
-        <thead>
-            <tr>
-                <th>Apprentice name</th>
-                <th>ULN</th>
-                <th>Employer</th>
-                <th>Apprenticeship training course</th>
-                <th>Planned start date</th>
-                <th>Planned end date</th>
-                <th>Status</th>
-                <th>Alerts</th>
-                <th></th>
+    <table class="govuk-table das-table--responsive">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Apprentice name</th>
+                <th scope="col" class="govuk-table__header">ULN</th>
+                <th scope="col" class="govuk-table__header">Employer</th>
+                <th scope="col" class="govuk-table__header">Apprenticeship training course</th>
+                <th scope="col" class="govuk-table__header">Planned start date</th>
+                <th scope="col" class="govuk-table__header">Planned start date</th>
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">Alerts</th>
             </tr>
         </thead>
-        <tbody>
-
+        <tbody class="govuk-table__body">
             @foreach (var apprenticeships in Model.Apprenticeships)
             {
-            <tr>
-                <td>
-                    @apprenticeships.ApprenticeName
-                </td>
-                <td>
-                    @apprenticeships.Uln
-                </td>
-                <td>
-                    @apprenticeships.EmployerName
-                </td>
-                <td>
-                    @apprenticeships.CourseName
-                </td>
-                <td>
-                    @apprenticeships.PlannedStartDate
-                </td>
-                <td>
-                    @apprenticeships.PlannedEndDateTime
-                </td>
-                <td>
-                    @apprenticeships.Status
-                </td>
-                <td>
-                    @apprenticeships.Alerts
-                </td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Apprentice name">
+                        @apprenticeships.ApprenticeName
+                    </td>
+                    <td class="govuk-table__cell" data-label="ULN">
+                        @apprenticeships.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Employer">
+                        @apprenticeships.EmployerName
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        @apprenticeships.CourseName
+                    </td>
+                    <td class="govuk-table__cell" data-label="Planned start date">
+                        @apprenticeships.PlannedStartDate
+                    </td>
+                    <td class="govuk-table__cell" data-label="Planned start date">
+                        @apprenticeships.PlannedEndDateTime
+                    </td>
+                    <td class="govuk-table__cell" data-label="Status">
+                        @apprenticeships.Status
+                    </td>
+                    <td class="govuk-table__cell" data-label="Alerts">
+                        @apprenticeships.Alerts
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -11,99 +12,78 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
     [TestFixture]
     public class WhenIGoToManageMyApprentices
     {
-        private ManageApprenticesController _controller;
-        private Mock<ICommitmentsService> _commitmentsService;
-
-        [SetUp]
-        public void Arrange()
-        {
-            _commitmentsService = new Mock<ICommitmentsService>();
-            _controller = new ManageApprenticesController(_commitmentsService.Object);
-        }
-
-        [Test]
-        public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned()
+        [Test, MoqAutoData]
+        public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller)
         {
             //Arrange
-            _controller.ModelState.AddModelError("test", "test");
+            controller.ModelState.AddModelError("test", "test");
 
             //Act
-            var result = _controller.Index(1);
+            var result = controller.Index(1);
 
             //Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
         }
 
-        [Test]
-        public void ThenTheProviderIdIsPassedToTheViewModel()
+        [Test, MoqAutoData]
+        public void ThenTheProviderIdIsPassedToTheViewModel(
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller,
+            int providerId)
         {
             //Arrange
-            var actualProviderId = 1;
-
+            
             //Act
-            var result = _controller.Index(actualProviderId);
+            var result = controller.Index(providerId);
 
             var view = ((ViewResult) result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            Assert.AreEqual(view.ProviderId, actualProviderId);
+            Assert.AreEqual(view.ProviderId, providerId);
         }
 
-        [Test]
-        public void ThenTheApprovedApprenticesAreSet()
+        [Test, MoqAutoData]
+        public void ThenTheApprovedApprenticesAreSet(
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller,
+            List<ApprenticeshipDetails> approvedApprenticeships)
         {
             //Arrange
-            var expectedApprenticeshipsCount = 1;
-            var approvedApprenticeships = new List<ApprenticeshipDetails>
-            {
-                new ApprenticeshipDetails
-                {
-                    Alerts = "alert",
-                    ApprenticeName = "apprentice name",
-                    CourseName = "course name",
-                    EmployerName = "employer name",
-                    PlannedStartDate = DateTime.UtcNow,
-                    PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
-                    Status = "status",
-                    Uln = "uln"
-                }
-            };
-
-            _commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
+            commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
-            var result = _controller.Index(1);
+            var result = controller.Index(1);
             var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            Assert.AreEqual(view.Apprenticeships.Count(), expectedApprenticeshipsCount);
+            Assert.AreEqual(view.Apprenticeships.Count(), approvedApprenticeships.Count);
         }
 
-        [TestCase(0, false)]
+/*        [TestCase(0, false)]
         [TestCase(1, true)]
-        [TestCase(10, true)]
-        public void ThenAnyApprenticeshipsIsSet(int numberOfApprenticeships, bool expected)
+        [TestCase(10, true)]*/
+        [Test]
+        [MoqInlineAutoData(0, false)]
+        [MoqInlineAutoData(1, true)]
+        [MoqInlineAutoData(10, true)]
+        public void ThenAnyApprenticeshipsIsSet(
+            int numberOfApprenticeships, 
+            bool expected,
+            ApprenticeshipDetails approvedApprenticeship,
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller)
         {
             //Arrange
-            var approvedApprenticeship = new ApprenticeshipDetails
-            {
-                Alerts = "alert",
-                ApprenticeName = "apprentice name",
-                CourseName = "course name",
-                EmployerName = "employer name",
-                PlannedStartDate = DateTime.UtcNow,
-                PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
-                Status = "status",
-                Uln = "uln"
-            };
-
             var approvedApprenticeships = new List<ApprenticeshipDetails>();
 
             for (int i = 0; i < numberOfApprenticeships; i++)
@@ -111,11 +91,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 approvedApprenticeships.Add(approvedApprenticeship);
             }
 
-            _commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
+            commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
-            var result = _controller.Index(1);
+            var result = controller.Index(1);
             var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
