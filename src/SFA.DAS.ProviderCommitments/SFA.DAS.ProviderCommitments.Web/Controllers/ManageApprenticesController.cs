@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("v2/{providerId}/apprentices/manage")]
+    [Route("v2/{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
         private readonly ICommitmentsService _commitmentsService;
