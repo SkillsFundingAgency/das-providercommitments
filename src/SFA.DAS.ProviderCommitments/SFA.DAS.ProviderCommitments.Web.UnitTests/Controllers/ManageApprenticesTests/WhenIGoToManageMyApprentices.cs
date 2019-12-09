@@ -69,9 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             Assert.AreEqual(view.Apprenticeships.Count(), approvedApprenticeships.Count);
         }
 
-/*        [TestCase(0, false)]
-        [TestCase(1, true)]
-        [TestCase(10, true)]*/
         [Test]
         [MoqInlineAutoData(0, false)]
         [MoqInlineAutoData(1, true)]
