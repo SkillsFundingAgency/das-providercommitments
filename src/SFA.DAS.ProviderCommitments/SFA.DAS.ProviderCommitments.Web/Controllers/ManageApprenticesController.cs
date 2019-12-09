@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("all")]
-        public async Task<IActionResult> Index(long providerId)
+        public async Task<IActionResult> Index(uint providerId)
         {
             if (!ModelState.IsValid)
             {
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = new ManageApprenticesViewModel
             {
                 ProviderId = providerId,
-                Apprenticeships = await _commitmentsService.GetApprovedApprenticeships((uint)providerId)
+                Apprenticeships = await _commitmentsService.GetApprovedApprenticeships(providerId)
             };
 
             return View(model);

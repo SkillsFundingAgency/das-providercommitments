@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public void ThenTheProviderIdIsPassedToTheViewModel(
             [Frozen]Mock<ICommitmentsService> commitmentsService,
             ManageApprenticesController controller,
-            int providerId)
+            uint providerId)
         {
             //Arrange
             
@@ -67,13 +67,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
             //Assert
             Assert.AreEqual(view.Apprenticeships.Count(), approvedApprenticeships.Count);
+            Assert.AreEqual(view.Apprenticeships.First().EmployerName, approvedApprenticeships.First().EmployerName);
+            Assert.AreEqual(view.Apprenticeships.First().Alerts, approvedApprenticeships.First().Alerts);
+            Assert.AreEqual(view.Apprenticeships.First().ApprenticeName, approvedApprenticeships.First().ApprenticeName);
+            Assert.AreEqual(view.Apprenticeships.First().CourseName, approvedApprenticeships.First().CourseName);
+            Assert.AreEqual(view.Apprenticeships.First().PlannedEndDateTime, approvedApprenticeships.First().PlannedEndDateTime);
+            Assert.AreEqual(view.Apprenticeships.First().PlannedStartDate, approvedApprenticeships.First().PlannedStartDate);
+            Assert.AreEqual(view.Apprenticeships.First().Status, approvedApprenticeships.First().Status);
+            Assert.AreEqual(view.Apprenticeships.First().Uln, approvedApprenticeships.First().Uln);
         }
 
         [Test]
         [MoqInlineAutoData(0, false)]
         [MoqInlineAutoData(1, true)]
-        [MoqInlineAutoData(10, true)]
-        public void ThenAnyApprenticeshipsIsSet(
+        [MoqInlineAutoData(2, true)]
+        public void ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
             int numberOfApprenticeships, 
             bool expected,
             ApprenticeshipDetails approvedApprenticeship,
@@ -87,6 +95,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             {
                 approvedApprenticeships.Add(approvedApprenticeship);
             }
+
+            commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
+                .ReturnsAsync(approvedApprenticeships);
+
+            //Act
+            var result = controller.Index(1);
+            var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
+
+            //Assert
+            Assert.AreEqual(view.AnyApprenticeships, expected);
+        }
+
+        [Test, MoqAutoData]
+        public void ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNull(
+            ApprenticeshipDetails approvedApprenticeship,
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller)
+        {
+            //Arrange
+            var expected = false;
+
+            List<ApprenticeshipDetails> approvedApprenticeships = null;
 
             commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
                 .ReturnsAsync(approvedApprenticeships);
