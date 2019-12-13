@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using StructureMap;
+using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -95,6 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseDasHealthChecks()
                 .UseCookiePolicy()
                 .UseAuthentication()
+                .UseDasContentSecurityPolicy()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
