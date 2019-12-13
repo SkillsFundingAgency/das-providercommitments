@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -31,6 +35,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Route("download",Name = "Download")]
+        public async Task<IActionResult> Download(uint providerId)
+        {
+            var result = await _commitmentsService.GetApprovedApprenticeships(providerId);
+            return CreateCsvStream(result, "Manageyourapprentices");
+        }
+
+        private ActionResult CreateCsvStream<T>(IEnumerable<T> results, string fileNamePreFix)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var streamWriter = new StreamWriter(memoryStream))
+                {
+                    using (var csvWriter = new CsvWriter(streamWriter))
+                    {
+                        csvWriter.WriteRecords(results);
+                        streamWriter.Flush();
+                        memoryStream.Position = 0;
+                        return File(memoryStream.ToArray(), "text/csv", $"{fileNamePreFix}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+                    }
+                }
+            }
         }
     }
 }
