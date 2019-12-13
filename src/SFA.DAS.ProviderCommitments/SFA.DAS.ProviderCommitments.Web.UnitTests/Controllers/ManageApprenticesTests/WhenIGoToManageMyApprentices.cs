@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -36,9 +37,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
         [Test, MoqAutoData]
         public void ThenTheProviderIdIsPassedToTheViewModel(
+            uint providerId,
             [Frozen]Mock<ICommitmentsService> commitmentsService,
-            ManageApprenticesController controller,
-            uint providerId)
+            ManageApprenticesController controller)
         {
             //Arrange
             
@@ -53,9 +54,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
         [Test, MoqAutoData]
         public void ThenTheApprovedApprenticesAreSet(
+            List<ApprenticeshipDetails> approvedApprenticeships,
             [Frozen]Mock<ICommitmentsService> commitmentsService,
-            ManageApprenticesController controller,
-            List<ApprenticeshipDetails> approvedApprenticeships)
+            ManageApprenticesController controller)
         {
             //Arrange
             commitmentsService.Setup(x => x.GetApprovedApprenticeships(It.IsAny<uint>()))
@@ -66,15 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            Assert.AreEqual(view.Apprenticeships.Count(), approvedApprenticeships.Count);
-            Assert.AreEqual(view.Apprenticeships.First().EmployerName, approvedApprenticeships.First().EmployerName);
-            Assert.AreEqual(view.Apprenticeships.First().Alerts, approvedApprenticeships.First().Alerts);
-            Assert.AreEqual(view.Apprenticeships.First().ApprenticeName, approvedApprenticeships.First().ApprenticeName);
-            Assert.AreEqual(view.Apprenticeships.First().CourseName, approvedApprenticeships.First().CourseName);
-            Assert.AreEqual(view.Apprenticeships.First().PlannedEndDateTime, approvedApprenticeships.First().PlannedEndDateTime);
-            Assert.AreEqual(view.Apprenticeships.First().PlannedStartDate, approvedApprenticeships.First().PlannedStartDate);
-            Assert.AreEqual(view.Apprenticeships.First().Status, approvedApprenticeships.First().Status);
-            Assert.AreEqual(view.Apprenticeships.First().Uln, approvedApprenticeships.First().Uln);
+            view.Apprenticeships.Should().BeEquivalentTo(approvedApprenticeships);
         }
 
         [Test]
