@@ -38,4 +38,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Commitments.Shared\SFA.DAS.Commitments.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CsvHelper">
+      <HintPath>..\..\..\..\..\..\Users\Pete\.nuget\packages\csvhelper\12.2.2\lib\netstandard2.0\CsvHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

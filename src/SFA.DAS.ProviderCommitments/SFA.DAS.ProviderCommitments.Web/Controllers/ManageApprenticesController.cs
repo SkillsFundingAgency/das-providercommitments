@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -14,10 +15,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ManageApprenticesController : Controller
     {
         private readonly ICommitmentsService _commitmentsService;
+        private readonly ICreateCsvService _createCsvService;
 
-        public ManageApprenticesController(ICommitmentsService commitmentsService)
+        public ManageApprenticesController(ICommitmentsService commitmentsService, ICreateCsvService createCsvService)
         {
             _commitmentsService = commitmentsService;
+            _createCsvService = createCsvService;
         }
 
         [Route("all")]
@@ -42,24 +45,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(uint providerId)
         {
             var result = await _commitmentsService.GetApprovedApprenticeships(providerId);
-            return CreateCsvStream(result, "Manageyourapprentices");
-        }
-
-        private ActionResult CreateCsvStream<T>(IEnumerable<T> results, string fileNamePreFix)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var streamWriter = new StreamWriter(memoryStream))
-                {
-                    using (var csvWriter = new CsvWriter(streamWriter))
-                    {
-                        csvWriter.WriteRecords(results);
-                        streamWriter.Flush();
-                        memoryStream.Position = 0;
-                        return File(memoryStream.ToArray(), "text/csv", $"{fileNamePreFix}_{DateTime.Now:yyyyMMddhhmmss}.csv");
-                    }
-                }
-            }
+            var csvFileContent = _createCsvService.GenerateCsvContent(result);
+            return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }
     }
 }
