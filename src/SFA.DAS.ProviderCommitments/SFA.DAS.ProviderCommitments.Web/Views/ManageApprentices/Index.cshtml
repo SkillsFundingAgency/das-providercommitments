@@ -14,7 +14,7 @@
 }
 else
 {
-    <a href="@Url.RouteUrl("Download",new {providerId = Model.ProviderId})">Download all data (CSV)</a>
+    <a class="govuk-link" href="@Url.RouteUrl("Download",new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
 
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
