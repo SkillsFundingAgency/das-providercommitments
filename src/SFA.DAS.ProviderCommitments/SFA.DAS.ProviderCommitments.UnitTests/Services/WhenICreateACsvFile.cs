@@ -79,7 +79,6 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
         public void AndNothingIsPassedToTheContentGeneratorThenExceptionIsThrown()
         {
             List<ApprenticeshipDetails> nullList = null;
-            //var actual = _createCsvService.GenerateCsvContent(nullList);
 
             Assert.Throws<WriterException>(() => _createCsvService.GenerateCsvContent(nullList));
         }

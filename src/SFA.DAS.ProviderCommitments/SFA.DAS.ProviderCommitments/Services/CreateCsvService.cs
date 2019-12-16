@@ -23,9 +23,9 @@ namespace SFA.DAS.ProviderCommitments.Services
                             memoryStream.Position = 0;
                             return memoryStream.ToArray();
                         }
-                        catch (NullReferenceException)
+                        catch (NullReferenceException e)
                         {
-                            throw new NullReferenceException();
+                            throw e;
                         }
                     }
                 }
