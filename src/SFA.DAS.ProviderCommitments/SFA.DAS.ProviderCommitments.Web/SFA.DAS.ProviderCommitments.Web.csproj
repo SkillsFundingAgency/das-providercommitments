@@ -21,8 +21,9 @@
     <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.49" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.49" />
     <PackageReference Include="SFA.DAS.Authorization.CommitmentPermissions" Version="6.0.49" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.181" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.181" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.606" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="4.1.606" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.606" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.9" />
@@ -34,7 +35,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Commitments.Shared\SFA.DAS.Commitments.Shared.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj" />
   </ItemGroup>
 

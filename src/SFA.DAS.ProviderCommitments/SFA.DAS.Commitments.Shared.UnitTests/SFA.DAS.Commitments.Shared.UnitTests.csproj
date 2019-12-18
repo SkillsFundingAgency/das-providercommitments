@@ -14,8 +14,4 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.181" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Commitments.Shared\SFA.DAS.Commitments.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

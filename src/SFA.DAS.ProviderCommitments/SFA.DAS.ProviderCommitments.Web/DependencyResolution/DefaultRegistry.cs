@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SFA.DAS.Authorization.Context;
 using SFA.DAS.Authorization.Handlers;
-using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
