@@ -18,19 +18,22 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [DasAuthorize(ProviderOperation.CreateCohort)]
+//    [DasAuthorize(ProviderOperation.CreateCohort)]
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
         private readonly IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest> _createCohortRequestMapper;
+        private readonly IMapper<SelectEmployerRequest, SelectEmployerViewModel> _selectEmployerViewModelMapper;
         private readonly ILinkGenerator _urlHelper;
 
         public CreateCohortWithDraftApprenticeshipController(IMediator mediator,
             IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest> createCohortRequestMapper,
+            IMapper<SelectEmployerRequest, SelectEmployerViewModel> selectEmployerViewModelMapper,
             ILinkGenerator urlHelper)
         {
             _mediator = mediator;
             _createCohortRequestMapper = createCohortRequestMapper;
+            _selectEmployerViewModelMapper = selectEmployerViewModelMapper;
             _urlHelper = urlHelper;
         }
 
@@ -87,6 +90,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await AddEmployerAndCoursesToModel(model);
                 return View(model);
             }
+        }
+
+        [HttpGet]
+        [Route("add/select-employer")]
+        public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
+        {
+            var model = await _selectEmployerViewModelMapper.Map(request);
+
+            return View(model);
+
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)

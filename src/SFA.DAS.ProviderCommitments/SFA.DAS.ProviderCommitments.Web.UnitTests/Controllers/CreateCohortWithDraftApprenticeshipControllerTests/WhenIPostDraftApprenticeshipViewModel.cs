@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
 using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
@@ -46,6 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
             private readonly CreateCohortWithDraftApprenticeshipController _controller;
             private readonly Mock<IMediator> _mediator;
             private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>> _mapper;
+            private readonly Mock<IMapper<SelectEmployerRequest, SelectEmployerViewModel>> _selectEmployerViewModelMapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
             private readonly AddDraftApprenticeshipViewModel _model;
             private readonly CreateCohortRequest _createCohortRequest;
@@ -60,6 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
 
                 _mediator = new Mock<IMediator>();
                 _mapper = new Mock<IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>>();
+                _selectEmployerViewModelMapper = new Mock<IMapper<SelectEmployerRequest,SelectEmployerViewModel>>();
                 _linkGenerator = new Mock<ILinkGenerator>();
 
                 _model = new AddDraftApprenticeshipViewModel
@@ -88,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                     .Callback((string value) => _linkGeneratorParameter = value);
                     
                 
-                _controller = new CreateCohortWithDraftApprenticeshipController(_mediator.Object, _mapper.Object, _linkGenerator.Object);
+                _controller = new CreateCohortWithDraftApprenticeshipController(_mediator.Object, _mapper.Object,_selectEmployerViewModelMapper.Object, _linkGenerator.Object);
             }
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()
