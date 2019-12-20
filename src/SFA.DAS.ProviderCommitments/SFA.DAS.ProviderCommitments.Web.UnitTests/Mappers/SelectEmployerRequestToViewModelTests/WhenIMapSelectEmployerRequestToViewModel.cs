@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderRelationships.Api.Client;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerRequestToViewModelTests
 {
@@ -20,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
         private IMapper<SelectEmployerRequest, SelectEmployerViewModel> _mapper;
         private SelectEmployerRequest _request;
         private Mock<IProviderRelationshipsApiClient> _mockProviderRelationshipsApiClient;
+        private Mock<ILinkGenerator> _mockLinkGenerator;
         private Func<Task<SelectEmployerViewModel>> _act;
 
         [SetUp]
@@ -32,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
                 .Create();
 
             _mockProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
-            _mapper = new SelectEmployerViewModelMapper(_mockProviderRelationshipsApiClient.Object);
+            _mockLinkGenerator = new Mock<ILinkGenerator>();
+            _mapper = new SelectEmployerViewModelMapper(_mockProviderRelationshipsApiClient.Object, _mockLinkGenerator.Object);
 
             _act = async () => await _mapper.Map(_request);
         }

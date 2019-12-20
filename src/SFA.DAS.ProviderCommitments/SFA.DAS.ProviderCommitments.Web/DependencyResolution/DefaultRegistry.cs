@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
                 });
 
             For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachUserInfoToSaveRequests<,>));
+            For<IModelMapper>().Use<ModelMapper>();
             For<IAuthorizationHandler>().Add<ServiceAuthorizationHandler>();
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
