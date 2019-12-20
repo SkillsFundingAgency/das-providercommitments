@@ -40,14 +40,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     EmployerAccountLegalEntityName = apiEntity.AccountLegalEntityName,
                     EmployerAccountLegalEntityPublicHashedId = apiEntity.AccountLegalEntityPublicHashedId,
                     EmployerAccountName = apiEntity.AccountName,
-                    EmployerAccountPublicHashedId = apiEntity.AccountPublicHashedId
+                    EmployerAccountPublicHashedId = apiEntity.AccountPublicHashedId,
+                    //SelectLink = _linkGenerator.ProviderApprenticeshipServiceLink()
                 });
             }
 
             return new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = viewModelList,
-                BackLink = _linkGenerator.ProviderApprenticeshipServiceLink($"account")
+                BackLink = _linkGenerator.ProviderApprenticeshipServiceLink("account")
             };
         }
 
