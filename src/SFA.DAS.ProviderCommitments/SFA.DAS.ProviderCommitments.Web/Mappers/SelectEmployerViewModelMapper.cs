@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     EmployerAccountLegalEntityPublicHashedId = apiEntity.AccountLegalEntityPublicHashedId,
                     EmployerAccountName = apiEntity.AccountName,
                     EmployerAccountPublicHashedId = apiEntity.AccountPublicHashedId,
-                    //SelectLink = _linkGenerator.ProviderApprenticeshipServiceLink()
+                    //SelectEmployerUrl = _linkGenerator.ProviderApprenticeshipServiceLink()
                 });
             }
 
