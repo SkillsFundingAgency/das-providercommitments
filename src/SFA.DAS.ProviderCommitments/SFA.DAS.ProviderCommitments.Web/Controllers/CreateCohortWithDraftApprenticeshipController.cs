@@ -18,7 +18,7 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-//    [DasAuthorize(ProviderOperation.CreateCohort)]
+    [DasAuthorize(ProviderOperation.CreateCohort)]
     public class CreateCohortWithDraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
