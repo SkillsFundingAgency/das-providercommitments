@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = new ManageApprenticesViewModel
             {
                 ProviderId = providerId,
-                Apprenticeships = await _commitmentsService.GetApprovedApprenticeships(providerId)
+                Apprenticeships = await _commitmentsService.GetApprenticeships(providerId)
             };
 
             return View(model);
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("download",Name = "Download")]
         public async Task<IActionResult> Download(uint providerId)
         {
-            var result = await _commitmentsService.GetApprovedApprenticeships(providerId);
+            var result = await _commitmentsService.GetApprenticeships(providerId);
             var csvFileContent = _createCsvService.GenerateCsvContent(result);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }

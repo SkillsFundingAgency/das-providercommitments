@@ -22,45 +22,45 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
                 new ApprenticeshipDetails
                 {
                     Alerts = null,
-                    ApprenticeName = "Name1",
+                    ApprenticeFirstName = "Name1",
                     CourseName = "Course1",
                     EmployerName = "Employer1",
                     PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
                     PlannedStartDate = DateTime.UtcNow,
-                    Status = "Active",
+                    PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN1"
                 },
                 new ApprenticeshipDetails
                 {
                     Alerts = null,
-                    ApprenticeName = "Name2",
+                    ApprenticeFirstName = "Name2",
                     CourseName = "Course2",
                     EmployerName = "Employer2",
                     PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
                     PlannedStartDate = DateTime.UtcNow,
-                    Status = "Active",
+                    PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN2"
                 },
                 new ApprenticeshipDetails
                 {
                     Alerts = null,
-                    ApprenticeName = "Name3",
+                    ApprenticeFirstName = "Name3",
                     CourseName = "Course3",
                     EmployerName = "Employer3",
                     PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
                     PlannedStartDate = DateTime.UtcNow,
-                    Status = "Active",
+                    PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN3"
                 },
                 new ApprenticeshipDetails
                 {
                     Alerts = null,
-                    ApprenticeName = "Name4",
+                    ApprenticeFirstName = "Name4",
                     CourseName = "Course4",
                     EmployerName = "Employer4",
                     PlannedEndDateTime = DateTime.UtcNow.AddMonths(2),
                     PlannedStartDate = DateTime.UtcNow,
-                    Status = "Active",
+                    PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN4"
                 }
             };

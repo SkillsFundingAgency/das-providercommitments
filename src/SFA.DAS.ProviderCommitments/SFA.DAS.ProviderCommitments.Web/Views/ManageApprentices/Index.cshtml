@@ -34,7 +34,7 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeships.ApprenticeName
+                        @apprenticeships.ApprenticeFirstName @apprenticeships.ApprenticeLastName
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeships.Uln
@@ -52,7 +52,7 @@ else
                         @apprenticeships.PlannedEndDateTime
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
-                        @apprenticeships.Status
+                        @apprenticeships.PaymentStatus
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
                         @apprenticeships.Alerts
