@@ -16,17 +16,10 @@ namespace SFA.DAS.ProviderCommitments.Services
                 {
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
-                        try
-                        {
-                            csvWriter.WriteRecords(results);
-                            streamWriter.Flush();
-                            memoryStream.Position = 0;
-                            return memoryStream.ToArray();
-                        }
-                        catch (NullReferenceException e)
-                        {
-                            throw e;
-                        }
+                        csvWriter.WriteRecords(results);
+                        streamWriter.Flush();
+                        memoryStream.Position = 0;
+                        return memoryStream.ToArray();
                     }
                 }
             }
