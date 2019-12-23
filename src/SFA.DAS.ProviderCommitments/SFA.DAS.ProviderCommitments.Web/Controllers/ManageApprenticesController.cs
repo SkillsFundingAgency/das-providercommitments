@@ -45,7 +45,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(uint providerId)
         {
             var result = await _commitmentsService.GetApprovedApprenticeships(providerId);
-            var csvFileContent = _createCsvService.GenerateCsvContent(result);
+
+            var csvContent = result.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
+            
+            var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }
     }

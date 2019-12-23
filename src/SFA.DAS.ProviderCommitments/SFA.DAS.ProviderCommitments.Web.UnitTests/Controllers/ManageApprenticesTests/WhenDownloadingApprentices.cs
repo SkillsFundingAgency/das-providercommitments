@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
@@ -27,6 +28,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
             //Assert
             Assert.AreEqual(expected, actualFileResult.FileDownloadName);
+        }
+
+        [Test]
+        public async Task Then_The_Result_Is_Mapped_To_The_Csv_View_Model()
+        {
+            //Arrange
+            var createCsvService = new Mock<ICreateCsvService>();
+            var controller = new ManageApprenticesController(Mock.Of<ICommitmentsService>(), createCsvService.Object);
+            
+            //Act
+            await controller.Download(1);
+            
+            //Arrange
+            createCsvService.Verify(x=>x.GenerateCsvContent(It.IsAny<List<ApprenticeshipDetailsCsvViewModel>>()));
         }
     }
 }
