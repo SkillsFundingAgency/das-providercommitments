@@ -23,7 +23,7 @@
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.203" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.203" />
-    <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.49" />
+    <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.51" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.606" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="4.1.606" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.606" />
