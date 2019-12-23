@@ -25,32 +25,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
         {
-            var result = await _providerRelationshipsApiClient.GetAccountProviderLegalEntitiesWithPermission(
-                new GetAccountProviderLegalEntitiesWithPermissionRequest
-                {
-                    Ukprn = source.ProviderId,
-                    Operation = Operation.CreateCohort
-                });
-
-            var viewModelList = new List<AccountProviderLegalEntityViewModel>();
-            foreach (var apiEntity in result.AccountProviderLegalEntities)
-            {
-                viewModelList.Add(new AccountProviderLegalEntityViewModel
-                {
-                    EmployerAccountLegalEntityName = apiEntity.AccountLegalEntityName,
-                    EmployerAccountLegalEntityPublicHashedId = apiEntity.AccountLegalEntityPublicHashedId,
-                    EmployerAccountName = apiEntity.AccountName,
-                    EmployerAccountPublicHashedId = apiEntity.AccountPublicHashedId,
-                    //SelectEmployerUrl = _linkGenerator.ProviderApprenticeshipServiceLink()
-                });
-            }
-
             return new SelectEmployerViewModel
             {
-                AccountProviderLegalEntities = viewModelList,
+                AccountProviderLegalEntities = (await GetLegalEntitiesWithCreatePermission(source.ProviderId)).Select(x=>new AccountProviderLegalEntityViewModel
+                {
+                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                    EmployerAccountName = x.AccountName,
+                    EmployerAccountPublicHashedId = x.AccountPublicHashedId,
+                }).ToList(),
                 BackLink = _linkGenerator.ProviderApprenticeshipServiceLink("account")
             };
         }
 
+        private async Task<IEnumerable<AccountProviderLegalEntityDto>> GetLegalEntitiesWithCreatePermission(long providerId)
+        {
+            var result = await _providerRelationshipsApiClient.GetAccountProviderLegalEntitiesWithPermission(
+                new GetAccountProviderLegalEntitiesWithPermissionRequest
+                {
+                    Ukprn = providerId,
+                    Operation = Operation.CreateCohort
+                });
+
+            if (result?.AccountProviderLegalEntities == null)
+            {
+                return new List<AccountProviderLegalEntityDto>();
+            }
+
+            return result.AccountProviderLegalEntities;
+        }
     }
 }
