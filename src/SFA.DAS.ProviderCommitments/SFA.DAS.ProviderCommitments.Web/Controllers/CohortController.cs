@@ -19,13 +19,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
     [DasAuthorize(ProviderOperation.CreateCohort)]
-    public class CreateCohortWithDraftApprenticeshipController : Controller
+    public class CohortController : Controller
     {
         private readonly IMediator _mediator;
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
 
-        public CreateCohortWithDraftApprenticeshipController(IMediator mediator,
+        public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper)
         {
@@ -100,6 +100,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = await _modelMapper.Map<SelectEmployerViewModel>(request);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route("add-confirm-employer")]
+        [Route("add/confirm-employer")]
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
 
             return View(model);
         }

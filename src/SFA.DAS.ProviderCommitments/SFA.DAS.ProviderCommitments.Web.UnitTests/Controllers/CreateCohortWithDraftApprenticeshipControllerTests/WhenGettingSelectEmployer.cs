@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
 
     public class SelectEmployerFixture
     {
-        public CreateCohortWithDraftApprenticeshipController Sut { get; set; }
+        public CohortController Sut { get; set; }
         
 
         private readonly Mock<IMediator> _mediatorMock;
@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                 .ReturnsAsync(_viewModel);
 
 
-            Sut = new CreateCohortWithDraftApprenticeshipController(_mediatorMock.Object, _modelMapperMock.Object, _linkGeneratorMock.Object);
+            Sut = new CohortController(_mediatorMock.Object, _modelMapperMock.Object, _linkGeneratorMock.Object);
         }
 
         public SelectEmployerFixture WithModelStateErrors()

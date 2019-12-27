@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
 
         private class UnapprovedControllerTestFixture
         {
-            private readonly CreateCohortWithDraftApprenticeshipController _controller;
+            private readonly CohortController _controller;
             private readonly Mock<IMediator> _mediator;
             private readonly Mock<IModelMapper> _mockModelMapper;
             private readonly Mock<ILinkGenerator> _linkGenerator;
@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                     .Callback((string value) => _linkGeneratorParameter = value);
                     
                 
-                _controller = new CreateCohortWithDraftApprenticeshipController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object);
+                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object);
             }
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()
