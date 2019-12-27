@@ -18,7 +18,6 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved")]
-    [DasAuthorize(ProviderOperation.CreateCohort)]
     public class CohortController : Controller
     {
         private readonly IMediator _mediator;
@@ -37,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             if (!ModelState.IsValid)
@@ -61,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             // TODO this will probably need to be removed later (once validation is moved to API)

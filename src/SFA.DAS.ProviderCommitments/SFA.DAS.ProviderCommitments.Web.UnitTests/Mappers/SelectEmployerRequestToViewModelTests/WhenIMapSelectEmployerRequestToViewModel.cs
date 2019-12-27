@@ -38,6 +38,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
         }
 
         [Test]
+        public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
+        {
+            var fixture = new SelectEmployerViewModelMapperFixture().WithNoMatchingEmployers();
+
+            var result = await fixture.Act();
+
+            fixture.Assert_ListOfEmployersIsEmpty(result);
+        }
+
+        [Test]
         public async Task ThenCallsLinkGeneratorForBackLink()
         {
             var fixture = new SelectEmployerViewModelMapperFixture();
@@ -106,6 +116,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
 
         public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
 
+
+        public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
+        {
+            _providerRelationshipsApiClientMock
+                .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
+                    It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
+                    CancellationToken.None))
+                .ReturnsAsync(new GetAccountProviderLegalEntitiesWithPermissionResponse());
+
+            return this;
+        }
+
         public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
         {
             _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
@@ -132,6 +154,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
                     x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId));
             }
         }
+
+        public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+        {
+            Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+        }
+
 
         public void Assert_BackLinkIsGenerated(SelectEmployerViewModel result)
         {
