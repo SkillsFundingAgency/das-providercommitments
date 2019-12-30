@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
+﻿@using SFA.DAS.Commitments.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
 
 @{
     ViewData["Title"] = "Manage Your Apprentices";
@@ -46,16 +47,19 @@ else
                         @apprenticeships.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.PlannedStartDate
+                        @apprenticeships.PlannedStartDate.ToGdsFormatWithoutDay()
                     </td>
-                    <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.PlannedEndDateTime
+                    <td class="govuk-table__cell" data-label="Planned end date">
+                        @apprenticeships.PlannedEndDateTime.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
                         @apprenticeships.PaymentStatus
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @apprenticeships.Alerts
+                        @if (apprenticeships.Alerts.Any())
+                        {
+                            @apprenticeships.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
+                        }
                     </td>
                 </tr>
             }
