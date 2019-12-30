@@ -68,12 +68,32 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
         }
 
         [Test]
+        public void Then_The_First_Line_Of_The_File_Is_The_Headers()
+        {
+            var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);
+
+            Assert.IsNotNull(actual);
+            Assert.IsNotEmpty(actual);
+            Assert.IsAssignableFrom<byte[]>(actual);
+            var fileString = System.Text.Encoding.Default.GetString(actual);
+            var headerLine = fileString.Split('\n')[0];
+            Assert.AreEqual(8,headerLine.Split(',').Length);
+            Assert.Contains(nameof(ApprenticeshipDetails.PlannedStartDate),headerLine.Split(','));
+        }
+
+        [Test]
         public void ThenTheCsvFileContentIsGenerated()
         {
             var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);
 
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
+            Assert.IsAssignableFrom<byte[]>(actual);
+            var fileString = System.Text.Encoding.Default.GetString(actual);
+            var lines = fileString.Split('\n');
+            Assert.AreEqual(_apprenticeshipDetails.Count + 2,lines.Length);
+            Assert.AreEqual(8,lines[0].Split(',').Length);
+            Assert.AreEqual(_apprenticeshipDetails[0].PlannedStartDate.ToString(),lines[1].Split(',')[5]);
         }
 
         [Test]
