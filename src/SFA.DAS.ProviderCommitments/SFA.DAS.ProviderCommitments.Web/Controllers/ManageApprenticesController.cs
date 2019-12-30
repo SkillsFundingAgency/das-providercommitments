@@ -23,7 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _createCsvService = createCsvService;
         }
 
-        [Route("all")]
         public async Task<IActionResult> Index(uint providerId)
         {
             if (!ModelState.IsValid)

@@ -78,7 +78,7 @@ namespace SFA.DAS.Commitments.Shared.Services
 
         public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId)
         {
-            return _client.GetApprenticeships(providerId);
+            return _client.GetApprovedApprenticeships(providerId);
         }
     }
 }
