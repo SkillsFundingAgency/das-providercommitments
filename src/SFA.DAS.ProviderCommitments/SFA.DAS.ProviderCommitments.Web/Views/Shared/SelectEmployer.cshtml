@@ -1,4 +1,6 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.SelectEmployerViewModel
+﻿@using SFA.DAS.ProviderUrlHelper
+@model SFA.DAS.ProviderCommitments.Web.Models.SelectEmployerViewModel
+@inject ILinkGenerator LinkGenerator
 
 @{
     ViewData["Title"] = "Apprenticeships";
@@ -38,5 +40,5 @@
 
 @section breadcrumb 
 {
-    <a id="back-link" class="govuk-back-link" href="@Model.BackLink">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")">Back</a>
 }

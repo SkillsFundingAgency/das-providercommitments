@@ -46,26 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
 
             fixture.Assert_ListOfEmployersIsEmpty(result);
         }
-
-        [Test]
-        public async Task ThenCallsLinkGeneratorForBackLink()
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture();
-
-            await fixture.Act();
-
-            fixture.Verify_LinkGeneratorCalledForBackLink();
-        }
-
-        [Test]
-        public async Task ThenGeneratesBackLink()
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture();
-
-            var result = await fixture.Act();
-
-            fixture.Assert_BackLinkIsGenerated(result);
-        }
     }
 
     public class SelectEmployerViewModelMapperFixture
@@ -75,13 +55,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
         private readonly Mock<ILinkGenerator> _linkGeneratorMock;
         private readonly SelectEmployerRequest _request;
         private readonly long _providerId;
-        private readonly string _TestBackLink;
         private readonly GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
 
         public SelectEmployerViewModelMapperFixture()
         {
             _providerId = 123;
-            _TestBackLink = "testBackLink.com";
             _request = new SelectEmployerRequest {ProviderId = _providerId};
             _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
             {
@@ -107,11 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
                     CancellationToken.None))
                 .ReturnsAsync(_apiResponse);
 
-            _linkGeneratorMock = new Mock<ILinkGenerator>();
-            _linkGeneratorMock
-                .Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
-                .Returns(_TestBackLink);
-            _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object, _linkGeneratorMock.Object);
+            _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object);
         }
 
         public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
@@ -136,11 +110,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
                     y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
         }
 
-        public void Verify_LinkGeneratorCalledForBackLink()
-        {
-            _linkGeneratorMock.Verify(x => x.ProviderApprenticeshipServiceLink("account"));
-        }
-
         public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
         {
             Assert.AreEqual(_apiResponse.AccountProviderLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
@@ -159,16 +128,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
         {
             Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
         }
-
-
-        public void Assert_BackLinkIsGenerated(SelectEmployerViewModel result)
-        {
-            Assert.NotNull(result.BackLink);
-            Assert.AreEqual(_TestBackLink, result.BackLink);
-        }
-
-
-
     }
 }
 
