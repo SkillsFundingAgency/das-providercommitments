@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -118,6 +119,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
 
             return View(model);
+        }
+
+        [HttpPost]
+        [Route("add-confirm-employer")]
+        [Route("add/confirm-employer")]
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var request = await _modelMapper.Map<CreateEmptyCohortRequest>(viewModel);
+            var response = await _mediator.Send(request);
+
+            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{response.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)

@@ -34,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     EmployerAccountName = x.AccountName,
                     EmployerAccountPublicHashedId = x.AccountPublicHashedId,
                 }).ToList(),
-                BackLink = _linkGenerator.ProviderApprenticeshipServiceLink("account")
+                BackLink = _linkGenerator.ProviderApprenticeshipServiceLink("account"),
+                ProviderId = source.ProviderId
             };
         }
 

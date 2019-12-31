@@ -27,7 +27,7 @@
                     <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                     <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                        <a href="@Url.Action("ConfirmEmployer", new { viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                        <a href="@Url.Action("ConfirmEmployer", new {Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
                     </td>
                 </tr>
             }
