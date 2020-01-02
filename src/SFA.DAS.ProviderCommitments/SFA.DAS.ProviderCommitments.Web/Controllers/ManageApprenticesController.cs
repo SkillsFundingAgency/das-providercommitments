@@ -23,7 +23,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _createCsvService = createCsvService;
         }
 
-        public async Task<IActionResult> Index(uint providerId)
+        public async Task<IActionResult> Index(uint providerId, string sortField = "")
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = new ManageApprenticesViewModel{ProviderId = providerId};
+            if (sortField != "")
+            {
+                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
+            }
+            else
+            {
+                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Sort(uint providerId, string sortField)
         {
             if (!ModelState.IsValid)
             {
@@ -33,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = new ManageApprenticesViewModel
             {
                 ProviderId = providerId,
-                Apprenticeships = await _commitmentsService.GetApprenticeships(providerId)
+                Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField)
             };
 
             return View(model);
