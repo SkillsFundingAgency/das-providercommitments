@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -11,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWithDraftApprenticeshipControllerTests
 {
@@ -56,10 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
     {
         public CreateCohortWithDraftApprenticeshipController Sut { get; set; }
         
-
-        private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly Mock<ILinkGenerator> _linkGeneratorMock;
         private readonly SelectEmployerViewModel _viewModel;
         private readonly SelectEmployerRequest _request;
         private readonly long _providerId;
@@ -67,9 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
         public SelectEmployerFixture()
         {
             _request = new SelectEmployerRequest { ProviderId = _providerId };
-            _mediatorMock = new Mock<IMediator>();
             _modelMapperMock = new Mock<IModelMapper>();
-            _linkGeneratorMock = new Mock<ILinkGenerator>();
             _viewModel = new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityViewModel>(),
@@ -81,8 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWith
                 .Setup(x => x.Map<SelectEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
 
-
-            Sut = new CreateCohortWithDraftApprenticeshipController(_mediatorMock.Object, _modelMapperMock.Object, _linkGeneratorMock.Object);
+            Sut = new CreateCohortWithDraftApprenticeshipController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>());
         }
 
         public SelectEmployerFixture WithModelStateErrors()
