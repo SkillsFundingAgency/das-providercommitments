@@ -11,9 +11,10 @@
                 <partial name="_ValidationSummary" />
                 <h1 class="govuk-heading-xl">Confirm employer</h1>
                 <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
-
-                <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-24">
-                    <dt class="das-definition-list__title">Account name</dt>
+                
+                <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
+                    @*Account name:@Model.EmployerAccountName &nbsp; &nbsp; Agreement ID:@Model.EmployerAccountLegalEntityPublicHashedId*@
+                    <dt class="das-definition-list__title">Account Name</dt>
                     <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
                     <dt class="das-definition-list__title">Agreement ID</dt>
                     <dd class="das-definition-list__definition">@Model.EmployerAccountLegalEntityPublicHashedId</dd>
@@ -29,12 +30,8 @@
 
                         <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
-
-                                <legend>
-                                    @Html.ValidationMessageFor(m => m.Confirm, "Please choose an option", new { id = "error-message-" + Html.IdFor(m => m.Confirm) })
-                                    <span class="heading-small">
-                                        Is this the employer you'd like to add apprentice details for?
-                                    </span>
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    Is this the employer you'd like to add apprentice details for?
                                 </legend>
 
                                 <div class="govuk-radios">
