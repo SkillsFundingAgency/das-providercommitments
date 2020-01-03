@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("v2/{providerId}/apprentices")]
+    [Route("v2/{providerId}/apprentices",Name = "index")]
     public class ManageApprenticesController : Controller
     {
         private readonly ICommitmentsService _commitmentsService;
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = new ManageApprenticesViewModel{ProviderId = providerId};
-            if (sortField != "")
+            if (sortField == "")
             {
                 model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
             }
@@ -39,23 +40,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField);
             }
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Sort(uint providerId, string sortField)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var model = new ManageApprenticesViewModel
-            {
-                ProviderId = providerId,
-                Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField)
-            };
 
             return View(model);
         }
