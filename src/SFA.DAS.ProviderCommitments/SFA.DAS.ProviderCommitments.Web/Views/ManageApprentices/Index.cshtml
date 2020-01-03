@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.Commitments.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
 
 @{
@@ -15,7 +16,7 @@
 }
 else
 {
-    <a class="govuk-link" href="@Url.RouteUrl("Download",new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+    <a class="govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices,new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
 
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
@@ -65,6 +66,27 @@ else
             }
         </tbody>
     </table>
+}
+
+@if (Model.ShowPageLinks)
+{
+    <nav role="navigation" aria-label="Pagination">
+        <div class="das-pagination__summary">Showing @Model.FilterModel.PagedRecordsFrom to @Model.FilterModel.PagedRecordsTo of @Model.FilterModel.NumberOfRecordsFound reservation@(Model.FilterModel.NumberOfRecordsFound != 1 ? "s" : null)</div>
+        <ul class="das-pagination">
+            @foreach (var pageLink in Model.FilterModel.PageLinks)
+            {
+                <li class="das-pagination__item">
+                    <a class="das-pagination__link @(pageLink.IsCurrent.HasValue && pageLink.IsCurrent.Value ? "current":"")"
+                       asp-route="@RouteNames.ManageApprentices"
+                       asp-all-route-data="@pageLink.RouteData"
+                       aria-current="@pageLink.IsCurrent"
+                       aria-label="@pageLink.AriaLabel">
+                        @pageLink.Label
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
 
 @section breadcrumb {

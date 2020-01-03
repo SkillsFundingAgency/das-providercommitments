@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +7,8 @@ using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 
 namespace SFA.DAS.Commitments.Shared.Services
 {
@@ -77,14 +76,14 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, uint pageNumber)
+        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber)
         {
-            var apprenticeships = await _client.GetApprovedApprenticeships(providerId);
+            var apprenticeships = (await _client.GetApprenticeships(providerId))?.ToArray() ?? new ApprenticeshipDetails[0];
 
             return new GetApprenticeshipsFilteredResult
             {
                 Apprenticeships = apprenticeships,
-                NumberOfRecordsFound = (uint) (apprenticeships?.Count() ?? 0)
+                NumberOfRecordsFound = apprenticeships.Length
             };
         }
     }

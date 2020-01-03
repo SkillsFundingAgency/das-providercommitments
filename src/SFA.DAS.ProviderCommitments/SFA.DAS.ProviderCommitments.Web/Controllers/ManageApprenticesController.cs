@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -24,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("manage", Name = RouteNames.ManageApprentices)]
-        public async Task<IActionResult> Index(uint providerId, uint pageNumber = 1)
+        public async Task<IActionResult> Index(uint providerId, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
             {
@@ -35,14 +33,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var filterModel = new ManageApprenticesFilterModel
             {
-                NumberOfRecordsFound = (int) (result?.NumberOfRecordsFound ?? 0),
-                PageNumber = (int)pageNumber
+                NumberOfRecordsFound = result.NumberOfRecordsFound,
+                PageNumber = pageNumber
             };
 
             var model = new ManageApprenticesViewModel
             {
                 ProviderId = providerId,
-                Apprenticeships = result?.Apprenticeships ?? new List<ApprenticeshipDetails>(),
+                Apprenticeships = result.Apprenticeships,
                 FilterModel = filterModel
             };
 

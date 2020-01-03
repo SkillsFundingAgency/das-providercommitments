@@ -6,6 +6,6 @@ namespace SFA.DAS.Commitments.Shared.Models
     public class GetApprenticeshipsFilteredResult
     {
         public IEnumerable<ApprenticeshipDetails> Apprenticeships { get; set; }
-        public uint NumberOfRecordsFound { get; set; }
+        public int NumberOfRecordsFound { get; set; }
     }
 }
