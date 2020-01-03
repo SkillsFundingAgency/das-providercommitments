@@ -107,7 +107,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-confirm-employer")]
         [Route("add/confirm-employer")]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
@@ -122,13 +121,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add-confirm-employer")]
         [Route("add/confirm-employer")]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
+            }
+
+            if (!viewModel.Confirm.Value)
+            {
+                return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
             }
 
             var request = await _modelMapper.Map<CreateEmptyCohortRequest>(viewModel);
@@ -143,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var getEmployerTask =
                 GetEmployerIfRequired(model.AccountLegalEntityId);
-
+            
             var getCoursesTask = GetCourses();
 
             await Task.WhenAll(getEmployerTask, getCoursesTask);

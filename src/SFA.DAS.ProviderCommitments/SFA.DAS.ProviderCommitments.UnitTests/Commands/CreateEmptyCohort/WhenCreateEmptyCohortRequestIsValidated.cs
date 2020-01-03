@@ -1,28 +1,27 @@
 ﻿using System;
 using FluentValidation.Results;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
+namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateEmptyCohort
 {
     [TestFixture]
     public class WhenCreateEmptyCohortRequestIsValidated
     {
-        private CreateCohortValidator _validator;
-        private CreateCohortRequest _validRequest;
+        private CreateEmptyCohortValidator _validator;
+        private CreateEmptyCohortRequest _validRequest;
         private Func<ValidationResult> _act;
 
         [SetUp]
         public void Arrange()
         {
-            _validRequest = new CreateCohortRequest
+            _validRequest = new CreateEmptyCohortRequest
             {
                 ProviderId = 123,
                 AccountLegalEntityId = 456,
-                ReservationId = Guid.NewGuid()
             };
 
-            _validator = new CreateCohortValidator();
+            _validator = new CreateEmptyCohortValidator();
             _act = () =>_validator.Validate(_validRequest);
         }
 
@@ -40,15 +39,6 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             var result = _act();
             Assert.IsFalse(result.IsValid);
         }
-
-        [Test]
-        public void ThenReservationIdIsRequired()
-        {
-            _validRequest.ReservationId = Guid.Empty;
-            var result = _act();
-            Assert.IsFalse(result.IsValid);
-        }
-
 
         [Test]
         public void ThenEmployerAccountIdIsRequired()

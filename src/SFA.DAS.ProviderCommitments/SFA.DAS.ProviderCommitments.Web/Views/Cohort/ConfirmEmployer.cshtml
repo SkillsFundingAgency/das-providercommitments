@@ -5,65 +5,61 @@
 }
 
 <div class="govuk-width-container">
-    <main class="govuk-main-wrapper">
+    <main class="govuk-main-wrapper" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-
                 <partial name="_ValidationSummary" />
+                <h1 class="govuk-heading-xl">Confirm employer</h1>
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
 
-                @*<h1 class="govuk-heading-xl">
-                    Confirm Employer
-                    <br />
-                    @Model.EmployerAccountName
-                </h1>*@
-
-                <h1 class="heading-xlarge">Confirm employer</h1>
-                <p class="heading-large">@Model.EmployerAccountLegalEntityName</p>
-                <dl class="inline-secondary">
-                    <dt>Account name</dt>
-                    <dd>@Model.EmployerAccountName</dd>
-                    <dt>Agreement ID</dt>
-                    <dd>@Model.EmployerAccountLegalEntityPublicHashedId</dd>
+                <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-24">
+                    <dt class="das-definition-list__title">Account name</dt>
+                    <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
+                    <dt class="das-definition-list__title">Agreement ID</dt>
+                    <dd class="das-definition-list__definition">@Model.EmployerAccountLegalEntityPublicHashedId</dd>
                 </dl>
 
                 <form method="post">
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-                    @Html.HiddenFor(x => x.EmployerAccountPublicHashedId)
-                    @Html.HiddenFor(x => x.ProviderId)
+                    <fieldset class="govuk-fieldset">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+                        @Html.HiddenFor(x => x.ProviderId)
+                        @Html.HiddenFor(x => x.EmployerAccountName)
+                        @Html.HiddenFor(x => x.EmployerAccountLegalEntityName)
 
-                    <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
-                        <fieldset class="govuk-fieldset">
+                        <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                            <fieldset class="govuk-fieldset">
 
-                            <legend>
-                                @Html.ValidationMessageFor(m => m.Confirm, "Please choose an option", new { id = "error-message-" + Html.IdFor(m => m.Confirm) })
-                                <span class="heading-small">
-                                    Is this the employer you'd like to add apprentice details for?
-                                </span>
-                            </legend>
+                                <legend>
+                                    @Html.ValidationMessageFor(m => m.Confirm, "Please choose an option", new { id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                                    <span class="heading-small">
+                                        Is this the employer you'd like to add apprentice details for?
+                                    </span>
+                                </legend>
 
-                            <div class="govuk-radios">
-                                <div class="govuk-radios__item">
-                                    <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
-                                    <label class="govuk-label govuk-radios__label" for="confirm-true">
-                                        Yes, use @Model.EmployerAccountLegalEntityName
-                                    </label>
+                                <div class="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                            Yes, use @Model.EmployerAccountLegalEntityName
+                                        </label>
 
+                                    </div>
+
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                            No, choose a different employer
+                                        </label>
+                                    </div>
                                 </div>
+                            </fieldset>
+                        </div>
 
-                                <div class="govuk-radios__item">
-                                    <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
-                                    <label class="govuk-label govuk-radios__label" for="confirm-false">
-                                        No, choose a different employer
-                                    </label>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-
-                    <button class="govuk-button" type="submit" data-module="govuk-button">
-                        Continue
-                    </button>
+                        <button class="govuk-button" type="submit" data-module="govuk-button">
+                            Continue
+                        </button>
+                    </fieldset>
                 </form>
             </div>
         </div>
@@ -72,5 +68,5 @@
 
 @section breadcrumb
 {
-    <a class="govuk-back-link" href=@Model.BackLink>Back</a>
+    @Html.ActionLink("Back", "SelectEmployer", new { Model.ProviderId }, new { id = "back-link", @class = "govuk-back-link" })
 }
