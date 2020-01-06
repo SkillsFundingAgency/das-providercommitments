@@ -46,16 +46,6 @@
     <Folder Include="RouteValues\" />
     <Folder Include="Views\Unapproved\" />
   </ItemGroup>
-
-
-  <ItemGroup>
-    <Reference Include="SFA.DAS.Provider.Shared.UI">
-      <HintPath>..\..\..\..\das-shared-packages\SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI\bin\Debug\netstandard2.0\SFA.DAS.Provider.Shared.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="SFA.DAS.Provider.Shared.UI.Views">
-      <HintPath>..\..\..\..\das-shared-packages\SFA.DAS.Provider.Shared.UI\SFA.DAS.Provider.Shared.UI\bin\Debug\netstandard2.0\SFA.DAS.Provider.Shared.UI.Views.dll</HintPath>
-    </Reference>
-  </ItemGroup>
    
 
   <ItemGroup>
