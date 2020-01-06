@@ -8,22 +8,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper : IMapper<ConfirmEmployerViewModel, CreateEmptyCohortRequest>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-
-        public ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient)
+        public Task<CreateEmptyCohortRequest> Map(ConfirmEmployerViewModel source)
         {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
-
-        public async Task<CreateEmptyCohortRequest> Map(ConfirmEmployerViewModel source)
-        {
-            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId.Value);
-            return new CreateEmptyCohortRequest
+            return Task.FromResult(new CreateEmptyCohortRequest
             {
-                AccountId = accountLegalEntity.AccountId,
                 AccountLegalEntityId = source.AccountLegalEntityId.Value,
                 ProviderId = source.ProviderId,
-            };
+            });
         }
     }
 }

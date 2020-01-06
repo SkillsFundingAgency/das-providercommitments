@@ -69,7 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly CreateEmptyCohortResponse _emptyCohortResponse;
         private readonly ConfirmEmployerViewModel _viewModel;
         private readonly long _providerId;
-        
 
         public PostConfirmEmployerFixture()
         {

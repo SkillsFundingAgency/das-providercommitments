@@ -6,7 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
     internal static class IActionResultTestExtensions
     {
-
         public static ViewResult VerifyReturnsViewModel(this IActionResult result)
         {
             return result.VerifyResponseObjectType<ViewResult>();

@@ -3,19 +3,28 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using WebApp= SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using API=SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class CreateEmptyCohortRequestToApiCreateEmptyCohortRequestMapper : IMapper<CreateEmptyCohortRequest, API.CreateEmptyCohortRequest>
     {
-        public Task<API.CreateEmptyCohortRequest> Map(CreateEmptyCohortRequest source)
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
+
+        public CreateEmptyCohortRequestToApiCreateEmptyCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient)
         {
-            return Task.FromResult(new API.CreateEmptyCohortRequest
+            _commitmentsApiClient = commitmentsApiClient;
+        }
+
+        public async Task<API.CreateEmptyCohortRequest> Map(CreateEmptyCohortRequest source)
+        {
+            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId);
+            return new API.CreateEmptyCohortRequest
             {
-                AccountId = source.AccountId,
+                AccountId = accountLegalEntity.AccountId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 ProviderId = source.ProviderId
-            });
+            };
         }
     }
 }
