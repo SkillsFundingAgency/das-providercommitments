@@ -21,7 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
 
-
         private void AssertValidationResult<T>(Expression<Func<SelectEmployerRequest, T>> property, SelectEmployerRequest instance, bool expectedValid)
         {
             var validator = new SelectEmployerRequestValidator();

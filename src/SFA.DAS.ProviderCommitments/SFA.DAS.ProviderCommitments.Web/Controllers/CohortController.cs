@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -35,7 +36,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
@@ -60,7 +60,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
@@ -92,8 +91,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-select-employer")]
         [Route("add/select-employer")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
         {
             if (!ModelState.IsValid)
@@ -108,6 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/confirm-employer")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
             if (!ModelState.IsValid)
@@ -122,6 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/confirm-employer")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (!ModelState.IsValid)
