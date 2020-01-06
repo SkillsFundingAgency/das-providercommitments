@@ -20,14 +20,14 @@ else
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "FirstName", isReversed= Model.SortField.ToLower()=="firstname"})">Apprentice name</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "Uln", isReversed= Model.SortField.ToLower()=="uln"})">ULN</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "LegalEntityName", isReversed= Model.SortField.ToLower()=="legalentityname"})">Employer</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "CourseName", isReversed= Model.SortField.ToLower()=="coursename"})">Apprenticeship training course</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "StartDate", isReversed= Model.SortField.ToLower()=="startdate"})">Planned start date</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "EndDate", isReversed= Model.SortField.ToLower()=="enddate"})">Planned end date</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "PaymentStatus", isReversed= Model.SortField.ToLower()=="paymentstatus"})">Status</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "DataLockStatus", isReversed= Model.SortField.ToLower()=="datalockstatus"})">Alerts</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "FirstName", isReversed= Model.SortField.ToLower()=="firstname" && !Model.IsReversed})">Apprentice name</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "Uln", isReversed= Model.SortField.ToLower()=="uln" && !Model.IsReversed})">ULN</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "LegalEntityName", isReversed= Model.SortField.ToLower()=="legalentityname" && !Model.IsReversed})">Employer</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "CourseName", isReversed= Model.SortField.ToLower()=="coursename" && !Model.IsReversed})">Apprenticeship training course</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "StartDate", isReversed= Model.SortField.ToLower()=="startdate" && !Model.IsReversed})">Planned start date</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "EndDate", isReversed= Model.SortField.ToLower()=="enddate" && !Model.IsReversed})">Planned end date</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "PaymentStatus", isReversed= Model.SortField.ToLower()=="paymentstatus" && !Model.IsReversed})">Status</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "DataLockStatus", isReversed= Model.SortField.ToLower()=="datalockstatus" && !Model.IsReversed})">Alerts</a></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
