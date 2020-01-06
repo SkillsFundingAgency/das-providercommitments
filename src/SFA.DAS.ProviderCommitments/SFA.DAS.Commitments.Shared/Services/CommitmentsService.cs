@@ -77,11 +77,11 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId, string sortField = "")
+        public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId, string sortField = "", bool reverseSort = false)
         {
             if (sortField == "")
                 return _client.GetApprenticeships(providerId);
-            return _client.GetApprenticeships(providerId, sortField);
+            return _client.GetApprenticeships(providerId, sortField, reverseSort);
         }
 
     }
