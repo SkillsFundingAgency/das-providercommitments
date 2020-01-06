@@ -10,7 +10,7 @@ using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenGettingConfirmEmployer

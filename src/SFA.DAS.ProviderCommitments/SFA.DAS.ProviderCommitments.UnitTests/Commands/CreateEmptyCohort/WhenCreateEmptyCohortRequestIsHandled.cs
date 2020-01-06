@@ -69,7 +69,6 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateEmptyCohort
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IMapper<CreateEmptyCohortRequest, CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>> _mapper;
 
-
             public CreateEmptyCohortHandlerFixture()
             {
                 var autoFixture = new Fixture();

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenIPostConfirmEmployer

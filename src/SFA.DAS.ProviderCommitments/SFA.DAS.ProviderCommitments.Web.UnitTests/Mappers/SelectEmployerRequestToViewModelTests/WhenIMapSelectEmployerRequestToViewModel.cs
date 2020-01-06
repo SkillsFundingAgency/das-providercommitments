@@ -52,7 +52,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerReques
     {
         private readonly SelectEmployerViewModelMapper _sut;
         private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
-        private readonly Mock<ILinkGenerator> _linkGeneratorMock;
         private readonly SelectEmployerRequest _request;
         private readonly long _providerId;
         private readonly GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;

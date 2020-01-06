@@ -10,7 +10,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenGettingSelectEmployer 
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortCont
                 .Setup(x => x.Map<SelectEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
 
-            Sut = new CreateCohortWithDraftApprenticeshipController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>());
+            Sut = new CohortController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>());
         }
 
         public SelectEmployerFixture WithModelStateErrors()
