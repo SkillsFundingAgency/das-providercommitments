@@ -31,34 +31,36 @@ else
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var apprenticeships in Model.Apprenticeships)
+            @foreach (var apprenticeship in Model.Apprenticeships)
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeships.ApprenticeFirstName @apprenticeships.ApprenticeLastName
+                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-apprenticeshipid="@apprenticeship.Id">
+                            @apprenticeship.ApprenticeFirstName @apprenticeship.ApprenticeLastName
+                        </a>
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
-                        @apprenticeships.Uln
+                        @apprenticeship.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Employer">
-                        @apprenticeships.EmployerName
+                        @apprenticeship.EmployerName
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
-                        @apprenticeships.CourseName
+                        @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.PlannedStartDate.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeships.PlannedEndDateTime.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedEndDateTime.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
-                        @apprenticeships.PaymentStatus
+                        @apprenticeship.PaymentStatus
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @if (apprenticeships.Alerts.Any())
+                        @if (apprenticeship.Alerts.Any())
                         {
-                            @apprenticeships.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
+                            @apprenticeship.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
                         }
                     </td>
                 </tr>
