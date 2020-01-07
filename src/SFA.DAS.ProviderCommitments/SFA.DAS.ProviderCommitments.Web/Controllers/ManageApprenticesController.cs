@@ -24,21 +24,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _createCsvService = createCsvService;
         }
 
-        public async Task<IActionResult> Index(uint providerId, string sortField = "", bool isReversed = false)
+        public async Task<IActionResult> Index(uint providerId, string sortField = "", bool reverseSort = false)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, IsReversed = isReversed};
+            var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, ReverseSort = reverseSort};
             if (sortField == "")
             {
                 model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
             }
             else
             {
-                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField, isReversed);
+                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
             }
             
             return View(model);

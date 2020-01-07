@@ -20,14 +20,14 @@ else
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "FirstName", isReversed= Model.SortField.ToLower()=="firstname" && !Model.IsReversed})">Apprentice name</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "Uln", isReversed= Model.SortField.ToLower()=="uln" && !Model.IsReversed})">ULN</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "LegalEntityName", isReversed= Model.SortField.ToLower()=="legalentityname" && !Model.IsReversed})">Employer</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "CourseName", isReversed= Model.SortField.ToLower()=="coursename" && !Model.IsReversed})">Apprenticeship training course</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "StartDate", isReversed= Model.SortField.ToLower()=="startdate" && !Model.IsReversed})">Planned start date</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "EndDate", isReversed= Model.SortField.ToLower()=="enddate" && !Model.IsReversed})">Planned end date</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "PaymentStatus", isReversed= Model.SortField.ToLower()=="paymentstatus" && !Model.IsReversed})">Status</a></th>
-                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "DataLockStatus", isReversed= Model.SortField.ToLower()=="datalockstatus" && !Model.IsReversed})">Alerts</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "FirstName", reverseSort= Model.SortField.ToLower()=="firstname" && !Model.ReverseSort})">Apprentice name</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "Uln", reverseSort= Model.SortField.ToLower()=="uln" && !Model.ReverseSort})">ULN</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "LegalEntityName", reverseSort= Model.SortField.ToLower()=="legalentityname" && !Model.ReverseSort})">Employer</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "CourseName", reverseSort= Model.SortField.ToLower()=="coursename" && !Model.ReverseSort})">Apprenticeship training course</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "StartDate", reverseSort= Model.SortField.ToLower()=="startdate" && !Model.ReverseSort})">Planned start date</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "EndDate", reverseSort= Model.SortField.ToLower()=="enddate" && !Model.ReverseSort})">Planned end date</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "PaymentStatus", reverseSort= Model.SortField.ToLower()=="paymentstatus" && !Model.ReverseSort})">Status</a></th>
+                <th scope="col" class="govuk-table__header"><a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "DataLockStatus", reverseSort= Model.SortField.ToLower()=="datalockstatus" && !Model.ReverseSort})">Alerts</a></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
