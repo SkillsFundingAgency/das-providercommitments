@@ -15,6 +15,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
+using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {

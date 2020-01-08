@@ -4,6 +4,7 @@ using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 
 namespace SFA.DAS.Commitments.Shared.Interfaces
 {
@@ -14,6 +15,6 @@ namespace SFA.DAS.Commitments.Shared.Interfaces
         Task<CohortDetails> GetCohortDetail(long cohortId);
         Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId);
         Task UpdateDraftApprenticeship(long cohortId, long draftApprenticeshipId, UpdateDraftApprenticeshipRequest updateRequest);
-        Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId);
+        Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId, string sortField = "", bool isReversed = false, bool isDownload = false);
     }
 }

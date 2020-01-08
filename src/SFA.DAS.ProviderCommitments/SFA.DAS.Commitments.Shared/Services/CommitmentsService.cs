@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 
 namespace SFA.DAS.Commitments.Shared.Services
 {
@@ -76,9 +77,9 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId)
+        public async Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId, string sortField = "", bool isReversed = false, bool isDownload = false)
         {
-            return _client.GetApprovedApprenticeships(providerId);
+            return await _client.GetApprenticeships(providerId, sortField, isReversed, isDownload);
         }
     }
 }
