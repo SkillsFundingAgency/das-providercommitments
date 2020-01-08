@@ -35,7 +35,7 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-apprenticeshipid="@apprenticeship.Id">
+                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.Id" asp-route-providerId="@Model.ProviderId">
                             @apprenticeship.ApprenticeFirstName @apprenticeship.ApprenticeLastName
                         </a>
                     </td>
@@ -60,7 +60,9 @@ else
                     <td class="govuk-table__cell" data-label="Alerts">
                         @if (apprenticeship.Alerts.Any())
                         {
-                            @apprenticeship.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
+                            <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.Id" asp-route-providerId="@Model.ProviderId">
+                                @apprenticeship.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
+                            </a>
                         }
                     </td>
                 </tr>
