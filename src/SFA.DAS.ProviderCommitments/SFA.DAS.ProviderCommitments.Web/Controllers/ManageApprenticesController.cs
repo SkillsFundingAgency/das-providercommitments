@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var result = await _commitmentsService.GetApprenticeships(providerId);
 
-            var csvContent = result.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
+            var csvContent = result.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");

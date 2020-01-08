@@ -1,47 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
     public class WhenDownloadingApprentices
     {
-        [Test]
-        public async Task ThenTheFileNameIsSetCorrectly()
+        [Test, MoqAutoData]
+        public async Task Then_The_File_Name_Is_Set_Correctly(
+            uint providerId,
+            ManageApprenticesController controller)
         {
             //Arrange
             var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
-            var controller = new ManageApprenticesController(Mock.Of<ICommitmentsService>(), Mock.Of<ICreateCsvService>());
-
+            
             //Act
-            var actual = await controller.Download(1);
-
-            var actualFileResult = actual as FileContentResult;
+            var actual = await controller.Download(providerId) as FileContentResult;
 
             //Assert
-            Assert.AreEqual(expected, actualFileResult.FileDownloadName);
+            Assert.AreEqual(expected, actual.FileDownloadName);
         }
 
-        [Test]
-        public async Task Then_The_Result_Is_Mapped_To_The_Csv_View_Model()
+        [Test, MoqAutoData]
+        public async Task Then_The_Result_Is_Mapped_To_The_Csv_View_Model(
+            [Frozen] Mock<ICreateCsvService> mockCreateCsvService,
+            ManageApprenticesController controller)
         {
-            //Arrange
-            var createCsvService = new Mock<ICreateCsvService>();
-            var controller = new ManageApprenticesController(Mock.Of<ICommitmentsService>(), createCsvService.Object);
-            
             //Act
             await controller.Download(1);
             
             //Arrange
-            createCsvService.Verify(x=>x.GenerateCsvContent(It.IsAny<List<ApprenticeshipDetailsCsvViewModel>>()));
+            mockCreateCsvService.Verify(x=>x.GenerateCsvContent(It.IsAny<List<ApprenticeshipDetailsCsvModel>>()));
         }
     }
 }

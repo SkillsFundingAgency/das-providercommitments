@@ -5,20 +5,20 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class ApprenticeshipDetailsCsvViewModel 
+    public class ApprenticeshipDetailsCsvModel 
     {
-        public static implicit operator ApprenticeshipDetailsCsvViewModel(ApprenticeshipDetails model)
+        public static implicit operator ApprenticeshipDetailsCsvModel(ApprenticeshipDetails model)
         {
-            return new ApprenticeshipDetailsCsvViewModel
+            return new ApprenticeshipDetailsCsvModel
             {
                 ApprenticeName = $"{model.ApprenticeFirstName} {model.ApprenticeLastName}",
                 Uln = model.Uln,
                 Employer = model.EmployerName,
                 CourseName = model.CourseName,
-                PlannedStartDate = model.PlannedStartDate,
-                PlannedEndDate = model.PlannedEndDateTime,
+                PlannedStartDate = model.PlannedStartDate.ToString("MMM yyyy"),
+                PlannedEndDate = model.PlannedEndDateTime.ToString("MMM yyyy"),
                 Status = model.PaymentStatus.ToString(),
-                Alerts = model.Alerts.Any() ? model.Alerts.Aggregate((a,b)=> $"{a}, {b}") : ""
+                Alerts = model.Alerts.Any() ? model.Alerts.Aggregate((a,b)=> $"{a}|{b}") : ""
             };
         }
 
@@ -35,10 +35,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseName { get ; private set ; }
 
         [Name("Planned start date")]
-        public DateTime PlannedStartDate { get ; private set ; }
+        public string PlannedStartDate { get ; private set ; }
 
         [Name("Planned end date")]
-        public DateTime PlannedEndDate { get ; private set ; }
+        public string PlannedEndDate { get ; private set ; }
 
         [Name("Status")]
         public string Status { get ; private set ; }
