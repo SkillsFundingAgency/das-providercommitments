@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _commitmentsService.GetApprenticeships(providerId, pageNumber);
+            var result = await _commitmentsService.GetApprenticeships(providerId, pageNumber, ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage);
 
             var filterModel = new ManageApprenticesFilterModel
             {
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("download", Name = RouteNames.DownloadApprentices)]
         public async Task<IActionResult> Download(uint providerId)
         {
-            var result = await _commitmentsService.GetApprenticeships(providerId,0);
+            var result = await _commitmentsService.GetApprenticeships(providerId);
 
             var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
             

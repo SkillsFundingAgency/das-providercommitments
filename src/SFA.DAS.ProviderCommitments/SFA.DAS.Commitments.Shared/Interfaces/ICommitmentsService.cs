@@ -12,6 +12,7 @@ namespace SFA.DAS.Commitments.Shared.Interfaces
         Task<CohortDetails> GetCohortDetail(long cohortId);
         Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId);
         Task UpdateDraftApprenticeship(long cohortId, long draftApprenticeshipId, UpdateDraftApprenticeshipRequest updateRequest);
-        Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber);
+        Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId);
+        Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber, int pageItemCount);
     }
 }

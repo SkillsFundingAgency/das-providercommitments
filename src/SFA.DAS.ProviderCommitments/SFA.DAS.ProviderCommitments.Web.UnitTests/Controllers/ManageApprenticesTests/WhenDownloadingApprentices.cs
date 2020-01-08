@@ -21,8 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             //Arrange
             var commitmentService = new Mock<ICommitmentsService>();
 
-            commitmentService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>()))
-                .ReturnsAsync(new GetApprenticeshipsFilteredResult()
+            commitmentService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
+                .ReturnsAsync(new GetApprenticeshipsFilteredResult
                 {
                     Apprenticeships = new List<ApprenticeshipDetails>(),
                     NumberOfRecordsFound = 0
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             //Arrange
             var commitmentService = new Mock<ICommitmentsService>();
 
-            commitmentService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>()))
+            commitmentService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
                 .ReturnsAsync(new GetApprenticeshipsFilteredResult()
                 {
                     Apprenticeships = new List<ApprenticeshipDetails>(),

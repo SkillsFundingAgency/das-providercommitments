@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesController controller)
         {
             //Arrange
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(),It.IsAny<int>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(),It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(apprenticeshipsResult);
 
             //Act
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesController controller)
         {
             //Arrange
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(apprenticeshipsResult);
 
             //Act
@@ -93,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         {
             //Arrange
             var expectedPageNumber = 4;
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), expectedPageNumber))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), expectedPageNumber, It.IsAny<int>()))
                 .ReturnsAsync(apprenticeshipsResult);
 
             //Act
@@ -126,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
             apprenticeshipsResult.Apprenticeships = apprenticeships;
 
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(apprenticeshipsResult);
 
             //Act

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
@@ -8,7 +7,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
-using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
+
 
 namespace SFA.DAS.Commitments.Shared.Services
 {
@@ -76,14 +75,25 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber)
+        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId)
         {
-            var apprenticeships = (await _client.GetApprenticeships(providerId))?.ToArray() ?? new ApprenticeshipDetails[0];
+            var response = await _client.GetApprenticeships(providerId);
 
             return new GetApprenticeshipsFilteredResult
             {
-                Apprenticeships = apprenticeships,
-                NumberOfRecordsFound = apprenticeships.Length
+                Apprenticeships = response.Apprenticeships,
+                NumberOfRecordsFound = response.TotalApprenticeshipsFound
+            };
+        }
+
+        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber, int pageItemCount)
+        {
+            var response = await _client.GetApprenticeships(providerId, pageNumber, pageItemCount);
+
+            return new GetApprenticeshipsFilteredResult
+            {
+                Apprenticeships = response.Apprenticeships,
+                NumberOfRecordsFound = response.TotalApprenticeshipsFound
             };
         }
     }
