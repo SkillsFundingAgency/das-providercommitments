@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Commitments.Shared.Interfaces
 {
