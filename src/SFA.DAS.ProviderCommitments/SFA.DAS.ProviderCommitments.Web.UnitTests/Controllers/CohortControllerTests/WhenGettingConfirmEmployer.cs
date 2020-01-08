@@ -9,23 +9,13 @@ using SFA.DAS.ProviderUrlHelper;
 using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenGettingConfirmEmployer
     {
-        [Test]
-        public async Task AndModelStateInvalid_ThenReturnsBadRequest()
-        {
-            var fixture = new GetConfirmEmployerFixture()
-                .WithModelStateErrors();
-
-            var result = await fixture.Act();
-
-            result.VerifyReturnsBadRequestObject();
-        }
-
         [Test]
         public async Task ThenCallsModelMapper()
         {
@@ -68,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
             
-            Sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>());
+            Sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public GetConfirmEmployerFixture WithModelStateErrors()

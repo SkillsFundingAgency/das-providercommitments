@@ -9,23 +9,13 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
 using System.Threading;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenIPostConfirmEmployer
     {
-        [Test]
-        public async Task PostConfirmEmployerViewModel_WithInValidModel_ShouldReturnView_WithConfirmEmployerViewModel()
-        {
-            var fixture = new PostConfirmEmployerFixture()
-                .WithModelStateErrors();
-
-            var result = await fixture.Act();
-            result.VerifyReturnsViewModel().WithModel<ConfirmEmployerViewModel>();
-        }
-
         [Test]
         public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmFalse_ShouldRedirectToSelectEmployer()
         {
@@ -63,10 +53,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public string RedirectUrl;
         private readonly Mock<ILinkGenerator> _linkGenerator;
-        private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly CreateEmptyCohortRequest _emptyCohortRequest;
-        private readonly CreateEmptyCohortResponse _emptyCohortResponse;
+        private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
+        private readonly CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest _emptyCohortRequest;
+        private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _emptyCohortResponse;
         private readonly ConfirmEmployerViewModel _viewModel;
         private readonly long _providerId;
 
@@ -75,25 +65,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new Fixture();
             _providerId = 123;
             _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" };
+            _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
-            _emptyCohortRequest = fixture.Create<CreateEmptyCohortRequest>();
+            _emptyCohortRequest = fixture.Create<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>();
+            _emptyCohortResponse = fixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper
-                .Setup(x => x.Map<CreateEmptyCohortRequest>(_viewModel))
+                .Setup(x => x.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(_viewModel))
                 .ReturnsAsync(_emptyCohortRequest);
 
-            _emptyCohortResponse = fixture.Create<CreateEmptyCohortResponse>();
-
-            _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(_emptyCohortRequest, It.IsAny<CancellationToken>()))
+            _commitmentApiClient
+                .Setup(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_emptyCohortResponse);
 
             RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_emptyCohortResponse.CohortReference}/Details";
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 
-            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object);
+            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object);
         }
 
         public PostConfirmEmployerFixture WithModelStateErrors()
@@ -116,13 +106,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public PostConfirmEmployerFixture VerifyMapperIsCalled()
         {
-            _mockModelMapper.Verify(x => x.Map<CreateEmptyCohortRequest>(_viewModel));
+            _mockModelMapper.Verify(x => x.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(_viewModel));
             return this;
         }
 
         public PostConfirmEmployerFixture VerifyCohortCreated()
         {
-            _mediator.Verify(x => x.Send(_emptyCohortRequest, It.IsAny<CancellationToken>()), Times.Once);
+            _commitmentApiClient.Verify(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()), Times.Once);
             return this;
         }
 

@@ -14,8 +14,8 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateEmptyCohort;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.CommitmentsV2.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -25,14 +25,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
+        private readonly ICommitmentsApiClient _commitmentApiClient;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
-            ILinkGenerator urlHelper)
+            ILinkGenerator urlHelper,
+            ICommitmentsApiClient commitmentsApiClient)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
+            _commitmentApiClient = commitmentsApiClient;
         }
 
         [HttpGet]
@@ -110,11 +113,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var model = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
 
             return View(model);
@@ -125,22 +123,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
-            if (!ModelState.IsValid)
+            if (viewModel.Confirm.Value)
             {
-                return View(viewModel);
+                var request = await _modelMapper.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(viewModel);
+                var response = await _commitmentApiClient.CreateCohort(request);
+
+                var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{response.CohortReference}/Details";
+                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+                return Redirect(url);
             }
 
-            if (!viewModel.Confirm.Value)
-            {
-                return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
-            }
-
-            var request = await _modelMapper.Map<CreateEmptyCohortRequest>(viewModel);
-            var response = await _mediator.Send(request);
-
-            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{response.CohortReference}/Details";
-            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            return Redirect(url);
+            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)

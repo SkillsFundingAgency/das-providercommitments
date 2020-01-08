@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -45,16 +46,19 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.AddValidation();
                     ConfigureAuthorization(options);
                 })
                 .AddNavigationBarSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
-                .AddSessionStateTempDataProvider()
-                .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                //.AddSessionStateTempDataProvider()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+                
 
-            services.AddHealthChecks();
+            services
+                //.AddSession()
+                .AddHealthChecks();
         }
 
         /// <summary>
@@ -93,14 +97,16 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseDasHealthChecks()
-                .UseCookiePolicy()
+             
                 .UseAuthentication()
+                //.UseSession()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
+                .UseCookiePolicy()
                 .UseHealthChecks("/health-check"); 
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
