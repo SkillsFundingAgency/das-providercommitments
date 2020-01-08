@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesController controller)
         {
             //Arrange
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 approvedApprenticeships.Add(approvedApprenticeship);
             }
 
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
             List<ApprenticeshipDetails> approvedApprenticeships = null;
 
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
