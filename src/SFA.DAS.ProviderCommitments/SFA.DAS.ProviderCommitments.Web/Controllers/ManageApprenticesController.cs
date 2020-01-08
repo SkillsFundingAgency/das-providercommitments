@@ -33,7 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var filterModel = new ManageApprenticesFilterModel
             {
-                NumberOfRecordsFound = result.NumberOfRecordsFound,
+                TotalNumberOfApprenticeshipsFound = result.TotalNumberOfApprenticeshipsFound,
+                TotalNumberOfApprenticeshipsWithAlertsFound = result.TotalNumberOfApprenticeshipsWithAlertsFound,
                 PageNumber = pageNumber
             };
 
