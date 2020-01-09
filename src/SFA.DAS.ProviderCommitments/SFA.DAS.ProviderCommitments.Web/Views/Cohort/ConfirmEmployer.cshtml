@@ -23,7 +23,7 @@
                     <fieldset class="govuk-fieldset">
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-                        @Html.HiddenFor(x => x.ProviderId)
+
                  
                         <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
