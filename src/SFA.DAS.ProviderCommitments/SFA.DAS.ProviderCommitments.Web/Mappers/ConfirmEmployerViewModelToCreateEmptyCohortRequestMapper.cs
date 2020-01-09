@@ -17,11 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<CreateEmptyCohortRequest> Map(ConfirmEmployerViewModel source)
         {
-            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId.Value);
+            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId);
             return new CreateEmptyCohortRequest
             {
                 AccountId = accountLegalEntity.AccountId,
-                AccountLegalEntityId = source.AccountLegalEntityId.Value,
+                AccountLegalEntityId = source.AccountLegalEntityId,
                 ProviderId = source.ProviderId,
             };
         }

@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ConfirmEmployerReque
         public async Task ThenAccountLegalEntityIdIsNotMapped()
         {
             var result = await _act();
-            Assert.IsNull(result.AccountLegalEntityId);
+            Assert.AreEqual(0, result.AccountLegalEntityId);
         }
     }
 }
