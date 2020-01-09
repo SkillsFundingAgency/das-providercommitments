@@ -32,7 +32,17 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             var response = await _fixture.Sut.GetApprenticeships(1, 1, 1);
 
             //Assert
-            Assert.AreEqual(_fixture.GetApprenticeshipsResponse.TotalApprenticeshipsFound, response.NumberOfRecordsFound);
+            Assert.AreEqual(_fixture.GetApprenticeshipsResponse.TotalApprenticeshipsFound, response.TotalNumberOfApprenticeshipsFound);
+        }
+
+        [Test]
+        public async Task TheShouldReturnTotalApprenticeshipWithAlertsCount()
+        {
+            //Act
+            var response = await _fixture.Sut.GetApprenticeships(1, 1, 1);
+
+            //Assert
+            Assert.AreEqual(_fixture.GetApprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, response.TotalNumberOfApprenticeshipsWithAlertsFound);
         }
     }
 }

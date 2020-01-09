@@ -81,8 +81,7 @@ namespace SFA.DAS.Commitments.Shared.Services
 
             return new GetApprenticeshipsFilteredResult
             {
-                Apprenticeships = response.Apprenticeships,
-                NumberOfRecordsFound = response.TotalApprenticeshipsFound
+                Apprenticeships = response.Apprenticeships
             };
         }
 
@@ -93,7 +92,8 @@ namespace SFA.DAS.Commitments.Shared.Services
             return new GetApprenticeshipsFilteredResult
             {
                 Apprenticeships = response.Apprenticeships,
-                NumberOfRecordsFound = response.TotalApprenticeshipsFound
+                TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
+                TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound
             };
         }
     }

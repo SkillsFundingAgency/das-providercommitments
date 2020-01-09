@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 .ReturnsAsync(new GetApprenticeshipsFilteredResult
                 {
                     Apprenticeships = new List<ApprenticeshipDetails>(),
-                    NumberOfRecordsFound = 0
+                    TotalNumberOfApprenticeshipsFound = 0
                 });
 
             var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 .ReturnsAsync(new GetApprenticeshipsFilteredResult()
                 {
                     Apprenticeships = new List<ApprenticeshipDetails>(),
-                    NumberOfRecordsFound = 0
+                    TotalNumberOfApprenticeshipsFound = 0
                 });
 
             var createCsvService = new Mock<ICreateCsvService>();

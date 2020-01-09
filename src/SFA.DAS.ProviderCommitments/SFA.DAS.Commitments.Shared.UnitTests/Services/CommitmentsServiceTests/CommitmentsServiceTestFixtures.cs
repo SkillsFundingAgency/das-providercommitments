@@ -60,6 +60,5 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId)).Returns((long id, EncodingType encodingType) => $"AX{id}X");
             return this;
         }
-
     }
 }

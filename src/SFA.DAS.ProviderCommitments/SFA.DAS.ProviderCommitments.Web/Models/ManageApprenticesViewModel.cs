@@ -11,6 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public IEnumerable<ApprenticeshipDetails> Apprenticeships { get; set; }
 
         public ManageApprenticesFilterModel FilterModel { get; set; }
-        public bool ShowPageLinks  => FilterModel.NumberOfRecordsFound > ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
+        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
     }
 }

@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
         public void And_PageNumber_1_And_0_Records_Found_Then_Should_Be_0(ManageApprenticesFilterModel filterModel)
         {
             filterModel.PageNumber = 1;
-            filterModel.NumberOfRecordsFound = 0;
+            filterModel.TotalNumberOfApprenticeshipsFound = 0;
 
             filterModel.PagedRecordsFrom.Should().Be(0);
         }

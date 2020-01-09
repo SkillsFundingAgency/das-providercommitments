@@ -81,7 +81,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            view.FilterModel.NumberOfRecordsFound.Should().Be((int)apprenticeshipsResult.NumberOfRecordsFound);
+            view.FilterModel.TotalNumberOfApprenticeshipsFound.Should().Be(apprenticeshipsResult.TotalNumberOfApprenticeshipsFound);
+        }
+
+        [Test, MoqAutoData]
+        public void ThenTheTotalNumberOfApprenticesWithAlertsIsSet(
+            GetApprenticeshipsFilteredResult apprenticeshipsResult,
+            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller)
+        {
+            //Arrange
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(apprenticeshipsResult);
+
+            //Act
+            var result = controller.Index(1);
+            var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
+
+            //Assert
+            view.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound.Should().Be(apprenticeshipsResult.TotalNumberOfApprenticeshipsWithAlertsFound);
         }
 
         
@@ -101,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            view.FilterModel.NumberOfRecordsFound.Should().Be((int)apprenticeshipsResult.NumberOfRecordsFound);
+            view.FilterModel.PageNumber.Should().Be(expectedPageNumber);
         }
 
         [Test]
