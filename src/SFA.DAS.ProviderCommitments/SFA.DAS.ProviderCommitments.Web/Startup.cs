@@ -52,13 +52,18 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddNavigationBarSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
-                //.AddSessionStateTempDataProvider()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
                 
 
             services
-                //.AddSession()
                 .AddHealthChecks();
+
+            services.Configure<CookieTempDataProviderOptions>(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
         }
 
         /// <summary>
@@ -97,16 +102,14 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseDasHealthChecks()
-             
+                .UseCookiePolicy()
                 .UseAuthentication()
-                //.UseSession()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
-                .UseCookiePolicy()
                 .UseHealthChecks("/health-check"); 
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
