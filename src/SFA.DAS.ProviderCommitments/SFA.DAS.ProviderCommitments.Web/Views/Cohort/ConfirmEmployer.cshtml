@@ -13,7 +13,6 @@
                 <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
                 
                 <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
-                    @*Account name:@Model.EmployerAccountName &nbsp; &nbsp; Agreement ID:@Model.EmployerAccountLegalEntityPublicHashedId*@
                     <dt class="das-definition-list__title">Account Name</dt>
                     <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
                     <dt class="das-definition-list__title">Agreement ID</dt>
@@ -25,9 +24,7 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                         @Html.HiddenFor(x => x.ProviderId)
-                        @Html.HiddenFor(x => x.EmployerAccountName)
-                        @Html.HiddenFor(x => x.EmployerAccountLegalEntityName)
-
+                 
                         <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
