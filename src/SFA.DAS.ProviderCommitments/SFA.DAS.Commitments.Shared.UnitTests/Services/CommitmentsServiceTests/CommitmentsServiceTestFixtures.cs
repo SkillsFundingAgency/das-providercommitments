@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using AutoFixture;
 using Moq;
 using SFA.DAS.Commitments.Shared.Services;
@@ -7,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 
 namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
 {
@@ -22,6 +24,7 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             CohortId = autoFixture.Create<long>();
             AddDraftApprenticeshipRequest = autoFixture.Build<AddDraftApprenticeshipRequest>().Create();
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
+            GetApprenticeshipsResponse = autoFixture.Build<List<ApprenticeshipDetails>>().Create();
 
             Sut = new CommitmentsService(CommitmentsApiClientMock.Object, HashingServiceMock.Object);
         }
@@ -30,6 +33,7 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
         public AddDraftApprenticeshipRequest AddDraftApprenticeshipRequest { get; }
         public GetDraftApprenticeshipResponse GetDraftApprenticeshipResponse { get; }
         public GetCohortResponse CohortApiDetail { get; }
+        public IEnumerable<ApprenticeshipDetails> GetApprenticeshipsResponse{ get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClientMock { get; }
         public Mock<IEncodingService> HashingServiceMock{ get; }
 
@@ -44,6 +48,15 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
         public CommitmentsServiceTestFixtures SetupGetDraftApprenticeshipReturnValue(GetDraftApprenticeshipResponse retVal)
         {
             CommitmentsApiClientMock.Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(retVal);
+            return this;
+        }
+
+        public CommitmentsServiceTestFixtures SetupGetApprenticeshipsReturnValue(
+            IEnumerable<ApprenticeshipDetails> retVal)
+        {
+            CommitmentsApiClientMock.Setup(x =>
+                    x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(retVal);
             return this;
         }
 
