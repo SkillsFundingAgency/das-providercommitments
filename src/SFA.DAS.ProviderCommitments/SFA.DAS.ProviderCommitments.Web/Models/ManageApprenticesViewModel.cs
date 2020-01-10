@@ -8,6 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public long ProviderId { get; set; }
         public bool AnyApprenticeships => Apprenticeships != null && Apprenticeships.Any();
-        public IEnumerable<ApprenticeshipDetails> Apprenticeships { get; set; }
+        public IEnumerable<ApprenticeshipDetailsViewModel> Apprenticeships { get; set; }
     }
 }

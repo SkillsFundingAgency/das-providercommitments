@@ -35,8 +35,8 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.Id" asp-route-providerId="@Model.ProviderId">
-                            @apprenticeship.ApprenticeFirstName @apprenticeship.ApprenticeLastName
+                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.EncodedApprenticeshipId" asp-route-providerId="@Model.ProviderId">
+                            @apprenticeship.ApprenticeName
                         </a>
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
@@ -49,19 +49,19 @@ else
                         @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedStartDate
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeship.PlannedEndDateTime.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedEndDate
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
-                        @apprenticeship.PaymentStatus
+                        @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @if (apprenticeship.Alerts.Any())
+                        @if (apprenticeship.Alerts != null && !string.IsNullOrWhiteSpace(apprenticeship.Alerts.Value))
                         {
-                            <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.Id" asp-route-providerId="@Model.ProviderId">
-                                @apprenticeship.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
+                            <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.EncodedApprenticeshipId" asp-route-providerId="@Model.ProviderId">
+                                @apprenticeship.Alerts
                             </a>
                         }
                     </td>

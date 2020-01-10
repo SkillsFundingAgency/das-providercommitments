@@ -1,6 +1,6 @@
-using System;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -15,8 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 Uln = model.Uln,
                 Employer = model.EmployerName,
                 CourseName = model.CourseName,
-                PlannedStartDate = model.PlannedStartDate.ToString("MMM yyyy"),
-                PlannedEndDate = model.PlannedEndDateTime.ToString("MMM yyyy"),
+                PlannedStartDate = model.PlannedStartDate.ToGdsFormatWithoutDay(),
+                PlannedEndDate = model.PlannedEndDateTime.ToGdsFormatWithoutDay(),
                 Status = model.PaymentStatus.ToString(),
                 Alerts = model.Alerts.Any() ? model.Alerts.Aggregate((a,b)=> $"{a}|{b}") : ""
             };

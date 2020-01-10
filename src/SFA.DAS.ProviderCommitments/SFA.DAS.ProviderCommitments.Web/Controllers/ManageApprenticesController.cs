@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -13,11 +15,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly ICreateCsvService _createCsvService;
+        private readonly IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel> _mapper;
 
-        public ManageApprenticesController(ICommitmentsService commitmentsService, ICreateCsvService createCsvService)
+        public ManageApprenticesController(
+            ICommitmentsService commitmentsService, 
+            ICreateCsvService createCsvService,
+            IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel> mapper)
         {
             _commitmentsService = commitmentsService;
             _createCsvService = createCsvService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index(uint providerId)
@@ -26,11 +33,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            var apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
+            var viewModels = new List<ApprenticeshipDetailsViewModel>();
+            if (apprenticeships != null)
+            {
+                foreach (var apprenticeshipDetails in apprenticeships)
+                {
+                    viewModels.Add(await _mapper.Map(apprenticeshipDetails));
+                }
+            }
+            
             var model = new ManageApprenticesViewModel
             {
                 ProviderId = providerId,
-                Apprenticeships = await _commitmentsService.GetApprenticeships(providerId)
+                Apprenticeships = viewModels
             };
 
             return View(model);
