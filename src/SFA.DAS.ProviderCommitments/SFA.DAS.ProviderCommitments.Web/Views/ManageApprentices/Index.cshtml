@@ -35,7 +35,7 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.EncodedApprenticeshipId" asp-route-providerId="@Model.ProviderId">
+                        <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
                             @apprenticeship.ApprenticeName
                         </a>
                     </td>
@@ -60,7 +60,7 @@ else
                     <td class="govuk-table__cell" data-label="Alerts">
                         @if (apprenticeship.Alerts != null && !string.IsNullOrWhiteSpace(apprenticeship.Alerts.Value))
                         {
-                            <a class="govuk-link" asp-route="ApprenticeshipDetails" asp-route-id="@apprenticeship.EncodedApprenticeshipId" asp-route-providerId="@Model.ProviderId">
+                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
                                 @apprenticeship.Alerts
                             </a>
                         }
