@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var getApprenticeshipsResponse = await _commitmentsService.GetApprenticeships(providerId);
+            var getApprenticeshipsResponse = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
             var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, ReverseSort = reverseSort};
             if (sortField == "")
             {
