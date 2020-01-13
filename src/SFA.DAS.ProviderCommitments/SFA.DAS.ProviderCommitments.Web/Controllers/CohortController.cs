@@ -39,15 +39,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var model = new AddDraftApprenticeshipViewModel
             {
                 EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId,
@@ -63,34 +59,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
+        [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            // TODO this will probably need to be removed later (once validation is moved to API)
-            if (!ModelState.IsValid)
-            {
-                await AddEmployerAndCoursesToModel(model);
-                return View(model);
-            }
-
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
-            try
-            {
-                var response = await _mediator.Send(request);
-
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                return Redirect(url);
-            }
-            catch (CommitmentsApiModelException ex)
-            {
-                ModelState.AddModelExceptionErrors(ex);
-
-                await AddEmployerAndCoursesToModel(model);
-                return View(model);
-            }
+            var response = await _mediator.Send(request);
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         [HttpGet]
@@ -98,13 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var model = await _modelMapper.Map<SelectEmployerViewModel>(request);
-
             return View(model);
         }
 

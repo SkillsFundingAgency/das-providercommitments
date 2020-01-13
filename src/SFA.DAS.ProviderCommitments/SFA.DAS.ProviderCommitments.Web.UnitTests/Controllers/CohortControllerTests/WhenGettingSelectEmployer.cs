@@ -16,18 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     [TestFixture]
     public class WhenGettingSelectEmployer 
     {
-
-        [Test]
-        public async Task AndModelStateInvalid_ThenReturnsBadRequest()
-        {
-            var fixture = new SelectEmployerFixture()
-                .WithModelStateErrors();
-
-            var result = await fixture.Act();
-            
-            Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
-        }
-
         [Test]
         public async Task ThenCallsModelMapper()
         {

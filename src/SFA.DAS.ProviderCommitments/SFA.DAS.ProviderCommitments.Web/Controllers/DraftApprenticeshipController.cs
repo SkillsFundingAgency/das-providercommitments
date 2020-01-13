@@ -70,11 +70,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [RequireQueryParameter("ReservationId")]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var model = new AddDraftApprenticeshipViewModel
             {
                 ProviderId = request.ProviderId,
@@ -94,48 +89,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                await AddLegalEntityAndCoursesToModel(model);
-                return View(model);
-            }
-
             var request = await _addDraftApprenticeshipToCohortRequestMapper.Map(model);
             request.UserId = User.Upn();
 
-            try
-            {
-                await _commitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
-                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                return Redirect(url);
-            }
-            catch (CommitmentsApiModelException ex)
-            {
-                ModelState.AddModelExceptionErrors(ex);
-                await AddLegalEntityAndCoursesToModel(model);
-                return View(model);
-            }
+            await _commitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-                await _commitmentsService.GetDraftApprenticeshipForCohort(
-                    request.CohortId.Value,
-                    request.DraftApprenticeshipId.Value));
+                          await _commitmentsService.GetDraftApprenticeshipForCohort(
+                                request.CohortId.Value,
+                                request.DraftApprenticeshipId.Value));
 
             model.ProviderId = request.ProviderId;
-
             await AddLegalEntityAndCoursesToModel(model);
-
             return View(model);
         }
 
@@ -143,27 +116,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                await AddLegalEntityAndCoursesToModel(model);
-                return View(model);
-            }
-
             var updateRequest = await _updateDraftApprenticeshipRequestMapper.Map(model);
-
-            try
-            {
-                await _commitmentsService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
-                var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
-                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                return Redirect(url);
-            }
-            catch (CommitmentsApiModelException ex)
-            {
-                ModelState.AddModelExceptionErrors(ex);
-                await AddLegalEntityAndCoursesToModel(model);
-                return View(model);
-            }
+            await _commitmentsService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
+            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)

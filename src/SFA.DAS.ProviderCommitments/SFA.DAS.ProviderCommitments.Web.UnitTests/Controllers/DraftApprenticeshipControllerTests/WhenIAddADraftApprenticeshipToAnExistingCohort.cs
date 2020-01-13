@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -57,25 +58,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingFailsItShouldReturnTheViewWithModelAndErrors()
+        public async Task AndWhenSavingFailsBecauseOfModelValidationItShouldThrowCommitmentApiModelException()
         {
-
             _fixture.SetupAddingToThrowCommitmentsApiException();
-            await _fixture.PostToAddDraftApprenticeship();
-            _fixture.VerifyAddViewWasReturnedAndHasErrors()
-                .VerifyCohortDetailsWasCalledWithCorrectId()
-                .VerifyGetCoursesWasCalled();
-        }
-
-        [Test]
-        public async Task AndWhenSavingFailsduetoModelBindingItShouldReturnTheViewWithModelAndErrors()
-        {
-
-            _fixture.SetupModelStateToBeInvalid();
-            await _fixture.PostToAddDraftApprenticeship();
-            _fixture.VerifyAddViewWasReturnedAndHasErrors()
-                .VerifyCohortDetailsWasCalledWithCorrectId()
-                .VerifyGetCoursesWasCalled();
+            Assert.ThrowsAsync<CommitmentsApiModelException>(async ()=>  await _fixture.PostToAddDraftApprenticeship());
         }
 
         [TestCase(true)]
