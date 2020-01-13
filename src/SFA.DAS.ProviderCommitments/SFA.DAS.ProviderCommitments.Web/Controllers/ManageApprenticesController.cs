@@ -12,7 +12,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("v2/{providerId}/apprentices",Name = "index")]
+    [Route("{providerId}/apprentices",Name = "index")]
     public class ManageApprenticesController : Controller
     {
         private readonly ICommitmentsService _commitmentsService;
@@ -31,15 +31,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
+            var getApprenticeshipsResponse = await _commitmentsService.GetApprenticeships(providerId);
             var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, ReverseSort = reverseSort};
             if (sortField == "")
             {
-                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
+                model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
                 model.SortField = "DataLockStatus";
             }
             else
             {
-                model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
+                model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
             }
 
             SetSortedByHeader(model);
@@ -53,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var result = await _commitmentsService.GetApprenticeships(providerId);
 
-            var csvContent = result.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
+            var csvContent = result?.Apprenticeships != null ? result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList() : new List<ApprenticeshipDetailsCsvViewModel>();
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");

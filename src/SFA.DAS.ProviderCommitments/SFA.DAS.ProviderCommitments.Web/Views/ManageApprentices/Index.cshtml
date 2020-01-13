@@ -79,7 +79,7 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeships.ApprenticeFirstName @apprenticeships.ApprenticeLastName
+                        @apprenticeships.FirstName @apprenticeships.LastName
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeships.Uln
@@ -91,10 +91,10 @@ else
                         @apprenticeships.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.PlannedStartDate.ToGdsFormatWithoutDay()
+                        @apprenticeships.StartDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeships.PlannedEndDateTime.ToGdsFormatWithoutDay()
+                        @apprenticeships.EndDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
                         @apprenticeships.PaymentStatus
