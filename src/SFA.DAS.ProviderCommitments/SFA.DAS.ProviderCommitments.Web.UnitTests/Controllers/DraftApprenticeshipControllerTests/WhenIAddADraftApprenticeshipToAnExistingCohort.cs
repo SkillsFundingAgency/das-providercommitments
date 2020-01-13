@@ -16,21 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task IfCalledDirectlyFromProvideApprenticeshipServiceItShouldReturnAddDraftApprenticeshipViewWithCohortButWithoutAReservationId()
-        {
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyAddViewHasCohortButWithoutAReservationId();
-        }
-
-        [Test]
-        public async Task IfCalledDirectlyFromProvideApprenticeshipServiceWithAnInvalidRequestShouldGetBadResponse()
-        {
-            _fixture.SetupModelStateToBeInvalid();
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyWeGetABadRequestResponse();
-        }
-
-        [Test]
         public async Task IfCalledViaReservationsItShouldReturnAddDraftApprenticeshipViewWithCohortAndWithAReservationId()
         {
             await _fixture.AddDraftApprenticeshipWithReservation();
@@ -38,15 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
         }
-
-        [Test]
-        public async Task IfCalledViaReservationsWithAnInvalidRequestShouldGetBadResponse()
-        {
-            _fixture.SetupModelStateToBeInvalid();
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyWeGetABadRequestResponse();
-        }
-
 
         [Test]
         public async Task AndWhenSavingTheApprenticeToCohortIsSuccessful()
@@ -62,15 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _fixture.SetupAddingToThrowCommitmentsApiException();
             Assert.ThrowsAsync<CommitmentsApiModelException>(async ()=>  await _fixture.PostToAddDraftApprenticeship());
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task FrameworkCourseAreOnlyRequestedWhenCohortisNotFundedByTransfer(bool isFundedByTransfer)
-        {
-            _fixture.SetupCohortTransferFundedStatus(isFundedByTransfer);
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyWhetherFrameworkCourseWereRequested(!isFundedByTransfer);
         }
     }
 }

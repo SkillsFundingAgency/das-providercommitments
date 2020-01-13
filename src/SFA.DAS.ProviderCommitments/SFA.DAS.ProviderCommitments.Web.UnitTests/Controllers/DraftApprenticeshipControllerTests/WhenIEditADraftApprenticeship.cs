@@ -55,15 +55,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.SetupUpdatingToThrowCommitmentsApiException();
             Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToEditDraftApprenticeship());
         }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task FrameworkCourseAreOnlyRequestedWhenCohortisNotFundedByTransfer(bool isFundedByTransfer)
-        {
-            _fixture.SetupCohortTransferFundedStatus(isFundedByTransfer);
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyWhetherFrameworkCourseWereRequested(!isFundedByTransfer);
-        }
-
     }
 }
