@@ -24,8 +24,7 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
             GetApprenticeshipsResponse = autoFixture.Build<GetApprenticeshipsResponse>().Create();
 
-            CommitmentsApiClientMock.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<int>(),
-                    It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            CommitmentsApiClientMock.Setup(x => x.GetApprenticeships(It.IsAny<GetApprenticeshipRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(GetApprenticeshipsResponse);
 
             Sut = new CommitmentsService(CommitmentsApiClientMock.Object, HashingServiceMock.Object);

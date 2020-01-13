@@ -2,6 +2,6 @@
 {
     public class GetApprenticeshipsCsvContentRequest
     {
-        public uint ProviderId { get; set; }
+        public long ProviderId { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCsvContentMapperTests
 {
@@ -28,7 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
 
             var mapper = new GetApprenticeshipsCsvContentRequestMapper(client.Object, csvService.Object);
 
-            client.Setup(x => x.GetApprenticeships(request.ProviderId, 0,0,null, false, It.IsAny<CancellationToken>()))
+            client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
+                    r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
             csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvViewModel>>()))

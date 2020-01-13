@@ -7,8 +7,8 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.Testing.AutoFixture;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMapperTests
 {
@@ -16,14 +16,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
     {
         [Test, MoqAutoData]
         public async Task ShouldMapValues(
-            GetApprenticeshipsRequest request,
+            Requests.GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,
             Mock<ICommitmentsApiClient> client,
             GetApprenticeshipsRequestMapper mapper)
         {
             //Arrange
-            client.Setup(x => x.GetApprenticeships(request.ProviderId, request.PageNumber, 
-                    request.PageItemCount, null, false, It.IsAny<CancellationToken>()))
+            client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
+                    r.ProviderId.Equals(request.ProviderId) &&
+                    r.PageNumber.Equals(request.PageNumber) &&
+                    r.PageItemCount.Equals(request.PageItemCount)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
             //Act
@@ -46,14 +48,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         public async Task ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
             int numberOfApprenticeships, 
             bool expected,
-            ApprenticeshipDetails approvedApprenticeship,
-            GetApprenticeshipsRequest request,
+            ApprenticeshipDetailsResponse approvedApprenticeship,
+            Requests.GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,
             Mock<ICommitmentsApiClient> client,
             GetApprenticeshipsRequestMapper mapper)
         {
             //Arrange
-            var apprenticeships = new List<ApprenticeshipDetails>();
+            var apprenticeships = new List<ApprenticeshipDetailsResponse>();
 
             for (var i = 0; i < numberOfApprenticeships; i++)
             {
@@ -62,8 +64,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
             clientResponse.Apprenticeships = apprenticeships;
            
-            client.Setup(x => x.GetApprenticeships(request.ProviderId, request.PageNumber, 
-                    request.PageItemCount, null, false, It.IsAny<CancellationToken>()))
+            client.Setup(x => x.GetApprenticeships( It.Is<GetApprenticeshipsRequest>(r => 
+                    r.ProviderId.Equals(request.ProviderId) &&
+                    r.PageNumber.Equals(request.PageNumber) &&
+                    r.PageItemCount.Equals(request.PageItemCount)),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
             //Act

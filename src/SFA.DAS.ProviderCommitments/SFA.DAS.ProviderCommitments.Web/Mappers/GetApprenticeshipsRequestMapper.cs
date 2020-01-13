@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 
@@ -17,7 +18,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
         {
-            var response = await _client.GetApprenticeships(source.ProviderId, source.PageNumber, source.PageItemCount);
+            var response = await _client.GetApprenticeships(new GetApprenticeshipRequest
+            {
+                ProviderId = source.ProviderId, 
+                PageNumber = source.PageNumber, 
+                PageItemCount = source.PageItemCount
+            });
             
             var filterModel = new ManageApprenticesFilterModel
             {
