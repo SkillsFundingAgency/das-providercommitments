@@ -13,5 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public IEnumerable<ApprenticeshipDetails> Apprenticeships { get; set; }
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
+        public string SortedByHeaderClassName { get; set; }
+        public const string HeaderClassName = "das-table__sort";
     }
 }

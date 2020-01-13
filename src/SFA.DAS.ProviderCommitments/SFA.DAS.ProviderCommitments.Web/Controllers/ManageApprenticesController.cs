@@ -35,11 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (sortField == "")
             {
                 model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
+                model.SortField = "DataLockStatus";
             }
             else
             {
                 model.Apprenticeships = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
             }
+
+            SetSortedByHeader(model);
             
             return View(model);
         }
@@ -54,6 +57,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+        }
+
+        private void SetSortedByHeader(ManageApprenticesViewModel model)
+        {
+            model.SortedByHeaderClassName = ManageApprenticesViewModel.HeaderClassName;
+            if (model.ReverseSort)
+            {
+                 model.SortedByHeaderClassName = model.SortedByHeaderClassName += "--desc";
+            }
+            else
+            {
+                 model.SortedByHeaderClassName = model.SortedByHeaderClassName  += "--asc";
+            }
         }
     }
 }
