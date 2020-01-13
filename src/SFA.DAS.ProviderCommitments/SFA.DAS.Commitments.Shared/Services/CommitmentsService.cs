@@ -76,9 +76,10 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId)
+        public async Task<GetApprenticeshipsResponse> GetApprenticeships(uint providerId)
         {
-            return _client.GetApprovedApprenticeships(providerId);
+            var getApprenticeshipsResponse = await _client.GetApprenticeships(new GetApprenticeshipRequest{ProviderId = providerId});
+            return getApprenticeshipsResponse;
         }
     }
 }
