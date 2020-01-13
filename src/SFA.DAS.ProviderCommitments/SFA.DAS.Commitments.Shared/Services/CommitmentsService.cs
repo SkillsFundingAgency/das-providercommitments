@@ -74,27 +74,5 @@ namespace SFA.DAS.Commitments.Shared.Services
         {
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
-
-        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId)
-        {
-            var response = await _client.GetApprenticeships(providerId);
-
-            return new GetApprenticeshipsFilteredResult
-            {
-                Apprenticeships = response.Apprenticeships
-            };
-        }
-
-        public async Task<GetApprenticeshipsFilteredResult> GetApprenticeships(uint providerId, int pageNumber, int pageItemCount)
-        {
-            var response = await _client.GetApprenticeships(providerId, pageNumber, pageItemCount);
-
-            return new GetApprenticeshipsFilteredResult
-            {
-                Apprenticeships = response.Apprenticeships,
-                TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
-                TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound
-            };
-        }
     }
 }

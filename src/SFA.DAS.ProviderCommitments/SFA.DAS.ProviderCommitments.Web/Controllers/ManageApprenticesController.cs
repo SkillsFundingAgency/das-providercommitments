@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("v2/{providerId}/apprentices")]
+    [Route("{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
-        private readonly ICommitmentsService _commitmentsService;
-        private readonly ICreateCsvService _createCsvService;
+        private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
+        private readonly IMapper<GetApprenticeshipsCsvContentRequest, byte[]> _csvMapper;
 
-        public ManageApprenticesController(ICommitmentsService commitmentsService, ICreateCsvService createCsvService)
+        public ManageApprenticesController(IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper)
         {
-            _commitmentsService = commitmentsService;
-            _createCsvService = createCsvService;
+            _apprenticeshipMapper = apprenticeshipMapper;
+            _csvMapper = csvMapper;
         }
 
         [Route("manage", Name = RouteNames.ManageApprentices)]
@@ -29,34 +28,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _commitmentsService.GetApprenticeships(providerId, pageNumber, ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage);
-
-            var filterModel = new ManageApprenticesFilterModel
-            {
-                TotalNumberOfApprenticeshipsFound = result.TotalNumberOfApprenticeshipsFound,
-                TotalNumberOfApprenticeshipsWithAlertsFound = result.TotalNumberOfApprenticeshipsWithAlertsFound,
-                PageNumber = pageNumber
-            };
-
-            var model = new ManageApprenticesViewModel
+            var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
-                Apprenticeships = result.Apprenticeships,
-                FilterModel = filterModel
+                PageNumber = pageNumber,
+                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage
             };
 
-            return View(model);
+            var viewModel = await _apprenticeshipMapper.Map(request);
+
+            return View(viewModel);
         }
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
         public async Task<IActionResult> Download(uint providerId)
         {
-            var result = await _commitmentsService.GetApprenticeships(providerId);
+            var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
 
-            var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
-            
-            var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
+            var csvFileContent = await _csvMapper.Map(request);
+
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }
     }
