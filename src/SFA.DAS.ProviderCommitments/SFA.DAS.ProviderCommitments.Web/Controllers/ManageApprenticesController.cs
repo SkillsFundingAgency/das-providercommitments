@@ -65,11 +65,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.SortedByHeaderClassName = ManageApprenticesViewModel.HeaderClassName;
             if (model.ReverseSort)
             {
-                 model.SortedByHeaderClassName = model.SortedByHeaderClassName += " das-table__sort--desc";
+                 model.SortedByHeaderClassName += " das-table__sort--desc";
             }
             else
             {
-                 model.SortedByHeaderClassName = model.SortedByHeaderClassName  += " das-table__sort--asc";
+                 model.SortedByHeaderClassName += " das-table__sort--asc";
             }
         }
     }
