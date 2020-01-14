@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
@@ -75,9 +74,10 @@ namespace SFA.DAS.Commitments.Shared.Services
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
         }
 
-        public Task<IEnumerable<ApprenticeshipDetails>> GetApprenticeships(uint providerId)
+        public async Task<GetApprenticeshipsResponse> GetApprenticeships(uint providerId)
         {
-            return _client.GetApprenticeships(providerId);
+            var getApprenticeshipsResponse = await _client.GetApprenticeships(new GetApprenticeshipRequest{ProviderId = providerId});
+            return getApprenticeshipsResponse;
         }
     }
 }

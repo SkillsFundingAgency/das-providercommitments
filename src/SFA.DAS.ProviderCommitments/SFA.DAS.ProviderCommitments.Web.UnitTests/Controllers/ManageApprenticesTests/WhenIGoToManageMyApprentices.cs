@@ -52,10 +52,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         [Test, MoqAutoData]
         public void Then_The_ApprenticeshipDetailsViewModels_Are_Set_From_Mapper(
             uint providerId,
-            List<ApprenticeshipDetails> approvedApprenticeships,
+            GetApprenticeshipsResponse approvedApprenticeships,
             ApprenticeshipDetailsViewModel viewModelFromMapper,
             [Frozen] Mock<ICommitmentsService> commitmentsService,
-            [Frozen] Mock<IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel>> mockMapper,
+            [Frozen] Mock<IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> mockMapper,
             ManageApprenticesController controller)
         {
             //Arrange
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 .Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
                 .ReturnsAsync(approvedApprenticeships);
             mockMapper
-                .Setup(mapper => mapper.Map(It.IsAny<ApprenticeshipDetails>()))
+                .Setup(mapper => mapper.Map(It.IsAny<ApprenticeshipDetailsResponse>()))
                 .ReturnsAsync(viewModelFromMapper);
 
             //Act
@@ -81,20 +81,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public void ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
             int numberOfApprenticeships, 
             bool expected,
-            ApprenticeshipDetails approvedApprenticeship,
+            ApprenticeshipDetailsResponse approvedApprenticeship,
             [Frozen]Mock<ICommitmentsService> commitmentsService,
             ManageApprenticesController controller)
         {
             //Arrange
-            var approvedApprenticeships = new List<ApprenticeshipDetails>();
+            var approvedApprenticeships = new List<ApprenticeshipDetailsResponse>();
 
             for (int i = 0; i < numberOfApprenticeships; i++)
             {
                 approvedApprenticeships.Add(approvedApprenticeship);
             }
 
+            var response = new GetApprenticeshipsResponse
+            {
+                Apprenticeships = approvedApprenticeships,
+            };
+
             commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
-                .ReturnsAsync(approvedApprenticeships);
+                .ReturnsAsync(response);
 
             //Act
             var result = controller.Index(1);
@@ -110,10 +115,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesController controller)
         {
             //Arrange
-            List<ApprenticeshipDetails> approvedApprenticeships = null;
             commitmentsService
                 .Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
-                .ReturnsAsync(approvedApprenticeships);
+                .ReturnsAsync((GetApprenticeshipsResponse) null);
 
             //Act
             var result = controller.Index(1);

@@ -10,7 +10,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class ApprenticeshipDetailsToViewModelMapper : IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel>
+    public class ApprenticeshipDetailsToViewModelMapper : IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>
     {
         private readonly IEncodingService _encodingService;
 
@@ -19,17 +19,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _encodingService = encodingService;
         }
 
-        public Task<ApprenticeshipDetailsViewModel> Map(ApprenticeshipDetails source)
+        public Task<ApprenticeshipDetailsViewModel> Map(ApprenticeshipDetailsResponse source)
         {
             var result = new ApprenticeshipDetailsViewModel
             {
                 EncodedApprenticeshipId = _encodingService.Encode(source.Id, EncodingType.ApprenticeshipId),
-                ApprenticeName = $"{source.ApprenticeFirstName} {source.ApprenticeLastName}",
+                ApprenticeName = $"{source.FirstName} {source.LastName}",
                 Uln = source.Uln,
                 EmployerName = source.EmployerName,
                 CourseName = source.CourseName,
-                PlannedStartDate = source.PlannedStartDate.ToGdsFormatWithoutDay(),
-                PlannedEndDate = source.PlannedEndDateTime.ToGdsFormatWithoutDay(),
+                PlannedStartDate = source.StartDate.ToGdsFormatWithoutDay(),
+                PlannedEndDate = source.EndDate.ToGdsFormatWithoutDay(),
                 Status = source.PaymentStatus.ToString(),
                 Alerts = new HtmlString(source.Alerts.Any() ? source.Alerts.Aggregate((a,b)=> $"{a}<br/>{b}") : "") 
             };

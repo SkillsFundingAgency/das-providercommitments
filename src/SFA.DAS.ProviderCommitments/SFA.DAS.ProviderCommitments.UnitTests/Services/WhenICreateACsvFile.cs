@@ -22,9 +22,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             var fileString = System.Text.Encoding.Default.GetString(actual);
             var headerLine = fileString.Split(Environment.NewLine)[0];
 
-            Assert.AreEqual(2,headerLine.Split(',').Length);
             Assert.That(headerLine.Contains(nameof(SomethingToCsv.Id)));
-            Assert.That(headerLine.Contains(nameof(SomethingToCsv.Description)));
             Assert.That(!headerLine.Contains(nameof(SomethingToCsv.InternalStuff)));
         }
 
@@ -41,8 +39,6 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             var fileString = System.Text.Encoding.Default.GetString(actual);
             var lines = fileString.Split(Environment.NewLine);
             Assert.AreEqual(listToWriteToCsv.Count + 2,lines.Length);
-            Assert.AreEqual(2,lines[0].Split(',').Length);
-            Assert.AreEqual(listToWriteToCsv[0].Id.ToString(),lines[1].Split(',')[0]);
             Assert.AreEqual(listToWriteToCsv[0].Description,lines[1].Split(',')[1]);
         }
 

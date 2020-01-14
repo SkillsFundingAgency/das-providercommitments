@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
     {
         [Test, MoqAutoData]
         public async Task Then_Maps_ApprenticeshipId(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             string encodedApprenticeshipId,
             [Frozen] Mock<IEncodingService> mockEncodingService,
             ApprenticeshipDetailsToViewModelMapper mapper)
@@ -33,17 +33,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_ApprenticeName(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.ApprenticeName.Should().Be($"{source.ApprenticeFirstName} {source.ApprenticeLastName}");
+            result.ApprenticeName.Should().Be($"{source.FirstName} {source.LastName}");
         }
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Uln(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_EmployerName(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_CourseName(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -73,27 +73,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_PlannedStartDate(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.PlannedStartDate.Should().Be(source.PlannedStartDate.ToString("MMM yyyy"));
+            result.PlannedStartDate.Should().Be(source.StartDate.ToString("MMM yyyy"));
         }
 
         [Test, MoqAutoData]
         public async Task Then_Maps_PlannedEndDate(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.PlannedEndDate.Should().Be(source.PlannedEndDateTime.ToString("MMM yyyy"));
+            result.PlannedEndDate.Should().Be(source.EndDate.ToString("MMM yyyy"));
         }
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Status(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Alerts(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task And_No_Alerts_Then_Maps_Alerts_To_Empty_String(
-            ApprenticeshipDetails source,
+            ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             source.Alerts = new List<string>();

@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("v2/{providerId}/apprentices")]
+    [Route("{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly ICreateCsvService _createCsvService;
-        private readonly IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel> _mapper;
+        private readonly IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> _mapper;
 
         public ManageApprenticesController(
             ICommitmentsService commitmentsService, 
             ICreateCsvService createCsvService,
-            IMapper<ApprenticeshipDetails, ApprenticeshipDetailsViewModel> mapper)
+            IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> mapper)
         {
             _commitmentsService = commitmentsService;
             _createCsvService = createCsvService;
@@ -37,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModels = new List<ApprenticeshipDetailsViewModel>();
             if (apprenticeships != null)
             {
-                foreach (var apprenticeshipDetails in apprenticeships)
+                foreach (var apprenticeshipDetails in apprenticeships.Apprenticeships)
                 {
                     viewModels.Add(await _mapper.Map(apprenticeshipDetails));
                 }
@@ -58,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var result = await _commitmentsService.GetApprenticeships(providerId);
 
-            var csvContent = result.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
+            var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");

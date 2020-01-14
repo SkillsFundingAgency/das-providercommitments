@@ -2,21 +2,22 @@ using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class ApprenticeshipDetailsCsvModel 
+    public class ApprenticeshipDetailsCsvModel
     {
-        public static implicit operator ApprenticeshipDetailsCsvModel(ApprenticeshipDetails model)
+        public static implicit operator ApprenticeshipDetailsCsvModel(ApprenticeshipDetailsResponse model)
         {
             return new ApprenticeshipDetailsCsvModel
             {
-                ApprenticeName = $"{model.ApprenticeFirstName} {model.ApprenticeLastName}",
+                ApprenticeName = $"{model.FirstName} {model.LastName}",
                 Uln = model.Uln,
                 Employer = model.EmployerName,
                 CourseName = model.CourseName,
-                PlannedStartDate = model.PlannedStartDate.ToGdsFormatWithoutDay(),
-                PlannedEndDate = model.PlannedEndDateTime.ToGdsFormatWithoutDay(),
+                PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
+                PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
                 Status = model.PaymentStatus.ToString(),
                 Alerts = model.Alerts.Any() ? model.Alerts.Aggregate((a,b)=> $"{a}|{b}") : ""
             };

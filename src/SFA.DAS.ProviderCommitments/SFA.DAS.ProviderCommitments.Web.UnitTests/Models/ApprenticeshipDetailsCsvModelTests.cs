@@ -11,16 +11,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
     {
         [Test, AutoData]
         public void Then_Maps_ApprenticeName(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
-            result.ApprenticeName.Should().Be($"{source.ApprenticeFirstName} {source.ApprenticeLastName}");
+            result.ApprenticeName.Should().Be($"{source.FirstName} {source.LastName}");
         }
 
         [Test, AutoData]
         public void Then_Maps_Uln(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_EmployerName(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_CourseName(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -47,25 +47,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PlannedStartDate(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
-            result.PlannedStartDate.Should().Be(source.PlannedStartDate.ToString("MMM yyyy"));
+            result.PlannedStartDate.Should().Be(source.StartDate.ToString("MMM yyyy"));
         }
 
         [Test, AutoData]
         public void Then_Maps_PlannedEndDate(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
-            result.PlannedEndDate.Should().Be(source.PlannedEndDateTime.ToString("MMM yyyy"));
+            result.PlannedEndDate.Should().Be(source.EndDate.ToString("MMM yyyy"));
         }
 
         [Test, AutoData]
         public void Then_Maps_Status(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Alerts(
-            ApprenticeshipDetails source)
+            ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
