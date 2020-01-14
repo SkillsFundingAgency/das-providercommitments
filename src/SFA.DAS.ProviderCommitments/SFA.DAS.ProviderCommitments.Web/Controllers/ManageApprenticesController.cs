@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("manage", Name = RouteNames.ManageApprentices)]
-        public async Task<IActionResult> Index(uint providerId, int pageNumber = 1)
+        public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        public async Task<IActionResult> Download(uint providerId)
+        public async Task<IActionResult> Download(long providerId)
         {
             var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
 
