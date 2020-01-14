@@ -86,12 +86,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object);
         }
 
-        public PostConfirmEmployerFixture WithModelStateErrors()
-        {
-            Sut.ControllerContext.ModelState.AddModelError("TestError", "Test Error");
-            return this;
-        }
-
         public PostConfirmEmployerFixture WithConfirmFalse()
         {
             _viewModel.Confirm = false;
