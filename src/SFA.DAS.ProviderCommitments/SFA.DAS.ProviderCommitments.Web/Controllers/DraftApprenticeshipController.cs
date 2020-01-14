@@ -82,9 +82,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
             var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-                          await _commitmentsService.GetDraftApprenticeshipForCohort(
-                                request.CohortId.Value,
-                                request.DraftApprenticeshipId.Value));
+            await _commitmentsService.GetDraftApprenticeshipForCohort(
+                request.CohortId.Value,
+                request.DraftApprenticeshipId.Value));
 
             model.ProviderId = request.ProviderId;
             await AddLegalEntityAndCoursesToModel(model);
