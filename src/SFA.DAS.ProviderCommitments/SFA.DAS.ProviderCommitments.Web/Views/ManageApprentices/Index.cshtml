@@ -16,20 +16,9 @@
 }
 else
 {
-    string sortClass = "das-table__sort";
-    string sortedByClass = sortClass;
-    if (Model.ReverseSort)
-    {
-        sortedByClass = sortedByClass += "--desc";
-    }
-    else
-    {
-        sortedByClass = sortedByClass += "--asc";
-    }
-    
     <a class="govuk-link" href="@Url.RouteUrl("Download",new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
 
-    <table class="govuk-table das-table--responsive">
+    <table class="govuk-table das-table--responsive das-table--double-arrows">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">

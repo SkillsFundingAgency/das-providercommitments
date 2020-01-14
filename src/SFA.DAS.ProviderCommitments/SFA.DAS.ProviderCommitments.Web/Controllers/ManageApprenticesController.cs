@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (sortField == "")
             {
                 model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
-                model.SortField = "DataLockStatus";
+                model.SortField = "FirstName";
             }
             else
             {
