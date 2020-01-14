@@ -73,7 +73,7 @@ else
     <nav role="navigation" aria-label="Pagination">
         <div class="das-pagination__summary">
             Showing @Model.FilterModel.PagedRecordsFrom to @Model.FilterModel.PagedRecordsTo of @Model.FilterModel.TotalNumberOfApprenticeshipsFound
-            reservation@(Model.FilterModel.TotalNumberOfApprenticeshipsFound != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts
+            apprentice records, @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts
         </div>
         <ul class="das-pagination">
             @foreach (var pageLink in Model.FilterModel.PageLinks)
