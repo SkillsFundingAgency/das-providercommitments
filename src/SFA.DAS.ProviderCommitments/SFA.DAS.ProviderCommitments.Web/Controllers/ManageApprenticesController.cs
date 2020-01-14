@@ -33,16 +33,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var getApprenticeshipsResponse = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
             var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, ReverseSort = reverseSort};
-            if (String.IsNullOrEmpty(sortField))
+
+            model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
+            if (string.IsNullOrEmpty(sortField))
             {
-                model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
                 model.SortField = "FirstName";
             }
-            else
-            {
-                model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
-            }
-
+            
             SetSortedByHeader(model);
             
             return View(model);
