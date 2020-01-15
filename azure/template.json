@@ -5,14 +5,14 @@
         "serviceName": {
             "type": "string"
         },
-        "appServicePlanName": {
+        "sharedFrontendAppServicePlanName": {
             "type": "string"
         },
-        "appServicePlanResourceGroup": {
+        "sharedAppServicePlanResourceGroup": {
             "type": "string"
         },
         "configurationStorageConnectionString": {
-            "type": "string"
+            "type": "securestring"
         },
         "environmentName": {
             "type": "string"
@@ -21,10 +21,10 @@
             "type": "string"
         },
         "loggingRedisConnectionString": {
-            "type": "string"
+            "type": "securestring"
         },
         "loggingRedisKey": {
-            "type": "string"
+            "type": "securestring"
         },
         "customHostName": {
             "type": "string"
@@ -32,8 +32,14 @@
         "keyVaultCertificateName": {
             "type": "string"
         },
+        "sharedKeyVaultName": {
+            "type": "string"
+        },
+        "sharedManagementResourceGroup": {
+            "type": "string"
+        },
         "cdnUrl": {
-          "type": "string"
+            "type": "string"
         }
     },
     "variables": {
@@ -61,6 +67,31 @@
             }
         },
         {
+            "condition": "[greater(length(parameters('customHostName')), 0)]",
+            "apiVersion": "2017-05-10",
+            "name": "web-app-service-certificate",
+            "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "keyVaultCertificateName": {
+                        "value": "[parameters('keyVaultCertificateName')]"
+                    },
+                    "keyVaultName": {
+                        "value": "[parameters('sharedKeyVaultName')]"
+                    },
+                    "keyVaultResourceGroup": {
+                        "value": "[parameters('sharedManagementResourceGroup')]"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "2017-05-10",
             "name": "web-app-service",
             "type": "Microsoft.Resources/deployments",
@@ -75,10 +106,10 @@
                         "value": "[variables('appServiceName')]"
                     },
                     "appServicePlanName": {
-                        "value": "[parameters('appServicePlanName')]"
+                        "value": "[parameters('sharedFrontendAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('appServicePlanResourceGroup')]"
+                        "value": "[parameters('sharedAppServicePlanResourceGroup')]"
                     },
                     "deployStagingSlot": {
                         "value": true
@@ -106,8 +137,8 @@
                                 "value": "[reference('web-app-insights').outputs.InstrumentationKey.value]"
                             },
                             {
-                              "name": "Cdn:Url",
-                              "value": "[parameters('cdnUrl')]"
+                                "name": "Cdn:Url",
+                                "value": "[parameters('cdnUrl')]"
                             }
                         ]
                     },
@@ -115,12 +146,13 @@
                         "value": "[parameters('customHostName')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/certificates', parameters('KeyVaultCertificateName')), '2016-03-01').Thumbprint]"
+                        "value": "[if(greater(length(parameters('customHostName')), 0), reference('web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
                     }
                 }
             },
             "dependsOn": [
-                "web-app-insights"
+                "web-app-insights",
+                "web-app-service-certificate"
             ]
         },
         {
@@ -142,7 +174,8 @@
                     }
                 }
             },
-            "dependsOn": []
+            "dependsOn": [
+            ]
         }
     ],
     "outputs": {
