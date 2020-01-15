@@ -28,8 +28,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var request = new GetApprenticeshipsRequest
             //if (result) todo: only get filters if displaying them
+
+            var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
                 PageNumber = pageNumber,
