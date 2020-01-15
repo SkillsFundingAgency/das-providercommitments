@@ -47,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download",Name = "Download")]
-        public async Task<IActionResult> Download(uint providerId)
+        public async Task<IActionResult> Download(long providerId)
         {
             var result = await _commitmentsService.GetApprenticeships(providerId);
 
