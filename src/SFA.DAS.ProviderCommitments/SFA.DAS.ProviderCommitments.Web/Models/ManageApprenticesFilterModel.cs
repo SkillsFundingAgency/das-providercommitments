@@ -17,6 +17,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase
     {
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
+        public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
+        public IEnumerable<string> StatusFilters { get; set; } = new List<string>();
+        public IEnumerable<string> StartDateFilters { get; set; } = new List<string>();
+        public IEnumerable<string> EndDateFilters { get; set; } = new List<string>();
 
         private const int PageSize = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;

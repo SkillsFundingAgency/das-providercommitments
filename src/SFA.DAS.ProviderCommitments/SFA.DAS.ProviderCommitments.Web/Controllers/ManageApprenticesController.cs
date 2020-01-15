@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = new GetApprenticeshipsRequest
+            //if (result) todo: only get filters if displaying them
             {
                 ProviderId = providerId,
                 PageNumber = pageNumber,
