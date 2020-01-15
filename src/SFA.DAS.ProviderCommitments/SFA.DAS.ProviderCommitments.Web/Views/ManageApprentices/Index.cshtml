@@ -16,8 +16,26 @@
 }
 else
 {
-    <a class="govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices,new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+    @if (Model.FilterModel.ShowSearch)
+    {
+        //todo: filters
+    }
 
+    @if (Model.FilterModel.SearchOrFiltersApplied)
+    {
+        //todo: filter applied text
+    }
+    else
+    {
+        <div class="govuk-grid-row govuk-!-margin-bottom-2">
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeships apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlerts with alerts</p>
+            </div>
+            <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+                <a class="govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+            </div>
+        </div>
+    }
     <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">

@@ -6,11 +6,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class ManageApprenticesFilterModelBase
     {
         public int PageNumber { get; set; } = 1;
+        public string SearchTerm { get; set; }
+        public string SelectedEmployer { get; set; }
+        public string SelectedCourse { get; set; }
+        public string SelectedStatus { get; set; }
+        public string SelectedStartDate { get; set; }
+        public string SelectedEndDate { get; set; }
     }
 
     public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase
     {
-        public const int PageSize = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
+        public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
+
+        private const int PageSize = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
         public int PagedRecordsTo {
             get
@@ -19,7 +27,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 return TotalNumberOfApprenticeshipsFound < potentialValue ? TotalNumberOfApprenticeshipsFound: potentialValue;
             }
         }
+        public bool ShowSearch => TotalNumberOfApprenticeships >= ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch;
 
+        public bool SearchOrFiltersApplied => !string.IsNullOrWhiteSpace(SearchTerm)
+                                              || !string.IsNullOrWhiteSpace(SelectedEmployer)
+                                              || !string.IsNullOrWhiteSpace(SelectedCourse)
+                                              || !string.IsNullOrWhiteSpace(SelectedStatus)
+                                              || !string.IsNullOrWhiteSpace(SelectedStartDate)
+                                              || !string.IsNullOrWhiteSpace(SelectedEndDate);
+
+        public int TotalNumberOfApprenticeships { get; set; }
+        public int TotalNumberOfApprenticeshipsWithAlerts { get; set; }
         public int TotalNumberOfApprenticeshipsFound { get; set; }
         public int TotalNumberOfApprenticeshipsWithAlertsFound { get; set; }
         
@@ -77,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 return links;
             }
         }
-
+        
         private Dictionary<string, string> BuildRouteData(int pageNumber)
         {
             var routeData = new Dictionary<string, string>
