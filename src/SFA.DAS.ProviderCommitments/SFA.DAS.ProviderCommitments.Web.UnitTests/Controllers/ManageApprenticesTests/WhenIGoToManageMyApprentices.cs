@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
         [Test, MoqAutoData]
         public void ThenTheProviderIdIsPassedToTheViewModel(
-            uint providerId,
+            long providerId,
             [Frozen]Mock<ICommitmentsService> commitmentsService,
             ManageApprenticesController controller)
         {
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesController controller)
         {
             //Arrange
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync(approvedApprenticeships);
 
             //Act
@@ -95,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                 Apprenticeships = approvedApprenticeships,
             };
 
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync(response);
 
             //Act
@@ -114,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             //Arrange
             var expected = false;
 
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<bool>()))
+            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync((GetApprenticeshipsResponse) null);
 
             //Act
@@ -123,6 +123,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
 
             //Assert
             Assert.AreEqual(view.AnyApprenticeships, expected);
+        }
+
+        [Test]
+        [MoqInlineAutoData(true, "das-table__sort das-table__sort--desc")]
+        [MoqInlineAutoData(false, "das-table__sort das-table__sort--asc")]
+        public void ThenTheSortByHeaderClassNameIsSetCorrectly(
+            bool isReverse,
+            string expected,
+            [Frozen] Mock<ICommitmentsService> commitmentsService,
+            ManageApprenticesController controller
+        )
+        {
+            //Arrange
+            
+            //Act
+            var result = controller.Index(1, reverseSort:isReverse);
+            var model = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
+
+            //Assert
+            Assert.AreEqual(expected, model.SortedByHeaderClassName);
         }
     }
 }

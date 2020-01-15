@@ -13,6 +13,6 @@ namespace SFA.DAS.Commitments.Shared.Interfaces
         Task<CohortDetails> GetCohortDetail(long cohortId);
         Task<EditDraftApprenticeshipDetails> GetDraftApprenticeshipForCohort(long cohortId, long draftApprenticeshipId);
         Task UpdateDraftApprenticeship(long cohortId, long draftApprenticeshipId, UpdateDraftApprenticeshipRequest updateRequest);
-        Task<GetApprenticeshipsResponse> GetApprenticeships(uint providerId, string sortField = "", bool reverseSort = false);
+        Task<GetApprenticeshipsResponse> GetApprenticeships(long providerId, string sortField = "", bool reverseSort = false);
     }
 }

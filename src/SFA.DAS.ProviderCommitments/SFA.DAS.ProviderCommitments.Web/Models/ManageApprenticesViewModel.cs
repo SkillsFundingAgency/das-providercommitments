@@ -13,5 +13,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool ReverseSort { get; set; }
         public string SortedByHeaderClassName { get; set; }
         public const string HeaderClassName = "das-table__sort";
+    
+        public void SortedByHeader()
+        {
+            SortedByHeaderClassName += HeaderClassName;
+            if (ReverseSort)
+            {
+                SortedByHeaderClassName += " das-table__sort--desc";
+            }
+            else
+            {
+                SortedByHeaderClassName += " das-table__sort--asc";
+            }
+        }
     }
 }

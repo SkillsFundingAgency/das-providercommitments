@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _createCsvService = createCsvService;
         }
 
-        public async Task<IActionResult> Index(uint providerId, string sortField = "", bool reverseSort = false)
+        public async Task<IActionResult> Index(long providerId, string sortField = "", bool reverseSort = false)
         {
             if (!ModelState.IsValid)
             {
@@ -39,8 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 model.SortField = "FirstName";
             }
-            
-            SetSortedByHeader(model);
+
+            model.SortedByHeader();
             
             return View(model);
         }
@@ -55,19 +55,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
-        }
-
-        private void SetSortedByHeader(ManageApprenticesViewModel model)
-        {
-            model.SortedByHeaderClassName = ManageApprenticesViewModel.HeaderClassName;
-            if (model.ReverseSort)
-            {
-                 model.SortedByHeaderClassName += " das-table__sort--desc";
-            }
-            else
-            {
-                 model.SortedByHeaderClassName += " das-table__sort--asc";
-            }
         }
     }
 }
