@@ -2,6 +2,6 @@
 {
     public static class ProviderCommitmentsWebConstants
     {
-        public const int NumberOfApprenticesPerSearchPage = 25;
+        public const int NumberOfApprenticesPerSearchPage = 100;
     }
 }
