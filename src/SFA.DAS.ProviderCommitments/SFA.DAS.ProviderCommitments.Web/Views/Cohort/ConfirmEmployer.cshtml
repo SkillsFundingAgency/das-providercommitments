@@ -30,7 +30,7 @@
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                     Is this the employer you'd like to add apprentice details for?
                                 </legend>
-
+                                @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
                                 <div class="govuk-radios">
                                     <div class="govuk-radios__item">
                                         <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
