@@ -29,6 +29,11 @@
         "customHostName": {
             "type": "string"
         },
+        "appServiceAllowedIPs": {
+            "type": "array",
+            "defaultValue": [
+            ]
+        },
         "keyVaultCertificateName": {
             "type": "string"
         },
@@ -147,6 +152,9 @@
                     },
                     "certificateThumbprint": {
                         "value": "[if(greater(length(parameters('customHostName')), 0), reference('web-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('appServiceAllowedIPs')]"
                     }
                 }
             },
