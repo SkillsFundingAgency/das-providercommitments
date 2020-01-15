@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _csvMapper = csvMapper;
         }
 
-        [Route("manage", Name = RouteNames.ManageApprentices)]
+        [Route("", Name = RouteNames.ManageApprentices)]
         public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
