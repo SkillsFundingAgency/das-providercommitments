@@ -38,6 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.IsNotNull(viewModel.FilterModel);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
+            Assert.AreEqual(clientResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
+            Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlerts, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlerts);
             Assert.AreEqual(request.PageNumber, viewModel.FilterModel.PageNumber);
         }
 
