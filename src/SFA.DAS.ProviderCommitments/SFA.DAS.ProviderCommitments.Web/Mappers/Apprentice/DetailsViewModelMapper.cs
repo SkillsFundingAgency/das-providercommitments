@@ -16,13 +16,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
-            var apiResponse = await _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
+            var detailsResponse = await _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
+            var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
 
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                ApprenticeName = $"{apiResponse.FirstName} {apiResponse.LastName}"
+                ApprenticeName = $"{detailsResponse.FirstName} {detailsResponse.LastName}"
             };
         }
     }
