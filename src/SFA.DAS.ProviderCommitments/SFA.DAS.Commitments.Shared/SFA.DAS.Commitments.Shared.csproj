@@ -11,7 +11,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.203" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.203" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.778" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.790" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.1" />
     <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7" />
