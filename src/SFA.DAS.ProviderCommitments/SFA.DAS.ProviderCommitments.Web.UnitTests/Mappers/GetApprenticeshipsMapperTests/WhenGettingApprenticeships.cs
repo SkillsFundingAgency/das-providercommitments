@@ -15,6 +15,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
     public class WhenGettingApprenticeships
     {
         [Test, MoqAutoData]
+        public async Task Should_Pass_Params_To_Api_Call(
+            Requests.GetApprenticeshipsRequest webRequest,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            GetApprenticeshipsRequestMapper mapper)
+        {
+            await mapper.Map(webRequest);
+
+            mockApiClient.Verify(client => client.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(apiRequest => 
+                        apiRequest.ProviderId == webRequest.ProviderId &&
+                        apiRequest.PageNumber == webRequest.PageNumber &&
+                        apiRequest.PageItemCount == webRequest.PageItemCount &&
+                        //apiRequest.SearchTerm == webRequest.SearchTerm && todo: future story
+                        apiRequest.EmployerName == webRequest.SelectedEmployer &&
+                        apiRequest.CourseName == webRequest.SelectedCourse &&
+                        apiRequest.Status == webRequest.SelectedStatus &&
+                        apiRequest.StartDate == webRequest.SelectedStartDate &&
+                        apiRequest.EndDate == webRequest.SelectedEndDate),
+                    It.IsAny<CancellationToken>()), 
+                Times.Once);
+        }
+
+        [Test, MoqAutoData]
         public async Task ShouldMapValues(
             Requests.GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,

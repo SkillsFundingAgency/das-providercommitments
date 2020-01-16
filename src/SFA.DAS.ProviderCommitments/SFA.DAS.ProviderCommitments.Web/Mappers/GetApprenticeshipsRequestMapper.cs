@@ -20,9 +20,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             var response = await _client.GetApprenticeships(new GetApprenticeshipRequest
             {
-                ProviderId = source.ProviderId, 
-                PageNumber = source.PageNumber, 
-                PageItemCount = source.PageItemCount
+                ProviderId = source.ProviderId,
+                PageNumber = source.PageNumber,
+                PageItemCount = source.PageItemCount,
+                //SearchTerm = source.SearchTerm,
+                EmployerName = source.SelectedEmployer,
+                CourseName = source.SelectedCourse,
+                Status = source.SelectedStatus,
+                StartDate = source.SelectedStartDate,
+                EndDate = source.SelectedEndDate
             });
             
             var filterModel = new ManageApprenticesFilterModel

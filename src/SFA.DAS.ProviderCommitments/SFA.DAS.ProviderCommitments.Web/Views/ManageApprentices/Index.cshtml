@@ -151,7 +151,7 @@ else
                 <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeships apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlerts with alerts</p>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                <a class="govuk-link govuk-body" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+                <a class="govuk-body govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
             </div>
         </div>
     }
