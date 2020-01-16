@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -19,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}")]
+        [DasAuthorize(ProviderFeature.ApprenticeDetailsV2)]
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
