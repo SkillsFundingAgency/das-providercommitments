@@ -22,6 +22,10 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             CohortId = autoFixture.Create<long>();
             AddDraftApprenticeshipRequest = autoFixture.Build<AddDraftApprenticeshipRequest>().Create();
             GetDraftApprenticeshipResponse = autoFixture.Build<GetDraftApprenticeshipResponse>().Create();
+            GetApprenticeshipsResponse = autoFixture.Build<GetApprenticeshipsResponse>().Create();
+
+            CommitmentsApiClientMock.Setup(x => x.GetApprenticeships(It.IsAny<GetApprenticeshipRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(GetApprenticeshipsResponse);
 
             Sut = new CommitmentsService(CommitmentsApiClientMock.Object, HashingServiceMock.Object);
         }
@@ -30,6 +34,7 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
         public AddDraftApprenticeshipRequest AddDraftApprenticeshipRequest { get; }
         public GetDraftApprenticeshipResponse GetDraftApprenticeshipResponse { get; }
         public GetCohortResponse CohortApiDetail { get; }
+        public GetApprenticeshipsResponse GetApprenticeshipsResponse { get; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClientMock { get; }
         public Mock<IEncodingService> HashingServiceMock{ get; }
 
@@ -54,6 +59,5 @@ namespace SFA.DAS.Commitments.Shared.UnitTests.Services.CommitmentsServiceTests
             HashingServiceMock.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId)).Returns((long id, EncodingType encodingType) => $"AX{id}X");
             return this;
         }
-
     }
 }

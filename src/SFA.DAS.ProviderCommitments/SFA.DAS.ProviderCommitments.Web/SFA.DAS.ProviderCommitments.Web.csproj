@@ -43,7 +43,6 @@
   <ItemGroup>
     <Folder Include="AppStart\" />
     <Folder Include="Assets\" />
-    <Folder Include="RouteValues\" />
     <Folder Include="Views\Unapproved\" />
   </ItemGroup>
    

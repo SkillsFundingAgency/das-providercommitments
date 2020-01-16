@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
@@ -19,7 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         {
             //Arrange
             var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
-            var controller = new ManageApprenticesController(Mock.Of<ICommitmentsService>(), Mock.Of<ICreateCsvService>());
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+                Mock.Of<IMapper<GetApprenticeshipsCsvContentRequest,byte[]>>());
 
             //Act
             var actual = await controller.Download(1);
@@ -31,17 +30,46 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         }
 
         [Test]
-        public async Task Then_The_Result_Is_Mapped_To_The_Csv_View_Model()
+        public async Task ThenTheFileContentIsSetCorrectly()
         {
             //Arrange
-            var createCsvService = new Mock<ICreateCsvService>();
-            var controller = new ManageApprenticesController(Mock.Of<ICommitmentsService>(), createCsvService.Object);
-            
+            const uint providerId = 1;
+            var expectedCsvContent = new byte[] {1, 2, 3, 4};
+            var commitmentService = new Mock<ICommitmentsService>();
+            var csvMapper = new Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>>();
+
+            csvMapper.Setup(x =>
+                    x.Map(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))))
+                .ReturnsAsync(expectedCsvContent);
+
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+                csvMapper.Object);
+
             //Act
-            await controller.Download(1);
-            
+            var actual = await controller.Download(providerId);
+
+            var actualFileResult = actual as FileContentResult;
+
+            //Assert
+            Assert.AreEqual(expectedCsvContent, actualFileResult.FileContents);
+        }
+
+        [Test]
+        public async Task ThenWillMapRequestToCsvContent()
+        {
             //Arrange
-            createCsvService.Verify(x=>x.GenerateCsvContent(It.IsAny<List<ApprenticeshipDetailsCsvViewModel>>()));
+            const uint providerId = 1;
+            var commitmentService = new Mock<ICommitmentsService>();
+            var csvMapper = new Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>>();
+
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+                csvMapper.Object);
+
+            //Act
+            await controller.Download(providerId);
+
+            //Assert
+            csvMapper.Verify(x => x.Map(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))));
         }
     }
 }

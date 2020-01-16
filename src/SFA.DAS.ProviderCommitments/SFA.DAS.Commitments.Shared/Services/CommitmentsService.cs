@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
@@ -7,7 +6,6 @@ using SFA.DAS.Commitments.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 
 namespace SFA.DAS.Commitments.Shared.Services
@@ -74,12 +72,6 @@ namespace SFA.DAS.Commitments.Shared.Services
         public Task UpdateDraftApprenticeship(long cohortId, long draftApprenticeshipId, UpdateDraftApprenticeshipRequest updateRequest)
         {
             return _client.UpdateDraftApprenticeship(cohortId, draftApprenticeshipId, updateRequest);
-        }
-
-        public async Task<GetApprenticeshipsResponse> GetApprenticeships(uint providerId)
-        {
-            var getApprenticeshipsResponse = await _client.GetApprenticeships(new GetApprenticeshipRequest{ProviderId = providerId});
-            return getApprenticeshipsResponse;
         }
     }
 }
