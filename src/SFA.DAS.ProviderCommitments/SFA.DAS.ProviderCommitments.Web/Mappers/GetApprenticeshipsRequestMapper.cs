@@ -30,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate
             });
+
+            //todo: only get filter values if tot records > min limit
             
             var filterModel = new ManageApprenticesFilterModel
             {
@@ -37,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TotalNumberOfApprenticeshipsWithAlerts = response.TotalApprenticeshipsWithAlerts,
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
-                PageNumber = source.PageNumber
+                PageNumber = source.PageNumber,
+                //EmployerFilters = 
             };
 
             return new ManageApprenticesViewModel

@@ -37,6 +37,46 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         }
 
         [Test, MoqAutoData]
+        public async Task Then_Gets_Filter_Values_From_Api(
+            Requests.GetApprenticeshipsRequest webRequest,
+            GetApprenticeshipsResponse clientResponse,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            GetApprenticeshipsRequestMapper mapper)
+        {
+            clientResponse.TotalApprenticeships =
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+            mockApiClient
+                .Setup(client => client.GetApprenticeships(
+                    It.IsAny<GetApprenticeshipsRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(clientResponse);
+
+            await mapper.Map(webRequest);
+
+            //mockApiClient.Verify(client => client.GetFiltersWhateverItsCalled); times once
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_TotalApprentices_Less_Than_NumberOfApprenticesRequiredForSearch_Then_Not_Get_Filter_Values_From_Api(
+            Requests.GetApprenticeshipsRequest webRequest,
+            GetApprenticeshipsResponse clientResponse,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            GetApprenticeshipsRequestMapper mapper)
+        {
+            clientResponse.TotalApprenticeships =
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch - 1;
+            mockApiClient
+                .Setup(client => client.GetApprenticeships(
+                    It.IsAny<GetApprenticeshipsRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(clientResponse);
+
+            await mapper.Map(webRequest);
+
+            //mockApiClient.Verify(client => client.GetFiltersWhateverItsCalled); times never
+        }
+
+        [Test, MoqAutoData]
         public async Task ShouldMapValues(
             Requests.GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,

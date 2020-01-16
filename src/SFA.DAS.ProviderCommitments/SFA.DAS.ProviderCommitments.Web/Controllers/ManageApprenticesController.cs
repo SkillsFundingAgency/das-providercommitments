@@ -21,19 +21,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
-        public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
+        public async Task<IActionResult> Index(long providerId, ManageApprenticesFilterModel filterModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            //if (result) todo: only get filters if displaying them
-
+            //todo: "map" other filter fields onto here
             var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
-                PageNumber = pageNumber,
+                PageNumber = filterModel.PageNumber,
                 PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage
             };
 
