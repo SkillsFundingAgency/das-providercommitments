@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using System;
 using System.Linq.Expressions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
 {
@@ -14,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase(1, true)]
         public void Validate_ProviderId_ShouldBeValidated(int providerId, bool expectedValid)
         {
-            var model = new ApprenticeDetailsRequest { ProviderId = providerId };
+            var model = new DetailsRequest { ProviderId = providerId };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
 
@@ -24,11 +25,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase("XYZ", true)]
         public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new ApprenticeDetailsRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new DetailsRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ApprenticeDetailsRequest, T>> property, ApprenticeDetailsRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<DetailsRequest, T>> property, DetailsRequest instance, bool expectedValid)
         {
             var validator = new ApprenticeDetailsRequestValidator();
 

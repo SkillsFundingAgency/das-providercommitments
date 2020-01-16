@@ -7,25 +7,27 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsRequestToViewModelMapperTests
 {
     [TestFixture]
     public class WhenIMapApprenticeDetailsRequestToViewModel
     {
-        private ApprenticeDetailsRequestToViewModelMapper _mapper;
-        private ApprenticeDetailsRequest _source; 
-        private Func<Task<ApprenticeDetailsViewModel>> _act;
+        private DetailsViewModelMapper _mapper;
+        private DetailsRequest _source; 
+        private Func<Task<DetailsViewModel>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<ApprenticeDetailsRequest>();
+            _source = fixture.Create<DetailsRequest>();
             var icommitmentApiClient = new Mock<ICommitmentsApiClient>();
             //icommitmentApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
-            _mapper = new ApprenticeDetailsRequestToViewModelMapper(icommitmentApiClient.Object);
+            _mapper = new DetailsViewModelMapper(icommitmentApiClient.Object);
             _act = async () => await _mapper.Map(_source);
         }
 
