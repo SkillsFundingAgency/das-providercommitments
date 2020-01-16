@@ -12,6 +12,7 @@ using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using StructureMap;
@@ -45,6 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.Filters.Add(new GoogleAnalyticsFilter());
                     ConfigureAuthorization(options);
                 })
                 .AddNavigationBarSettings(Configuration)
