@@ -29,7 +29,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
                 UkPrn = ukPrn
             };
         }
-
-        public string DataLoaded { get; set; }
     }
 }
