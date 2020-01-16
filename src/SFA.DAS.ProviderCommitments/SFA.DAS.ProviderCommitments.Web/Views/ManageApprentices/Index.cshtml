@@ -16,7 +16,7 @@
 }
 else
 {
-    @if (Model.FilterModel.ShowSearch)
+    @if (Model.FilterModel.ShowSearch || true)//todo:remove true once counts work properly
     {
         <form method="get" asp-route="@RouteNames.ManageApprentices">
             <div class="govuk-grid-row das-hidden">
@@ -93,6 +93,7 @@ else
                                     </select>
                                 </div>
                             </div>
+                        </div><div class="govuk-grid-row">
                             <div class="govuk-grid-column-one-third">
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStartDate">Planned start date</label>
@@ -150,7 +151,7 @@ else
                 <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeships apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlerts with alerts</p>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                <a class="govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+                <a class="govuk-link govuk-body" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
             </div>
         </div>
     }
