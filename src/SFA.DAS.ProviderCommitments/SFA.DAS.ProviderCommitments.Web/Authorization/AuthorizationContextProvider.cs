@@ -32,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             var accountLegalEntityId = GetAccountLegalEntityId();
             var cohortId = GetCohortId();
             var draftApprenticeshipId = GetDraftApprenticeshipId();
+            var apprenticeshipId = GetApprenticeshipId();
             var services = GetServices();
             var ukprn = GetUkrpn();
             var userEmail = GetUserEmail();
@@ -44,6 +45,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             if (draftApprenticeshipId != null)
             {
                 authorizationContext.Set(AuthorizationContextKeys.DraftApprenticeshipId, draftApprenticeshipId);
+            }
+
+            if (apprenticeshipId != null)
+            {
+                authorizationContext.Set(AuthorizationContextKeys.ApprenticeshipId, apprenticeshipId);
             }
 
             if (services != null)
@@ -94,6 +100,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return FindAndDecodeValue(RouteValueKeys.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
         }
 
+        private long? GetApprenticeshipId()
+        {
+            return FindAndDecodeValue(RouteValueKeys.ApprenticeshipId, EncodingType.ApprenticeshipId);
+        }
         private IEnumerable<string> GetServices()
         {
             if (!_authenticationService.IsUserAuthenticated())
