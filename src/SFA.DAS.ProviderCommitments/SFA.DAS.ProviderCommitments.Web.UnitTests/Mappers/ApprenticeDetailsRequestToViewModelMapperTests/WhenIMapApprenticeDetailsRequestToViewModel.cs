@@ -2,11 +2,10 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -16,7 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
     public class WhenIMapApprenticeDetailsRequestToViewModel
     {
         private DetailsViewModelMapper _mapper;
-        private DetailsRequest _source; 
+        private DetailsRequest _source;
+        private GetApprenticeshipResponse _apiResponse;
         private Func<Task<DetailsViewModel>> _act;
 
         [SetUp]
@@ -24,10 +24,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
         {
             var fixture = new Fixture();
             _source = fixture.Create<DetailsRequest>();
-            var icommitmentApiClient = new Mock<ICommitmentsApiClient>();
-            //icommitmentApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
+            _apiResponse = fixture.Create<GetApprenticeshipResponse>();
 
-            _mapper = new DetailsViewModelMapper(icommitmentApiClient.Object);
+            var apiClient = new Mock<ICommitmentsApiClient>();
+            apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_apiResponse);
+
+            //apiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
+
+            _mapper = new DetailsViewModelMapper(apiClient.Object);
             _act = async () => await _mapper.Map(_source);
         }
 
@@ -37,6 +42,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             var result = await _act();
             Assert.AreEqual(_source.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
         }
+
+        [Test]
+        public async Task ThenFullNameIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.FirstName + " " + _apiResponse.LastName, result.ApprenticeName);
+        }
+
 
         //[Test]
         //public async Task ThenNameIsMappedCorrectly()

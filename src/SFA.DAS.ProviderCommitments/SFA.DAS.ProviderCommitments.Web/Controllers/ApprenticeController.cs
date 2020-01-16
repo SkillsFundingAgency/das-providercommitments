@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
+using SFA.DAS.Provider.Shared.UI;
+using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/apprentices")]
+    [SetNavigationSection(NavigationSection.ManageApprentices)]
     public class ApprenticeController : Controller
     {
         private readonly IModelMapper _modelMapper;
