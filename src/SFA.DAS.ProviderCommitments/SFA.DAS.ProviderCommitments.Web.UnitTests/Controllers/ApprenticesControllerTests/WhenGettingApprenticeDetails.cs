@@ -1,0 +1,68 @@
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+{
+    [TestFixture]
+    public class WhenGettingApprenticeDetails
+    {
+        [Test]
+        public async Task ThenCallsModelMapper()
+        {
+            var fixture = new GetApprenticeDetailsFixture();
+
+            await fixture.Act();
+
+            fixture.VerifyMapperWasCalled();
+        }
+
+        [Test]
+        public async Task ThenReturnsView()
+        {
+            var fixture = new GetApprenticeDetailsFixture();
+
+            var result = await fixture.Act();
+
+            result.VerifyReturnsViewModel().WithModel<ApprenticeDetailsViewModel>();
+        }
+    }
+
+    public class GetApprenticeDetailsFixture
+    {
+        public ApprenticesController Sut { get; set; }
+
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        private readonly ApprenticeDetailsViewModel _viewModel;
+        private readonly ApprenticeDetailsRequest _request;
+        private readonly long _providerId;
+
+        public GetApprenticeDetailsFixture()
+        {
+            var fixture = new Fixture();
+            _providerId = 123;
+            _request = new ApprenticeDetailsRequest { ProviderId = _providerId, ApprenticeshipHashedId = "XYZ" };
+            _modelMapperMock = new Mock<IModelMapper>();
+            _viewModel = fixture.Create<ApprenticeDetailsViewModel>();
+
+            _modelMapperMock
+                .Setup(x => x.Map<ApprenticeDetailsViewModel>(_request))
+                .ReturnsAsync(_viewModel);
+
+            Sut = new ApprenticesController(_modelMapperMock.Object);
+        }
+
+        public void VerifyMapperWasCalled()
+        {
+            _modelMapperMock.Verify(x => x.Map<ApprenticeDetailsViewModel>(_request));
+        }
+
+        public async Task<IActionResult> Act() => await Sut.Details(_request);
+    }
+}
