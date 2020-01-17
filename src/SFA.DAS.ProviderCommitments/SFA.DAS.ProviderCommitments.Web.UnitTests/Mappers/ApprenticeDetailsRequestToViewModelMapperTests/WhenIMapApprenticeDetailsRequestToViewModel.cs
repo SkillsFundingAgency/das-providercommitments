@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -18,6 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
         private DetailsRequest _source;
         private GetApprenticeshipResponse _apiResponse;
         private Func<Task<DetailsViewModel>> _act;
+        private Mock<IEncodingService> _encodingService;
+        private string _cohortReference;
 
         [SetUp]
         public void Arrange()
@@ -26,13 +29,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             _source = fixture.Create<DetailsRequest>();
             _apiResponse = fixture.Create<GetApprenticeshipResponse>();
 
+
+            _cohortReference = fixture.Create<string>();
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
+                .Returns(_cohortReference);
+
             var apiClient = new Mock<ICommitmentsApiClient>();
             apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_apiResponse);
 
             //apiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
-            _mapper = new DetailsViewModelMapper(apiClient.Object);
+            _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
             _act = async () => await _mapper.Map(_source);
         }
 
@@ -57,26 +66,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_apiResponse.EmployerName, result.Employer);
         }
 
-
-        //[Test]
-        //public async Task ThenNameIsMappedCorrectly()
-        //{
-        //    var result = await _act();
-        //    Assert.AreEqual(_accountLegalEntityResponse.LegalEntityName, result.EmployerAccountLegalEntityName);
-        //}
-
-        //[Test]
-        //public async Task ThenProviderIdMappedCorrectly()
-        //{
-        //    var result = await _act();
-        //    Assert.AreEqual(_source.ProviderId, result.ProviderId);
-        //}
-
-        //[Test]
-        //public async Task ThenAccountLegalEntityIdIsNotMapped()
-        //{
-        //    var result = await _act();
-        //    Assert.AreEqual(0, result.AccountLegalEntityId);
-        //}
+        [Test]
+        public async Task ThenReferenceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_cohortReference, result.Reference);
+        }
     }
 }

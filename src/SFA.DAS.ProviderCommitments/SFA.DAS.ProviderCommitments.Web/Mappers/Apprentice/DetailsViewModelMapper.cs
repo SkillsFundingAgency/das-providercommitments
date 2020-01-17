@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -8,10 +9,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IEncodingService _encodingService;
 
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient)
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService)
         {
             _commitmentApiClient = commitmentApiClient;
+            _encodingService = encodingService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -24,7 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ApprenticeName = $"{detailsResponse.FirstName} {detailsResponse.LastName}",
-                Employer = detailsResponse.EmployerName
+                Employer = detailsResponse.EmployerName,
+                Reference = _encodingService.Encode(detailsResponse.CohortId, EncodingType.CohortReference)
             };
         }
     }
