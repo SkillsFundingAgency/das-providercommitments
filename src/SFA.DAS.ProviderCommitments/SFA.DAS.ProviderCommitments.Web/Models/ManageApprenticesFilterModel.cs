@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Microsoft.AspNetCore.Html;
+using SFA.DAS.Commitments.Shared.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -39,6 +42,42 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                                               || !string.IsNullOrWhiteSpace(SelectedStatus)
                                               || SelectedStartDate.HasValue
                                               || SelectedEndDate.HasValue;
+
+        public HtmlString FiltersUsedMessage
+        {
+            get
+            {
+                var filters = new List<string>();
+                if (!string.IsNullOrWhiteSpace(SearchTerm)) filters.Add($"‘{SearchTerm}’");
+                if (!string.IsNullOrWhiteSpace(SelectedEmployer)) filters.Add(SelectedEmployer);
+                if (!string.IsNullOrWhiteSpace(SelectedCourse)) filters.Add(SelectedCourse);
+                if (!string.IsNullOrWhiteSpace(SelectedStatus)) filters.Add(SelectedStatus);
+                if (SelectedStartDate.HasValue) filters.Add(SelectedStartDate.Value.ToGdsFormatWithoutDay());
+                if (SelectedEndDate.HasValue) filters.Add(SelectedEndDate.Value.ToGdsFormatWithoutDay());
+
+                if (filters.Count == 0) return HtmlString.Empty;
+
+                var message = new StringBuilder();
+
+                message.Append($"matching <strong>{filters[0]}</strong>");
+
+                for (var i = 1; i < filters.Count; i++)
+                {
+                    if (i == filters.Count-1)
+                    {
+                        message.Append(" and ");
+                    }
+                    else
+                    {
+                        message.Append(", ");
+                    }
+
+                    message.Append($"<strong>{filters[i]}</strong>");
+                }
+
+                return new HtmlString(message.ToString());
+            }
+        }
 
         public int TotalNumberOfApprenticeships { get; set; }
         public int TotalNumberOfApprenticeshipsWithAlerts { get; set; }

@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
             var filters = new GetApprenticeshipsFilterValuesResponse();
             if (response.TotalApprenticeships >=
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch || true)
             {
                 filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
             }
