@@ -15,5 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? StopDate { get; set; }
         public string AgreementId { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public string Uln { get; set; }
+        public string CourseName { get; set; }
     }
 }

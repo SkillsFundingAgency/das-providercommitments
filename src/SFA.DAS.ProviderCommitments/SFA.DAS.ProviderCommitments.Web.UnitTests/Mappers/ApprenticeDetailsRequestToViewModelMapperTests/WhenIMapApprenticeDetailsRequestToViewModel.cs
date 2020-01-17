@@ -79,6 +79,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_fixture.ApiResponse.DateOfBirth, _fixture.Result.DateOfBirth);
         }
 
+        [Test]
+        public async Task ThenUlnIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Uln, _fixture.Result.Uln);
+        }
+
+        [Test]
+        public async Task ThenCourseNameIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.CourseName, _fixture.Result.CourseName);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
