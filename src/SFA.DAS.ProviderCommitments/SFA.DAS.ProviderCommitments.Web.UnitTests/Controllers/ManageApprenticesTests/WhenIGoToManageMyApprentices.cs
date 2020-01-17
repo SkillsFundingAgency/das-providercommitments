@@ -17,17 +17,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         }
 
         [Test]
-        public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned()
-        {
-            //Arrange
-            _controller.ModelState.AddModelError("test", "test");
-            //Act
-            var result = _controller.Index(1);
-            //Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-        }
-
-        [Test]
         public void ThenTheProviderIdIsPassedToTheViewModel()
         {
             //Arrange
