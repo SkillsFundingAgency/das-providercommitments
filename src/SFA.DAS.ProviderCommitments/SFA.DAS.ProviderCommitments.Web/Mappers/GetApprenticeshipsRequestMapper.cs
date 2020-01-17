@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
             var filters = new GetApprenticeshipsFilterValuesResponse();
             if (response.TotalApprenticeships >=
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch || true)
             {
                 filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
             }
@@ -46,6 +46,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
                 PageNumber = source.PageNumber,
+                SearchTerm = source.SearchTerm,
+                SelectedEmployer = source.SelectedEmployer,
+                SelectedCourse = source.SelectedCourse,
+                SelectedStatus = source.SelectedStatus,
+                SelectedStartDate = source.SelectedStartDate,
+                SelectedEndDate = source.SelectedEndDate,
                 EmployerFilters = filters.EmployerNames,
                 CourseFilters = filters.CourseNames,
                 StatusFilters = filters.Statuses,

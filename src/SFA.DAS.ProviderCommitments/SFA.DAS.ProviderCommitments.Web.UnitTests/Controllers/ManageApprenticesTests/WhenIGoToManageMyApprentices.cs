@@ -33,6 +33,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         }
 
         [Test, MoqAutoData]
+        public async Task Then_Calls_Mapper_Service_With_Correct_Values(
+            long providerId,
+            ManageApprenticesFilterModel filterModel,
+            ManageApprenticesViewModel expectedViewModel,
+            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> mockMapper,
+            ManageApprenticesController controller)
+        {
+            await controller.Index(providerId, filterModel);
+
+            mockMapper.Verify(mapper => mapper.Map(
+                It.Is<GetApprenticeshipsRequest>(request => 
+                    request.ProviderId == providerId &&
+                    request.PageNumber == filterModel.PageNumber &&
+                    request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
+                    request.SearchTerm == filterModel.SearchTerm &&
+                    request.SelectedEmployer == filterModel.SelectedEmployer &&
+                    request.SelectedCourse == filterModel.SelectedCourse &&
+                    request.SelectedStatus == filterModel.SelectedStatus &&
+                    request.SelectedStartDate == filterModel.SelectedStartDate &&
+                    request.SelectedEndDate == filterModel.SelectedEndDate)));
+        }
+
+        [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
             ManageApprenticesFilterModel filterModel,

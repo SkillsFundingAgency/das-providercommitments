@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Requests
         public string SelectedEmployer { get; set; }
         public string SelectedCourse { get; set; }
         public string SelectedStatus { get; set; }
-        public DateTime SelectedStartDate { get; set; }
-        public DateTime SelectedEndDate { get; set; }
+        public DateTime? SelectedStartDate { get; set; }
+        public DateTime? SelectedEndDate { get; set; }
     }
 }

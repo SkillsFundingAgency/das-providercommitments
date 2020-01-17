@@ -28,12 +28,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            //todo: "map" other filter fields onto here
             var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
                 PageNumber = filterModel.PageNumber,
-                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage
+                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
+                SearchTerm = filterModel.SearchTerm,
+                SelectedEmployer = filterModel.SelectedEmployer,
+                SelectedCourse = filterModel.SelectedCourse,
+                SelectedStatus = filterModel.SelectedStatus,
+                SelectedStartDate = filterModel.SelectedStartDate,
+                SelectedEndDate = filterModel.SelectedEndDate
             };
 
             var viewModel = await _apprenticeshipMapper.Map(request);

@@ -103,11 +103,11 @@ else
                                         {
                                             if (startDate == Model.FilterModel.SelectedStartDate)
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate.ToString("O")</option>
                                             }
                                             else
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate.ToString("O")</option>
                                             }
                                         }
                                     </select>
@@ -122,11 +122,11 @@ else
                                         {
                                             if (endDate == Model.FilterModel.SelectedEndDate)
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate.ToString("O")</option>
                                             }
                                             else
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate.ToString("O")</option>
                                             }
                                         }
                                     </select>

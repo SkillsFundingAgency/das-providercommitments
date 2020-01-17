@@ -120,6 +120,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.AreEqual(filtersResponse.Statuses, viewModel.FilterModel.StatusFilters);
             Assert.AreEqual(filtersResponse.StartDates, viewModel.FilterModel.StartDateFilters);
             Assert.AreEqual(filtersResponse.EndDates, viewModel.FilterModel.EndDateFilters);
+            Assert.AreEqual(request.SearchTerm, viewModel.FilterModel.SearchTerm);
+            Assert.AreEqual(request.SelectedEmployer, viewModel.FilterModel.SelectedEmployer);
+            Assert.AreEqual(request.SelectedCourse, viewModel.FilterModel.SelectedCourse);
+            Assert.AreEqual(request.SelectedStatus, viewModel.FilterModel.SelectedStatus);
+            Assert.AreEqual(request.SelectedStartDate, viewModel.FilterModel.SelectedStartDate);
+            Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
         }
 
         [Test]
