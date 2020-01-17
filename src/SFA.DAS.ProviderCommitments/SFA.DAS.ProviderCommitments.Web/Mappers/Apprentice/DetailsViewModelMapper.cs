@@ -28,7 +28,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ApprenticeName = $"{detailsResponse.FirstName} {detailsResponse.LastName}",
                 Employer = detailsResponse.EmployerName,
-                Reference = _encodingService.Encode(detailsResponse.CohortId, EncodingType.CohortReference)
+                Reference = _encodingService.Encode(detailsResponse.CohortId, EncodingType.CohortReference),
+                Status = detailsResponse.Status,
+                StopDate = detailsResponse.StopDate
             };
         }
     }

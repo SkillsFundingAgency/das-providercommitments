@@ -1,4 +1,6 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -25,12 +27,16 @@
     <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
-            <td class="govuk-table__cell">xxx</td>
+            <td class="govuk-table__cell">@Model.Status</td> @*todo: proper description*@
         </tr>
+    
+    @if (Model.Status == ApprenticeshipStatus.Stopped)
+    {
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop applies from</th>
-            <td class="govuk-table__cell">xxx</td>
+            <td class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
         </tr>
+    }
     </tbody>
 </table>
 

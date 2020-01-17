@@ -51,22 +51,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_fixture.CohortReference, _fixture.Result.Reference);
         }
 
+        [Test]
+        public async Task ThenStatusIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Status, _fixture.Result.Status);
+        }
+
+        [Test]
+        public async Task ThenStopDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.StopDate, _fixture.Result.StopDate);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
-            private DetailsViewModelMapper _mapper;
-            public DetailsRequest Source { get; private set; }
+            private readonly DetailsViewModelMapper _mapper;
+            public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
-            public GetApprenticeshipResponse ApiResponse { get; private set; }
+            public GetApprenticeshipResponse ApiResponse { get; }
             
-            private Mock<IEncodingService> _encodingService;
-            public string CohortReference { get; private set; }
+            private readonly Mock<IEncodingService> _encodingService;
+            public string CohortReference { get; }
 
             public WhenIMapApprenticeDetailsRequestToViewModelFixture()
             {
                 var fixture = new Fixture();
                 Source = fixture.Create<DetailsRequest>();
                 ApiResponse = fixture.Create<GetApprenticeshipResponse>();
-
 
                 CohortReference = fixture.Create<string>();
                 _encodingService = new Mock<IEncodingService>();
@@ -77,10 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(ApiResponse);
 
-                //apiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
-
                 _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
-                
             }
 
             public async Task<WhenIMapApprenticeDetailsRequestToViewModelFixture> Map()
