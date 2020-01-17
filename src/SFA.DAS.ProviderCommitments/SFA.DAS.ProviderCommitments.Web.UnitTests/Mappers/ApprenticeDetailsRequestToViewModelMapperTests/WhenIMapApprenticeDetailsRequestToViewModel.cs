@@ -3,8 +3,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -72,12 +75,62 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_fixture.AgreementId, _fixture.Result.AgreementId);
         }
 
+        [Test]
+        public async Task ThenDateOfBirthIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.DateOfBirth, _fixture.Result.DateOfBirth);
+        }
+
+        [Test]
+        public async Task ThenUlnIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Uln, _fixture.Result.Uln);
+        }
+
+        [Test]
+        public async Task ThenCourseNameIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.CourseName, _fixture.Result.CourseName);
+        }
+
+        [Test]
+        public async Task ThenStartDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.StartDate, _fixture.Result.StartDate);
+        }
+
+        [Test]
+        public async Task ThenEndDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EndDate, _fixture.Result.EndDate);
+        }
+
+        [Test]
+        public async Task ThenProviderRefIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Reference, _fixture.Result.ProviderRef);
+        }
+
+        [Test]
+        public async Task ThenPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.PriceEpisodesApiResponse.PriceEpisodes.First().Cost, _fixture.Result.Cost);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
             public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
             public GetApprenticeshipResponse ApiResponse { get; }
+            public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
             
             private readonly Mock<IEncodingService> _encodingService;
             public string CohortReference { get; }
@@ -90,6 +143,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 ApiResponse = fixture.Create<GetApprenticeshipResponse>();
                 CohortReference = fixture.Create<string>();
                 AgreementId = fixture.Create<string>();
+                PriceEpisodesApiResponse = new GetPriceEpisodesResponse
+                {
+                    PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
+                    {
+                        new GetPriceEpisodesResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
+                    }
+                };
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
@@ -98,6 +158,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 var apiClient = new Mock<ICommitmentsApiClient>();
                 apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(ApiResponse);
+
+                apiClient.Setup(x => x.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(PriceEpisodesApiResponse);
 
                 _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
             }
