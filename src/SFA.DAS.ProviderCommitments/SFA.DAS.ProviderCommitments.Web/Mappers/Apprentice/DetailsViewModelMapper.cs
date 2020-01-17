@@ -34,7 +34,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 AgreementId = _encodingService.Encode(detailsResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 DateOfBirth = detailsResponse.DateOfBirth,
                 Uln = detailsResponse.Uln,
-                CourseName = detailsResponse.CourseName
+                CourseName = detailsResponse.CourseName,
+                StartDate = detailsResponse.StartDate,
+                EndDate = detailsResponse.EndDate,
+                ProviderRef = detailsResponse.Reference
             };
         }
     }

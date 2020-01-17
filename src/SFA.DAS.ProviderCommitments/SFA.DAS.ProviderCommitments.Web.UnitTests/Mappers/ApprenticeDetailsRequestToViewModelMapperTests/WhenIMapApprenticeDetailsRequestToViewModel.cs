@@ -93,6 +93,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_fixture.ApiResponse.CourseName, _fixture.Result.CourseName);
         }
 
+        [Test]
+        public async Task ThenStartDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.StartDate, _fixture.Result.StartDate);
+        }
+
+        [Test]
+        public async Task ThenEndDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EndDate, _fixture.Result.EndDate);
+        }
+
+        [Test]
+        public async Task ThenProviderRefIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Reference, _fixture.Result.ProviderRef);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
