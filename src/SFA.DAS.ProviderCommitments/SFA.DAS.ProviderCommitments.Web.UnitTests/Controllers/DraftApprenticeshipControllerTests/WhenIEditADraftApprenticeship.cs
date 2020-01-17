@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -39,14 +40,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task IfCalledWithAnInvalidRequestShouldGetBadResponseReturned()
-        {
-            _fixture.SetupModelStateToBeInvalid();
-            await _fixture.EditDraftApprenticeship();
-            _fixture.VerifyWeGetABadRequestResponse();
-        }
-
-        [Test]
         public async Task AndWhenSavingTheDraftApprenticeIsSuccessful()
         {
             await _fixture.PostToEditDraftApprenticeship();
@@ -56,34 +49,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingFailsItShouldReturnTheViewWithModelAndErrors()
+        public void AndWhenSavingFailsDueToValidationItShouldThrowCommitmentsApiModelException()
         {
-
             _fixture.SetupUpdatingToThrowCommitmentsApiException();
-            await _fixture.PostToEditDraftApprenticeship();
-            _fixture.VerifyEditViewWasReturnedAndHasErrors()
-                .VerifyCohortDetailsWasCalledWithCorrectId()
-                .VerifyGetCoursesWasCalled();
+            Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToEditDraftApprenticeship());
         }
-
-        [Test]
-        public async Task AndWhenSavingFailsDueToModelBindingItShouldReturnTheViewWithModelAndErrors()
-        {
-            _fixture.SetupModelStateToBeInvalid();
-            await _fixture.PostToEditDraftApprenticeship();
-            _fixture.VerifyEditViewWasReturnedAndHasErrors()
-                .VerifyCohortDetailsWasCalledWithCorrectId()
-                .VerifyGetCoursesWasCalled();
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task FrameworkCourseAreOnlyRequestedWhenCohortisNotFundedByTransfer(bool isFundedByTransfer)
-        {
-            _fixture.SetupCohortTransferFundedStatus(isFundedByTransfer);
-            await _fixture.AddDraftApprenticeshipWithoutReservation();
-            _fixture.VerifyWhetherFrameworkCourseWereRequested(!isFundedByTransfer);
-        }
-
     }
 }
