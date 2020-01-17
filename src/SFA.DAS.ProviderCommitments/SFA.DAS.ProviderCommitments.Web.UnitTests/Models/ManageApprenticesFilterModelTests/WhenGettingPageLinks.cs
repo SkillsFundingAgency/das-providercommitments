@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -13,6 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         {
             var filterModel = new ManageApprenticesFilterModel
             {
+                SearchTerm = "asedfas",
+                SelectedEmployer = "asdsad",
+                SelectedCourse = "iknjso",
+                SelectedStatus = "9psdgf",
+                SelectedStartDate = DateTime.Today,
+                SelectedEndDate = DateTime.Today,
                 TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3
             };
 
@@ -26,6 +33,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 pageLinks[i].AriaLabel.Should().Be($"Page {i+1}");
                 pageLinks[i].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
                     {
+                        {"searchTerm", filterModel.SearchTerm },
+                        {"selectedEmployer", filterModel.SelectedEmployer},
+                        {"selectedCourse", filterModel.SelectedCourse},
+                        {"selectedStatus", filterModel.SelectedStatus},
+                        {"selectedStartDate", filterModel.SelectedStartDate.Value.ToString("O")},
+                        {"selectedEndDate", filterModel.SelectedEndDate.Value.ToString("O")},
                         {"pageNumber", (i+1).ToString() }
                     });
             }

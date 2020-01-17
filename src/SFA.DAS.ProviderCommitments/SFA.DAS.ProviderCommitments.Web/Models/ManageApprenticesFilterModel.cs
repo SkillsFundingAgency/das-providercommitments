@@ -102,10 +102,39 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         
         private Dictionary<string, string> BuildRouteData(int pageNumber)
         {
-            var routeData = new Dictionary<string, string>
+            var routeData = new Dictionary<string, string>();
+
+            if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
-                {"pageNumber", pageNumber.ToString()}
-            };
+                routeData.Add("searchTerm", SearchTerm);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedEmployer))
+            {
+                routeData.Add("selectedEmployer", SelectedEmployer);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedCourse))
+            {
+                routeData.Add("selectedCourse", SelectedCourse);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SelectedStatus))
+            {
+                routeData.Add("selectedStatus", SelectedStatus);
+            }
+            
+            if (SelectedStartDate.HasValue)
+            {
+                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("O"));
+            }
+
+            if (SelectedEndDate.HasValue)
+            {
+                routeData.Add("selectedEndDate", SelectedEndDate.Value.ToString("O"));
+            }
+
+            routeData.Add("pageNumber", pageNumber.ToString());
 
             return routeData;
         }
