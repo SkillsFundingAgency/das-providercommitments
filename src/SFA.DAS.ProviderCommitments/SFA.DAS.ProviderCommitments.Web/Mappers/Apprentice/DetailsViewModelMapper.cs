@@ -23,7 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                ApprenticeName = $"{detailsResponse.FirstName} {detailsResponse.LastName}"
+                ApprenticeName = $"{detailsResponse.FirstName} {detailsResponse.LastName}",
+                Employer = detailsResponse.EmployerName
             };
         }
     }

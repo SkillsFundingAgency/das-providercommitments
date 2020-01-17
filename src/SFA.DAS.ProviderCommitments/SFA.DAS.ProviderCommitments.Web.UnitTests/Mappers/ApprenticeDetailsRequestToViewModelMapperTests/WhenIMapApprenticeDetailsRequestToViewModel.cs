@@ -50,6 +50,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_apiResponse.FirstName + " " + _apiResponse.LastName, result.ApprenticeName);
         }
 
+        [Test]
+        public async Task ThenEmployerIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmployerName, result.Employer);
+        }
+
 
         //[Test]
         //public async Task ThenNameIsMappedCorrectly()
