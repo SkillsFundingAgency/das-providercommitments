@@ -50,6 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     ConfigureAuthorization(options);
                 })
                 .AddNavigationBarSettings(Configuration)
+                .EnableGoogleAnalytics()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddSessionStateTempDataProvider()
