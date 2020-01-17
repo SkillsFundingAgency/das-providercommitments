@@ -31,7 +31,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Reference = _encodingService.Encode(detailsResponse.CohortId, EncodingType.CohortReference),
                 Status = detailsResponse.Status,
                 StopDate = detailsResponse.StopDate,
-                AgreementId = _encodingService.Encode(detailsResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
+                AgreementId = _encodingService.Encode(detailsResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                DateOfBirth = detailsResponse.DateOfBirth
             };
         }
     }
