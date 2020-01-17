@@ -30,7 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Employer = detailsResponse.EmployerName,
                 Reference = _encodingService.Encode(detailsResponse.CohortId, EncodingType.CohortReference),
                 Status = detailsResponse.Status,
-                StopDate = detailsResponse.StopDate
+                StopDate = detailsResponse.StopDate,
+                AgreementId = _encodingService.Encode(detailsResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
             };
         }
     }

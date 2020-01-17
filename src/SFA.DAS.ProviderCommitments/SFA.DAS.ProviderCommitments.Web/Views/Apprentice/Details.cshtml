@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Web.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @{
@@ -27,7 +28,7 @@
     <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
-            <td class="govuk-table__cell">@Model.Status</td> @*todo: proper description*@
+            <td class="govuk-table__cell">@Model.Status.GetDescription()</td>
         </tr>
     
     @if (Model.Status == ApprenticeshipStatus.Stopped)
@@ -65,7 +66,7 @@
     </tr>
     <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Agreement ID</th>
-        <td class="govuk-table__cell">xxx</td>
+        <td class="govuk-table__cell">@Model.AgreementId</td>
     </tr>
 
     </tbody>

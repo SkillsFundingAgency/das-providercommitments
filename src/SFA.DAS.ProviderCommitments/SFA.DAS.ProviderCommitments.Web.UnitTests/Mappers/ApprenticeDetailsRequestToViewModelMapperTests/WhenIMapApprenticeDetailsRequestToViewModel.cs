@@ -65,6 +65,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(_fixture.ApiResponse.StopDate, _fixture.Result.StopDate);
         }
 
+        [Test]
+        public async Task ThenAgreementIdIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.AgreementId, _fixture.Result.AgreementId);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
@@ -74,17 +81,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             
             private readonly Mock<IEncodingService> _encodingService;
             public string CohortReference { get; }
+            public string AgreementId { get; }
 
             public WhenIMapApprenticeDetailsRequestToViewModelFixture()
             {
                 var fixture = new Fixture();
                 Source = fixture.Create<DetailsRequest>();
                 ApiResponse = fixture.Create<GetApprenticeshipResponse>();
-
                 CohortReference = fixture.Create<string>();
+                AgreementId = fixture.Create<string>();
+
                 _encodingService = new Mock<IEncodingService>();
-                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
-                    .Returns(CohortReference);
+                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
+                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
 
                 var apiClient = new Mock<ICommitmentsApiClient>();
                 apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
