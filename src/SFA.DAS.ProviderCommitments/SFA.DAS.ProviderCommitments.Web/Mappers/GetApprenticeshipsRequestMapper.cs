@@ -2,6 +2,7 @@
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 
@@ -31,8 +32,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = source.SelectedEndDate
             });
 
-            //todo: only get filter values if tot records > min limit
-            
+            var filters = new GetApprenticeshipsFilterValuesResponse();
+            if (response.TotalApprenticeships >=
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
+            {
+                filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
+            }
+
             var filterModel = new ManageApprenticesFilterModel
             {
                 TotalNumberOfApprenticeships = response.TotalApprenticeships,
@@ -40,7 +46,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
                 PageNumber = source.PageNumber,
-                //EmployerFilters = 
+                EmployerFilters = filters.EmployerNames,
+                CourseFilters = filters.CourseNames,
+                StatusFilters = filters.Statuses,
+                StartDateFilters = filters.StartDates,
+                EndDateFilters = filters.EndDates
             };
 
             return new ManageApprenticesViewModel

@@ -101,13 +101,13 @@ else
                                         <option label="All" aria-label="All start dates"></option>
                                         @foreach (var startDate in Model.FilterModel.StartDateFilters)
                                         {
-                                            if (startDate.Replace(" ", null) == Model.FilterModel.SelectedStartDate?.Replace(" ", null))
+                                            if (startDate == Model.FilterModel.SelectedStartDate)
                                             {
-                                                <option label="@startDate" selected="selected">@startDate</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate</option>
                                             }
                                             else
                                             {
-                                                <option label="@startDate">@startDate</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate</option>
                                             }
                                         }
                                     </select>
@@ -120,13 +120,13 @@ else
                                         <option label="All" aria-label="All end dates"></option>
                                         @foreach (var endDate in Model.FilterModel.EndDateFilters)
                                         {
-                                            if (endDate.Replace(" ", null) == Model.FilterModel.SelectedEndDate?.Replace(" ", null))
+                                            if (endDate == Model.FilterModel.SelectedEndDate)
                                             {
-                                                <option label="@endDate" selected="selected">@endDate</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate</option>
                                             }
                                             else
                                             {
-                                                <option label="@endDate">@endDate</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate</option>
                                             }
                                         }
                                     </select>

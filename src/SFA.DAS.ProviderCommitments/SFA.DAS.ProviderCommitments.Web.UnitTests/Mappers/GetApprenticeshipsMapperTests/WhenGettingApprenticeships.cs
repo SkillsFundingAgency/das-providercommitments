@@ -53,7 +53,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
             await mapper.Map(webRequest);
 
-            //mockApiClient.Verify(client => client.GetFiltersWhateverItsCalled); times once
+            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
+                webRequest.ProviderId, 
+                It.IsAny<CancellationToken>()),
+                Times.Once); 
         }
 
         [Test, MoqAutoData]
@@ -73,22 +76,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
             await mapper.Map(webRequest);
 
-            //mockApiClient.Verify(client => client.GetFiltersWhateverItsCalled); times never
+            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
+                    It.IsAny<long>(), 
+                    It.IsAny<CancellationToken>()),
+                Times.Never); 
         }
 
         [Test, MoqAutoData]
         public async Task ShouldMapValues(
             Requests.GetApprenticeshipsRequest request,
-            [Frozen]GetApprenticeshipsResponse clientResponse,
-            Mock<ICommitmentsApiClient> client,
+            GetApprenticeshipsResponse apprenticeshipsResponse,
+            GetApprenticeshipsFilterValuesResponse filtersResponse,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             GetApprenticeshipsRequestMapper mapper)
         {
             //Arrange
-            client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
-                    r.ProviderId.Equals(request.ProviderId) &&
-                    r.PageNumber.Equals(request.PageNumber) &&
-                    r.PageItemCount.Equals(request.PageItemCount)), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(clientResponse);
+            apprenticeshipsResponse.TotalApprenticeships =
+                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+            mockApiClient
+                .Setup(x => x.GetApprenticeships(
+                    It.IsAny<GetApprenticeshipsRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(apprenticeshipsResponse);
+            mockApiClient
+                .Setup(client => client.GetApprenticeshipsFilterValues(
+                    It.IsAny<long>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(filtersResponse);
 
             //Act
             var viewModel = await mapper.Map(request);
@@ -96,13 +109,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             //Assert
             Assert.IsNotNull(viewModel);
             Assert.AreEqual(request.ProviderId, viewModel.ProviderId);
-            Assert.AreEqual(clientResponse.Apprenticeships, viewModel.Apprenticeships);
-            Assert.IsNotNull(viewModel.FilterModel);
-            Assert.AreEqual(clientResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
-            Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
-            Assert.AreEqual(clientResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
-            Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlerts, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlerts);
+            Assert.AreEqual(apprenticeshipsResponse.Apprenticeships, viewModel.Apprenticeships);
+            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
+            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
+            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
+            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlerts, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlerts);
             Assert.AreEqual(request.PageNumber, viewModel.FilterModel.PageNumber);
+            Assert.AreEqual(filtersResponse.EmployerNames, viewModel.FilterModel.EmployerFilters);
+            Assert.AreEqual(filtersResponse.CourseNames, viewModel.FilterModel.CourseFilters);
+            Assert.AreEqual(filtersResponse.Statuses, viewModel.FilterModel.StatusFilters);
+            Assert.AreEqual(filtersResponse.StartDates, viewModel.FilterModel.StartDateFilters);
+            Assert.AreEqual(filtersResponse.EndDates, viewModel.FilterModel.EndDateFilters);
         }
 
         [Test]

@@ -10,8 +10,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string SelectedEmployer { get; set; }
         public string SelectedCourse { get; set; }
         public string SelectedStatus { get; set; }
-        public string SelectedStartDate { get; set; }
-        public string SelectedEndDate { get; set; }
+        public DateTime? SelectedStartDate { get; set; }
+        public DateTime? SelectedEndDate { get; set; }
     }
 
     public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase
@@ -19,8 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
         public IEnumerable<string> StatusFilters { get; set; } = new List<string>();
-        public IEnumerable<string> StartDateFilters { get; set; } = new List<string>();
-        public IEnumerable<string> EndDateFilters { get; set; } = new List<string>();
+        public IEnumerable<DateTime> StartDateFilters { get; set; } = new List<DateTime>();
+        public IEnumerable<DateTime> EndDateFilters { get; set; } = new List<DateTime>();
 
         private const int PageSize = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
@@ -37,8 +37,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                                               || !string.IsNullOrWhiteSpace(SelectedEmployer)
                                               || !string.IsNullOrWhiteSpace(SelectedCourse)
                                               || !string.IsNullOrWhiteSpace(SelectedStatus)
-                                              || !string.IsNullOrWhiteSpace(SelectedStartDate)
-                                              || !string.IsNullOrWhiteSpace(SelectedEndDate);
+                                              || SelectedStartDate.HasValue
+                                              || SelectedEndDate.HasValue;
 
         public int TotalNumberOfApprenticeships { get; set; }
         public int TotalNumberOfApprenticeshipsWithAlerts { get; set; }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -55,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         {
             var filterModel = new ManageApprenticesFilterModel
             {
-                SelectedStartDate = "asedfas"
+                SelectedStartDate = DateTime.Today
             };
 
             filterModel.SearchOrFiltersApplied.Should().BeTrue();
@@ -66,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         {
             var filterModel = new ManageApprenticesFilterModel
             {
-                SelectedEndDate = "asedfas"
+                SelectedEndDate = DateTime.Today
             };
 
             filterModel.SearchOrFiltersApplied.Should().BeTrue();
