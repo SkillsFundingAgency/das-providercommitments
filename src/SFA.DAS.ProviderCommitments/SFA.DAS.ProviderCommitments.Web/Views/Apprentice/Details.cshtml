@@ -112,12 +112,11 @@
     </tr>
     <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-        <td class="govuk-table__cell">xxx</td>
+        <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
     </tr>
     <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Your reference</th>
         <td class="govuk-table__cell">@Model.ProviderRef</td>
     </tr>
-
     </tbody>
 </table>

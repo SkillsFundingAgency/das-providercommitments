@@ -20,5 +20,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string ProviderRef { get; set; }
+        public decimal Cost { get; set; }
     }
 }

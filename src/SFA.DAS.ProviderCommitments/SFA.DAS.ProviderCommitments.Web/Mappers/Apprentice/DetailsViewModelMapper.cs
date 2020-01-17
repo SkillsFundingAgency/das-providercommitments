@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -37,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CourseName = detailsResponse.CourseName,
                 StartDate = detailsResponse.StartDate,
                 EndDate = detailsResponse.EndDate,
-                ProviderRef = detailsResponse.Reference
+                ProviderRef = detailsResponse.Reference,
+                Cost = priceEpisodes.PriceEpisodes.GetPrice()
             };
         }
     }
