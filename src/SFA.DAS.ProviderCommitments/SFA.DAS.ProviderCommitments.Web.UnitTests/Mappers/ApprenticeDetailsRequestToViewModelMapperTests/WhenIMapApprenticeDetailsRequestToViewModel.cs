@@ -15,62 +15,79 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
     [TestFixture]
     public class WhenIMapApprenticeDetailsRequestToViewModel
     {
-        private DetailsViewModelMapper _mapper;
-        private DetailsRequest _source;
-        private GetApprenticeshipResponse _apiResponse;
-        private Func<Task<DetailsViewModel>> _act;
-        private Mock<IEncodingService> _encodingService;
-        private string _cohortReference;
+        private WhenIMapApprenticeDetailsRequestToViewModelFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            var fixture = new Fixture();
-            _source = fixture.Create<DetailsRequest>();
-            _apiResponse = fixture.Create<GetApprenticeshipResponse>();
-
-
-            _cohortReference = fixture.Create<string>();
-            _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
-                .Returns(_cohortReference);
-
-            var apiClient = new Mock<ICommitmentsApiClient>();
-            apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_apiResponse);
-
-            //apiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
-
-            _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
-            _act = async () => await _mapper.Map(_source);
+            _fixture = new WhenIMapApprenticeDetailsRequestToViewModelFixture();
         }
 
         [Test]
         public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
         {
-            var result = await _act();
-            Assert.AreEqual(_source.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.Source.ApprenticeshipHashedId, _fixture.Result.ApprenticeshipHashedId);
         }
 
         [Test]
         public async Task ThenFullNameIsMappedCorrectly()
         {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.FirstName + " " + _apiResponse.LastName, result.ApprenticeName);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.FirstName + " " + _fixture.ApiResponse.LastName, _fixture.Result.ApprenticeName);
         }
 
         [Test]
         public async Task ThenEmployerIsMappedCorrectly()
         {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.EmployerName, result.Employer);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EmployerName, _fixture.Result.Employer);
         }
 
         [Test]
         public async Task ThenReferenceIsMappedCorrectly()
         {
-            var result = await _act();
-            Assert.AreEqual(_cohortReference, result.Reference);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.CohortReference, _fixture.Result.Reference);
+        }
+
+        public class WhenIMapApprenticeDetailsRequestToViewModelFixture
+        {
+            private DetailsViewModelMapper _mapper;
+            public DetailsRequest Source { get; private set; }
+            public DetailsViewModel Result { get; private set; }
+            public GetApprenticeshipResponse ApiResponse { get; private set; }
+            
+            private Mock<IEncodingService> _encodingService;
+            public string CohortReference { get; private set; }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture()
+            {
+                var fixture = new Fixture();
+                Source = fixture.Create<DetailsRequest>();
+                ApiResponse = fixture.Create<GetApprenticeshipResponse>();
+
+
+                CohortReference = fixture.Create<string>();
+                _encodingService = new Mock<IEncodingService>();
+                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
+                    .Returns(CohortReference);
+
+                var apiClient = new Mock<ICommitmentsApiClient>();
+                apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(ApiResponse);
+
+                //apiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
+
+                _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
+                
+            }
+
+            public async Task<WhenIMapApprenticeDetailsRequestToViewModelFixture> Map()
+            {
+                Result = await _mapper.Map(Source);
+                return this;
+            }
         }
     }
 }
