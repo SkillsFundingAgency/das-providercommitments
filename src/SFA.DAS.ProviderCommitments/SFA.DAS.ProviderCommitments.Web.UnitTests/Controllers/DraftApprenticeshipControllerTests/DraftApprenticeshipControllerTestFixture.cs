@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -32,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>> _updateMapper;
         private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<ICommitmentsService> _providerCommitmentsService;
+        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
         private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
@@ -123,8 +126,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerCommitmentsService.Setup(x => x.GetCohortDetail(It.IsAny<long>()))
                 .ReturnsAsync(autoFixture.Build<CohortDetails>().Create());
 
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(autoFixture.Build<GetCohortResponse>().Create());
+
             _controller = new DraftApprenticeshipController(_mediator.Object, _providerCommitmentsService.Object,
-                _mapper.Object, _editMapper.Object, _updateMapper.Object, _linkGenerator.Object);
+                _mapper.Object, _editMapper.Object, _updateMapper.Object, _linkGenerator.Object, _commitmentsApiClient.Object);
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
@@ -256,8 +263,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyCohortDetailsWasCalledWithCorrectId()
         {
-            _providerCommitmentsService.Verify(
-                x => x.GetCohortDetail(_cohortId), Times.Once);
+            _commitmentsApiClient.Verify(x => x.GetCohort(_cohortId, It.IsAny<CancellationToken>()), Times.Once);
+
+            //_providerCommitmentsService.Verify(
+            //    x => x.GetCohortDetail(_cohortId), Times.Once);
             return this;
         }
 
