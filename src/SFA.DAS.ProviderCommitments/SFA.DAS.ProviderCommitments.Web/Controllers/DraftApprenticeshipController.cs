@@ -74,7 +74,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _addDraftApprenticeshipToCohortRequestMapper.Map(model);
             request.UserId = User.Upn();
 
-            await _commitmentsService.AddDraftApprenticeshipToCohort(model.CohortId.Value, request);
+            await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            
             var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
             return Redirect(url);

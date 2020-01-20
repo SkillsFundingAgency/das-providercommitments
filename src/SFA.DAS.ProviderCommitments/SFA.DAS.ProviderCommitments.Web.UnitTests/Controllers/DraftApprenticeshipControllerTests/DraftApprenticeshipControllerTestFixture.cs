@@ -171,10 +171,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsApiException()
+        public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsServiceApiException()
         {
             _providerCommitmentsService
                 .Setup(x => x.AddDraftApprenticeshipToCohort(It.IsAny<long>(), It.IsAny<AddDraftApprenticeshipRequest>()))
+                .ThrowsAsync(_apiModelException);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsApiException()
+        {
+            _commitmentsApiClient
+                .Setup(x => x.AddDraftApprenticeship(It.IsAny<long>(), It.IsAny<AddDraftApprenticeshipRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(_apiModelException);
             return this;
         }
@@ -264,9 +272,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyCohortDetailsWasCalledWithCorrectId()
         {
             _commitmentsApiClient.Verify(x => x.GetCohort(_cohortId, It.IsAny<CancellationToken>()), Times.Once);
-
-            //_providerCommitmentsService.Verify(
-            //    x => x.GetCohortDetail(_cohortId), Times.Once);
             return this;
         }
 
@@ -291,8 +296,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyApiAddMethodIsCalled()
         {
-            _providerCommitmentsService.Verify(
-                x => x.AddDraftApprenticeshipToCohort(_addModel.CohortId.Value, _createAddDraftApprenticeshipRequest), Times.Once);
+            _commitmentsApiClient.Verify(
+                x => x.AddDraftApprenticeship(_addModel.CohortId.Value, _createAddDraftApprenticeshipRequest, It.IsAny<CancellationToken>()), Times.Once);
             return this;
         }
 
