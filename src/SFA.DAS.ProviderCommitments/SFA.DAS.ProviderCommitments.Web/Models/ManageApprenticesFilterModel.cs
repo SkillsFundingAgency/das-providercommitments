@@ -165,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             
             if (SelectedStartDate.HasValue)
             {
-                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("O"));
+                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("o"));
             }
 
             if (SelectedEndDate.HasValue)
