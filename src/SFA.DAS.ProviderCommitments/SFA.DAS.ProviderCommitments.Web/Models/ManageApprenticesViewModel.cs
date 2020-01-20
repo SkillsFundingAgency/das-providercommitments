@@ -26,5 +26,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 SortedByHeaderClassName += " das-table__sort--asc";
             }
         }
+
+        public ManageApprenticesFilterModel FilterModel { get; set; }
+        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
     }
 }

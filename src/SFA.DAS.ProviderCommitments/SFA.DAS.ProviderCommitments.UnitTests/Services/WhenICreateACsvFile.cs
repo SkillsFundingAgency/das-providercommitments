@@ -6,21 +6,21 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Services;
 
+
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services
 {
     public class WhenICreateACsvFile
     {
-        
-        private List<ApprenticeshipDetails> _apprenticeshipDetails;
-        private CreateCsvService _createCsvService;
-
+        private ICreateCsvService _createCsvService;
+        private List<ApprenticeshipDetailsResponse> _apprenticeshipDetails;
         [SetUp]
         public void SetUp()
         {
             _createCsvService = new CreateCsvService();
-            _apprenticeshipDetails = new List<ApprenticeshipDetails>
+
+            _apprenticeshipDetails = new List<ApprenticeshipDetailsResponse>
             {
-                new ApprenticeshipDetails
+                new ApprenticeshipDetailsResponse
                 {
                     Alerts = null,
                     FirstName = "Name1",
@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
                     PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN1"
                 },
-                new ApprenticeshipDetails
+                new ApprenticeshipDetailsResponse
                 {
                     Alerts = null,
                     FirstName = "Name2",
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
                     PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN2"
                 },
-                new ApprenticeshipDetails
+                new ApprenticeshipDetailsResponse
                 {
                     Alerts = null,
                     FirstName = "Name3",
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
                     PaymentStatus = PaymentStatus.Active,
                     Uln = "ULN3"
                 },
-                new ApprenticeshipDetails
+                new ApprenticeshipDetailsResponse
                 {
                     Alerts = null,
                     FirstName = "Name4",

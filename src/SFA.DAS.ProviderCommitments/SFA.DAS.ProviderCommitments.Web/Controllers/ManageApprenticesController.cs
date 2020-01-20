@@ -1,59 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/apprentices",Name = "index")]
     public class ManageApprenticesController : Controller
     {
-        private readonly ICommitmentsService _commitmentsService;
-        private readonly ICreateCsvService _createCsvService;
+        private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
+        private readonly IMapper<GetApprenticeshipsCsvContentRequest, byte[]> _csvMapper;
 
-        public ManageApprenticesController(ICommitmentsService commitmentsService, ICreateCsvService createCsvService)
+        public ManageApprenticesController(IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper)
         {
-            _commitmentsService = commitmentsService;
-            _createCsvService = createCsvService;
+            _apprenticeshipMapper = apprenticeshipMapper;
+            _csvMapper = csvMapper;
         }
 
-        public async Task<IActionResult> Index(long providerId, string sortField = "", bool reverseSort = false)
+        [Route("", Name = RouteNames.ManageApprentices)]
+        public async Task<IActionResult> Index(long providerId, string sortField = "", bool reverseSort = false, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var getApprenticeshipsResponse = await _commitmentsService.GetApprenticeships(providerId, sortField, reverseSort);
-            var model = new ManageApprenticesViewModel{ProviderId = providerId, SortField = sortField, ReverseSort = reverseSort};
-
-            model.Apprenticeships = getApprenticeshipsResponse?.Apprenticeships;
-            if (string.IsNullOrEmpty(sortField))
+            var request = new GetApprenticeshipsRequest
             {
-                model.SortField = "FirstName";
+                ProviderId = providerId,
+                PageNumber = pageNumber,
+                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
+                SortField = sortField,
+                ReverseSort = reverseSort
+            };
+
+            var viewModel = await _apprenticeshipMapper.Map(request);
+            
+            if (string.IsNullOrEmpty(viewModel.SortField))
+            {
+                viewModel.SortField = "FirstName";
             }
 
-            model.SortedByHeader();
-            
-            return View(model);
-        }
+            viewModel.SortedByHeader();
 
+            return View(viewModel);
+        }
+        
         [HttpGet]
-        [Route("download",Name = "Download")]
+        [Route("download", Name = RouteNames.DownloadApprentices)]
         public async Task<IActionResult> Download(long providerId)
         {
-            var result = await _commitmentsService.GetApprenticeships(providerId);
+            var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
 
-            var csvContent = result?.Apprenticeships != null ? result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList() : new List<ApprenticeshipDetailsCsvViewModel>();
-            
-            var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
+            var csvFileContent = await _csvMapper.Map(request);
+
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }
     }
