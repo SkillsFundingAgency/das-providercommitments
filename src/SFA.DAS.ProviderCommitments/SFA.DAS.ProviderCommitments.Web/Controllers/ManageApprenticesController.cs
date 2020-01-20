@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;

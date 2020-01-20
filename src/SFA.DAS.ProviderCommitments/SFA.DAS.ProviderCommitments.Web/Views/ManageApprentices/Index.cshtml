@@ -23,42 +23,42 @@ else
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "FirstName", reverseSort = Model.SortField.ToLower() == "firstname" && !Model.ReverseSort})" title="Sort the table by name" class="@(Model.SortField=="FirstName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "FirstName", reverseSort = Model.SortField.ToLower() == "firstname" && !Model.ReverseSort})" title="Sort the table by name" class="@(Model.SortField=="FirstName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Apprentice name
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "Uln", reverseSort = Model.SortField.ToLower() == "uln" && !Model.ReverseSort})" title="Sort the table by ULN" class="@(Model.SortField=="Uln" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "Uln", reverseSort = Model.SortField.ToLower() == "uln" && !Model.ReverseSort})" title="Sort the table by ULN" class="@(Model.SortField=="Uln" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         ULN
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "LegalEntityName", reverseSort = Model.SortField.ToLower() == "legalentityname" && !Model.ReverseSort})" title="Sort the table by employer name" class="@(Model.SortField=="LegalEntityName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "LegalEntityName", reverseSort = Model.SortField.ToLower() == "legalentityname" && !Model.ReverseSort})" title="Sort the table by employer name" class="@(Model.SortField=="LegalEntityName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Employer
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "CourseName", reverseSort = Model.SortField.ToLower() == "coursename" && !Model.ReverseSort})" title="Sort the table by course name" class="@(Model.SortField=="CourseName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "CourseName", reverseSort = Model.SortField.ToLower() == "coursename" && !Model.ReverseSort})" title="Sort the table by course name" class="@(Model.SortField=="CourseName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Apprenticeship training course
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "StartDate", reverseSort = Model.SortField.ToLower() == "startdate" && !Model.ReverseSort})" title="Sort the table by start date" class="@(Model.SortField=="StartDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "StartDate", reverseSort = Model.SortField.ToLower() == "startdate" && !Model.ReverseSort})" title="Sort the table by start date" class="@(Model.SortField=="StartDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Planned start date
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "EndDate", reverseSort = Model.SortField.ToLower() == "enddate" && !Model.ReverseSort})" title="Sort the table by end date" class="@(Model.SortField=="EndDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "EndDate", reverseSort = Model.SortField.ToLower() == "enddate" && !Model.ReverseSort})" title="Sort the table by end date" class="@(Model.SortField=="EndDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Planned end date
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "PaymentStatus", reverseSort = Model.SortField.ToLower() == "paymentstatus" && !Model.ReverseSort})" title="Sort the table by payment status" class="@(Model.SortField=="PaymentStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "PaymentStatus", reverseSort = Model.SortField.ToLower() == "paymentstatus" && !Model.ReverseSort})" title="Sort the table by payment status" class="@(Model.SortField=="PaymentStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Status
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a href="@Url.RouteUrl("Index", new {providerId = Model.ProviderId, sortField = "DataLockStatus", reverseSort = Model.SortField.ToLower() == "datalockstatus" && !Model.ReverseSort})" title="Sort the table by alerts" class="@(Model.SortField=="DataLockStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "DataLockStatus", reverseSort = Model.SortField.ToLower() == "datalockstatus" && !Model.ReverseSort})" title="Sort the table by alerts" class="@(Model.SortField=="DataLockStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
                         Alerts
                     </a>
                 </th>
