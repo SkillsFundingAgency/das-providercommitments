@@ -189,8 +189,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupUpdatingToThrowCommitmentsApiException()
         {
-            _providerCommitmentsService
-                .Setup(x => x.UpdateDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<UpdateDraftApprenticeshipRequest>()))
+            _commitmentsApiClient
+                .Setup(x => x.UpdateDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<UpdateDraftApprenticeshipRequest>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(_apiModelException);
             return this;
         }
@@ -303,8 +303,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyApiUpdateMethodIsCalled()
         {
-            _providerCommitmentsService.Verify(
-                x => x.UpdateDraftApprenticeship(_cohortId, _draftApprenticeshipId, _updateDraftApprenticeshipRequest), Times.Once);
+            _commitmentsApiClient.Verify(
+                x => x.UpdateDraftApprenticeship(_cohortId, _draftApprenticeshipId, _updateDraftApprenticeshipRequest, It.IsAny<CancellationToken>()), Times.Once);
             return this;
         }
 

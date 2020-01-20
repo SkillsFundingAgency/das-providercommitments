@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
         {
             var updateRequest = await _updateDraftApprenticeshipRequestMapper.Map(model);
-            await _commitmentsService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
+            await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
             var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
             return Redirect(url);
