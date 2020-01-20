@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 {
     public class DraftApprenticeshipControllerTestFixture
     {
-        private readonly EditDraftApprenticeshipDetails _editDraftApprenticeshipDetails;
+        private readonly GetDraftApprenticeshipResponse _editDraftApprenticeshipDetails;
         private readonly EditDraftApprenticeshipRequest _editDraftApprenticeshipRequest;
         private readonly DraftApprenticeshipController _controller;
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
@@ -33,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>> _editMapper;
         private readonly Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>> _updateMapper;
         private readonly Mock<ILinkGenerator> _linkGenerator;
-        private readonly Mock<ICommitmentsService> _providerCommitmentsService;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
@@ -63,9 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
                 .Create();
                 
-            _editDraftApprenticeshipDetails = autoFixture.Build<EditDraftApprenticeshipDetails>()
-                .With(x => x.CohortId, _cohortId)
-                .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+            _editDraftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
                 .Create();
 
             _createAddDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest();
@@ -122,15 +119,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                 .Returns<string>(input => input);
 
-            _providerCommitmentsService = new Mock<ICommitmentsService>();
-            _providerCommitmentsService.Setup(x => x.GetCohortDetail(It.IsAny<long>()))
-                .ReturnsAsync(autoFixture.Build<CohortDetails>().Create());
-
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(autoFixture.Build<GetCohortResponse>().Create());
 
-            _controller = new DraftApprenticeshipController(_mediator.Object, _providerCommitmentsService.Object,
+            _controller = new DraftApprenticeshipController(_mediator.Object,
                 _mapper.Object, _editMapper.Object, _updateMapper.Object, _linkGenerator.Object, _commitmentsApiClient.Object);
         }
 
@@ -164,25 +157,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture SetupProviderCommitmentServiceToReturnADraftApprentice()
-        {
-            _providerCommitmentsService
-                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
-            return this;
-        }
-
         public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
-            _providerCommitmentsService
-                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture SetupAddingToThrowCommitmentsServiceApiException()
-        {
-            _providerCommitmentsService
-                .Setup(x => x.AddDraftApprenticeshipToCohort(It.IsAny<long>(), It.IsAny<AddDraftApprenticeshipRequest>()))
-                .ThrowsAsync(_apiModelException);
+            _commitmentsApiClient
+                .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_editDraftApprenticeshipDetails);
             return this;
         }
 
@@ -210,9 +188,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupCohortTransferFundedStatus(bool isFundedByTransfer)
         {
-            _providerCommitmentsService
-                .Setup(pcs => pcs.GetCohortDetail(_cohortId))
-                .ReturnsAsync(new CohortDetails {CohortId = _cohortId, IsFundedByTransfer = isFundedByTransfer });
+            _commitmentsApiClient
+                .Setup(pcs => pcs.GetCohort(_cohortId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetCohortResponse {CohortId = _cohortId, TransferSenderId = 1});
             return this;
         }
 

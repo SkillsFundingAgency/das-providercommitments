@@ -24,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ICommitmentsService _commitmentsService;
         private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> _addDraftApprenticeshipToCohortRequestMapper;
         private readonly IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
@@ -32,14 +31,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
         public DraftApprenticeshipController(IMediator mediator,
-            ICommitmentsService commitmentsService,
             IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> addDraftApprenticeshipToCohortRequestMapper,
             IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
             ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient)
         {
             _mediator = mediator;
-            _commitmentsService = commitmentsService;
             _addDraftApprenticeshipToCohortRequestMapper = addDraftApprenticeshipToCohortRequestMapper;
             _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
             _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
