@@ -24,24 +24,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> _addDraftApprenticeshipToCohortRequestMapper;
         private readonly IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IModelMapper _modelMapper;
 
         public DraftApprenticeshipController(IMediator mediator,
-            IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> addDraftApprenticeshipToCohortRequestMapper,
             IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
-            ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient)
+            ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper)
         {
             _mediator = mediator;
-            _addDraftApprenticeshipToCohortRequestMapper = addDraftApprenticeshipToCohortRequestMapper;
             _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
             _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
             _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
+            _modelMapper = modelMapper;
         }
 
         [HttpGet]
@@ -68,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
-            var request = await _addDraftApprenticeshipToCohortRequestMapper.Map(model);
+            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
             request.UserId = User.Upn();
 
             await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
