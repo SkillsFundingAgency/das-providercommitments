@@ -9,7 +9,6 @@ using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
@@ -18,7 +17,6 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
-using StructureMap.Query;
 using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -30,8 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly DraftApprenticeshipController _controller;
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
         private readonly Mock<IMediator> _mediator;
-        private readonly Mock<IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>> _editMapper;
-        private readonly Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>> _updateMapper;
         private readonly Mock<IModelMapper> _modelMapper;
         private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
@@ -104,17 +100,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_courseResponse);
 
-            _editMapper = new Mock<IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>>();
-            _editMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipRequest>()))
-                .Returns(Task.FromResult(_editModel));
-
-            _updateMapper = new Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>>();
-            _updateMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipViewModel>()))
-                .Returns(Task.FromResult(_updateDraftApprenticeshipRequest));
-
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipRequest>(It.IsAny<AddDraftApprenticeshipViewModel>()))
                 .ReturnsAsync(_createAddDraftApprenticeshipRequest);
+
+            _modelMapper.Setup(x => x.Map<EditDraftApprenticeshipViewModel>(It.IsAny<EditDraftApprenticeshipRequest>()))
+                .ReturnsAsync(_editModel);
+
+            _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<EditDraftApprenticeshipViewModel>()))
+                .ReturnsAsync(_updateDraftApprenticeshipRequest);
 
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
@@ -125,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .ReturnsAsync(autoFixture.Build<GetCohortResponse>().Create());
 
             _controller = new DraftApprenticeshipController(_mediator.Object,
-                _editMapper.Object, _updateMapper.Object, _linkGenerator.Object, _commitmentsApiClient.Object, _modelMapper.Object);
+                _linkGenerator.Object, _commitmentsApiClient.Object, _modelMapper.Object);
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
@@ -270,7 +264,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyUpdateMappingToApiTypeIsCalled()
         {
-            _updateMapper.Verify(x => x.Map(_editModel), Times.Once);
+            _modelMapper.Verify(x => x.Map<UpdateDraftApprenticeshipRequest>(_editModel), Times.Once);
             return this;
         }
 

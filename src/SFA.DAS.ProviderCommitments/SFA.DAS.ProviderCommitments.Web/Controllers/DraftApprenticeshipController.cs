@@ -24,20 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
-        private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
 
         public DraftApprenticeshipController(IMediator mediator,
-            IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
-            IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
             ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper)
         {
             _mediator = mediator;
-            _editDraftApprenticeshipDetailsToViewModelMapper = editDraftApprenticeshipDetailsToViewModelMapper;
-            _updateDraftApprenticeshipRequestMapper = updateDraftApprenticeshipRequestMapper;
             _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
@@ -81,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
-            var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(request);
+            var model = await _modelMapper.Map<EditDraftApprenticeshipViewModel>(request);
 
             model.ProviderId = request.ProviderId;
             await AddLegalEntityAndCoursesToModel(model);
@@ -92,7 +86,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
         {
-            var updateRequest = await _updateDraftApprenticeshipRequestMapper.Map(model);
+            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
             var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
