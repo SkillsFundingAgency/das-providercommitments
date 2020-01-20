@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly ICommitmentsService _commitmentsService;
         private readonly IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> _addDraftApprenticeshipToCohortRequestMapper;
-        private readonly IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
+        private readonly IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> _editDraftApprenticeshipDetailsToViewModelMapper;
         private readonly IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> _updateDraftApprenticeshipRequestMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public DraftApprenticeshipController(IMediator mediator,
             ICommitmentsService commitmentsService,
             IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest> addDraftApprenticeshipToCohortRequestMapper,
-            IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
+            IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel> editDraftApprenticeshipDetailsToViewModelMapper,
             IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest> updateDraftApprenticeshipRequestMapper,
             ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient)
         {
@@ -85,10 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
         {
-            var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(
-            await _commitmentsService.GetDraftApprenticeshipForCohort(
-                request.CohortId.Value,
-                request.DraftApprenticeshipId.Value));
+            var model = await _editDraftApprenticeshipDetailsToViewModelMapper.Map(request);
 
             model.ProviderId = request.ProviderId;
             await AddLegalEntityAndCoursesToModel(model);

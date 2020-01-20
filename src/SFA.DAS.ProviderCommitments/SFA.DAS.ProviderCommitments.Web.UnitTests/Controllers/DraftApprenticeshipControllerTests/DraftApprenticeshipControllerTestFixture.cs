@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IMapper<AddDraftApprenticeshipViewModel, AddDraftApprenticeshipRequest>> _mapper;
-        private readonly Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>> _editMapper;
+        private readonly Mock<IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>> _editMapper;
         private readonly Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>> _updateMapper;
         private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<ICommitmentsService> _providerCommitmentsService;
@@ -110,8 +110,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _mapper.Setup(x => x.Map(It.IsAny<AddDraftApprenticeshipViewModel>()))
                 .Returns(Task.FromResult(_createAddDraftApprenticeshipRequest));
 
-            _editMapper = new Mock<IMapper<EditDraftApprenticeshipDetails, EditDraftApprenticeshipViewModel>>();
-            _editMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipDetails>()))
+            _editMapper = new Mock<IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>>();
+            _editMapper.Setup(x => x.Map(It.IsAny<EditDraftApprenticeshipRequest>()))
                 .Returns(Task.FromResult(_editModel));
 
             _updateMapper = new Mock<IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>>();
@@ -165,6 +165,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         public DraftApprenticeshipControllerTestFixture SetupProviderCommitmentServiceToReturnADraftApprentice()
+        {
+            _providerCommitmentsService
+                .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
             _providerCommitmentsService
                 .Setup(x => x.GetDraftApprenticeshipForCohort(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_editDraftApprenticeshipDetails);
@@ -238,12 +245,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var model = ((ViewResult)_actionResult).Model as EditDraftApprenticeshipViewModel;
             Assert.AreEqual(_editDraftApprenticeshipRequest.ProviderId, model.ProviderId);
 
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture VerifyGetDraftApprenticeshipReceivesCorrectParameters()
-        {
-            _providerCommitmentsService.Verify(x=>x.GetDraftApprenticeshipForCohort(_editDraftApprenticeshipRequest.CohortId.Value, _editDraftApprenticeshipRequest.DraftApprenticeshipId.Value));
             return this;
         }
 

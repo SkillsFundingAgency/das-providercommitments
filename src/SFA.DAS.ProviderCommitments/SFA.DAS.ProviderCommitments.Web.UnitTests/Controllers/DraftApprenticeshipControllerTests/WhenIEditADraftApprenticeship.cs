@@ -32,14 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task ShouldPassCohortIdAndDraftApprenticeshipIdToGetDraftApprenticeshipOnProviderCommitmentsService()
-        {
-            _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();
-            await _fixture.EditDraftApprenticeship();
-            _fixture.VerifyGetDraftApprenticeshipReceivesCorrectParameters();
-        }
-
-        [Test]
         public async Task AndWhenSavingTheDraftApprenticeIsSuccessful()
         {
             await _fixture.PostToEditDraftApprenticeship();
