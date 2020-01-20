@@ -22,7 +22,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 ProviderId = source.ProviderId, 
                 PageNumber = source.PageNumber, 
-                PageItemCount = source.PageItemCount
+                PageItemCount = source.PageItemCount,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort
             });
             
             var filterModel = new ManageApprenticesFilterModel
@@ -36,7 +38,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 ProviderId = source.ProviderId,
                 Apprenticeships = response.Apprenticeships,
-                FilterModel = filterModel
+                FilterModel = filterModel,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort
             };
         }
     }
