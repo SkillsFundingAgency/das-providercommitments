@@ -66,8 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             GetApprenticeshipsRequestMapper mapper)
         {
-            clientResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch - 1;
+            clientResponse.TotalApprenticeships = ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch - 1;
+            
             mockApiClient
                 .Setup(client => client.GetApprenticeships(
                     It.IsAny<GetApprenticeshipsRequest>(),

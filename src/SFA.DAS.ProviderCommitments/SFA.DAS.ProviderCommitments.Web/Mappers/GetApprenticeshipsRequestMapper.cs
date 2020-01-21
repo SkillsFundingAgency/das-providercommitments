@@ -33,8 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             });
 
             var filters = new GetApprenticeshipsFilterValuesResponse();
-            if (response.TotalApprenticeships >=
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch || true)
+            
+            if (response.TotalApprenticeships >= ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
             {
                 filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
             }
