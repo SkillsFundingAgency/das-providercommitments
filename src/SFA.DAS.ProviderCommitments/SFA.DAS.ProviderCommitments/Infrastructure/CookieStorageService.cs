@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         {
             var cookie = _httpContext.Request.Cookies[cookieName];
             if (cookie == null)
-                return default;
+                return default(T);
 
             var base64EncodedBytes = Convert.FromBase64String(cookie);
             return JsonConvert.DeserializeObject<T>(
