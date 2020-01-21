@@ -50,6 +50,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             if (apprenticeshipId != null)
             {
                 authorizationContext.Set(AuthorizationContextKeys.ApprenticeshipId, apprenticeshipId);
+                if (ukprn != null)
+                {
+                    authorizationContext.AddApprenticeshipPermissionValues(apprenticeshipId.Value, Party.Provider, ukprn.Value);
+                }
             }
 
             if (services != null)
