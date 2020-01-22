@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                     {
                         Label = "Previous",
                         AriaLabel = "Previous page",
-                        RouteData = BuildRouteData(PageNumber - 1)
+                        RouteData = BuildPagedRouteData(PageNumber - 1)
                     });
                 }
 
@@ -118,7 +118,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                         Label = (pageNumberSeed + i).ToString(),
                         AriaLabel = $"Page {pageNumberSeed + i}",
                         IsCurrent = pageNumberSeed + i == PageNumber? true : (bool?)null,
-                        RouteData = BuildRouteData(pageNumberSeed + i)
+                        RouteData = BuildPagedRouteData(pageNumberSeed + i)
                     };
                     links.Add(link);
                 }
@@ -130,15 +130,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                     {
                         Label = "Next",
                         AriaLabel = "Next page",
-                        RouteData = BuildRouteData(PageNumber + 1)
+                        RouteData = BuildPagedRouteData(PageNumber + 1)
                     });
                 }
 
                 return links;
             }
         }
-        
-        private Dictionary<string, string> BuildRouteData(int pageNumber)
+
+        public Dictionary<string, string> RouteData => BuildRouteData();
+
+        private Dictionary<string, string> BuildRouteData()
         {
             var routeData = new Dictionary<string, string>();
 
@@ -172,6 +174,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 routeData.Add("selectedEndDate", SelectedEndDate.Value.ToString("yyyy-MM-dd"));
             }
 
+            return routeData;
+        }
+        
+        private Dictionary<string, string> BuildPagedRouteData(int pageNumber)
+        {
+            var routeData = BuildRouteData();
+            
             routeData.Add("pageNumber", pageNumber.ToString());
 
             return routeData;

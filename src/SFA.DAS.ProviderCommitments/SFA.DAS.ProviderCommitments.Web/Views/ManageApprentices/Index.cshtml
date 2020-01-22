@@ -103,11 +103,11 @@ else
                                         {
                                             if (startDate == Model.FilterModel.SelectedStartDate)
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate.ToString("O")</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate.ToString("yyyy-MM-dd")</option>
                                             }
                                             else
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate.ToString("O")</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate.ToString("yyyy-MM-dd")</option>
                                             }
                                         }
                                     </select>
@@ -122,11 +122,11 @@ else
                                         {
                                             if (endDate == Model.FilterModel.SelectedEndDate)
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate.ToString("O")</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate.ToString("yyyy-MM-dd")</option>
                                             }
                                             else
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate.ToString("O")</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate.ToString("yyyy-MM-dd")</option>
                                             }
                                         }
                                     </select>
@@ -160,7 +160,10 @@ else
                 
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                <a class="govuk-body govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download filtered data (CSV)</a>
+                <a class="govuk-body govuk-link" 
+                   asp-route="@RouteNames.DownloadApprentices" 
+                   asp-all-route-data="@Model.FilterModel.RouteData"
+                   aria-label="Download all data">Download filtered data (CSV)</a>
             </div>
         </div>
     }
@@ -179,7 +182,10 @@ else
                 
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                <a class="govuk-body govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
+                <a class="govuk-body govuk-link" 
+                   asp-route="@RouteNames.DownloadApprentices" 
+                   asp-all-route-data="@Model.FilterModel.RouteData"
+                   aria-label="Download all data">Download all data (CSV)</a>
             </div>
         </div>
     }
