@@ -2,7 +2,7 @@
 {
     public static class ProviderCommitmentsWebConstants
     {
-        public const int NumberOfApprenticesPerSearchPage = 100;
+        public const int NumberOfApprenticesPerSearchPage = 5;
         public const int NumberOfApprenticesRequiredForSearch = 10;
     }
 }

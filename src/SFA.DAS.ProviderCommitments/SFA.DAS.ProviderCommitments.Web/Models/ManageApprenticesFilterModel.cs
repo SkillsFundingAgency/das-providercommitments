@@ -80,7 +80,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         }
 
         public int TotalNumberOfApprenticeships { get; set; }
-        public int TotalNumberOfApprenticeshipsWithAlerts { get; set; }
         public int TotalNumberOfApprenticeshipsFound { get; set; }
         public int TotalNumberOfApprenticeshipsWithAlertsFound { get; set; }
         
@@ -165,12 +164,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             
             if (SelectedStartDate.HasValue)
             {
-                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("o"));
+                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("yyyy-MM-dd"));
             }
 
             if (SelectedEndDate.HasValue)
             {
-                routeData.Add("selectedEndDate", SelectedEndDate.Value.ToString("O"));
+                routeData.Add("selectedEndDate", SelectedEndDate.Value.ToString("yyyy-MM-dd"));
             }
 
             routeData.Add("pageNumber", pageNumber.ToString());

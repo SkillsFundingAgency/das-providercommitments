@@ -42,7 +42,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             var filterModel = new ManageApprenticesFilterModel
             {
                 TotalNumberOfApprenticeships = response.TotalApprenticeships,
-                TotalNumberOfApprenticeshipsWithAlerts = response.TotalApprenticeshipsWithAlerts,
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
                 PageNumber = source.PageNumber,

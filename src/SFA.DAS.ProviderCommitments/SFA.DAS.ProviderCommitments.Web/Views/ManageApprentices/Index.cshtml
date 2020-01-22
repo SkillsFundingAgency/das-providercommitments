@@ -8,7 +8,7 @@
 
 <h1 class="govuk-heading-xl">Manage your apprentices</h1>
 
-@if (!Model.AnyApprenticeships)
+@if (Model.FilterModel.TotalNumberOfApprenticeships == 0)
 {
     <div class="govuk-inset-text das-inset-text--filled das-inset-text--highlight">
         <p>Your apprentices will appear here once you and the employer approve their details.</p>
@@ -149,7 +149,15 @@ else
         </div>
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFound apprentice record@(Model.FilterModel.TotalNumberOfApprenticeshipsFound != 1 ? "s" : null) @Model.FilterModel.FiltersUsedMessage</p>
+                @if (Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound > 0)
+                {
+                    <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFound apprentice record@(Model.FilterModel.TotalNumberOfApprenticeshipsFound != 1 ? "s" : null) @Model.FilterModel.FiltersUsedMessage, @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts</p>
+                }
+                else
+                {
+                    <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFound apprentice record@(Model.FilterModel.TotalNumberOfApprenticeshipsFound != 1 ? "s" : null) @Model.FilterModel.FiltersUsedMessage</p>
+                }
+                
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 <a class="govuk-body govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download filtered data (CSV)</a>
@@ -160,7 +168,15 @@ else
     {
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeships apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlerts with alerts</p>
+                @if (Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound > 0)
+                {
+                    <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFound apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null), @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts</p>
+                }
+                else
+                {
+                    <p class="govuk-body">@Model.FilterModel.TotalNumberOfApprenticeshipsFound apprentice record@(Model.FilterModel.TotalNumberOfApprenticeships != 1 ? "s" : null)</p>
+                }
+                
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 <a class="govuk-body govuk-link" href="@Url.RouteUrl(@RouteNames.DownloadApprentices, new {providerId = Model.ProviderId})" aria-label="Download all data">Download all data (CSV)</a>
@@ -217,7 +233,7 @@ else
     </table>
 }
 
-@if (Model.ShowPageLinks)
+@if (Model.ShowPageLinks || true)
 {
     <nav role="navigation" aria-label="Pagination">
         <div class="das-pagination__summary">

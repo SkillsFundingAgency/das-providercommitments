@@ -113,7 +113,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
-            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlerts, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlerts);
             Assert.AreEqual(request.PageNumber, viewModel.FilterModel.PageNumber);
             Assert.AreEqual(filtersResponse.EmployerNames, viewModel.FilterModel.EmployerFilters);
             Assert.AreEqual(filtersResponse.CourseNames, viewModel.FilterModel.CourseFilters);
