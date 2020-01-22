@@ -48,9 +48,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        public async Task<IActionResult> Download(long providerId)
+        public async Task<IActionResult> Download(long providerId, ManageApprenticesFilterModel filterModel)
         {
-            var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
+            var request = new GetApprenticeshipsCsvContentRequest
+            {
+                ProviderId = providerId,
+                FilterModel = filterModel
+            };
 
             var csvFileContent = await _csvMapper.Map(request);
 

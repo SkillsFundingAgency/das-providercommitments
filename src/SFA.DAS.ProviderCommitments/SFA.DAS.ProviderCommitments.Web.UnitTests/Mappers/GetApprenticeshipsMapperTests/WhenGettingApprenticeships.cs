@@ -126,41 +126,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.AreEqual(request.SelectedStartDate, viewModel.FilterModel.SelectedStartDate);
             Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
         }
-
-        [Test]
-        [MoqInlineAutoData(0, false)]
-        [MoqInlineAutoData(1, true)]
-        [MoqInlineAutoData(2, true)]
-        public async Task ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
-            int numberOfApprenticeships, 
-            bool expected,
-            ApprenticeshipDetailsResponse approvedApprenticeship,
-            Requests.GetApprenticeshipsRequest request,
-            [Frozen]GetApprenticeshipsResponse clientResponse,
-            Mock<ICommitmentsApiClient> client,
-            GetApprenticeshipsRequestMapper mapper)
-        {
-            //Arrange
-            var apprenticeships = new List<ApprenticeshipDetailsResponse>();
-
-            for (var i = 0; i < numberOfApprenticeships; i++)
-            {
-                apprenticeships.Add(approvedApprenticeship);
-            }
-
-            clientResponse.Apprenticeships = apprenticeships;
-           
-            client.Setup(x => x.GetApprenticeships( It.Is<GetApprenticeshipsRequest>(r => 
-                    r.ProviderId.Equals(request.ProviderId) &&
-                    r.PageNumber.Equals(request.PageNumber) &&
-                    r.PageItemCount.Equals(request.PageItemCount)),It.IsAny<CancellationToken>()))
-                .ReturnsAsync(clientResponse);
-
-            //Act
-            var viewModel = await mapper.Map(request);
-
-            //Assert
-            Assert.AreEqual(viewModel.AnyApprenticeships, expected);
-        }
     }
 }
