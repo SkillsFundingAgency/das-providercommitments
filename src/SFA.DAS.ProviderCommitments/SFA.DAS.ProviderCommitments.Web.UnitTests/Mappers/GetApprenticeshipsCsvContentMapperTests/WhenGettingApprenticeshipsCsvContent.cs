@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -10,12 +11,33 @@ using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.Testing.AutoFixture;
 using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCsvContentMapperTests
 {
     public class WhenGettingApprenticeshipsCsvContent
     {
+        [Test, MoqAutoData]
+        public async Task Then_Passes_Filter_Args_To_Api(
+            GetApprenticeshipsCsvContentRequest csvRequest,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            GetApprenticeshipsCsvContentRequestMapper mapper)
+        {
+            await mapper.Map(csvRequest);
+
+            mockApiClient.Verify(client => client.GetApprenticeships(
+                It.Is<GetApprenticeshipsRequest>(apiRequest =>
+                    apiRequest.ProviderId == csvRequest.ProviderId &&
+                    //apiRequest.SearchTerm == csvRequest.FilterModel.SearchTerm && todo: future story
+                    apiRequest.EmployerName == csvRequest.FilterModel.SelectedEmployer &&
+                    apiRequest.CourseName == csvRequest.FilterModel.SelectedCourse &&
+                    apiRequest.Status == csvRequest.FilterModel.SelectedStatus &&
+                    apiRequest.StartDate == csvRequest.FilterModel.SelectedStartDate &&
+                    apiRequest.EndDate == csvRequest.FilterModel.SelectedEndDate),
+                It.IsAny<CancellationToken>()));
+        }
+
         [Test]
         public async Task ShouldMapValues()
         {
