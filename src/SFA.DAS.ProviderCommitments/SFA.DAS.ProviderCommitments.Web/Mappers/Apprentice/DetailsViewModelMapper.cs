@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -12,17 +13,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
+        private readonly ILinkGenerator _linkGenerator;
 
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService)
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, ILinkGenerator linkGenerator)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
+            _linkGenerator = linkGenerator;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             var detailsResponse = await _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
             var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
+
+            var allowEditApprentice =
+                detailsResponse.Status == ApprenticeshipStatus.Live ||
+                detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
+                detailsResponse.Status == ApprenticeshipStatus.Paused;
+
+            var editApprenticeURL = allowEditApprentice
+                ? _linkGenerator.ProviderApprenticeshipServiceLink($"{source.ProviderId}/apprentices/manage/{source.ApprenticeshipHashedId}/edit")
+                : string.Empty;
 
             return new DetailsViewModel
             {
@@ -40,7 +52,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = detailsResponse.StartDate,
                 EndDate = detailsResponse.EndDate,
                 ProviderRef = detailsResponse.Reference,
-                Cost = priceEpisodes.PriceEpisodes.GetPrice()
+                Cost = priceEpisodes.PriceEpisodes.GetPrice(),
+                AllowEditApprentice = allowEditApprentice,
+                EditApprenticeURL = editApprenticeURL
             };
         }
     }
