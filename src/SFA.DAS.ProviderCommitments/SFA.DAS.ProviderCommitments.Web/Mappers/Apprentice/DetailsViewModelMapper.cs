@@ -21,8 +21,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
-            var detailsResponse = await _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
+            var detailsResponseTask = _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
             var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
+            var detailsResponse = await detailsResponseTask;
 
             return new DetailsViewModel
             {
