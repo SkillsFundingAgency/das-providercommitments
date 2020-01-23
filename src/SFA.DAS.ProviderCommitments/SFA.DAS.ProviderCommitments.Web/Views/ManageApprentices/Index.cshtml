@@ -16,7 +16,7 @@
 }
 else
 {
-    @if (Model.FilterModel.ShowSearch || true)//todo:remove true once counts work properly
+    @if (Model.FilterModel.ShowSearch)
     {
         <form method="get" asp-route="@RouteNames.ManageApprentices">
             <div class="govuk-grid-row das-hidden">
