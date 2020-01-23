@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -8,7 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.Testing.AutoFixture;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipRequest;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMapperTests
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
     {
         [Test, MoqAutoData]
         public async Task ShouldMapValues(
-            Requests.GetApprenticeshipsRequest request,
+            GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,
             Mock<ICommitmentsApiClient> client,
             GetApprenticeshipsRequestMapper mapper)
@@ -34,7 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             //Assert
             Assert.IsNotNull(viewModel);
             Assert.AreEqual(request.ProviderId, viewModel.ProviderId);
-            Assert.AreEqual(clientResponse.Apprenticeships, viewModel.Apprenticeships);
+            Assert.AreEqual(clientResponse.Apprenticeships.First().EmployerName, viewModel.Apprenticeships.First().Employer);
+            Assert.AreEqual(clientResponse.Apprenticeships.Last().EmployerName, viewModel.Apprenticeships.Last().Employer);
             Assert.IsNotNull(viewModel.FilterModel);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
@@ -48,14 +50,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         public async Task ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
             int numberOfApprenticeships, 
             bool expected,
-            ApprenticeshipDetailsResponse approvedApprenticeship,
-            Requests.GetApprenticeshipsRequest request,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse approvedApprenticeship,
+            GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,
             Mock<ICommitmentsApiClient> client,
             GetApprenticeshipsRequestMapper mapper)
         {
             //Arrange
-            var apprenticeships = new List<ApprenticeshipDetailsResponse>();
+            var apprenticeships = new List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>();
 
             for (var i = 0; i < numberOfApprenticeships; i++)
             {
