@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<byte[]> Map(GetApprenticeshipsCsvContentRequest request)
         {
-            var response = await _client.GetApprenticeships(new GetApprenticeshipRequest
+            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = request.ProviderId,
                 //SearchTerm = request.FilterModel.SearchTerm,

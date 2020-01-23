@@ -207,31 +207,28 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeships.FirstName @apprenticeships.LastName
+                        @apprenticeships.ApprenticeName
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeships.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Employer">
-                        @apprenticeships.EmployerName
+                        @apprenticeships.Employer
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeships.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.StartDate.ToGdsFormatWithoutDay()
+                        @apprenticeships.PlannedStartDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeships.EndDate.ToGdsFormatWithoutDay()
+                        @apprenticeships.PlannedEndDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
-                        @apprenticeships.PaymentStatus
+                        @apprenticeships.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @if (apprenticeships.Alerts.Any())
-                        {
-                            @apprenticeships.Alerts.Aggregate((a, b) => $"{a} {Environment.NewLine} {b}")
-                        }
+                        @apprenticeships.Alerts
                     </td>
                 </tr>
             }
