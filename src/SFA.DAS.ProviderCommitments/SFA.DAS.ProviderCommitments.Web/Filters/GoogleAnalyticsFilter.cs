@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters

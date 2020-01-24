@@ -6,10 +6,10 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.UnitTests.Customisations;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Filters;
-using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.Testing.AutoFixture;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SFA.DAS.Provider.Shared.UI.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 {
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
         }
 
         [Test, MoqAutoData]
-        public async Task ThenIfNotAControllerGaDataNotPopu(
+        public async Task AndContextIsNonController_ThenNoDataIsAddedToViewbag(
             long ukPrn,
             [ArrangeActionContext] ActionExecutingContext context,
             [Frozen] Mock<ActionExecutionDelegate> nextMethod,
