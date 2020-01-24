@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/apprentices")]
+    [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
     public class ManageApprenticesController : Controller
     {
         private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
