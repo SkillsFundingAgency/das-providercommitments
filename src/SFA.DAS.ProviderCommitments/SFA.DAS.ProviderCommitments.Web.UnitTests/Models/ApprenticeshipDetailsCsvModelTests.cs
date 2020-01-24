@@ -1,9 +1,13 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 {
@@ -11,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
     {
         [Test, AutoData]
         public void Then_Maps_ApprenticeName(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -20,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Uln(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -29,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_EmployerName(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -38,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_CourseName(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -47,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PlannedStartDate(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -56,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PlannedEndDate(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
@@ -65,20 +69,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Status(
-            ApprenticeshipDetailsResponse source)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             ApprenticeshipDetailsCsvModel result = source;
 
             result.Status.Should().Be(source.PaymentStatus.ToString());
         }
 
-        [Test, AutoData]
-        public void Then_Maps_Alerts(
-            ApprenticeshipDetailsResponse source)
+        [Test, MoqAutoData]
+        public async Task Then_Maps_Alerts(
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+            ApprenticeshipDetailsToViewModelMapper mapper)
         {
+            var expectedAlertString = string.Empty;
+
+            foreach (var alert in source.Alerts)
+            {
+                expectedAlertString += alert.FormatAlert() + "|";
+            }
+            expectedAlertString = expectedAlertString.TrimEnd('|');
+
             ApprenticeshipDetailsCsvModel result = source;
 
-            result.Alerts.Should().Be(source.Alerts.Aggregate((a,b) => $"{a}|{b}"));
+            result.Alerts.Should().Be(expectedAlertString);
         }
     }
 }

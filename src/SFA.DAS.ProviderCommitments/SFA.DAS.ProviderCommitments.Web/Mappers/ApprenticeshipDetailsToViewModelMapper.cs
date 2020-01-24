@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Html;
 using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class ApprenticeshipDetailsToViewModelMapper : IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>
+    public class ApprenticeshipDetailsToViewModelMapper : IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>
     {
         private readonly IEncodingService _encodingService;
 
@@ -19,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _encodingService = encodingService;
         }
 
-        public Task<ApprenticeshipDetailsViewModel> Map(ApprenticeshipDetailsResponse source)
+        public Task<ApprenticeshipDetailsViewModel> Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             var result = new ApprenticeshipDetailsViewModel
             {
@@ -28,13 +30,29 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = source.Uln,
                 EmployerName = source.EmployerName,
                 CourseName = source.CourseName,
-                PlannedStartDate = source.StartDate.ToGdsFormatWithoutDay(),
-                PlannedEndDate = source.EndDate.ToGdsFormatWithoutDay(),
+                PlannedStartDate = source.StartDate,
+                PlannedEndDate = source.EndDate,
                 Status = source.PaymentStatus.ToString(),
-                Alerts = new HtmlString(source.Alerts.Any() ? source.Alerts.Aggregate((a,b)=> $"{a}<br/>{b}") : "") 
+                Alerts = new HtmlString(source.Alerts.Any() ? GenerateAlerts(source.Alerts) : "") 
             };
 
             return Task.FromResult(result);
+        }
+
+        private static string GenerateAlerts(IEnumerable<Alerts> alerts)
+        {
+            var alertString = string.Empty;
+
+            foreach (var alert in alerts)
+            {
+                if (!string.IsNullOrWhiteSpace(alertString))
+                {
+                    alertString += "|";
+                }
+                alertString += alert.FormatAlert();
+            }
+
+            return alertString;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using System;
+using Microsoft.AspNetCore.Html;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -9,8 +10,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Uln { get; set; }
         public string EmployerName { get; set; }
         public string CourseName { get; set; }
-        public string PlannedStartDate { get; set; }
-        public string PlannedEndDate { get; set; }
+        public DateTime PlannedStartDate { get; set; }
+        public DateTime PlannedEndDate { get; set; }
         public string Status { get; set; }
         public HtmlString Alerts { get; set; }
     }

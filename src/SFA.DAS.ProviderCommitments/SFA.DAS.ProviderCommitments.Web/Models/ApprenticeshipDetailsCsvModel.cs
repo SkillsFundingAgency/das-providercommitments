@@ -1,28 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class ApprenticeshipDetailsCsvModel
     {
-        public static implicit operator ApprenticeshipDetailsCsvModel(ApprenticeshipDetailsResponse model)
-        {
-            return new ApprenticeshipDetailsCsvModel
-            {
-                ApprenticeName = $"{model.FirstName} {model.LastName}",
-                Uln = model.Uln,
-                Employer = model.EmployerName,
-                CourseName = model.CourseName,
-                PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
-                PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
-                Status = model.PaymentStatus.ToString(),
-                Alerts = model.Alerts.Any() ? model.Alerts.Aggregate((a,b)=> $"{a}|{b}") : ""
-            };
-        }
-
         [Name("Apprentice Name")]
         public string ApprenticeName { get ; private set ; }
 
@@ -46,5 +33,36 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
+
+        public static implicit operator ApprenticeshipDetailsCsvModel(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model)
+        {
+            return new ApprenticeshipDetailsCsvModel
+            {
+                ApprenticeName = $"{model.FirstName} {model.LastName}",
+                Uln = model.Uln,
+                Employer = model.EmployerName,
+                CourseName = model.CourseName,
+                PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
+                PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
+                Status = model.PaymentStatus.ToString(),
+                Alerts = model.Alerts.Any() ? GenerateAlerts(model.Alerts) : ""
+            };
+        }
+
+        private static string GenerateAlerts(IEnumerable<Alerts> alerts)
+        {
+            var alertString = string.Empty;
+
+            foreach (var alert in alerts)
+            {
+                if (!string.IsNullOrWhiteSpace(alertString))
+                {
+                    alertString += "|";
+                }
+                alertString += alert.FormatAlert();
+            }
+
+            return alertString;
+        }
     }
 }

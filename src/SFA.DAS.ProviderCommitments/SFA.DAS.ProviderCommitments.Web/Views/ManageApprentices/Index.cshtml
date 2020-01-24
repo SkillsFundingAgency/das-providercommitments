@@ -42,7 +42,7 @@ else
                         @apprenticeship.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Employer">
-                        @apprenticeship.Employer
+                        @apprenticeship.EmployerName
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
                         @apprenticeship.CourseName
@@ -57,13 +57,12 @@ else
                         @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @apprenticeship.Alerts
-                        @*@if (apprenticeship.Alerts != null && !string.IsNullOrWhiteSpace(apprenticeship.Alerts.Value))
+                        @if (!string.IsNullOrWhiteSpace(@apprenticeship.Alerts.Value))
                         {
                             <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
-                                @apprenticeship.Alerts
+                                @apprenticeship.Alerts.Value
                             </a>
-                        }*@
+                        }
                     </td>
                 </tr>
             }

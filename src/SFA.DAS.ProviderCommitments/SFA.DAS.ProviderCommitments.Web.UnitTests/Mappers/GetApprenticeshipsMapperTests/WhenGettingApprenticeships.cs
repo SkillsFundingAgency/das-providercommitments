@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
@@ -20,6 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             GetApprenticeshipsRequest request,
             [Frozen]GetApprenticeshipsResponse clientResponse,
             Mock<ICommitmentsApiClient> client,
+            [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> detailsViewModelMapper,
+            ApprenticeshipDetailsViewModel expectedViewModel, 
             GetApprenticeshipsRequestMapper mapper)
         {
             //Arrange
@@ -29,14 +33,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                     r.PageItemCount.Equals(request.PageItemCount)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
+            detailsViewModelMapper
+                .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
+                .ReturnsAsync(expectedViewModel);
+
             //Act
             var viewModel = await mapper.Map(request);
 
             //Assert
             Assert.IsNotNull(viewModel);
             Assert.AreEqual(request.ProviderId, viewModel.ProviderId);
-            Assert.AreEqual(clientResponse.Apprenticeships.First().EmployerName, viewModel.Apprenticeships.First().Employer);
-            Assert.AreEqual(clientResponse.Apprenticeships.Last().EmployerName, viewModel.Apprenticeships.Last().Employer);
+            Assert.AreEqual(expectedViewModel, viewModel.Apprenticeships.First());
             Assert.IsNotNull(viewModel.FilterModel);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(clientResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);

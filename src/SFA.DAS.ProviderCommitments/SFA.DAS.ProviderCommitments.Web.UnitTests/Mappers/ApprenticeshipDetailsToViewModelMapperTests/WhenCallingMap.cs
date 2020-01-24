@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.AspNetCore.Html;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
     {
         [Test, MoqAutoData]
         public async Task Then_Maps_ApprenticeshipId(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             string encodedApprenticeshipId,
             [Frozen] Mock<IEncodingService> mockEncodingService,
             ApprenticeshipDetailsToViewModelMapper mapper)
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_ApprenticeName(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Uln(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_EmployerName(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_CourseName(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -73,27 +73,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_PlannedStartDate(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.PlannedStartDate.Should().Be(source.StartDate.ToString("MMM yyyy"));
+            result.PlannedStartDate.Should().Be(source.StartDate);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Maps_PlannedEndDate(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.PlannedEndDate.Should().Be(source.EndDate.ToString("MMM yyyy"));
+            result.PlannedEndDate.Should().Be(source.EndDate);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Status(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
@@ -103,20 +103,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Alerts(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
+            var expectedAlertString = string.Empty;
+
+            foreach (var alert in source.Alerts)
+            {
+                expectedAlertString += alert.FormatAlert() + "|";
+            }
+            expectedAlertString = expectedAlertString.TrimEnd('|');
+
             var result = await mapper.Map(source);
 
-            result.Alerts.Value.Should().Be(source.Alerts.Aggregate((a,b) => $"{a}<br/>{b}"));
+            result.Alerts.Value.Should().Be(expectedAlertString);
         }
 
         [Test, MoqAutoData]
         public async Task And_No_Alerts_Then_Maps_Alerts_To_Empty_String(
-            ApprenticeshipDetailsResponse source,
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
-            source.Alerts = new List<string>();
+            source.Alerts = new List<Alerts>();
             var result = await mapper.Map(source);
 
             result.Alerts.Value.Should().Be("");
