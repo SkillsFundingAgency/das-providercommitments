@@ -1,67 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
-        private readonly ICommitmentsService _commitmentsService;
-        private readonly ICreateCsvService _createCsvService;
-        private readonly IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> _mapper;
+        private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
+        private readonly IMapper<GetApprenticeshipsCsvContentRequest, byte[]> _csvMapper;
 
-        public ManageApprenticesController(
-            ICommitmentsService commitmentsService, 
-            ICreateCsvService createCsvService,
-            IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> mapper)
+        public ManageApprenticesController(IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper)
         {
-            _commitmentsService = commitmentsService;
-            _createCsvService = createCsvService;
-            _mapper = mapper;
+            _apprenticeshipMapper = apprenticeshipMapper;
+            _csvMapper = csvMapper;
         }
 
-        public async Task<IActionResult> Index(uint providerId)
+        [Route("", Name = RouteNames.ManageApprentices)]
+        public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var apprenticeships = await _commitmentsService.GetApprenticeships(providerId);
-            var viewModels = new List<ApprenticeshipDetailsViewModel>();
-            if (apprenticeships != null)
-            {
-                foreach (var apprenticeshipDetails in apprenticeships.Apprenticeships)
-                {
-                    viewModels.Add(await _mapper.Map(apprenticeshipDetails));
-                }
-            }
-            
-            var model = new ManageApprenticesViewModel
+
+            var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
-                Apprenticeships = viewModels
+                PageNumber = pageNumber,
+                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage
             };
 
-            return View(model);
+            var viewModel = await _apprenticeshipMapper.Map(request);
+
+            return View(viewModel);
         }
 
         [HttpGet]
-        [Route("download",Name = "Download")]
-        public async Task<IActionResult> Download(uint providerId)
+        [Route("download", Name = RouteNames.DownloadApprentices)]
+        public async Task<IActionResult> Download(long providerId)
         {
-            var result = await _commitmentsService.GetApprenticeships(providerId);
+            var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
 
-            var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
-            
-            var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
+            var csvFileContent = await _csvMapper.Map(request);
+
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
         }
 

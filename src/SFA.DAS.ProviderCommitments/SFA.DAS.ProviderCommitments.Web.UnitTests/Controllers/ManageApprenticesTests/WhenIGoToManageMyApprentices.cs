@@ -6,11 +6,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Testing.Builders;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
     {
         [Test, MoqAutoData]
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
-            [Frozen]Mock<ICommitmentsService> commitmentsService,
+            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
@@ -33,98 +33,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         }
 
         [Test, MoqAutoData]
-        public void ThenTheProviderIdIsPassedToTheViewModel(
-            uint providerId,
-            [Frozen]Mock<ICommitmentsService> commitmentsService,
+        public void ThenTheMappedViewModelIsReturned(
+            ManageApprenticesViewModel expectedViewModel,
+            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
-            
-            //Act
-            var result = controller.Index(providerId);
-
-            var view = ((ViewResult) result.Result).Model as ManageApprenticesViewModel;
-
-            //Assert
-            Assert.AreEqual(view.ProviderId, providerId);
-        }
-
-        [Test, MoqAutoData]
-        public void Then_The_ApprenticeshipDetailsViewModels_Are_Set_From_Mapper(
-            uint providerId,
-            GetApprenticeshipsResponse approvedApprenticeships,
-            ApprenticeshipDetailsViewModel viewModelFromMapper,
-            [Frozen] Mock<ICommitmentsService> commitmentsService,
-            [Frozen] Mock<IMapper<ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> mockMapper,
-            ManageApprenticesController controller)
-        {
-            //Arrange
-            commitmentsService
-                .Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
-                .ReturnsAsync(approvedApprenticeships);
-            mockMapper
-                .Setup(mapper => mapper.Map(It.IsAny<ApprenticeshipDetailsResponse>()))
-                .ReturnsAsync(viewModelFromMapper);
-
-            //Act
-            var result = controller.Index(providerId);
-            var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
-
-            //Assert
-            view.Apprenticeships.Should().AllBeEquivalentTo(viewModelFromMapper);
-        }
-
-        [Test]
-        [MoqInlineAutoData(0, false)]
-        [MoqInlineAutoData(1, true)]
-        [MoqInlineAutoData(2, true)]
-        public void ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNotNull(
-            int numberOfApprenticeships, 
-            bool expected,
-            ApprenticeshipDetailsResponse approvedApprenticeship,
-            [Frozen]Mock<ICommitmentsService> commitmentsService,
-            ManageApprenticesController controller)
-        {
-            //Arrange
-            var approvedApprenticeships = new List<ApprenticeshipDetailsResponse>();
-
-            for (int i = 0; i < numberOfApprenticeships; i++)
-            {
-                approvedApprenticeships.Add(approvedApprenticeship);
-            }
-
-            var response = new GetApprenticeshipsResponse
-            {
-                Apprenticeships = approvedApprenticeships,
-            };
-
-            commitmentsService.Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
-                .ReturnsAsync(response);
+            apprenticeshipMapper.Setup(x => x.Map(It.IsAny<GetApprenticeshipsRequest>()))
+                .ReturnsAsync(expectedViewModel);
 
             //Act
             var result = controller.Index(1);
-            var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
+            var actualModel = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
 
             //Assert
-            Assert.AreEqual(view.AnyApprenticeships, expected);
-        }
-
-        [Test, MoqAutoData]
-        public void ThenAnyApprenticeshipsIsSetWhenApprenticeshipsIsNull(
-            [Frozen]Mock<ICommitmentsService> commitmentsService,
-            ManageApprenticesController controller)
-        {
-            //Arrange
-            commitmentsService
-                .Setup(x => x.GetApprenticeships(It.IsAny<uint>()))
-                .ReturnsAsync((GetApprenticeshipsResponse) null);
-
-            //Act
-            var result = controller.Index(1);
-            var view = ((ViewResult)result.Result).Model as ManageApprenticesViewModel;
-
-            //Assert
-            Assert.IsFalse(view.AnyApprenticeships);
+            actualModel.Should().BeEquivalentTo(expectedViewModel);
         }
     }
 }
