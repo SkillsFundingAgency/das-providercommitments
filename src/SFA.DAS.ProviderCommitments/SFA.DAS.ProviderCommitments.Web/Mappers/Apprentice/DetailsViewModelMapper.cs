@@ -37,15 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ? _linkGenerator.ProviderApprenticeshipServiceLink($"{source.ProviderId}/apprentices/manage/{source.ApprenticeshipHashedId}/edit")
                 : string.Empty;
 
-            var allowEditApprentice =
-                detailsResponse.Status == ApprenticeshipStatus.Live ||
-                detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
-                detailsResponse.Status == ApprenticeshipStatus.Paused;
-
-            var editApprenticeURL = allowEditApprentice
-                ? _linkGenerator.ProviderApprenticeshipServiceLink($"{source.ProviderId}/apprentices/manage/{source.ApprenticeshipHashedId}/edit")
-                : string.Empty;
-
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
