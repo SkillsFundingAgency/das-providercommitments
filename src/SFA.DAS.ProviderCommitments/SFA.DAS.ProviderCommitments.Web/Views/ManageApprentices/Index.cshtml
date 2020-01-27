@@ -36,7 +36,9 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeship.ApprenticeName
+                        <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                            @apprenticeship.ApprenticeName
+                        </a>
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
                         @apprenticeship.Uln
