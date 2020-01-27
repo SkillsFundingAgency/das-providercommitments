@@ -23,5 +23,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")}
             });
         }
+
+        [Test, AutoData]
+        public void Then_Not_Contain_Item_For_PageNumber(
+            ManageApprenticesFilterModel filterModel)
+        {
+            filterModel.RouteData.Should().NotContain(new KeyValuePair<string, string>(
+                nameof(filterModel.PageNumber), filterModel.PageNumber.ToString() )
+            );
+        }
     }
 }
