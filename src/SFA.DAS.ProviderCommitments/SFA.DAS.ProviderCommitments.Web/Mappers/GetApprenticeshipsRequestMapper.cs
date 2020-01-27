@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
+using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>
+    public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>
     {
         private readonly ICommitmentsApiClient _client;
 
@@ -21,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
         {
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
+            var response = await _client.GetApprenticeships(new ApiRequests.GetApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
                 PageNumber = source.PageNumber,

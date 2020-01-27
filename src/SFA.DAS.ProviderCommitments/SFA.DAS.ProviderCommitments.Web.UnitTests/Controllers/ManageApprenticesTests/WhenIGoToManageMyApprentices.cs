@@ -7,9 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.Testing.AutoFixture;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
@@ -20,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
             long providerId,
             ManageApprenticesFilterModel filterModel,
-            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
+            [Frozen]Mock<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
@@ -37,14 +35,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public async Task Then_Calls_Mapper_Service_With_Correct_Values(
             long providerId,
             ManageApprenticesFilterModel filterModel,
-            ManageApprenticesViewModel expectedViewModel,
-            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> mockMapper,
+            [Frozen]Mock<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>> mockMapper,
             ManageApprenticesController controller)
         {
             await controller.Index(providerId, filterModel);
 
             mockMapper.Verify(mapper => mapper.Map(
-                It.Is<GetApprenticeshipsRequest>(request => 
+                It.Is<Requests.GetApprenticeshipsRequest>(request => 
                     request.ProviderId == providerId &&
                     request.PageNumber == filterModel.PageNumber &&
                     request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
@@ -61,12 +58,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             long providerId,
             ManageApprenticesFilterModel filterModel,
             ManageApprenticesViewModel expectedViewModel,
-            [Frozen]Mock<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
+            [Frozen]Mock<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
             apprenticeshipMapper
-                .Setup(x => x.Map(It.IsAny<GetApprenticeshipsRequest>()))
+                .Setup(x => x.Map(It.IsAny<Requests.GetApprenticeshipsRequest>()))
                 .ReturnsAsync(expectedViewModel);
 
             //Act

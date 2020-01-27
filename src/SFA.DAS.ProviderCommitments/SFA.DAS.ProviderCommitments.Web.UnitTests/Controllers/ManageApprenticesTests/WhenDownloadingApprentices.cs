@@ -8,7 +8,6 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
@@ -21,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         {
             //Arrange
             var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
                 Mock.Of<IMapper<GetApprenticeshipsCsvContentRequest,byte[]>>());
 
             //Act
@@ -47,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                     x.Map(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))))
                 .ReturnsAsync(expectedCsvContent);
 
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
                 csvMapper.Object);
 
             //Act
@@ -68,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             var commitmentService = new Mock<ICommitmentsService>();
             var csvMapper = new Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>>();
 
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
+            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
                 csvMapper.Object);
 
             //Act
