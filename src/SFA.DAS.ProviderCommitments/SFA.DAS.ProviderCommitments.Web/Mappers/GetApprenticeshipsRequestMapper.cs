@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 PageNumber = source.PageNumber,
                 PageItemCount = source.PageItemCount,
-                //SearchTerm = source.SearchTerm,
+                SearchTerm = source.SearchTerm,
 				SortField = source.SortField,
                 ReverseSort = source.ReverseSort,
                 EmployerName = source.SelectedEmployer,

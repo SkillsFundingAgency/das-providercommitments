@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                         apiRequest.ProviderId == webRequest.ProviderId &&
                         apiRequest.PageNumber == webRequest.PageNumber &&
                         apiRequest.PageItemCount == webRequest.PageItemCount &&
-                        //apiRequest.SearchTerm == webRequest.SearchTerm && todo: future story
+                        apiRequest.SearchTerm == webRequest.SearchTerm && 
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
                         apiRequest.Status == webRequest.SelectedStatus &&
