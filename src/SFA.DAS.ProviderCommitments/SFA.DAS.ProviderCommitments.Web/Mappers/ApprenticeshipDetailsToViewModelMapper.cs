@@ -33,17 +33,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 PlannedStartDate = source.StartDate,
                 PlannedEndDate = source.EndDate,
                 Status = source.PaymentStatus.ToString(),
-                Alerts = new HtmlString(source.Alerts.Any() ? GenerateAlerts(source.Alerts) : "") 
+                Alerts = source.Alerts.Select(x => x.FormatAlert()) 
             };
 
             return Task.FromResult(result);
-        }
-
-        private static string GenerateAlerts(IEnumerable<Alerts> alerts)
-        {
-            var alertStrings = alerts.Select(x => x.FormatAlert());
-
-            return alertStrings.Aggregate((a, b) => a + Environment.NewLine + b);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore.Html;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -13,6 +13,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
         public string Status { get; set; }
-        public HtmlString Alerts { get; set; }
+        public IEnumerable<string> Alerts { get; set; }
     }
 }

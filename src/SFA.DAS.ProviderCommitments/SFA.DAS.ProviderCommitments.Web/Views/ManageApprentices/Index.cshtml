@@ -59,11 +59,11 @@ else
                         @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @if (!string.IsNullOrWhiteSpace(@apprenticeship.Alerts.Value))
+                        @foreach(var alert in apprenticeship.Alerts)
                         {
                             <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
-                                @apprenticeship.Alerts.Value
-                            </a>
+                                @alert
+                            </a><br/>
                         }
                     </td>
                 </tr>

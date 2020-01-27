@@ -110,22 +110,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
         {
             var alertStrings = source.Alerts.Select(x => x.FormatAlert());
 
-            var expectedAlertString = alertStrings.Aggregate((a, b) => a + Environment.NewLine + b);
-
             var result = await mapper.Map(source);
 
-            result.Alerts.Value.Should().Be(expectedAlertString);
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_No_Alerts_Then_Maps_Alerts_To_Empty_String(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
-            ApprenticeshipDetailsToViewModelMapper mapper)
-        {
-            source.Alerts = new List<Alerts>();
-            var result = await mapper.Map(source);
-
-            result.Alerts.Value.Should().Be("");
+            result.Alerts.Should().BeEquivalentTo(alertStrings);
         }
     }
 }
