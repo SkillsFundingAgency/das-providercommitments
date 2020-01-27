@@ -4,7 +4,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -13,13 +12,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
-        private readonly ILinkGenerator _linkGenerator;
 
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, ILinkGenerator linkGenerator)
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
-            _linkGenerator = linkGenerator;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -32,10 +29,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 detailsResponse.Status == ApprenticeshipStatus.Live ||
                 detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
                 detailsResponse.Status == ApprenticeshipStatus.Paused;
-
-            var editApprenticeURL = allowEditApprentice
-                ? _linkGenerator.ProviderApprenticeshipServiceLink($"{source.ProviderId}/apprentices/manage/{source.ApprenticeshipHashedId}/edit")
-                : string.Empty;
 
             return new DetailsViewModel
             {
@@ -55,7 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderRef = detailsResponse.Reference,
                 Cost = priceEpisodes.PriceEpisodes.GetPrice(),
                 AllowEditApprentice = allowEditApprentice,
-                EditApprenticeURL = editApprenticeURL
             };
         }
     }

@@ -73,7 +73,7 @@
     <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
         @if (Model.AllowEditApprentice)
         {
-            <a href="@Model.EditApprenticeURL" class="govuk-link">Edit apprentice</a>
+            <a id="edit-apprentice-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/edit")" class="govuk-link">Edit apprentice</a>
         }
     </div>
 </div>
