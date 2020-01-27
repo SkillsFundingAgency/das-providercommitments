@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -106,13 +108,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
-            var expectedAlertString = string.Empty;
+            var alertStrings = source.Alerts.Select(x => x.FormatAlert());
 
-            foreach (var alert in source.Alerts)
-            {
-                expectedAlertString += alert.FormatAlert() + "|";
-            }
-            expectedAlertString = expectedAlertString.TrimEnd('|');
+            var expectedAlertString = alertStrings.Aggregate((a, b) => a + Environment.NewLine + b);
 
             var result = await mapper.Map(source);
 

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
-using SFA.DAS.Commitments.Shared.Extensions;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -41,18 +41,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         private static string GenerateAlerts(IEnumerable<Alerts> alerts)
         {
-            var alertString = string.Empty;
+            var alertStrings = alerts.Select(x => x.FormatAlert());
 
-            foreach (var alert in alerts)
-            {
-                if (!string.IsNullOrWhiteSpace(alertString))
-                {
-                    alertString += "|";
-                }
-                alertString += alert.FormatAlert();
-            }
-
-            return alertString;
+            return alertStrings.Aggregate((a, b) => a + Environment.NewLine + b);
         }
     }
 }
