@@ -67,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             };
         }
 
-        [Ignore("currently broken - Scott fixing on another branch")]
+        [Test]
         public void Then_The_First_Line_Of_The_File_Is_The_Headers()
         {
             var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);
@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             Assert.Contains(nameof(ApprenticeshipDetails.StartDate),headerLine.Split(','));
         }
 
-        [Ignore("currently broken - Scott fixing on another branch")]
+        [Test]
         public void ThenTheCsvFileContentIsGenerated()
         {
             var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);

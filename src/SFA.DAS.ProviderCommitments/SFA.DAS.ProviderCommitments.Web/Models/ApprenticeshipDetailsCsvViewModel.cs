@@ -4,6 +4,7 @@ using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using ApprenticeshipDetailsResponse = SFA.DAS.CommitmentsV2.Api.Types.Responses.GetApprenticeshipsResponse.ApprenticeshipDetailsResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -21,11 +22,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 PlannedStartDate = model.StartDate,
                 PlannedEndDate = model.EndDate,
                 Status = model.PaymentStatus.ToString(),
-                Alerts = FormatMe(model.Alerts.ToList())
+                Alerts = FormatAlerts(model.Alerts)
             };
         }
 
-        private static string FormatMe(IEnumerable<Alerts> alerts)
+        private static string FormatAlerts(IEnumerable<Alerts> alerts)
         {
             var alertString = string.Empty;
 
@@ -35,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 {
                     alertString += "|";
                 }
-                alertString += alert.ToString();
+                alertString += alert.FormatAlert();
             }
 
             return alertString;
