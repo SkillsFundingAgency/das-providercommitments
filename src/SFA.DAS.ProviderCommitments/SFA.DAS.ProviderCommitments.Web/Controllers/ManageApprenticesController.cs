@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.Provider.Shared.UI;
+using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -25,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
+        [SetNavigationSection(NavigationSection.ManageApprentices)]
         public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
