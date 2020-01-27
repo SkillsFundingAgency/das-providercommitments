@@ -59,11 +59,15 @@ else
                         @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @foreach(var alert in apprenticeship.Alerts)
+                        @for(var i = 0; i < apprenticeship.Alerts.Count(); i++)
                         {
                             <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
-                                @alert
-                            </a><br/>
+                                @apprenticeship.Alerts.ElementAt(i)
+                            </a>
+                            @if (i < apprenticeship.Alerts.Count() - 1)
+                            {
+                                <br/>
+                            }
                         }
                     </td>
                 </tr>
