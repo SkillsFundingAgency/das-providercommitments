@@ -33,13 +33,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 pageLinks[i].AriaLabel.Should().Be($"Page {i+1}");
                 pageLinks[i].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
                     {
-                        {"searchTerm", filterModel.SearchTerm },
-                        {"selectedEmployer", filterModel.SelectedEmployer},
-                        {"selectedCourse", filterModel.SelectedCourse},
-                        {"selectedStatus", filterModel.SelectedStatus},
-                        {"selectedStartDate", filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
-                        {"selectedEndDate", filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
-                        {"pageNumber", (i+1).ToString() }
+                        {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
+                        {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
+                        {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
+                        {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus},
+                        {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.PageNumber), (i+1).ToString() }
                     });
             }
         }

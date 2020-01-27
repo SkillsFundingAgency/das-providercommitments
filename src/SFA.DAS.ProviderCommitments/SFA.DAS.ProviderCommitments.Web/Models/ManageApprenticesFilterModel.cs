@@ -146,32 +146,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
-                routeData.Add("searchTerm", SearchTerm);
+                routeData.Add(nameof(SearchTerm), SearchTerm);
             }
 
             if (!string.IsNullOrWhiteSpace(SelectedEmployer))
             {
-                routeData.Add("selectedEmployer", SelectedEmployer);
+                routeData.Add(nameof(SelectedEmployer), SelectedEmployer);
             }
 
             if (!string.IsNullOrWhiteSpace(SelectedCourse))
             {
-                routeData.Add("selectedCourse", SelectedCourse);
+                routeData.Add(nameof(SelectedCourse), SelectedCourse);
             }
 
             if (!string.IsNullOrWhiteSpace(SelectedStatus))
             {
-                routeData.Add("selectedStatus", SelectedStatus);
+                routeData.Add(nameof(SelectedStatus), SelectedStatus);
             }
             
             if (SelectedStartDate.HasValue)
             {
-                routeData.Add("selectedStartDate", SelectedStartDate.Value.ToString("yyyy-MM-dd"));
+                routeData.Add(nameof(SelectedStartDate), SelectedStartDate.Value.ToString("yyyy-MM-dd"));
             }
 
             if (SelectedEndDate.HasValue)
             {
-                routeData.Add("selectedEndDate", SelectedEndDate.Value.ToString("yyyy-MM-dd"));
+                routeData.Add(nameof(SelectedEndDate), SelectedEndDate.Value.ToString("yyyy-MM-dd"));
             }
 
             return routeData;
@@ -181,7 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         {
             var routeData = BuildRouteData();
             
-            routeData.Add("pageNumber", pageNumber.ToString());
+            routeData.Add(nameof(PageNumber), pageNumber.ToString());
 
             return routeData;
         }
