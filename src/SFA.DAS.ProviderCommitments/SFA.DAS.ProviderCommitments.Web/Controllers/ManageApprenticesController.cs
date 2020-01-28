@@ -5,6 +5,7 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -58,6 +59,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var csvFileContent = await _csvMapper.Map(request);
 
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+        }
+
+        [Route("{apprenticeshipId}", Name = "ApprenticeshipDetails")]
+        public IActionResult Details(uint providerId, long apprenticeshipId)
+        {
+            return Content($"Details of apprenticeship Id:[{apprenticeshipId}].");
         }
     }
 }
