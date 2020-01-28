@@ -9,11 +9,12 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("{providerId}/apprentices")]
+    [Route("{providerId}/apprentices",Name = "index")]
     [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
     public class ManageApprenticesController : Controller
     {
@@ -28,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [Route("", Name = RouteNames.ManageApprentices)]
         [SetNavigationSection(NavigationSection.ManageApprentices)]
-        public async Task<IActionResult> Index(long providerId, int pageNumber = 1)
+        public async Task<IActionResult> Index(long providerId, string sortField = "", bool reverseSort = false, int pageNumber = 1)
         {
             if (!ModelState.IsValid)
             {
@@ -39,14 +40,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 ProviderId = providerId,
                 PageNumber = pageNumber,
-                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage
+                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
+                SortField = sortField,
+                ReverseSort = reverseSort
             };
 
             var viewModel = await _apprenticeshipMapper.Map(request);
+            
+            if (string.IsNullOrEmpty(viewModel.SortField))
+            {
+                viewModel.SortField = "FirstName";
+            }
+
+            viewModel.SortedByHeader();
 
             return View(viewModel);
         }
-
+        
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
         public async Task<IActionResult> Download(long providerId)
@@ -56,6 +66,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var csvFileContent = await _csvMapper.Map(request);
 
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+        }
+
+        [Route("{apprenticeshipId}", Name = "ApprenticeshipDetails")]
+        public IActionResult Details(uint providerId, long apprenticeshipId)
+        {
+            return Content($"Details of apprenticeship Id:[{apprenticeshipId}].");
         }
     }
 }
