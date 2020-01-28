@@ -23,12 +23,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var detailsResponseTask = _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
             var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
+            var pendingUpdates = await _commitmentApiClient.GetApprenticeshipUpdates(new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdateRequest
+            {
+                ApprenticeshipId = source.ApprenticeshipId,
+                Status = ApprenticeshipUpdateStatus.Pending
+            });
+
             var detailsResponse = await detailsResponseTask;
+
+            var pendingUpdatesOnApprentice = pendingUpdates.ApprenticeshipUpdates.Count > 0;
 
             var allowEditApprentice =
                 detailsResponse.Status == ApprenticeshipStatus.Live ||
                 detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
-                detailsResponse.Status == ApprenticeshipStatus.Paused;
+                detailsResponse.Status == ApprenticeshipStatus.Paused &&
+                !pendingUpdatesOnApprentice;
 
             return new DetailsViewModel
             {
@@ -48,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderRef = detailsResponse.Reference,
                 Cost = priceEpisodes.PriceEpisodes.GetPrice(),
                 AllowEditApprentice = allowEditApprentice,
+                PendingUpdate = pendingUpdatesOnApprentice
             };
         }
     }
