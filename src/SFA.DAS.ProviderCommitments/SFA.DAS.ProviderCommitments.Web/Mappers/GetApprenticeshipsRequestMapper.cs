@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -36,14 +37,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
                 PageNumber = source.PageNumber
             };
-
-            var apprenticeshipTasks = response.Apprenticeships.Select(c => _mapper.Map(c)).ToArray();
-            Task.WaitAll(apprenticeshipTasks.Cast<Task>().ToArray());
+            
+            var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
+            foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
+            {
+                var apprenticeship = await _mapper.Map(apprenticeshipDetailsResponse);
+                apprenticeships.Add(apprenticeship);
+            }
 
             return new ManageApprenticesViewModel
             {
                 ProviderId = source.ProviderId,
-                Apprenticeships = response.Apprenticeships,
+                Apprenticeships = apprenticeships,
                 FilterModel = filterModel,
                 SortField = source.SortField,
                 ReverseSort = source.ReverseSort
