@@ -6,13 +6,13 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Services;
 
-
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services
 {
     public class WhenICreateACsvFile
     {
         private ICreateCsvService _createCsvService;
         private List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse> _apprenticeshipDetails;
+        
         [SetUp]
         public void SetUp()
         {

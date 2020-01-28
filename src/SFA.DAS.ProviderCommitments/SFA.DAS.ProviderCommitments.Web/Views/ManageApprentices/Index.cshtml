@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.Commitments.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
 
@@ -189,46 +190,89 @@ else
             </div>
         </div>
     }
-    <table class="govuk-table das-table--responsive">
+    <table class="govuk-table das-table--responsive das-table--double-arrows">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Apprentice name</th>
-                <th scope="col" class="govuk-table__header">ULN</th>
-                <th scope="col" class="govuk-table__header">Employer</th>
-                <th scope="col" class="govuk-table__header">Apprenticeship training course</th>
-                <th scope="col" class="govuk-table__header">Planned start date</th>
-                <th scope="col" class="govuk-table__header">Planned end date</th>
-                <th scope="col" class="govuk-table__header">Status</th>
-                <th scope="col" class="govuk-table__header">Alerts</th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "FirstName", reverseSort = Model.SortField.ToLower() == "firstname" && !Model.ReverseSort})" title="Sort the table by name" class="@(Model.SortField=="FirstName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Apprentice name
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "Uln", reverseSort = Model.SortField.ToLower() == "uln" && !Model.ReverseSort})" title="Sort the table by ULN" class="@(Model.SortField=="Uln" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        ULN
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "LegalEntityName", reverseSort = Model.SortField.ToLower() == "legalentityname" && !Model.ReverseSort})" title="Sort the table by employer name" class="@(Model.SortField=="LegalEntityName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Employer
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "CourseName", reverseSort = Model.SortField.ToLower() == "coursename" && !Model.ReverseSort})" title="Sort the table by course name" class="@(Model.SortField=="CourseName" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Apprenticeship training course
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "StartDate", reverseSort = Model.SortField.ToLower() == "startdate" && !Model.ReverseSort})" title="Sort the table by start date" class="@(Model.SortField=="StartDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Planned start date
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "EndDate", reverseSort = Model.SortField.ToLower() == "enddate" && !Model.ReverseSort})" title="Sort the table by end date" class="@(Model.SortField=="EndDate" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Planned end date
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "PaymentStatus", reverseSort = Model.SortField.ToLower() == "paymentstatus" && !Model.ReverseSort})" title="Sort the table by payment status" class="@(Model.SortField=="PaymentStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Status
+                    </a>
+                </th>
+                <th scope="col" class="govuk-table__header">
+                    <a href="@Url.RouteUrl(RouteNames.ManageApprentices, new {providerId = Model.ProviderId, sortField = "DataLockStatus", reverseSort = Model.SortField.ToLower() == "datalockstatus" && !Model.ReverseSort})" title="Sort the table by alerts" class="@(Model.SortField=="DataLockStatus" ? Model.SortedByHeaderClassName: ManageApprenticesViewModel.HeaderClassName)">
+                        Alerts
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var apprenticeships in Model.Apprenticeships)
+            @foreach (var apprenticeship in Model.Apprenticeships)
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        @apprenticeships.ApprenticeName
+                        <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                            @apprenticeship.ApprenticeName
+                        </a>
                     </td>
                     <td class="govuk-table__cell" data-label="ULN">
-                        @apprenticeships.Uln
+                        @apprenticeship.Uln
                     </td>
                     <td class="govuk-table__cell" data-label="Employer">
-                        @apprenticeships.Employer
+                        @apprenticeship.EmployerName
                     </td>
                     <td class="govuk-table__cell" data-label="Apprenticeship training course">
-                        @apprenticeships.CourseName
+                        @apprenticeship.CourseName
                     </td>
                     <td class="govuk-table__cell" data-label="Planned start date">
-                        @apprenticeships.PlannedStartDate.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeships.PlannedEndDate.ToGdsFormatWithoutDay()
+                        @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
-                        @apprenticeships.Status
+                        @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @apprenticeships.Alerts
+                        @for(var i = 0; i < apprenticeship.Alerts.Count(); i++)
+                        {
+                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                                @apprenticeship.Alerts.ElementAt(i)
+                            </a>
+                            @if (i < apprenticeship.Alerts.Count() - 1)
+                            {
+                                <br/>
+                            }
+                        }
                     </td>
                 </tr>
             }

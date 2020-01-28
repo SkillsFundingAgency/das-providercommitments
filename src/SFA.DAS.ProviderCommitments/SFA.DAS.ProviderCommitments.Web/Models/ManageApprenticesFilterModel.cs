@@ -15,6 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string SelectedStatus { get; set; }
         public DateTime? SelectedStartDate { get; set; }
         public DateTime? SelectedEndDate { get; set; }
+        public string SortField { get; set; }
+        public bool ReverseSort { get; set; }
     }
 
     public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase

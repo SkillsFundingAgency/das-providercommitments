@@ -8,68 +8,60 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.Testing.AutoFixture;
+using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
 {
     public class WhenDownloadingApprentices
     {
-        [Test, AutoData]
+        [Test, MoqAutoData]
         public async Task ThenTheFileNameIsSetCorrectly(
-            long providerId,
-            ManageApprenticesFilterModel filterModel)
+            uint providerId,
+            ManageApprenticesFilterModel filterModel,
+            ManageApprenticesController controller)
         {
             //Arrange
             var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
-                Mock.Of<IMapper<GetApprenticeshipsCsvContentRequest,byte[]>>());
 
             //Act
-            var actual = await controller.Download(providerId, filterModel);
-
-            var actualFileResult = actual as FileContentResult;
+            var actual = await controller.Download(providerId, filterModel) as FileContentResult;
 
             //Assert
-            Assert.AreEqual(expected, actualFileResult.FileDownloadName);
+            Assert.AreEqual(expected, actual.FileDownloadName);
         }
 
-        [Test, AutoData]
+        [Test, MoqAutoData]
         public async Task ThenTheFileContentIsSetCorrectly(
-            long providerId,
-            ManageApprenticesFilterModel filterModel)
+            uint providerId,
+            ManageApprenticesFilterModel filterModel,
+            [Frozen] byte[] expectedCsvContent,
+            [Frozen] Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>> csvMapper,
+            ManageApprenticesController controller)
         {
             //Arrange
-            var expectedCsvContent = new byte[] {1, 2, 3, 4};
-            var commitmentService = new Mock<ICommitmentsService>();
-            var csvMapper = new Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>>();
-
             csvMapper.Setup(x =>
                     x.Map(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))))
                 .ReturnsAsync(expectedCsvContent);
 
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
-                csvMapper.Object);
-
             //Act
             var actual = await controller.Download(providerId, filterModel);
 
             var actualFileResult = actual as FileContentResult;
 
             //Assert
+            Assert.IsNotNull(actualFileResult);
             Assert.AreEqual(expectedCsvContent, actualFileResult.FileContents);
         }
 
-        [Test, AutoData]
+        [Test, MoqAutoData]
         public async Task ThenWillMapRequestToCsvContent(
-            long providerId,
-            ManageApprenticesFilterModel filterModel)
+            uint providerId,
+            ManageApprenticesFilterModel filterModel,
+            [Frozen] byte[] expectedCsvContent,
+            [Frozen] Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>> csvMapper,
+            ManageApprenticesController controller)
         {
-            //Arrange
-            var commitmentService = new Mock<ICommitmentsService>();
-            var csvMapper = new Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>>();
-
-            var controller = new ManageApprenticesController(Mock.Of<IMapper<Requests.GetApprenticeshipsRequest,ManageApprenticesViewModel>>(), 
-                csvMapper.Object);
-
             //Act
             await controller.Download(providerId, filterModel);
 
