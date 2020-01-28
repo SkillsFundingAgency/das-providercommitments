@@ -15,108 +15,109 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Apprentice status</h2>
-    </div>
-    <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-        @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+
+        <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+            @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--visible">
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
+                    <td class="govuk-table__cell">@Model.Status.GetDescription()</td>
+                </tr>
+
+                @if (Model.Status == ApprenticeshipStatus.Stopped)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop applies from</th>
+                        <td class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+        <div class="govuk-grid-row govuk-!-margin-bottom-2">
+            <div class="govuk-grid-column-two-thirds">
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Overview</h2>
+            </div>
+            <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+                @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+            </div>
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--visible">
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Employer</th>
+                    <td class="govuk-table__cell das-table-cell-width-50">@Model.Employer</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Reference</th>
+                    <td class="govuk-table__cell">@Model.Reference</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Agreement ID</th>
+                    <td class="govuk-table__cell">@Model.AgreementId</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+        <div class="govuk-grid-row govuk-!-margin-bottom-2">
+            <div class="govuk-grid-column-two-thirds">
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Apprentice</h2>
+            </div>
+            <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+                @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+            </div>
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--visible">
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Name</th>
+                    <td class="govuk-table__cell das-table-cell-width-50">@Model.ApprenticeName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Date of birth</th>
+                    <td class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td class="govuk-table__cell">@Model.Uln</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <td class="govuk-table__cell">@Model.CourseName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training start date</th>
+                    <td class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training end date</th>
+                    <td class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                    <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <td class="govuk-table__cell">@Model.ProviderRef</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-
-<hr class="govuk-section-break govuk-section-break--visible">
-
-<table class="govuk-table">
-    <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
-            <td class="govuk-table__cell">@Model.Status.GetDescription()</td>
-        </tr>
-    
-    @if (Model.Status == ApprenticeshipStatus.Stopped)
-    {
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop applies from</th>
-            <td class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-
-
-<div class="govuk-grid-row govuk-!-margin-bottom-2">
-    <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Overview</h2>
-    </div>
-    <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-        @*<a href="#" class="govuk-link">Edit apprentice</a>*@
-    </div>
-</div>
-
-<hr class="govuk-section-break govuk-section-break--visible">
-
-<table class="govuk-table">
-    <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header das-table-cell-width-50">Employer</th>
-            <td class="govuk-table__cell das-table-cell-width-50">@Model.Employer</td>
-        </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Reference</th>
-        <td class="govuk-table__cell">@Model.Reference</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Agreement ID</th>
-        <td class="govuk-table__cell">@Model.AgreementId</td>
-    </tr>
-
-    </tbody>
-</table>
-
-
-
-<div class="govuk-grid-row govuk-!-margin-bottom-2">
-    <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Apprentice</h2>
-    </div>
-    <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-        @*<a href="#" class="govuk-link">Edit apprentice</a>*@
-    </div>
-</div>
-
-<hr class="govuk-section-break govuk-section-break--visible">
-
-<table class="govuk-table">
-    <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header das-table-cell-width-50">Name</th>
-        <td class="govuk-table__cell das-table-cell-width-50">@Model.ApprenticeName</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Date of birth</th>
-        <td class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Unique learner number</th>
-        <td class="govuk-table__cell">@Model.Uln</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-        <td class="govuk-table__cell">@Model.CourseName</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Training start date</th>
-        <td class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Training end date</th>
-        <td class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-        <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-    </tr>
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Your reference</th>
-        <td class="govuk-table__cell">@Model.ProviderRef</td>
-    </tr>
-    </tbody>
-</table>
