@@ -7,7 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
     [TestFixture]
     public class ManageApprenticesModelTests
     {
-        //TODO to move
         [Test]
         [MoqInlineAutoData(true, "das-table__sort das-table__sort--desc")]
         [MoqInlineAutoData(false, "das-table__sort das-table__sort--asc")]
