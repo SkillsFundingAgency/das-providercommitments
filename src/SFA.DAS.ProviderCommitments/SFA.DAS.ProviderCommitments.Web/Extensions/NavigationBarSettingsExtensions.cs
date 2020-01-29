@@ -12,9 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static IMvcBuilder AddNavigationBarSettings(this IMvcBuilder builder, IConfiguration configuration)
         {
             builder.SetDefaultNavigationSection(NavigationSection.YourCohorts);
-            
-            builder.SuppressNavigationSection(NavigationSection.Reservations);
-
             return builder;
         }
     }
