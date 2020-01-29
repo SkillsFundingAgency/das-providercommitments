@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using ApprenticeshipDetailsResponse = SFA.DAS.CommitmentsV2.Api.Types.Responses.GetApprenticeshipsResponse.ApprenticeshipDetailsResponse;
 
+
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class ApprenticeshipDetailsCsvViewModel 

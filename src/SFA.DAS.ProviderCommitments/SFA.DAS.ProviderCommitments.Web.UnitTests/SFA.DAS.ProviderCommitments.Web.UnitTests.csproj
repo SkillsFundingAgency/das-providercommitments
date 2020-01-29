@@ -19,7 +19,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.881" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.Testing" Version="3.0.22" />
-    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.161" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />
   </ItemGroup>
 
   <ItemGroup>

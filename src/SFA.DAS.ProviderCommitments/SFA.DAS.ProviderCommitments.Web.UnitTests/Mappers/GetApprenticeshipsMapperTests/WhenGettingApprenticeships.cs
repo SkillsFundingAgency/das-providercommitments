@@ -5,6 +5,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -20,6 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         public async Task Should_Pass_Params_To_Api_Call(
             Requests.GetApprenticeshipsRequest webRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> detailsViewModelMapper,
+            ApprenticeshipDetailsViewModel expectedViewModel, 
             GetApprenticeshipsRequestMapper mapper)
         {
             await mapper.Map(webRequest);
@@ -53,12 +56,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
+           
             await mapper.Map(webRequest);
 
-            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
-                webRequest.ProviderId, 
-                It.IsAny<CancellationToken>()),
-                Times.Once); 
+            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(webRequest.ProviderId,It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -89,6 +90,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Requests.GetApprenticeshipsRequest request,
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
+            ApprenticeshipDetailsViewModel expectedViewModel,
+            [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> detailsViewModelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             GetApprenticeshipsRequestMapper mapper)
         {
@@ -104,6 +107,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                     It.IsAny<long>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(filtersResponse);
+            detailsViewModelMapper
+                .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
+                .ReturnsAsync(expectedViewModel);
 
             //Act
             var viewModel = await mapper.Map(request);
@@ -111,12 +117,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             //Assert
             Assert.IsNotNull(viewModel);
             Assert.AreEqual(request.ProviderId, viewModel.ProviderId);
-            viewModel.Apprenticeships.Should().BeEquivalentTo(
-                apprenticeshipsResponse.Apprenticeships.Select((response, i) => (ApprenticesViewModel)response));
+            viewModel.Apprenticeships.Should().AllBeEquivalentTo(expectedViewModel);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
             Assert.AreEqual(request.PageNumber, viewModel.FilterModel.PageNumber);
+            Assert.AreEqual(request.ReverseSort,viewModel.FilterModel.ReverseSort);
+            Assert.AreEqual(request.SortField, viewModel.FilterModel.SortField);
             Assert.AreEqual(filtersResponse.EmployerNames, viewModel.FilterModel.EmployerFilters);
             Assert.AreEqual(filtersResponse.CourseNames, viewModel.FilterModel.CourseFilters);
             Assert.AreEqual(filtersResponse.Statuses, viewModel.FilterModel.StatusFilters);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -12,10 +13,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>
     {
         private readonly ICommitmentsApiClient _client;
+        private readonly IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> _mapper;
 
-        public GetApprenticeshipsRequestMapper(ICommitmentsApiClient client)
+        public GetApprenticeshipsRequestMapper(ICommitmentsApiClient client, IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> mapper)
         {
             _client = client;
+            _mapper = mapper;
         }
 
         public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
@@ -26,6 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 PageNumber = source.PageNumber,
                 PageItemCount = source.PageItemCount,
                 //SearchTerm = source.SearchTerm,
+				SortField = source.SortField,
+                ReverseSort = source.ReverseSort,
                 EmployerName = source.SelectedEmployer,
                 CourseName = source.SelectedCourse,
                 Status = source.SelectedStatus,
@@ -46,6 +51,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
                 PageNumber = source.PageNumber,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort,
                 SearchTerm = source.SearchTerm,
                 SelectedEmployer = source.SelectedEmployer,
                 SelectedCourse = source.SelectedCourse,
@@ -58,12 +65,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDateFilters = filters.StartDates,
                 EndDateFilters = filters.EndDates
             };
+            
+            var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
+            foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
+            {
+                var apprenticeship = await _mapper.Map(apprenticeshipDetailsResponse);
+                apprenticeships.Add(apprenticeship);
+            }
 
             return new ManageApprenticesViewModel
             {
                 ProviderId = source.ProviderId,
-                Apprenticeships = response.Apprenticeships.Select(c=> (ApprenticesViewModel)c).ToList() ,
-                FilterModel = filterModel
+                Apprenticeships = apprenticeships,
+                FilterModel = filterModel,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort
+
             };
         }
     }

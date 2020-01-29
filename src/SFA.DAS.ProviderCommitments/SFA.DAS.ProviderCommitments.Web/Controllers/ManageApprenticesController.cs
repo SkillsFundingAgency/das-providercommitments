@@ -33,7 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = providerId,
                 PageNumber = filterModel.PageNumber,
                 PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
-                SearchTerm = filterModel.SearchTerm,
+                SortField = filterModel.SortField,
+                ReverseSort = filterModel.ReverseSort,
                 SelectedEmployer = filterModel.SelectedEmployer,
                 SelectedCourse = filterModel.SelectedCourse,
                 SelectedStatus = filterModel.SelectedStatus,
@@ -42,10 +43,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             };
 
             var viewModel = await _apprenticeshipMapper.Map(request);
+            
+            if (string.IsNullOrEmpty(viewModel.SortField))
+            {
+                viewModel.SortField = "FirstName";
+            }
+
+            viewModel.SortedByHeader();
 
             return View(viewModel);
         }
-
+        
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
         public async Task<IActionResult> Download(long providerId, ManageApprenticesFilterModel filterModel)
@@ -59,6 +67,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var csvFileContent = await _csvMapper.Map(request);
 
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+        }
+
+        [Route("{apprenticeshipId}", Name = "ApprenticeshipDetails")]
+        public IActionResult Details(uint providerId, long apprenticeshipId)
+        {
+            return Content($"Details of apprenticeship Id:[{apprenticeshipId}].");
         }
     }
 }
