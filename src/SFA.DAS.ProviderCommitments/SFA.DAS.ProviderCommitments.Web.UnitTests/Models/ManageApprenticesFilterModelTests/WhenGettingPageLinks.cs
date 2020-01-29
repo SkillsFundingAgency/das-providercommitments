@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -20,17 +21,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 SelectedStatus = "9psdgf",
                 SelectedStartDate = DateTime.Today,
                 SelectedEndDate = DateTime.Today,
-                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3,
+                SortField = "gsd",
+                ReverseSort = false
             };
 
-            var pageLinks = filterModel.PageLinks.Where(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
+            var pageLinks = filterModel.PageLinks.Where(link =>
+                link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
             for (var i = 0; i < 3; i++)
             {
-                pageLinks[i].Label.Should().Be($"{i+1}");
-                pageLinks[i].AriaLabel.Should().Be($"Page {i+1}");
+                pageLinks[i].Label.Should().Be($"{i + 1}");
+                pageLinks[i].AriaLabel.Should().Be($"Page {i + 1}");
                 pageLinks[i].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
                     {
                         {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
@@ -39,6 +42,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                         {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus},
                         {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
                         {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.SortField), filterModel.SortField},
+                        {nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString()},
                         {nameof(filterModel.PageNumber), (i+1).ToString() }
                     });
             }

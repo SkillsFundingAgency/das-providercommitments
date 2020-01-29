@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string SelectedStatus { get; set; }
         public DateTime? SelectedStartDate { get; set; }
         public DateTime? SelectedEndDate { get; set; }
-        public string SortField { get; set; }
+        public string SortField { get; set; } = "FirstName";
         public bool ReverseSort { get; set; }
     }
 
@@ -184,6 +184,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             var routeData = BuildRouteData();
             
             routeData.Add(nameof(PageNumber), pageNumber.ToString());
+
+            if (!string.IsNullOrEmpty(SortField))
+            {
+                routeData.Add(nameof(SortField), SortField);
+
+                routeData.Add(nameof(ReverseSort), ReverseSort.ToString());
+            }
+
+            return routeData;
+        }
+
+        public Dictionary<string, string> BuildSortRouteData(string sortField)
+        {
+            var routeData = BuildRouteData();
+
+            var reverseSort = !string.IsNullOrEmpty(SortField) 
+                              && SortField.ToLower() == sortField.ToLower() 
+                              && !ReverseSort;
+            routeData.Add(nameof(ReverseSort), reverseSort.ToString());
+            routeData.Add(nameof(SortField), sortField);
 
             return routeData;
         }

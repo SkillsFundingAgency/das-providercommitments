@@ -44,11 +44,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var viewModel = await _apprenticeshipMapper.Map(request);
             
-            if (string.IsNullOrEmpty(viewModel.SortField))
-            {
-                viewModel.SortField = "FirstName";
-            }
-
             viewModel.SortedByHeader();
 
             return View(viewModel);

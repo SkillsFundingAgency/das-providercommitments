@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public void SortedByHeader()
         {
             SortedByHeaderClassName += HeaderClassName;
-            if (ReverseSort)
+            if (FilterModel.ReverseSort)
             {
                 SortedByHeaderClassName += " das-table__sort--desc";
             }
