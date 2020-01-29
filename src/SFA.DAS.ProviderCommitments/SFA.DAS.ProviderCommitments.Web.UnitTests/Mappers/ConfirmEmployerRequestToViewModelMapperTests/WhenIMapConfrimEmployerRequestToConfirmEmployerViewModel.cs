@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ConfirmEmployerRequestToViewModelMapperTests
 {
+    [TestFixture]
     public class WhenIMapConfrimEmployerRequestToConfirmEmployerViewModel
     {
         private ConfirmEmployerRequestToViewModelMapper _mapper;
