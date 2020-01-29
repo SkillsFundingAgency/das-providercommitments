@@ -80,33 +80,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             //Assert
             actualModel.Should().BeEquivalentTo(expectedViewModel);
         }
-
-        //TODO to move
-        //[Test]
-        //[MoqInlineAutoData(true, "das-table__sort das-table__sort--desc", "sort-desc")]
-        //[MoqInlineAutoData(false, "das-table__sort das-table__sort--asc", "sort-asc")]
-        //public async Task ThenTheSortByHeaderClassNameIsSetCorrectly(
-        //    bool isReverse,
-        //    string expected,
-        //    string sortField,
-        //    long providerId,
-        //    Ma
-        //    ManageApprenticesViewModel model,
-        //    [Frozen] Mock<IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>> mapper,
-        //    ManageApprenticesController controller
-        //)
-        //{
-        //    //Arrange
-        //    mapper.Setup(x => x.Map(It.Is<GetApprenticeshipsRequest>(c=>c.ProviderId.Equals(providerId)))).ReturnsAsync(model);
-
-        //    //Act
-        //    var actual = await controller.Index(providerId, filterModel) as ViewResult;
-
-        //    //Assert
-        //    Assert.IsNotNull(actual);
-        //    var actualViewModel = actual.Model as ManageApprenticesViewModel;
-        //    Assert.IsNotNull(actualViewModel);
-        //    Assert.AreEqual(expected, actualViewModel.SortedByHeaderClassName);
-        //}
     }
 }

@@ -20,6 +20,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         }
 
         [Test, AutoData]
+        public void And_No_SortField_Then_Should_Set_SortField(
+            string sortField,
+            ManageApprenticesFilterModel model)
+        {
+            //Arrange
+            model.SortField = null;
+
+            //Act
+            var actual = model.BuildSortRouteData(sortField);
+
+            //Assert
+            Assert.AreEqual(sortField, actual[nameof(model.SortField)]);
+        }
+
+        [Test, AutoData]
         public void Then_Should_Set_ReverseSort(
             string sortField,
             ManageApprenticesFilterModel model)
@@ -33,21 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
 
             //Assert
             Assert.AreEqual(expected.ToString(), actual[nameof(model.ReverseSort)]);
-        }
-
-        [Test, AutoData]
-        public void And_No_SortField_Then_Should_Set_SortField(
-            string sortField,
-            ManageApprenticesFilterModel model)
-        {
-            //Arrange
-            model.SortField = null;
-
-            //Act
-            var actual = model.BuildSortRouteData(sortField);
-
-            //Assert
-            Assert.AreEqual(sortField, actual[nameof(model.SortField)]);
         }
 
         [Test, AutoData]
