@@ -41,7 +41,7 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedEmployer">Employer</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedEmployer" name="selectedEmployer">
-                                        <option label="All" aria-label="All employers"></option>
+                                        <option label="All" aria-label="All employers">All</option>
                                         @foreach (var employer in Model.FilterModel.EmployerFilters)
                                         {
                                             if (employer.Replace(" ", null) == Model.FilterModel.SelectedEmployer?.Replace(" ", null))
@@ -60,7 +60,7 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedCourse">Apprenticeship training course</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedCourse" name="selectedCourse">
-                                        <option label="All" aria-label="All courses"></option>
+                                        <option label="All" aria-label="All courses">All</option>
                                         @foreach (var course in Model.FilterModel.CourseFilters)
                                         {
                                             if (course.Replace(" ", null) == Model.FilterModel.SelectedCourse?.Replace(" ", null))
@@ -79,7 +79,7 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStatus">Status</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedStatus" name="selectedStatus">
-                                        <option label="All" aria-label="All statuses"></option>
+                                        <option label="All" aria-label="All statuses">All</option>
                                         @foreach (var status in Model.FilterModel.StatusFilters)
                                         {
                                             if (status.Replace(" ", null) == Model.FilterModel.SelectedStatus?.Replace(" ", null))
@@ -99,7 +99,7 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStartDate">Planned start date</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedStartDate" name="selectedStartDate">
-                                        <option label="All" aria-label="All start dates"></option>
+                                        <option label="All" aria-label="All start dates">All</option>
                                         @foreach (var startDate in Model.FilterModel.StartDateFilters)
                                         {
                                             if (startDate == Model.FilterModel.SelectedStartDate)
@@ -118,7 +118,7 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedEndDate">Planned end date</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedEndDate" name="selectedEndDate">
-                                        <option label="All" aria-label="All end dates"></option>
+                                        <option label="All" aria-label="All end dates">All</option>
                                         @foreach (var endDate in Model.FilterModel.EndDateFilters)
                                         {
                                             if (endDate == Model.FilterModel.SelectedEndDate)
@@ -304,13 +304,23 @@ else
     </table>
 }
 
-@if (Model.ShowPageLinks || true)
+@if (Model.ShowPageLinks)
 {
     <nav role="navigation" aria-label="Pagination">
-        <div class="das-pagination__summary">
-            Showing @Model.FilterModel.PagedRecordsFrom to @Model.FilterModel.PagedRecordsTo of @Model.FilterModel.TotalNumberOfApprenticeshipsFound
-            apprentice records, @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts
-        </div>
+        @if (Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound > 0)
+        {
+            <div class="das-pagination__summary">
+                Showing @Model.FilterModel.PagedRecordsFrom to @Model.FilterModel.PagedRecordsTo of @Model.FilterModel.TotalNumberOfApprenticeshipsFound
+                apprentice records
+            </div>
+        }
+        else
+        {
+            <div class="das-pagination__summary">
+                Showing @Model.FilterModel.PagedRecordsFrom to @Model.FilterModel.PagedRecordsTo of @Model.FilterModel.TotalNumberOfApprenticeshipsFound
+                apprentice records, @Model.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound with alerts
+            </div>
+        }
         <ul class="das-pagination">
             @foreach (var pageLink in Model.FilterModel.PageLinks)
             {
