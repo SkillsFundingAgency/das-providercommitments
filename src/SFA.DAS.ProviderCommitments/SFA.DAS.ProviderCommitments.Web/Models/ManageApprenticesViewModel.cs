@@ -7,18 +7,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class ManageApprenticesViewModel
     {
         public long? ProviderId { get; set; }
-        public bool AnyApprenticeships => Apprenticeships != null && Apprenticeships.Any();
 
         public IEnumerable<ApprenticeshipDetailsViewModel> Apprenticeships { get; set; }
-        public string SortField { get; set; }
-        public bool ReverseSort { get; set; }
         public string SortedByHeaderClassName { get; set; }
         public const string HeaderClassName = "das-table__sort";
     
         public void SortedByHeader()
         {
             SortedByHeaderClassName += HeaderClassName;
-            if (ReverseSort)
+            if (FilterModel.ReverseSort)
             {
                 SortedByHeaderClassName += " das-table__sort--desc";
             }

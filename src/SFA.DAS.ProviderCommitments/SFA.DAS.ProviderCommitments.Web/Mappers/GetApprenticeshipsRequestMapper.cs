@@ -78,9 +78,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 Apprenticeships = apprenticeships,
                 FilterModel = filterModel,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort
-
             };
         }
     }
