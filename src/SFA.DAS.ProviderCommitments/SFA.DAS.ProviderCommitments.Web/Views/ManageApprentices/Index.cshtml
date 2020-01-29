@@ -41,16 +41,16 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedEmployer">Employer</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedEmployer" name="selectedEmployer">
-                                        <option label="All" aria-label="All employers">All</option>
+                                        <option label="All" aria-label="All employers" value="">All</option>
                                         @foreach (var employer in Model.FilterModel.EmployerFilters)
                                         {
                                             if (employer.Replace(" ", null) == Model.FilterModel.SelectedEmployer?.Replace(" ", null))
                                             {
-                                                <option label="@employer" selected="selected">@employer</option>
+                                                <option label="@employer" value="@employer" selected="selected">@employer</option>
                                             }
                                             else
                                             {
-                                                <option label="@employer">@employer</option>
+                                                <option label="@employer" value="@employer">@employer</option>
                                             }
                                         }
                                     </select>
@@ -60,16 +60,16 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedCourse">Apprenticeship training course</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedCourse" name="selectedCourse">
-                                        <option label="All" aria-label="All courses">All</option>
+                                        <option label="All" aria-label="All courses" value="">All</option>
                                         @foreach (var course in Model.FilterModel.CourseFilters)
                                         {
                                             if (course.Replace(" ", null) == Model.FilterModel.SelectedCourse?.Replace(" ", null))
                                             {
-                                                <option label="@course" selected="selected">@course</option>
+                                                <option label="@course" value="@course" selected="selected">@course</option>
                                             }
                                             else
                                             {
-                                                <option label="@course">@course</option>
+                                                <option label="@course" value="@course">@course</option>
                                             }
                                         }
                                     </select>
@@ -79,16 +79,16 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStatus">Status</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedStatus" name="selectedStatus">
-                                        <option label="All" aria-label="All statuses">All</option>
+                                        <option label="All" aria-label="All statuses" value="">All</option>
                                         @foreach (var status in Model.FilterModel.StatusFilters)
                                         {
                                             if (status.Replace(" ", null) == Model.FilterModel.SelectedStatus?.Replace(" ", null))
                                             {
-                                                <option label="@status" selected="selected">@status</option>
+                                                <option label="@status" value="@status" selected="selected">@status</option>
                                             }
                                             else
                                             {
-                                                <option label="@status">@status</option>
+                                                <option label="@status" value="@status">@status</option>
                                             }
                                         }
                                     </select>
@@ -99,16 +99,16 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStartDate">Planned start date</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedStartDate" name="selectedStartDate">
-                                        <option label="All" aria-label="All start dates">All</option>
+                                        <option label="All" aria-label="All start dates" value="">All</option>
                                         @foreach (var startDate in Model.FilterModel.StartDateFilters)
                                         {
                                             if (startDate == Model.FilterModel.SelectedStartDate)
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()" selected="selected">@startDate.ToString("yyyy-MM-dd")</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()" value="@startDate.ToString("yyyy-MM-dd")" selected="selected">@startDate.ToString("yyyy-MM-dd")</option>
                                             }
                                             else
                                             {
-                                                <option label="@startDate.ToGdsFormatWithoutDay()">@startDate.ToString("yyyy-MM-dd")</option>
+                                                <option label="@startDate.ToGdsFormatWithoutDay()" value="@startDate.ToString("yyyy-MM-dd")">@startDate.ToString("yyyy-MM-dd")</option>
                                             }
                                         }
                                     </select>
@@ -118,16 +118,16 @@ else
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedEndDate">Planned end date</label>
                                     <select class="govuk-select govuk-!-width-full" id="selectedEndDate" name="selectedEndDate">
-                                        <option label="All" aria-label="All end dates">All</option>
+                                        <option label="All" aria-label="All end dates" value="">All</option>
                                         @foreach (var endDate in Model.FilterModel.EndDateFilters)
                                         {
                                             if (endDate == Model.FilterModel.SelectedEndDate)
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()" selected="selected">@endDate.ToString("yyyy-MM-dd")</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()" value="@endDate.ToString("yyyy-MM-dd")" selected="selected">@endDate.ToString("yyyy-MM-dd")</option>
                                             }
                                             else
                                             {
-                                                <option label="@endDate.ToGdsFormatWithoutDay()">@endDate.ToString("yyyy-MM-dd")</option>
+                                                <option label="@endDate.ToGdsFormatWithoutDay()" value="@endDate.ToString("yyyy-MM-dd")">@endDate.ToString("yyyy-MM-dd")</option>
                                             }
                                         }
                                     </select>
