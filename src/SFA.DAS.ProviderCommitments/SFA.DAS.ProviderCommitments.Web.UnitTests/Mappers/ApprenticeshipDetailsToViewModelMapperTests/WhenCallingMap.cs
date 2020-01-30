@@ -94,13 +94,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Maps_Status(
+        public async Task Then_Maps_ApprenticeshipStatus(
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
             var result = await mapper.Map(source);
 
-            result.Status.Should().Be(source.PaymentStatus.ToString());
+            result.Status.Should().Be(source.ApprenticeshipStatus.FormatStatus());
         }
 
         [Test, MoqAutoData]
