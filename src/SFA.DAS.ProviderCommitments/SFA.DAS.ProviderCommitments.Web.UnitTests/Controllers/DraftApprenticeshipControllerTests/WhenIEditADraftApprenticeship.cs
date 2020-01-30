@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task ShouldReturnEditDraftApprenticeshipView()
         {
-            _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();
+            _fixture.SetupCommitmentsApiToReturnADraftApprentice();
             await _fixture.EditDraftApprenticeship();
             _fixture.VerifyEditDraftApprenticeshipViewModelIsSentToViewResult();
         }
@@ -26,17 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task ShouldSetProviderIdOnViewModel()
         {
-            _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice().SetupProviderIdOnEditRequest(123);
+            _fixture.SetupCommitmentsApiToReturnADraftApprentice().SetupProviderIdOnEditRequest(123);
             await _fixture.EditDraftApprenticeship();
             _fixture.VerifyEditDraftApprenticeshipViewModelHasProviderIdSet();
-        }
-
-        [Test]
-        public async Task ShouldPassCohortIdAndDraftApprenticeshipIdToGetDraftApprenticeshipOnProviderCommitmentsService()
-        {
-            _fixture.SetupProviderCommitmentServiceToReturnADraftApprentice();
-            await _fixture.EditDraftApprenticeship();
-            _fixture.VerifyGetDraftApprenticeshipReceivesCorrectParameters();
         }
 
         [Test]
