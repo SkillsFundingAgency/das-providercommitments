@@ -22,21 +22,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             var detailsResponseTask = _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
-            var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
-            var pendingUpdates = await _commitmentApiClient.GetApprenticeshipUpdates(new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdateRequest
+            var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
+            var pendingUpdatesTask =  _commitmentApiClient.GetApprenticeshipUpdates(new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdateRequest
             {
                 ApprenticeshipId = source.ApprenticeshipId,
                 Status = ApprenticeshipUpdateStatus.Pending
             });
 
+            await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask);
+
             var detailsResponse = await detailsResponseTask;
+            var priceEpisodes = await priceEpisodesTask;
+            var pendingUpdates = await pendingUpdatesTask;   
 
             var pendingUpdatesOnApprentice = pendingUpdates.ApprenticeshipUpdates.Count > 0;
 
             var allowEditApprentice =
-                detailsResponse.Status == ApprenticeshipStatus.Live ||
+                (detailsResponse.Status == ApprenticeshipStatus.Live ||
                 detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
-                detailsResponse.Status == ApprenticeshipStatus.Paused &&
+                detailsResponse.Status == ApprenticeshipStatus.Paused) &&
                 !pendingUpdatesOnApprentice;
 
             return new DetailsViewModel

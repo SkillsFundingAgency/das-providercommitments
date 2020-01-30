@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -135,7 +136,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
             await _fixture.Map();
 
-            Assert.AreEqual(_fixture.Result.AllowEditApprentice, expectedAllowEditApprentice);
+            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase]
+        public async Task WhenPendingUpdates_ThenAllowEditApprenticeIsMappedCorrectly()
+        {
+            _fixture.WithPendingUpdates();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(false, _fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenPendingUpdateIsMappedCorrectly(bool pendingUpdate)
+        {
+            if (pendingUpdate)
+            {
+                _fixture.WithPendingUpdates();
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(pendingUpdate, _fixture.Result.PendingUpdate);
         }
 
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
@@ -145,6 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             public DetailsViewModel Result { get; private set; }
             public GetApprenticeshipResponse ApiResponse { get; }
             public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
+            public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;
             public string CohortReference { get; }
@@ -167,6 +193,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                     }
                 };
 
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                };
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
@@ -177,6 +208,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
                 apiClient.Setup(x => x.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(PriceEpisodesApiResponse);
+
+                apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<GetApprenticeshipUpdateRequest>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
 
                 _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
             }
@@ -191,6 +225,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 ApprenticeshipStatus status)
             {
                 ApiResponse.Status = status;
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdates()
+            {
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                    {
+                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        {
+                            Id = 1,
+                        }
+                    }
+                };
                 return this;
             }
         }
