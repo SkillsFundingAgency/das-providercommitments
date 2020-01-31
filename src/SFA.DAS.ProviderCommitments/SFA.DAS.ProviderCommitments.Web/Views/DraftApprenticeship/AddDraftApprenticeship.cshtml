@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Apprenticeships";
+    ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/add";
 }
 
 <div class="govuk-grid-row">
@@ -22,10 +23,9 @@
             <dd class="das-definition-list__definition">@Model.Employer</dd>
         </dl>
         <form id="addApprenticeship" novalidate method="post">
-            @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
 
-            <partial name="DraftApprenticeship" for="@Model" />
+            <partial name="_DraftApprenticeship" for="@Model" />
 
             <button type="submit" class="govuk-button">Add</button>
             

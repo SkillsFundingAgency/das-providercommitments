@@ -9,17 +9,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Extensions;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -46,14 +47,15 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.Filters.Add(new GoogleAnalyticsFilter());
                     options.AddValidation();
                     ConfigureAuthorization(options);
                 })
                 .AddNavigationBarSettings(Configuration)
+                .EnableGoogleAnalytics()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
-                
 
             services
                 .AddHealthChecks();
@@ -110,11 +112,10 @@ namespace SFA.DAS.ProviderCommitments.Web
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
-                .UseHealthChecks("/health-check"); 
+                .UseHealthChecks("/health-check");
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             logger.Log(LogLevel.Information, "Application start up configure is complete");
-
         }
     }
 }

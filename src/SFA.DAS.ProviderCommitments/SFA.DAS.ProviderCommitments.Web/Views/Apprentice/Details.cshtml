@@ -8,29 +8,25 @@
     ViewData["Title"] = "Apprentice Details";
 }
 
-<h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
-
 @*https://localhost:5001/10005077/apprentices/4MBBNM*@
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Apprentice status</h2>
-
-        <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-            @*<a href="#" class="govuk-link">Edit apprentice</a>*@
-        </div>
 
         @if (Model.PendingUpdate)
         {
-            <div class="purple-border">
-                <p>
-                    There are changes to this apprentice's details that are waiting for approval by the employer.
-                </p>
-                <a href="@LinkGenerator.ProviderApprenticeshipServiceLink("")" aria-label="View changes" class="">View changes</a>
+            <div class="das-notification" tabindex="-1">
+                <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
+                <p class="das-notification__body"><a href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
             </div>
         }
 
-        <hr class="govuk-section-break govuk-section-break--visible">
+        <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+
+        <h2 class="govuk-heading-m">Apprentice status</h2>
+        <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+            @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+        </div>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -51,14 +47,12 @@
 
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Overview</h2>
+                <h2 class="govuk-heading-m">Overview</h2>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @*<a href="#" class="govuk-link">Edit apprentice</a>*@
             </div>
         </div>
-
-        <hr class="govuk-section-break govuk-section-break--visible">
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -79,7 +73,7 @@
 
         <div class="govuk-grid-row govuk-!-margin-bottom-2">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Apprentice</h2>
+                <h2 class="govuk-heading-m">Apprentice</h2>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @if (Model.AllowEditApprentice)
@@ -88,8 +82,6 @@
                 }
             </div>
         </div>
-
-        <hr class="govuk-section-break govuk-section-break--visible">
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
