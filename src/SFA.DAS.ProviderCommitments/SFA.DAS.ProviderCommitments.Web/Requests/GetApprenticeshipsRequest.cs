@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests
 {
@@ -12,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Requests
         public string SearchTerm { get; set; }
         public string SelectedEmployer { get; set; }
         public string SelectedCourse { get; set; }
-        public string SelectedStatus { get; set; }
+        public ApprenticeshipStatus? SelectedStatus { get; set; }
         public DateTime? SelectedStartDate { get; set; }
         public DateTime? SelectedEndDate { get; set; }
     }

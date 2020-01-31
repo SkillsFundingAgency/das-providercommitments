@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -33,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReverseSort = source.ReverseSort,
                 EmployerName = source.SelectedEmployer,
                 CourseName = source.SelectedCourse,
-                Status = source.SelectedStatus,
+                Status = source.SelectedStatus.ToString(),
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate
             });
@@ -61,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 SelectedEndDate = source.SelectedEndDate,
                 EmployerFilters = filters.EmployerNames,
                 CourseFilters = filters.CourseNames,
-                StatusFilters = filters.Statuses,
+                StatusFilters = new []{ApprenticeshipStatus.WaitingToStart, ApprenticeshipStatus.Live, ApprenticeshipStatus.Paused, ApprenticeshipStatus.Stopped},
                 StartDateFilters = filters.StartDates,
                 EndDateFilters = filters.EndDates
             };

@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
                     //apiRequest.SearchTerm == csvRequest.FilterModel.SearchTerm && todo: future story
                     apiRequest.EmployerName == csvRequest.FilterModel.SelectedEmployer &&
                     apiRequest.CourseName == csvRequest.FilterModel.SelectedCourse &&
-                    apiRequest.Status == csvRequest.FilterModel.SelectedStatus &&
+                    apiRequest.Status == csvRequest.FilterModel.SelectedStatus.ToString() &&
                     apiRequest.StartDate == csvRequest.FilterModel.SelectedStartDate &&
                     apiRequest.EndDate == csvRequest.FilterModel.SelectedEndDate),
                 It.IsAny<CancellationToken>()));
