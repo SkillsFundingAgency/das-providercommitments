@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ProviderCommitments.UnitTests\SFA.DAS.ProviderCommitments.UnitTests.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments.Web\SFA.DAS.ProviderCommitments.Web.csproj" />
   </ItemGroup>
 
