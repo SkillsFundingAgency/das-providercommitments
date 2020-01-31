@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Apprenticeships";
-    ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/edit";
 }
 
 <div class="govuk-grid-row">
@@ -23,7 +22,7 @@
         </dl>
         <form id="addApprenticeship" novalidate method="post" action="@Url.Action("EditDraftApprenticeship")">
             @Html.AntiForgeryToken()
-            <partial name="_DraftApprenticeship" for="@Model" />
+            <partial name="DraftApprenticeship" for="@Model" />
             <button type="submit" class="govuk-button">Save</button>
             <a class="govuk-button govuk-button--warning das-float-right" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/{Model.DraftApprenticeshipHashedId}/delete")">Delete</a>
             <p class="govuk-body govuk-!-margin-bottom-0">
