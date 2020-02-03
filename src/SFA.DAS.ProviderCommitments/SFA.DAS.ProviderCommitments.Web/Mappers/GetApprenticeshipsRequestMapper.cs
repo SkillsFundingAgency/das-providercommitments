@@ -29,12 +29,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 PageNumber = source.PageNumber,
                 PageItemCount = source.PageItemCount,
-                SearchTerm = source.SearchTerm,
-				SortField = source.SortField,
+                SortField = source.SortField,
                 ReverseSort = source.ReverseSort,
+                SearchTerm = source.SearchTerm,
                 EmployerName = source.SelectedEmployer,
                 CourseName = source.SelectedCourse,
-                Status = source.SelectedStatus.ToString(),
+                Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate
             });
@@ -45,6 +45,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
             }
+
+            var statusFilters = new[]
+            {
+                ApprenticeshipStatus.WaitingToStart, 
+                ApprenticeshipStatus.Live,
+                ApprenticeshipStatus.Paused, 
+                ApprenticeshipStatus.Stopped
+            };
 
             var filterModel = new ManageApprenticesFilterModel
             {
@@ -62,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 SelectedEndDate = source.SelectedEndDate,
                 EmployerFilters = filters.EmployerNames,
                 CourseFilters = filters.CourseNames,
-                StatusFilters = new []{ApprenticeshipStatus.WaitingToStart, ApprenticeshipStatus.Live, ApprenticeshipStatus.Paused, ApprenticeshipStatus.Stopped},
+                StatusFilters = statusFilters,
                 StartDateFilters = filters.StartDates,
                 EndDateFilters = filters.EndDates
             };
