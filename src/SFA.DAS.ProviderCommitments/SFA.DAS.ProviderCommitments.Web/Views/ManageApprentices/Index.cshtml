@@ -161,12 +161,15 @@ else
                 }
                 
             </div>
-            <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                <a class="govuk-body govuk-link" 
-                   asp-route="@RouteNames.DownloadApprentices" 
-                   asp-all-route-data="@Model.FilterModel.RouteData"
-                   aria-label="Download all data">Download filtered data (CSV)</a>
-            </div>
+            @if (Model.FilterModel.TotalNumberOfApprenticeshipsFound > 0)
+            {
+                <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
+                    <a class="govuk-body govuk-link"
+                       asp-route="@RouteNames.DownloadApprentices"
+                       asp-all-route-data="@Model.FilterModel.RouteData"
+                       aria-label="Download all data">Download filtered data (CSV)</a>
+                </div>
+            }
         </div>
     }
     else
@@ -191,7 +194,7 @@ else
             </div>
         </div>
     }
-    @if (Model.Apprenticeships.Count != 0)
+    @if (Model.FilterModel.TotalNumberOfApprenticeshipsFound > 0)
     {
         <table class="govuk-table das-table--responsive das-table--double-arrows">
             <thead class="govuk-table__head">
