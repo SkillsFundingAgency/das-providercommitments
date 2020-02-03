@@ -4,6 +4,7 @@ using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
@@ -18,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 SearchTerm = "asedfas",
                 SelectedEmployer = "asdsad",
                 SelectedCourse = "iknjso",
-                SelectedStatus = "9psdgf",
+                SelectedStatus = ApprenticeshipStatus.WaitingToStart,
                 SelectedStartDate = DateTime.Today,
                 SelectedEndDate = DateTime.Today,
                 TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3,
@@ -39,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                         {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
                         {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
                         {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
-                        {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus},
+                        {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
                         {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
                         {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
                         {nameof(filterModel.SortField), filterModel.SortField},

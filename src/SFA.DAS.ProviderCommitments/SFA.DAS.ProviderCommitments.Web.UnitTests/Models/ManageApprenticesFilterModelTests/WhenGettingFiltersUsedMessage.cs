@@ -4,6 +4,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Extensions;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
@@ -56,14 +58,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
 
         [Test, AutoData]
         public void And_No_Search_And_SelectedStatus_Then_SelectedStatus(
-            string selectedStatus)
+            ApprenticeshipStatus selectedStatus)
         {
             var filterModel = new ManageApprenticesFilterModel
             {
                 SelectedStatus = selectedStatus
             };
 
-            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus}</strong>");
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus.FormatStatus()}</strong>");
         }
 
         [Test, AutoData]

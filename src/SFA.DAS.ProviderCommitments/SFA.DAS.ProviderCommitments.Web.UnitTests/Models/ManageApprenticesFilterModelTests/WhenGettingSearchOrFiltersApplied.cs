@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
@@ -45,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         {
             var filterModel = new ManageApprenticesFilterModel
             {
-                SelectedStatus = "asedfas"
+                SelectedStatus = ApprenticeshipStatus.WaitingToStart
             };
 
             filterModel.SearchOrFiltersApplied.Should().BeTrue();

@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.Commitments.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
@@ -82,13 +83,13 @@ else
                                         <option label="All" aria-label="All statuses" value="">All</option>
                                         @foreach (var status in Model.FilterModel.StatusFilters)
                                         {
-                                            if (status.Replace(" ", null) == Model.FilterModel.SelectedStatus?.Replace(" ", null))
+                                            if (status == Model.FilterModel.SelectedStatus)
                                             {
-                                                <option label="@status" value="@status" selected="selected">@status</option>
+                                                <option label="@status.FormatStatus()" value="@status" selected="selected">@status.FormatStatus()</option>
                                             }
                                             else
                                             {
-                                                <option label="@status" value="@status">@status</option>
+                                                <option label="@status.FormatStatus()" value="@status">@status.FormatStatus()</option>
                                             }
                                         }
                                     </select>
