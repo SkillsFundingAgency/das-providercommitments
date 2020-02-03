@@ -191,8 +191,10 @@ else
             </div>
         </div>
     }
-    <table class="govuk-table das-table--responsive das-table--double-arrows">
-        <thead class="govuk-table__head">
+    @if (Model.Apprenticeships.Count != 0)
+    {
+        <table class="govuk-table das-table--responsive das-table--double-arrows">
+            <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">
                     <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
@@ -259,8 +261,8 @@ else
                     </a>
                 </th>
             </tr>
-        </thead>
-        <tbody class="govuk-table__body">
+            </thead>
+            <tbody class="govuk-table__body">
             @foreach (var apprenticeship in Model.Apprenticeships)
             {
                 <tr class="govuk-table__row">
@@ -288,7 +290,7 @@ else
                         @apprenticeship.Status
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @for(var i = 0; i < apprenticeship.Alerts.Count(); i++)
+                        @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                         {
                             <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
                                 @apprenticeship.Alerts.ElementAt(i)
@@ -301,8 +303,9 @@ else
                     </td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 }
 
 @if (Model.ShowPageLinks)

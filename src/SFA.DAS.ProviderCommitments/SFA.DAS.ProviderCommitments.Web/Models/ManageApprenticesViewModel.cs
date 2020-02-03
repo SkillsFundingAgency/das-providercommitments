@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public long? ProviderId { get; set; }
 
-        public IEnumerable<ApprenticeshipDetailsViewModel> Apprenticeships { get; set; }
+        public List<ApprenticeshipDetailsViewModel> Apprenticeships { get; set; }
         public string SortedByHeaderClassName { get; set; }
         public const string HeaderClassName = "das-table__sort";
     
