@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
                 {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
                 {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
-                {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus},
+                {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
                 {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
                 {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")}
             });

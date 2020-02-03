@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using SFA.DAS.Commitments.Shared.Extensions;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -12,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string SearchTerm { get; set; }
         public string SelectedEmployer { get; set; }
         public string SelectedCourse { get; set; }
-        public string SelectedStatus { get; set; }
+        public ApprenticeshipStatus? SelectedStatus { get; set; }
         public DateTime? SelectedStartDate { get; set; }
         public DateTime? SelectedEndDate { get; set; }
         public string SortField { get; set; }
@@ -23,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
-        public IEnumerable<string> StatusFilters { get; set; } = new List<string>();
+        public IEnumerable<ApprenticeshipStatus> StatusFilters { get; set; } = new List<ApprenticeshipStatus>();
         public IEnumerable<DateTime> StartDateFilters { get; set; } = new List<DateTime>();
         public IEnumerable<DateTime> EndDateFilters { get; set; } = new List<DateTime>();
 
@@ -41,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool SearchOrFiltersApplied => !string.IsNullOrWhiteSpace(SearchTerm)
                                               || !string.IsNullOrWhiteSpace(SelectedEmployer)
                                               || !string.IsNullOrWhiteSpace(SelectedCourse)
-                                              || !string.IsNullOrWhiteSpace(SelectedStatus)
+                                              || SelectedStatus.HasValue
                                               || SelectedStartDate.HasValue
                                               || SelectedEndDate.HasValue;
 
@@ -53,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 if (!string.IsNullOrWhiteSpace(SearchTerm)) filters.Add($"‘{SearchTerm}’");
                 if (!string.IsNullOrWhiteSpace(SelectedEmployer)) filters.Add(SelectedEmployer);
                 if (!string.IsNullOrWhiteSpace(SelectedCourse)) filters.Add(SelectedCourse);
-                if (!string.IsNullOrWhiteSpace(SelectedStatus)) filters.Add(SelectedStatus);
+                if (SelectedStatus.HasValue) filters.Add(SelectedStatus.Value.FormatStatus());
                 if (SelectedStartDate.HasValue) filters.Add(SelectedStartDate.Value.ToGdsFormatWithoutDay());
                 if (SelectedEndDate.HasValue) filters.Add(SelectedEndDate.Value.ToGdsFormatWithoutDay());
 
@@ -161,9 +163,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 routeData.Add(nameof(SelectedCourse), SelectedCourse);
             }
 
-            if (!string.IsNullOrWhiteSpace(SelectedStatus))
+            if (SelectedStatus.HasValue)
             {
-                routeData.Add(nameof(SelectedStatus), SelectedStatus);
+                routeData.Add(nameof(SelectedStatus), SelectedStatus.Value.ToString());
             }
             
             if (SelectedStartDate.HasValue)
