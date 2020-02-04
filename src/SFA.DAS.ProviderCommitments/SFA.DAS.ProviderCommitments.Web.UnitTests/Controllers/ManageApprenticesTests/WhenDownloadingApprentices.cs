@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
@@ -18,10 +19,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public async Task ThenTheFileNameIsSetCorrectly(
             uint providerId,
             ManageApprenticesFilterModel filterModel,
+            [Frozen] ICurrentDateTime mockDateTime,
             ManageApprenticesController controller)
         {
             //Arrange
-            var expected = $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv";
+            var expected = $"{"Manageyourapprentices"}_{mockDateTime.Now:yyyyMMddhhmmss}.csv";
 
             //Act
             var actual = await controller.Download(providerId, filterModel) as FileContentResult;

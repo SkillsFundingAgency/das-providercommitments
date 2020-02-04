@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -13,11 +14,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
         private readonly IMapper<GetApprenticeshipsCsvContentRequest, byte[]> _csvMapper;
+        private readonly ICurrentDateTime _currentDateTime;
 
-        public ManageApprenticesController(IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper)
+        public ManageApprenticesController(
+            IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, 
+            IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper,
+            ICurrentDateTime currentDateTime)
         {
             _apprenticeshipMapper = apprenticeshipMapper;
             _csvMapper = csvMapper;
+            _currentDateTime = currentDateTime;
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
@@ -62,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var csvFileContent = await _csvMapper.Map(request);
 
-            return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{DateTime.Now:yyyyMMddhhmmss}.csv");
+            return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv");
         }
 
         [Route("{apprenticeshipId}", Name = "ApprenticeshipDetails")]
