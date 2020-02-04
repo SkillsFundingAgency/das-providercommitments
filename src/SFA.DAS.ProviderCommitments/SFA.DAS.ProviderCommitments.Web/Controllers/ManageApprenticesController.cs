@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -23,11 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("", Name = RouteNames.ManageApprentices)]
         public async Task<IActionResult> Index(long providerId, ManageApprenticesFilterModel filterModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
@@ -41,7 +35,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 SelectedStartDate = filterModel.SelectedStartDate,
                 SelectedEndDate = filterModel.SelectedEndDate
             };
-
             var viewModel = await _apprenticeshipMapper.Map(request);
             
             viewModel.SortedByHeader();
