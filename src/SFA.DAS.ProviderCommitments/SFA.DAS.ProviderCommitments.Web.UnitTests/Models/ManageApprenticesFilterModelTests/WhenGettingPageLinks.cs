@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
 {
     public class WhenGettingPageLinks
     {
@@ -13,20 +16,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
         {
             var filterModel = new ManageApprenticesFilterModel
             {
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 3
+                SearchTerm = "asedfas",
+                SelectedEmployer = "asdsad",
+                SelectedCourse = "iknjso",
+                SelectedStatus = ApprenticeshipStatus.WaitingToStart,
+                SelectedStartDate = DateTime.Today,
+                SelectedEndDate = DateTime.Today,
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3,
+                SortField = "gsd",
+                ReverseSort = false
             };
 
-            var pageLinks = filterModel.PageLinks.Where(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
+            var pageLinks = filterModel.PageLinks.Where(link =>
+                link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
             for (var i = 0; i < 3; i++)
             {
-                pageLinks[i].Label.Should().Be($"{i+1}");
-                pageLinks[i].AriaLabel.Should().Be($"Page {i+1}");
+                pageLinks[i].Label.Should().Be($"{i + 1}");
+                pageLinks[i].AriaLabel.Should().Be($"Page {i + 1}");
                 pageLinks[i].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
                     {
-                        {"pageNumber", (i+1).ToString() }
+                        {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
+                        {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
+                        {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
+                        {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
+                        {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.SortField), filterModel.SortField},
+                        {nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString()},
+                        {nameof(filterModel.PageNumber), (i+1).ToString() }
                     });
             }
         }
@@ -37,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 3
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3
             };
 
             var pageLinks = filterModel.PageLinks.Where(link => 
@@ -55,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 3,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 3
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3
             };
 
             var pageLinks = filterModel.PageLinks.Where(link => 
@@ -73,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 5,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 7
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 7
             };
 
             var pageLinks = filterModel.PageLinks.Where(link => 
@@ -93,7 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 3
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 3
             };
 
             filterModel.PageLinks.Count(link => 
@@ -108,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 10
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 10
             };
 
             filterModel.PageLinks.Count(link => 
@@ -123,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 4,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 5
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 5
             };
 
             var pageLinks = filterModel.PageLinks.Where(link =>
@@ -143,7 +162,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 7,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 10
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 10
             };
 
             var pageLinks = filterModel.PageLinks.Where(link =>
@@ -163,7 +182,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 10,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 10
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 10
             };
 
             var pageLinks = filterModel.PageLinks.Where(link =>
@@ -183,7 +202,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize - 1
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage - 1
             };
 
             var pageLinks = filterModel.PageLinks.ToList();
@@ -198,7 +217,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 6
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 6
             };
 
             var pageLinks = filterModel.PageLinks.ToList();
@@ -216,7 +235,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 6,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 6
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 6
             };
 
             var pageLinks = filterModel.PageLinks.ToList();
@@ -230,7 +249,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 2,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 6
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 6
             };
 
             var pageLinks = filterModel.PageLinks.ToList();
@@ -248,7 +267,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
             var filterModel = new ManageApprenticesFilterModel
             {
                 PageNumber = 1,
-                TotalNumberOfApprenticeshipsFound = ManageApprenticesFilterModel.PageSize * 6
+                TotalNumberOfApprenticeshipsFound = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage * 6
             };
 
             var pageLinks = filterModel.PageLinks.ToList();

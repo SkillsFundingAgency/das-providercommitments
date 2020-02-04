@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel>
+    public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>
     {
         private readonly ICommitmentsApiClient _client;
         private readonly IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> _mapper;
@@ -22,20 +24,47 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
         {
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
+            var response = await _client.GetApprenticeships(new ApiRequests.GetApprenticeshipsRequest
             {
-                ProviderId = source.ProviderId, 
-                PageNumber = source.PageNumber, 
+                ProviderId = source.ProviderId,
+                PageNumber = source.PageNumber,
                 PageItemCount = source.PageItemCount,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort
+                //SearchTerm = source.SearchTerm,
+				SortField = source.SortField,
+                ReverseSort = source.ReverseSort,
+                EmployerName = source.SelectedEmployer,
+                CourseName = source.SelectedCourse,
+                Status = source.SelectedStatus,
+                StartDate = source.SelectedStartDate,
+                EndDate = source.SelectedEndDate
             });
+
+            var filters = new GetApprenticeshipsFilterValuesResponse();
             
+            if (response.TotalApprenticeships >= ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
+            {
+                filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
+            }
+
             var filterModel = new ManageApprenticesFilterModel
             {
+                TotalNumberOfApprenticeships = response.TotalApprenticeships,
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
-                PageNumber = source.PageNumber
+                PageNumber = source.PageNumber,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort,
+                SearchTerm = source.SearchTerm,
+                SelectedEmployer = source.SelectedEmployer,
+                SelectedCourse = source.SelectedCourse,
+                SelectedStatus = source.SelectedStatus,
+                SelectedStartDate = source.SelectedStartDate,
+                SelectedEndDate = source.SelectedEndDate,
+                EmployerFilters = filters.EmployerNames,
+                CourseFilters = filters.CourseNames,
+                StatusFilters = new []{ApprenticeshipStatus.WaitingToStart, ApprenticeshipStatus.Live, ApprenticeshipStatus.Paused, ApprenticeshipStatus.Stopped},
+                StartDateFilters = filters.StartDates,
+                EndDateFilters = filters.EndDates
             };
             
             var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
@@ -50,9 +79,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 Apprenticeships = apprenticeships,
                 FilterModel = filterModel,
-                SortField = source.SortField,
-                ReverseSort = source.ReverseSort
-
             };
         }
     }

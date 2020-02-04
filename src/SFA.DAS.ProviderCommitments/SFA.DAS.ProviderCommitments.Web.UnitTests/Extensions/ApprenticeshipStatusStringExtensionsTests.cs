@@ -6,7 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 {
     public class ApprenticeshipStatusStringExtensionsTests
     {
-        [TestCase(ApprenticeshipStatus.Unknown, "Unknown")]
         [TestCase(ApprenticeshipStatus.Completed, "Completed")]
         [TestCase(ApprenticeshipStatus.Live, "Live")]
         [TestCase(ApprenticeshipStatus.Paused, "Paused")]

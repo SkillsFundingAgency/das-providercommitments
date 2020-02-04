@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseName = source.CourseName,
                 PlannedStartDate = source.StartDate,
                 PlannedEndDate = source.EndDate,
-                Status = source.PaymentStatus.ToString(),
+                Status = source.ApprenticeshipStatus.FormatStatus(),
                 Alerts = source.Alerts.Select(x => x.FormatAlert()) 
             };
 

@@ -2,106 +2,61 @@
 using System.Collections.Generic;
 using CsvHelper;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Services;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services
 {
     public class WhenICreateACsvFile
     {
-        private ICreateCsvService _createCsvService;
-        private List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse> _apprenticeshipDetails;
-        
-        [SetUp]
-        public void SetUp()
+        [Test, MoqAutoData]
+        public void Then_The_First_Line_Of_The_File_Is_The_Headers(
+            List<SomethingToCsv> listToWriteToCsv,
+            CreateCsvService createCsvService)
         {
-            _createCsvService = new CreateCsvService();
-
-            _apprenticeshipDetails = new List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>
-            {
-                new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
-                {
-                    Alerts = null,
-                    FirstName = "Name1",
-                    CourseName = "Course1",
-                    EmployerName = "Employer1",
-                    EndDate = DateTime.UtcNow.AddMonths(2),
-                    StartDate = DateTime.UtcNow,
-                    PaymentStatus = PaymentStatus.Active,
-                    Uln = "ULN1"
-                },
-                new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
-                {
-                    Alerts = null,
-                    FirstName = "Name2",
-                    CourseName = "Course2",
-                    EmployerName = "Employer2",
-                    EndDate = DateTime.UtcNow.AddMonths(2),
-                    StartDate = DateTime.UtcNow,
-                    PaymentStatus = PaymentStatus.Active,
-                    Uln = "ULN2"
-                },
-                new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
-                {
-                    Alerts = null,
-                    FirstName = "Name3",
-                    CourseName = "Course3",
-                    EmployerName = "Employer3",
-                    EndDate = DateTime.UtcNow.AddMonths(2),
-                    StartDate = DateTime.UtcNow,
-                    PaymentStatus = PaymentStatus.Active,
-                    Uln = "ULN3"
-                },
-                new GetApprenticeshipsResponse.ApprenticeshipDetailsResponse
-                {
-                    Alerts = null,
-                    FirstName = "Name4",
-                    CourseName = "Course4",
-                    EmployerName = "Employer4",
-                    EndDate = DateTime.UtcNow.AddMonths(2),
-                    StartDate = DateTime.UtcNow,
-                    PaymentStatus = PaymentStatus.Active,
-                    Uln = "ULN4"
-                }
-            };
-        }
-
-        [Ignore("Currently broken, Scott to fix on another branch")]
-        public void Then_The_First_Line_Of_The_File_Is_The_Headers()
-        {
-            var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);
+            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv);
 
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
             Assert.IsAssignableFrom<byte[]>(actual);
             var fileString = System.Text.Encoding.Default.GetString(actual);
-            var headerLine = fileString.Split('\n')[0];
-            Assert.AreEqual(9,headerLine.Split(',').Length);
-            Assert.Contains(nameof(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse.StartDate),headerLine.Split(','));
+            var headerLine = fileString.Split(Environment.NewLine)[0];
+
+            Assert.That(headerLine.Contains(nameof(SomethingToCsv.Id)));
+            Assert.That(!headerLine.Contains(nameof(SomethingToCsv.InternalStuff)));
         }
 
-        [Ignore("Currently broken, Scott to fix on another branch")]
-        public void ThenTheCsvFileContentIsGenerated()
+        [Test, MoqAutoData]
+        public void Then_The_Csv_File_Content_Is_Generated(
+            List<SomethingToCsv> listToWriteToCsv,
+            CreateCsvService createCsvService)
         {
-            var actual = _createCsvService.GenerateCsvContent(_apprenticeshipDetails);
+            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv);
 
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
             Assert.IsAssignableFrom<byte[]>(actual);
             var fileString = System.Text.Encoding.Default.GetString(actual);
-            var lines = fileString.Split('\n');
-            Assert.AreEqual(_apprenticeshipDetails.Count + 2,lines.Length);
-            Assert.AreEqual(9,lines[0].Split(',').Length);
-            Assert.AreEqual(_apprenticeshipDetails[0].StartDate.ToString(),lines[1].Split(',')[6]);
+            var lines = fileString.Split(Environment.NewLine);
+            Assert.AreEqual(listToWriteToCsv.Count + 2, lines.Length);
+            Assert.AreEqual(listToWriteToCsv[0].Description, lines[1].Split(',')[1]);
         }
 
-        [Test]
-        public void AndNothingIsPassedToTheContentGeneratorThenExceptionIsThrown()
+        [Test, MoqAutoData]
+        public void And_Nothing_Is_Passed_To_The_Content_Generator_Then_Exception_Is_Thrown(
+            CreateCsvService createCsvService)
         {
-            List<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse> nullList = null;
+            List<SomethingToCsv> nullList = null;
 
-            Assert.Throws<WriterException>(() => _createCsvService.GenerateCsvContent(nullList));
+            Assert.Throws<WriterException>(() => createCsvService.GenerateCsvContent(nullList));
         }
+    }
+
+    public class SomethingToCsv
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+        [CsvHelper.Configuration.Attributes.Ignore]
+        public long InternalStuff { get; set; }
     }
 }

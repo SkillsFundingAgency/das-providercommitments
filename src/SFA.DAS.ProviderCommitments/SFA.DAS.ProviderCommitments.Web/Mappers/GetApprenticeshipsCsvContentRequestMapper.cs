@@ -23,7 +23,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<byte[]> Map(GetApprenticeshipsCsvContentRequest request)
         {
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest{ProviderId = request.ProviderId});
+            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
+            {
+                ProviderId = request.ProviderId,
+                //SearchTerm = request.FilterModel.SearchTerm,
+                EmployerName = request.FilterModel.SelectedEmployer,
+                CourseName = request.FilterModel.SelectedCourse,
+                Status = request.FilterModel.SelectedStatus,
+                StartDate = request.FilterModel.SelectedStartDate,
+                EndDate = request.FilterModel.SelectedEndDate
+            });
 
             var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
             

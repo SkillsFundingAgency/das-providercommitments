@@ -5,11 +5,10 @@ using SFA.DAS.Commitments.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using GetApprenticeshipsRequest = SFA.DAS.CommitmentsV2.Api.Types.Requests.GetApprenticeshipsRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [Route("{providerId}/apprentices",Name = "index")]
+    [Route("{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
         private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
@@ -22,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
-        public async Task<IActionResult> Index(long providerId, string sortField = "", bool reverseSort = false, int pageNumber = 1)
+        public async Task<IActionResult> Index(long providerId, ManageApprenticesFilterModel filterModel)
         {
             if (!ModelState.IsValid)
             {
@@ -32,19 +31,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = new GetApprenticeshipsRequest
             {
                 ProviderId = providerId,
-                PageNumber = pageNumber,
+                PageNumber = filterModel.PageNumber,
                 PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
-                SortField = sortField,
-                ReverseSort = reverseSort
+                SortField = filterModel.SortField,
+                ReverseSort = filterModel.ReverseSort,
+                SelectedEmployer = filterModel.SelectedEmployer,
+                SelectedCourse = filterModel.SelectedCourse,
+                SelectedStatus = filterModel.SelectedStatus,
+                SelectedStartDate = filterModel.SelectedStartDate,
+                SelectedEndDate = filterModel.SelectedEndDate
             };
 
             var viewModel = await _apprenticeshipMapper.Map(request);
             
-            if (string.IsNullOrEmpty(viewModel.SortField))
-            {
-                viewModel.SortField = "FirstName";
-            }
-
             viewModel.SortedByHeader();
 
             return View(viewModel);
@@ -52,9 +51,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        public async Task<IActionResult> Download(long providerId)
+        public async Task<IActionResult> Download(long providerId, ManageApprenticesFilterModel filterModel)
         {
-            var request = new GetApprenticeshipsCsvContentRequest{ProviderId = providerId};
+            var request = new GetApprenticeshipsCsvContentRequest
+            {
+                ProviderId = providerId,
+                FilterModel = filterModel
+            };
 
             var csvFileContent = await _csvMapper.Map(request);
 

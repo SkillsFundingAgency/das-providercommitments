@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
 {
     public class WhenGettingPagedRecordsFrom
     {
@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
         {
             filterModel.PageNumber = 2;
 
-            filterModel.PagedRecordsFrom.Should().Be(ManageApprenticesFilterModel.PageSize+1);
+            filterModel.PagedRecordsFrom.Should().Be(ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage+1);
         }
 
         [Test, AutoData]
@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManagedFilterModel
         {
             filterModel.PageNumber = 3;
 
-            filterModel.PagedRecordsFrom.Should().Be(2 * ManageApprenticesFilterModel.PageSize+1);
+            filterModel.PagedRecordsFrom.Should().Be(2 * ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage+1);
         }
 
         [Test, AutoData]
