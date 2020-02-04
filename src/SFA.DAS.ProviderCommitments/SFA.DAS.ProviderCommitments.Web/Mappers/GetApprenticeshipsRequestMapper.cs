@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReverseSort = source.ReverseSort,
                 EmployerName = source.SelectedEmployer,
                 CourseName = source.SelectedCourse,
-                Status = source.SelectedStatus.ToString(),
+                Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate
             });

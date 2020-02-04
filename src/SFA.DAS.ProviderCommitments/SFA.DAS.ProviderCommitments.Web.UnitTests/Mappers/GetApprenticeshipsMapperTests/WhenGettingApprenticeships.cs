@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                         //apiRequest.SearchTerm == webRequest.SearchTerm && todo: future story
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
-                        apiRequest.Status == webRequest.SelectedStatus.ToString() &&
+                        apiRequest.Status == webRequest.SelectedStatus &&
                         apiRequest.StartDate == webRequest.SelectedStartDate &&
                         apiRequest.EndDate == webRequest.SelectedEndDate),
                     It.IsAny<CancellationToken>()), 
@@ -179,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Stopped));
             Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.WaitingToStart));
 
-            Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.None));
+            Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Unknown));
             Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Completed));
         }
     }

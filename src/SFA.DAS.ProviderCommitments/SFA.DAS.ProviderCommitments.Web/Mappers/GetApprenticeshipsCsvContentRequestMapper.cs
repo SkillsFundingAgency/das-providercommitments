@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 //SearchTerm = request.FilterModel.SearchTerm,
                 EmployerName = request.FilterModel.SelectedEmployer,
                 CourseName = request.FilterModel.SelectedCourse,
-                Status = request.FilterModel.SelectedStatus.ToString(),
+                Status = request.FilterModel.SelectedStatus,
                 StartDate = request.FilterModel.SelectedStartDate,
                 EndDate = request.FilterModel.SelectedEndDate
             });
