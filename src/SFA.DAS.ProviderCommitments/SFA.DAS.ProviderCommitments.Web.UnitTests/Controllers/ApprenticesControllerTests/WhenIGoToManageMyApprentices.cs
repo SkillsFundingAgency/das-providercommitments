@@ -9,7 +9,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprenticesTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
     public class WhenIGoToManageMyApprentices
@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
             long providerId,
             ManageApprenticesFilterModel filterModel,
-            ManageApprenticesController controller)
+            ApprenticeController controller)
         {
             //Arrange
             controller.ModelState.AddModelError("test", "test");
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesFilterModel filterModel,
             ManageApprenticesViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            ManageApprenticesController controller)
+            ApprenticeController controller)
         {
             //Arrange
             apprenticeshipMapper

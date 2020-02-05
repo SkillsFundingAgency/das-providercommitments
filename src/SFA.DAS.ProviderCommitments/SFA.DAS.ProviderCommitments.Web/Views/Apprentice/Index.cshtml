@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
@@ -295,7 +294,7 @@ else
                     <td class="govuk-table__cell" data-label="Alerts">
                         @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                         {
-                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{apprenticeship.EncodedApprenticeshipId}/details")">
                                 @apprenticeship.Alerts.ElementAt(i)
                             </a>
                             @if (i < apprenticeship.Alerts.Count() - 1)

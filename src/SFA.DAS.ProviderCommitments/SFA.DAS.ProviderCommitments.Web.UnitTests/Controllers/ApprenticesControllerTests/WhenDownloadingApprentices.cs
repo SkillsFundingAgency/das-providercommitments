@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             uint providerId,
             ManageApprenticesFilterModel filterModel,
             [Frozen] ICurrentDateTime mockDateTime,
-            ManageApprenticesController controller)
+            ApprenticeController controller)
         {
             //Arrange
             var expected = $"{"Manageyourapprentices"}_{mockDateTime.Now:yyyyMMddhhmmss}.csv";
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             ManageApprenticesFilterModel filterModel,
             [Frozen] byte[] expectedCsvContent,
             [Frozen] Mock<IModelMapper> csvMapper,
-            ManageApprenticesController controller)
+            ApprenticeController controller)
         {
             //Arrange
             csvMapper.Setup(x =>
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             uint providerId,
             ManageApprenticesFilterModel filterModel,
             [Frozen] Mock<IModelMapper> csvMapper,
-            ManageApprenticesController controller)
+            ApprenticeController controller)
         {
             //Act
             await controller.Download(providerId, filterModel);
