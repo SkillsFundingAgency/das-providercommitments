@@ -90,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
             ApprenticeshipDetailsViewModel expectedViewModel,
-            [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> detailsViewModelMapper,
+            [Frozen] Mock<IModelMapper> modelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             GetApprenticeshipsRequestMapper mapper)
         {
@@ -109,8 +109,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(filtersResponse);
             
-            detailsViewModelMapper
-                .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
+            modelMapper
+                .Setup(x => x.Map<ApprenticeshipDetailsViewModel>(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
                 .ReturnsAsync(expectedViewModel);
 
             //Act

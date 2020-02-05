@@ -13,12 +13,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>
     {
         private readonly ICommitmentsApiClient _client;
-        private readonly IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> _mapper;
+        private readonly IModelMapper _modelMapper;
 
-        public GetApprenticeshipsRequestMapper(ICommitmentsApiClient client, IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel> mapper)
+        public GetApprenticeshipsRequestMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
         {
             _client = client;
-            _mapper = mapper;
+            _modelMapper = modelMapper;
         }
 
         public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
@@ -77,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
             foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
             {
-                var apprenticeship = await _mapper.Map(apprenticeshipDetailsResponse);
+                var apprenticeship = await _modelMapper.Map<ApprenticeshipDetailsViewModel>(apprenticeshipDetailsResponse);
                 apprenticeships.Add(apprenticeship);
             }
 

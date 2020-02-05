@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
     {
         public static HtmlString GetFiltersUsedMessage(this ApprenticesFilterModel model)
         {
-            var filters = BuildFilterList(model);
+            var filters = BuildUsedFilterList(model);
 
             if (filters.Count == 0)
             {
@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             return new HtmlString(message.ToString());
         }
 
-        private static IList<string> BuildFilterList(ApprenticesFilterModel model)
+        private static IList<string> BuildUsedFilterList(ApprenticesFilterModel model)
         {
             var filters = new List<string>();
             if (!string.IsNullOrWhiteSpace(model.SearchTerm))
