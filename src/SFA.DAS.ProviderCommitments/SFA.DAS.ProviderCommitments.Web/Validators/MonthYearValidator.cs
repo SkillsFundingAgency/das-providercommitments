@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SFA.DAS.Commitments.Shared.Models;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators
 {
