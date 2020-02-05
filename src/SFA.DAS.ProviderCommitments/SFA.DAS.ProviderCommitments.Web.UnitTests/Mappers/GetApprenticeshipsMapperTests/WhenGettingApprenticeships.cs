@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             GetApprenticeshipsRequestMapper mapper)
         {
             clientResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
             mockApiClient
                 .Setup(client => client.GetApprenticeships(
                     It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             GetApprenticeshipsRequestMapper mapper)
         {
-            clientResponse.TotalApprenticeships = ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch - 1;
+            clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
             
             mockApiClient
                 .Setup(client => client.GetApprenticeships(
@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
             
             mockApiClient
                 .Setup(x => x.GetApprenticeships(
@@ -152,7 +152,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
             mockApiClient
                 .Setup(x => x.GetApprenticeships(

@@ -5,6 +5,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Requests
     public class GetApprenticeshipsCsvContentRequest
     {
         public long ProviderId { get; set; }
-        public ManageApprenticesFilterModel FilterModel { get; set; }
+        public ApprenticesFilterModel FilterModel { get; set; }
     }
 }

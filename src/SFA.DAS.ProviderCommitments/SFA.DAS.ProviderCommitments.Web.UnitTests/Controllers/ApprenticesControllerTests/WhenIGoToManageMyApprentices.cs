@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
             long providerId,
-            ManageApprenticesFilterModel filterModel,
+            ApprenticesFilterModel filterModel,
             ApprenticeController controller)
         {
             //Arrange
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
-            ManageApprenticesFilterModel filterModel,
+            ApprenticesFilterModel filterModel,
             ManageApprenticesViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
             ApprenticeController controller)
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     It.Is<Requests.GetApprenticeshipsRequest>(request =>
                             request.ProviderId == providerId &&
                             request.PageNumber == filterModel.PageNumber &&
-                            request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
+                            request.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
                             request.SortField == filterModel.SortField &&
                             request.ReverseSort == filterModel.ReverseSort &&
                             request.SearchTerm == filterModel.SearchTerm &&

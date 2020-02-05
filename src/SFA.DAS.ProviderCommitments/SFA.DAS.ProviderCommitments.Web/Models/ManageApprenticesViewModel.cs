@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             }
         }
 
-        public ManageApprenticesFilterModel FilterModel { get; set; }
-        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
+        public ApprenticesFilterModel FilterModel { get; set; }
+        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
     }
 }

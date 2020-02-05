@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_No_Search_And_No_Filters_Then_Null()
         {
-            var filterModel = new ManageApprenticesFilterModel();
+            var filterModel = new ApprenticesFilterModel();
 
             filterModel.FiltersUsedMessage.Should().Be(HtmlString.Empty);
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_Search_And_No_Filters_Then_Quoted_SearchTerm(
             string searchTerm)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm
             };
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedEmployer_Then_SelectedEmployer(
             string selectedEmployer)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEmployer = selectedEmployer
             };
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedCourse_Then_SelectedCourse(
             string selectedCourse)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedCourse = selectedCourse
             };
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedStatus_Then_SelectedStatus(
             ApprenticeshipStatus selectedStatus)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStatus = selectedStatus
             };
@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedStartDate_Then_SelectedStartDate(
             DateTime selectedStartDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStartDate = selectedStartDate
             };
@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedEndDate_Then_SelectedEndDate(
             DateTime selectedEndDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEndDate = selectedEndDate
             };
@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string searchTerm,
             string selectedEmployer)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm,
                 SelectedEmployer = selectedEmployer
@@ -114,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string selectedEmployer,
             string selectedCourse)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm,
                 SelectedEmployer = selectedEmployer,
@@ -133,7 +133,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string selectedCourse,
             DateTime selectedStartDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEmployer = selectedEmployer,
                 SelectedCourse = selectedCourse,

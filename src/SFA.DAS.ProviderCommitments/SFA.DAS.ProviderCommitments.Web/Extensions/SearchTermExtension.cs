@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class FiltersMessageExtension
     {
-        public static HtmlString GetFiltersUsedMessage(this ManageApprenticesFilterModel model)
+        public static HtmlString GetFiltersUsedMessage(this ApprenticesFilterModel model)
         {
             var filters = new List<string>();
             if (!string.IsNullOrWhiteSpace(model.SearchTerm)) filters.Add($"‘{model.SearchTerm}’");

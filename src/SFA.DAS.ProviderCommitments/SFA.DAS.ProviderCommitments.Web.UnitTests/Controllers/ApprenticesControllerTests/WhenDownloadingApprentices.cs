@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public async Task ThenTheFileNameIsSetCorrectly(
             uint providerId,
-            ManageApprenticesFilterModel filterModel,
+            ApprenticesFilterModel filterModel,
             [Frozen] ICurrentDateTime mockDateTime,
             ApprenticeController controller)
         {
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public async Task ThenTheFileContentIsSetCorrectly(
             uint providerId,
-            ManageApprenticesFilterModel filterModel,
+            ApprenticesFilterModel filterModel,
             [Frozen] byte[] expectedCsvContent,
             [Frozen] Mock<IModelMapper> csvMapper,
             ApprenticeController controller)
@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public async Task ThenWillMapRequestToCsvContent(
             uint providerId,
-            ManageApprenticesFilterModel filterModel,
+            ApprenticesFilterModel filterModel,
             [Frozen] Mock<IModelMapper> csvMapper,
             ApprenticeController controller)
         {

@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SearchTerm_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = "asedfas"
             };
@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SelectedEmployer_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEmployer = "asedfas"
             };
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SelectedCourse_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedCourse = "asedfas"
             };
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SelectedStatus_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStatus = ApprenticeshipStatus.WaitingToStart
             };
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SelectedStartDate_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStartDate = DateTime.Today
             };
@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_Has_SelectedEndDate_Then_True()
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEndDate = DateTime.Today
             };
@@ -77,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test]
         public void And_No_Search_Or_Filter_Then_False()
         {
-            var filterModel = new ManageApprenticesFilterModel();
+            var filterModel = new ApprenticesFilterModel();
 
             filterModel.SearchOrFiltersApplied.Should().BeFalse();
         }

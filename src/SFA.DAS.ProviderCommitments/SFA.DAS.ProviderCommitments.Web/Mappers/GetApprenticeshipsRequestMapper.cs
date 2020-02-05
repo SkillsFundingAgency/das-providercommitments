@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
             var filters = new GetApprenticeshipsFilterValuesResponse();
             
-            if (response.TotalApprenticeships >= ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch)
+            if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
             {
                 filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
             }
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ApprenticeshipStatus.Stopped
             };
 
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 TotalNumberOfApprenticeships = response.TotalApprenticeships,
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,

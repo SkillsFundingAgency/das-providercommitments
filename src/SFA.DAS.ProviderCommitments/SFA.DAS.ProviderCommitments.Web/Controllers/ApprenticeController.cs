@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
-        public async Task<IActionResult> Index(long providerId, ManageApprenticesFilterModel filterModel)
+        public async Task<IActionResult> Index(long providerId, ApprenticesFilterModel filterModel)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 ProviderId = providerId,
                 PageNumber = filterModel.PageNumber,
-                PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
+                PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
                 SortField = filterModel.SortField,
                 ReverseSort = filterModel.ReverseSort,
                 SearchTerm = filterModel.SearchTerm,
@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        public async Task<IActionResult> Download(long providerId, ManageApprenticesFilterModel filterModel)
+        public async Task<IActionResult> Download(long providerId, ApprenticesFilterModel filterModel)
         {
             var request = new GetApprenticeshipsCsvContentRequest
             {

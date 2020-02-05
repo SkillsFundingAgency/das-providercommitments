@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
     {
         [Test, AutoData]
         public void Then_Contains_Item_For_Each_Search_And_Filter_Value(
-            ManageApprenticesFilterModel filterModel)
+            ApprenticesFilterModel filterModel)
         {
             filterModel.RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
             {
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
 
         [Test, AutoData]
         public void Then_Not_Contain_Item_For_PageNumber(
-            ManageApprenticesFilterModel filterModel)
+            ApprenticesFilterModel filterModel)
         {
             filterModel.RouteData.Should().NotContain(new KeyValuePair<string, string>(
                 nameof(filterModel.PageNumber), filterModel.PageNumber.ToString() )
