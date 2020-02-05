@@ -37,12 +37,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
             uint providerId,
             ManageApprenticesFilterModel filterModel,
             [Frozen] byte[] expectedCsvContent,
-            [Frozen] Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>> csvMapper,
+            [Frozen] Mock<IModelMapper> csvMapper,
             ManageApprenticesController controller)
         {
             //Arrange
             csvMapper.Setup(x =>
-                    x.Map(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))))
+                    x.Map<byte[]>(It.Is<GetApprenticeshipsCsvContentRequest>(request => request.ProviderId.Equals(providerId))))
                 .ReturnsAsync(expectedCsvContent);
 
             //Act
@@ -59,14 +59,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public async Task ThenWillMapRequestToCsvContent(
             uint providerId,
             ManageApprenticesFilterModel filterModel,
-            [Frozen] Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>> csvMapper,
+            [Frozen] Mock<IModelMapper> csvMapper,
             ManageApprenticesController controller)
         {
             //Act
             await controller.Download(providerId, filterModel);
 
             //Assert
-            csvMapper.Verify(x => x.Map(
+            csvMapper.Verify(x => x.Map<byte[]>(
                 It.Is<GetApprenticeshipsCsvContentRequest>(request => 
                     request.ProviderId.Equals(providerId) &&
                     request.FilterModel.Equals(filterModel))));
