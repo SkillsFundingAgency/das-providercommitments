@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 if (!string.IsNullOrWhiteSpace(SearchTerm)) filters.Add($"‘{SearchTerm}’");
                 if (!string.IsNullOrWhiteSpace(SelectedEmployer)) filters.Add(SelectedEmployer);
                 if (!string.IsNullOrWhiteSpace(SelectedCourse)) filters.Add(SelectedCourse);
-                if (SelectedStatus.HasValue) filters.Add(SelectedStatus.Value.FormatStatus());
+                if (SelectedStatus.HasValue) filters.Add(SelectedStatus.Value.GetDescription());
                 if (SelectedStartDate.HasValue) filters.Add(SelectedStartDate.Value.ToGdsFormatWithoutDay());
                 if (SelectedEndDate.HasValue) filters.Add(SelectedEndDate.Value.ToGdsFormatWithoutDay());
 

@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         {
             ApprenticeshipDetailsCsvModel result = source;
 
-            result.Status.Should().Be(source.ApprenticeshipStatus.FormatStatus());
+            result.Status.Should().Be(source.ApprenticeshipStatus.GetDescription());
         }
 
         [Test, MoqAutoData]

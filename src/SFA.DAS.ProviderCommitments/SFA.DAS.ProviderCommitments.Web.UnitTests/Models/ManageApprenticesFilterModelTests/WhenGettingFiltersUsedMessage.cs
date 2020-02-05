@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
                 SelectedStatus = selectedStatus
             };
 
-            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus.FormatStatus()}</strong>");
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus.GetDescription()}</strong>");
         }
 
         [Test, AutoData]

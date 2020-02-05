@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -28,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseName = source.CourseName,
                 PlannedStartDate = source.StartDate,
                 PlannedEndDate = source.EndDate,
-                Status = source.ApprenticeshipStatus.FormatStatus(),
+                Status = source.ApprenticeshipStatus.GetDescription(),
                 Alerts = source.Alerts.Select(x => x.FormatAlert()) 
             };
 

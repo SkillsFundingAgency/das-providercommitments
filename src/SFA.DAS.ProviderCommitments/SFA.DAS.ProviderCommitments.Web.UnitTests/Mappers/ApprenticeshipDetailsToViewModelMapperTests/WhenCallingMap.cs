@@ -7,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -100,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
         {
             var result = await mapper.Map(source);
 
-            result.Status.Should().Be(source.ApprenticeshipStatus.FormatStatus());
+            result.Status.Should().Be(source.ApprenticeshipStatus.GetDescription());
         }
 
         [Test, MoqAutoData]
