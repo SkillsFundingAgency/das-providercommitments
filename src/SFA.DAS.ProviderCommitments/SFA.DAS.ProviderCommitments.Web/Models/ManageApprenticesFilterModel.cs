@@ -8,7 +8,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class ManageApprenticesFilterModelBase
+    public class ManageApprenticesFilterModel
     {
         public int PageNumber { get; set; } = 1;
         public string SearchTerm { get; set; }
@@ -19,10 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime? SelectedEndDate { get; set; }
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
-    }
 
-    public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase
-    {
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
         public IEnumerable<ApprenticeshipStatus> StatusFilters { get; set; } = new List<ApprenticeshipStatus>();
@@ -47,41 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                                               || SelectedStartDate.HasValue
                                               || SelectedEndDate.HasValue;
 
-        public HtmlString FiltersUsedMessage
-        {
-            get
-            {
-                var filters = new List<string>();
-                if (!string.IsNullOrWhiteSpace(SearchTerm)) filters.Add($"‘{SearchTerm}’");
-                if (!string.IsNullOrWhiteSpace(SelectedEmployer)) filters.Add(SelectedEmployer);
-                if (!string.IsNullOrWhiteSpace(SelectedCourse)) filters.Add(SelectedCourse);
-                if (SelectedStatus.HasValue) filters.Add(SelectedStatus.Value.GetDescription());
-                if (SelectedStartDate.HasValue) filters.Add(SelectedStartDate.Value.ToGdsFormatWithoutDay());
-                if (SelectedEndDate.HasValue) filters.Add(SelectedEndDate.Value.ToGdsFormatWithoutDay());
-
-                if (filters.Count == 0) return HtmlString.Empty;
-
-                var message = new StringBuilder();
-
-                message.Append($"matching <strong>{filters[0]}</strong>");
-
-                for (var i = 1; i < filters.Count; i++)
-                {
-                    if (i == filters.Count-1)
-                    {
-                        message.Append(" and ");
-                    }
-                    else
-                    {
-                        message.Append(", ");
-                    }
-
-                    message.Append($"<strong>{filters[i]}</strong>");
-                }
-
-                return new HtmlString(message.ToString());
-            }
-        }
+        public HtmlString FiltersUsedMessage => this.GetFiltersUsedMessage();
 
         public int TotalNumberOfApprenticeships { get; set; }
         public int TotalNumberOfApprenticeshipsFound { get; set; }
@@ -209,13 +172,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
             return routeData;
         }
+        public class PageLink
+        {
+            public string Label { get; set; }
+            public string AriaLabel { get; set; }
+            public bool? IsCurrent { get; set; }
+            public Dictionary<string, string> RouteData { get; set; }
+        }
     }
 
-    public class PageLink
-    {
-        public string Label { get; set; }
-        public string AriaLabel { get; set; }
-        public bool? IsCurrent { get; set; }
-        public Dictionary<string, string> RouteData { get; set; }
-    }
+    
 }
