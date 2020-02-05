@@ -1,9 +1,9 @@
-﻿using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution;
-using SFA.DAS.Authorization.DependencyResolution;
-using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution;
-using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution;
+﻿using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.StructureMap;
+using SFA.DAS.Authorization.DependencyResolution.StructureMap;
+using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.StructureMap;
+using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.StructureMap;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
-using SFA.DAS.Commitments.Shared.DependencyInjection;
+using SFA.DAS.CommitmentsV2.Shared.DependencyInjection;
 using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
