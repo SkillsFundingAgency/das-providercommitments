@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;

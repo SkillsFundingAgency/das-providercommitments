@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = request.FilterModel.SelectedEndDate
             });
 
-            var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvViewModel)c).ToList();
+            var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
             
             var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
 

@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
                     r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
-            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvViewModel>>()))
+            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>()))
                 .Returns(expectedCsvContent);
 
             //Act

@@ -44,8 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 CourseName = model.CourseName,
                 PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
                 PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
-                Status = model.PaymentStatus.ToString(),
-                Alerts = model.Alerts.Any() ? GenerateAlerts(model.Alerts) : ""
+                Status = model.ApprenticeshipStatus.FormatStatus(),
+                Alerts = GenerateAlerts(model.Alerts)
             };
         }
 
