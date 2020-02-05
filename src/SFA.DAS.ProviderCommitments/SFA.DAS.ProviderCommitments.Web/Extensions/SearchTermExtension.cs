@@ -10,15 +10,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
     {
         public static HtmlString GetFiltersUsedMessage(this ApprenticesFilterModel model)
         {
-            var filters = new List<string>();
-            if (!string.IsNullOrWhiteSpace(model.SearchTerm)) filters.Add($"‘{model.SearchTerm}’");
-            if (!string.IsNullOrWhiteSpace(model.SelectedEmployer)) filters.Add(model.SelectedEmployer);
-            if (!string.IsNullOrWhiteSpace(model.SelectedCourse)) filters.Add(model.SelectedCourse);
-            if (model.SelectedStatus.HasValue) filters.Add(model.SelectedStatus.Value.GetDescription());
-            if (model.SelectedStartDate.HasValue) filters.Add(model.SelectedStartDate.Value.ToGdsFormatWithoutDay());
-            if (model.SelectedEndDate.HasValue) filters.Add(model.SelectedEndDate.Value.ToGdsFormatWithoutDay());
+            var filters = BuildFilterList(model);
 
-            if (filters.Count == 0) return HtmlString.Empty;
+            if (filters.Count == 0)
+            {
+                return HtmlString.Empty;
+            }
 
             var message = new StringBuilder();
 
@@ -26,19 +23,48 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
             for (var i = 1; i < filters.Count; i++)
             {
-                if (i == filters.Count - 1)
-                {
-                    message.Append(" and ");
-                }
-                else
-                {
-                    message.Append(", ");
-                }
+                message.Append(i == filters.Count - 1 ? " and " : ", ");
 
                 message.Append($"<strong>{filters[i]}</strong>");
             }
 
             return new HtmlString(message.ToString());
+        }
+
+        private static IList<string> BuildFilterList(ApprenticesFilterModel model)
+        {
+            var filters = new List<string>();
+            if (!string.IsNullOrWhiteSpace(model.SearchTerm))
+            {
+                filters.Add($"‘{model.SearchTerm}’");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SelectedEmployer))
+            {
+                filters.Add(model.SelectedEmployer);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.SelectedCourse))
+            {
+                filters.Add(model.SelectedCourse);
+            }
+
+            if (model.SelectedStatus.HasValue)
+            {
+                filters.Add(model.SelectedStatus.Value.GetDescription());
+            }
+
+            if (model.SelectedStartDate.HasValue)
+            {
+                filters.Add(model.SelectedStartDate.Value.ToGdsFormatWithoutDay());
+            }
+
+            if (model.SelectedEndDate.HasValue)
+            {
+                filters.Add(model.SelectedEndDate.Value.ToGdsFormatWithoutDay());
+            }
+
+            return filters;
         }
     }
 }
