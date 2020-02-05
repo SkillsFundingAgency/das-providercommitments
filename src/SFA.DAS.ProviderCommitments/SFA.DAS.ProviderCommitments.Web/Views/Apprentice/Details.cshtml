@@ -2,7 +2,6 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
-@inject ILinkGenerator LinkGenerator
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -13,11 +12,11 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
 
-        @if (Model.PendingUpdate)
+        @if (Model.HasPendingUpdate)
         {
-            <div class="das-notification" tabindex="-1">
-                <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
-                <p class="das-notification__body"><a href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
+            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
+                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
+                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
             </div>
         }
 

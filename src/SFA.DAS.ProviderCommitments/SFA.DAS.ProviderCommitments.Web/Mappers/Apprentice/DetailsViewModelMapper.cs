@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -35,13 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var priceEpisodes = await priceEpisodesTask;
             var pendingUpdates = await pendingUpdatesTask;   
 
-            var pendingUpdatesOnApprentice = pendingUpdates.ApprenticeshipUpdates.Count > 0;
+            var pendingProviderUpdatesOnApprentice =
+                pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider);
 
             var allowEditApprentice =
                 (detailsResponse.Status == ApprenticeshipStatus.Live ||
                 detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
                 detailsResponse.Status == ApprenticeshipStatus.Paused) &&
-                !pendingUpdatesOnApprentice;
+                !pendingProviderUpdatesOnApprentice;
 
             return new DetailsViewModel
             {
@@ -61,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderRef = detailsResponse.Reference,
                 Cost = priceEpisodes.PriceEpisodes.GetPrice(),
                 AllowEditApprentice = allowEditApprentice,
-                PendingUpdate = pendingUpdatesOnApprentice
+                HasPendingUpdate = pendingProviderUpdatesOnApprentice
             };
         }
     }

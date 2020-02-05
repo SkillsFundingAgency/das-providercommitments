@@ -160,7 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
             await _fixture.Map();
 
-            Assert.AreEqual(pendingUpdate, _fixture.Result.PendingUpdate);
+            Assert.AreEqual(pendingUpdate, _fixture.Result.HasPendingUpdate);
         }
 
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
@@ -237,6 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                         new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
                         {
                             Id = 1,
+                            OriginatingParty = Party.Provider
                         }
                     }
                 };
