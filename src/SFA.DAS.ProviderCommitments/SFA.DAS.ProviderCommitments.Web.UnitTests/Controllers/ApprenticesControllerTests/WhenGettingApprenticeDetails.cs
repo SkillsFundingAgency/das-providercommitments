@@ -4,8 +4,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
