@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.Commitments.Shared.Models;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
