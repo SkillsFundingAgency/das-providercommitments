@@ -11,17 +11,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [Route("{providerId}/apprentices")]
     public class ManageApprenticesController : Controller
     {
-        private readonly IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel> _apprenticeshipMapper;
-        private readonly IMapper<GetApprenticeshipsCsvContentRequest, byte[]> _csvMapper;
+        private readonly IModelMapper _mapper;
         private readonly ICurrentDateTime _currentDateTime;
 
         public ManageApprenticesController(
-            IMapper<GetApprenticeshipsRequest,ManageApprenticesViewModel> apprenticeshipMapper, 
-            IMapper<GetApprenticeshipsCsvContentRequest,byte[]> csvMapper,
+            IModelMapper mapper,
             ICurrentDateTime currentDateTime)
         {
-            _apprenticeshipMapper = apprenticeshipMapper;
-            _csvMapper = csvMapper;
+            _mapper = mapper;
             _currentDateTime = currentDateTime;
         }
 
@@ -47,8 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 SelectedStartDate = filterModel.SelectedStartDate,
                 SelectedEndDate = filterModel.SelectedEndDate
             };
-            var viewModel = await _apprenticeshipMapper.Map(request);
-            
+
+            var viewModel = await _mapper.Map<ManageApprenticesViewModel>(request);
             viewModel.SortedByHeader();
 
             return View(viewModel);
@@ -64,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 FilterModel = filterModel
             };
 
-            var csvFileContent = await _csvMapper.Map(request);
+            var csvFileContent = await _mapper.Map<byte[]>(request);
 
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv");
         }

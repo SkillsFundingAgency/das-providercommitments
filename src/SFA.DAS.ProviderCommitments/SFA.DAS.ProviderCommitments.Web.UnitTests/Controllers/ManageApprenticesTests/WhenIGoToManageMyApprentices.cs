@@ -31,41 +31,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Calls_Mapper_Service_With_Correct_Values(
-            long providerId,
-            ManageApprenticesFilterModel filterModel,
-            [Frozen] Mock<IMapper<Requests.GetApprenticeshipsRequest, ManageApprenticesViewModel>> mockMapper,
-            ManageApprenticesController controller)
-        {
-            await controller.Index(providerId, filterModel);
-
-            mockMapper.Verify(mapper => mapper.Map(
-                It.Is<Requests.GetApprenticeshipsRequest>(request =>
-                    request.ProviderId == providerId &&
-                    request.PageNumber == filterModel.PageNumber &&
-                    request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
-                    request.SortField == filterModel.SortField &&
-                    request.ReverseSort == filterModel.ReverseSort &&
-                    request.SearchTerm == filterModel.SearchTerm &&
-                    request.SelectedEmployer == filterModel.SelectedEmployer &&
-                    request.SelectedCourse == filterModel.SelectedCourse &&
-                    request.SelectedStatus == filterModel.SelectedStatus &&
-                    request.SelectedStartDate == filterModel.SelectedStartDate &&
-                    request.SelectedEndDate == filterModel.SelectedEndDate
-                    )));
-        }
-
-        [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
             ManageApprenticesFilterModel filterModel,
             ManageApprenticesViewModel expectedViewModel,
-            [Frozen] Mock<IMapper<Requests.GetApprenticeshipsRequest, ManageApprenticesViewModel>> apprenticeshipMapper,
+            [Frozen] Mock<IModelMapper> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
             apprenticeshipMapper
-                .Setup(x => x.Map(It.IsAny<Requests.GetApprenticeshipsRequest>()))
+                .Setup(mapper => mapper.Map<ManageApprenticesViewModel>(
+                    It.Is<Requests.GetApprenticeshipsRequest>(request =>
+                            request.ProviderId == providerId &&
+                            request.PageNumber == filterModel.PageNumber &&
+                            request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
+                            request.SortField == filterModel.SortField &&
+                            request.ReverseSort == filterModel.ReverseSort &&
+                            request.SearchTerm == filterModel.SearchTerm &&
+                            request.SelectedEmployer == filterModel.SelectedEmployer &&
+                            request.SelectedCourse == filterModel.SelectedCourse &&
+                            request.SelectedStatus == filterModel.SelectedStatus &&
+                            request.SelectedStartDate == filterModel.SelectedStartDate &&
+                            request.SelectedEndDate == filterModel.SelectedEndDate)))
                 .ReturnsAsync(expectedViewModel);
 
             //Act
