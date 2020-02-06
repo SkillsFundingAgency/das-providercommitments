@@ -2,7 +2,8 @@
 {
     public static class RouteNames
     {
-        public const string ManageApprentices = "manage-apprentices-index";
-        public const string DownloadApprentices = "manage-apprentices-download";
+        public const string ApprenticesIndex = "apprentices-index";
+        public const string DownloadApprentices = "apprentices-download";
+        public const string ApprenticeDetail = "apprentice-details";
     }
 }

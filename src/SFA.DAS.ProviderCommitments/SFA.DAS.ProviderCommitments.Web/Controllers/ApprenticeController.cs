@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _currentDateTime = currentDateTime;
         }
 
-        [Route("", Name = RouteNames.ManageApprentices)]
+        [Route("", Name = RouteNames.ApprenticesIndex)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(long providerId, ApprenticesFilterModel filterModel)
         {
@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("{apprenticeshipHashedId}")]
+        [Route("{apprenticeshipHashedId}", Name= RouteNames.ApprenticeDetail)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
         public async Task<IActionResult> Details(DetailsRequest request)
         {
