@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = request.ProviderId,
-                //SearchTerm = request.FilterModel.SearchTerm,
+                SearchTerm = request.FilterModel.SearchTerm,
                 EmployerName = request.FilterModel.SelectedEmployer,
                 CourseName = request.FilterModel.SelectedCourse,
                 Status = request.FilterModel.SelectedStatus,

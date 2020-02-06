@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             mockApiClient.Verify(client => client.GetApprenticeships(
                 It.Is<GetApprenticeshipsRequest>(apiRequest =>
                     apiRequest.ProviderId == csvRequest.ProviderId &&
-                    //apiRequest.SearchTerm == csvRequest.FilterModel.SearchTerm && todo: future story
+                    apiRequest.SearchTerm == csvRequest.FilterModel.SearchTerm && 
                     apiRequest.EmployerName == csvRequest.FilterModel.SelectedEmployer &&
                     apiRequest.CourseName == csvRequest.FilterModel.SelectedCourse &&
                     apiRequest.Status == csvRequest.FilterModel.SelectedStatus &&

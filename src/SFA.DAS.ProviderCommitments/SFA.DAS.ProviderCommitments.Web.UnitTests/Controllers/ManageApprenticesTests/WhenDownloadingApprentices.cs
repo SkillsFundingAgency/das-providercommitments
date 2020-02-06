@@ -57,7 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         public async Task ThenWillMapRequestToCsvContent(
             uint providerId,
             ManageApprenticesFilterModel filterModel,
-            [Frozen] byte[] expectedCsvContent,
             [Frozen] Mock<IMapper<GetApprenticeshipsCsvContentRequest, byte[]>> csvMapper,
             ManageApprenticesController controller)
         {

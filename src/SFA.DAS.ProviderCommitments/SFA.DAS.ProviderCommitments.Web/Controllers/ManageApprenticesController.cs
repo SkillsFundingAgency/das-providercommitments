@@ -35,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 PageItemCount = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage,
                 SortField = filterModel.SortField,
                 ReverseSort = filterModel.ReverseSort,
+                SearchTerm = filterModel.SearchTerm,
                 SelectedEmployer = filterModel.SelectedEmployer,
                 SelectedCourse = filterModel.SelectedCourse,
                 SelectedStatus = filterModel.SelectedStatus,

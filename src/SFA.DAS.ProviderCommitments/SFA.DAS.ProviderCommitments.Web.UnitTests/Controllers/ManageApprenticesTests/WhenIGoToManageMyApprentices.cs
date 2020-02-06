@@ -17,9 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         [Test, MoqAutoData]
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
             long providerId,
-            string sortField,
             ManageApprenticesFilterModel filterModel,
-            [Frozen] Mock<IMapper<Requests.GetApprenticeshipsRequest, ManageApprenticesViewModel>> apprenticeshipMapper,
             ManageApprenticesController controller)
         {
             //Arrange
@@ -35,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         [Test, MoqAutoData]
         public async Task Then_Calls_Mapper_Service_With_Correct_Values(
             long providerId,
-            string sortField,
             ManageApprenticesFilterModel filterModel,
             [Frozen] Mock<IMapper<Requests.GetApprenticeshipsRequest, ManageApprenticesViewModel>> mockMapper,
             ManageApprenticesController controller)
@@ -49,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
                     request.PageItemCount == ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage &&
                     request.SortField == filterModel.SortField &&
                     request.ReverseSort == filterModel.ReverseSort &&
-                    //request.SearchTerm == filterModel.SearchTerm &&
+                    request.SearchTerm == filterModel.SearchTerm &&
                     request.SelectedEmployer == filterModel.SelectedEmployer &&
                     request.SelectedCourse == filterModel.SelectedCourse &&
                     request.SelectedStatus == filterModel.SelectedStatus &&
@@ -61,7 +58,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ManageApprentice
         [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
-            string sortField,
             ManageApprenticesFilterModel filterModel,
             ManageApprenticesViewModel expectedViewModel,
             [Frozen] Mock<IMapper<Requests.GetApprenticeshipsRequest, ManageApprenticesViewModel>> apprenticeshipMapper,
