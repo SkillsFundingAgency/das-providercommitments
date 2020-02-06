@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class IndexViewModelMapper : IMapper<GetApprenticeshipsRequest, IndexViewModel>
+    public class IndexViewModelMapper : IMapper<IndexRequest, IndexViewModel>
     {
         private readonly ICommitmentsApiClient _client;
         private readonly IModelMapper _modelMapper;
@@ -21,13 +22,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             _modelMapper = modelMapper;
         }
 
-        public async Task<IndexViewModel> Map(GetApprenticeshipsRequest source)
+        public async Task<IndexViewModel> Map(IndexRequest source)
         {
-            var response = await _client.GetApprenticeships(new ApiRequests.GetApprenticeshipsRequest
+            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
                 PageNumber = source.PageNumber,
-                PageItemCount = source.PageItemCount,
+                PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
                 SortField = source.SortField,
                 ReverseSort = source.ReverseSort,
                 SearchTerm = source.SearchTerm,

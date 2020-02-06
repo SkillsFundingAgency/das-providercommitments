@@ -8,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -17,15 +18,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         [Test, MoqAutoData]
         public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
-            long providerId,
-            ApprenticesFilterModel filterModel,
+            IndexRequest request,
             ApprenticeController controller)
         {
             //Arrange
             controller.ModelState.AddModelError("test", "test");
 
             //Act
-            var result = controller.Index(providerId, filterModel);
+            var result = controller.Index(request);
 
             //Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
@@ -35,29 +35,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
             ApprenticesFilterModel filterModel,
+            IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
             ApprenticeController controller)
         {
             //Arrange
             apprenticeshipMapper
-                .Setup(mapper => mapper.Map<IndexViewModel>(
-                    It.Is<Requests.GetApprenticeshipsRequest>(request =>
-                            request.ProviderId == providerId &&
-                            request.PageNumber == filterModel.PageNumber &&
-                            request.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
-                            request.SortField == filterModel.SortField &&
-                            request.ReverseSort == filterModel.ReverseSort &&
-                            request.SearchTerm == filterModel.SearchTerm &&
-                            request.SelectedEmployer == filterModel.SelectedEmployer &&
-                            request.SelectedCourse == filterModel.SelectedCourse &&
-                            request.SelectedStatus == filterModel.SelectedStatus &&
-                            request.SelectedStartDate == filterModel.SelectedStartDate &&
-                            request.SelectedEndDate == filterModel.SelectedEndDate)))
+                .Setup(mapper => mapper.Map<IndexViewModel>(request))
                 .ReturnsAsync(expectedViewModel);
 
             //Act
-            var result = await controller.Index(providerId, filterModel) as ViewResult;
+            var result = await controller.Index(request) as ViewResult;
             var actualModel = result.Model as IndexViewModel;
 
             //Assert

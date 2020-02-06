@@ -10,6 +10,7 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -30,28 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
-        public async Task<IActionResult> Index(long providerId, ApprenticesFilterModel filterModel)
+        public async Task<IActionResult> Index(IndexRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var request = new GetApprenticeshipsRequest
-            {
-                ProviderId = providerId,
-                PageNumber = filterModel.PageNumber,
-                PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage,
-                SortField = filterModel.SortField,
-                ReverseSort = filterModel.ReverseSort,
-                SearchTerm = filterModel.SearchTerm,
-                SelectedEmployer = filterModel.SelectedEmployer,
-                SelectedCourse = filterModel.SelectedCourse,
-                SelectedStatus = filterModel.SelectedStatus,
-                SelectedStartDate = filterModel.SelectedStartDate,
-                SelectedEndDate = filterModel.SelectedEndDate
-            };
-
+            
             var viewModel = await _modelMapper.Map<IndexViewModel>(request);
             viewModel.SortedByHeader();
 
@@ -67,17 +53,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
 
-
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        public async Task<IActionResult> Download(long providerId, ApprenticesFilterModel filterModel)
+        public async Task<IActionResult> Download(DownloadRequest request)
         {
-            var request = new GetApprenticeshipsCsvContentRequest
-            {
-                ProviderId = providerId,
-                FilterModel = filterModel
-            };
-
             var csvFileContent = await _modelMapper.Map<byte[]>(request);
 
             return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv");

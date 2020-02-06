@@ -12,6 +12,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
@@ -21,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
     {
         [Test, MoqAutoData]
         public async Task Should_Pass_Params_To_Api_Call(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             IndexViewModelMapper mapper)
         {
@@ -30,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             mockApiClient.Verify(client => client.GetApprenticeships(It.Is<ApiRequests.GetApprenticeshipsRequest>(apiRequest => 
                         apiRequest.ProviderId == webRequest.ProviderId &&
                         apiRequest.PageNumber == webRequest.PageNumber &&
-                        apiRequest.PageItemCount == webRequest.PageItemCount &&
+                        apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
                         apiRequest.SearchTerm == webRequest.SearchTerm && 
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
@@ -43,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Filter_Values_From_Api(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             IndexViewModelMapper mapper)
@@ -64,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task And_TotalApprentices_Less_Than_NumberOfApprenticesRequiredForSearch_Then_Not_Get_Filter_Values_From_Api(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             IndexViewModelMapper mapper)
@@ -87,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task ShouldMapApiValues(
-            Requests.GetApprenticeshipsRequest request,
+            IndexRequest request,
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
             ApprenticeshipDetailsViewModel expectedViewModel,
@@ -141,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task ShouldMapStatusValues(
-            Requests.GetApprenticeshipsRequest request,
+            IndexRequest request,
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
             ApprenticeshipDetailsViewModel expectedViewModel,
