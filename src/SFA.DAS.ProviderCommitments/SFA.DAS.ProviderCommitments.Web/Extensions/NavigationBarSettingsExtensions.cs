@@ -14,12 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static IMvcBuilder AddNavigationBarSettings(this IMvcBuilder builder, IConfiguration configuration)
         {
             builder.SetDefaultNavigationSection(NavigationSection.YourCohorts);
-            var featuresConfiguration = configuration
-                .GetSection(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration)
-                .Get<ProviderFeaturesConfiguration>();
-            var manageApprenticesV2Toggle =
-                featuresConfiguration.FeatureToggles.SingleOrDefault(x =>
-                    x.Feature == ProviderFeature.ManageApprenticesV2WithoutPrefix);
+           
             return builder;
         }
     }
