@@ -7,9 +7,6 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -19,13 +16,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly IModelMapper _modelMapper;
-        private readonly ICurrentDateTime _currentDateTime;
 
-        public ApprenticeController(IModelMapper modelMapper,
-            ICurrentDateTime currentDateTime)
+        public ApprenticeController(IModelMapper modelMapper)
         {
             _modelMapper = modelMapper;
-            _currentDateTime = currentDateTime;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -54,11 +48,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
+        [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Download(DownloadRequest request)
         {
-            var csvFileContent = await _modelMapper.Map<byte[]>(request);
+            var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
 
-            return File(csvFileContent, "text/csv", $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv");
+            return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
         }
     }
 }

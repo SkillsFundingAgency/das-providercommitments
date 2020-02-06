@@ -3,25 +3,29 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class DownloadApprenticesRequestMapper : IMapper<DownloadRequest, byte[]>
+    public class DownloadApprenticesRequestMapper : IMapper<DownloadRequest, DownloadViewModel>
     {
         private readonly ICommitmentsApiClient _client;
         private readonly ICreateCsvService _createCsvService;
+        private readonly ICurrentDateTime _currentDateTime;
 
-        public DownloadApprenticesRequestMapper(ICommitmentsApiClient client, ICreateCsvService createCsvService)
+        public DownloadApprenticesRequestMapper(ICommitmentsApiClient client, ICreateCsvService createCsvService, ICurrentDateTime currentDateTime)
         {
             _client = client;
             _createCsvService = createCsvService;
+            _currentDateTime = currentDateTime;
         }
 
-        public async Task<byte[]> Map(DownloadRequest request)
+        public async Task<DownloadViewModel> Map(DownloadRequest request)
         {
+            var downloadViewModel = new DownloadViewModel();
             var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = request.ProviderId,
@@ -34,10 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             });
 
             var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
-            
-            var csvFileContent = _createCsvService.GenerateCsvContent(csvContent);
 
-            return csvFileContent;
+            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent);
+            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv";
+            return downloadViewModel;
         }
     }
 }

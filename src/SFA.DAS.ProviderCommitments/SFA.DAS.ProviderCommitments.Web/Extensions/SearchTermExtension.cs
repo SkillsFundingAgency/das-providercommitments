@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Html;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {

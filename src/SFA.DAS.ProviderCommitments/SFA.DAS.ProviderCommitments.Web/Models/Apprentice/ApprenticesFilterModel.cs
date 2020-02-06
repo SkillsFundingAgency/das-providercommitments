@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Html;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class ApprenticesFilterModel
     {
