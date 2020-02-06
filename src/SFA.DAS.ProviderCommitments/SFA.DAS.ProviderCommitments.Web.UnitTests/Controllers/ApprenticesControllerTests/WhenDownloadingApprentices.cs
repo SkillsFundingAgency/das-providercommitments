@@ -34,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             Assert.IsNotNull(actualFileResult);
             Assert.AreEqual(expectedCsvContent.Content, actualFileResult.FileContents);
             Assert.AreEqual(expectedCsvContent.Name, actualFileResult.FileDownloadName);
+            Assert.AreEqual(expectedCsvContent.ContentType, actualFileResult.ContentType);
         }
     }
 }
