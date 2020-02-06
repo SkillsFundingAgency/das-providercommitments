@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Requests;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class GetApprenticeshipsRequestMapper : IMapper<GetApprenticeshipsRequest, ManageApprenticesViewModel>
+    public class IndexViewModelMapper : IMapper<GetApprenticeshipsRequest, IndexViewModel>
     {
         private readonly ICommitmentsApiClient _client;
         private readonly IModelMapper _modelMapper;
 
-        public GetApprenticeshipsRequestMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
+        public IndexViewModelMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
         {
             _client = client;
             _modelMapper = modelMapper;
         }
 
-        public async Task<ManageApprenticesViewModel> Map(GetApprenticeshipsRequest source)
+        public async Task<IndexViewModel> Map(GetApprenticeshipsRequest source)
         {
             var response = await _client.GetApprenticeships(new ApiRequests.GetApprenticeshipsRequest
             {
@@ -37,13 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate
             });
-
-            var filters = new GetApprenticeshipsFilterValuesResponse();
-            
-            if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
-            {
-                filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
-            }
 
             var statusFilters = new[]
             {
@@ -67,13 +60,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 SelectedStatus = source.SelectedStatus,
                 SelectedStartDate = source.SelectedStartDate,
                 SelectedEndDate = source.SelectedEndDate,
-                EmployerFilters = filters.EmployerNames,
-                CourseFilters = filters.CourseNames,
-                StatusFilters = statusFilters,
-                StartDateFilters = filters.StartDates,
-                EndDateFilters = filters.EndDates
+                StatusFilters = statusFilters
             };
-            
+
+            if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
+            {
+                var filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
+                filterModel.EmployerFilters = filters.EmployerNames;
+                filterModel.CourseFilters = filters.CourseNames;
+                filterModel.StartDateFilters = filters.StartDates;
+                filterModel.EndDateFilters = filters.EndDates;
+            }
+
             var apprenticeships = new List<ApprenticeshipDetailsViewModel>();
             foreach (var apprenticeshipDetailsResponse in response.Apprenticeships)
             {
@@ -81,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 apprenticeships.Add(apprenticeship);
             }
 
-            return new ManageApprenticesViewModel
+            return new IndexViewModel
             {
                 ProviderId = source.ProviderId,
                 Apprenticeships = apprenticeships,

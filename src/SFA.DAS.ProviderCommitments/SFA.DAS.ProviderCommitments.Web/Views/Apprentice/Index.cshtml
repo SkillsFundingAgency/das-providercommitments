@@ -1,7 +1,8 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@model SFA.DAS.ProviderCommitments.Web.Models.ManageApprenticesViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
 
 @{
     ViewData["Title"] = "Manage Your Apprentices";
@@ -199,7 +200,7 @@ else
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "FirstName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("FirstName")"
                        title="Sort the table by name">
@@ -207,7 +208,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "Uln" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Uln")"
                        title="Sort the table by name">
@@ -215,7 +216,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "LegalEntityName" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "LegalEntityName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LegalEntityName")"
                        title="Sort the table by name">
@@ -223,7 +224,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "CourseName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("CourseName")"
                        title="Sort the table by name">
@@ -231,7 +232,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "StartDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("StartDate")"
                        title="Sort the table by name">
@@ -239,7 +240,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "EndDate" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "EndDate" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("EndDate")"
                        title="Sort the table by name">
@@ -247,7 +248,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "PaymentStatus" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "PaymentStatus" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("PaymentStatus")"
                        title="Sort the table by name">
@@ -255,7 +256,7 @@ else
                     </a>
                 </th>
                 <th scope="col" class="govuk-table__header">
-                    <a class="@(Model.FilterModel.SortField == "DataLockStatus" ? Model.SortedByHeaderClassName : ManageApprenticesViewModel.HeaderClassName)"
+                    <a class="@(Model.FilterModel.SortField == "DataLockStatus" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                        asp-route="@RouteNames.ApprenticesIndex"
                        asp-all-route-data="@Model.FilterModel.BuildSortRouteData("DataLockStatus")"
                        title="Sort the table by name">

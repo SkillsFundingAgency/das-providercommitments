@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -34,13 +35,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
             ApprenticesFilterModel filterModel,
-            ManageApprenticesViewModel expectedViewModel,
+            IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
             ApprenticeController controller)
         {
             //Arrange
             apprenticeshipMapper
-                .Setup(mapper => mapper.Map<ManageApprenticesViewModel>(
+                .Setup(mapper => mapper.Map<IndexViewModel>(
                     It.Is<Requests.GetApprenticeshipsRequest>(request =>
                             request.ProviderId == providerId &&
                             request.PageNumber == filterModel.PageNumber &&
@@ -57,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             //Act
             var result = await controller.Index(providerId, filterModel) as ViewResult;
-            var actualModel = result.Model as ManageApprenticesViewModel;
+            var actualModel = result.Model as IndexViewModel;
 
             //Assert
             actualModel.Should().BeEquivalentTo(expectedViewModel);

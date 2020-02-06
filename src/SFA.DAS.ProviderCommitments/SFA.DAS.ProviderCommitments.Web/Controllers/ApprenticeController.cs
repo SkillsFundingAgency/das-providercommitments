@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 SelectedEndDate = filterModel.SelectedEndDate
             };
 
-            var viewModel = await _modelMapper.Map<ManageApprenticesViewModel>(request);
+            var viewModel = await _modelMapper.Map<IndexViewModel>(request);
             viewModel.SortedByHeader();
 
             return View(viewModel);

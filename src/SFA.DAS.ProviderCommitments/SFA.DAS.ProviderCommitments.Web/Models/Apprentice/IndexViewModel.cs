@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ManageApprenticesViewModel
+    public class IndexViewModel
     {
         public long? ProviderId { get; set; }
 
