@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
             Assert.IsAssignableFrom<byte[]>(actual);
-            var fileString = System.Text.Encoding.Default.GetString(actual);
+            var fileString = System.Text.Encoding.Default.GetString(actual).Replace("\r","");
             var lines = fileString.Split(Environment.NewLine);
             Assert.AreEqual(listToWriteToCsv.Count + 2, lines.Length);
             Assert.AreEqual(listToWriteToCsv[0].Description, lines[1].Split(',')[1]);
