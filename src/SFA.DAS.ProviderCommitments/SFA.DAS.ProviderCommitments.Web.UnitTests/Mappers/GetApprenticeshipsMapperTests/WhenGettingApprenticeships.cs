@@ -10,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -22,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
         public async Task Should_Pass_Params_To_Api_Call(
             Requests.GetApprenticeshipsRequest webRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             await mapper.Map(webRequest);
 
@@ -45,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Requests.GetApprenticeshipsRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             clientResponse.TotalApprenticeships =
                 Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
@@ -66,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Requests.GetApprenticeshipsRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
             
@@ -92,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             ApprenticeshipDetailsViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> modelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
@@ -148,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>>
                 detailsViewModelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
