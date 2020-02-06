@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 {
     public class AlertStringExtensionsTests
     {
-        [TestCase(Alerts.IlrDataMismatch, "Ilr Data Mismatch")]
+        [TestCase(Alerts.IlrDataMismatch, "ILR Data Mismatch")]
         [TestCase(Alerts.ChangesForReview, "Changes For Review")]
         [TestCase(Alerts.ChangesPending, "Changes Pending")]
         [TestCase(Alerts.ChangesRequested, "Changes Requested")]
