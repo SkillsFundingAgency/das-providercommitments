@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly IModelMapper _modelMapper;
-        private ICurrentDateTime _currentDateTime;
+        private readonly ICurrentDateTime _currentDateTime;
 
         public ApprenticeController(IModelMapper modelMapper,
             ICurrentDateTime currentDateTime)
@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ManageApprentices)]
+        [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(long providerId, ApprenticesFilterModel filterModel)
         {
             if (!ModelState.IsValid)
