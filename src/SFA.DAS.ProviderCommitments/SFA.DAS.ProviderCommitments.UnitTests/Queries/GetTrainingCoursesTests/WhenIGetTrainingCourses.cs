@@ -28,13 +28,17 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
             var standard = new Standard
             {
                 EffectiveFrom = new DateTime(2016, 01, 01),
-                EffectiveTo = new DateTime(2016, 12, 31)
+                EffectiveTo = new DateTime(2016, 12, 31),
+                Title = "Title"
             };
 
             var framework = new Framework
             {
                 EffectiveFrom = new DateTime(2017, 01, 01),
-                EffectiveTo = new DateTime(2017, 12, 31)
+                EffectiveTo = new DateTime(2017, 12, 31),
+                Title = "Title",
+                FrameworkName = "Name",
+                PathwayName = "Name"
             };
 
             _standards = new Standard[1] {standard};

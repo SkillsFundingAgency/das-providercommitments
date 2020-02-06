@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.Commitments.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using WebApp= SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using API=SFA.DAS.CommitmentsV2.Api.Types.Requests;
 

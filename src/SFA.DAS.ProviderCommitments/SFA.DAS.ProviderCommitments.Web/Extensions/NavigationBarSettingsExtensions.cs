@@ -14,22 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static IMvcBuilder AddNavigationBarSettings(this IMvcBuilder builder, IConfiguration configuration)
         {
             builder.SetDefaultNavigationSection(NavigationSection.YourCohorts);
-            
-            builder.SuppressNavigationSection(NavigationSection.Reservations);
-
             var featuresConfiguration = configuration
                 .GetSection(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration)
                 .Get<ProviderFeaturesConfiguration>();
-
             var manageApprenticesV2Toggle =
                 featuresConfiguration.FeatureToggles.SingleOrDefault(x =>
                     x.Feature == ProviderFeature.ManageApprenticesV2WithoutPrefix);
-
-            if (manageApprenticesV2Toggle == null || !manageApprenticesV2Toggle.IsEnabled)
-            {
-                builder.SuppressNavigationSection(NavigationSection.ManageApprentices);
-            }
-
             return builder;
         }
     }

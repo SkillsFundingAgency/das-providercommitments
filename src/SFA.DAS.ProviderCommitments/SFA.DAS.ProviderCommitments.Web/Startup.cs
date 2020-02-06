@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -45,16 +46,24 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.AddValidation();
                     ConfigureAuthorization(options);
                 })
                 .AddNavigationBarSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
-                .AddSessionStateTempDataProvider()
-                .AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+                
 
-            services.AddHealthChecks();
+            services
+                .AddHealthChecks();
+
+            services.Configure<CookieTempDataProviderOptions>(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
         }
 
         /// <summary>
