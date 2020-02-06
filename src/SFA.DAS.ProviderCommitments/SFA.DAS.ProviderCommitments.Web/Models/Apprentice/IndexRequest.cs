@@ -2,7 +2,7 @@
 using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
 
-namespace SFA.DAS.ProviderCommitments.Web.Requests.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class IndexRequest : IAuthorizationContextModel
     {

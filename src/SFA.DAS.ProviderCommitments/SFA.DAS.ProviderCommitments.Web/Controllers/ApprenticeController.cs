@@ -10,7 +10,6 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
