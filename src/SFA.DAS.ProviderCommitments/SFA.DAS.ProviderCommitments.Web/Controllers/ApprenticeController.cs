@@ -25,12 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("", Name = RouteNames.ApprenticesIndex)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(IndexRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            
+        {   
             var viewModel = await _modelMapper.Map<IndexViewModel>(request);
             viewModel.SortedByHeader();
 

@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -15,21 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     [TestFixture]
     public class WhenIGoToManageMyApprentices
     {
-        [Test, MoqAutoData]
-        public void IfCalledWithAnInvalidRequestShouldGetBadResponseReturned(
-            IndexRequest request,
-            ApprenticeController controller)
-        {
-            //Arrange
-            controller.ModelState.AddModelError("test", "test");
-
-            //Act
-            var result = controller.Index(request);
-
-            //Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
-        }
-
         [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
             long providerId,
