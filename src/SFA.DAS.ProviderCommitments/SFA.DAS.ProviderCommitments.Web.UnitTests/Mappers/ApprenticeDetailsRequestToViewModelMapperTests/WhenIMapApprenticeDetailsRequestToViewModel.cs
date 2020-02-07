@@ -142,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
         [TestCase]
         public async Task WhenPendingUpdates_ThenAllowEditApprenticeIsMappedCorrectly()
         {
-            _fixture.WithPendingUpdates();
+            _fixture.WithPendingUpdatesForProvider();
 
             await _fixture.Map();
 
@@ -151,16 +151,46 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
         [TestCase(true)]
         [TestCase(false)]
-        public async Task ThenPendingUpdateIsMappedCorrectly(bool pendingUpdate)
+        public async Task ThenProviderPendingUpdateIsMappedCorrectly(bool pendingUpdate)
         {
             if (pendingUpdate)
             {
-                _fixture.WithPendingUpdates();
+                _fixture.WithPendingUpdatesForProvider();
             }
 
             await _fixture.Map();
 
-            Assert.AreEqual(pendingUpdate, _fixture.Result.HasPendingUpdate);
+            Assert.AreEqual(pendingUpdate, _fixture.Result.HasProviderPendingUpdate);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenEmployerPendingUpdateIsMappedCorrectly(bool pendingUpdate)
+        {
+            if (pendingUpdate)
+            {
+                _fixture.WithPendingUpdatesForEmployer();
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(pendingUpdate, _fixture.Result.HasEmployerPendingUpdate);
+        }
+
+        [Test]
+        public async Task When_ProviderPendingUpdates_HasEmployerPendingUpdate_IsFalse()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
+        }
+
+        [Test]
+        public async Task When_EmployerPendingUpdates_HasProviderPendingUpdate_IsFalse()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
         }
 
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
@@ -228,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdates()
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForProvider()
             {
                 GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
                 {
@@ -239,6 +269,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                             Id = 1,
                             OriginatingParty = Party.Provider
                         }
+                    }
+                };
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForEmployer()
+            {
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                    {
+                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        {
+                            Id = 1,
+                            OriginatingParty = Party.Employer                        }
                     }
                 };
                 return this;

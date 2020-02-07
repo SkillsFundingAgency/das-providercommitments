@@ -35,12 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var pendingProviderUpdatesOnApprentice =
                 pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider);
+            var pendingEmployerUpdatesOnApprentice =
+              pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer);
 
             var allowEditApprentice =
                 (detailsResponse.Status == ApprenticeshipStatus.Live ||
                 detailsResponse.Status == ApprenticeshipStatus.WaitingToStart ||
                 detailsResponse.Status == ApprenticeshipStatus.Paused) &&
-                !pendingProviderUpdatesOnApprentice;
+                !pendingProviderUpdatesOnApprentice && !pendingEmployerUpdatesOnApprentice;
 
             return new DetailsViewModel
             {
@@ -60,7 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderRef = detailsResponse.Reference,
                 Cost = priceEpisodes.PriceEpisodes.GetPrice(),
                 AllowEditApprentice = allowEditApprentice,
-                HasPendingUpdate = pendingProviderUpdatesOnApprentice
+                HasProviderPendingUpdate = pendingProviderUpdatesOnApprentice,
+                HasEmployerPendingUpdate = pendingEmployerUpdatesOnApprentice
             };
         }
     }

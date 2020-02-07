@@ -12,11 +12,18 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
 
-        @if (Model.HasPendingUpdate)
+        @if (Model.HasProviderPendingUpdate)
         {
             <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
                 <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
                 <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
+            </div>
+        }
+        else if (Model.HasEmployerPendingUpdate)
+        {
+            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
+                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
+                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">View changes</a> </p>
             </div>
         }
 

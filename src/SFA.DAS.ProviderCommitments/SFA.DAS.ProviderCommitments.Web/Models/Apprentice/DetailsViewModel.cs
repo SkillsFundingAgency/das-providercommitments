@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ProviderRef { get; set; }
         public decimal Cost { get; set; }
         public bool AllowEditApprentice { get; set; }
-        public bool HasPendingUpdate { get; set; }
+        public bool HasProviderPendingUpdate { get; set; }
+        public bool HasEmployerPendingUpdate { get; set; }
     }
 }
