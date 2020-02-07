@@ -9,13 +9,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             switch (alert)
             {
                 case Alerts.IlrDataMismatch:
-                    return "ILR Data Mismatch";
+                    return "ILR data mismatch";
                 case Alerts.ChangesPending:
-                    return "Changes Pending";
+                    return "Changes pending";
                 case Alerts.ChangesRequested:
-                    return "Changes Requested";
+                    return "Changes requested";
                 case Alerts.ChangesForReview:
-                    return "Changes For Review";
+                    return "Changes for review";
                 default:
                     return "";
             }

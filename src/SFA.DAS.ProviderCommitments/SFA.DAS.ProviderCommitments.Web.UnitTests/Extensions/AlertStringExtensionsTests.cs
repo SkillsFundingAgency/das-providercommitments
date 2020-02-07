@@ -6,10 +6,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 {
     public class AlertStringExtensionsTests
     {
-        [TestCase(Alerts.IlrDataMismatch, "ILR Data Mismatch")]
-        [TestCase(Alerts.ChangesForReview, "Changes For Review")]
-        [TestCase(Alerts.ChangesPending, "Changes Pending")]
-        [TestCase(Alerts.ChangesRequested, "Changes Requested")]
+        [TestCase(Alerts.IlrDataMismatch, "ILR data mismatch")]
+        [TestCase(Alerts.ChangesForReview, "Changes for review")]
+        [TestCase(Alerts.ChangesPending, "Changes pending")]
+        [TestCase(Alerts.ChangesRequested, "Changes requested")]
         public void ThenAlertsAreFormattedCorrectly(Alerts alert, string expected)
         {
             //Act
