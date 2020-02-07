@@ -24,11 +24,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var detailsResponseTask = _commitmentApiClient.GetApprenticeship(source.ApprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
-            var pendingUpdatesTask =  _commitmentApiClient.GetApprenticeshipUpdates(new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdateRequest
-            {
-                ApprenticeshipId = source.ApprenticeshipId,
-                Status = ApprenticeshipUpdateStatus.Pending
-            });
+            var pendingUpdatesTask = _commitmentApiClient.GetApprenticeshipUpdates(source.ApprenticeshipId, 
+                new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest { Status = ApprenticeshipUpdateStatus.Pending });
 
             await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask);
 

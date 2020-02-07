@@ -209,7 +209,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 apiClient.Setup(x => x.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(PriceEpisodesApiResponse);
 
-                apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<GetApprenticeshipUpdateRequest>(), It.IsAny<CancellationToken>()))
+                apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
 
                 _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
