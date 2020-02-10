@@ -44,13 +44,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/inform")]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
-        public async Task<IActionResult> Inform(InformRequest request)
+        public IActionResult Inform(InformRequest request)
         {
-            var viewModel = await _modelMapper.Map<InformViewModel>(request);
+            var viewModel = new InformViewModel
+            {
+                ApprenticeshipHashedId = request.ApprenticeshipHashedId,
+                ApprenticeshipId = request.ApprenticeshipId,
+                ProviderId = request.ProviderId
+            };
 
             return View(viewModel);
         }
 
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/select-employer")]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
+        public Task<IActionResult> SelectEmployer()
+        {
+            throw new NotImplementedException();
+        }
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]

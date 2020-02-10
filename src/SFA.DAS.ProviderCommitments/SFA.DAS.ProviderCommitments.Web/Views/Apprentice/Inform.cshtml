@@ -1,7 +1,33 @@
-﻿
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.InformViewModel
+
 @{
     ViewData["Title"] = "Inform";
 }
 
-<h1>Inform</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
+        <h1 class="govuk-heading-xl">What you'll need</h1>
+
+        <p class="govuk-body">If an apprentice you're training needs to move to a new employer, you should:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>speak to the new employer to agree new training dates and price</li>
+            <li>ask the new employer to give you <a id="permission-link" class="govuk-body govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider-" target="_blank">permission</a> to move the apprentice to their apprenticeship service account</li>
+        </ul>
+
+        <p class="govuk-body">Once you've agreed these details, you can change the employer.</p>
+
+        <p class="govuk-body">Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.</p>
+
+        <a id="change-the-employer-button" class="govuk-button" href="@Url.Action("SelectEmployer", new { @Model.ProviderId, @Model.ApprenticeshipHashedId})">Change the employer</a>
+
+        <p><a id="cancel-link" class="govuk-body govuk-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Cancel</a></p>
+
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Back</a>
+}
