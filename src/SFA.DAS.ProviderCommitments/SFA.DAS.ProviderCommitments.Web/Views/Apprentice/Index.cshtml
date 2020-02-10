@@ -270,7 +270,7 @@ else
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Apprentice name">
-                        <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
+                        <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
                             @apprenticeship.ApprenticeName
                         </a>
                     </td>
@@ -295,9 +295,9 @@ else
                     <td class="govuk-table__cell" data-label="Alerts">
                         @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                         {
-                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{apprenticeship.EncodedApprenticeshipId}/details")">
-                                @apprenticeship.Alerts.ElementAt(i)
-                            </a>
+                        <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                            @apprenticeship.Alerts.ElementAt(i)
+                        </a>
                             @if (i < apprenticeship.Alerts.Count() - 1)
                             {
                                 <br/>
