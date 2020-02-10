@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
-    [Parallelizable(ParallelScope.All)]
     [TestFixture]
     public class WhenGettingInformPage
     {

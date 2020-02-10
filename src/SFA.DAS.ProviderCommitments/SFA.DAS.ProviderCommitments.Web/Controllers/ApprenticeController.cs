@@ -44,12 +44,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/inform")]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
-        public Task<IActionResult> Inform(InformRequest request)
+        public async Task<IActionResult> Inform(InformRequest request)
         {
-            throw new NotImplementedException();
-            var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
+            var viewModel = await _modelMapper.Map<InformViewModel>(request);
 
-            return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
+            return View(viewModel);
         }
 
 
