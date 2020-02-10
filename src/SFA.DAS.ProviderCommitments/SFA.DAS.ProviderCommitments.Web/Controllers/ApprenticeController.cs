@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -39,6 +40,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
             return View(viewModel);
         }
+        
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/inform")]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
+        public Task<IActionResult> Inform(InformRequest request)
+        {
+            throw new NotImplementedException();
+            var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
+
+            return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
+        }
 
 
         [HttpGet]
@@ -49,6 +61,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
 
             return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
-        }
     }
 }
