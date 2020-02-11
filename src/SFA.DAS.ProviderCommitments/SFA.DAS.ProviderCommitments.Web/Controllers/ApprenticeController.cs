@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/inform")]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public IActionResult Inform(InformRequest request)
         {
             var viewModel = new InformViewModel
@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer")]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public Task<IActionResult> SelectEmployer()
         {
             throw new NotImplementedException();
