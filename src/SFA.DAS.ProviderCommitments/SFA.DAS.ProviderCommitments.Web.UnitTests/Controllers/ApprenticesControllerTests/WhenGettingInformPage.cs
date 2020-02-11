@@ -20,9 +20,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenReturnsView()
+        public void ThenReturnsView()
         {
-            var result = await _fixture.Act();
+            var result = _fixture.Act();
 
             result.VerifyReturnsViewModel().WithModel<InformViewModel>();
         }
@@ -59,6 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _sut = new ApprenticeController(_modelMapper.Object);
         }
 
-        public async Task<IActionResult> Act() => await _sut.Inform(_request);
+        public IActionResult Act() => _sut.Inform(_request);
     }
 }
