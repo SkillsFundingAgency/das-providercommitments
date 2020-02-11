@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Html;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ManageApprenticesFilterModelBase
+    public class ApprenticesFilterModel
     {
         public int PageNumber { get; set; } = 1;
         public string SearchTerm { get; set; }
@@ -19,17 +17,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime? SelectedEndDate { get; set; }
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
-    }
 
-    public class ManageApprenticesFilterModel : ManageApprenticesFilterModelBase
-    {
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
         public IEnumerable<ApprenticeshipStatus> StatusFilters { get; set; } = new List<ApprenticeshipStatus>();
         public IEnumerable<DateTime> StartDateFilters { get; set; } = new List<DateTime>();
         public IEnumerable<DateTime> EndDateFilters { get; set; } = new List<DateTime>();
 
-        private const int PageSize = ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
+        private const int PageSize = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
         public int PagedRecordsTo {
             get
@@ -38,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 return TotalNumberOfApprenticeshipsFound < potentialValue ? TotalNumberOfApprenticeshipsFound: potentialValue;
             }
         }
-        public bool ShowSearch => TotalNumberOfApprenticeships >= ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch;
+        public bool ShowSearch => TotalNumberOfApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch;
 
         public bool SearchOrFiltersApplied => !string.IsNullOrWhiteSpace(SearchTerm)
                                               || !string.IsNullOrWhiteSpace(SelectedEmployer)
@@ -47,41 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                                               || SelectedStartDate.HasValue
                                               || SelectedEndDate.HasValue;
 
-        public HtmlString FiltersUsedMessage
-        {
-            get
-            {
-                var filters = new List<string>();
-                if (!string.IsNullOrWhiteSpace(SearchTerm)) filters.Add($"‘{SearchTerm}’");
-                if (!string.IsNullOrWhiteSpace(SelectedEmployer)) filters.Add(SelectedEmployer);
-                if (!string.IsNullOrWhiteSpace(SelectedCourse)) filters.Add(SelectedCourse);
-                if (SelectedStatus.HasValue) filters.Add(SelectedStatus.Value.FormatStatus());
-                if (SelectedStartDate.HasValue) filters.Add(SelectedStartDate.Value.ToGdsFormatWithoutDay());
-                if (SelectedEndDate.HasValue) filters.Add(SelectedEndDate.Value.ToGdsFormatWithoutDay());
-
-                if (filters.Count == 0) return HtmlString.Empty;
-
-                var message = new StringBuilder();
-
-                message.Append($"matching <strong>{filters[0]}</strong>");
-
-                for (var i = 1; i < filters.Count; i++)
-                {
-                    if (i == filters.Count-1)
-                    {
-                        message.Append(" and ");
-                    }
-                    else
-                    {
-                        message.Append(", ");
-                    }
-
-                    message.Append($"<strong>{filters[i]}</strong>");
-                }
-
-                return new HtmlString(message.ToString());
-            }
-        }
+        public HtmlString FiltersUsedMessage => this.GetFiltersUsedMessage();
 
         public int TotalNumberOfApprenticeships { get; set; }
         public int TotalNumberOfApprenticeshipsFound { get; set; }
@@ -209,13 +170,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
             return routeData;
         }
+        public class PageLink
+        {
+            public string Label { get; set; }
+            public string AriaLabel { get; set; }
+            public bool? IsCurrent { get; set; }
+            public Dictionary<string, string> RouteData { get; set; }
+        }
     }
 
-    public class PageLink
-    {
-        public string Label { get; set; }
-        public string AriaLabel { get; set; }
-        public bool? IsCurrent { get; set; }
-        public Dictionary<string, string> RouteData { get; set; }
-    }
+    
 }

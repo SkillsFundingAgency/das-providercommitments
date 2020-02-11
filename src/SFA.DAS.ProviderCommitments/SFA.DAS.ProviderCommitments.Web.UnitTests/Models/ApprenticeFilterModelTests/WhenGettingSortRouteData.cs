@@ -1,8 +1,9 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests
 {
     [TestFixture]
     public class WhenGettingSortRouteData
@@ -10,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test, AutoData]
         public void Then_Should_Set_SortField(
             string sortField,
-            ManageApprenticesFilterModel model)
+            ApprenticesFilterModel model)
         {
             //Act
             var actual = model.BuildSortRouteData(sortField);
@@ -22,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test, AutoData]
         public void And_No_SortField_Then_Should_Set_SortField(
             string sortField,
-            ManageApprenticesFilterModel model)
+            ApprenticesFilterModel model)
         {
             //Arrange
             model.SortField = null;
@@ -37,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test, AutoData]
         public void Then_Should_Set_ReverseSort(
             string sortField,
-            ManageApprenticesFilterModel model)
+            ApprenticesFilterModel model)
         {
             //Arrange
             model.SortField = sortField;
@@ -53,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         [Test, AutoData]
         public void And_No_SortField_Then_Should_Set_ReverseSort(
             string sortField,
-            ManageApprenticesFilterModel model)
+            ApprenticesFilterModel model)
         {
             //Arrange
             model.SortField = null;

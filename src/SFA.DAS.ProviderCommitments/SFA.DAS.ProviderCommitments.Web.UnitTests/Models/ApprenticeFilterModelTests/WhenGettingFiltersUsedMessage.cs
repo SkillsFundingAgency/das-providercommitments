@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Html;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests
 {
     public class WhenGettingFiltersUsedMessage
     {
         [Test]
         public void And_No_Search_And_No_Filters_Then_Null()
         {
-            var filterModel = new ManageApprenticesFilterModel();
+            var filterModel = new ApprenticesFilterModel();
 
             filterModel.FiltersUsedMessage.Should().Be(HtmlString.Empty);
         }
@@ -24,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_Search_And_No_Filters_Then_Quoted_SearchTerm(
             string searchTerm)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm
             };
@@ -32,11 +33,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>‘{searchTerm}’</strong>");
         }
 
+        [Test]
+        public void And_Search_Has_Html_Then_Html_Encodes_It()
+        {
+            var htmlSearchTerm = "<script>alert('hi');</script>";
+            var filterModel = new ApprenticesFilterModel
+            {
+                SearchTerm = htmlSearchTerm
+            };
+
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>‘{WebUtility.HtmlEncode(htmlSearchTerm)}’</strong>");
+        }
+
         [Test, AutoData]
         public void And_No_Search_And_SelectedEmployer_Then_SelectedEmployer(
             string selectedEmployer)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEmployer = selectedEmployer
             };
@@ -48,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedCourse_Then_SelectedCourse(
             string selectedCourse)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedCourse = selectedCourse
             };
@@ -60,19 +73,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedStatus_Then_SelectedStatus(
             ApprenticeshipStatus selectedStatus)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStatus = selectedStatus
             };
 
-            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus.FormatStatus()}</strong>");
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedStatus.GetDescription()}</strong>");
         }
 
         [Test, AutoData]
         public void And_No_Search_And_SelectedStartDate_Then_SelectedStartDate(
             DateTime selectedStartDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedStartDate = selectedStartDate
             };
@@ -84,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
         public void And_No_Search_And_SelectedEndDate_Then_SelectedEndDate(
             DateTime selectedEndDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEndDate = selectedEndDate
             };
@@ -97,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string searchTerm,
             string selectedEmployer)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm,
                 SelectedEmployer = selectedEmployer
@@ -114,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string selectedEmployer,
             string selectedCourse)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SearchTerm = searchTerm,
                 SelectedEmployer = selectedEmployer,
@@ -133,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
             string selectedCourse,
             DateTime selectedStartDate)
         {
-            var filterModel = new ManageApprenticesFilterModel
+            var filterModel = new ApprenticesFilterModel
             {
                 SelectedEmployer = selectedEmployer,
                 SelectedCourse = selectedCourse,

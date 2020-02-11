@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class ApprenticeshipDetailsViewModel
     {

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilterModelTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests
 {
     public class WhenGettingRouteData
     {
         [Test, AutoData]
         public void Then_Contains_Item_For_Each_Search_And_Filter_Value(
-            ManageApprenticesFilterModel filterModel)
+            ApprenticesFilterModel filterModel)
         {
             filterModel.RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
             {
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ManageApprenticesFilt
 
         [Test, AutoData]
         public void Then_Not_Contain_Item_For_PageNumber(
-            ManageApprenticesFilterModel filterModel)
+            ApprenticesFilterModel filterModel)
         {
             filterModel.RouteData.Should().NotContain(new KeyValuePair<string, string>(
                 nameof(filterModel.PageNumber), filterModel.PageNumber.ToString() )

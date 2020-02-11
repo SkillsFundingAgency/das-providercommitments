@@ -10,7 +10,9 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
@@ -20,16 +22,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
     {
         [Test, MoqAutoData]
         public async Task Should_Pass_Params_To_Api_Call(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             await mapper.Map(webRequest);
 
             mockApiClient.Verify(client => client.GetApprenticeships(It.Is<ApiRequests.GetApprenticeshipsRequest>(apiRequest => 
                         apiRequest.ProviderId == webRequest.ProviderId &&
                         apiRequest.PageNumber == webRequest.PageNumber &&
-                        apiRequest.PageItemCount == webRequest.PageItemCount &&
+                        apiRequest.PageItemCount == Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage &&
                         apiRequest.SearchTerm == webRequest.SearchTerm && 
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
@@ -42,13 +44,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Filter_Values_From_Api(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             clientResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
             mockApiClient
                 .Setup(client => client.GetApprenticeships(
                     It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
@@ -63,12 +65,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task And_TotalApprentices_Less_Than_NumberOfApprenticesRequiredForSearch_Then_Not_Get_Filter_Values_From_Api(
-            Requests.GetApprenticeshipsRequest webRequest,
+            IndexRequest webRequest,
             GetApprenticeshipsResponse clientResponse,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
-            clientResponse.TotalApprenticeships = ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch - 1;
+            clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
             
             mockApiClient
                 .Setup(client => client.GetApprenticeships(
@@ -86,17 +88,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task ShouldMapApiValues(
-            Requests.GetApprenticeshipsRequest request,
+            IndexRequest request,
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
             ApprenticeshipDetailsViewModel expectedViewModel,
-            [Frozen] Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>> detailsViewModelMapper,
+            [Frozen] Mock<IModelMapper> modelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
             
             mockApiClient
                 .Setup(x => x.GetApprenticeships(
@@ -109,8 +111,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(filtersResponse);
             
-            detailsViewModelMapper
-                .Setup(x => x.Map(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
+            modelMapper
+                .Setup(x => x.Map<ApprenticeshipDetailsViewModel>(It.IsAny<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()))
                 .ReturnsAsync(expectedViewModel);
 
             //Act
@@ -140,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
         [Test, MoqAutoData]
         public async Task ShouldMapStatusValues(
-            Requests.GetApprenticeshipsRequest request,
+            IndexRequest request,
             GetApprenticeshipsResponse apprenticeshipsResponse,
             GetApprenticeshipsFilterValuesResponse filtersResponse,
             ApprenticeshipDetailsViewModel expectedViewModel,
@@ -148,11 +150,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Mock<IMapper<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, ApprenticeshipDetailsViewModel>>
                 detailsViewModelMapper,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
-            GetApprenticeshipsRequestMapper mapper)
+            IndexViewModelMapper mapper)
         {
             //Arrange
             apprenticeshipsResponse.TotalApprenticeships =
-                ProviderCommitmentsWebConstants.NumberOfApprenticesRequiredForSearch + 1;
+                Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch + 1;
 
             mockApiClient
                 .Setup(x => x.GetApprenticeships(

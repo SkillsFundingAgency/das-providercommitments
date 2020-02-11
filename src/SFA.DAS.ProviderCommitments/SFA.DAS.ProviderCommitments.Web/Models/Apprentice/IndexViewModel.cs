@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ManageApprenticesViewModel
+    public class IndexViewModel
     {
         public long? ProviderId { get; set; }
 
@@ -25,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             }
         }
 
-        public ManageApprenticesFilterModel FilterModel { get; set; }
-        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > ProviderCommitmentsWebConstants.NumberOfApprenticesPerSearchPage;
+        public ApprenticesFilterModel FilterModel { get; set; }
+        public bool ShowPageLinks  => FilterModel.TotalNumberOfApprenticeshipsFound > Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
     }
 }
