@@ -45,14 +45,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/inform", Name = RouteNames.ApprenticeInform)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public IActionResult Inform(InformRequest request)
+        public async Task<IActionResult> Inform(InformRequest request)
         {
-            var viewModel = new InformViewModel
-            {
-                ApprenticeshipHashedId = request.ApprenticeshipHashedId,
-                ApprenticeshipId = request.ApprenticeshipId,
-                ProviderId = request.ProviderId
-            };
+            var viewModel = await _modelMapper.Map<InformViewModel>(request);
 
             return View(viewModel);
         }

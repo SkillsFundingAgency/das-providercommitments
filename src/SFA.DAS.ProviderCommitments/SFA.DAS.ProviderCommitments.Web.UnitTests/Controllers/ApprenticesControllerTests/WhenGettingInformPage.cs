@@ -20,9 +20,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public void ThenReturnsView()
+        public async Task ThenMapsRequest()
         {
-            var result = _fixture.Act();
+            await _fixture.Act();
+
+            _fixture.Verify_ModelMapper_WasCalled(Times.Once());
+        }
+
+
+        [Test]
+        public async Task ThenReturnsView()
+        {
+            var result = await _fixture.Act();
 
             result.VerifyReturnsViewModel().WithModel<InformViewModel>();
         }
@@ -56,9 +65,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipId = _apprenticeshipId
             };
             _modelMapper = new Mock<IModelMapper>();
+            _modelMapper
+                .Setup(x => x.Map<InformViewModel>(_request))
+                .ReturnsAsync(_viewModel);
             _sut = new ApprenticeController(_modelMapper.Object);
         }
 
-        public IActionResult Act() => _sut.Inform(_request);
+        public Task<IActionResult> Act() => _sut.Inform(_request);
+
+        public void Verify_ModelMapper_WasCalled(Times times)
+        {
+            _modelMapper.Verify(x => x.Map<InformViewModel>(_request), times);
+        }
     }
 }
