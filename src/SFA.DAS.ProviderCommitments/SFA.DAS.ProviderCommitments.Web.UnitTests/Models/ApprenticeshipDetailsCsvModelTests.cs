@@ -4,8 +4,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -78,14 +76,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, MoqAutoData]
         public async Task Then_Maps_Alerts(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
-            ApprenticeshipDetailsToViewModelMapper mapper)
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             var expectedAlertString = string.Empty;
 
             foreach (var alert in source.Alerts)
             {
-                expectedAlertString += alert.FormatAlert() + "|";
+                expectedAlertString += alert.GetDescription() + "|";
             }
             expectedAlertString = expectedAlertString.TrimEnd('|');
 

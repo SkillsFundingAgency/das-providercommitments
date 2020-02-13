@@ -4,9 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -65,7 +63,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
             {
-                var filters = await _client.GetApprenticeshipsFilterValues(source.ProviderId);
+                var filters = await _client.GetApprenticeshipsFilterValues(
+                    new GetApprenticeshipFiltersRequest{ProviderId = source.ProviderId});
+
                 filterModel.EmployerFilters = filters.EmployerNames;
                 filterModel.CourseFilters = filters.CourseNames;
                 filterModel.StartDateFilters = filters.StartDates;

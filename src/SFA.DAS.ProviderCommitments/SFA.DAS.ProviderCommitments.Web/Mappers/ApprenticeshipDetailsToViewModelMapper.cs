@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 PlannedStartDate = source.StartDate,
                 PlannedEndDate = source.EndDate,
                 Status = source.ApprenticeshipStatus.GetDescription(),
-                Alerts = source.Alerts.Select(x => x.FormatAlert()) 
+                Alerts = source.Alerts.Select(x => x.GetDescription()) 
             };
 
             return Task.FromResult(result);

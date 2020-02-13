@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 {
                     alertString += "|";
                 }
-                alertString += alert.FormatAlert();
+                alertString += alert.GetDescription();
             }
 
             return alertString;

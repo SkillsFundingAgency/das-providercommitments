@@ -16,8 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         [Test, MoqAutoData]
         public async Task ThenTheMappedViewModelIsReturned(
-            long providerId,
-            ApprenticesFilterModel filterModel,
             IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
