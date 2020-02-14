@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -75,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Maps_Alerts(
+        public void Then_Maps_Alerts(
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source)
         {
             var expectedAlertString = string.Empty;
