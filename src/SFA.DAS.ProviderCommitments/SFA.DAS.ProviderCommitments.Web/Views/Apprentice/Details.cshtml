@@ -1,6 +1,7 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @{
@@ -24,6 +25,22 @@
             <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
                 <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
                 <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">View changes</a> </p>
+            </div>
+        }
+
+        @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
+        {
+            <div class="das-notification" tabindex="-1">
+                <h3 class="das-notification__heading">Change request pending</h3>
+                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
+            </div>
+        }
+        else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
+        {
+            <div class="das-notification" tabindex="-1">
+                <h3 class="das-notification__heading">ILR data mismatch</h3>
+                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
+                <p class="das-notification__body"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link">View details</a> </p>
             </div>
         }
 

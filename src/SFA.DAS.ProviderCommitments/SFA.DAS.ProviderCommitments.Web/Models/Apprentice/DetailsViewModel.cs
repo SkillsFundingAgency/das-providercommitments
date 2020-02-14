@@ -24,5 +24,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool AllowEditApprentice { get; set; }
         public bool HasProviderPendingUpdate { get; set; }
         public bool HasEmployerPendingUpdate { get; set; }
+        public DataLockSummaryStatus DataLockStatus { get; set; }
+
+        public enum DataLockSummaryStatus
+        {
+            None,
+            AwaitingTriage,
+            HasUnresolvedDataLocks
+        }
     }
 }
