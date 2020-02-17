@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -87,28 +86,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var pendingUpdates = await pendingUpdatesTask;
             var dataLocks = (await dataLocksTask).DataLocks;
 
-            var dataLockStatus = GetDataLockSummaryStatus(dataLocks);
-
             return (detailsResponse, 
                 priceEpisodes, 
                 pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider),
                 pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer),
-                dataLockStatus);
-        }
-
-        private static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(IReadOnlyCollection<GetDataLocksResponse.DataLock> dataLocks)
-        {
-            DetailsViewModel.DataLockSummaryStatus dataLockStatus = DetailsViewModel.DataLockSummaryStatus.None;
-            if (dataLocks.Any(x => x.TriageStatus != TriageStatus.Unknown && x.DataLockStatus == Status.Fail && !x.IsResolved))
-            {
-                dataLockStatus = DetailsViewModel.DataLockSummaryStatus.AwaitingTriage;
-            }
-            else if (dataLocks.Any(x => x.TriageStatus == TriageStatus.Unknown && x.DataLockStatus == Status.Fail && !x.IsResolved))
-            {
-                dataLockStatus = DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks;
-            }
-
-            return dataLockStatus;
+                dataLocks.GetDataLockSummaryStatus());
         }
     }
 }
