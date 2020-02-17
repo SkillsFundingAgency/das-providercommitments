@@ -150,8 +150,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(false, _fixture.Result.AllowEditApprentice);
         }
 
-        [TestCase(TriageStatus.FixIlr)]
-        public async Task WhenThereAreNoDataLocks_ThenAllowEditApprenticeIsTrue(TriageStatus triageStatus)
+        [Test]
+        public async Task WhenThereAreNoDataLocks_ThenAllowEditApprenticeIsTrue()
         {
             await _fixture.Map();
 
