@@ -6,9 +6,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class IndexRequest : IAuthorizationContextModel
     {
+        private int _pageNumber = 1;
         public long ProviderId { get; set; }
-        public int PageNumber { get; set; }
-		public string SortField { get; set; }
+
+        public int PageNumber
+        {
+            get => _pageNumber;
+            set => _pageNumber = value > 0 ? value : 1;
+        }
+
+        public string SortField { get; set; }
         public bool ReverseSort { get; set; }
         public string SearchTerm { get; set; }
         public string SelectedEmployer { get; set; }
