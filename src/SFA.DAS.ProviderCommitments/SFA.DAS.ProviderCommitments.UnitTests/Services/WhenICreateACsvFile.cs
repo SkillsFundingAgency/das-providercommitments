@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CsvHelper;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Services;
-using ApprenticeshipDetails = SFA.DAS.CommitmentsV2.Api.Types.Responses.ApprenticeshipDetails;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Services
