@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using System.Threading.Tasks;
+using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
+using System.Threading.Tasks;
+using CsvHelper.Configuration.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -25,14 +27,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("", Name = RouteNames.ApprenticesIndex)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(IndexRequest request)
-        {   
+        {
             var viewModel = await _modelMapper.Map<IndexViewModel>(request);
             viewModel.SortedByHeader();
 
             return View(viewModel);
         }
 
-        [Route("{apprenticeshipHashedId}", Name= RouteNames.ApprenticeDetail)]
+        [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
         public async Task<IActionResult> Details(DetailsRequest request)
         {
@@ -40,6 +42,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/inform", Name = RouteNames.ApprenticeInform)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> Inform(InformRequest request)
+        {
+            var viewModel = await _modelMapper.Map<InformViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public Task<IActionResult> SelectEmployer()
+        {
+            throw new NotImplementedException();
+        }
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
