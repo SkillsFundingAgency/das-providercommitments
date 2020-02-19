@@ -6,6 +6,7 @@
 
 @{
     ViewData["Title"] = "Manage Your Apprentices";
+    ViewBag.GaData.Vpv = "/apprentices";
 }
 
 <h1 class="govuk-heading-xl">Manage your apprentices</h1>
@@ -196,7 +197,7 @@ else
     }
     @if (Model.FilterModel.TotalNumberOfApprenticeshipsFound > 0)
     {
-        <table class="govuk-table das-table--responsive das-table--double-arrows">
+        <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">
