@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -15,11 +16,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
+        private readonly ILogger<DetailsViewModelMapper> _logger;
 
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService)
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, ILogger<DetailsViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
+            _logger = logger;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -61,7 +64,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             catch (Exception e)
             {
-                throw e;
+                _logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
+                throw;
             }
         }
 
