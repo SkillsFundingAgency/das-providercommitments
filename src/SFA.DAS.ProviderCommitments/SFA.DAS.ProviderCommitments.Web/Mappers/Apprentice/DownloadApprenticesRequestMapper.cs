@@ -34,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CourseName = request.SelectedCourse,
                 Status = request.SelectedStatus,
                 StartDate = request.SelectedStartDate,
-                EndDate = request.SelectedEndDate
+                EndDate = request.SelectedEndDate,
+                PageNumber = 0
             });
 
             var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
