@@ -2,7 +2,10 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@inject ILinkGenerator LinkGenerator
+
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -144,3 +147,8 @@
         </table>
     </div>
 </div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/all?&ResetFilter=False")">Back</a>
+}
