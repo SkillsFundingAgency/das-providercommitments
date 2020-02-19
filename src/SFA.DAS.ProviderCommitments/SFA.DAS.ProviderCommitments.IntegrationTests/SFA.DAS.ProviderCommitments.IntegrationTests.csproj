@@ -16,8 +16,8 @@
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.606" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.606" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.965" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />
   </ItemGroup>
 
   <ItemGroup>
