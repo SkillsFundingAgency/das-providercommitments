@@ -253,6 +253,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 _fixture.Result.DataLockStatus);
         }
 
+        [Test]
+        public async Task When_PendingEmployerUpdates_Then_SuppressDataLockStatusLink_IsTrue()
+        {
+            _fixture.WithPendingUpdatesForEmployer();
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+        }
+
+        [Test]
+        public async Task When_PendingProviderUpdates_Then_SuppressDataLockStatusLink_IsTrue()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
