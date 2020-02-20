@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -38,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
 
             downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent);
-            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv";
+            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.UtcNow:yyyyMMddhhmmss}.csv";
             return downloadViewModel;
         }
     }
