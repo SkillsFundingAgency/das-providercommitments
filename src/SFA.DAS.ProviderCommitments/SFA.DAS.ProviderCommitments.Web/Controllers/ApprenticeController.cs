@@ -10,6 +10,8 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
 using System.Threading.Tasks;
 using CsvHelper.Configuration.Attributes;
+using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -55,9 +57,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> SelectEmployer()
+        public async Task<IActionResult> SelectEmployer(ChangeEmployerRequest request)
         {
-            throw new NotImplementedException();
+            var viewModel = await _modelMapper.Map<ChangeEmployerViewModel>(request);
+
+            return View(viewModel);
         }
 
         [HttpGet]
