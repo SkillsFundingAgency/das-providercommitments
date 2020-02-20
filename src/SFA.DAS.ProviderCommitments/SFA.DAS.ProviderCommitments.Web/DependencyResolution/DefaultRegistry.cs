@@ -31,7 +31,6 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAuthorizationHandler>().Add<ServiceAuthorizationHandler>();
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
-            For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
