@@ -24,7 +24,7 @@
         {
             <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
                 <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
-                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">View changes</a> </p>
+                    <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">View changes</a> </p>
             </div>
         }
 
@@ -40,10 +40,12 @@
             <div class="das-notification" tabindex="-1">
                 <h3 class="das-notification__heading">ILR data mismatch</h3>
                 <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
-                <p class="das-notification__body"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link">View details</a> </p>
+                @if (!Model.SuppressDataLockStatusReviewLink)
+                {
+                    <p class="das-notification__body"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link">View details</a> </p>
+                }
             </div>
         }
-
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
