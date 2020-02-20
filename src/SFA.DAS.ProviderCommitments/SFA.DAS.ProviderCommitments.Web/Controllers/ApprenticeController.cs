@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
 
-            return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
+            return File(downloadViewModel.Content, Constants.ApprenticesSearch.DownloadContentType, downloadViewModel.Name);
         }
     }
 }
