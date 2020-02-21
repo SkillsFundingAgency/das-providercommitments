@@ -7,11 +7,8 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
 using System.Threading.Tasks;
-using CsvHelper.Configuration.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Requests;
-using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -57,9 +54,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> SelectEmployer(ChangeEmployerRequest request)
+        public async Task<IActionResult> SelectEmployer(Requests.Apprentice.SelectEmployerRequest request)
         {
-            var viewModel = await _modelMapper.Map<ChangeEmployerViewModel>(request);
+            var viewModel = await _modelMapper.Map<SelectEmployerViewModel>(request);
 
             return View(viewModel);
         }

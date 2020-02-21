@@ -1,12 +1,8 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderCommitments.Web.Requests
+namespace SFA.DAS.ProviderCommitments.Web.Requests.Apprentice
 {
-    public class ChangeEmployerRequest : IAuthorizationContextModel
+    public class SelectEmployerRequest : IAuthorizationContextModel
     {
         public long ApprenticeshipId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
