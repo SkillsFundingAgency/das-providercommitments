@@ -90,7 +90,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
            
             await mapper.Map(webRequest);
 
-            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(webRequest.ProviderId,It.IsAny<CancellationToken>()), Times.Once);
+            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
+                It.Is<ApiRequests.GetApprenticeshipFiltersRequest>(
+                    r => r.ProviderId.Equals(webRequest.ProviderId)),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -111,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             await mapper.Map(webRequest);
 
             mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
-                    It.IsAny<long>(), 
+                    It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(), 
                     It.IsAny<CancellationToken>()),
                 Times.Never); 
         }
@@ -137,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             
             mockApiClient
                 .Setup(client => client.GetApprenticeshipsFilterValues(
-                    It.IsAny<long>(),
+                    It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(filtersResponse);
             
@@ -193,7 +196,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
             mockApiClient
                 .Setup(client => client.GetApprenticeshipsFilterValues(
-                    It.IsAny<long>(),
+                    It.IsAny<ApiRequests.GetApprenticeshipFiltersRequest>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(filtersResponse);
 

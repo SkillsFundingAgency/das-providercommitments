@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -51,8 +52,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             var csvService = new Mock<ICreateCsvService>();
             var currentDateTime = new Mock<ICurrentDateTime>();
             var expectedCsvContent = new byte[] {1, 2, 3, 4};
-            currentDateTime.Setup(x => x.Now).Returns(new DateTime(2020, 12, 30));
-            var expectedFileName = $"{"Manageyourapprentices"}_{currentDateTime.Object.Now:yyyyMMddhhmmss}.csv";
+            currentDateTime.Setup(x => x.UtcNow).Returns(new DateTime(2020, 12, 30));
+            var expectedFileName = $"{"Manageyourapprentices"}_{currentDateTime.Object.UtcNow:yyyyMMddhhmmss}.csv";
 
             var mapper = new DownloadApprenticesRequestMapper(client.Object, csvService.Object, currentDateTime.Object);
 

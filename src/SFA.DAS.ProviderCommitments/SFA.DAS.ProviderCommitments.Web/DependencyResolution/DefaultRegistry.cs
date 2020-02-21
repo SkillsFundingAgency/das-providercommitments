@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Net.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.Authorization.Context;
 using SFA.DAS.Authorization.Handlers;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
-using SFA.DAS.ProviderCommitments.Infrastructure;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -35,6 +35,9 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ICurrentDateTime>().Use<CurrentDateTime>().Singleton();
             For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
+            For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
+            For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
+
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
         

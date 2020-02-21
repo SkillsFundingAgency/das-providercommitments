@@ -41,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 })
+                .AddHttpContextAccessor()
                 .AddDasHealthChecks()
                 .AddProviderIdamsAuthentication(Configuration)
                 .AddDasAuthorization()
