@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class SelectEmployerViewModelMapper : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
     {

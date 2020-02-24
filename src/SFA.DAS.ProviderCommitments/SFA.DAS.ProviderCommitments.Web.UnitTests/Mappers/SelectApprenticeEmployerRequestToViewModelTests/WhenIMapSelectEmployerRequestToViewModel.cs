@@ -12,7 +12,7 @@ using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerRequestToViewModelTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectApprenticeEmployerRequestToViewModelTests
 {
     [TestFixture]
     public class WhenIMapSelectEmployerRequestToViewModel

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Requests;
+﻿using FluentValidation;
+using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Validators
+namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
 {
     public class SelectEmployerRequestValidator : AbstractValidator<SelectEmployerRequest>
     {
