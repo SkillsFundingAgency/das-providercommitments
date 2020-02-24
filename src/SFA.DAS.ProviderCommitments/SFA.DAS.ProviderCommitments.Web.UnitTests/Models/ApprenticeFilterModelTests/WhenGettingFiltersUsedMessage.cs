@@ -39,10 +39,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             var htmlSearchTerm = "<script>alert('hi');</script>";
             var filterModel = new ApprenticesFilterModel
             {
-                SearchTerm = htmlSearchTerm
+                SearchTerm = htmlSearchTerm,
+                SelectedEmployer = htmlSearchTerm,
+                SelectedCourse = htmlSearchTerm
             };
-
-            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>‘{WebUtility.HtmlEncode(htmlSearchTerm)}’</strong>");
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>‘{WebUtility.HtmlEncode(htmlSearchTerm)}’</strong>, <strong>{WebUtility.HtmlEncode(htmlSearchTerm)}</strong> and <strong>{WebUtility.HtmlEncode(htmlSearchTerm)}</strong>");
         }
 
         [Test, AutoData]

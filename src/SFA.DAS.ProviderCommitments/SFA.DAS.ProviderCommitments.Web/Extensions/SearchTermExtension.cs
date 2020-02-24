@@ -43,27 +43,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
             if (!string.IsNullOrWhiteSpace(model.SelectedEmployer))
             {
-                filters.Add(model.SelectedEmployer);
+                filters.Add(WebUtility.HtmlEncode(model.SelectedEmployer));
             }
 
             if (!string.IsNullOrWhiteSpace(model.SelectedCourse))
-            {
-                filters.Add(model.SelectedCourse);
+            { 
+                filters.Add(WebUtility.HtmlEncode(model.SelectedCourse));
             }
 
             if (model.SelectedStatus.HasValue)
             {
-                filters.Add(model.SelectedStatus.Value.GetDescription());
+                filters.Add(WebUtility.HtmlEncode(model.SelectedStatus.Value.GetDescription()));
             }
 
             if (model.SelectedStartDate.HasValue)
             {
-                filters.Add(model.SelectedStartDate.Value.ToGdsFormatWithoutDay());
+                filters.Add(WebUtility.HtmlEncode(model.SelectedStartDate.Value.ToGdsFormatWithoutDay()));
             }
 
             if (model.SelectedEndDate.HasValue)
             {
-                filters.Add(model.SelectedEndDate.Value.ToGdsFormatWithoutDay());
+                filters.Add(WebUtility.HtmlEncode(model.SelectedEndDate.Value.ToGdsFormatWithoutDay()));
             }
 
             return filters;
