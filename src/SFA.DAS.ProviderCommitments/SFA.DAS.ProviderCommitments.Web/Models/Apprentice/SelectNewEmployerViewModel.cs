@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class SelectEmployerViewModel
+    public class SelectNewEmployerViewModel
     {
         public long ProviderId { get; set; }
         public IList<AccountProviderLegalEntityViewModel> AccountProviderLegalEntities { get; set; }

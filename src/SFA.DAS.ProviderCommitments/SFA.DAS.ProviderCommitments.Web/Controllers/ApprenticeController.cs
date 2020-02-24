@@ -54,9 +54,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> SelectEmployer(Requests.Apprentice.SelectEmployerRequest request)
+        public async Task<IActionResult> SelectEmployer(Requests.Apprentice.SelectNewEmployerRequest request)
         {
-            var viewModel = await _modelMapper.Map<SelectEmployerViewModel>(request);
+            var viewModel = await _modelMapper.Map<SelectNewEmployerViewModel>(request);
 
             return View(viewModel);
         }
