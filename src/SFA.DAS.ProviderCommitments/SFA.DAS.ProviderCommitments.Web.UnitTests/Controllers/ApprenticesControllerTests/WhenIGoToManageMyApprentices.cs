@@ -78,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             await controller.Index(request);
 
             //Assert
-            cookieService.Verify(x => x.Update(CookieNames.ManageApprentices, request));
+            cookieService.Verify(x => x.Update(CookieNames.ManageApprentices, request, It.IsAny<int>()));
         }
 
         [Test, MoqAutoData]
@@ -160,7 +160,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             //Assert
             cookieService.Verify(x => x.Update(
-                CookieNames.ManageApprentices, It.IsAny<IndexRequest>()), Times.Never);
+                CookieNames.ManageApprentices, It.IsAny<IndexRequest>(), It.IsAny<int>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Will_Used_Current_Search_Details_If_Saved_Details_Not_Available(
+            IndexRequest request,
+            IndexViewModel expectedViewModel,
+            [Frozen] Mock<IModelMapper> apprenticeshipMapper,
+            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            ApprenticeController controller)
+        {
+            //Arrange
+            request.FromSearch = true;
+
+            apprenticeshipMapper
+                .Setup(mapper => mapper.Map<IndexViewModel>(It.IsAny<IndexRequest>()))
+                .ReturnsAsync(expectedViewModel);
+
+            cookieService
+                .Setup(x => x.Get(CookieNames.ManageApprentices))
+                .Returns((IndexRequest) null);
+
+            //Act
+            await controller.Index(request);
+
+            //Assert
+            apprenticeshipMapper.Verify(mapper => mapper.Map<IndexViewModel>(request));
+            
+            cookieService.Verify(x => x.Update(
+                CookieNames.ManageApprentices, It.IsAny<IndexRequest>(), It.IsAny<int>()), Times.Once);
+
         }
     }
 }

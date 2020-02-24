@@ -115,3 +115,9 @@
         </table>
     </div>
 </div>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderCommitmentsLink($"{Model.ProviderId}/apprentices?FromSearch=true")">Back</a>
+}
+
+

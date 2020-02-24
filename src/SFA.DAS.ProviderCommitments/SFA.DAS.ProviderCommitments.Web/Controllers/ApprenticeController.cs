@@ -29,13 +29,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(IndexRequest request)
         {
+            IndexRequest savedRequest = null;
+
             if (request.FromSearch)
             {
-                request = _cookieStorage.Get(CookieNames.ManageApprentices);
+                savedRequest = _cookieStorage.Get(CookieNames.ManageApprentices);
+
+                if (savedRequest != null)
+                {
+                    request = savedRequest;
+                }
             }
-            else
+            
+            if(savedRequest == null)
             {
-                _cookieStorage.Create(request, CookieNames.ManageApprentices);
+                _cookieStorage.Update(CookieNames.ManageApprentices, request);
             }
 
             var viewModel = await _modelMapper.Map<IndexViewModel>(request);
@@ -51,8 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
             return View(viewModel);
         }
-
-
+        
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
