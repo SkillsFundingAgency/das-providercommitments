@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.Validators
+namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class SelectNewEmployerRequestValidator : AbstractValidator<SelectNewEmployerRequest>
+    public class SelectEmployerRequestValidator : AbstractValidator<SelectEmployerRequest>
         {
-            public SelectNewEmployerRequestValidator()
+            public SelectEmployerRequestValidator()
             {
                 RuleFor(x => x.ProviderId).GreaterThan(0);
                 RuleFor(x => x.ApprenticeshipId).GreaterThan(0);

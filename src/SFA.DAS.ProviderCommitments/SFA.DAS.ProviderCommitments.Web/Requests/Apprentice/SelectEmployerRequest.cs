@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Requests.Apprentice
 {
-    public class SelectNewEmployerRequest : IAuthorizationContextModel
+    public class SelectEmployerRequest : IAuthorizationContextModel
     {
         public long ApprenticeshipId { get; set; }
         public string ApprenticeshipHashedId { get; set; }

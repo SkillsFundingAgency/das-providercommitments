@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Shared;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {

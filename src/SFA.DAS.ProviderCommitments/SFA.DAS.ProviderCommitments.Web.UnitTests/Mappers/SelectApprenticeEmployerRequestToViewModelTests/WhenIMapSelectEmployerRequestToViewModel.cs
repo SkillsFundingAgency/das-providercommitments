@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
@@ -14,7 +15,7 @@ using SFA.DAS.ProviderRelationships.Types.Models;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerRequestToViewModelTests
 {
     [TestFixture]
-    public class WhenIMapSelectNewEmployerRequestToViewModel
+    public class WhenIMapSelectEmployerRequestToViewModel
     {
         [Test]
         public async Task ThenCallsProviderRelationshipsApiClient()
@@ -69,10 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerReq
 
     public class SelectEmployerViewModelMapperFixture
     {
-        private readonly Web.Mappers.Apprentice.SelectNewEmployerViewModelMapper _sut;
+        private readonly SelectEmployerViewModelMapper _sut;
         private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClientMock;
-        private readonly Requests.Apprentice.SelectNewEmployerRequest _request;
+        private readonly SelectEmployerRequest _request;
         private readonly long _providerId;
         private readonly long _accountLegalEntityId;
         private readonly long _apprenticeshipId;
@@ -83,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerReq
             _providerId = 123;
             _accountLegalEntityId = 457;
             _apprenticeshipId = 1;
-        _request = new Requests.Apprentice.SelectNewEmployerRequest { ProviderId = _providerId, ApprenticeshipId = _apprenticeshipId};
+        _request = new SelectEmployerRequest { ProviderId = _providerId, ApprenticeshipId = _apprenticeshipId};
             _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
@@ -126,10 +127,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerReq
                     AccountLegalEntityId = _accountLegalEntityId
                 });
 
-            _sut = new Web.Mappers.Apprentice.SelectNewEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object, _commitmentApiClientMock.Object);
+            _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object, _commitmentApiClientMock.Object);
         }
 
-        public async Task<SelectNewEmployerViewModel> Act() => await _sut.Map(_request);
+        public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
 
 
         public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
@@ -156,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerReq
             _commitmentApiClientMock.Verify(x => x.GetApprenticeship(_apprenticeshipId, CancellationToken.None), Times.Once);
         }
 
-        public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectNewEmployerViewModel result)
+        public void Assert_SelectEmployerViewModelCorrectlyMapped(Web.Models.Apprentice.SelectEmployerViewModel result)
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
             Assert.AreEqual(filteredLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
@@ -171,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectNewEmployerReq
             }
         }
 
-        public void Assert_ListOfEmployersIsEmpty(SelectNewEmployerViewModel result)
+        public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
         {
             Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
         }

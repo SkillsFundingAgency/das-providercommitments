@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using System.Collections.Generic;
@@ -9,27 +8,28 @@ using SFA.DAS.ProviderRelationships.Types.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class SelectNewEmployerViewModelMapper : IMapper<SelectNewEmployerRequest, SelectNewEmployerViewModel>
+    public class SelectEmployerViewModelMapper : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
     {
         private readonly IProviderRelationshipsApiClient _providerRelationshipsApiClient;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public SelectNewEmployerViewModelMapper(IProviderRelationshipsApiClient providerRelationshipsApiClient, ICommitmentsApiClient commitmentsApiClient)
+        public SelectEmployerViewModelMapper(IProviderRelationshipsApiClient providerRelationshipsApiClient, ICommitmentsApiClient commitmentsApiClient)
         {
             _providerRelationshipsApiClient = providerRelationshipsApiClient;
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<SelectNewEmployerViewModel> Map(SelectNewEmployerRequest source)
+        public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
         {
             var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var legalEntities = await GetLegalEntitiesWithCreatePermission(source.ProviderId);
             var apprenticeShip = await apprenticeshipTask;
             var filteredLegalEntities = legalEntities.Where(x => x.AccountLegalEntityId != apprenticeShip.AccountLegalEntityId);
-            return new SelectNewEmployerViewModel
+            return new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = (filteredLegalEntities.Select(x => new AccountProviderLegalEntityViewModel
                 {
