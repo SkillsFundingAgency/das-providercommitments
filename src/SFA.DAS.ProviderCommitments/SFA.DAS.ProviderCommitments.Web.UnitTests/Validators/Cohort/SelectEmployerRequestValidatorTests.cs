@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {
     [TestFixture]
     public class SelectEmployerRequestValidatorTests 

@@ -1,11 +1,11 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Requests;
-using SFA.DAS.ProviderCommitments.Web.Validators;
+using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 using System;
 using System.Linq.Expressions;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {
     [TestFixture]
     public class ConfirmEmployerRequestValidatorTests

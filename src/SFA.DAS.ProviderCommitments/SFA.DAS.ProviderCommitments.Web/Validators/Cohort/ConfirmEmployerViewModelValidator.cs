@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Validators
+namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
 {
     public class ConfirmEmployerViewModelValidator : AbstractValidator<ConfirmEmployerViewModel>
     {
