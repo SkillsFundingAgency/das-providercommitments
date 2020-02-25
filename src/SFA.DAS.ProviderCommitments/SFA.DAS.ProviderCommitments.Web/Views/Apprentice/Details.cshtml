@@ -11,30 +11,27 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
 
-        @if (Model.Status == ApprenticeshipStatus.Stopped ||
-            Model.Status == ApprenticeshipStatus.Live ||
-            Model.Status == ApprenticeshipStatus.Paused ||
-            Model.Status == ApprenticeshipStatus.WaitingToStart)
+        @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
         {
-            <details id="" class="govuk-details" data-module="govuk-details">
+            <details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
                         Help with changes in apprentice's circumstances
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <ul class="govuk-list govuk-list--bullet">
-                        <p class="govuk-body">If an apprentice you're training needs to move to a new employer, you should:</p>
+                    
+                    <p class="govuk-body">If an apprentice you're training needs to move to a new employer, you should:
 
-                        <li>contact their original employer and ask them to stop the apprentice record</li>
-                        <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>contact their original employer and ask them to stop the apprentice record</li>
+                            <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
+                        </ul>
 
-                        <br />
+                        Once you've agreed these details, you can change the employer.<br /><br />
 
-                        <p class="govuk-body">Once you've agreed these details, you can change the employer.</p>
-
-                        <p class="govuk-body">Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.</p>
-                    </ul>
+                        Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
+                    </p>
                 </div>
             </details>
         }
@@ -78,7 +75,7 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-40">Employer</th>
                     <td class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
                     <td class="govuk-table__cell das-table-cell-width-20 govuk-table__cell--numeric">
-                        @if (Model.Status == ApprenticeshipStatus.Stopped && Model.ChangeOfEmployerEnabled)
+                        @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
                         {
                             <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }
