@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var priceEpisodes = await _commitmentApiClient.GetPriceEpisodes(source.ApprenticeshipId);
             var detailsResponse = await detailsResponseTask;
 
-            var changeOfEmployerEnabled = _featureTogglesService.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer))?.IsEnabled ?? false;
+            var isChangeOfEmployerEnabled = _featureTogglesService.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer))?.IsEnabled ?? false;
 
             return new DetailsViewModel
             {
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EndDate = detailsResponse.EndDate,
                 ProviderRef = detailsResponse.Reference,
                 Cost = priceEpisodes.PriceEpisodes.GetPrice(),
-                ChangeOfEmployerEnabled = changeOfEmployerEnabled
+                IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled
             };
         }
     }

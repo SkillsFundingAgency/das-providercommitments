@@ -135,7 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
             await _fixture.Map();
 
-            Assert.AreEqual(enabled, _fixture.Result.ChangeOfEmployerEnabled);
+            Assert.AreEqual(enabled, _fixture.Result.IsChangeOfEmployerEnabled);
         }
 
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
