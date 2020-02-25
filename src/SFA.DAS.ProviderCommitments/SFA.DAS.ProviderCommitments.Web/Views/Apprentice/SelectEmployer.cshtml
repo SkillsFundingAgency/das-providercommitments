@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
 
 @{
     ViewData["Title"] = "Choose an employer";
@@ -9,12 +10,9 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Choose a new employer for this apprentice</h1>
 
-        <details class="govuk-details" data-module="govuk-details">
-            <div class="govuk-details__text">
-                The new employer must have <a href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider">set up permissions</a> for you in order to appear in this list.
-            </div>
-        </details>
-
+        <div class="govuk-inset-text">
+            The new employer must have <a href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider" target="_blank">set up permissions</a> for you in order to appear in this list.
+        </div>
 
         <table class="govuk-table das-table--responsive">
             <thead class="govuk-table__head">
@@ -34,7 +32,7 @@
                         <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                         <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            <a href="@Url.Action("ConfirmEmployer", new {Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                            <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer)">Select</a>
                         </td>
                     </tr>
                 }
@@ -45,5 +43,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl("apprentice-inform")">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeInform)">Back</a>
 }
