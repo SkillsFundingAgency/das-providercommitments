@@ -1,0 +1,16 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmEmployerViewModel
+@{
+    ViewData["Title"] = "ConfirmEmployer";
+}
+
+<h1>Confirm Employer</h1>
+
+<p>
+    @Model.EmployerAccountLegalEntityName
+</p>
+
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl("apprentice-select-employer")">Back</a>
+}
