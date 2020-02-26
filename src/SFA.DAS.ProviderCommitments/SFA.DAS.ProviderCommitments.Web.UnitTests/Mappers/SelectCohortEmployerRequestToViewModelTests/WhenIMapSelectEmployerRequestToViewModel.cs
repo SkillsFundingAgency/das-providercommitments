@@ -4,15 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
-using SFA.DAS.ProviderUrlHelper;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectEmployerRequestToViewModelTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.SelectCohortEmployerRequestToViewModelTests
 {
     [TestFixture]
     public class WhenIMapSelectEmployerRequestToViewModel

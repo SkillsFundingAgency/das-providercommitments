@@ -8,6 +8,7 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -70,6 +71,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpGet]
