@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -31,7 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 var data = await GetApprenticeshipData(source.ApprenticeshipId);
                 var dataLockSummaryStatus = data.DataLocks.DataLocks.GetDataLockSummaryStatus();
-                var dataLockErrors = data.DataLocks.DataLocks.Where(x => x.IsUnresolvedError()).ToList();
                 
                 var allowEditApprentice =
                     (data.Apprenticeship.Status == ApprenticeshipStatus.Live ||
@@ -62,13 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasProviderPendingUpdate = data.HasProviderUpdates,
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
-                    AvailableTriageOption =
-                        !data.Apprenticeship.HasHadDataLockSuccess ? DetailsViewModel.TriageOption.Update
-                        : dataLockErrors.All(x => x.IsPrice()) ? DetailsViewModel.TriageOption.Update
-                        : dataLockErrors.Any(x => x.IsCourseAndPrice()) ? DetailsViewModel.TriageOption.Restart
-                        : dataLockErrors.All(x => x.IsCourse()) ? DetailsViewModel.TriageOption.Restart
-                        : dataLockErrors.All(x => x.IsCourseOrPrice()) ? DetailsViewModel.TriageOption.Both
-                        : DetailsViewModel.TriageOption.Update
+                    AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks)
                 };
             }
             catch (Exception e)
@@ -76,6 +70,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 _logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
                 throw;
             }
+        }
+
+        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<GetDataLocksResponse.DataLock> dataLocks)
+        {
+            if (!hasHadDataLockSuccess)
+            {
+                return DetailsViewModel.TriageOption.Update;
+            }
+
+            var dataLockErrors = dataLocks.Where(x => x.IsUnresolvedError()).ToList();
+
+            if (dataLockErrors.All(x => x.IsPrice()))
+                return  DetailsViewModel.TriageOption.Update;
+
+            if (dataLockErrors.Any(x => x.IsCourseAndPrice()))
+                return DetailsViewModel.TriageOption.Restart;
+
+            if (dataLockErrors.All(x => x.IsCourse()))
+                return DetailsViewModel.TriageOption.Restart;
+
+            if (dataLockErrors.All(x => x.IsCourseOrPrice()))
+                return DetailsViewModel.TriageOption.Both;
+
+            return DetailsViewModel.TriageOption.Update;
         }
 
         private async Task<(GetApprenticeshipResponse Apprenticeship, 
