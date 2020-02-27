@@ -108,7 +108,6 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseDasHealthChecks()
                 .UseCookiePolicy()
                 .UseAuthentication()
-                .UseDasContentSecurityPolicy()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
