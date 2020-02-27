@@ -2,14 +2,13 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ConfirmEmployerRequestToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeConfirmEmployerRequestToViewModelMapperTests
 {
     [TestFixture]
     public class WhenIMapConfrimEmployerRequestToConfirmEmployerViewModel
@@ -59,13 +58,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ConfirmEmployerReque
         {
             var result = await _act();
             Assert.AreEqual(_source.ProviderId, result.ProviderId);
-        }
-
-        [Test]
-        public async Task ThenAccountLegalEntityIdIsNotMapped()
-        {
-            var result = await _act();
-            Assert.AreEqual(0, result.AccountLegalEntityId);
         }
     }
 }
