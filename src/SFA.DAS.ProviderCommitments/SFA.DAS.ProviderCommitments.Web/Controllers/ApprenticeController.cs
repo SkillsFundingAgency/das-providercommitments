@@ -73,12 +73,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel request)
         {
-            throw new NotImplementedException();
+            var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
+
+            return View(viewModel);
         }
 
         [HttpGet]

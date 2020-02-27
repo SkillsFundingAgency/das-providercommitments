@@ -1,16 +1,68 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmEmployerViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmEmployerViewModel
+
 @{
-    ViewData["Title"] = "ConfirmEmployer";
+    ViewBag.Title = "Confirm Employer";
+    ViewBag.GaData.Vpv = "/apprentices/change-employer/confirm-employer";
 }
 
-<h1>Confirm Employer</h1>
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <partial name="_ValidationSummary" />
+                <h1 class="govuk-heading-xl">Confirm employer</h1>
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
 
-<p>
-    @Model.EmployerAccountLegalEntityName
-</p>
+                <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
+                    <dt class="das-definition-list__title">Account Name</dt>
+                    <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
+                    <dt class="das-definition-list__title">Agreement ID</dt>
+                    <dd class="das-definition-list__definition">@Model.EmployerAccountLegalEntityPublicHashedId</dd>
+                </dl>
 
+                <form method="post">
+                    <fieldset class="govuk-fieldset">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+
+
+                        <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    Is this the employer you'd like to add apprentice details for?
+                                </legend>
+                                @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                                <div class="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                            Yes, use @Model.EmployerAccountLegalEntityName
+                                        </label>
+
+                                    </div>
+
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                            No, choose a different employer
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <button class="govuk-button" type="submit" data-module="govuk-button">
+                            Continue
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl("apprentice-select-employer")">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectEmployer)">Back</a>
 }
