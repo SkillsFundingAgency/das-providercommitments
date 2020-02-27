@@ -27,12 +27,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DataLockSummaryStatus DataLockStatus { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
-
+        public TriageOption AvailableTriageOption { get; set; }
         public enum DataLockSummaryStatus
         {
             None,
             AwaitingTriage,
             HasUnresolvedDataLocks
+        }
+
+        public enum TriageOption
+        {
+            Restart,
+            Update,
+            Both
         }
     }
 }

@@ -43,7 +43,23 @@
                 <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
                 @if (!Model.SuppressDataLockStatusReviewLink)
                 {
-                    <p class="das-notification__body"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link">View details</a> </p>
+                    <p class="das-notification__body">
+
+                            @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
+                            {
+                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
+                            }
+                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
+                            {
+                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
+                            }
+                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
+                            {
+                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
+                                <br/>
+                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
+                            }
+                    </p>
                 }
             </div>
         }
