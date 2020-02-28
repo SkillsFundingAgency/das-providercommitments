@@ -1,10 +1,15 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
 
 @{
     ViewData["Title"] = "Apprentice Details";
 }
+
+@*https://localhost:5001/10005077/apprentices/4MBBNM*@
 
 <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
@@ -36,8 +41,58 @@
             </details>
         }
 
-        <h2 class="govuk-heading-m">Apprentice status</h2>
+        @if (Model.HasProviderPendingUpdate)
+        {
+            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
+                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
+                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
+            </div>
+        }
+        else if (Model.HasEmployerPendingUpdate)
+        {
+            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
+                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
+                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">Review changes</a> </p>
+            </div>
+        }
 
+        @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
+        {
+            <div class="das-notification" tabindex="-1">
+                <h3 class="das-notification__heading">Change request pending</h3>
+                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
+            </div>
+        }
+        else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
+        {
+            <div class="das-notification" tabindex="-1">
+                <h3 class="das-notification__heading">ILR data mismatch</h3>
+                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
+                @if (!Model.SuppressDataLockStatusReviewLink)
+                {
+                    <p class="das-notification__body">
+
+                            @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
+                            {
+                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
+                            }
+                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
+                            {
+                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
+                            }
+                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
+                            {
+                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
+                                <br/>
+                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
+                            }
+                    </p>
+                }
+            </div>
+        }
+        <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+
+        <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
             @*<a href="#" class="govuk-link">Edit apprentice</a>*@
         </div>
@@ -102,7 +157,10 @@
                 <h2 class="govuk-heading-m">Apprentice</h2>
             </div>
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                @*<a href="#" class="govuk-link">Edit apprentice</a>*@
+                @if (Model.AllowEditApprentice)
+                {
+                    <a id="edit-apprentice-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/edit")" class="govuk-link">Edit apprentice</a>
+                }
             </div>
         </div>
 
@@ -144,3 +202,8 @@
         </table>
     </div>
 </div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/all?&ResetFilter=False")">Back</a>
+}
