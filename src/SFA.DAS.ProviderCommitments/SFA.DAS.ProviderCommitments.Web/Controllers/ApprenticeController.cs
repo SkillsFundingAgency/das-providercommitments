@@ -76,11 +76,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel request)
+        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
-            var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
+            if (viewModel.Confirm.Value)
+            {
+                 return RedirectToAction("SelectNewTrainingDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+            }
 
-            return View(viewModel);
+            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeNewTrainingStartDate)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public Task<IActionResult> SelectNewTrainingDate()
+        {
+            throw new NotImplementedException();
         }
 
         [HttpGet]
