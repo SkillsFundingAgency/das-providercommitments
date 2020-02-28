@@ -13,7 +13,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsRequestToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
     public class WhenIMapApprenticeDetailsRequestToViewModel
