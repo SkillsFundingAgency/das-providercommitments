@@ -9,7 +9,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CohortConfirmEmployerRequestToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
+
 {
     [TestFixture]
     public class WhenIMapConfrimEmployerRequestToConfirmEmployerViewModel
