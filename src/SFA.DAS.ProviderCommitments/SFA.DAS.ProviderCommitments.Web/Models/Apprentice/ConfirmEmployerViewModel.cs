@@ -1,6 +1,8 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿using SFA.DAS.Authorization.ModelBinding;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ConfirmEmployerViewModel
+    public class ConfirmEmployerViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
         public string EmployerAccountName { get; set; }
