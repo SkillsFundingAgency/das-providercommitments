@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderRelationships.Types.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 

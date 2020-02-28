@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 using System;
 using System.Linq.Expressions;

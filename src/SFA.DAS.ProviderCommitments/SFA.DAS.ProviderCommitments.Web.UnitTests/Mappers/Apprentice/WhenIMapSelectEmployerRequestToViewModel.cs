@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
 {

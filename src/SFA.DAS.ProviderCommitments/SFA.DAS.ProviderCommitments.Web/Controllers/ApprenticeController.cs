@@ -6,7 +6,6 @@ using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
 using System.Threading.Tasks;

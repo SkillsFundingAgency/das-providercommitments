@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Requests.Cohort;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
