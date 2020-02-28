@@ -21,5 +21,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime EndDate { get; set; }
         public string ProviderRef { get; set; }
         public decimal Cost { get; set; }
+        public bool IsChangeOfEmployerEnabled { get; set; }
+        public bool AllowEditApprentice { get; set; }
+        public bool HasProviderPendingUpdate { get; set; }
+        public bool HasEmployerPendingUpdate { get; set; }
+        public DataLockSummaryStatus DataLockStatus { get; set; }
+
+        public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
+        public TriageOption AvailableTriageOption { get; set; }
+        public enum DataLockSummaryStatus
+        {
+            None,
+            AwaitingTriage,
+            HasUnresolvedDataLocks
+        }
+
+        public enum TriageOption
+        {
+            Restart,
+            Update,
+            Both
+        }
     }
 }
