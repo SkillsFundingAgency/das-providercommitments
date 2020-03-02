@@ -7,7 +7,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -44,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             downloadViewModel.Request = getApprenticeshipsRequest;
             downloadViewModel.GetAndCreateContent = Handler;
             downloadViewModel.Dispose = DisposeService;
-            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv";
+            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.UtcNow:yyyyMMddhhmmss}.csv";
             return await Task.FromResult(downloadViewModel);
         }
 
