@@ -2,16 +2,17 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -124,6 +125,74 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.PriceEpisodesApiResponse.PriceEpisodes.First().Cost, _fixture.Result.Cost);
         }
 
+        [TestCase(ApprenticeshipStatus.Live, true)]
+        [TestCase(ApprenticeshipStatus.Paused, true)]
+        [TestCase(ApprenticeshipStatus.WaitingToStart, true)]
+        [TestCase(ApprenticeshipStatus.Stopped, false)]
+        [TestCase(ApprenticeshipStatus.Completed, false)]
+        public async Task ThenAllowEditApprenticeIsMappedCorrectly(ApprenticeshipStatus status, bool expectedAllowEditApprentice)
+        {
+            _fixture.WithApprenticeshipStatus(status);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase]
+        public async Task WhenPendingUpdates_ThenAllowEditApprenticeIsMappedCorrectly()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(false, _fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenProviderPendingUpdateIsMappedCorrectly(bool pendingUpdate)
+        {
+            if (pendingUpdate)
+            {
+                _fixture.WithPendingUpdatesForProvider();
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(pendingUpdate, _fixture.Result.HasProviderPendingUpdate);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenEmployerPendingUpdateIsMappedCorrectly(bool pendingUpdate)
+        {
+            if (pendingUpdate)
+            {
+                _fixture.WithPendingUpdatesForEmployer();
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(pendingUpdate, _fixture.Result.HasEmployerPendingUpdate);
+        }
+
+        [Test]
+        public async Task When_ProviderPendingUpdates_HasEmployerPendingUpdate_IsFalse()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
+        }
+
+        [Test]
+        public async Task When_EmployerPendingUpdates_HasProviderPendingUpdate_IsFalse()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
@@ -131,10 +200,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModel Result { get; private set; }
             public GetApprenticeshipResponse ApiResponse { get; }
             public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
-            
+            public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
+
             private readonly Mock<IEncodingService> _encodingService;
             public string CohortReference { get; }
             public string AgreementId { get; }
+            public string URL { get; }
 
             public WhenIMapApprenticeDetailsRequestToViewModelFixture()
             {
@@ -143,12 +214,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApiResponse = fixture.Create<GetApprenticeshipResponse>();
                 CohortReference = fixture.Create<string>();
                 AgreementId = fixture.Create<string>();
+                URL = fixture.Create<string>();
                 PriceEpisodesApiResponse = new GetPriceEpisodesResponse
                 {
                     PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
                     {
                         new GetPriceEpisodesResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
                     }
+                };
+
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
                 };
 
                 _encodingService = new Mock<IEncodingService>();
@@ -162,12 +239,53 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(PriceEpisodesApiResponse);
 
+                apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
+
                 _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
             }
 
             public async Task<WhenIMapApprenticeDetailsRequestToViewModelFixture> Map()
             {
                 Result = await _mapper.Map(Source);
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithApprenticeshipStatus(
+                ApprenticeshipStatus status)
+            {
+                ApiResponse.Status = status;
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForProvider()
+            {
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                    {
+                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        {
+                            Id = 1,
+                            OriginatingParty = Party.Provider
+                        }
+                    }
+                };
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForEmployer()
+            {
+                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
+                {
+                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                    {
+                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        {
+                            Id = 1,
+                            OriginatingParty = Party.Employer                        }
+                    }
+                };
                 return this;
             }
         }
