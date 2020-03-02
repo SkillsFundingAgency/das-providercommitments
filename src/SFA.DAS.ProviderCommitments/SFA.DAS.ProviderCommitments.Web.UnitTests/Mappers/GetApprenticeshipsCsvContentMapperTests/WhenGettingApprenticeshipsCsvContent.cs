@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -21,12 +22,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
     public class WhenGettingApprenticeshipsCsvContent
     {
         [Test, MoqAutoData]
-        public async Task Then_Passes_Filter_Args_To_Api(
+        public async Task Then_Passes_Filter_Args_To_Api_When_GetAndCreateContent_Is_Called(
             DownloadRequest csvRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             DownloadApprenticesRequestMapper mapper)
         {
-            await mapper.Map(csvRequest);
+            var mappedResult = await mapper.Map(csvRequest);
+
+            await mappedResult.GetAndCreateContent(mappedResult.Request);
 
             mockApiClient.Verify(client => client.GetApprenticeships(
                 It.Is<GetApprenticeshipsRequest>(apiRequest =>
@@ -51,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             var csvService = new Mock<ICreateCsvService>();
             var currentDateTime = new Mock<ICurrentDateTime>();
             var expectedCsvContent = new byte[] {1, 2, 3, 4};
+            var expectedMemoryStream = new MemoryStream(expectedCsvContent);
             currentDateTime.Setup(x => x.Now).Returns(new DateTime(2020, 12, 30));
             var expectedFileName = $"{"Manageyourapprentices"}_{currentDateTime.Object.Now:yyyyMMddhhmmss}.csv";
 
@@ -59,17 +63,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
                     r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
-
-            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>()))
-                .Returns(expectedCsvContent);
+            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>(), true))
+                .Returns(expectedMemoryStream);
 
             //Act
             var content = await mapper.Map(request);
+            var csvContent = await content.GetAndCreateContent(content.Request);
 
             //Assert
-            Assert.IsNotEmpty(content.Content);
-            Assert.AreEqual(expectedCsvContent, content.Content);
             Assert.AreEqual(expectedFileName, content.Name);
+            var actualContent = csvContent.ToArray(); 
+            Assert.IsNotEmpty(actualContent);
+            Assert.AreEqual(expectedCsvContent, actualContent);
         }
     }
 }

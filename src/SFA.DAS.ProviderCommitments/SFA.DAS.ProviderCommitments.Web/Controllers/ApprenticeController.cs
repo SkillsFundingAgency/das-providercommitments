@@ -7,6 +7,7 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
+using SFA.DAS.CommitmentsV2.Shared.ActionResults;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -48,7 +49,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
 
-            return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
+            return new FileCallbackResult(downloadViewModel.ContentType, async (outputStream, _) =>
+            {
+                var moreData = true;
+                while (moreData)
+                {
+                    using var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request);
+                    if (stream2.Length == 0)
+                    {
+                        moreData = false;
+                    }
+
+                    downloadViewModel.Request.PageNumber += 1;
+
+                    stream2.CopyTo(outputStream);
+
+                    downloadViewModel.Dispose();
+                }
+                
+            }){FileDownloadName = downloadViewModel.Name};
+
         }
     }
 }
