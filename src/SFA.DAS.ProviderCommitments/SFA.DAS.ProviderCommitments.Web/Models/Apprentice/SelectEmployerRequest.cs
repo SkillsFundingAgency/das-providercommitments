@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 
-namespace SFA.DAS.ProviderCommitments.Web.Requests.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class SelectEmployerRequest : IAuthorizationContextModel
     {

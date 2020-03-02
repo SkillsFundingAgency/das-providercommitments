@@ -8,7 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeConfirmEmployerRequestToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
     public class ConfirmEmployerViewModelMapperTests
