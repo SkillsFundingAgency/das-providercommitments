@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
         }
 
         [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_RedirectToSelectNewTrainingDate()
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_RedirectToDates()
         {
             var fixture = new PostConfirmEmployerFixture()
                 .WithConfirmTrue();
