@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [Parallelizable(ParallelScope.All)]
     [TestFixture]
-    public class InformRequestToViewModelMapperTests
+    public class InformViewModelMapperTests
     {
         private GetInformPageFixture _fixture;
 

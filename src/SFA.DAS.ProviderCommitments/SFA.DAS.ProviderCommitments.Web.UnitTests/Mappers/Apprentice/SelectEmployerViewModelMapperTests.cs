@@ -14,7 +14,7 @@ using SFA.DAS.ProviderRelationships.Types.Models;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class WhenIMapSelectEmployerRequestToViewModel
+    public class SelectEmployerViewModelMapperTests
     {
         [Test]
         public async Task ThenCallsProviderRelationshipsApiClient()
