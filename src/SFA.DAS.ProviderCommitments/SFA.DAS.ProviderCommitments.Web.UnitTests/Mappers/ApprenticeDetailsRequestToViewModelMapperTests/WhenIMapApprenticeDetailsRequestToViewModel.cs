@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsRequestToViewModelMapperTests
 {
@@ -149,6 +151,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(false, _fixture.Result.AllowEditApprentice);
         }
 
+        [Test]
+        public async Task WhenThereAreNoDataLocks_ThenAllowEditApprenticeIsTrue()
+        {
+            await _fixture.Map();
+
+            Assert.IsTrue(_fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(TriageStatus.Change)]
+        [TestCase(TriageStatus.Restart)]
+        [TestCase(TriageStatus.FixIlr)]
+        public async Task WhenThereAreDataLocksInTriage_ThenAllowEditApprenticeIsFalse(TriageStatus triageStatus)
+        {
+            _fixture.WithUnResolvedDataLocksInTriage(triageStatus);
+
+            await _fixture.Map();
+
+            Assert.IsFalse(_fixture.Result.AllowEditApprentice);
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public async Task ThenProviderPendingUpdateIsMappedCorrectly(bool pendingUpdate)
@@ -193,6 +215,94 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
         }
 
+        [Test]
+        public async Task When_DataLocks_AreUnresolvedAndFailed_Then_DataLockStatus_IsHasUnresolvedDataLocks()
+        {
+            _fixture.WithUnresolvedAndFailedDataLocks();
+            await _fixture.Map();
+            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks, 
+                _fixture.Result.DataLockStatus);
+        }
+
+        [Test]
+        public async Task When_DataLocks_AreUnresolvedAndPassing_Then_DataLockStatus_IsNone()
+        {
+            _fixture.WithUnResolvedAndPassingDataLocks();
+            await _fixture.Map();
+            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.None,
+                _fixture.Result.DataLockStatus);
+        }
+
+        [Test]
+        public async Task When_DataLocks_AreResolved_Then_DataLockStatus_IsNone()
+        {
+            _fixture.WithResolvedDataLocks();
+            await _fixture.Map();
+            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.None,
+                _fixture.Result.DataLockStatus);
+        }
+
+        [TestCase(TriageStatus.Change)]
+        [TestCase(TriageStatus.Restart)]
+        [TestCase(TriageStatus.FixIlr)]
+        public async Task When_DataLocks_AreUnresolvedButInTriage_Then_DataLockStatus_IsAwaitingTriage(TriageStatus triageStatus)
+        {
+            _fixture.WithUnResolvedDataLocksInTriage(triageStatus);
+            await _fixture.Map();
+            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.AwaitingTriage,
+                _fixture.Result.DataLockStatus);
+        }
+
+        [Test]
+        public async Task When_PendingEmployerUpdates_Then_SuppressDataLockStatusLink_IsTrue()
+        {
+            _fixture.WithPendingUpdatesForEmployer();
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+        }
+
+        [Test]
+        public async Task When_PendingProviderUpdates_Then_SuppressDataLockStatusLink_IsTrue()
+        {
+            _fixture.WithPendingUpdatesForProvider();
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+        }
+
+        [TestCase(false, DataLockErrorCode.Dlock04, DetailsViewModel.TriageOption.Update)]
+        [TestCase(false, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Update)]
+        [TestCase(false, DataLockErrorCode.Dlock07 | DataLockErrorCode.Dlock04, DetailsViewModel.TriageOption.Update)]
+        [TestCase(true, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Update)]
+        [TestCase(true, DataLockErrorCode.Dlock04, DetailsViewModel.TriageOption.Restart)]
+        [TestCase(true, DataLockErrorCode.Dlock04 | DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Restart)]
+        public async Task With_Single_Datalock_Then_AvailableTriageOption_Is_Mapped_Correctly(bool hasHadDataLockSuccess, DataLockErrorCode dataLockErrorCode, DetailsViewModel.TriageOption expectedTriageOption)
+        {
+            _fixture
+                .WithHasHadDataLockSuccess(hasHadDataLockSuccess)
+                .WithUnresolvedAndFailedDataLocks(dataLockErrorCode);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
+        }
+
+
+        [TestCase(false, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Update)]
+        [TestCase(true, DataLockErrorCode.Dlock04, DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Both)]
+        [TestCase(true, DataLockErrorCode.Dlock03, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Restart)]
+        [TestCase(true, DataLockErrorCode.Dlock07, DataLockErrorCode.Dlock03 | DataLockErrorCode.Dlock07, DetailsViewModel.TriageOption.Restart)]
+        public async Task With_Multiple_Datalocks_Then_AvailableTriageOption_Is_Mapped_Correctly(bool hasHadDataLockSuccess, DataLockErrorCode dataLockErrorCode, DataLockErrorCode dataLock2ErrorCode, DetailsViewModel.TriageOption expectedTriageOption)
+        {
+            _fixture
+                .WithHasHadDataLockSuccess(hasHadDataLockSuccess)
+                .WithUnresolvedAndFailedDataLocks(dataLockErrorCode)
+                .WithAnotherDataLock(dataLock2ErrorCode);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
+        }
+
         public class WhenIMapApprenticeDetailsRequestToViewModelFixture
         {
             private readonly DetailsViewModelMapper _mapper;
@@ -201,6 +311,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             public GetApprenticeshipResponse ApiResponse { get; }
             public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
             public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
+            public GetDataLocksResponse GetDataLocksResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;
             public string CohortReference { get; }
@@ -228,6 +339,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                     ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
                 };
 
+                GetDataLocksResponse = new GetDataLocksResponse
+                {
+                    DataLocks = new List<GetDataLocksResponse.DataLock>()
+                };
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
@@ -241,8 +357,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
 
                 apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
+                
+                apiClient.Setup(x => x.GetApprenticeshipDatalocksStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetDataLocksResponse);
 
-                _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object);
+                _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
             }
 
             public async Task<WhenIMapApprenticeDetailsRequestToViewModelFixture> Map()
@@ -286,6 +405,86 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                             OriginatingParty = Party.Employer                        }
                     }
                 };
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithResolvedDataLocks()
+            {
+                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { 
+                    new GetDataLocksResponse.DataLock
+                    {
+                        Id = 1,
+                        TriageStatus = TriageStatus.Unknown,
+                        DataLockStatus = Status.Fail,
+                        IsResolved = true
+                    },
+                    new GetDataLocksResponse.DataLock
+                    {
+                        Id = 2,
+                        TriageStatus = TriageStatus.Unknown,
+                        DataLockStatus = Status.Pass,
+                        IsResolved = true
+                    }
+                };
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
+            {
+                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                {
+                    Id = 1,
+                    TriageStatus = TriageStatus.Unknown,
+                    DataLockStatus = Status.Fail,
+                    IsResolved = false,
+                    ErrorCode = errorCode
+                }};
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithAnotherDataLock(DataLockErrorCode errorCode)
+            {
+                var dataLocks = GetDataLocksResponse.DataLocks.ToList();
+                dataLocks.Add(new GetDataLocksResponse.DataLock
+                {
+                    Id = 1,
+                    TriageStatus = TriageStatus.Unknown,
+                    DataLockStatus = Status.Fail,
+                    IsResolved = false,
+                    ErrorCode = errorCode
+                });
+
+                GetDataLocksResponse.DataLocks = dataLocks.AsReadOnly();
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnResolvedAndPassingDataLocks()
+            {
+                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                {
+                    Id = 1,
+                    TriageStatus = TriageStatus.Unknown,
+                    DataLockStatus = Status.Pass,
+                    IsResolved = false
+                }};
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
+            {
+                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                {
+                    Id = 1,
+                    TriageStatus = triageStatus,
+                    DataLockStatus = Status.Fail,
+                    IsResolved = false
+                }};
+                return this;
+            }
+
+            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithHasHadDataLockSuccess(bool hasHadDataLockSuccess)
+            {
+                ApiResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
                 return this;
             }
         }
