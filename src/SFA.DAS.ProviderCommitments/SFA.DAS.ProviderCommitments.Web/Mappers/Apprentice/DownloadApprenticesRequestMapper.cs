@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = request.SelectedStartDate,
                 EndDate = request.SelectedEndDate,
                 PageNumber = 1,
-                PageItemCount = 15
+                PageItemCount = Constants.ApprenticesSearch.NumberOfApprenticesPerDownloadPage
             };
             downloadViewModel.Request = getApprenticeshipsRequest;
             downloadViewModel.GetAndCreateContent = Handler;

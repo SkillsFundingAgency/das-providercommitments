@@ -61,7 +61,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             var mapper = new DownloadApprenticesRequestMapper(client.Object, csvService.Object, currentDateTime.Object);
 
             client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
-                    r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
+                    r.ProviderId.Equals(request.ProviderId) 
+                    && r.PageItemCount.Equals(Constants.ApprenticesSearch.NumberOfApprenticesPerDownloadPage)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>(), true))
                 .Returns(expectedMemoryStream);
