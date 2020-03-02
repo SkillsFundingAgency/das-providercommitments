@@ -88,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeNewTrainingStartDate)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> Dates()
+        public Task<IActionResult> Dates(DatesRequest request)
         {
             throw new NotImplementedException();
         }
