@@ -100,15 +100,15 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-40">Status</th>
-                    <td class="govuk-table__cell das-table-cell-width-60">@Model.Status.GetDescription()</td>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
+                    <td id="apprenticeship-status" class="govuk-table__cell">@Model.Status.GetDescription()</td>
                 </tr>
 
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
                 {
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header ">Stop applies from</th>
-                        <td class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                        <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop applies from</th>
+                        <td id="apprenticeship-stop-date"class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                     </tr>
                 }
             </tbody>
@@ -127,8 +127,9 @@
             <tbody class="govuk-table__body">
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-40">Employer</th>
-                    <td class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
+                    
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Employer</th>
+                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-50">@Model.Employer</td>
                     <td class="govuk-table__cell das-table-cell-width-20 govuk-table__cell--numeric">
                         @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
                         {
@@ -139,14 +140,13 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Reference</th>
-                    <td class="govuk-table__cell">@Model.Reference</td>
+                    <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
 
                 <tr class="govuk-table__row">
-
                     <th scope="row" class="govuk-table__header">Agreement ID</th>
-                    <td class="govuk-table__cell">@Model.AgreementId</td>
+                    <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
             </tbody>
@@ -168,35 +168,35 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-40">Name</th>
-                    <td class="govuk-table__cell das-table-cell-width-60">@Model.ApprenticeName</td>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-50">@Model.ApprenticeName</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Date of birth</th>
-                    <td class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
+                    <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Unique learner number</th>
-                    <td class="govuk-table__cell">@Model.Uln</td>
+                    <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-                    <td class="govuk-table__cell">@Model.CourseName</td>
+                    <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Training start date</th>
-                    <td class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+                    <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Training end date</th>
-                    <td class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
+                    <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                    <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Your reference</th>
-                    <td class="govuk-table__cell">@Model.ProviderRef</td>
+                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
                 </tr>
             </tbody>
         </table>
