@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
@@ -17,10 +18,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly IModelMapper _modelMapper;
+        private readonly ILogger<ApprenticeController> _logger;
 
-        public ApprenticeController(IModelMapper modelMapper)
+        public ApprenticeController(
+            IModelMapper modelMapper,
+            ILogger<ApprenticeController> logger)
         {
             _modelMapper = modelMapper;
+            _logger = logger;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -54,6 +59,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var moreData = true;
                 while (moreData)
                 {
+                    _logger.LogDebug($"Streaming page number: [{downloadViewModel.Request.PageNumber}]");
+
                     using (var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request))
                     {
                         if (stream2.Length == 0)
@@ -64,10 +71,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         downloadViewModel.Request.PageNumber += 1;
 
                         stream2.CopyTo(outputStream);
+
+                        _logger.LogDebug($"Page number: [{downloadViewModel.Request.PageNumber}] has been copied to output stream");
                     }
                     
                     downloadViewModel.Dispose();
                 }
+
+                _logger.LogDebug("Finished streaming all pages");
                 
             }){FileDownloadName = downloadViewModel.Name};
 
