@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.ActionResults;
@@ -17,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task ThenTheFileContentIsSetCorrectly(
             DownloadRequest request,
             string expectedFileName,
+            [Frozen] Mock<HttpContext> httpContext,
             [Frozen] Mock<IModelMapper> csvMapper,
             ApprenticeController controller)
         {
@@ -28,6 +32,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             csvMapper.Setup(x =>
                     x.Map<DownloadViewModel>(request))
                 .ReturnsAsync(expectedCsvContent);
+            var defaultHttpResponse = new DefaultHttpResponse(httpContext.Object);
+            httpContext.Setup(x => x.Response).Returns(defaultHttpResponse);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext.Object
+            };
 
             //Act
             var actual = await controller.Download(request);
@@ -40,4 +50,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             Assert.AreEqual(expectedCsvContent.ContentType, actualFileResult.ContentType);
         }
     }
+
 }

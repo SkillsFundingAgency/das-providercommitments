@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
-            
+            HttpContext.Response.Headers.Add("Content-Encoding","identity");
             return new FileCallbackResult(downloadViewModel.ContentType, async (outputStream, _) =>
             {
                 var moreData = true;
@@ -76,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 
                     downloadViewModel.Dispose();
                 }
-
+                outputStream.Flush();
                 _logger.LogDebug("Finished streaming all pages");
                 
             }){FileDownloadName = downloadViewModel.Name};
