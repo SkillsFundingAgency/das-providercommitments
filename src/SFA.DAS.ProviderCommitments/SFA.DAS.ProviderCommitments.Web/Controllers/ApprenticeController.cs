@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
@@ -53,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
-
+            
             return new FileCallbackResult(downloadViewModel.ContentType, async (outputStream, _) =>
             {
                 var moreData = true;
@@ -61,27 +60,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 {
                     _logger.LogDebug($"Streaming page number: [{downloadViewModel.Request.PageNumber}]");
 
-                    using (var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request))
-                    {
-                        if (stream2.Length == 0)
-                        {
-                            moreData = false;
-                        }
-
-                        downloadViewModel.Request.PageNumber += 1;
-
-                        stream2.CopyTo(outputStream);
-
-                        _logger.LogDebug($"Page number: [{downloadViewModel.Request.PageNumber}] has been copied to output stream");
-                    }
+                    var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request);
                     
+                    if (stream2.Length == 0)
+                    {
+                        moreData = false;
+                    }
+
+                    downloadViewModel.Request.PageNumber += 1;
+
+                    stream2.CopyTo(outputStream);
+
+                    _logger.LogDebug($"Page number: [{downloadViewModel.Request.PageNumber}] has been copied to output stream");
+                
                     downloadViewModel.Dispose();
                 }
 
                 _logger.LogDebug("Finished streaming all pages");
                 
             }){FileDownloadName = downloadViewModel.Name};
-
+            
         }
     }
 }
