@@ -55,6 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
+            HttpContext.Response.Headers.Clear();
             HttpContext.Response.Headers.Add("Content-Encoding","deflate, identity");
             return new FileCallbackResult(downloadViewModel.ContentType, async (outputStream, _) =>
             {
