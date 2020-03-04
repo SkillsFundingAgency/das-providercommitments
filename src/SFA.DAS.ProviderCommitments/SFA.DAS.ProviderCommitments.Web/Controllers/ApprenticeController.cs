@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -53,31 +55,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
-            HttpContext.Response.Headers.Add("Content-Encoding","identity");
+            HttpContext.Response.Headers.Add("Content-Encoding","deflate, identity");
             return new FileCallbackResult(downloadViewModel.ContentType, async (outputStream, _) =>
             {
-                var moreData = true;
-                while (moreData)
+                try
                 {
-                    _logger.LogDebug($"Streaming page number: [{downloadViewModel.Request.PageNumber}]");
-
-                    var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request);
-                    
-                    if (stream2.Length == 0)
+                    var moreData = true;
+                    while (moreData)
                     {
-                        moreData = false;
+                        _logger.LogDebug($"Streaming page number: [{downloadViewModel.Request.PageNumber}]");
+
+                        var stream2 = await downloadViewModel.GetAndCreateContent(downloadViewModel.Request);
+
+                        if (stream2.Length == 0)
+                        {
+                            moreData = false;
+                        }
+
+                        stream2.CopyTo(outputStream);
+                        downloadViewModel.Request.PageNumber += 1;
+
+
+                        _logger.LogDebug(
+                            $"Page number: [{downloadViewModel.Request.PageNumber}] has been copied to output stream");
+
+                        downloadViewModel.Dispose();
                     }
 
-                    downloadViewModel.Request.PageNumber += 1;
-
-                    stream2.CopyTo(outputStream);
-
-                    _logger.LogDebug($"Page number: [{downloadViewModel.Request.PageNumber}] has been copied to output stream");
-                
-                    downloadViewModel.Dispose();
+                    outputStream.Flush();
+                    outputStream.Close();
+                    outputStream.Dispose();
+                    _logger.LogDebug("Finished streaming all pages");
                 }
-                outputStream.Flush();
-                _logger.LogDebug("Finished streaming all pages");
+                catch (Exception e)
+                {
+                    _logger.LogError(e,"Unable to download file");
+                }
+                
                 
             }){FileDownloadName = downloadViewModel.Name};
             
