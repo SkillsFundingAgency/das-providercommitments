@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
     public class WhenGettingApprenticeshipsCsvContent
     {
         [Test, MoqAutoData]
-        public async Task Then_Passes_Filter_Args_To_Api_When_GetAndCreateContent_Is_Called(
+        public async Task Then_Passes_Filter_Args_To_Api(
             DownloadRequest csvRequest,
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             DownloadApprenticesRequestMapper mapper)

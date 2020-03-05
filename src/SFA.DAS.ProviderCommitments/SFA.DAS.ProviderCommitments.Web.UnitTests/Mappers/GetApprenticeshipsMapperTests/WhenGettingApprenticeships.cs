@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -90,7 +91,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
            
             await mapper.Map(webRequest);
 
-            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(It.Is<ApiRequests.GetApprenticeshipFiltersRequest>(c=>c.ProviderId.Equals(webRequest.ProviderId)),It.IsAny<CancellationToken>()), Times.Once);
+            mockApiClient.Verify(client => client.GetApprenticeshipsFilterValues(
+                It.Is<ApiRequests.GetApprenticeshipFiltersRequest>(
+                    r => r.ProviderId.Equals(webRequest.ProviderId)),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -155,7 +159,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
             Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
-            Assert.AreEqual(request.PageNumber, viewModel.FilterModel.PageNumber);
+            Assert.AreEqual(apprenticeshipsResponse.PageNumber, viewModel.FilterModel.PageNumber);
             Assert.AreEqual(request.ReverseSort,viewModel.FilterModel.ReverseSort);
             Assert.AreEqual(request.SortField, viewModel.FilterModel.SortField);
             Assert.AreEqual(filtersResponse.EmployerNames, viewModel.FilterModel.EmployerFilters);
@@ -211,6 +215,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMa
 
             Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Unknown));
             Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Completed));
+        }
+
+        [Test, MoqAutoData]
+        public async Task ThenWillSetPageNumberToLastOneIfRequestPageNumberIsTooHigh(
+            IndexRequest webRequest,
+            GetApprenticeshipsResponse clientResponse,
+            [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
+            IndexViewModelMapper mapper)
+        {
+            clientResponse.PageNumber = (int)Math.Ceiling((double)clientResponse.TotalApprenticeshipsFound / Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage);
+            webRequest.PageNumber = clientResponse.PageNumber + 10;
+
+            clientResponse.TotalApprenticeships = Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch - 1;
+            
+            mockApiClient
+                .Setup(client => client.GetApprenticeships(
+                    It.IsAny<ApiRequests.GetApprenticeshipsRequest>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(clientResponse);
+
+            var result= await mapper.Map(webRequest);
+
+            Assert.AreEqual(1, result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value));
+
+            Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
         }
     }
 }
