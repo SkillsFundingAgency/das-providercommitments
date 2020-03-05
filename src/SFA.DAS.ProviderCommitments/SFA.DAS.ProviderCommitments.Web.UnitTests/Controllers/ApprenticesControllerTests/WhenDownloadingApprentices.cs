@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
@@ -27,7 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             //Arrange
             var expectedCsvContent = new DownloadViewModel
             {
-                Name = expectedFileName
+                Name = expectedFileName,
+                Content = new MemoryStream()
             };
             csvMapper.Setup(x =>
                     x.Map<DownloadViewModel>(request))
@@ -42,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             //Act
             var actual = await controller.Download(request);
 
-            var actualFileResult = actual as FileCallbackResult;
+            var actualFileResult = actual as FileResult;
 
             //Assert
             Assert.IsNotNull(actualFileResult);

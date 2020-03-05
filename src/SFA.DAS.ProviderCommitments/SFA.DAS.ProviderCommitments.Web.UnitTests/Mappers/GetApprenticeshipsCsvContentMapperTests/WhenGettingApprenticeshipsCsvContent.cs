@@ -25,9 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             DownloadApprenticesRequestMapper mapper)
         {
-            var mappedResult = await mapper.Map(csvRequest);
-
-            await mappedResult.GetAndCreateContent(mappedResult.Request);
+            await mapper.Map(csvRequest);
 
             mockApiClient.Verify(client => client.GetApprenticeships(
                 It.Is<GetApprenticeshipsRequest>(apiRequest =>
@@ -59,21 +57,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
             var mapper = new DownloadApprenticesRequestMapper(client.Object, csvService.Object, currentDateTime.Object);
 
             client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
-                    r.ProviderId.Equals(request.ProviderId) 
-                    && r.PageItemCount.Equals(Constants.ApprenticesSearch.NumberOfApprenticesPerDownloadPage)), It.IsAny<CancellationToken>()))
+                    r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
             csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>(), true))
                 .Returns(expectedMemoryStream);
 
             //Act
             var content = await mapper.Map(request);
-            var csvContent = await content.GetAndCreateContent(content.Request);
 
             //Assert
             Assert.AreEqual(expectedFileName, content.Name);
-            var actualContent = csvContent.ToArray(); 
-            Assert.IsNotEmpty(actualContent);
-            Assert.AreEqual(expectedCsvContent, actualContent);
+            Assert.AreEqual(expectedMemoryStream, content.Content);
         }
     }
 }
