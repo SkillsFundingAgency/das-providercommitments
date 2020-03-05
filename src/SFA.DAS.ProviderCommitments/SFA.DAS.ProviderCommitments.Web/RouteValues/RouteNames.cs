@@ -9,5 +9,6 @@
         public const string ApprenticeSelectEmployer = "apprentice-select-employer";
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";
         public const string ApprenticeNewTrainingStartDate = "apprentice-new-training-start-date";
+        public const string ApprenticeNewPrice = "apprentice-new-price";
     }
 }
