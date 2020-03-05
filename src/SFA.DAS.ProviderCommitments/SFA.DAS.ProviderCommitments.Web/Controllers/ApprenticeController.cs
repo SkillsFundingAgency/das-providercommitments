@@ -88,9 +88,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeNewTrainingStartDate)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> Dates(DatesRequest request)
+        public async Task<IActionResult> Dates(ChangeStartDateRequest request)
         {
-            throw new NotImplementedException();
+            var viewModel = await _modelMapper.Map<ChangeStartDateViewModel>(request);
+
+            return View(viewModel);
         }
 
         [HttpGet]
