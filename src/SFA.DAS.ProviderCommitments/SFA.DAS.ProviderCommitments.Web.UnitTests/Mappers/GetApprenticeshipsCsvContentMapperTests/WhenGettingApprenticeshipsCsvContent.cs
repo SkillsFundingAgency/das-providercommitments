@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -61,8 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsCs
                     r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(clientResponse);
 
-            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>()))
-                .Returns(expectedCsvContent);
+            csvService.Setup(x => x.GenerateCsvContent(It.IsAny<IEnumerable<ApprenticeshipDetailsCsvModel>>(), It.IsAny<bool>()))
+                .Returns(new MemoryStream(expectedCsvContent));
 
             //Act
             var content = await mapper.Map(request);

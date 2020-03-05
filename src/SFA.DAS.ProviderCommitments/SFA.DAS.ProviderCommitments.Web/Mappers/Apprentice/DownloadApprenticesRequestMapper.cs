@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
 
-            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent);
+            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent, true).ToArray();
             downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.UtcNow:yyyyMMddhhmmss}.csv";
             return downloadViewModel;
         }

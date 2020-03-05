@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Services
 {
     public class CreateCsvService : ICreateCsvService
     {
-        public byte[] GenerateCsvContent<T>(IEnumerable<T> results)
+        public MemoryStream GenerateCsvContent<T>(IEnumerable<T> results, bool hasHeader)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -15,13 +15,23 @@ namespace SFA.DAS.ProviderCommitments.Services
                 {
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
+                        if (hasHeader)
+                        {
+                            csvWriter.WriteHeader<T>();
+                        }
+
                         csvWriter.WriteRecords(results);
                         streamWriter.Flush();
                         memoryStream.Position = 0;
-                        return memoryStream.ToArray();
+                        return memoryStream;
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+           
         }
     }
 }

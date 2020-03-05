@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             List<SomethingToCsv> listToWriteToCsv,
             CreateCsvService createCsvService)
         {
-            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv);
+            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv, true).ToArray();
 
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
@@ -31,15 +31,15 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
             List<SomethingToCsv> listToWriteToCsv,
             CreateCsvService createCsvService)
         {
-            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv);
+            var actual = createCsvService.GenerateCsvContent(listToWriteToCsv, true).ToArray();
 
             Assert.IsNotNull(actual);
             Assert.IsNotEmpty(actual);
             Assert.IsAssignableFrom<byte[]>(actual);
             var fileString = System.Text.Encoding.Default.GetString(actual);
             var lines = fileString.Split(Environment.NewLine);
-            Assert.AreEqual(listToWriteToCsv.Count + 2, lines.Length);
-            Assert.AreEqual(listToWriteToCsv[0].Description, lines[1].Split(',')[1]);
+            Assert.AreEqual(listToWriteToCsv.Count + 1, lines.Length);
+            Assert.AreEqual(listToWriteToCsv[1].Description, lines[1].Split(',')[1]);
         }
 
         [Test, MoqAutoData]
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Services
         {
             List<SomethingToCsv> nullList = null;
 
-            Assert.Throws<WriterException>(() => createCsvService.GenerateCsvContent(nullList));
+            Assert.Throws<WriterException>(() => createCsvService.GenerateCsvContent(nullList, true));
         }
     }
 
