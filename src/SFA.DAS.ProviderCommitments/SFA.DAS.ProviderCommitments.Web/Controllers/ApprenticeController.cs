@@ -96,6 +96,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public Task<IActionResult> NewPrice(ChangePriceRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Download(DownloadRequest request)
