@@ -10,5 +10,6 @@
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";
         public const string ApprenticeNewTrainingStartDate = "apprentice-new-training-start-date";
         public const string ApprenticeNewPrice = "apprentice-new-price";
+        public const string ApprenticeConfirmChangeOfEmployer = "apprentice-confirm-change-of-employer";
     }
 }

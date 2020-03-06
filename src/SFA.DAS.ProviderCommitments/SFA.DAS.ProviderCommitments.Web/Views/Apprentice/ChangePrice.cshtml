@@ -1,0 +1,27 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangePriceViewModel
+
+@{
+    ViewBag.Title = "What's the new agreed apprenticeship price?";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <p>This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment.</p>
+        <form method="post">
+            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+            @Html.HiddenFor(x => x.NewStartDate)
+            <div class="govuk-form-group">
+                @Html.ValidationMessageFor(m => m.NewPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.NewPrice) })
+                <label class="govuk-label" for="price">Enter the price in whole pounds</label>
+                <span class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
+                <input asp-for="NewPrice" class="govuk-input govuk-!-width-one-third" />
+            </div>
+            <button class="govuk-button">
+                Save and continue
+            </button>
+        </form>
+    </div>
+</div>

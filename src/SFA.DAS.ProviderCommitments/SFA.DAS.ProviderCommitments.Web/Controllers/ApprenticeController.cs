@@ -7,7 +7,6 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -61,7 +60,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
@@ -98,9 +96,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> NewPrice(ChangePriceRequest request)
+        public async Task<IActionResult> ChangePrice(ChangePriceRequest request)
         {
-            throw new NotImplementedException();
+            var model = await _modelMapper.Map<ChangePriceViewModel>(request);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> ChangePrice(ChangePriceViewModel viewModel)
+        {
+            var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, request);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirmChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public IActionResult ConfirmChangeOfEmployer(ChangeOfEmployerRequest request)
+        {
+            return View("NotImplemented");
         }
 
         [HttpGet]
