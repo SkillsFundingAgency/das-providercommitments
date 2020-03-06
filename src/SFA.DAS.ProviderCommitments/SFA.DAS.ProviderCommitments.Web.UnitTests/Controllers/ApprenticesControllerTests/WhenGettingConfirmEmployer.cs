@@ -1,16 +1,13 @@
-﻿using MediatR;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
 using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeControllerTests
 {
     [TestFixture]
     public class WhenGettingConfirmEmployer
@@ -38,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class GetConfirmEmployerFixture
     {
-        public CohortController Sut { get; set; }
+        public ApprenticeController Sut { get; set; }
 
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ConfirmEmployerViewModel _viewModel;
@@ -57,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
             
-            Sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new ApprenticeController(_modelMapperMock.Object);
         }
 
         public GetConfirmEmployerFixture WithModelStateErrors()

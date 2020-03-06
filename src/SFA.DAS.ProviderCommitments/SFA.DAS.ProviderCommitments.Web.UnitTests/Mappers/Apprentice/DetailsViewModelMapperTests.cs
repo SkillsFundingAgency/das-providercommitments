@@ -18,17 +18,17 @@ using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.ProviderCommitments.Features;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsRequestToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class WhenIMapApprenticeDetailsRequestToViewModel
+    public class DetailsViewModelMapperTests
     {
-        private WhenIMapApprenticeDetailsRequestToViewModelFixture _fixture;
+        private DetailsViewModelMapperFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            _fixture = new WhenIMapApprenticeDetailsRequestToViewModelFixture();
+            _fixture = new DetailsViewModelMapperFixture();
         }
 
         [Test]
@@ -316,9 +316,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             Assert.AreEqual(enabled, _fixture.Result.IsChangeOfEmployerEnabled);
         }
 
-        public class WhenIMapApprenticeDetailsRequestToViewModelFixture
+        public class DetailsViewModelMapperFixture
         {
-            private readonly DetailsViewModelMapper _mapper;
+            private readonly DetailsViewModelMapper _sut;
             public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
             public GetApprenticeshipResponse ApiResponse { get; }
@@ -332,7 +332,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
             public string AgreementId { get; }
             public string URL { get; }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture()
+            public DetailsViewModelMapperFixture()
             {
                 var fixture = new Fixture();
                 Source = fixture.Create<DetailsRequest>();
@@ -385,23 +385,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 apiClient.Setup(x => x.GetApprenticeshipDatalocksStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetDataLocksResponse);
 
-                _mapper = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
             }
 
-            public async Task<WhenIMapApprenticeDetailsRequestToViewModelFixture> Map()
+            public async Task<DetailsViewModelMapperFixture> Map()
             {
-                Result = await _mapper.Map(Source);
+                Result = await _sut.Map(Source);
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithApprenticeshipStatus(
+            public DetailsViewModelMapperFixture WithApprenticeshipStatus(
                 ApprenticeshipStatus status)
             {
                 ApiResponse.Status = status;
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForProvider()
+            public DetailsViewModelMapperFixture WithPendingUpdatesForProvider()
             {
                 GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
                 {
@@ -417,7 +417,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithPendingUpdatesForEmployer()
+            public DetailsViewModelMapperFixture WithPendingUpdatesForEmployer()
             {
                 GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
                 {
@@ -432,7 +432,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithResolvedDataLocks()
+            public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
                 GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { 
                     new GetDataLocksResponse.DataLock
@@ -453,7 +453,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
+            public DetailsViewModelMapperFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
             {
                 GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
                 {
@@ -466,7 +466,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithAnotherDataLock(DataLockErrorCode errorCode)
+            public DetailsViewModelMapperFixture WithAnotherDataLock(DataLockErrorCode errorCode)
             {
                 var dataLocks = GetDataLocksResponse.DataLocks.ToList();
                 dataLocks.Add(new GetDataLocksResponse.DataLock
@@ -482,7 +482,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnResolvedAndPassingDataLocks()
+            public DetailsViewModelMapperFixture WithUnResolvedAndPassingDataLocks()
             {
                 GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
                 {
@@ -494,7 +494,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
+            public DetailsViewModelMapperFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
             {
                 GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
                 {
@@ -506,13 +506,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeDetailsReq
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithHasHadDataLockSuccess(bool hasHadDataLockSuccess)
+            public DetailsViewModelMapperFixture WithHasHadDataLockSuccess(bool hasHadDataLockSuccess)
             {
                 ApiResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
                 return this;
             }
 
-            public WhenIMapApprenticeDetailsRequestToViewModelFixture WithChangeOfEmployerToggle(bool enabled)
+            public DetailsViewModelMapperFixture WithChangeOfEmployerToggle(bool enabled)
             {
                 _featureToggleService
                     .Setup(x => x.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer)))

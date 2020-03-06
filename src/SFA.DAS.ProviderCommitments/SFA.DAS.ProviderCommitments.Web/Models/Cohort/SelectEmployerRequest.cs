@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Requests.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class SelectEmployerRequest
     {

@@ -14,7 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 using ApiRequests = SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.GetApprenticeshipsMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     public class WhenGettingApprenticeships
     {

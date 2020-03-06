@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Requests.Apprentice;
 using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {

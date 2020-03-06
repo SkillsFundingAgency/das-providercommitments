@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 
-namespace SFA.DAS.ProviderCommitments.Web.Requests
+namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class NonReservationsAddDraftApprenticeshipRequest : IAuthorizationContextModel
     {

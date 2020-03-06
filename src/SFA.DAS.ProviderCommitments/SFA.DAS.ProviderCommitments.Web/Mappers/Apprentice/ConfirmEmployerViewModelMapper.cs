@@ -1,15 +1,16 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+﻿using System;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ConfirmEmployerRequestToViewModelMapper : IMapper<ConfirmEmployerRequest, ConfirmEmployerViewModel>
+    public class ConfirmEmployerViewModelMapper : IMapper<ConfirmEmployerRequest, ConfirmEmployerViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public ConfirmEmployerRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ConfirmEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
