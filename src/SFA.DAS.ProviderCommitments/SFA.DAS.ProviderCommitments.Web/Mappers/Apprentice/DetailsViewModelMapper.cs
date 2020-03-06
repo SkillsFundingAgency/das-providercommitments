@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -10,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -18,18 +21,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
         private readonly ILogger<DetailsViewModelMapper> _logger;
+        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
 
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, ILogger<DetailsViewModelMapper> logger)
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService,
+            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService, ILogger<DetailsViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
             _logger = logger;
+            _featureTogglesService = featureTogglesService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             try
             {
+                var isChangeOfEmployerEnabled = _featureTogglesService.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer))?.IsEnabled ?? false;
                 var data = await GetApprenticeshipData(source.ApprenticeshipId);
                 var dataLockSummaryStatus = data.DataLocks.DataLocks.GetDataLockSummaryStatus();
                 
@@ -62,7 +69,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasProviderPendingUpdate = data.HasProviderUpdates,
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
-                    AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks)
+                    AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
+                    IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled
                 };
             }
             catch (Exception e)

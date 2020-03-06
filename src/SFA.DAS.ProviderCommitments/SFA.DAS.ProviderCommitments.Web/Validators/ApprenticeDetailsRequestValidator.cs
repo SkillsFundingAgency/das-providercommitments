@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators
