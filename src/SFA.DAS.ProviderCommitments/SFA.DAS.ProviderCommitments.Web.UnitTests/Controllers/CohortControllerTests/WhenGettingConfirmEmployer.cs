@@ -3,13 +3,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 using SFA.DAS.ProviderUrlHelper;
 using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {

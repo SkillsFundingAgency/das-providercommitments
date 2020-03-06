@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {

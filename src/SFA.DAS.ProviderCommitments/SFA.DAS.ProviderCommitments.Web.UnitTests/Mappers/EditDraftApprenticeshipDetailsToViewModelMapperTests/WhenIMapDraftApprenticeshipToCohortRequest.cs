@@ -9,7 +9,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprenticeshipDetailsToViewModelMapperTests
 {

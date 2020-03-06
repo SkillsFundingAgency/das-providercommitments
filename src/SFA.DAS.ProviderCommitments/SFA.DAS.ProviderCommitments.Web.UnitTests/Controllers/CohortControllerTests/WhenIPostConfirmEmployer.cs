@@ -10,6 +10,7 @@ using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {

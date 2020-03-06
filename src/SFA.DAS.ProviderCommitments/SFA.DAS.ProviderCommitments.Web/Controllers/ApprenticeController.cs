@@ -9,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
 using System.Threading.Tasks;
-using CsvHelper.Configuration.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -55,7 +54,41 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> SelectEmployer()
+        public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
+        {
+            var viewModel = await _modelMapper.Map<SelectEmployerViewModel>(request);
+
+            return View(viewModel);
+        }
+
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        {
+            if (viewModel.Confirm.Value)
+            {
+                 return RedirectToAction("Dates", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+            }
+
+            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeNewTrainingStartDate)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public Task<IActionResult> Dates(DatesRequest request)
         {
             throw new NotImplementedException();
         }
