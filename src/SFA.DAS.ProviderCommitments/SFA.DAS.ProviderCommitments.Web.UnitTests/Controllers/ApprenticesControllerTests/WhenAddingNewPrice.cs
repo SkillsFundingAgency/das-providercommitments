@@ -4,8 +4,6 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
