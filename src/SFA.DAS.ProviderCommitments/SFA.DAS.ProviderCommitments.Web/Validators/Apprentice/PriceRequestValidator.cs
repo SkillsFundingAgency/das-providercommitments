@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class ChangePriceRequestValidator : AbstractValidator<PriceRequest>
+    public class PriceRequestValidator : AbstractValidator<PriceRequest>
     {
-        public ChangePriceRequestValidator()
+        public PriceRequestValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
