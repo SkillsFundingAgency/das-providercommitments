@@ -1,4 +1,4 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangePriceViewModel
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
 @{
     ViewBag.Title = "What's the new agreed apprenticeship price?";
@@ -12,12 +12,12 @@
         <p>This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment.</p>
         <form method="post">
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-            @Html.HiddenFor(x => x.NewStartDate)
+            @Html.HiddenFor(x => x.StartDate)
             <div class="govuk-form-group">
-                @Html.ValidationMessageFor(m => m.NewPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.NewPrice) })
+                @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
                 <label class="govuk-label" for="price">Enter the price in whole pounds</label>
                 <span class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
-                <input asp-for="NewPrice" class="govuk-input govuk-!-width-one-third" />
+                <input asp-for="Price" class="govuk-input govuk-!-width-one-third" />
             </div>
             <button class="govuk-button">
                 Save and continue

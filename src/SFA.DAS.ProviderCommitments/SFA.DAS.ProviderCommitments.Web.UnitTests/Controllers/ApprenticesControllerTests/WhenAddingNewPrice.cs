@@ -14,13 +14,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     public class WhenAddingNewPrice
     {
         [Test]
-        public async Task GetThenCallsChangePriceViewModelMapper()
+        public async Task GetThenCallsPriceViewModelMapper()
         {
             var fixture = new WhenAddingNewPriceFixture();
 
-            await fixture.Sut.ChangePrice(fixture.ChangePriceRequest);
+            await fixture.Sut.Price(fixture.PriceRequest);
 
-            fixture.VerifyChangePriceViewMapperWasCalled();
+            fixture.VerifyPriceViewMapperWasCalled();
         }
 
         [Test]
@@ -28,10 +28,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new WhenAddingNewPriceFixture();
 
-            var result = await fixture.Sut.ChangePrice(fixture.ChangePriceRequest) as ViewResult;
+            var result = await fixture.Sut.Price(fixture.PriceRequest) as ViewResult;
 
             Assert.NotNull(result);
-            Assert.AreEqual(typeof(ChangePriceViewModel), result.Model.GetType());
+            Assert.AreEqual(typeof(PriceViewModel), result.Model.GetType());
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new WhenAddingNewPriceFixture();
 
-            await fixture.Sut.ChangePrice(fixture.ChangePriceViewModel);
+            await fixture.Sut.Price(fixture.PriceViewModel);
 
             fixture.VerifyChangeOfEmployerMapperWasCalled();
         }
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new WhenAddingNewPriceFixture();
 
-            var result = await fixture.Sut.ChangePrice(fixture.ChangePriceViewModel) as RedirectToRouteResult;
+            var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
             Assert.NotNull(result);
             Assert.AreEqual(RouteNames.ApprenticeConfirmChangeOfEmployer, result.RouteName);
@@ -59,8 +59,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     public class WhenAddingNewPriceFixture
     {
         public ApprenticeController Sut { get; set; }
-        public ChangePriceRequest ChangePriceRequest { get; set; }
-        public ChangePriceViewModel ChangePriceViewModel { get; set; }
+        public PriceRequest PriceRequest { get; set; }
+        public PriceViewModel PriceViewModel { get; set; }
 
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly Fixture _fixture;
@@ -68,24 +68,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public WhenAddingNewPriceFixture()
         {
             _fixture = new Fixture();
-            ChangePriceRequest = _fixture.Create<ChangePriceRequest>();
-            ChangePriceViewModel = _fixture.Create<ChangePriceViewModel>();
+            PriceRequest = _fixture.Create<PriceRequest>();
+            PriceViewModel = _fixture.Create<PriceViewModel>();
 
             _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock.Setup(x => x.Map<ChangePriceViewModel>(It.IsAny<ChangePriceRequest>()))
-                .ReturnsAsync(ChangePriceViewModel);
+            _modelMapperMock.Setup(x => x.Map<PriceViewModel>(It.IsAny<PriceRequest>()))
+                .ReturnsAsync(PriceViewModel);
 
             Sut = new ApprenticeController(_modelMapperMock.Object);
         }
 
-        public void VerifyChangePriceViewMapperWasCalled()
+        public void VerifyPriceViewMapperWasCalled()
         {
-            _modelMapperMock.Verify(x => x.Map<ChangePriceViewModel>(ChangePriceRequest));
+            _modelMapperMock.Verify(x => x.Map<PriceViewModel>(PriceRequest));
         }
 
         public void VerifyChangeOfEmployerMapperWasCalled()
         {
-            _modelMapperMock.Verify(x => x.Map<ChangeOfEmployerRequest>(ChangePriceViewModel));
+            _modelMapperMock.Verify(x => x.Map<ChangeOfEmployerRequest>(PriceViewModel));
         }
     }
 }

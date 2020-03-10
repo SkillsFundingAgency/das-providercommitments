@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangeOfEmployerRequestMapper : IMapper<ChangePriceViewModel, ChangeOfEmployerRequest>
+    public class ChangeOfEmployerRequestMapper : IMapper<PriceViewModel, ChangeOfEmployerRequest>
     {
         private readonly ILogger<ChangeOfEmployerRequestMapper> _logger;
 
@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             _logger = logger;
         }
 
-        public async Task<ChangeOfEmployerRequest> Map(ChangePriceViewModel source)
+        public async Task<ChangeOfEmployerRequest> Map(PriceViewModel source)
         {
             try
             {
@@ -24,13 +24,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    NewStartDate = source.NewStartDate,
-                    NewPrice = decimal.ToInt32(source.NewPrice.Value)
+                    NewStartDate = source.StartDate,
+                    NewPrice = decimal.ToInt32(source.Price.Value)
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Mapping {nameof(ChangePriceViewModel)} to {nameof(ChangeOfEmployerRequest)}", e);
+                _logger.LogError($"Error Mapping {nameof(PriceViewModel)} to {nameof(ChangeOfEmployerRequest)}", e);
                 throw;
             }
         }

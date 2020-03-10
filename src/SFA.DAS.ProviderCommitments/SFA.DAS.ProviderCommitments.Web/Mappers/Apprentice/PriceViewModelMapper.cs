@@ -4,16 +4,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangePriceViewModelMapper : IMapper<ChangePriceRequest, ChangePriceViewModel>
+    public class PriceViewModelMapper : IMapper<PriceRequest, PriceViewModel>
     {
-        public Task<ChangePriceViewModel> Map(ChangePriceRequest source)
+        public Task<PriceViewModel> Map(PriceRequest source)
         {
-            return Task.FromResult(new ChangePriceViewModel
+            return Task.FromResult(new PriceViewModel
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                NewStartDate = source.NewStartDate
+                StartDate = source.StartDate
             });
         }
     }

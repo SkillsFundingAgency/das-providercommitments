@@ -13,14 +13,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class ChangeOfEmployerRequestMapperTests
     {
         private ChangeOfEmployerRequestMapper _mapper;
-        private ChangePriceViewModel _source;
+        private PriceViewModel _source;
         private Func<Task<ChangeOfEmployerRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<ChangePriceViewModel>();
+            _source = fixture.Create<PriceViewModel>();
 
             _mapper = new ChangeOfEmployerRequestMapper(Mock.Of<ILogger<ChangeOfEmployerRequestMapper>>());
 
@@ -52,20 +52,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.NewStartDate, result.NewStartDate);
+            Assert.AreEqual(_source.StartDate, result.NewStartDate);
         }
 
         [Test]
         public async Task ThenNewPriceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.NewPrice.Value, result.NewPrice);
+            Assert.AreEqual(_source.Price.Value, result.NewPrice);
         }
 
         [Test]
         public void ThenThrowsExceptionWhenNewPriceIsNull()
         {
-            _source.NewPrice = null;
+            _source.Price = null;
             Assert.ThrowsAsync<InvalidOperationException>( () => _mapper.Map(TestHelper.Clone(_source)));
         }
     }

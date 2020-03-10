@@ -96,16 +96,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> ChangePrice(ChangePriceRequest request)
+        public async Task<IActionResult> Price(PriceRequest request)
         {
-            var model = await _modelMapper.Map<ChangePriceViewModel>(request);
+            var model = await _modelMapper.Map<PriceViewModel>(request);
             return View(model);
         }
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> ChangePrice(ChangePriceViewModel viewModel)
+        public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
             var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
             return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, request);

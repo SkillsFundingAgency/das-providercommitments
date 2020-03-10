@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class ChangePriceViewModelMapperTests
+    public class PriceViewModelMapperTests
     {
-        private ChangePriceViewModelMapper _mapper;
-        private ChangePriceRequest _source;
-        private Func<Task<ChangePriceViewModel>> _act;
+        private PriceViewModelMapper _mapper;
+        private PriceRequest _source;
+        private Func<Task<PriceViewModel>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<ChangePriceRequest>();
+            _source = fixture.Create<PriceRequest>();
 
-            _mapper = new ChangePriceViewModelMapper();
+            _mapper = new PriceViewModelMapper();
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -47,10 +47,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenNewStartDateIsMappedCorrectly()
+        public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.NewStartDate, result.NewStartDate);
+            Assert.AreEqual(_source.StartDate, result.StartDate);
         }
     }
 }
