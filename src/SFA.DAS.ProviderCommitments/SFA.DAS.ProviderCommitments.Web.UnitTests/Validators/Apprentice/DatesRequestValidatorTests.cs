@@ -7,13 +7,13 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
-    public class ChangeStartDateRequestValidatorTests
+    public class DatesRequestValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
         {
-            var request = new ChangeStartDateRequest { ProviderId = providerId };
+            var request = new DatesRequest { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
@@ -22,33 +22,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("XYZ", true)]
-        public void Validate_EmployerAccountLegalEntityPublicHashedId_ShouldBeValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
+        public void ThenEmployerAccountLegalEntityPublicHashedIdIsValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
         {
-            var model = new ChangeStartDateRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
+            var model = new DatesRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
 
             AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
         }
 
         [TestCase(0, false)]
         [TestCase(102, true)]
-        public void Validate_AccountLegalEntityId_ShouldBeValidated(long accountLegalEntityId, bool expectedValid)
+        public void ThenAccountLegalEntityIdIsValidated(long accountLegalEntityId, bool expectedValid)
         {
-            var model = new ChangeStartDateRequest { AccountLegalEntityId = accountLegalEntityId };
+            var model = new DatesRequest { AccountLegalEntityId = accountLegalEntityId };
             AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
         }
 
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("AB76V", true)]
-        public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
+        public void ThenApprenticeshipHashedIdIsValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new ChangeStartDateRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new DatesRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ChangeStartDateRequest, T>> property, ChangeStartDateRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<DatesRequest, T>> property, DatesRequest instance, bool expectedValid)
         {
-            var validator = new ChangeStartDateRequestValidator();
+            var validator = new DatesRequestValidator();
 
             if (expectedValid)
             {

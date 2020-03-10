@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
                 .WithConfirmTrue();
 
             var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("ChangeStartDate");
+            result.VerifyReturnsRedirectToActionResult().WithActionName("Dates");
         }
     }
 

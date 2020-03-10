@@ -1,23 +1,23 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
-    public class WhenGettingChangeStartDatePage
+    public class WhenGettingDatesPage
     {
-        private GetChangeStartDateFixture _fixture;
+        private GetDatesFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new GetChangeStartDateFixture();
+            _fixture = new GetDatesFixture();
         }
 
         [Test]
@@ -33,36 +33,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = await _fixture.Act();
 
-            result.VerifyReturnsViewModel().WithModel<ChangeStartDateViewModel>();
+            result.VerifyReturnsViewModel().WithModel<DatesViewModel>();
         }
     }
 
-    internal class GetChangeStartDateFixture
+    internal class GetDatesFixture
     {
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ApprenticeController _sut;
-        private readonly ChangeStartDateRequest _request;
-        private readonly ChangeStartDateViewModel _viewModel;
+        private readonly DatesRequest _request;
+        private readonly DatesViewModel _viewModel;
 
-        public GetChangeStartDateFixture()
+        public GetDatesFixture()
         {
-            _request = new ChangeStartDateRequest
+            _request = new DatesRequest
             {
                 ProviderId = 2342,
                 EmployerAccountLegalEntityPublicHashedId = "AB34CDS",
                 ApprenticeshipHashedId = "KG34DF989"
             };
-            _viewModel = new ChangeStartDateViewModel();
+            _viewModel = new DatesViewModel();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
-                .Setup(x => x.Map<ChangeStartDateViewModel>(_request))
+                .Setup(x => x.Map<DatesViewModel>(_request))
                 .ReturnsAsync(_viewModel);
 
             _sut = new ApprenticeController(_modelMapperMock.Object);
         }
 
-        public Task<IActionResult> Act() => _sut.ChangeStartDate(_request);
+        public Task<IActionResult> Act() => _sut.Dates(_request);
 
-        public void Verify_ModelMapperWasCalled(Times times) => _modelMapperMock.Verify(x => x.Map<ChangeStartDateViewModel>(_request), times);
+        public void Verify_ModelMapperWasCalled(Times times) => _modelMapperMock.Verify(x => x.Map<DatesViewModel>(_request), times);
     }
 }
