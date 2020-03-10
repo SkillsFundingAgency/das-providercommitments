@@ -1,8 +1,10 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
 @{
     ViewBag.Title = "What's the new agreed apprenticeship price?";
-    ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
+    ViewBag.GaData.Vpv = "/apprentices/change-employer/price";
 }
 
 <div class="govuk-grid-row">
@@ -13,15 +15,20 @@
         <form method="post">
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.StartDate)
-            <div class="govuk-form-group">
+            <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
                 @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
                 <label class="govuk-label" for="price">Enter the price in whole pounds</label>
                 <span class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
-                <input asp-for="Price" class="govuk-input govuk-!-width-one-third" />
+                <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
             </div>
-            <button class="govuk-button">
+            <button id="save-and-continue-button" class="govuk-button" type="submit" data-module="govuk-button">
                 Save and continue
             </button>
         </form>
     </div>
 </div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeChangeStartDate, new { Model.EmployerAccountLegalEntityPublicHashedId.Length, Model.StartDate})">Back</a>
+}
