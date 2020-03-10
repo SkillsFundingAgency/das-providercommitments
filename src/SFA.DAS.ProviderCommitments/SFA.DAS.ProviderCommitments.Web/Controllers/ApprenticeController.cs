@@ -8,7 +8,9 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -46,9 +48,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Dates(DatesViewModel viewModel)
         {
-            var request = await _modelMapper.Map<PriceRequest>(viewModel);
-
-            return RedirectToAction(nameof(ChangePrice), request);
+            try
+            {
+                var request = await _modelMapper.Map<PriceRequest>(viewModel);
+                return RedirectToAction(nameof(ChangePrice), request);
+            }
+            catch (ValidationException)
+            {
+                ModelState.AddModelError(nameof(viewModel.StartDate),"The new training start date cannot be before the stop date");
+                return RedirectToAction(nameof(Dates), viewModel);
+            }
         }
 
         [HttpGet]

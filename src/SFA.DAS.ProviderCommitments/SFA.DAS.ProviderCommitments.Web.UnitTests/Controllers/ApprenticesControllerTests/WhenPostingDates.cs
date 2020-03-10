@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -30,11 +31,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenRedirectsToRoute()
+        public async Task AndNoValidationErrorThrown_ThenRedirectsToPrices()
         {
             var result = await _fixture.Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.ChangePrice));
+        }
+
+        [Test]
+        public async Task AndValidationExceptionIsThrown_ThenRedirectsToDates()
+        {
+            _fixture.WithValidationError();
+
+            var result = await _fixture.Act();
+
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Dates));
         }
     }
 
@@ -62,12 +73,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
             _modelMapperMock = new Mock<IModelMapper>();
+            _modelMapperMock
+                .Setup(x => x.Map<PriceRequest>(_viewModel))
+                .ReturnsAsync(_request);
+
             _sut = new ApprenticeController(_modelMapperMock.Object);
         }
 
         public Task<IActionResult> Act() => _sut.Dates(_viewModel);
 
+        public PostDatesFixture WithValidationError()
+        {
+            _modelMapperMock
+                .Setup(x => x.Map<PriceRequest>(_viewModel))
+                .ThrowsAsync(new ValidationException());
+            return this;
+        }
+
         public void VerifyModelMapperWasCalled(Times times) =>
             _modelMapperMock.Verify(x => x.Map<PriceRequest>(_viewModel), times);
+
+        
     }
 }
