@@ -1,6 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.Provider.Shared.UI.Extensions
 
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
@@ -210,3 +211,4 @@
 {
     <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/all?&ResetFilter=False")">Back</a>
 }
+@Html.SetZendeskLabels("App-Choose an employer")
