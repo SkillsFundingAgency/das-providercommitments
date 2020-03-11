@@ -1,6 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
@@ -165,7 +166,7 @@
 </div>
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href="@Url.ProviderCommitmentsLink($"{Model.ProviderId}/apprentices?FromSearch=true")">Back</a>
+    <a id="back-link" class="govuk-back-link" asp-route="@RouteNames.ApprenticesIndex" asp-route-fromsearch="true">Back</a>
 }
 
 
