@@ -1,10 +1,14 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿using SFA.DAS.Authorization.Context;
+using SFA.DAS.Authorization.ModelBinding;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ChangeOfEmployerRequest
+    public class ChangeOfEmployerRequest : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
+        public long ApprenticeshipId { get; set; }
         public string StartDate { get; set; }
         public int Price { get; set; }
     }
