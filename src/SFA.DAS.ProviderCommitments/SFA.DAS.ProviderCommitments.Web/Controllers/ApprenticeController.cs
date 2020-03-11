@@ -124,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ApprenticeInform)]
+        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeNewPrice)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Price(PriceRequest request)
         {

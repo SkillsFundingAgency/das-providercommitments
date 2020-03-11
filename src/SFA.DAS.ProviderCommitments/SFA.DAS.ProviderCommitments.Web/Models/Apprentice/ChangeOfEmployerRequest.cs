@@ -5,7 +5,7 @@
         public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
-        public string NewStartDate { get; set; }
-        public int NewPrice { get; set; }
+        public string StartDate { get; set; }
+        public int Price { get; set; }
     }
 }
