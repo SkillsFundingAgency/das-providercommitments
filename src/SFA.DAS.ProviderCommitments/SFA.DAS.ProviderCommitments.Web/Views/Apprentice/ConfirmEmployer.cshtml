@@ -1,62 +1,64 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.Provider.Shared.UI.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmEmployerViewModel
 
 @{
     ViewBag.Title = "Confirm Employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm-employer";
+    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-                <partial name="_ValidationSummary" />
-                <h1 class="govuk-heading-xl">Confirm new employer</h1>
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Confirm new employer</h1>
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
 
-                <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
-                    <dt class="das-definition-list__title">Account Name</dt>
-                    <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
-                    <dt class="das-definition-list__title">Agreement ID</dt>
-                    <dd class="das-definition-list__definition">@Model.EmployerAccountLegalEntityPublicHashedId</dd>
-                </dl>
+        <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
+            <dt class="das-definition-list__title">Account Name</dt>
+            <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
+            <dt class="das-definition-list__title">Agreement ID</dt>
+            <dd class="das-definition-list__definition">@Model.EmployerAccountLegalEntityPublicHashedId</dd>
+        </dl>
 
-                <form method="post">
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+
+
+                <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
-                        @Html.AntiForgeryToken()
-                        @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Is this the new employer you'd like to move the apprentice record to?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                    Yes, confirm @Model.EmployerAccountLegalEntityName
+                                </label>
 
+                            </div>
 
-                        <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
-                            <fieldset class="govuk-fieldset">
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                    Is this the new employer you'd like to move the apprentice record to?
-                                </legend>
-                                @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
-                                <div class="govuk-radios">
-                                    <div class="govuk-radios__item">
-                                        <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
-                                        <label class="govuk-label govuk-radios__label" for="confirm-true">
-                                            Yes, confirm @Model.EmployerAccountLegalEntityName
-                                        </label>
-
-                                    </div>
-
-                                    <div class="govuk-radios__item">
-                                        <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
-                                        <label class="govuk-label govuk-radios__label" for="confirm-false">
-                                            No, choose a different employer
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
+                            <div class="govuk-radios__item">
+                                <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    No, choose a different employer
+                                </label>
+                            </div>
                         </div>
-
-                        <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
-                            Save and continue
-                        </button>
                     </fieldset>
-                </form>
-            </div>
-        </div>
+                </div>
+
+                <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
 
 
 @section breadcrumb

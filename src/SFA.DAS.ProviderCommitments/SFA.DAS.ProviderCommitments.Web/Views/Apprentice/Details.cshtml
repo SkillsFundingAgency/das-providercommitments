@@ -2,13 +2,13 @@
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.Provider.Shared.UI.Extensions
-
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 
 @{
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
+    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 @*https://localhost:5001/10005077/apprentices/4MBBNM*@
@@ -211,4 +211,4 @@
 {
     <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/all?&ResetFilter=False")">Back</a>
 }
-@Html.SetZendeskLabels("App-Choose an employer")
+@*@Html.SetZendeskLabels("App-Choose an employer")*@

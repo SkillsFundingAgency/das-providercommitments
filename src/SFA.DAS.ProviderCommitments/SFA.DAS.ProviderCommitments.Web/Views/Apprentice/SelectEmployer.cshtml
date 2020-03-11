@@ -1,9 +1,11 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.Provider.Shared.UI.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
 
 @{
     ViewData["Title"] = "Choose an employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/select-employer";
+    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 <div class="govuk-grid-row">
@@ -27,14 +29,14 @@
 
                 @foreach (var viewModel in Model.AccountProviderLegalEntities)
                 {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
-                        <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
-                        <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer,  new {viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
-                        </td>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
+                    <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
+                    <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                        <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer,  new {viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

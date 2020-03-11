@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Choose an employer";
     ViewBag.GaData.Vpv = "/unapproved/add/select-employer";
+    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 <div class="govuk-grid-row">
@@ -44,5 +45,4 @@
 {
     <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")">Back</a>
 }
-@Html.SetZendeskLabels("App - Choose an employer")
-      
+

@@ -54,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddNavigationBarSettings(Configuration)
                 .EnableGoogleAnalytics()
+                .AddZenDeskSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
