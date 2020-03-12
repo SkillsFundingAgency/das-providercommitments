@@ -63,8 +63,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
             {
-                var request = new GetApprenticeshipFiltersRequest{ ProviderId = source.ProviderId };
-                var filters = await _client.GetApprenticeshipsFilterValues(request);
+                var filters = await _client.GetApprenticeshipsFilterValues(
+                    new GetApprenticeshipFiltersRequest{ProviderId = source.ProviderId});
+
                 filterModel.EmployerFilters = filters.EmployerNames;
                 filterModel.CourseFilters = filters.CourseNames;
                 filterModel.StartDateFilters = filters.StartDates;

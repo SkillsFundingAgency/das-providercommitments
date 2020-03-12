@@ -14,9 +14,9 @@
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.1168" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="4.1.1168" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.1168" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.1214" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Types" Version="4.1.1214" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.1214" />
     <PackageReference Include="CsvHelper" Version="12.3.2" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />
   </ItemGroup>

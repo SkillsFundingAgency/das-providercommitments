@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.ActionResults;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -49,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             //Assert
             Assert.IsNotNull(actualFileResult);
             Assert.AreEqual(expectedCsvContent.Name, actualFileResult.FileDownloadName);
-            Assert.AreEqual(expectedCsvContent.ContentType, actualFileResult.ContentType);
+            Assert.AreEqual(actualFileResult.ContentType, actualFileResult.ContentType);
         }
     }
 
