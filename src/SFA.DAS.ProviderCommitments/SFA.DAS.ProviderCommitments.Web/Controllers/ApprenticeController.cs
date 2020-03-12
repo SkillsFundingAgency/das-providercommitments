@@ -66,7 +66,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
-
             return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
         }
     }

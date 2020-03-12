@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Shared.ActionResults;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -16,25 +20,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test, MoqAutoData]
         public async Task ThenTheFileContentIsSetCorrectly(
             DownloadRequest request,
-            [Frozen] DownloadViewModel expectedCsvContent,
+            string expectedFileName,
+            [Frozen] Mock<HttpContext> httpContext,
             [Frozen] Mock<IModelMapper> csvMapper,
             ApprenticeController controller)
         {
             //Arrange
+            var expectedCsvContent = new DownloadViewModel
+            {
+                Name = expectedFileName,
+                Content = new MemoryStream()
+            };
             csvMapper.Setup(x =>
                     x.Map<DownloadViewModel>(request))
                 .ReturnsAsync(expectedCsvContent);
+            var defaultHttpResponse = new DefaultHttpResponse(httpContext.Object);
+            httpContext.Setup(x => x.Response).Returns(defaultHttpResponse);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext.Object
+            };
 
             //Act
             var actual = await controller.Download(request);
 
-            var actualFileResult = actual as FileContentResult;
+            var actualFileResult = actual as FileResult;
 
             //Assert
             Assert.IsNotNull(actualFileResult);
-            Assert.AreEqual(expectedCsvContent.Content, actualFileResult.FileContents);
             Assert.AreEqual(expectedCsvContent.Name, actualFileResult.FileDownloadName);
             Assert.AreEqual(expectedCsvContent.ContentType, actualFileResult.ContentType);
         }
     }
+
 }

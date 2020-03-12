@@ -22,8 +22,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DownloadViewModel> Map(DownloadRequest request)
         {
+            
             var downloadViewModel = new DownloadViewModel();
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
+            var getApprenticeshipsRequest = new GetApprenticeshipsRequest
             {
                 ProviderId = request.ProviderId,
                 SearchTerm = request.SearchTerm,
@@ -33,13 +34,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = request.SelectedStartDate,
                 EndDate = request.SelectedEndDate,
                 PageNumber = 0
-            });
+            };
 
-            var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
+            var result = await _client.GetApprenticeships(getApprenticeshipsRequest);
+            var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
 
-            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent, true).ToArray();
+            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent, true);
+            downloadViewModel.Request = getApprenticeshipsRequest;
             downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.UtcNow:yyyyMMddhhmmss}.csv";
-            return downloadViewModel;
+            return await Task.FromResult(downloadViewModel);
         }
+
     }
 }
