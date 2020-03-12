@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
         {
             _providerId = 123;
             _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" , ApprenticeshipHashedId = "ABC"};
-            Sut = new ApprenticeController(Mock.Of<IModelMapper>());
+            Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
