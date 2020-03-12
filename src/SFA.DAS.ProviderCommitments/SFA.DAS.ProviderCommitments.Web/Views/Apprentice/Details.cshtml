@@ -8,9 +8,12 @@
 
 @{
     ViewData["Title"] = "Apprentice Details";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
 }
 
 @*https://localhost:5001/10005077/apprentices/4MBBNM*@
+
+
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
@@ -46,25 +49,52 @@
                 {
                     <p class="das-notification__body">
 
-                            @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
-                            {
-                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
-                            }
-                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
-                            {
-                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
-                            }
-                            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
-                            {
-                                <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
-                                <br/>
-                                <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
-                            }
+                        @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
+                        {
+                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
+                        }
+                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
+                        {
+                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
+                        }
+                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
+                        {
+                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
+                            <br />
+                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
+                        }
                     </p>
                 }
             </div>
         }
+
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+
+        @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
+        {
+            <details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Help with changes in apprentice's circumstances
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+
+                    <p class="govuk-body">
+                        If an apprentice you're training needs to move to a new employer, you should:
+
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>contact their original employer and ask them to stop the apprentice record</li>
+                            <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
+                        </ul>
+
+                        Once you've agreed these details, you can change the employer.<br /><br />
+
+                        Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
+                    </p>
+                </div>
+            </details>
+        }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
@@ -74,15 +104,15 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Status</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell">@Model.Status.GetDescription()</td>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
 
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
                 {
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop applies from</th>
-                        <td id="apprenticeship-stop-date"class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                        <th scope="row" class="govuk-table__header">Stop applies from</th>
+                        <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                     </tr>
                 }
             </tbody>
@@ -99,17 +129,29 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
+
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Employer</th>
-                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-50">@Model.Employer</td>
+
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
+                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
+                    <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
+                        @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
+                        {
+                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                        }
+                    </td>
                 </tr>
+
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Reference</th>
                     <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
+                    <td class="govuk-table__cell"></td>
                 </tr>
+
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Agreement ID</th>
-                    <td id ="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
+                    <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
+                    <td class="govuk-table__cell"></td>
                 </tr>
             </tbody>
         </table>
@@ -129,8 +171,8 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Name</th>
-                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-50">@Model.ApprenticeName</td>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Date of birth</th>

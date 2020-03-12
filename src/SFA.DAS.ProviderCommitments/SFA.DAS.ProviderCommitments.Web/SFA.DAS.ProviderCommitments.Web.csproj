@@ -28,7 +28,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.1214" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.17" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.20" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
@@ -51,6 +51,10 @@
   <ItemGroup>
     <Content Update="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Views\Apprentice\ConfirmEmployer.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Update="Views\Shared\AddDraftApprenticeship.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
