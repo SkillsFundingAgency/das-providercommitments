@@ -1,11 +1,9 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.Provider.Shared.UI.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
 
 @{
     ViewData["Title"] = "Choose an employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/select-employer";
-    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 <div class="govuk-grid-row">

@@ -1,12 +1,10 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
-@using SFA.DAS.Provider.Shared.UI.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 @inject ILinkGenerator LinkGenerator
 
 @{
     ViewData["Title"] = "Choose an employer";
     ViewBag.GaData.Vpv = "/unapproved/add/select-employer";
-    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 <div class="govuk-grid-row">

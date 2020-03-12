@@ -1,13 +1,11 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.Provider.Shared.UI.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
 
 @{
     ViewData["Title"] = "Manage Your Apprentices";
     ViewBag.GaData.Vpv = "/apprentices/apprentice";
-    Html.SetZendeskLabels($"App-{ViewBag.Title}");
 }
 
 <h1 class="govuk-heading-xl">Manage your apprentices</h1>
