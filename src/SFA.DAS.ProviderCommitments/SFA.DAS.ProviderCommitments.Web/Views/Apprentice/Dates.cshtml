@@ -32,7 +32,7 @@
             </tbody>
         </table>
 
-        <form method="post">
+        <form novalidate method="post">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StopDate)
@@ -57,7 +57,7 @@
                                 <label class="govuk-label govuk-date-input__label" for="start-date-month">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-input--error")" id="start-date-month" asp-for="StartMonth" type="text" pattern="[0-9]*" inputmode="numeric">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-input--error")" id="start-date-month" asp-for="StartMonth" type="number" pattern="[0-9]*" inputmode="numeric">
                             </div>
                         </div>
 
@@ -66,7 +66,7 @@
                                 <label class="govuk-label govuk-date-input__label" for="start-date-year">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-input--error")" id="start-date-year" asp-for="StartYear" type="text" pattern="[0-9]*" inputmode="numeric">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-input--error")" id="start-date-year" asp-for="StartYear" type="number" pattern="[0-9]*" inputmode="numeric">
                             </div>
                         </div>
                     </div>
