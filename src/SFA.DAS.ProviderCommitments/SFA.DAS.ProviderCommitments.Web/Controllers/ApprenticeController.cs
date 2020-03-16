@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
+
         public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage)
         {
             _modelMapper = modelMapper;
@@ -119,6 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return View(viewModel);
         }
+
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ApprenticeInform)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]

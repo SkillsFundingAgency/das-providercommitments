@@ -40,21 +40,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class PostDatesFixture
     {
-        private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
+        private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly PriceRequest _request;
         private readonly ApprenticeController _sut;
         private readonly DatesViewModel _viewModel;
 
         public PostDatesFixture()
         {
-            _request = new PriceRequest
-            {
-                ApprenticeshipHashedId = "DFO24FD",
-                EmployerAccountLegalEntityPublicHashedId = "DFE3434DF",
-                ProviderId = 32957,
-                NewStartDate = "62020"
-            };
             _viewModel = new DatesViewModel
             {
                 ApprenticeshipHashedId = "DF34WG2",
@@ -63,8 +56,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StartDate = new MonthYearModel("62020"),
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
+            _request = new PriceRequest
+            {
+                ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
+                EmployerAccountLegalEntityPublicHashedId = _viewModel.EmployerAccountLegalEntityPublicHashedId,
+                ProviderId = _viewModel.ProviderId,
+                NewStartDate = _viewModel.StartDate.MonthYear
+            };
             _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
+            _modelMapperMock
+                .Setup(x => x.Map<PriceRequest>(_viewModel))
+                .ReturnsAsync(_request);
             _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object);
         }
 
