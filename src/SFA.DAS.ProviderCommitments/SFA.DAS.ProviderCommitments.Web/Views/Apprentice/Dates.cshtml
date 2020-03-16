@@ -34,6 +34,8 @@
 <form method="post">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
         @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+        @Html.HiddenFor(x => x.StopDate)
+
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
 
             <span id="start-date-hint" class="govuk-hint">
