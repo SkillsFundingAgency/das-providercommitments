@@ -39,9 +39,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class GetDatesFixture
     {
+        private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ApprenticeController _sut;
         private readonly DatesRequest _request;
+        private readonly ApprenticeController _sut;
         private readonly DatesViewModel _viewModel;
 
         public GetDatesFixture()
@@ -53,12 +54,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = "KG34DF989"
             };
             _viewModel = new DatesViewModel();
+            _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
                 .Setup(x => x.Map<DatesViewModel>(_request))
                 .ReturnsAsync(_viewModel);
 
-            _sut = new ApprenticeController(_modelMapperMock.Object);
+            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object);
         }
 
         public Task<IActionResult> Act() => _sut.Dates(_request);

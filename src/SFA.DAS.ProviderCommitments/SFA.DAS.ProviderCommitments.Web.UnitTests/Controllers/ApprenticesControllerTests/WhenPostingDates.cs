@@ -6,7 +6,6 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -42,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     internal class PostDatesFixture
     {
         private readonly Mock<IModelMapper> _modelMapperMock;
+        private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly PriceRequest _request;
         private readonly ApprenticeController _sut;
         private readonly DatesViewModel _viewModel;
@@ -63,8 +63,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StartDate = new MonthYearModel("62020"),
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
+            _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
-            _sut = new ApprenticeController(_modelMapperMock.Object);
+            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object);
         }
 
         public Task<IActionResult> Act() => _sut.Dates(_viewModel);

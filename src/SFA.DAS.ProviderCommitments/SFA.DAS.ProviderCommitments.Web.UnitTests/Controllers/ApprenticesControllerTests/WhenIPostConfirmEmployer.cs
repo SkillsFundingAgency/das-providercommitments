@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
     public class WhenIPostConfirmEmployer
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
         {
             _providerId = 123;
             _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" , ApprenticeshipHashedId = "ABC"};
-            Sut = new ApprenticeController(Mock.Of<IModelMapper>());
+            Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
