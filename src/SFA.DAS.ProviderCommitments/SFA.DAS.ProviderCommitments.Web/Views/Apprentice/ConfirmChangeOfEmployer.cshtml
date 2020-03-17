@@ -10,6 +10,21 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+
+        @if (Model.ExceedsFundingBandCap)
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">The apprentice is above the funding band maximum</h3>
+                <p>
+                    The new agreed apprenticeship price is above the @Model.FundingBandCap.Value <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value for the funding band</a> for this apprenticeship.
+                    You'll need to ask the new employer to pay the difference directly to you - this can be funded from their account.
+
+                    @*<text>@course.FundingBandExcess.DisplaySingleFundingBandCap</text>
+                    You'll need to pay the difference directly to the training provider.*@
+                </p>
+            </div>
+        }
+
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
@@ -30,7 +45,7 @@
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Training start date</th>
-                    <td class="govuk-table__cell"@DisplayDate(Model.OldStartDate)</td>
+                    <td class="govuk-table__cell" @DisplayDate(Model.OldStartDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">

@@ -25,6 +25,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string NewEmployerName { get; set; }
         public MonthYearModel NewStartDate { get; set; }
         public int NewPrice { get; set; }
+        public int? FundingBandCap { get; set; }
+        public bool ExceedsFundingBandCap
+        {
+            get
+            {
+                if (FundingBandCap.HasValue)
+                {
+                    return NewPrice > FundingBandCap.Value;
+                }
 
+                return false;
+            }
+        }
     }
 }
