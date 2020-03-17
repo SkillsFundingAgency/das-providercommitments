@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Setup(x => x.Map<PriceViewModel>(It.IsAny<PriceRequest>()))
                 .ReturnsAsync(PriceViewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object);
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>());
         }
 
         public void VerifyPriceViewMapperWasCalled()

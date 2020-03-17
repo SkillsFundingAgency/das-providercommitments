@@ -49,6 +49,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         }
 
         [Test]
+        public void AndStopDateIsValid_ThenShouldNotHaveError()
+        {
+            DateTime? date = new DateTime(2020, 1, 1);
+            var model = new DatesViewModel { StopDate = date };
+            AssertValidationResult(request => request.StopDate, model, true);
+        }
+
+        [Test]
+        public void AndStopDateIsNull_ThenShouldHaveError()
+        {
+            var model = new DatesViewModel { StopDate = null };
+            AssertValidationResult(request => request.StopDate, model, false);
+        }
+
+
+        [Test]
         public void AndStartDateIsValid_ThenShouldNotHaveError()
         {
             DateTime? stopDate = new DateTime(2019, 1, 1);
@@ -78,6 +94,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             MonthYearModel startDate = new MonthYearModel("");
             startDate.Month = month;
             startDate.Year = year;
+            var model = new DatesViewModel { StartDate = startDate, StopDate = stopDate };
+            AssertValidationResult(request => request.StartDate, model, false);
+        }
+
+        [Test]
+        public void AndStartDateIsBeforeStopDate_ThenShouldHaveError()
+        {
+            DateTime? stopDate = new DateTime(2019, 1, 1);
+            MonthYearModel startDate = new MonthYearModel("");
+            startDate.Month = 1;
+            startDate.Year = 2018;
             var model = new DatesViewModel { StartDate = startDate, StopDate = stopDate };
             AssertValidationResult(request => request.StartDate, model, false);
         }

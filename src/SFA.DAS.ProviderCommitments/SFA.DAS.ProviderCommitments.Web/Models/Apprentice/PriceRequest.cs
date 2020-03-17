@@ -6,5 +6,6 @@
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public string StartDate { get; set; }
+        public string StopDate { get; set; }
     }
 }

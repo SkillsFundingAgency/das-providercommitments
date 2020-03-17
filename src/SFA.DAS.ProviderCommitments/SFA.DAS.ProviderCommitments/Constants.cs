@@ -9,8 +9,10 @@
 
         public static class ApprenticesSearch
         {
+            public const int NumberOfApprenticesPerDownloadPage = 200;
             public const int NumberOfApprenticesPerSearchPage = 100;
             public const int NumberOfApprenticesRequiredForSearch = 10;
+            public const string DownloadContentType = "text/csv";
         }
     }
 }
