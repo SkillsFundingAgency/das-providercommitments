@@ -10,10 +10,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
-            RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId).NotEmpty(); 
-            RuleFor(x => x.StartDate)
-                .Must(field => field.IsValidMonthYear())
-                .WithMessage("{PropertyName} is invalid format");
+            RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId).NotEmpty();
+            RuleFor(x => x.StartDate).Must(field => field.IsValidMonthYear());
         }
     }
 }

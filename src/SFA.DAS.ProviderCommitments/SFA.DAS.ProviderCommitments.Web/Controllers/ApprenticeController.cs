@@ -5,12 +5,11 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Web.Cookies;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -18,38 +17,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [SetNavigationSection(NavigationSection.ManageApprentices)]
     public class ApprenticeController : Controller
     {
+        private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
 
-        public ApprenticeController(IModelMapper modelMapper)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage)
         {
             _modelMapper = modelMapper;
-        }
-
-        [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Dates(DatesRequest request)
-        {
-            var viewModel = await _modelMapper.Map<DatesViewModel>(request);
-
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Dates(DatesViewModel viewModel)
-        {
-            try
-            {
-                var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), request);
-            }
-            catch (ValidationException)
-            {
-                ModelState.AddModelError(nameof(viewModel.StartDate),"The new training start date cannot be before the stop date");
-                return RedirectToAction(nameof(Dates), viewModel);
-            }
+            _cookieStorage = cookieStorage;
         }
 
         [HttpGet]
@@ -75,6 +49,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> Dates(DatesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<DatesViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> Dates(DatesViewModel viewModel)
+        {
+            var request = await _modelMapper.Map<PriceRequest>(viewModel);
+
+            return RedirectToAction(nameof(Price), request);
+        }
+
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
         public async Task<IActionResult> Details(DetailsRequest request)
@@ -89,7 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
-
             return File(downloadViewModel.Content, downloadViewModel.ContentType, downloadViewModel.Name);
         }
 
@@ -97,6 +90,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(IndexRequest request)
         {
+            IndexRequest savedRequest = null;
+
+            if (request.FromSearch)
+            {
+                savedRequest = _cookieStorage.Get(CookieNames.ManageApprentices);
+
+                if (savedRequest != null)
+                {
+                    request = savedRequest;
+                }
+            }
+
+            if (savedRequest == null)
+            {
+                _cookieStorage.Update(CookieNames.ManageApprentices, request);
+            }
+
             var viewModel = await _modelMapper.Map<IndexViewModel>(request);
             viewModel.SortedByHeader();
 
