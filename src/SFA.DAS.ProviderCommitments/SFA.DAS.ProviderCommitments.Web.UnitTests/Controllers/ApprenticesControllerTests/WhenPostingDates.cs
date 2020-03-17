@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = await _fixture.Act();
 
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.ChangePrice));
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Price));
         }
     }
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = _viewModel.EmployerAccountLegalEntityPublicHashedId,
                 ProviderId = _viewModel.ProviderId,
-                NewStartDate = _viewModel.StartDate.MonthYear
+                StartDate = _viewModel.StartDate.MonthYear
             };
             _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();

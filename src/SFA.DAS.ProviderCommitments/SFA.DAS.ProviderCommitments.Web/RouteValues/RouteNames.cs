@@ -9,6 +9,7 @@
         public const string ApprenticeSelectEmployer = "apprentice-select-employer";
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";
         public const string ApprenticeDates = "apprentice-dates";
-        public const string ApprenticeChangePrice = "apprentice-change-price";
+        public const string ApprenticePrice = "apprentice-price";
+        public const string ApprenticeConfirmChangeOfEmployer = "apprentice-confirm-change-of-employer";
     }
 }

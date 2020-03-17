@@ -27,14 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticeChangePrice)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public Task<IActionResult> ChangePrice(PriceRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
@@ -74,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
 
-            return RedirectToAction(nameof(ChangePrice), request);
+            return RedirectToAction(nameof(Price), request);
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
@@ -139,6 +131,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<SelectEmployerViewModel>(request);
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticePrice)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> Price(PriceRequest request)
+        {
+            var model = await _modelMapper.Map<PriceViewModel>(request);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticePrice)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> Price(PriceViewModel viewModel)
+        {
+            var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, request);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirmChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public IActionResult ConfirmChangeOfEmployer(ChangeOfEmployerRequest request)
+        {
+            return View("NotImplemented");
         }
     }
 }

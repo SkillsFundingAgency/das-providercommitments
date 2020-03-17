@@ -47,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.ViewModel.StartDate.MonthYear, result.NewStartDate);
+            Assert.AreEqual(_fixture.ViewModel.StartDate.MonthYear, result.StartDate);
         }
     }
 
