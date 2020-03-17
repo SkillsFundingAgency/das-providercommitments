@@ -6,6 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
 using AutoFixture;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -46,14 +47,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public WhenConfirmingChangeOfEmployerFixture()
         {
             _fixture = new Fixture();
-            ChangeOfEmployerRequest = _fixture.Create<ChangeOfEmployerRequest>();
-            ChangeOfEmployerViewModel = _fixture.Create<ChangeOfEmployerViewModel>();
+            ChangeOfEmployerRequest = _fixture.Build<ChangeOfEmployerRequest>().With(x=>x.StartDate, "042020").Create();
+            ChangeOfEmployerViewModel = _fixture.Build<ChangeOfEmployerViewModel>().With(x => x.NewStartDate, new MonthYearModel("042020")).Create();
 
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<ChangeOfEmployerViewModel>(It.IsAny<ChangeOfEmployerRequest>()))
                 .ReturnsAsync(ChangeOfEmployerViewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object);
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>());
         }
 
         public void VerifyChangeOfRequestViewMapperWasCalled()

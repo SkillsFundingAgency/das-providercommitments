@@ -52,14 +52,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartDate, result.NewStartDate);
+            Assert.AreEqual(_source.StartDate, result.StartDate);
         }
 
         [Test]
         public async Task ThenNewPriceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Price.Value, result.NewPrice);
+            Assert.AreEqual(_source.Price.Value, result.Price);
         }
 
         [Test]
