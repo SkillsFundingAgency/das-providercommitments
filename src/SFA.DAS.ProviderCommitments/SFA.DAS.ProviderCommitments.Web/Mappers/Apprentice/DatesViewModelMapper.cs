@@ -2,6 +2,7 @@
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -20,10 +21,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new DatesViewModel
             {
+                ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StopDate = apprenticeship.StopDate,
-                ProviderId = source.ProviderId
+                StartDate = new MonthYearModel(source.StartDate),
+                Price = source.Price
             };
         }
     }

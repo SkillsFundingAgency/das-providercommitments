@@ -9,5 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
         public string StartDate { get; set; }
+        public int? Price { get; set; }
     }
 }

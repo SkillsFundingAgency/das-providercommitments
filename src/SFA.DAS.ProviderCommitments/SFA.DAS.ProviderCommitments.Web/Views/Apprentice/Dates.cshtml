@@ -36,6 +36,7 @@
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StopDate)
+                @Html.HiddenFor(x => x.Price)
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
 
@@ -83,5 +84,12 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer, new { Model.EmployerAccountLegalEntityPublicHashedId})">Back</a>
+    @if (Model.InEditMode)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirmChangeOfEmployer, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate.MonthYear, Model.Price })">Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer, new {Model.EmployerAccountLegalEntityPublicHashedId})">Back</a>
+    }
 }
