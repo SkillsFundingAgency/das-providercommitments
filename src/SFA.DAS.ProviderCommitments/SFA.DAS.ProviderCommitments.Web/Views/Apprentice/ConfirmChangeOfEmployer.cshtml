@@ -55,7 +55,7 @@
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New training start date</th>
-                    <td class="govuk-table__cell">@DisplayDate(Model.OldStartDate)</td>
+                    <td class="govuk-table__cell">@DisplayDate(Model.NewStartDate.Date.Value)</td>
                     <td class="govuk-table__cell">
                         <a class="govuk-link" href="#">Change</a>
                     </td>
@@ -89,5 +89,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId.Length, Model.NewStartDate})">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.NewStartDate.MonthYear})">Back</a>
 }
