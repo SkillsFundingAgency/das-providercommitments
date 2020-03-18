@@ -35,14 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     OldEmployerName = apprenticeship.EmployerName,
                     ApprenticeName = $"{apprenticeship.FirstName} {apprenticeship.LastName}",
-                    StopDate = apprenticeship.StopDate.Value,
+                    StopDate =   System.DateTime.Now.AddDays(-199),//apprenticeship.StopDate.Value,
                     OldStartDate = apprenticeship.StartDate,
                     OldPrice = 0, // TODO add current apprenticeship cost and return in a field 'apprenticeship.Price or apprenticeship.Cost)
                     NewEmployerName = "New Name", // TODO Determine where to Lookup the new account Name from? Do we call MA API? 
                     NewStartDate = newStartDate,
                     NewPrice = source.Price,
                     FundingBandCap = await GetFundingBandCap(apprenticeship.CourseCode, newStartDate.Date)
-f                };
+                };
             }
             catch(Exception e)
             {

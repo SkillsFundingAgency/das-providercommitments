@@ -3,7 +3,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeOfEmployerViewModel
 
 @{
-    ViewBag.Title = "Confirm the information before sending the your request";
+    ViewBag.Title = "Confirm the information before sending your request";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/confirm";
 }
 
@@ -14,13 +14,13 @@
         @if (Model.ExceedsFundingBandCap)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">The apprentice is above the funding band maximum</h3>
+                <h3 class="govuk-heading-s">The apprenticeship is above the funding band maximum</h3>
                 <p>
-                    The new agreed apprenticeship price is above the @Model.FundingBandCap.Value <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value for the funding band</a> for this apprenticeship.
+                    The new agreed apprenticeship price is above the @DisplayCost(Model.FundingBandCap.Value) <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">maximum value for the funding band</a> for this apprenticeship.
                     You'll need to ask the new employer to pay the difference directly to you - this can be funded from their account.
 
                     @*<text>@course.FundingBandExcess.DisplaySingleFundingBandCap</text>
-                    You'll need to pay the difference directly to the training provider.*@
+        You'll need to pay the difference directly to the training provider.*@
                 </p>
             </div>
         }
