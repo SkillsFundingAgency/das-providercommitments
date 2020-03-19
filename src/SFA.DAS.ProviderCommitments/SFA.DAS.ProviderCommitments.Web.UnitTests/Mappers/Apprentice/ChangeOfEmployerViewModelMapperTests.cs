@@ -10,6 +10,8 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.Cost, result.OldPrice);
+            Assert.AreEqual(_fixture.priceEpisodesResponse.PriceEpisodes.First().Cost, result.OldPrice);
         }
 
         [Test]
@@ -138,6 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public ITrainingProgramme trainingProgramme;
         public GetApprenticeshipResponse getApprenticeshipResponse { get; set; }
         public AccountLegalEntityResponse accountLegalEntityResponse { get; set; }
+        public GetPriceEpisodesResponse priceEpisodesResponse { get; set; }
 
         public ChangeOfEmployerViewModelMapperFixture()
         {
@@ -147,12 +150,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             trainingProgramme = fixture.Create<Standard>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
+            priceEpisodesResponse = new GetPriceEpisodesResponse
+            {
+                PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
+                    {
+                        new GetPriceEpisodesResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
+                    }
+            };
 
             var commitmentAiClient = new Mock<ICommitmentsApiClient>();
             var trainingProgrammeApiClient = new Mock<ITrainingProgrammeApiClient>();
 
             commitmentAiClient.Setup(x => x.GetApprenticeship(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => getApprenticeshipResponse);
             commitmentAiClient.Setup(x => x.GetLegalEntity(getApprenticeshipResponse.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
+            commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => priceEpisodesResponse);
             trainingProgrammeApiClient.Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode)).ReturnsAsync(() => trainingProgramme);
 
             _sut = new ChangeOfEmployerViewModelMapper(commitmentAiClient.Object, trainingProgrammeApiClient.Object, Mock.Of<ILogger<ChangeOfEmployerViewModelMapper>>());

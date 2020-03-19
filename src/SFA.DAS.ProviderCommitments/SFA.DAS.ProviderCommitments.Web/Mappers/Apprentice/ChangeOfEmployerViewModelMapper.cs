@@ -6,18 +6,21 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Apprenticeships.Api.Client;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class ChangeOfEmployerViewModelMapper : IMapper<ChangeOfEmployerRequest, ChangeOfEmployerViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly ILogger<ChangeOfEmployerViewModelMapper> _logger;
         private readonly ITrainingProgrammeApiClient _trainingProgrammeApiClient;
 
         public ChangeOfEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ITrainingProgrammeApiClient trainingProgrammeApiClient, ILogger<ChangeOfEmployerViewModelMapper> logger)
         {
-            _commitmentsApiClient = commitmentsApiClient;
+            _commitmentApiClient = commitmentsApiClient;
             _trainingProgrammeApiClient = trainingProgrammeApiClient;
             _logger = logger;
         }
@@ -26,22 +29,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             try
             {
-                var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
+                var data = await  GetApprenticeshipData(source.ApprenticeshipId);
+
                 var newStartDate = new MonthYearModel(source.StartDate);
 
                 return new ChangeOfEmployerViewModel
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    OldEmployerName = apprenticeship.EmployerName,
-                    ApprenticeName = $"{apprenticeship.FirstName} {apprenticeship.LastName}",
-                    StopDate =   System.DateTime.Now.AddDays(-199),//apprenticeship.StopDate.Value,
-                    OldStartDate = apprenticeship.StartDate,
-                    OldPrice = 0, // TODO add current apprenticeship cost and return in a field 'apprenticeship.Price or apprenticeship.Cost)
-                    NewEmployerName = "New Name", // TODO Determine where to Lookup the new account Name from? Do we call MA API? 
+                    OldEmployerName = data.Apprenticeship.EmployerName,
+                    ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                    StopDate =   data.Apprenticeship.StopDate.Value, //DateTime.Now.AddDays(-199),
+                    OldStartDate = data.Apprenticeship.StartDate,
+                    OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
+                    NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
                     NewStartDate = newStartDate,
                     NewPrice = source.Price,
-                    FundingBandCap = await GetFundingBandCap(apprenticeship.CourseCode, newStartDate.Date)
+                    FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };
             }
             catch(Exception e)
@@ -51,15 +55,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private async Task<int?> GetFundingBandCap(string courseCode, DateTime? startDate)
+        private async Task<(GetApprenticeshipResponse Apprenticeship,
+           GetPriceEpisodesResponse PriceEpisodes,
+           AccountLegalEntityResponse AccountLegalEntity,
+           ITrainingProgramme TrainingProgramme)>
+           GetApprenticeshipData(long apprenticeshipId)
         {
-            if (startDate == null)
-            {
-                return null;
-            }
+            var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
+            var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
+            var legalEntityTask =  _commitmentApiClient.GetLegalEntity(apprenticeship.AccountLegalEntityId);
+            var trainingProgrammeTask = _trainingProgrammeApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
 
-            var course = await _trainingProgrammeApiClient.GetTrainingProgramme(courseCode);
 
+            await Task.WhenAll(priceEpisodesTask, legalEntityTask, trainingProgrammeTask);
+
+            var priceEpisodes = await priceEpisodesTask;
+            var legalEntity = await legalEntityTask;
+            var trainingProgramme = await trainingProgrammeTask;
+
+            return (apprenticeship,
+                priceEpisodes,
+                legalEntity,
+                trainingProgramme);
+        }
+
+        private int? GetFundingBandCap(ITrainingProgramme course, DateTime? startDate)
+        {
             if (course == null)
             {
                 return null;
