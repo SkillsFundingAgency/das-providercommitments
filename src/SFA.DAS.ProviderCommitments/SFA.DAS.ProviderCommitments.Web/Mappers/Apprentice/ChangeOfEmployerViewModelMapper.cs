@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
-                    StopDate =   data.Apprenticeship.StopDate.Value, //DateTime.Now.AddDays(-199),
+                    StopDate =   data.Apprenticeship.StopDate.Value, 
                     OldStartDate = data.Apprenticeship.StartDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
