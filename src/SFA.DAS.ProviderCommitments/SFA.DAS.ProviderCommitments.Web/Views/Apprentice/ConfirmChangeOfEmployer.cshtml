@@ -57,14 +57,14 @@
                     <th scope="row" class="govuk-table__header">New training start date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.NewStartDate.Date.Value)</td>
                     <td class="govuk-table__cell">
-                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeDates, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
+                        <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeDates, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New agreed apprenticeship price</th>
                     <td class="govuk-table__cell">@DisplayCost(Model.NewPrice)</td>
                     <td class="govuk-table__cell">
-                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
+                        <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
                     </td>
                 </tr>
             </tbody>
