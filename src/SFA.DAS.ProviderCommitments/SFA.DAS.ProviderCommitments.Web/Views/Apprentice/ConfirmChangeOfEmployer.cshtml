@@ -101,5 +101,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.NewStartDate.MonthYear})">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear,Price = Model.NewPrice})">Back</a>
 }

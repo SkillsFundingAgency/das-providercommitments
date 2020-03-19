@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             else
             {
                 var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), request);
+                return RedirectToAction(nameof(Price), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, StartDate = viewModel.StartDate.MonthYear });
             }
         }
 
@@ -156,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
             var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, request);
+            return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.Price });
         }
 
         [HttpGet]
