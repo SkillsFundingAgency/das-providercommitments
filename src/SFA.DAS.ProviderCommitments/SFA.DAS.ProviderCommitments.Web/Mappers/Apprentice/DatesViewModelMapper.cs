@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                StopDate = System.DateTime.Now.AddDays(-199),  //apprenticeship.StopDate,
+                StopDate = apprenticeship.StopDate,
                 ProviderId = source.ProviderId
             };
         }
