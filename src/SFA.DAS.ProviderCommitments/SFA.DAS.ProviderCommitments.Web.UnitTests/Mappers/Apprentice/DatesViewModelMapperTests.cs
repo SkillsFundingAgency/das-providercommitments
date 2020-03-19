@@ -60,6 +60,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
         }
+
+        [TestCase(null)]
+        [TestCase(234)]
+        public async Task ThenPriceIsMapped(int? price)
+        {
+            _fixture.Request.Price = price;
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(price, result.Price);
+        }
+
+        [TestCase(null)]
+        [TestCase(234)]
+        public async Task ThenEditModeIsOnWhenAPriceHasAValue(int? price)
+        {
+            _fixture.Request.Price = price;
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(price.HasValue, result.InEditMode);
+        }
     }
 
     public class DatesViewModelMapperFixture

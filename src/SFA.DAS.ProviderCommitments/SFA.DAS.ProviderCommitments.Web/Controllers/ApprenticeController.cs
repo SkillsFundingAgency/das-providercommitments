@@ -64,9 +64,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Dates(DatesViewModel viewModel)
         {
-            var request = await _modelMapper.Map<PriceRequest>(viewModel);
+            if (viewModel.InEditMode)
+            {
+                var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
+                return RedirectToAction(nameof(ConfirmChangeOfEmployer), request);
 
-            return RedirectToAction(nameof(Price), request);
+            }
+            else
+            {
+                var request = await _modelMapper.Map<PriceRequest>(viewModel);
+                return RedirectToAction(nameof(Price), request);
+            }
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]

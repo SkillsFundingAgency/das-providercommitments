@@ -10,5 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long ApprenticeshipId { get; set; }
         public string StartDate { get; set; }
         public decimal? Price { get; set; }
+        public bool InEditMode { get; set; }
     }
 }
