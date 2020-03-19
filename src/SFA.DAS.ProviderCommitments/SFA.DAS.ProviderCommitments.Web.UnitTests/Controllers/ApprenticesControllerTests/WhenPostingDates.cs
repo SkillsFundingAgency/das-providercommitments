@@ -30,11 +30,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenRedirectsToRoute()
+        public async Task ThenRedirectsToPriceRoute()
         {
             var result = await _fixture.Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Price));
+        }
+
+        [Test]
+        public async Task ThenRedirectsToConfirmationRouteWhenInEditMode()
+        {
+            _fixture.SetEditModeOn();
+            var result = await _fixture.Act();
+
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.ConfirmChangeOfEmployer));
         }
     }
 
@@ -72,6 +81,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         public Task<IActionResult> Act() => _sut.Dates(_viewModel);
+
+        public PostDatesFixture SetEditModeOn()
+        {
+            _viewModel.Price = 1;
+            return this;
+        }
+
 
         public void VerifyModelMapperWasCalled(Times times) =>
             _modelMapperMock.Verify(x => x.Map<PriceRequest>(_viewModel), times);
