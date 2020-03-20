@@ -61,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public ApprenticeController Sut { get; set; }
         public PriceRequest PriceRequest { get; set; }
         public PriceViewModel PriceViewModel { get; set; }
+        public ChangeOfEmployerRequest ChangeOfEmployerRequest { get; set; }
 
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly Fixture _fixture;
@@ -70,10 +71,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _fixture = new Fixture();
             PriceRequest = _fixture.Create<PriceRequest>();
             PriceViewModel = _fixture.Create<PriceViewModel>();
+            ChangeOfEmployerRequest = _fixture.Create<ChangeOfEmployerRequest>();
 
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<PriceViewModel>(It.IsAny<PriceRequest>()))
                 .ReturnsAsync(PriceViewModel);
+            _modelMapperMock.Setup(x => x.Map<ChangeOfEmployerRequest>(It.IsAny<PriceViewModel>()))
+                .ReturnsAsync(ChangeOfEmployerRequest);
 
             Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>());
         }
