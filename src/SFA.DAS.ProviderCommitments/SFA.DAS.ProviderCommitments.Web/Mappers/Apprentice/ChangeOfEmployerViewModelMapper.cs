@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             try
             {
-                var data = await  GetApprenticeshipData(source.ApprenticeshipId);
+                var data = await  GetApprenticeshipData(source.ApprenticeshipId, source.EmployerAccountLegalEntityId);
 
                 var newStartDate = new MonthYearModel(source.StartDate);
 
@@ -59,11 +59,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
            GetPriceEpisodesResponse PriceEpisodes,
            AccountLegalEntityResponse AccountLegalEntity,
            ITrainingProgramme TrainingProgramme)>
-           GetApprenticeshipData(long apprenticeshipId)
+           GetApprenticeshipData(long apprenticeshipId, long newEmployerLegalEntityId)
         {
             var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var legalEntityTask =  _commitmentApiClient.GetLegalEntity(apprenticeship.AccountLegalEntityId);
+            var legalEntityTask =  _commitmentApiClient.GetLegalEntity(newEmployerLegalEntityId);
             var trainingProgrammeTask = _trainingProgrammeApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
 
             await Task.WhenAll(priceEpisodesTask, legalEntityTask, trainingProgrammeTask);
