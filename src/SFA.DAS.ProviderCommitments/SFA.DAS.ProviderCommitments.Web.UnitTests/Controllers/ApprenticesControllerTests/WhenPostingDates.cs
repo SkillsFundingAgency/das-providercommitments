@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _fixture.SetEditModeOn();
             var result = await _fixture.Act();
 
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.ConfirmChangeOfEmployer));
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Confirm));
         }
     }
 

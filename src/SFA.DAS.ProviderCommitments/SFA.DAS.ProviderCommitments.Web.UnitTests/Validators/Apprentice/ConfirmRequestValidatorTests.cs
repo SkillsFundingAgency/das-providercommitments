@@ -7,13 +7,13 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
-    public class ChangeOfEmployerRequestValidatorTests
+    public class ConfirmRequestValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
         {
-            var request = new ChangeOfEmployerRequest { ProviderId = providerId };
+            var request = new ConfirmRequest { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("XYZ", true)]
         public void Validate_EmployerAccountLegalEntityPublicHashedId_ShouldBeValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
         {
-            var model = new ChangeOfEmployerRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
+            var model = new ConfirmRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
 
             AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
         }
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("AB76V", true)]
         public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new ChangeOfEmployerRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new ConfirmRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("012002", true)]
         public void Validate_StartDate_ShouldBeValidated(string startDate, bool expectedValid)
         {
-            var model = new ChangeOfEmployerRequest { StartDate = startDate };
+            var model = new ConfirmRequest { StartDate = startDate };
             AssertValidationResult(request => request.StartDate, model, expectedValid);
         }
 
@@ -57,13 +57,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase(100001, false)]
         public void Validate_Price_ShouldBeValidated(int price, bool expectedValid)
         {
-            var model = new ChangeOfEmployerRequest { Price = price };
+            var model = new ConfirmRequest { Price = price };
             AssertValidationResult(request => request.Price, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ChangeOfEmployerRequest, T>> property, ChangeOfEmployerRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<ConfirmRequest, T>> property, ConfirmRequest instance, bool expectedValid)
         {
-            var validator = new ChangeOfEmployerRequestValidator();
+            var validator = new ConfirmRequestValidator();
 
             if (expectedValid)
             {

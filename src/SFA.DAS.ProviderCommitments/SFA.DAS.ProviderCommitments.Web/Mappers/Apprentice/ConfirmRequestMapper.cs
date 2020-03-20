@@ -6,31 +6,31 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class DatesViewModelToChangeOfEmployerRequestMapper : IMapper<DatesViewModel, ChangeOfEmployerRequest>
+    public class ConfirmRequestMapper : IMapper<PriceViewModel, ConfirmRequest>
     {
-        private readonly ILogger<DatesViewModelToChangeOfEmployerRequestMapper> _logger;
+        private readonly ILogger<ConfirmRequestMapper> _logger;
 
-        public DatesViewModelToChangeOfEmployerRequestMapper(ILogger<DatesViewModelToChangeOfEmployerRequestMapper> logger)
+        public ConfirmRequestMapper(ILogger<ConfirmRequestMapper> logger)
         {
             _logger = logger;
         }
 
-        public async Task<ChangeOfEmployerRequest> Map(DatesViewModel source)
+        public async Task<ConfirmRequest> Map(PriceViewModel source)
         {
             try
             {
-                return await Task.FromResult(new ChangeOfEmployerRequest
+                return await Task.FromResult(new ConfirmRequest
                 {
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    StartDate = source.StartDate.MonthYear,
-                    Price = source.Price.Value
+                    StartDate = source.StartDate,
+                    Price = decimal.ToInt32(source.Price.Value)
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Mapping {nameof(DatesViewModel)} to {nameof(ChangeOfEmployerRequest)}", e);
+                _logger.LogError($"Error Mapping {nameof(PriceViewModel)} to {nameof(ConfirmRequest)}", e);
                 throw;
             }
         }

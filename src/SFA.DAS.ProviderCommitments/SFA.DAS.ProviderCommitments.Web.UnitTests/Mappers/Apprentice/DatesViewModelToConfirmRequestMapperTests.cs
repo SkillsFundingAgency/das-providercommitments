@@ -6,23 +6,24 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class ChangeOfEmployerRequestMapperTests
+    public class DatesViewModelToConfirmRequestMapperTests
     {
-        private ChangeOfEmployerRequestMapper _mapper;
-        private PriceViewModel _source;
-        private Func<Task<ChangeOfEmployerRequest>> _act;
+        private DatesViewModelToConfirmRequestMapper _mapper;
+        private DatesViewModel _source;
+        private Func<Task<ConfirmRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<PriceViewModel>();
+            _source = fixture.Build<DatesViewModel>().With(x=>x.StartDate, new MonthYearModel("042020")).Create();
 
-            _mapper = new ChangeOfEmployerRequestMapper(Mock.Of<ILogger<ChangeOfEmployerRequestMapper>>());
+            _mapper = new DatesViewModelToConfirmRequestMapper(Mock.Of<ILogger<DatesViewModelToConfirmRequestMapper>>());
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -52,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartDate, result.StartDate);
+            Assert.AreEqual(_source.StartDate.MonthYear, result.StartDate);
         }
 
         [Test]

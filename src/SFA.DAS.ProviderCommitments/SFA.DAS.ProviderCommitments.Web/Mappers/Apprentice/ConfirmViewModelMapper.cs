@@ -12,20 +12,20 @@ using SFA.DAS.Apprenticeships.Api.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangeOfEmployerViewModelMapper : IMapper<ChangeOfEmployerRequest, ChangeOfEmployerViewModel>
+    public class ConfirmViewModelMapper : IMapper<ConfirmRequest, ConfirmViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
-        private readonly ILogger<ChangeOfEmployerViewModelMapper> _logger;
+        private readonly ILogger<ConfirmViewModelMapper> _logger;
         private readonly ITrainingProgrammeApiClient _trainingProgrammeApiClient;
 
-        public ChangeOfEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ITrainingProgrammeApiClient trainingProgrammeApiClient, ILogger<ChangeOfEmployerViewModelMapper> logger)
+        public ConfirmViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ITrainingProgrammeApiClient trainingProgrammeApiClient, ILogger<ConfirmViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentsApiClient;
             _trainingProgrammeApiClient = trainingProgrammeApiClient;
             _logger = logger;
         }
 
-        public async Task<ChangeOfEmployerViewModel> Map(ChangeOfEmployerRequest source)
+        public async Task<ConfirmViewModel> Map(ConfirmRequest source)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
                 var newStartDate = new MonthYearModel(source.StartDate);
 
-                return new ChangeOfEmployerViewModel
+                return new ConfirmViewModel
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             catch(Exception e)
             {
-                _logger.LogError($"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ChangeOfEmployerViewModel)}", e);
+                _logger.LogError($"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ConfirmViewModel)}", e);
                 throw;
             }
         }

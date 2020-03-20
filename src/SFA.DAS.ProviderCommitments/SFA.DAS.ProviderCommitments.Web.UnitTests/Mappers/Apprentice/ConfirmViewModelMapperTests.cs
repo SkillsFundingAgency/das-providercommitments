@@ -18,14 +18,14 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class ChangeOfEmployerViewModelMapperTests
+    public class ConfirmViewModelMapperTests
     {
-        private ChangeOfEmployerViewModelMapperFixture _fixture;
+        private ConfirmViewModelMapperFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new ChangeOfEmployerViewModelMapperFixture();
+            _fixture = new ConfirmViewModelMapperFixture();
         }
 
         [Test]
@@ -131,21 +131,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    public class ChangeOfEmployerViewModelMapperFixture
+    public class ConfirmViewModelMapperFixture
     {
-        private readonly ChangeOfEmployerViewModelMapper _sut;
+        private readonly ConfirmViewModelMapper _sut;
 
-        public ChangeOfEmployerRequest request { get; }
+        public ConfirmRequest request { get; }
 
         public ITrainingProgramme trainingProgramme;
         public GetApprenticeshipResponse getApprenticeshipResponse { get; set; }
         public AccountLegalEntityResponse accountLegalEntityResponse { get; set; }
         public GetPriceEpisodesResponse priceEpisodesResponse { get; set; }
 
-        public ChangeOfEmployerViewModelMapperFixture()
+        public ConfirmViewModelMapperFixture()
         {
             Fixture fixture = new Fixture();
-            request = fixture.Create<ChangeOfEmployerRequest>();
+            request = fixture.Create<ConfirmRequest>();
             request.StartDate = "012020";
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             trainingProgramme = fixture.Create<Standard>();
@@ -166,10 +166,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => priceEpisodesResponse);
             trainingProgrammeApiClient.Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode)).ReturnsAsync(() => trainingProgramme);
 
-            _sut = new ChangeOfEmployerViewModelMapper(commitmentAiClient.Object, trainingProgrammeApiClient.Object, Mock.Of<ILogger<ChangeOfEmployerViewModelMapper>>());
+            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, trainingProgrammeApiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>());
         }
 
-        public ChangeOfEmployerViewModelMapperFixture SetPriceBand(int fundingCap, DateTime startDate)
+        public ConfirmViewModelMapperFixture SetPriceBand(int fundingCap, DateTime startDate)
         {
             trainingProgramme = new Standard
             {
@@ -187,19 +187,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             return this;
         }
 
-        public ChangeOfEmployerViewModelMapperFixture SetStartDateInRequest(DateTime startDate)
+        public ConfirmViewModelMapperFixture SetStartDateInRequest(DateTime startDate)
         {
             request.StartDate = startDate.Month.ToString() + startDate.Year.ToString();
 
             return this;
         }
 
-        public ChangeOfEmployerViewModelMapperFixture SetPriceInRequest(int price)
+        public ConfirmViewModelMapperFixture SetPriceInRequest(int price)
         {
             request.Price = price;
             return this;
         }
 
-        public Task<ChangeOfEmployerViewModel> Map() => _sut.Map(request);
+        public Task<ConfirmViewModel> Map() => _sut.Map(request);
     }
 }

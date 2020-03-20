@@ -66,8 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.InEditMode)
             {
-                var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
-                return RedirectToAction(nameof(ConfirmChangeOfEmployer), request);
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
 
             }
             else
@@ -155,16 +155,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
-            var request = await _modelMapper.Map<ChangeOfEmployerRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirmChangeOfEmployer, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.Price });
+            var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ApprenticeConfirm, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.Price });
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirmChangeOfEmployer)]
+        [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> ConfirmChangeOfEmployer(ChangeOfEmployerRequest request)
+        public async Task<IActionResult> Confirm(ConfirmRequest request)
         {
-            var viewModel = await _modelMapper.Map<ChangeOfEmployerViewModel>(request);
+            var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
             return View(viewModel);
         }
     }

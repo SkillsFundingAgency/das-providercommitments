@@ -4,9 +4,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class ChangeOfEmployerRequestValidator : AbstractValidator<ChangeOfEmployerRequest>
+    public class ConfirmRequestValidator : AbstractValidator<ConfirmRequest>
     {
-        public ChangeOfEmployerRequestValidator()
+        public ConfirmRequestValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();

@@ -4,9 +4,9 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class ChangeOfEmployerViewModel : IAuthorizationContextModel
+    public class ConfirmViewModel : IAuthorizationContextModel
     {
-        public ChangeOfEmployerViewModel()
+        public ConfirmViewModel()
         {
             NewStartDate = new MonthYearModel("");
         }
