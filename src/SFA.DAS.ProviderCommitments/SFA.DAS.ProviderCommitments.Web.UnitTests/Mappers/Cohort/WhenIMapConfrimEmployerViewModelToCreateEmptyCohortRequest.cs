@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
              _accountlegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
             _source = fixture.Create<ConfirmEmployerViewModel>();
-            _commitmentApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountlegalEntityResponse);
+            _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountlegalEntityResponse);
 
             _mapper = new ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper(_commitmentApiClient.Object);
 

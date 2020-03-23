@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<ConfirmEmployerViewModel> Map(ConfirmEmployerRequest source)
         {
-            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId);
+            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
 
             return new ConfirmEmployerViewModel
             {

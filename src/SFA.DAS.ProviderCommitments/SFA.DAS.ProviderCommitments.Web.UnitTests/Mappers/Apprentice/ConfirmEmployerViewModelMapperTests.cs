@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _accountLegalEntityResponse = fixture.Create<CommitmentsV2.Api.Types.Responses.AccountLegalEntityResponse>();
             _source = fixture.Create<ConfirmEmployerRequest>();
             var icommitmentApiClient = new Mock<ICommitmentsApiClient>();
-            icommitmentApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
+            icommitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
             _mapper = new ConfirmEmployerViewModelMapper(icommitmentApiClient.Object);
 

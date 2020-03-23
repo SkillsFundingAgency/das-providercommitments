@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var legalEntityTask =  _commitmentApiClient.GetLegalEntity(newEmployerLegalEntityId);
+            var legalEntityTask =  _commitmentApiClient.GetAccountLegalEntity(newEmployerLegalEntityId);
             var trainingProgrammeTask = _trainingProgrammeApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
 
             await Task.WhenAll(priceEpisodesTask, legalEntityTask, trainingProgrammeTask);

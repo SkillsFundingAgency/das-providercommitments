@@ -162,7 +162,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var trainingProgrammeApiClient = new Mock<ITrainingProgrammeApiClient>();
 
             commitmentAiClient.Setup(x => x.GetApprenticeship(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => getApprenticeshipResponse);
-            commitmentAiClient.Setup(x => x.GetLegalEntity(request.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
+            commitmentAiClient.Setup(x => x.GetAccountLegalEntity(request.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
             commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => priceEpisodesResponse);
             trainingProgrammeApiClient.Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode)).ReturnsAsync(() => trainingProgramme);
 
