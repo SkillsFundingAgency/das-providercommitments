@@ -11,5 +11,6 @@
         public const string ApprenticeDates = "apprentice-dates";
         public const string ApprenticePrice = "apprentice-price";
         public const string ApprenticeConfirm = "apprentice-confirm";
+        public const string ApprenticeSent = "apprentice-sent";
     }
 }

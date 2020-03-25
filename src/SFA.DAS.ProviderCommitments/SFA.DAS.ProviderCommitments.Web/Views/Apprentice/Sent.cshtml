@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Change of employer requested";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/sent";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Change of employer requested</h1>
+        </div>
+        <h2 class="govuk-heading-m">What's next?</h2>
+        <p class="govuk-body">The new employer will receive an email requesting confirmation of the change. Once they've confirmed the apprentice's details, the apprentice will move to the new employer and payments will restart.</p>
+    </div>
+</div>
+
+<a id="home-link" href="@Url.ProviderApprenticeshipServiceLink($"account")" class="govuk-link">Return to homepage</a>
