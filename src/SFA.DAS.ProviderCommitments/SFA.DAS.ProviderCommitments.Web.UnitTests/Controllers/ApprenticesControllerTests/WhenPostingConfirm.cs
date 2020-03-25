@@ -8,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using StructureMap.Query;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -31,8 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         internal class WhenPostingConfirmFixture
         {
-            private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
-            private readonly Mock<IModelMapper> _modelMapperMock;
             private readonly ApprenticeController _sut;
             private readonly ConfirmViewModel _viewModel;
 
@@ -46,9 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     NewStartDate = new MonthYearModel("62020")
                 };
 
-                _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
-                _modelMapperMock = new Mock<IModelMapper>();
-                _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object);
+                _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>());
             }
 
             public IActionResult Act() => _sut.Confirm(_viewModel);
