@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -106,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             ApprenticeshipDetailsToViewModelMapper mapper)
         {
-            var alertStrings = source.Alerts.Select(x => x.FormatAlert());
+            var alertStrings = source.Alerts.Select(x => x.GetDescription());
 
             var result = await mapper.Map(source);
 

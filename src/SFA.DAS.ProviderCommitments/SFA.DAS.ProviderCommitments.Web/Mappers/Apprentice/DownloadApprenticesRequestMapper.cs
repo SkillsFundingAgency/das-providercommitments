@@ -3,9 +3,6 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Services;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -25,8 +22,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DownloadViewModel> Map(DownloadRequest request)
         {
+            
             var downloadViewModel = new DownloadViewModel();
-            var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
+            var getApprenticeshipsRequest = new GetApprenticeshipsRequest
             {
                 ProviderId = request.ProviderId,
                 SearchTerm = request.SearchTerm,
@@ -36,13 +34,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = request.SelectedStartDate,
                 EndDate = request.SelectedEndDate,
                 PageNumber = 0
-            });
+            };
 
-            var csvContent = response.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
+            var result = await _client.GetApprenticeships(getApprenticeshipsRequest);
+            var csvContent = result.Apprenticeships.Select(c => (ApprenticeshipDetailsCsvModel)c).ToList();
 
-            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent);
-            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.Now:yyyyMMddhhmmss}.csv";
-            return downloadViewModel;
+            downloadViewModel.Content = _createCsvService.GenerateCsvContent(csvContent, true);
+            downloadViewModel.Request = getApprenticeshipsRequest;
+            downloadViewModel.Name = $"{"Manageyourapprentices"}_{_currentDateTime.UtcNow:yyyyMMddhhmmss}.csv";
+            return await Task.FromResult(downloadViewModel);
         }
+
     }
 }
