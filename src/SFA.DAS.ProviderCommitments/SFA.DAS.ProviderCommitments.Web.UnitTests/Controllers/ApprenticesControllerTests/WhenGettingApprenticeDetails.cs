@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .Setup(x => x.Map<DetailsViewModel>(_request))
                 .ReturnsAsync(_viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object);
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>());
         }
 
         public void VerifyMapperWasCalled()

@@ -1,9 +1,13 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿using System.IO;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class DownloadViewModel
     {
-        public byte[] Content { get; set; }
         public string Name { get; set; }
-        public string ContentType => "text/csv";
+        public string ContentType => "application/octet-stream";
+        public GetApprenticeshipsRequest Request { get; set; }
+        public Stream Content { get; set; }
     }
 }

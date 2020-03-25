@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
@@ -270,7 +271,7 @@ else
                 {
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" data-label="Apprentice name">
-                            <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                            <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
                                 @apprenticeship.ApprenticeName
                             </a>
                         </td>
@@ -295,7 +296,7 @@ else
                         <td class="govuk-table__cell" data-label="Alerts">
                             @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                             {
-                                <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{apprenticeship.EncodedApprenticeshipId}/details")">
+                                <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
                                     @apprenticeship.Alerts.ElementAt(i)
                                 </a>
                                 @if (i < apprenticeship.Alerts.Count() - 1)
@@ -346,5 +347,5 @@ else
 }
 
 @section breadcrumb {
-    <div class="das-js-back-link"></div>
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
 }
