@@ -115,6 +115,14 @@
                         <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                     </tr>
                 }
+
+                @if (Model.Status == ApprenticeshipStatus.Paused)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
+                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
+                    </tr>
+                }
             </tbody>
         </table>
 
