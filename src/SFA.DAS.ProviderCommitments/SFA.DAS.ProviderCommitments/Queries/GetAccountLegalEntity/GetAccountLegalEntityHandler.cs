@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetAccountLegalEntity
         public async Task<GetAccountLegalEntityResponse> Handle(GetAccountLegalEntityRequest request, CancellationToken cancellationToken)
         {
             _validator.ValidateAndThrow(request);
-            var legalEntity = await _commitmentsApiClient.GetLegalEntity(request.EmployerAccountLegalEntityId);
+            var legalEntity = await _commitmentsApiClient.GetAccountLegalEntity(request.EmployerAccountLegalEntityId);
 
             return new GetAccountLegalEntityResponse
             {

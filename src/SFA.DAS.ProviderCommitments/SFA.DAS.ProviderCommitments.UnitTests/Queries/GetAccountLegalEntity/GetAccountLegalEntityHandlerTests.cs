@@ -76,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetAccountLegalEntity
             string legalEntityName)
         {
             CommitmentsApiClientMock
-                .Setup(client => client.GetLegalEntity(accountLegalEntityId, It.IsAny<CancellationToken>()))
+                .Setup(client => client.GetAccountLegalEntity(accountLegalEntityId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new AccountLegalEntityResponse
                 {
                     AccountName = accountName,

@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<CreateEmptyCohortRequest> Map(ConfirmEmployerViewModel source)
         {
-            var accountLegalEntity = await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId);
+            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
             return new CreateEmptyCohortRequest
             {
                 AccountId = accountLegalEntity.AccountId,
