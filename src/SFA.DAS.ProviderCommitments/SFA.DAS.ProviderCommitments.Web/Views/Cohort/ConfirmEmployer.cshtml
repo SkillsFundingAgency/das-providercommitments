@@ -12,7 +12,7 @@
                 <partial name="_ValidationSummary" />
                 <h1 class="govuk-heading-xl">Confirm employer</h1>
                 <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.EmployerAccountLegalEntityName</h2>
-                
+
                 <dl class="das-definition-list das-definition-list--inline das-definition-list--muted govuk-!-font-size-20">
                     <dt class="das-definition-list__title">Account Name</dt>
                     <dd class="das-definition-list__definition">@Model.EmployerAccountName</dd>
@@ -25,7 +25,7 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
 
-                 
+
                         <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                             <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">

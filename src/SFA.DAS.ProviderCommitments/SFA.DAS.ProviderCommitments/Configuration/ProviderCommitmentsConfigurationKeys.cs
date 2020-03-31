@@ -8,5 +8,6 @@
         public static string ApprenticeshipInfoServiceConfiguration = $"{ProviderCommitments}:ApprenticeshipInfoServiceConfiguration";
         public static string CommitmentsClientApiConfiguration = $"{ProviderCommitments}:CommitmentsClientApi";
         public static string FeaturesConfiguration = $"{ProviderCommitments}:Features";
+        public static string ZenDeskConfiguration = $"{ProviderCommitments}:ZenDesk";
     }
 }
