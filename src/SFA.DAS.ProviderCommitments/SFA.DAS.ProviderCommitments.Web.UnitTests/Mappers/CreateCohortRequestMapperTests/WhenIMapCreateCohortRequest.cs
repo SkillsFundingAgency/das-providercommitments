@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _mockCommitmentsApiClient.Setup(x => x.GetLegalEntity(_accountLegalEntityId, It.IsAny<CancellationToken>()))
+            _mockCommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(_accountLegalEntityId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_accountLegalEntityResponse);
 
             var birthDate = fixture.Create<DateTime?>();
@@ -155,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         [Test]
         public void AndWhenTheAccountLegalEntityIsNotFoundThenShouldThrowInvalidOperationException()
         {
-            _mockCommitmentsApiClient.Setup(x => x.GetLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            _mockCommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((AccountLegalEntityResponse) null);
 
             Assert.ThrowsAsync<EntityNotFoundException>(() => _act());

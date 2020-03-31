@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             }
 
             var accountLegalEntity =
-                await _commitmentsApiClient.GetLegalEntity(source.AccountLegalEntityId.Value, CancellationToken.None);
+                await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId.Value, CancellationToken.None);
 
             if (accountLegalEntity is null)
             {

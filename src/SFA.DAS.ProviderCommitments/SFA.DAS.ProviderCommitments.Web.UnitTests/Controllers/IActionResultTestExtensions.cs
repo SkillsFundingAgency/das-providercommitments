@@ -21,9 +21,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
             return result.VerifyResponseObjectType<RedirectToActionResult>();
         }
 
+        public static RedirectToRouteResult VerifyReturnsRedirectToRouteResult(this IActionResult result)
+        {
+            return result.VerifyResponseObjectType<RedirectToRouteResult>();
+        }
+
         public static RedirectToActionResult WithActionName(this RedirectToActionResult result, string expectedName)
         {
             Assert.AreEqual(expectedName, result.ActionName);
+            return result;
+        }
+
+        public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
+        {
+            Assert.AreEqual(expectedName, result.RouteName);
             return result;
         }
 
