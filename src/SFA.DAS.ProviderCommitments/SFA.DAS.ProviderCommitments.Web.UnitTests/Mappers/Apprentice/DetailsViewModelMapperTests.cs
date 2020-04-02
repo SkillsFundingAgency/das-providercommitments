@@ -74,6 +74,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenPauseDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.PauseDate, _fixture.Result.PauseDate);
+        }
+
+        [Test]
         public async Task ThenAgreementIdIsMappedCorrectly()
         {
             await _fixture.Map();
