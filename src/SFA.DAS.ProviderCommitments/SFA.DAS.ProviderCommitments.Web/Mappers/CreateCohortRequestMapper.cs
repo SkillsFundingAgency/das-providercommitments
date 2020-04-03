@@ -20,13 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
         {
-            if (source.AccountLegalEntityId is null)
-            {
-                throw new InvalidOperationException("AccountLegalEntity cannot be null");
-            }
-
-            var accountLegalEntity =
-                await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId.Value, CancellationToken.None);
+            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId, CancellationToken.None);
 
             if (accountLegalEntity is null)
             {
@@ -36,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             return new CreateCohortRequest
             {
                 AccountId = accountLegalEntity.AccountId,
-                AccountLegalEntityId = source.AccountLegalEntityId.Value,
+                AccountLegalEntityId = source.AccountLegalEntityId,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId.Value,
                 FirstName = source.FirstName,
