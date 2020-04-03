@@ -12,7 +12,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using WebApp = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -37,8 +36,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     typeof(SFA.DAS.Apprenticeships.Api.Types.ITrainingProgramme),
                     typeof(Standard)));
 
-
-
             _source = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().With(x => x.StartMonthYear, "042020").Create();
             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
@@ -54,7 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(_trainingCoursesQueryResponse);
 
             _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object);
-
         }
 
         [Test]
@@ -94,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         [TestCase(ApprenticeshipEmployerType.Levy, true)]
         [TestCase(ApprenticeshipEmployerType.NonLevy, false)]
-        public async Task ThenFrameworkCoursesAreIncludeInMediatorRequest(ApprenticeshipEmployerType levyStatus, bool frameworksAreIncluded)
+        public async Task ThenFrameworkCoursesAreIncludeOrNotInMediatorRequest(ApprenticeshipEmployerType levyStatus, bool frameworksAreIncluded)
         {
             _accountLegalEntityResponse.LevyStatus = levyStatus;
             await _mapper.Map(_source);
