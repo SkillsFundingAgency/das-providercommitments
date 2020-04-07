@@ -15,7 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IMediator _mediator;
 
-
         public AddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IMediator mediator)
         {
             _commitmentsApiClient = commitmentsApiClient;
