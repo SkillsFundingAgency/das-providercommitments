@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -14,9 +13,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return Task.FromResult(new ChangeOfPartyRequestRequest
             {
                 ChangeOfPartyRequestType = ChangeOfPartyRequestType.ChangeEmployer,
+                NewPartyId = source.EmployerAccountLegalEntityId,
                 NewPrice = source.NewPrice,
-                NewStartDate = source.NewStartDate.Date,
-                PartyId = source.EmployerAccountLegalEntityId
+                NewStartDate = source.NewStartDate.Date
             });
         }
     }
