@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return Task.FromResult(new ChangeOfPartyRequestRequest
             {
                 ChangeOfPartyRequestType = ChangeOfPartyRequestType.ChangeEmployer,
-                NewPartyId = source.EmployerAccountLegalEntityId,
+                NewPartyId = source.AccountLegalEntityId,
                 NewPrice = source.NewPrice,
                 NewStartDate = source.NewStartDate.Date
             });

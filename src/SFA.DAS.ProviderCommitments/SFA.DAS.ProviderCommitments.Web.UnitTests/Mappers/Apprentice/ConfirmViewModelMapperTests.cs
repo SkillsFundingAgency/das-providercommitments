@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.request.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.AreEqual(_fixture.request.EmployerAccountLegalEntityPublicHashedId, result.AccountLegalEntityPublicHashedId);
         }
 
         [Test]

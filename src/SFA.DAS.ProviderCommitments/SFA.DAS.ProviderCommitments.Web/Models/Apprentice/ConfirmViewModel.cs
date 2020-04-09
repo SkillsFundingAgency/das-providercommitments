@@ -11,8 +11,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             NewStartDate = new MonthYearModel("");
         }
         public long ProviderId { get; set; }
-        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-        public long EmployerAccountLegalEntityId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
 
@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
         public string NewEmployerName { get; set; }
         public MonthYearModel NewStartDate { get; set; }
+
         public int NewPrice { get; set; }
         public int? FundingBandCap { get; set; }
         public bool ExceedsFundingBandCap

@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _source = new ConfirmViewModel
             {
                 NewStartDate = new MonthYearModel("032020"),
-                EmployerAccountLegalEntityId = fixture.Create<long>(),
+                AccountLegalEntityId = fixture.Create<long>(),
                 NewPrice = fixture.Create<int>()
             };
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public void NewPartyIdIsMappedCorrectly()
         {
-            Assert.AreEqual(_source.EmployerAccountLegalEntityId, _result.NewPartyId);
+            Assert.AreEqual(_source.AccountLegalEntityId, _result.NewPartyId);
         }
 
         [Test]

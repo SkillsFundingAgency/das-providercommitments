@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     ApprenticeshipId = 123,
                     ApprenticeshipHashedId = "DF34WG2",
                     ProviderId = 2342,
-                    EmployerAccountLegalEntityPublicHashedId = "DFF41G",
+                    AccountLegalEntityPublicHashedId = "DFF41G",
                     NewStartDate = new MonthYearModel("62020")
                 };
 
