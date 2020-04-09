@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     OldStartDate = data.Apprenticeship.StartDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
-                    NewStartDate = newStartDate,
+                    NewStartDate = newStartDate.MonthYear,
                     NewPrice = source.Price,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };

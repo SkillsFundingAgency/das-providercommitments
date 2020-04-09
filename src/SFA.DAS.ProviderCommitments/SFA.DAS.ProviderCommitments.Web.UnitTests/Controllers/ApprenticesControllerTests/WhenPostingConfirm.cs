@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     ApprenticeshipHashedId = "DF34WG2",
                     ProviderId = 2342,
                     AccountLegalEntityPublicHashedId = "DFF41G",
-                    NewStartDate = new MonthYearModel("62020")
+                    NewStartDate = "62020"
                 };
 
                 _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);

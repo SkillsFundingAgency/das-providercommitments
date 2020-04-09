@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
             var expectedStartDate = new MonthYearModel(_fixture.request.StartDate);
 
-            Assert.AreEqual(expectedStartDate.MonthYear, result.NewStartDate.MonthYear);
+            Assert.AreEqual(expectedStartDate.MonthYear, result.NewStartDate);
         }
 
         [Test]

@@ -6,10 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class ConfirmViewModel : IAuthorizationContextModel
     {
-        public ConfirmViewModel()
-        {
-            NewStartDate = new MonthYearModel("");
-        }
         public long ProviderId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
@@ -23,7 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int OldPrice { get; set; }
 
         public string NewEmployerName { get; set; }
-        public MonthYearModel NewStartDate { get; set; }
+        public string NewStartDate { get; set; }
+        public DateTime NewStartDateTime => new MonthYearModel(NewStartDate).Date.Value;
 
         public int NewPrice { get; set; }
         public int? FundingBandCap { get; set; }
