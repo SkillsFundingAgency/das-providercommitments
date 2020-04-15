@@ -42,20 +42,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             private readonly ApprenticeController _sut;
             private readonly ConfirmViewModel _viewModel;
-            private readonly ChangeOfPartyRequestRequest _mapperResult;
+            private readonly CreateChangeOfPartyRequestRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
 
             public WhenPostingConfirmFixture()
             {
                 _apiClient = new Mock<ICommitmentsApiClient>();
-                _apiClient.Setup(x => x.ChangeOfPartyRequest(It.IsAny<long>(), It.IsAny<ChangeOfPartyRequestRequest>(),
+                _apiClient.Setup(x => x.CreateChangeOfPartyRequest(It.IsAny<long>(), It.IsAny<CreateChangeOfPartyRequestRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _mapperResult = new ChangeOfPartyRequestRequest();
+                _mapperResult = new CreateChangeOfPartyRequestRequest();
 
                 _modelMapper = new Mock<IModelMapper>();
-                _modelMapper.Setup(x => x.Map<ChangeOfPartyRequestRequest>(It.IsAny<ConfirmViewModel>()))
+                _modelMapper.Setup(x => x.Map<CreateChangeOfPartyRequestRequest>(It.IsAny<ConfirmViewModel>()))
                     .ReturnsAsync(_mapperResult);
 
                 _viewModel = new ConfirmViewModel
@@ -74,8 +74,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             public void VerifyChangeOfPartyRequestCreated()
             {
-                _apiClient.Verify(x => x.ChangeOfPartyRequest(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.Is<ChangeOfPartyRequestRequest>(r => r == _mapperResult),
+                _apiClient.Verify(x => x.CreateChangeOfPartyRequest(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
+                    It.Is<CreateChangeOfPartyRequestRequest>(r => r == _mapperResult),
                     It.IsAny<CancellationToken>()));
             }
         }

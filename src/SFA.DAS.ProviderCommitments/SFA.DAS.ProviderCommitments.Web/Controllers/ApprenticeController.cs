@@ -177,8 +177,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
-            var apiRequest = await _modelMapper.Map<ChangeOfPartyRequestRequest>(viewModel);
-            await _commitmentApiClient.ChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
+            var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
+            await _commitmentApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
             return RedirectToRoute(RouteNames.ApprenticeSent, new { viewModel.ApprenticeshipHashedId });
         }
 

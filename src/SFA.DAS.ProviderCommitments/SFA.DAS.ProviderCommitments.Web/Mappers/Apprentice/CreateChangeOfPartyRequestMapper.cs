@@ -6,11 +6,11 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class CreateChangeOfPartyRequestMapper : IMapper<ConfirmViewModel, ChangeOfPartyRequestRequest>
+    public class CreateChangeOfPartyRequestMapper : IMapper<ConfirmViewModel, CreateChangeOfPartyRequestRequest>
     {
-        public Task<ChangeOfPartyRequestRequest> Map(ConfirmViewModel source)
+        public Task<CreateChangeOfPartyRequestRequest> Map(ConfirmViewModel source)
         {
-            return Task.FromResult(new ChangeOfPartyRequestRequest
+            return Task.FromResult(new CreateChangeOfPartyRequestRequest
             {
                 ChangeOfPartyRequestType = ChangeOfPartyRequestType.ChangeEmployer,
                 NewPartyId = source.AccountLegalEntityId,

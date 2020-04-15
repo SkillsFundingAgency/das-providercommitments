@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     {
         private CreateChangeOfPartyRequestMapper _mapper;
         private ConfirmViewModel _source;
-        private ChangeOfPartyRequestRequest _result;
+        private CreateChangeOfPartyRequestRequest _result;
 
         [SetUp]
         public async Task Arrange()
