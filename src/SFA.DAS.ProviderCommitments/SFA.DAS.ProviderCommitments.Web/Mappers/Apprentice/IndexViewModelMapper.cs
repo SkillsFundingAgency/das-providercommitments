@@ -41,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipStatus.WaitingToStart, 
                 ApprenticeshipStatus.Live,
                 ApprenticeshipStatus.Paused, 
-                ApprenticeshipStatus.Stopped
+                ApprenticeshipStatus.Stopped,
+                ApprenticeshipStatus.Completed
             };
 
             var filterModel = new ApprenticesFilterModel
