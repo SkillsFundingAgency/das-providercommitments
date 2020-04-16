@@ -17,7 +17,13 @@
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
-
+    @if (Model.HasPendingChangeOfPartyRequest)
+        {
+            <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
+                <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the new employer.</p>
+                <p class="das-notification__body"><a href="" class="govuk-link">View changes</a> </p>
+            </div>
+        }
         @if (Model.HasProviderPendingUpdate)
         {
             <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
