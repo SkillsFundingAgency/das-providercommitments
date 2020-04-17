@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeEmployerRequestDetailsViewModel
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeEmployerRequestDetailsViewModel
 
 @{
     ViewData["Title"] = "View changes";
@@ -8,9 +9,34 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">View changes</h1>
+       <h1 class="govuk-heading-xl">View changes</h1>
 
+        <p>@Model.EmployerName are reviewing the new details.</p>
 
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-30"></th>
+                    <th class="govuk-table__header das-table-cell-width-30">Current details</th>
+                    <th class="govuk-table__header das-table-cell-width-30">Requested changes</th>
+                </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Employer</th>
+                <td class="govuk-table__cell">@Model.CurrentEmployerName</td>
+                <td class="govuk-table__cell">@Model.EmployerName</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Training start date</th>
+                <td class="govuk-table__cell">@Model.CurrentStartDate.ToGdsFormatWithoutDay()</td>
+                <td class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                <td class="govuk-table__cell">@Model.CurrentPrice.ToGdsCostFormat()</td>
+                <td class="govuk-table__cell">@Model.Price.ToGdsCostFormat()</td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 </div>
