@@ -1,0 +1,21 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeEmployerRequestDetailsViewModel
+
+@{
+    ViewData["Title"] = "View changes";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/pending-request";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">View changes</h1>
+
+
+
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Back</a>
+}

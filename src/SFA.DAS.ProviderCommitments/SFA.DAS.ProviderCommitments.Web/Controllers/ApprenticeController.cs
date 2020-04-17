@@ -130,9 +130,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Inform(InformRequest request)
         {
-            var viewModel = await _modelMapper.Map<InformViewModel>(request);
+            //var viewModel = await _modelMapper.Map<InformViewModel>(request); //todo: remove this mapper too
+            //return View(viewModel);
 
-            return View(viewModel);
+            var viewModel = await _modelMapper.Map<IChangeEmployerInformViewModel>(request);
+            var viewName = viewModel is InformViewModel ? "Inform" : "ChangeEmployerRequestDetails";
+            return View(viewName, viewModel);
         }
 
         [HttpGet]

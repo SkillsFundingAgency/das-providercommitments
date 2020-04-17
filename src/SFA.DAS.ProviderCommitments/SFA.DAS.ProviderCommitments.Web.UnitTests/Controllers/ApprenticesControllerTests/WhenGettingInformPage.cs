@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         private Mock<IModelMapper> _modelMapper;
         private long _providerId;
         private InformRequest _request;
-        private InformViewModel _viewModel;
+        private InformViewModel _informViewModel;
         private ApprenticeController _sut;
 
         public GetInformPageFixture()
@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = _apprenticeshipHashedId,
                 ApprenticeshipId = _apprenticeshipId
             };
-            _viewModel = new InformViewModel
+            _informViewModel = new InformViewModel
             {
                 ProviderId = _providerId,
                 ApprenticeshipHashedId = _apprenticeshipHashedId,
@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper
                 .Setup(x => x.Map<InformViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(_informViewModel);
             _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 

@@ -21,7 +21,9 @@
         {
             <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
                 <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the new employer.</p>
-                <p class="das-notification__body"><a href="" class="govuk-link">View changes</a> </p>
+                <p class="das-notification__body">
+                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
+                </p>
             </div>
         }
         @if (Model.HasProviderPendingUpdate)
