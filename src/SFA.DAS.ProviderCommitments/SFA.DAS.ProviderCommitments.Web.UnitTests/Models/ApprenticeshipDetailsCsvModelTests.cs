@@ -109,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         {
             var result = model.Map(source, encodingService.Object);
 
-            result.DateOfBirth.Should().Be(source.DateOfBirth.ToString("dd MMM yyyy"));
+            result.DateOfBirth.Should().Be(source.DateOfBirth.ToString("d MMM yyyy"));
         }
         [Test, AutoData]
         public void Then_Maps_Status(
