@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -30,6 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
+        {
+            var model = await _modelMapper.Map<CohortsViewModel>(request);
+            return View("NotImplemented");
         }
 
         [HttpGet]
@@ -91,6 +99,67 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [Route("review")]
+        public IActionResult Review(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        [HttpGet]
+        [Route("draft")]
+        public IActionResult Draft(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        [HttpGet]
+        [Route("with-employer")]
+        public IActionResult WithEmployer(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        [HttpGet]
+        [Route("with-transfer-sender")]
+        public IActionResult WithTransferSender(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
+        {
+            var getEmployerTask =
+                GetEmployerIfRequired(model.AccountLegalEntityId);
+            
+            var getCoursesTask = GetCourses();
+
+            await Task.WhenAll(getEmployerTask, getCoursesTask);
+
+            model.Employer = getEmployerTask.Result?.LegalEntityName;
+            model.Courses = getCoursesTask.Result;
+        }
+
+        private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
+        {
+            if (!accountLegalEntityId.HasValue)
+            {
+                return Task.FromResult((GetAccountLegalEntityResponse) null);
+            }
+
+            return _mediator.Send(new GetAccountLegalEntityRequest
+            {
+                EmployerAccountLegalEntityId = accountLegalEntityId.Value
+            });
+        }
+
+        private async Task<ITrainingProgramme[]> GetCourses()
+        {
+            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
+
+            return result.TrainingCourses;
         }
     }
 }
