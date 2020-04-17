@@ -7,22 +7,23 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class IChangeEmployerInformViewModelMapper : IMapper<InformRequest, IChangeEmployerInformViewModel>
+    public class IChangeEmployerViewModelMapper : IMapper<ChangeEmployerRequest, IChangeEmployerViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public IChangeEmployerInformViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public IChangeEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<IChangeEmployerInformViewModel> Map(InformRequest source)
+        public async Task<IChangeEmployerViewModel> Map(ChangeEmployerRequest source)
         {
             var changeOfPartyRequest = await _commitmentsApiClient.GetChangeOfPartyRequests(source.ApprenticeshipId);
 
             if (changeOfPartyRequest.ChangeOfPartyRequests.Any(x =>
-                x.ChangeOfPartyType == ChangeOfPartyRequestType.ChangeEmployer &&
-                x.Status == ChangeOfPartyRequestStatus.Pending))
+                x.OriginatingParty == Party.Provider
+                && x.ChangeOfPartyType == ChangeOfPartyRequestType.ChangeEmployer &&
+                (x.Status == ChangeOfPartyRequestStatus.Pending || x.Status == ChangeOfPartyRequestStatus.Approved)))
             {
                 return new ChangeEmployerRequestDetailsViewModel
                 {

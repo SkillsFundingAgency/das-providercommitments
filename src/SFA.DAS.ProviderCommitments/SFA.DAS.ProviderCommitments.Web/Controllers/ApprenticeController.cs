@@ -10,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
@@ -126,14 +127,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ApprenticeInform)]
+        [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ChangeEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Inform(InformRequest request)
+        public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
-            //var viewModel = await _modelMapper.Map<InformViewModel>(request); //todo: remove this mapper too
-            //return View(viewModel);
-
-            var viewModel = await _modelMapper.Map<IChangeEmployerInformViewModel>(request);
+            var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
             var viewName = viewModel is InformViewModel ? "Inform" : "ChangeEmployerRequestDetails";
             return View(viewName, viewModel);
         }

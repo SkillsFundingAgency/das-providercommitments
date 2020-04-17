@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using AutoFixture;
 using NUnit.Framework;
@@ -10,11 +9,10 @@ using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.None)]
     [TestFixture]
     public class InformViewModelMapperTests
     {
@@ -27,22 +25,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenIfNoChangeOfPartyRequestIsPendingThenResultIsInformViewModel()
+        public async Task Then_With_No_ChangeOfPartyRequest_Pending_Then_Result_Is_InformViewModel()
         {
             await _fixture.Act();
             _fixture.VerifyResult<InformViewModel>();
         }
 
-        //[Test]
-        //public async Task ThenIfAChangeOfPartyRequestIsPendingThenResultIsRequestDetailsViewModel()
-        //{
-        //    _fixture.WithPendingRequest(ChangeOfPartyRequestStatus.Pending); //todo: what about other statuses?
-        //    await _fixture.Act();
-        //    _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-        //}
+        [TestCase(ChangeOfPartyRequestStatus.Rejected)]
+        [TestCase(ChangeOfPartyRequestStatus.Withdrawn)]
+        public async Task Then_With_A_ChangeOfPartyRequest_Rejected_Or_Withdrawn_Then_Result_Is_InformViewModel(ChangeOfPartyRequestStatus status)
+        {
+            _fixture.WithChangeOfPartRequest(status);
+            await _fixture.Act();
+            _fixture.VerifyResult<InformViewModel>();
+        }
+
+        [TestCase(ChangeOfPartyRequestStatus.Approved)]
+        [TestCase(ChangeOfPartyRequestStatus.Pending)]
+        public async Task Then_With_A_ChangeOfPartyRequest_Pending_Or_Approved_Then_Result_Is_ChangeEmployerRequestDetailsViewModel(ChangeOfPartyRequestStatus status)
+        {
+            _fixture.WithChangeOfPartRequest(status);
+            await _fixture.Act();
+            _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+        }
 
         [Test]
-        public async Task Then_InformViewModel_ProviderIdIsMapped()
+        public async Task Then_With_InformViewModel_ProviderIdIsMapped()
         {
             await _fixture.Act();
 
@@ -51,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task Then_InformViewModel_ApprenticeshipIdIsMapped()
+        public async Task Then_With_InformViewModel_ApprenticeshipIdIsMapped()
         {
             await _fixture.Act();
             var result = _fixture.VerifyResult<InformViewModel>();
@@ -60,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task Then_InformViewModel_ApprenticeshipHashedIdIsMapped()
+        public async Task Then_With_InformViewModel_ApprenticeshipHashedIdIsMapped()
         {
             await _fixture.Act();
             var result = _fixture.VerifyResult<InformViewModel>();
@@ -70,22 +78,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     internal class GetInformPageFixture : Fixture
     {
-        private readonly InformRequest _informRequest;
-        private readonly IChangeEmployerInformViewModelMapper _sut;
+        private readonly ChangeEmployerRequest _changeEmployerRequest;
+        private readonly IChangeEmployerViewModelMapper _sut;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
 
         public long ApprenticeshipId { get; set; }
         public long ProviderId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public GetChangeOfPartyRequestsResponse ChangeOfPartyRequests { get; private set; }
-        public IChangeEmployerInformViewModel Result { get; private set; }
+        public IChangeEmployerViewModel Result { get; private set; }
 
         public GetInformPageFixture()
         {
             ProviderId = 123;
             ApprenticeshipId = 234;
             ApprenticeshipHashedId = "SD23DS24";
-            _informRequest = new InformRequest
+            _changeEmployerRequest = new ChangeEmployerRequest
             {
                 ApprenticeshipId = ApprenticeshipId,
                 ProviderId = ProviderId,
@@ -100,10 +108,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Setup(x => x.GetChangeOfPartyRequests(It.Is<long>(a => a == ApprenticeshipId),
                     It.IsAny<CancellationToken>())).ReturnsAsync(ChangeOfPartyRequests);
 
-            _sut = new IChangeEmployerInformViewModelMapper(_commitmentsApiClient.Object);
+            _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object);
         }
 
-        public GetInformPageFixture WithPendingRequest(ChangeOfPartyRequestStatus? requestStatus)
+        public GetInformPageFixture WithChangeOfPartRequest(ChangeOfPartyRequestStatus? requestStatus)
         {
             if (requestStatus.HasValue)
             {
@@ -131,9 +139,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             return this;
         }
 
-        public async Task<IChangeEmployerInformViewModel> Act()
+        public async Task<IChangeEmployerViewModel> Act()
         {
-            Result = await _sut.Map(_informRequest);
+            Result = await _sut.Map(_changeEmployerRequest);
             return Result;
         }
 

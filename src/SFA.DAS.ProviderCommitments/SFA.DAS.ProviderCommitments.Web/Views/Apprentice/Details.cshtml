@@ -22,7 +22,7 @@
             <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
                 <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the new employer.</p>
                 <p class="das-notification__body">
-                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
+                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
                 </p>
             </div>
         }
@@ -153,7 +153,7 @@
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                         @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
                         {
-                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }
                     </td>
                 </tr>
