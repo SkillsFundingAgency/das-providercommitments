@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string DateOfBirth { get; private set; }
         [Name("Total agreed apprenticeship price")]
         public string TotalAgreedPrice { get; private set; }
-        [Name("Your Reference")]
+        [Name("Your reference")]
         public string ProviderRef { get; private set; }
         [Name("Agreement ID")]
         public string AgreementId { get; private set; }
