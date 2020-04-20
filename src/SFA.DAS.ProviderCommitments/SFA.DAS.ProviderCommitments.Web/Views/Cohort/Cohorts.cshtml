@@ -1,0 +1,29 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.CohortsViewModel
+
+@{
+    ViewBag.Title = "Apprentice requests";
+    ViewBag.GaData.Vpv = "/unapproved";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-width-container">
+            <h1 class="govuk-heading-xl">Apprentice requests</h1>
+
+            <div class="das-cards das-cards--bingo">
+                @await Html.PartialAsync("_CardLink", Model.CohortsInReview)
+                @await Html.PartialAsync("_CardLink", Model.CohortsWithEmployer)
+                @if (Model.ShowDrafts)
+                {
+                    @await Html.PartialAsync("_CardLink", Model.CohortsInDraft)
+                }
+                @await Html.PartialAsync("_CardLink", Model.CohortsWithTransferSender)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/account")">Back</a>
+}

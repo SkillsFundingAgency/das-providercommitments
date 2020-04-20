@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
         {
             var model = await _modelMapper.Map<CohortsViewModel>(request);
-            return View("NotImplemented");
+            return View(model);
         }
 
         [HttpGet]
