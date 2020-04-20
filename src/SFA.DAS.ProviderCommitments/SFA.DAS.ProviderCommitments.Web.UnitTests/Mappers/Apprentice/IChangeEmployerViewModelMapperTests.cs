@@ -16,14 +16,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [Parallelizable(ParallelScope.None)]
     [TestFixture]
-    public class InformViewModelMapperTests
+    public class IChangeEmployerViewModelMapperTests
     {
-        private GetInformPageFixture _fixture;
+        private IChangeEmployerViewModelMapperTestsFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new GetInformPageFixture();
+            _fixture = new IChangeEmployerViewModelMapperTestsFixture();
         }
 
         [Test]
@@ -159,7 +159,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    internal class GetInformPageFixture : Fixture
+    internal class IChangeEmployerViewModelMapperTestsFixture : Fixture
     {
         private readonly ChangeEmployerRequest _changeEmployerRequest;
         private readonly IChangeEmployerViewModelMapper _sut;
@@ -176,7 +176,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public GetChangeOfPartyRequestsResponse ChangeOfPartyRequests { get; private set; }
         public IChangeEmployerViewModel Result { get; private set; }
 
-        public GetInformPageFixture()
+        public IChangeEmployerViewModelMapperTestsFixture()
         {
             var autoFixture = new Fixture();
 
@@ -229,7 +229,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object);
         }
 
-        public GetInformPageFixture WithChangeOfPartRequest(ChangeOfPartyRequestStatus? requestStatus)
+        public IChangeEmployerViewModelMapperTestsFixture WithChangeOfPartRequest(ChangeOfPartyRequestStatus? requestStatus)
         {
             if (requestStatus.HasValue)
             {
