@@ -34,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
         {
             var model = await _modelMapper.Map<CohortsViewModel>(request);
@@ -103,6 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("review")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public IActionResult Review(CohortsByProviderRequest request)
         {
             return View("NotImplemented");
@@ -110,6 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("draft")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public IActionResult Draft(CohortsByProviderRequest request)
         {
             return View("NotImplemented");
@@ -117,6 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("with-employer")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public IActionResult WithEmployer(CohortsByProviderRequest request)
         {
             return View("NotImplemented");
@@ -124,6 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("with-transfer-sender")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public IActionResult WithTransferSender(CohortsByProviderRequest request)
         {
             return View("NotImplemented");
