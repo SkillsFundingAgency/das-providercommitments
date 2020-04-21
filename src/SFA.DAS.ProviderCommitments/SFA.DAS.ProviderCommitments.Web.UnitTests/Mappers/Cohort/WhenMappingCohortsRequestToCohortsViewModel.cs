@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task WhenThereAreNoCreatePermissionsGrantedToThisProviderTheShowDraftsBingoBoxIsNotDisplayed()
+        public async Task WhenThereAreCreatePermissionsGrantedToThisProviderTheShowDraftsPropertyIsTrue()
         {
             var f = new WhenMappingCohortsRequestToCohortsViewModelFixture().WithCreatePermissionsForAnEmployer();
             var result = await f.Sut.Map(f.CohortsRequest);
