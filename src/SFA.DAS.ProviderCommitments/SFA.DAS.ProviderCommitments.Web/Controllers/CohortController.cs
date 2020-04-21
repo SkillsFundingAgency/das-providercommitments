@@ -118,9 +118,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("review")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult Review(CohortsByProviderRequest request)
+        public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
+            return View(reviewViewModel);
         }
 
         [HttpGet]
