@@ -11,6 +11,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
@@ -49,12 +50,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var client = new Mock<ICommitmentsApiClient>();
             var csvService = new Mock<ICreateCsvService>();
             var currentDateTime = new Mock<ICurrentDateTime>();
+            var encodingService = new Mock<IEncodingService>();
             var expectedCsvContent = new byte[] {1, 2, 3, 4};
             var expectedMemoryStream = new MemoryStream(expectedCsvContent);
             currentDateTime.Setup(x => x.UtcNow).Returns(new DateTime(2020, 12, 30));
             var expectedFileName = $"{"Manageyourapprentices"}_{currentDateTime.Object.UtcNow:yyyyMMddhhmmss}.csv";
 
-            var mapper = new DownloadApprenticesRequestMapper(client.Object, csvService.Object, currentDateTime.Object);
+            var mapper = new DownloadApprenticesRequestMapper(client.Object, csvService.Object, currentDateTime.Object, encodingService.Object);
 
             client.Setup(x => x.GetApprenticeships(It.Is<GetApprenticeshipsRequest>(r => 
                     r.ProviderId.Equals(request.ProviderId)), It.IsAny<CancellationToken>()))
