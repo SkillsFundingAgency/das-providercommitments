@@ -14,5 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public CohortCardLinkViewModel CohortsInReview { get; set; }
         public CohortCardLinkViewModel CohortsWithEmployer { get; set; }
         public CohortCardLinkViewModel CohortsWithTransferSender { get; set; }
+        public bool IsAgreementSigned { get; set; }
     }
 }
