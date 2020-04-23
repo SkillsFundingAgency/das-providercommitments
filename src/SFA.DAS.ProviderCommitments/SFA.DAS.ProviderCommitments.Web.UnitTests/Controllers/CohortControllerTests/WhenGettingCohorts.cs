@@ -40,9 +40,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             var f = new WhenGettingCohortsFixture();
 
-            await f.Sut.Review2(f.Request);
+            await f.Sut.Review(f.Request);
 
-            f.ModelMapperMock.Verify(x => x.Map<ReviewViewModel2>(f.Request));
+            f.ModelMapperMock.Verify(x => x.Map<ReviewViewModel>(f.Request));
         }
 
         [Test]
@@ -50,10 +50,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             var f = new WhenGettingCohortsFixture();
 
-            var result = await f.Sut.Review2(f.Request) as ViewResult;
+            var result = await f.Sut.Review(f.Request) as ViewResult;
 
             Assert.NotNull(result);
-            Assert.AreEqual(typeof(ReviewViewModel2), result.Model.GetType());
+            Assert.AreEqual(typeof(ReviewViewModel), result.Model.GetType());
         }
     }
 
@@ -64,17 +64,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public Mock<IModelMapper> ModelMapperMock { get; }
         public CohortsViewModel CohortsViewModel { get; }
-        public ReviewViewModel2 ReviewViewModel2 { get; }
+        public ReviewViewModel ReviewViewModel { get; }
 
         public WhenGettingCohortsFixture()
         {
             Request = new CohortsByProviderRequest();
             ModelMapperMock = new Mock<IModelMapper>();
             CohortsViewModel = new CohortsViewModel();
-            ReviewViewModel2 = new ReviewViewModel2();
+            ReviewViewModel = new ReviewViewModel();
 
             ModelMapperMock.Setup(x => x.Map<CohortsViewModel>(Request)).ReturnsAsync(CohortsViewModel);
-            ModelMapperMock.Setup(x => x.Map<ReviewViewModel2>(Request)).ReturnsAsync(ReviewViewModel2);
+            ModelMapperMock.Setup(x => x.Map<ReviewViewModel>(Request)).ReturnsAsync(ReviewViewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
         }

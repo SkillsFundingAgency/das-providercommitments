@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class ReviewCohortSummaryViewModel2
+    public class ReviewCohortSummaryViewModel
     {
         public string CohortReference { get; set; }
         public string EmployerName { get; set; }
