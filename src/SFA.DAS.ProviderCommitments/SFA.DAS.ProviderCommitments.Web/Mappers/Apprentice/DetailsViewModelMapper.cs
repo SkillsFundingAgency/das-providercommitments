@@ -71,7 +71,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DataLockStatus = dataLockSummaryStatus,
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
                     IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled,
-                    PauseDate = data.Apprenticeship.PauseDate
+                    PauseDate = data.Apprenticeship.PauseDate,
+                    CompletionDate = data.Apprenticeship.CompletionDate
                 };
             }
             catch (Exception e)
