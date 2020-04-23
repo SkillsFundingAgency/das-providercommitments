@@ -45,6 +45,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("review")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
+        public async Task<IActionResult> Review2(CohortsByProviderRequest request)
+        {
+            var reviewViewModel = await _modelMapper.Map<ReviewViewModel2>(request);
+            return View(reviewViewModel);
+        }
+
+        [HttpGet]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
@@ -113,15 +122,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
-        }
-
-        [HttpGet]
-        [Route("review")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public async Task<IActionResult> Review(CohortsByProviderRequest request)
-        {
-            var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
-            return View(reviewViewModel);
         }
 
         [HttpGet]
