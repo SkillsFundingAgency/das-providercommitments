@@ -6,11 +6,9 @@
 }
 
 <div class="govuk-grid-row">
-
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
             <h1 class="govuk-heading-xl">Apprentice details ready for review</h1>
-
             <table class="govuk-table das-table--responsive">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -22,7 +20,6 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-
                     @foreach (var cohort in Model.Cohorts)
                     {
                         <tr class="govuk-table__row" data-cohort="@cohort.CohortReference">
@@ -35,10 +32,8 @@
                             </td>
                         </tr>
                     }
-
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>
