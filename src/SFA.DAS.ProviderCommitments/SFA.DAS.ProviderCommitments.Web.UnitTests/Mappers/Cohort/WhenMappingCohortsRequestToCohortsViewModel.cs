@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.PAS.Account.Api.ClientV2;
+using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderRelationships.Api.Client;
@@ -77,13 +80,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsTrue(result.ShowDrafts);
         }
 
+        [TestCase(ProviderAgreementStatus.Agreed, true)]
+        [TestCase(ProviderAgreementStatus.NotAgreed, false)]
+        public async Task TheIsAgreementSignedIsPopulatedCorrectly(ProviderAgreementStatus providerAgreementStatus, bool expectedIsAgreementSigned)
+        {
+            var f = new WhenMappingCohortsRequestToCohortsViewModelFixture().WithProviderAgreementStatus(providerAgreementStatus);
+            var result = await f.Sut.Map(f.CohortsRequest);
+
+            Assert.AreEqual(expectedIsAgreementSigned, result.IsAgreementSigned);
+        }
+
         public class WhenMappingCohortsRequestToCohortsViewModelFixture
         {
             public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
             public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
+            public Mock<IPasAccountApiClient> PasAccountApiClient { get; private set; }
             public Mock<IUrlHelper> UrlHelper { get; }
             public CohortsByProviderRequest CohortsRequest { get; }
             public CohortsSummaryViewModelMapper Sut { get; }
+            public ProviderAgreementStatus AgreementStatus { get; set; }
 
             private Fixture _fixture;
 
@@ -95,11 +110,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
                 CommitmentsApiClient.Setup(x => x.GetCohorts(It.IsAny<GetCohortsRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(CreateGetCohortsResponse());
                 ProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
+                
+                PasAccountApiClient = new Mock<IPasAccountApiClient>();
+                PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = AgreementStatus });
 
                 UrlHelper = new Mock<IUrlHelper>();
                 UrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
 
-                Sut = new CohortsSummaryViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, UrlHelper.Object);
+                Sut = new CohortsSummaryViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, UrlHelper.Object, PasAccountApiClient.Object);
             }
 
             public WhenMappingCohortsRequestToCohortsViewModelFixture WithNoCohortsFound()
@@ -115,6 +133,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         It.Is<HasRelationshipWithPermissionRequest>(p =>
                             p.Ukprn == CohortsRequest.ProviderId && p.Operation == Operation.CreateCohort),
                         It.IsAny<CancellationToken>())).ReturnsAsync(true);
+                return this;
+            }
+
+            public WhenMappingCohortsRequestToCohortsViewModelFixture WithProviderAgreementStatus(ProviderAgreementStatus providerAgreementStatus)
+            {
+                AgreementStatus = providerAgreementStatus;
                 return this;
             }
 
