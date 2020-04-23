@@ -47,10 +47,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("review")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public async Task<IActionResult> Review2(CohortsByProviderRequest request)
+        public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
-            var reviewViewModel = await _modelMapper.Map<ReviewViewModel2>(request);
+            var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
             return View(reviewViewModel);
+        }
+
+        [HttpGet]
+        [Route("draft")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
+        public IActionResult Draft(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        [HttpGet]
+        [Route("with-employer")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
+        public IActionResult WithEmployer(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
+        }
+
+        [HttpGet]
+        [Route("with-transfer-sender")]
+        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
+        public IActionResult WithTransferSender(CohortsByProviderRequest request)
+        {
+            return View("NotImplemented");
         }
 
         [HttpGet]
@@ -122,30 +146,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
-        }
-
-        [HttpGet]
-        [Route("draft")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult Draft(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
-        }
-
-        [HttpGet]
-        [Route("with-employer")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithEmployer(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
-        }
-
-        [HttpGet]
-        [Route("with-transfer-sender")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithTransferSender(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
         }
 
         private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)

@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public CohortsByProviderRequest ReviewRequest { get; set; }
         public GetCohortsResponse GetCohortsResponse { get; set; }
         public ReviewRequestViewModelMapper Mapper { get; set; }
-        public ReviewViewModel2 ReviewViewModel2 { get; set; }
+        public ReviewViewModel ReviewViewModel { get; set; }
 
         public long ProviderId => 1;
 
@@ -109,13 +109,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task<WhenMappingReviewRequestToViewModelFixture> Map()
         {
-            ReviewViewModel2 = await Mapper.Map(ReviewRequest);
+            ReviewViewModel = await Mapper.Map(ReviewRequest);
             return this;
         }
 
         public void Verify_OnlyTheCohorts_ReadyForReviewForProvider_Are_Mapped()
         {
-            Assert.AreEqual(2, ReviewViewModel2.Cohorts.Count());
+            Assert.AreEqual(2, ReviewViewModel.Cohorts.Count());
 
             Assert.IsNotNull(GetCohortInReviewViewModel(1));
             Assert.IsNotNull(GetCohortInReviewViewModel(2));
@@ -149,13 +149,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.AreEqual("Employer1", ReviewViewModel2.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer2", ReviewViewModel2.Cohorts.Last().EmployerName);
+            Assert.AreEqual("Employer1", ReviewViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer2", ReviewViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, ReviewViewModel2.ProviderId);
+            Assert.AreEqual(ProviderId, ReviewViewModel.ProviderId);
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()
@@ -217,9 +217,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return long.Parse(cohortReference.Replace("_Encoded", ""));
         }
 
-        private ReviewCohortSummaryViewModel2 GetCohortInReviewViewModel(long id)
+        private ReviewCohortSummaryViewModel GetCohortInReviewViewModel(long id)
         {
-            return ReviewViewModel2.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
+            return ReviewViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
         }
     }
 }

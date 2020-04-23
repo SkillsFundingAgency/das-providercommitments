@@ -10,7 +10,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class ReviewRequestViewModelMapper : IMapper<CohortsByProviderRequest, ReviewViewModel2>
+    public class ReviewRequestViewModelMapper : IMapper<CohortsByProviderRequest, ReviewViewModel>
     {
         private readonly IEncodingService _encodingService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
@@ -21,17 +21,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _commitmentsApiClient = commitmentApiClient;
         }
 
-        public async Task<ReviewViewModel2> Map(CohortsByProviderRequest source)
+        public async Task<ReviewViewModel> Map(CohortsByProviderRequest source)
         {
             var cohortsResponse = await _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
 
-            var reviewViewModel = new ReviewViewModel2
+            var reviewViewModel = new ReviewViewModel
             {
                 ProviderId = source.ProviderId,
                 Cohorts = cohortsResponse.Cohorts
                     .Where(x => x.GetStatus() == CohortStatus.Review)
                     .OrderByDescending(z => z.CreatedOn)
-                    .Select(y => new ReviewCohortSummaryViewModel2
+                    .Select(y => new ReviewCohortSummaryViewModel
                     {
                         CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
                         EmployerName = y.LegalEntityName,
