@@ -61,7 +61,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     {
         public CohortController Sut { get; set; }
         public CohortsByProviderRequest Request { get; }
-
         public Mock<IModelMapper> ModelMapperMock { get; }
         public CohortsViewModel CohortsViewModel { get; }
         public ReviewViewModel ReviewViewModel { get; }
