@@ -72,7 +72,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
                     IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled && !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
                     PauseDate = data.Apprenticeship.PauseDate,
-                    HasPendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending)
+                    HasPendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending),
+                    CompletionDate = data.Apprenticeship.CompletionDate
                 };
             }
             catch (Exception e)

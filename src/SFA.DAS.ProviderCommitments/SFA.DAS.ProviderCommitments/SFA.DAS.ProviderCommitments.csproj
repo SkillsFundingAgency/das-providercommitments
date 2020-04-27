@@ -21,8 +21,8 @@
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.233" />
     <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.233" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.58" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.1377" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="4.1.1377" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="4.1.1419" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="4.1.1419" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.1" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.851" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="3.2.61" />
