@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -330,15 +331,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(enabled, _fixture.Result.IsChangeOfEmployerEnabled);
         }
 
+        [TestCase(null, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Rejected, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Pending, true)]
+        public async Task ThenHasChangeOfPartyRequestPendingIsMappedCorrectly(ChangeOfPartyRequestStatus? status, bool expectHasPending)
+        {
+            if (status.HasValue)
+            {
+                _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, status.Value);
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
+        }
+
+        [Test]
+        public async Task ThenAPendingChangeOfPartyOriginatingFromEmployerDoesNotSetHasPendingChangeOfPartyRequest()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeProvider, ChangeOfPartyRequestStatus.Pending);
+
+            await _fixture.Map();
+
+            Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
+        }
+
+        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Pending, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Rejected, true)]
+        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, true)]
+        public async Task ThenPendingOrApprovedChangeOfPartyRequestPreventsChangeOfEmployer(ChangeOfPartyRequestStatus status, bool expectChangeEmployerEnabled)
+        {
+            _fixture
+                .WithChangeOfEmployerToggle(true)
+                .WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, status);
+            await _fixture.Map();
+            Assert.AreEqual(expectChangeEmployerEnabled, _fixture.Result.IsChangeOfEmployerEnabled);
+        }
+
         public class DetailsViewModelMapperFixture
         {
-            private readonly DetailsViewModelMapper _sut;
+            private DetailsViewModelMapper _sut;
             public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
             public GetApprenticeshipResponse ApiResponse { get; }
             public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
             public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
+            public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;
             private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleService;
@@ -372,6 +414,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     DataLocks = new List<GetDataLocksResponse.DataLock>()
                 };
 
+                GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
+                {
+                    ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>()
+                };
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
@@ -385,7 +432,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         IsEnabled = false,
                         Whitelist = null
                     });
+            }
 
+            public async Task<DetailsViewModelMapperFixture> Map()
+            {
                 var apiClient = new Mock<ICommitmentsApiClient>();
                 apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(ApiResponse);
@@ -395,15 +445,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
-                
+
                 apiClient.Setup(x => x.GetApprenticeshipDatalocksStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetDataLocksResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
-            }
+                apiClient.Setup(x => x.GetChangeOfPartyRequests(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetChangeOfPartyRequestsResponse);
 
-            public async Task<DetailsViewModelMapperFixture> Map()
-            {
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+
                 Result = await _sut.Map(Source);
                 return this;
             }
@@ -536,6 +586,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         IsEnabled = enabled,
                         Whitelist = null
                     });
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status)
+            {
+                GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
+                {
+                    ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>
+                    {
+                        new GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest
+                        {
+                            Id = 1,
+                            ChangeOfPartyType = requestType,
+                            OriginatingParty = requestType == ChangeOfPartyRequestType.ChangeEmployer ? Party.Provider : Party.Employer,
+                            Status = status
+                        }
+                    }
+                };
+
                 return this;
             }
         }

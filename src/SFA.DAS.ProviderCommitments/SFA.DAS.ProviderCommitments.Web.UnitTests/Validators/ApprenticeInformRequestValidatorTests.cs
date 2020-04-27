@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase("XYZ", true)]
         public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new InformRequest() { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new ChangeEmployerRequest() { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
@@ -24,10 +24,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase(1, true)]
         public void Validate_ProviderId_ShouldBeValidated(int providerId, bool expectedValid)
         {
-            var model = new InformRequest { ProviderId = providerId };
+            var model = new ChangeEmployerRequest { ProviderId = providerId };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
-        private void AssertValidationResult<T>(Expression<Func<InformRequest, T>> property, InformRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<ChangeEmployerRequest, T>> property, ChangeEmployerRequest instance, bool expectedValid)
         {
             var validator = new ApprenticeInformRequestValidator();
 
