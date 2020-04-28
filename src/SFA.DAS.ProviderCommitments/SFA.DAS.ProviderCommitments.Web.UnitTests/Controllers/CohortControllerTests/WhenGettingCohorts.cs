@@ -17,49 +17,72 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task ThenCallsModelMapper()
         {
-            var fixture = new WhenGettingCohortsFixture();
+            var f = new WhenGettingCohortsFixture();
 
-            await fixture.Act();
+            await f.Sut.Cohorts(f.Request);
 
-            fixture.VerifyMapperWasCalled();
+            f.ModelMapperMock.Verify(x => x.Map<CohortsViewModel>(f.Request));
         }
 
         [Test]
-        public async Task ThenReturnsView()
+        public async Task ThenReturnsCohortsViewModel()
         {
-            var fixture = new WhenGettingCohortsFixture();
+            var f = new WhenGettingCohortsFixture();
 
-            var result = await fixture.Act() as ViewResult;
+            var result = await f.Sut.Cohorts(f.Request) as ViewResult;
 
             Assert.NotNull(result);
             Assert.AreEqual(typeof(CohortsViewModel), result.Model.GetType());
+        }
+
+        [Test]
+        public async Task ForReviewThenCallsModelMapper()
+        {
+            var f = new WhenGettingCohortsFixture();
+
+            await f.Sut.Review(f.Request);
+
+            f.ModelMapperMock.Verify(x => x.Map<ReviewViewModel>(f.Request));
+        }
+
+        [Test]
+        public async Task ForReviewThenReturnsReviewViewModel()
+        {
+            var f = new WhenGettingCohortsFixture();
+
+            var result = await f.Sut.Review(f.Request) as ViewResult;
+
+            Assert.NotNull(result);
+            Assert.AreEqual(typeof(ReviewViewModel), result.Model.GetType());
         }
     }
 
     public class WhenGettingCohortsFixture
     {
         public CohortController Sut { get; set; }
-        
-        private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly CohortsViewModel _viewModel;
-        private readonly CohortsByProviderRequest _request;
+        public CohortsByProviderRequest Request { get; }
+        public Mock<IModelMapper> ModelMapperMock { get; }
+        public CohortsViewModel CohortsViewModel { get; }
+        public ReviewViewModel ReviewViewModel { get; }
 
         public WhenGettingCohortsFixture()
         {
-            _request = new CohortsByProviderRequest();
-            _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = new CohortsViewModel();
+            Request = new CohortsByProviderRequest();
+            ModelMapperMock = new Mock<IModelMapper>();
+            CohortsViewModel = new CohortsViewModel();
+            ReviewViewModel = new ReviewViewModel();
 
-            _modelMapperMock.Setup(x => x.Map<CohortsViewModel>(_request)).ReturnsAsync(_viewModel);
+            ModelMapperMock.Setup(x => x.Map<CohortsViewModel>(Request)).ReturnsAsync(CohortsViewModel);
+            ModelMapperMock.Setup(x => x.Map<ReviewViewModel>(Request)).ReturnsAsync(ReviewViewModel);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public void VerifyMapperWasCalled()
         {
-            _modelMapperMock.Verify(x => x.Map<CohortsViewModel>(_request));
+            ModelMapperMock.Verify(x => x.Map<CohortsViewModel>(Request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.Cohorts(_request);
+        public async Task<IActionResult> Act() => await Sut.Cohorts(Request);
     }
 }
