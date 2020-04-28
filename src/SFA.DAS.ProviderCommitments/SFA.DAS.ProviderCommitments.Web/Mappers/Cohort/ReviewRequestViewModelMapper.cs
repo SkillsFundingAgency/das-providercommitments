@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ProviderId = source.ProviderId,
                 Cohorts = cohortsResponse.Cohorts
                     .Where(x => x.GetStatus() == CohortStatus.Review)
-                    .OrderByDescending(z => z.CreatedOn)
+                    .OrderBy(z => z.CreatedOn)
                     .Select(y => new ReviewCohortSummaryViewModel
                     {
                         CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
