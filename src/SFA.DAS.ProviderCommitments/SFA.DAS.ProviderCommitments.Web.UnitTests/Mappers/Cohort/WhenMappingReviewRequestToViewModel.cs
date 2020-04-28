@@ -171,7 +171,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = DateTime.Now.AddMinutes(10)
+                    CreatedOn = DateTime.Now.AddMinutes(-10)
                 },
                 new CohortSummary
                 {
@@ -182,7 +182,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = DateTime.Now.AddMinutes(5),
+                    CreatedOn = DateTime.Now.AddMinutes(-5),
                     LatestMessageFromEmployer = new Message("This is latestMessage from employer", DateTime.Now.AddMinutes(-2))
                 },
                 new CohortSummary
@@ -194,7 +194,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 300,
                     IsDraft = true,
                     WithParty = Party.Employer,
-                    CreatedOn = DateTime.Now.AddMinutes(1)
+                    CreatedOn = DateTime.Now.AddMinutes(-1)
                 },
                  new CohortSummary
                 {
