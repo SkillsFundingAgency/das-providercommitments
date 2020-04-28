@@ -28,7 +28,7 @@
                             <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Number of apprentices">@cohort.NumberOfApprentices</td>
                             <td class="govuk-table__cell" data-label="Last Message">@cohort.LastMessage</td>
                             <td class="govuk-table__cell govuk-table__cell--numeric" data-label="">
-                                <a class="govuk-link cohort-details-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{cohort.CohortReference}/details")">Details</a>
+                                <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{cohort.CohortReference}/details")">Details</a>
                             </td>
                         </tr>
                     }
