@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeEmployerRequestDetailsViewModel
 
 @{
@@ -18,7 +19,15 @@
         else
         {
             var url = Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/Details");
-            <p><span id="new-employer">@Model.EmployerName</span> are <a id="cohort-link" href="@url">reviewing the new details</a>.</p>
+
+            if (Model.WithParty == Party.Employer)
+            {
+                <p><span id="new-employer">@Model.EmployerName</span> are <a id="cohort-link" href="@url">reviewing the new details</a>.</p>
+            }
+            else
+            {
+                <p><span id="new-employer">@Model.EmployerName</span> requested further changes. <a id="cohort-link" href="@url">Review the apprentice details to update</a>.</p>
+            }
         }
 
         <table class="govuk-table">
