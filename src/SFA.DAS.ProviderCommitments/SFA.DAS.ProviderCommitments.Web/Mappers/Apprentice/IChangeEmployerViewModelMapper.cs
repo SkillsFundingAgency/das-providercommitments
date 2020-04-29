@@ -40,7 +40,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerName = changeOfPartyRequest.EmployerName,
                     CurrentEmployerName = apprenticeDetails.EmployerName,
                     CurrentStartDate = apprenticeDetails.StartDate,
-                    CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice()
+                    CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
+                    CohortId = changeOfPartyRequest.CohortId,
+                    WithParty = changeOfPartyRequest.WithParty
                 };
             }
             else
