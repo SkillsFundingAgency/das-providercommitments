@@ -20,8 +20,18 @@
     @if (Model.HasPendingChangeOfPartyRequest)
         {
             <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
-                <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the new employer.</p>
                 <p class="das-notification__body">
+                    @if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
+                    {
+                        <span id="change-of-party-status-text">There are changes to this apprentice's details that are waiting for approval by the new employer.</span>
+                    }
+                    else
+                    {
+                        <span id="change-of-party-status-text">The new employer has requested changes to this apprentice's details.</span>
+                    }
+                </p>
+    
+                    <p class="das-notification__body">
                     <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
                 </p>
             </div>
