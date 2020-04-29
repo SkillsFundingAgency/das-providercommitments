@@ -3,9 +3,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class DatesViewModelValidator : AbstractValidator<StartDateViewModel>
+    public class StartDateViewModelValidator : AbstractValidator<StartDateViewModel>
     {
-        public DatesViewModelValidator()
+        public StartDateViewModelValidator()
         {
             RuleFor(x => x.ApprenticeshipHashedId)
                 .NotEmpty();

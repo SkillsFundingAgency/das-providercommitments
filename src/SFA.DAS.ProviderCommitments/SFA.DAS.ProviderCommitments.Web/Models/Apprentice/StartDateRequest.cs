@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class DatesRequest : IAuthorizationContextModel
+    public class StartDateRequest : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
