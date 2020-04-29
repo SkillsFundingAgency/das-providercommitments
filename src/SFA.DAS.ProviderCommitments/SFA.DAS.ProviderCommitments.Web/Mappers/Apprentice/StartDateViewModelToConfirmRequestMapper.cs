@@ -6,16 +6,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class DatesViewModelToConfirmRequestMapper : IMapper<DatesViewModel, ConfirmRequest>
+    public class StartDateViewModelToConfirmRequestMapper : IMapper<StartDateViewModel, ConfirmRequest>
     {
-        private readonly ILogger<DatesViewModelToConfirmRequestMapper> _logger;
+        private readonly ILogger<StartDateViewModelToConfirmRequestMapper> _logger;
 
-        public DatesViewModelToConfirmRequestMapper(ILogger<DatesViewModelToConfirmRequestMapper> logger)
+        public StartDateViewModelToConfirmRequestMapper(ILogger<StartDateViewModelToConfirmRequestMapper> logger)
         {
             _logger = logger;
         }
 
-        public async Task<ConfirmRequest> Map(DatesViewModel source)
+        public async Task<ConfirmRequest> Map(StartDateViewModel source)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Mapping {nameof(DatesViewModel)} to {nameof(ConfirmRequest)}", e);
+                _logger.LogError($"Error Mapping {nameof(StartDateViewModel)} to {nameof(ConfirmRequest)}", e);
                 throw;
             }
         }

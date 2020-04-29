@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class PriceRequestMapper : IMapper<DatesViewModel, PriceRequest>
+    public class PriceRequestMapper : IMapper<StartDateViewModel, PriceRequest>
     {
-        public Task<PriceRequest> Map(DatesViewModel source)
+        public Task<PriceRequest> Map(StartDateViewModel source)
         {
             return Task.FromResult(new PriceRequest
             {

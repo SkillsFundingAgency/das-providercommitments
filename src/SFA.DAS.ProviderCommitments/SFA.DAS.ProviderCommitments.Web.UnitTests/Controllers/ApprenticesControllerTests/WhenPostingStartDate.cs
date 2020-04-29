@@ -12,14 +12,14 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
-    public class WhenPostingDates
+    public class WhenPostingStartDate
     {
-        private PostDatesFixture _fixture;
+        private PostStartDateFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new PostDatesFixture();
+            _fixture = new PostStartDateFixture();
         }
 
         [Test]
@@ -48,17 +48,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
     }
 
-    internal class PostDatesFixture
+    internal class PostStartDateFixture
     {
         private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly PriceRequest _request;
         private readonly ApprenticeController _sut;
-        private readonly DatesViewModel _viewModel;
+        private readonly StartDateViewModel _viewModel;
 
-        public PostDatesFixture()
+        public PostStartDateFixture()
         {
-            _viewModel = new DatesViewModel
+            _viewModel = new StartDateViewModel
             {
                 ApprenticeshipHashedId = "DF34WG2",
                 EmployerAccountLegalEntityPublicHashedId = "DFF41G",
@@ -81,9 +81,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
 
-        public Task<IActionResult> Act() => _sut.Dates(_viewModel);
+        public Task<IActionResult> Act() => _sut.StartDate(_viewModel);
 
-        public PostDatesFixture SetEditModeOn()
+        public PostStartDateFixture SetEditModeOn()
         {
             _viewModel.Price = 1;
             return this;

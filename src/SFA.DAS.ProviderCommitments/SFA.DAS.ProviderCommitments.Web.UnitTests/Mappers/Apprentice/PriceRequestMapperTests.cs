@@ -55,11 +55,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     {
         private readonly PriceRequestMapper _sut;
         
-        public DatesViewModel ViewModel { get; }
+        public StartDateViewModel ViewModel { get; }
 
         public PriceRequestMapperFixture()
         {
-            ViewModel = new DatesViewModel
+            ViewModel = new StartDateViewModel
             {
                 ApprenticeshipHashedId = "DFE546SD",
                 ProviderId = 2350,

@@ -3,7 +3,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class DatesViewModelValidator : AbstractValidator<DatesViewModel>
+    public class DatesViewModelValidator : AbstractValidator<StartDateViewModel>
     {
         public DatesViewModelValidator()
         {

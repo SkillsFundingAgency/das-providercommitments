@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class DatesViewModelMapperTests
+    public class StartDateViewModelMapperTests
     {
-        private DatesViewModelMapperFixture _fixture;
+        private StartDateViewModelMapperFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new DatesViewModelMapperFixture();
+            _fixture = new StartDateViewModelMapperFixture();
         }
 
         [Test]
@@ -82,18 +82,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    public class DatesViewModelMapperFixture
+    public class StartDateViewModelMapperFixture
     {
-        private readonly DatesViewModel _viewModel;
+        private readonly StartDateViewModel _viewModel;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-        private readonly DatesViewModelMapper _sut;
+        private readonly StartDateViewModelMapper _sut;
 
-        public DatesRequest Request { get; }
+        public StartDateRequest Request { get; }
         public GetApprenticeshipResponse Response { get; }
 
-        public DatesViewModelMapperFixture()
+        public StartDateViewModelMapperFixture()
         {
-            Request = new DatesRequest
+            Request = new StartDateRequest
             {
                 ApprenticeshipHashedId = "SF45G54",
                 ApprenticeshipId = 234,
@@ -108,10 +108,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(Response);
-            _sut = new DatesViewModelMapper(_commitmentsApiClientMock.Object);
+            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object);
         }
 
-        public Task<DatesViewModel> Act() => _sut.Map(Request);
+        public Task<StartDateViewModel> Act() => _sut.Map(Request);
 
         public void Verify_ICommitmentsApiClient_WasCalled(Times times)
         {

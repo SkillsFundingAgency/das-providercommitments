@@ -11,19 +11,19 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class DatesViewModelToConfirmRequestMapperTests
+    public class StartDateViewModelToConfirmRequestMapperTests
     {
-        private DatesViewModelToConfirmRequestMapper _mapper;
-        private DatesViewModel _source;
+        private StartDateViewModelToConfirmRequestMapper _mapper;
+        private StartDateViewModel _source;
         private Func<Task<ConfirmRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Build<DatesViewModel>().With(x=>x.StartDate, new MonthYearModel("042020")).Create();
+            _source = fixture.Build<StartDateViewModel>().With(x=>x.StartDate, new MonthYearModel("042020")).Create();
 
-            _mapper = new DatesViewModelToConfirmRequestMapper(Mock.Of<ILogger<DatesViewModelToConfirmRequestMapper>>());
+            _mapper = new StartDateViewModelToConfirmRequestMapper(Mock.Of<ILogger<StartDateViewModelToConfirmRequestMapper>>());
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
