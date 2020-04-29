@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators
 {
-    public class ApprenticeInformRequestValidator : AbstractValidator<InformRequest>
+    public class ApprenticeInformRequestValidator : AbstractValidator<ChangeEmployerRequest>
     {
         public ApprenticeInformRequestValidator()
         {

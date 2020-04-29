@@ -36,14 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 return new ConfirmViewModel
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+                    AccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
                     StopDate = data.Apprenticeship.StopDate.Value, 
                     OldStartDate = data.Apprenticeship.StartDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
-                    NewStartDate = newStartDate,
+                    NewStartDate = newStartDate.MonthYear,
                     NewPrice = source.Price,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };

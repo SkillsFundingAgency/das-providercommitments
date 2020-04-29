@@ -70,8 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
-                    IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled,
-                    PauseDate = data.Apprenticeship.PauseDate
+                    IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled && !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
+                    PauseDate = data.Apprenticeship.PauseDate,
+                    HasPendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending),
+                    CompletionDate = data.Apprenticeship.CompletionDate
                 };
             }
             catch (Exception e)
@@ -109,7 +111,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             GetPriceEpisodesResponse PriceEpisodes, 
             bool HasProviderUpdates, 
             bool HasEmployerUpdates,
-            GetDataLocksResponse DataLocks)> 
+            GetDataLocksResponse DataLocks,
+            GetChangeOfPartyRequestsResponse ChangeOfPartyRequests)> 
             GetApprenticeshipData(long apprenticeshipId)
         {
             var detailsResponseTask = _commitmentApiClient.GetApprenticeship(apprenticeshipId);
@@ -118,6 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest
                     { Status = ApprenticeshipUpdateStatus.Pending });
             var dataLocksTask = _commitmentApiClient.GetApprenticeshipDatalocksStatus(apprenticeshipId);
+            var changeOfPartyRequestsTask = _commitmentApiClient.GetChangeOfPartyRequests(apprenticeshipId);
 
             await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask, dataLocksTask);
 
@@ -125,12 +129,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var priceEpisodes = await priceEpisodesTask;
             var pendingUpdates = await pendingUpdatesTask;
             var dataLocks = await dataLocksTask;
+            var changeOfPartyRequests = await changeOfPartyRequestsTask;
 
             return (detailsResponse, 
                 priceEpisodes, 
                 pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider),
                 pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer),
-                dataLocks);
+                dataLocks,
+                changeOfPartyRequests);
         }
     }
 }

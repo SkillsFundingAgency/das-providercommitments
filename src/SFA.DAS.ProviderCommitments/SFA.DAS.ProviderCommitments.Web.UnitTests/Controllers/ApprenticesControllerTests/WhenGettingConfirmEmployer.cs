@@ -5,6 +5,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using AutoFixture;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeControllerTests
@@ -54,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
             
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>());
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public GetConfirmEmployerFixture WithModelStateErrors()
