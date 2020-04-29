@@ -27,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime CurrentStartDate { get; set; }
         public decimal CurrentPrice { get; set; }
         public long? CohortId { get; set; }
+        public string CohortReference { get; set; }
         public Party? WithParty { get; set; }
     }
 }

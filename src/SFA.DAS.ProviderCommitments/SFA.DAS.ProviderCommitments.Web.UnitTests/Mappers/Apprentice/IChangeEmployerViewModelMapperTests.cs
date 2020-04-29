@@ -11,6 +11,7 @@ using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -168,6 +169,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().CohortId, result.CohortId);
         }
 
+        [Test]
+        public async Task Then_With_ChangeEmployerRequestDetailsViewModel_CohortReferenceIsMapped()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+            Assert.AreEqual(_fixture.CohortReference, result.CohortReference);
+        }
 
         [Test]
         public async Task Then_With_ChangeEmployerRequestDetailsViewModel_WithPartyIsMapped()
@@ -177,7 +186,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
             Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().WithParty, result.WithParty);
         }
-
     }
 
     internal class IChangeEmployerViewModelMapperTestsFixture : Fixture
@@ -185,6 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private readonly ChangeEmployerRequest _changeEmployerRequest;
         private readonly IChangeEmployerViewModelMapper _sut;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private readonly Mock<IEncodingService> _encodingService;
 
         public long ApprenticeshipId { get; set; }
         public long ProviderId { get; set; }
@@ -197,6 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public GetChangeOfPartyRequestsResponse ChangeOfPartyRequests { get; private set; }
         public IChangeEmployerViewModel Result { get; private set; }
         public Fixture AutoFixture { get; }
+        public string CohortReference { get; }
 
         public IChangeEmployerViewModelMapperTestsFixture()
         {
@@ -208,6 +218,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             EmployerName = AutoFixture.Create<string>();
             StartDate = AutoFixture.Create<DateTime>();
             Price = AutoFixture.Create<int>();
+            CohortReference = AutoFixture.Create<string>();
 
             _changeEmployerRequest = new ChangeEmployerRequest
             {
@@ -248,7 +259,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClient.Setup(x => x.GetPriceEpisodes(It.Is<long>(a => a == ApprenticeshipId),
                 It.IsAny<CancellationToken>())).ReturnsAsync(PriceEpisodes);
 
-            _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object);
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
+                .Returns(CohortReference);
+
+            _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object, _encodingService.Object);
         }
 
         public IChangeEmployerViewModelMapperTestsFixture WithChangeOfPartyRequest(ChangeOfPartyRequestStatus? requestStatus)
