@@ -25,6 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StopDate = apprenticeship.StopDate,
+                EndDate = source.EndDate,
                 StartDate = new MonthYearModel(source.StartDate),
                 Price = source.Price
             };

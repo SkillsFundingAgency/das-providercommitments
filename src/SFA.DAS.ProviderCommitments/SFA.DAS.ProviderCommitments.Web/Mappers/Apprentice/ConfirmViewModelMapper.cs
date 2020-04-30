@@ -32,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var data = await  GetApprenticeshipData(source.ApprenticeshipId, source.AccountLegalEntityId);
 
                 var newStartDate = new MonthYearModel(source.StartDate);
+                var newEndDate = new MonthYearModel(source.EndDate);
 
                 return new ConfirmViewModel
                 {
@@ -44,6 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
                     NewStartDate = newStartDate.MonthYear,
+                    NewEndDate = newEndDate.MonthYear,
                     NewPrice = source.Price,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };

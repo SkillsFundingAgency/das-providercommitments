@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .WithMessage("The start date is not valid")
                 .When(z => z.StartDate.HasValue);
             RuleFor(x => x.StartDate)
-                .Must((y, z) => y.StartDate.Date >= y.StopDate)
+                .Must((y, _) => y.StartDate.Date >= y.StopDate)
                 .WithMessage("The new training start date cannot be before the stop date")
                 .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
         }

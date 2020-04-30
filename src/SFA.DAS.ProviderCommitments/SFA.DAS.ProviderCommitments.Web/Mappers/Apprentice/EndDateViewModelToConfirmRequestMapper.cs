@@ -6,16 +6,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class StartDateViewModelToConfirmRequestMapper : IMapper<StartDateViewModel, ConfirmRequest>
+    public class EndDateViewModelToConfirmRequestMapper : IMapper<EndDateViewModel, ConfirmRequest>
     {
-        private readonly ILogger<StartDateViewModelToConfirmRequestMapper> _logger;
+        private readonly ILogger<EndDateViewModelToConfirmRequestMapper> _logger;
 
-        public StartDateViewModelToConfirmRequestMapper(ILogger<StartDateViewModelToConfirmRequestMapper> logger)
+        public EndDateViewModelToConfirmRequestMapper(ILogger<EndDateViewModelToConfirmRequestMapper> logger)
         {
             _logger = logger;
         }
 
-        public async Task<ConfirmRequest> Map(StartDateViewModel source)
+        public async Task<ConfirmRequest> Map(EndDateViewModel source)
         {
             try
             {
@@ -24,14 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    EndDate = source.EndDate,
-                    StartDate = source.StartDate.MonthYear,
+                    EndDate = source.EndDate.MonthYear,
+                    StartDate = source.StartDate,
                     Price = source.Price.Value
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Mapping {nameof(StartDateViewModel)} to {nameof(ConfirmRequest)}", e);
+                _logger.LogError($"Error Mapping {nameof(EndDateViewModel)} to {nameof(ConfirmRequest)}", e);
                 throw;
             }
         }
