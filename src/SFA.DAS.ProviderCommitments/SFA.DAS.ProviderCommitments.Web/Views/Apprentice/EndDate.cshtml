@@ -33,21 +33,21 @@
         </table>
 
         <form novalidate method="post">
-            <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StartDate)
                 @Html.HiddenFor(x => x.Price)
 
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndDate,"govuk-form-group--error")">
 
-                    <span id="start-date-hint" class="govuk-hint">
+                    <span id="end-date-hint" class="govuk-hint">
                         For example, 04 2020
                     </span>
 
                     @if (!ViewContext.ModelState.IsValid)
                     {
-                        <span id="error-message-StartDate" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(x => x.StartDate)
+                        <span id="error-message-EndDate" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(x => x.EndDate)
                         </span>
                     }
 
@@ -86,7 +86,7 @@
 {
     @if (Model.InEditMode)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price })">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price })">Back</a>
     }
     else
     {

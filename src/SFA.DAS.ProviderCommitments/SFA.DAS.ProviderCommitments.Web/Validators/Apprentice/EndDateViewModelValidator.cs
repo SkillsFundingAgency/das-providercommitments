@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .Must(field => field.IsValidMonthYear());
             RuleFor(x => x.EndDate)
                 .Must(y => y.HasValue)
-                .WithMessage("Enter the new training end date for this apprenticeship")
+                .WithMessage("Enter a date after the new training start date")
                 .When(z => !z.EndDate.HasValue);
             RuleFor(x => x.EndDate)
                 .Must(y => y.IsValid)
@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .When(z => z.EndDate.HasValue);
             RuleFor(x => x.EndDate)
                 .Must((y, _) => y.EndDate.Date > (new MonthYearModel(y.StartDate).Date))
-                .WithMessage("The new training end date cannot be before the stop date")
+                .WithMessage("Enter a date after the new training start date")
                 .When(a => a.EndDate.HasValue && a.EndDate.IsValid);
         }
     }
