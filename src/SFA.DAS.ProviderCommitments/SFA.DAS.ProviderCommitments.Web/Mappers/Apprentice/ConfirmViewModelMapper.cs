@@ -42,6 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
                     StopDate = data.Apprenticeship.StopDate.Value, 
                     OldStartDate = data.Apprenticeship.StartDate,
+                    OldEndDate = data.Apprenticeship.EndDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
                     NewStartDate = newStartDate.MonthYear,

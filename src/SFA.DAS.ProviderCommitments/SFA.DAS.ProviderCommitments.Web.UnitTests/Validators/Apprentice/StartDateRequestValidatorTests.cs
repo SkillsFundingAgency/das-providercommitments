@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
-    public class DatesRequestValidatorTests
+    public class StartDateRequestValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]

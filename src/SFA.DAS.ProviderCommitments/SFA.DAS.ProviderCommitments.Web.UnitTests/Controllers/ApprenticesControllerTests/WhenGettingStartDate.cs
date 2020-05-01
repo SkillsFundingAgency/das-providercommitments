@@ -13,13 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     [TestFixture]
     public class WhenGettingStartDate
     {
-        private GetstartDateFixture _fixture;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _fixture = new GetstartDateFixture();
-        }
+        private GetStartDateFixture _fixture;
 
         [Test]
         public async Task ThenCallsModelMapper()
@@ -36,9 +30,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             result.VerifyReturnsViewModel().WithModel<StartDateViewModel>();
         }
+
+        [SetUp]
+        public void SetUp()
+        {
+            _fixture = new GetStartDateFixture();
+        }
     }
 
-    internal class GetstartDateFixture
+    internal class GetStartDateFixture
     {
         private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         private readonly ApprenticeController _sut;
         private readonly StartDateViewModel _viewModel;
 
-        public GetstartDateFixture()
+        public GetStartDateFixture()
         {
             _request = new StartDateRequest
             {

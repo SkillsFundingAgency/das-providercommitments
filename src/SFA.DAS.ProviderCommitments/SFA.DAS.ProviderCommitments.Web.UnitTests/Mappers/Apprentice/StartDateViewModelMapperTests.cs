@@ -72,6 +72,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [TestCase(null)]
+        [TestCase("022020")]
+        public async Task ThenEndDateIsMapped(string endDate)
+        {
+            _fixture.Request.EndDate = endDate;
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(endDate, result.EndDate);
+        }
+
+        [TestCase(null)]
         [TestCase(234)]
         public async Task ThenEditModeIsOnWhenAPriceHasAValue(int? price)
         {

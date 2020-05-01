@@ -31,11 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenRedirectsToPriceRoute()
+        public async Task ThenRedirectsToEndDateRoute()
         {
             var result = await _fixture.Act();
 
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Price));
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.EndDate));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly PriceRequest _request;
+        private readonly EndDateRequest _request;
         private readonly ApprenticeController _sut;
         private readonly StartDateViewModel _viewModel;
 
@@ -66,7 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StartDate = new MonthYearModel("62020"),
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
-            _request = new PriceRequest
+
+            _request = new EndDateRequest
             {
                 ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = _viewModel.EmployerAccountLegalEntityPublicHashedId,
@@ -76,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
-                .Setup(x => x.Map<PriceRequest>(_viewModel))
+                .Setup(x => x.Map<EndDateRequest>(_viewModel))
                 .ReturnsAsync(_request);
             _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
@@ -89,8 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             return this;
         }
 
-
         public void VerifyModelMapperWasCalled(Times times) =>
-            _modelMapperMock.Verify(x => x.Map<PriceRequest>(_viewModel), times);
+            _modelMapperMock.Verify(x => x.Map<EndDateRequest>(_viewModel), times);
     }
 }
