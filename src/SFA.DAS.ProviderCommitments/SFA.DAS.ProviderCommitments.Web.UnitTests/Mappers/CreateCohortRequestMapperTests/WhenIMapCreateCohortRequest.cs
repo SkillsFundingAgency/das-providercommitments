@@ -145,14 +145,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
-        public void AndWhenTheAccountLegalEntityIdIsNullThenShouldThrowInvalidOperationException()
-        {
-            _source.AccountLegalEntityId = null;
-
-            Assert.ThrowsAsync<InvalidOperationException>(() => _act());
-        }
-
-        [Test]
         public void AndWhenTheAccountLegalEntityIsNotFoundThenShouldThrowInvalidOperationException()
         {
             _mockCommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
