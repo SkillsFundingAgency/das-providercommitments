@@ -11,22 +11,14 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class StartDateViewModelMapperTests
+    public class EndDateViewModelMapperTests
     {
-        private StartDateViewModelMapperFixture _fixture;
+        private EndDateViewModelMapperFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new StartDateViewModelMapperFixture();
-        }
-
-        [Test]
-        public async Task ThenCallsApiClient()
-        {
-            await _fixture.Act();
-
-            _fixture.Verify_ICommitmentsApiClient_WasCalled(Times.Once());
+            _fixture = new EndDateViewModelMapperFixture();
         }
 
         [Test]
@@ -53,22 +45,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.Request.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
         }
 
-        [Test]
-        public async Task ThenStopDateIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
-        }
-
-        [TestCase("")]
-        [TestCase("042019")]
+        [TestCase(null)]
+        [TestCase("022020")]
         public async Task ThenStartDateIsMapped(string startDate)
         {
             _fixture.Request.StartDate = startDate;
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Request.StartDate, result.StartDate.MonthYear);
+            Assert.AreEqual(startDate, result.StartDate);
         }
 
         [TestCase(null)]
@@ -81,14 +65,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(price, result.Price);
         }
 
-        [TestCase(null)]
-        [TestCase("022020")]
+        [TestCase("")]
+        [TestCase("042019")]
         public async Task ThenEndDateIsMapped(string endDate)
         {
             _fixture.Request.EndDate = endDate;
             var result = await _fixture.Act();
 
-            Assert.AreEqual(endDate, result.EndDate);
+            Assert.AreEqual(_fixture.Request.EndDate, result.EndDate.MonthYear);
         }
 
         [TestCase(null)]
@@ -102,40 +86,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    public class StartDateViewModelMapperFixture
+    class EndDateViewModelMapperFixture
     {
-        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-        private readonly StartDateViewModelMapper _sut;
+        private readonly EndDateViewModelMapper _sut;
 
-        public StartDateRequest Request { get; }
-        public GetApprenticeshipResponse Response { get; }
+        public EndDateRequest Request { get; }
 
-        public StartDateViewModelMapperFixture()
+        public EndDateViewModelMapperFixture()
         {
-            Request = new StartDateRequest
+            Request = new EndDateRequest
             {
                 ApprenticeshipHashedId = "SF45G54",
                 ApprenticeshipId = 234,
                 ProviderId = 645621,
-                EmployerAccountLegalEntityPublicHashedId = "GD35SD35"
+                EmployerAccountLegalEntityPublicHashedId = "GD35SD35",
+                StartDate = "122019"
             };
-            Response = new GetApprenticeshipResponse
-            {
-                StopDate = DateTime.UtcNow.AddDays(-5)
-            };
-            _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClientMock
-                .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
-                .ReturnsAsync(Response);
-            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object);
+            _sut = new EndDateViewModelMapper();
         }
 
-        public Task<StartDateViewModel> Act() => _sut.Map(Request);
-
-        public void Verify_ICommitmentsApiClient_WasCalled(Times times)
-        {
-            _commitmentsApiClientMock
-                .Verify(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None), times);
-        }
+        public Task<EndDateViewModel> Act() => _sut.Map(Request);
     }
 }
