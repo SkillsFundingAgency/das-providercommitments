@@ -109,6 +109,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.StartDate, model, false);
         }
 
+        [TestCase("082020", null, true)]
+        [TestCase("082020", "082020", false)]
+        [TestCase("082020", "072020", false)]
+        [TestCase("082020", "072021", true)]
+        public void AndStartDateIsComparedAgainstEndDate_ThenShouldGetExpectedResult(string startDate, string endDate, bool expected)
+        {
+            DateTime? stopDate = new DateTime(2019, 1, 1);
+            MonthYearModel start = new MonthYearModel(startDate);
+            var model = new StartDateViewModel { StartDate = start, StopDate = stopDate, EndDate = endDate };
+            AssertValidationResult(request => request.StartDate, model, expected);
+        }
+
         private void AssertValidationResult<T>(Expression<Func<StartDateViewModel, T>> property, StartDateViewModel instance, bool expectedValid)
         {
             var validator = new StartDateViewModelValidator();

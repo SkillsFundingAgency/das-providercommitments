@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
@@ -29,6 +30,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .Must((y, _) => y.StartDate.Date >= y.StopDate)
                 .WithMessage("The new training start date cannot be before the stop date")
                 .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
+            RuleFor(x => x.StartDate)
+                .Must((y, _) => y.StartDate.Date < (new MonthYearModel(y.EndDate).Date))
+                .WithMessage("Enter a start date prior to the new training end date")
+                .When(a => a.EndDate != null && a.StartDate.HasValue && a.StartDate.IsValid);
         }
     }
 }
