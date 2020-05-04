@@ -14,7 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
 using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CreateCohortWithDraftApprenticeshipControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
     public class WhenIPostDraftApprenticeshipViewModel
