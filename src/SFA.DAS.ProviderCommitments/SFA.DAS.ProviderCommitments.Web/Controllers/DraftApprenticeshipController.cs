@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -103,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<ITrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
         {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer });
+            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer && cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy });
 
             return result.TrainingCourses;
         }
