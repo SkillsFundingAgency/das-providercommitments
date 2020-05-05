@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -59,9 +60,9 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
-                
 
             services
+                .AddUrlHelper()
                 .AddHealthChecks();
 
             services.Configure<CookieTempDataProviderOptions>(options =>
