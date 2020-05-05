@@ -17,7 +17,15 @@
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
-
+    @if (Model.HasPendingChangeOfPartyRequest)
+        {
+            <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
+                <p class="das-notification__body">There are changes to this apprentice's details that are waiting for approval by the new employer.</p>
+                <p class="das-notification__body">
+                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
+                </p>
+            </div>
+        }
         @if (Model.HasProviderPendingUpdate)
         {
             <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
@@ -123,6 +131,14 @@
                         <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
                     </tr>
                 }
+
+                @if (Model.Status == ApprenticeshipStatus.Completed)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Completion payment month</th>
+                        <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
             </tbody>
         </table>
 
@@ -145,7 +161,7 @@
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                         @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
                         {
-                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("Inform", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }
                     </td>
                 </tr>
