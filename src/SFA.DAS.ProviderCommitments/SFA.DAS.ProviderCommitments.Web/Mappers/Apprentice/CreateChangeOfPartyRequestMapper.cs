@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 NewPartyId = source.AccountLegalEntityId,
                 NewPrice = source.NewPrice,
                 NewStartDate = source.NewStartDateTime,
-                EndDate = source.NewEndDateTime
+                NewEndDate = source.NewEndDateTime
             });
         }
     }
