@@ -9,13 +9,13 @@ using System.Linq.Expressions;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
     [TestFixture]
-    public class DatesViewModelValidatorTests
+    public class StartDateViewModelValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
         {
-            var request = new DatesViewModel { ProviderId = providerId };
+            var request = new StartDateViewModel { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("XYZ", true)]
         public void ThenEmployerAccountLegalEntityPublicHashedIdIsValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
         {
-            var model = new DatesViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
+            var model = new StartDateViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
 
             AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
         }
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase(102, true)]
         public void ThenAccountLegalEntityIdIsValidated(long accountLegalEntityId, bool expectedValid)
         {
-            var model = new DatesViewModel { AccountLegalEntityId = accountLegalEntityId };
+            var model = new StartDateViewModel { AccountLegalEntityId = accountLegalEntityId };
             AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
         }
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("AB76V", true)]
         public void ThenApprenticeshipHashedIdIsValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new DatesViewModel { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new StartDateViewModel { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
@@ -52,14 +52,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         public void AndStopDateIsValid_ThenShouldNotHaveError()
         {
             DateTime? date = new DateTime(2020, 1, 1);
-            var model = new DatesViewModel { StopDate = date };
+            var model = new StartDateViewModel { StopDate = date };
             AssertValidationResult(request => request.StopDate, model, true);
         }
 
         [Test]
         public void AndStopDateIsNull_ThenShouldHaveError()
         {
-            var model = new DatesViewModel { StopDate = null };
+            var model = new StartDateViewModel { StopDate = null };
             AssertValidationResult(request => request.StopDate, model, false);
         }
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             MonthYearModel startDate = new MonthYearModel("");
             startDate.Month = 1;
             startDate.Year = 2020;
-            var model = new DatesViewModel {StartDate = startDate, StopDate = stopDate};
+            var model = new StartDateViewModel {StartDate = startDate, StopDate = stopDate};
             AssertValidationResult(request => request.StartDate, model, true);
         }
 
@@ -80,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             DateTime? stopDate = new DateTime(2019, 1, 1);
             MonthYearModel startDate = new MonthYearModel("");
-            var model = new DatesViewModel { StartDate = startDate, StopDate = stopDate };
+            var model = new StartDateViewModel { StartDate = startDate, StopDate = stopDate };
             AssertValidationResult(request => request.StartDate, model, false);
         }
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             MonthYearModel startDate = new MonthYearModel("");
             startDate.Month = month;
             startDate.Year = year;
-            var model = new DatesViewModel { StartDate = startDate, StopDate = stopDate };
+            var model = new StartDateViewModel { StartDate = startDate, StopDate = stopDate };
             AssertValidationResult(request => request.StartDate, model, false);
         }
 
@@ -105,13 +105,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             MonthYearModel startDate = new MonthYearModel("");
             startDate.Month = 1;
             startDate.Year = 2018;
-            var model = new DatesViewModel { StartDate = startDate, StopDate = stopDate };
+            var model = new StartDateViewModel { StartDate = startDate, StopDate = stopDate };
             AssertValidationResult(request => request.StartDate, model, false);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<DatesViewModel, T>> property, DatesViewModel instance, bool expectedValid)
+        [TestCase("082020", null, true)]
+        [TestCase("082020", "082020", false)]
+        [TestCase("082020", "072020", false)]
+        [TestCase("082020", "072021", true)]
+        public void AndStartDateIsComparedAgainstEndDate_ThenShouldGetExpectedResult(string startDate, string endDate, bool expected)
         {
-            var validator = new DatesViewModelValidator();
+            DateTime? stopDate = new DateTime(2019, 1, 1);
+            MonthYearModel start = new MonthYearModel(startDate);
+            var model = new StartDateViewModel { StartDate = start, StopDate = stopDate, EndDate = endDate };
+            AssertValidationResult(request => request.StartDate, model, expected);
+        }
+
+        private void AssertValidationResult<T>(Expression<Func<StartDateViewModel, T>> property, StartDateViewModel instance, bool expectedValid)
+        {
+            var validator = new StartDateViewModelValidator();
 
             if (expectedValid)
             {

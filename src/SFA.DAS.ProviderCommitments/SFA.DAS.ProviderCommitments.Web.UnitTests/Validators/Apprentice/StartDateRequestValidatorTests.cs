@@ -7,13 +7,13 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
-    public class DatesRequestValidatorTests
+    public class StartDateRequestValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
         {
-            var request = new DatesRequest { ProviderId = providerId };
+            var request = new StartDateRequest { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("XYZ", true)]
         public void ThenEmployerAccountLegalEntityPublicHashedIdIsValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
         {
-            var model = new DatesRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
+            var model = new StartDateRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
 
             AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
         }
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase(102, true)]
         public void ThenAccountLegalEntityIdIsValidated(long accountLegalEntityId, bool expectedValid)
         {
-            var model = new DatesRequest { AccountLegalEntityId = accountLegalEntityId };
+            var model = new StartDateRequest { AccountLegalEntityId = accountLegalEntityId };
             AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
         }
 
@@ -42,13 +42,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("AB76V", true)]
         public void ThenApprenticeshipHashedIdIsValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new DatesRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new StartDateRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<DatesRequest, T>> property, DatesRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<StartDateRequest, T>> property, StartDateRequest instance, bool expectedValid)
         {
-            var validator = new DatesRequestValidator();
+            var validator = new StartDateRequestValidator();
 
             if (expectedValid)
             {

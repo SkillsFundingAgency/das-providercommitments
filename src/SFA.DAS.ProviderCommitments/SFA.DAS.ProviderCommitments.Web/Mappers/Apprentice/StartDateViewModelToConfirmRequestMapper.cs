@@ -6,16 +6,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ConfirmRequestMapper : IMapper<PriceViewModel, ConfirmRequest>
+    public class StartDateViewModelToConfirmRequestMapper : IMapper<StartDateViewModel, ConfirmRequest>
     {
-        private readonly ILogger<ConfirmRequestMapper> _logger;
+        private readonly ILogger<StartDateViewModelToConfirmRequestMapper> _logger;
 
-        public ConfirmRequestMapper(ILogger<ConfirmRequestMapper> logger)
+        public StartDateViewModelToConfirmRequestMapper(ILogger<StartDateViewModelToConfirmRequestMapper> logger)
         {
             _logger = logger;
         }
 
-        public async Task<ConfirmRequest> Map(PriceViewModel source)
+        public async Task<ConfirmRequest> Map(StartDateViewModel source)
         {
             try
             {
@@ -24,14 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    StartDate = source.StartDate,
                     EndDate = source.EndDate,
-                    Price = decimal.ToInt32(source.Price.Value)
+                    StartDate = source.StartDate.MonthYear,
+                    Price = source.Price.Value
                 });
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error Mapping {nameof(PriceViewModel)} to {nameof(ConfirmRequest)}", e);
+                _logger.LogError($"Error Mapping {nameof(StartDateViewModel)} to {nameof(ConfirmRequest)}", e);
                 throw;
             }
         }
