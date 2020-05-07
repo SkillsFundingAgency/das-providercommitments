@@ -95,7 +95,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             };
 
             _cohortResponse = autoFixture.Build<GetCohortResponse>()
-                .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy).Create();
+                .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy)
+                .With(x => x.ChangeOfPartyRequestId, default(long?))
+                .Create();
 
             _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>()
                 {new ErrorDetail("Name", "Cannot be more than...")});
@@ -165,6 +167,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             else
             {
                 _cohortResponse.TransferSenderId = null;
+            }
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetCohortWithChangeOfParty(bool isChangeOfParty)
+        {
+            if (isChangeOfParty)
+            {
+                _cohortResponse.ChangeOfPartyRequestId = 12345;
+            }
+            else
+            {
+                _cohortResponse.ChangeOfPartyRequestId = null;
             }
             return this;
         }

@@ -51,5 +51,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.AddDraftApprenticeshipWithReservation();
             _fixture.VerifyWhetherFrameworkCourseWereRequested(areFrameworksIncluded);
         }
+
+        [Test]
+        public async Task AndWhenGettingCourseListIncludeFrameworksForChangeOfPartyRequests()
+        {
+            _fixture.SetupLevyStatus(ApprenticeshipEmployerType.NonLevy)
+                .SetupCohortFundedByTransfer(false)
+                .SetCohortWithChangeOfParty(true);
+
+            await _fixture.AddDraftApprenticeshipWithReservation();
+            _fixture.VerifyWhetherFrameworkCourseWereRequested(true);
+        }
     }
 }
