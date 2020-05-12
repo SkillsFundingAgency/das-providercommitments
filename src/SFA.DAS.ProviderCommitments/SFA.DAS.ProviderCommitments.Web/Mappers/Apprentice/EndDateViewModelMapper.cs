@@ -1,20 +1,22 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class PriceRequestMapper : IMapper<EndDateViewModel, PriceRequest>
+    public class EndDateViewModelMapper : IMapper<EndDateRequest, EndDateViewModel>
     {
-        public Task<PriceRequest> Map(EndDateViewModel source)
+        public Task<EndDateViewModel> Map(EndDateRequest source)
         {
-            return Task.FromResult(new PriceRequest
+            return Task.FromResult(new EndDateViewModel
             {
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ProviderId = source.ProviderId,
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StartDate = source.StartDate,
-                EndDate = source.EndDate.MonthYear
+                EndDate = new MonthYearModel(source.EndDate),
+                Price = source.Price
             });
         }
     }

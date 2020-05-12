@@ -14,6 +14,7 @@
         <form novalidate method="post">
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.StartDate)
+            @Html.HiddenFor(x => x.EndDate)
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
                 <p>This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment.</p>
                 <label class="govuk-label" for="price">Enter the price in whole pounds.</label>
@@ -32,10 +33,10 @@
 {
     @if (Model.InEditMode)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new {Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, Model.Price})">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new {Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, Model.EndDate, Model.Price})">Back</a>
     }
     else
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDates, new {Model.EmployerAccountLegalEntityPublicHashedId})">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, new {Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate})">Back</a>
     }
 }

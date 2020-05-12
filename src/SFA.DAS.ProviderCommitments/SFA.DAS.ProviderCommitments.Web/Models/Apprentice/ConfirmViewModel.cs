@@ -15,12 +15,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeName { get; set; }
         public string OldEmployerName { get; set; }
         public DateTime OldStartDate { get; set; }
+        public DateTime OldEndDate { get; set; }
         public DateTime StopDate { get; set; }
         public int OldPrice { get; set; }
 
         public string NewEmployerName { get; set; }
         public string NewStartDate { get; set; }
         public DateTime NewStartDateTime => new MonthYearModel(NewStartDate).Date.Value;
+        public string NewEndDate { get; set; }
+        public DateTime NewEndDateTime => new MonthYearModel(NewEndDate).Date.Value;
+
 
         public int NewPrice { get; set; }
         public int? FundingBandCap { get; set; }
