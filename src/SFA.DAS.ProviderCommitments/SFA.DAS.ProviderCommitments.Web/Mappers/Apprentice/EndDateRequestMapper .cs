@@ -4,17 +4,16 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class PriceRequestMapper : IMapper<EndDateViewModel, PriceRequest>
+    public class EndDateRequestMapper : IMapper<StartDateViewModel, EndDateRequest>
     {
-        public Task<PriceRequest> Map(EndDateViewModel source)
+        public Task<EndDateRequest> Map(StartDateViewModel source)
         {
-            return Task.FromResult(new PriceRequest
+            return Task.FromResult(new EndDateRequest
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                StartDate = source.StartDate,
-                EndDate = source.EndDate.MonthYear
+                StartDate = source.StartDate.MonthYear
             });
         }
     }

@@ -17,8 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 .AddAzureTableStorage(
                     ProviderCommitmentsConfigurationKeys.Encoding,
                     ProviderCommitmentsConfigurationKeys.ProviderCommitments,
-                    ConfigurationKeys.CommitmentsSharedConfiguration,
-                    ProviderCommitmentsConfigurationKeys.PasAccountApiClient));
+                    ConfigurationKeys.CommitmentsSharedConfiguration));
         }
     }
 

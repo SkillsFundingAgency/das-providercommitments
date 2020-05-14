@@ -9,6 +9,5 @@
         public static string CommitmentsClientApiConfiguration = $"{ProviderCommitments}:CommitmentsClientApi";
         public static string FeaturesConfiguration = $"{ProviderCommitments}:Features";
         public static string ZenDeskConfiguration = $"{ProviderCommitments}:ZenDesk";
-        public static string PasAccountApiClient => PAS.Account.Api.ClientV2.Configuration.ConfigurationKeys.PasAccountApiClient;
     }
 }

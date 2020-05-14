@@ -33,47 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
-        {
-            var model = await _modelMapper.Map<CohortsViewModel>(request);
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("review")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public async Task<IActionResult> Review(CohortsByProviderRequest request)
-        {
-            var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
-            return View(reviewViewModel);
-        }
-
-        [HttpGet]
-        [Route("draft")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult Draft(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
-        }
-
-        [HttpGet]
-        [Route("with-employer")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithEmployer(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
-        }
-
-        [HttpGet]
-        [Route("with-transfer-sender")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithTransferSender(CohortsByProviderRequest request)
-        {
-            return View("NotImplemented");
-        }
-
-        [HttpGet]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
         [DasAuthorize(ProviderOperation.CreateCohort)]

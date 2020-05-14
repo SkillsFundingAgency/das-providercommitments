@@ -4,9 +4,9 @@ using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class DatesViewModel : IAuthorizationContextModel
+    public class StartDateViewModel : IAuthorizationContextModel
     {
-        public DatesViewModel()
+        public StartDateViewModel()
         {
             StartDate = new MonthYearModel("");
         }
@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long ApprenticeshipId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long ProviderId { get; set; }
+        public string EndDate { get; set; }
         public int? Price { get; set; }
         public MonthYearModel StartDate { get; set; }
         public DateTime? StopDate { get; set; }

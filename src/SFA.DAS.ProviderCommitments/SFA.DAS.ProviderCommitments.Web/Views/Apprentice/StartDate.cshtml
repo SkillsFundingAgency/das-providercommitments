@@ -1,6 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DatesViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
 @{
     ViewData["Title"] = "New training start date";
@@ -36,6 +36,7 @@
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StopDate)
+                @Html.HiddenFor(x => x.EndDate)
                 @Html.HiddenFor(x => x.Price)
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
@@ -86,7 +87,7 @@
 {
     @if (Model.InEditMode)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.StartDate.MonthYear, Model.Price })">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.StartDate.MonthYear, Model.EndDate, Model.Price })">Back</a>
     }
     else
     {
