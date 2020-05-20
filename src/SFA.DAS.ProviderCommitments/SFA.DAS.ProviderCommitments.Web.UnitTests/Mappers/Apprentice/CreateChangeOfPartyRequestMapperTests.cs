@@ -61,7 +61,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public void NewEndDateIsMappedCorrectly()
         {
-            Assert.AreEqual(new MonthYearModel(_source.NewEndDate).Date, _result.NewEndDate);
+            Assert.AreEqual(new MonthYearModel(_source.NewEndDate).Date, _result.EndDate);
         }
+
+
     }
 }
