@@ -133,37 +133,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View("NotImplemented");
         }
 
-        private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
-        {
-            var getEmployerTask =
-                GetEmployerIfRequired(model.AccountLegalEntityId);
+        //private async Task AddEmployerAndCoursesToModel(AddDraftApprenticeshipViewModel model)
+        //{
+        //    var getEmployerTask =
+        //        GetEmployerIfRequired(model.AccountLegalEntityId);
             
-            var getCoursesTask = GetCourses();
+        //    var getCoursesTask = GetCourses();
 
-            await Task.WhenAll(getEmployerTask, getCoursesTask);
+        //    await Task.WhenAll(getEmployerTask, getCoursesTask);
 
-            model.Employer = getEmployerTask.Result?.LegalEntityName;
-            model.Courses = getCoursesTask.Result;
-        }
+        //    model.Employer = getEmployerTask.Result?.LegalEntityName;
+        //    model.Courses = getCoursesTask.Result;
+        //}
 
-        private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
-        {
-            if (!accountLegalEntityId.HasValue)
-            {
-                return Task.FromResult((GetAccountLegalEntityResponse) null);
-            }
+        //private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
+        //{
+        //    if (!accountLegalEntityId.HasValue)
+        //    {
+        //        return Task.FromResult((GetAccountLegalEntityResponse) null);
+        //    }
 
-            return _mediator.Send(new GetAccountLegalEntityRequest
-            {
-                EmployerAccountLegalEntityId = accountLegalEntityId.Value
-            });
-        }
+        //    return _mediator.Send(new GetAccountLegalEntityRequest
+        //    {
+        //        EmployerAccountLegalEntityId = accountLegalEntityId.Value
+        //    });
+        //}
 
-        private async Task<ITrainingProgramme[]> GetCourses()
-        {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
+        //private async Task<ITrainingProgramme[]> GetCourses()
+        //{
+        //    var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
 
-            return result.TrainingCourses;
-        }
+        //    return result.TrainingCourses;
+        //}
     }
 }
