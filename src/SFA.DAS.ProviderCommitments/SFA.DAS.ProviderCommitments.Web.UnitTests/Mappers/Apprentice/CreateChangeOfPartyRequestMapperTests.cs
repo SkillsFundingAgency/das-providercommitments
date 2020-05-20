@@ -24,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _source = new ConfirmViewModel
             {
                 NewStartDate = "032020",
-                NewEndDate = "092021",
                 AccountLegalEntityId = fixture.Create<long>(),
                 NewPrice = fixture.Create<int>()
             };

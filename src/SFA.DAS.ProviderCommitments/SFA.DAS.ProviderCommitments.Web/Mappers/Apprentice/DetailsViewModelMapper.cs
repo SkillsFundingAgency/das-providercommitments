@@ -48,9 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     !data.HasEmployerUpdates &&
                     dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
-                var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
-                    x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
-
                 return new DetailsViewModel
                 {
                     ProviderId = source.ProviderId,
@@ -75,9 +72,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
                     IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled && !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
                     PauseDate = data.Apprenticeship.PauseDate,
-                    CompletionDate = data.Apprenticeship.CompletionDate,
-                    HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
-                    PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty
+                    HasPendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending),
+                    CompletionDate = data.Apprenticeship.CompletionDate
                 };
             }
             catch (Exception e)
