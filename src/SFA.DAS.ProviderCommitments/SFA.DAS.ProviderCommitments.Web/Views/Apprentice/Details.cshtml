@@ -1,23 +1,17 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-
-@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
-
 
 @{
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
 }
 
-@*https://localhost:5001/10005077/apprentices/4MBBNM*@
-
-
-
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
-    @if (Model.HasPendingChangeOfPartyRequest)
+        @if (Model.HasPendingChangeOfPartyRequest)
         {
             <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
                 <p class="das-notification__body">
@@ -30,8 +24,8 @@
                         <span id="change-of-party-status-text">The new employer has requested changes to this apprentice's details.</span>
                     }
                 </p>
-    
-                    <p class="das-notification__body">
+
+                <p class="das-notification__body">
                     <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
                 </p>
             </div>

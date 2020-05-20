@@ -80,5 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Reference { get; set; }
 
         public ITrainingProgramme[] Courses { get; set; }
+
+        public bool IsContinuation { get; set; }
     }
 }

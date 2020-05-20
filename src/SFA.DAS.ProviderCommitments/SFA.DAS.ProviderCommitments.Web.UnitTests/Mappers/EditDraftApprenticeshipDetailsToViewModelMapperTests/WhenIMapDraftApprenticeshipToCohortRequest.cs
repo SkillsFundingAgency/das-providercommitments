@@ -155,5 +155,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var result = await _act();
             Assert.AreEqual(_source.ProviderId, result.ProviderId);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenIsContinuationIsMappedCorrectly(bool isContinuation)
+        {
+            _apiResponse.IsContinuation = isContinuation;
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.IsContinuation, result.IsContinuation);
+        }
     }
 }

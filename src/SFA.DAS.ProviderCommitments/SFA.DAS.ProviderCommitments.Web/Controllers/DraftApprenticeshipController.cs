@@ -104,7 +104,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<ITrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
         {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer && cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy });
+            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
+            {
+                IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
+                                     cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
+                                    || cohortDetails.IsLinkedToChangeOfPartyRequest
+            });
 
             return result.TrainingCourses;
         }
