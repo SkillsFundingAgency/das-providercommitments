@@ -133,35 +133,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
         }
-
-
-            
-        //    var getCoursesTask = GetCourses();
-
-        //    await Task.WhenAll(getEmployerTask, getCoursesTask);
-
-        //    model.Employer = getEmployerTask.Result?.LegalEntityName;
-        //    model.Courses = getCoursesTask.Result;
-        //}
-
-        //private Task<GetAccountLegalEntityResponse>  GetEmployerIfRequired(long? accountLegalEntityId)
-        //{
-        //    if (!accountLegalEntityId.HasValue)
-        //    {
-        //        return Task.FromResult((GetAccountLegalEntityResponse) null);
-        //    }
-
-        //    return _mediator.Send(new GetAccountLegalEntityRequest
-        //    {
-        //        EmployerAccountLegalEntityId = accountLegalEntityId.Value
-        //    });
-        //}
-
-        //private async Task<ITrainingProgramme[]> GetCourses()
-        //{
-        //    var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = true });
-
-        //    return result.TrainingCourses;
-        //}
     }
 }
