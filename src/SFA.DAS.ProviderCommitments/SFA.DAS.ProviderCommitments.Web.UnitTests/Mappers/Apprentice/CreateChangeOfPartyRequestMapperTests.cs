@@ -24,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _source = new ConfirmViewModel
             {
                 NewStartDate = "032020",
-                NewEndDate = "092021",
                 AccountLegalEntityId = fixture.Create<long>(),
                 NewPrice = fixture.Create<int>()
             };
@@ -56,12 +55,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void NewStartDateIsMappedCorrectly()
         {
             Assert.AreEqual(new MonthYearModel(_source.NewStartDate).Date, _result.NewStartDate);
-        }
-
-        [Test]
-        public void NewEndDateIsMappedCorrectly()
-        {
-            Assert.AreEqual(new MonthYearModel(_source.NewEndDate).Date, _result.NewEndDate);
         }
     }
 }

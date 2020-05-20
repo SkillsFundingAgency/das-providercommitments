@@ -6,26 +6,25 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class StartDateViewModelMapper : IMapper<StartDateRequest, StartDateViewModel>
+    public class DatesViewModelMapper : IMapper<DatesRequest, DatesViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public StartDateViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public DatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<StartDateViewModel> Map(StartDateRequest source)
+        public async Task<DatesViewModel> Map(DatesRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
-            return new StartDateViewModel
+            return new DatesViewModel
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StopDate = apprenticeship.StopDate,
-                EndDate = source.EndDate,
                 StartDate = new MonthYearModel(source.StartDate),
                 Price = source.Price
             };

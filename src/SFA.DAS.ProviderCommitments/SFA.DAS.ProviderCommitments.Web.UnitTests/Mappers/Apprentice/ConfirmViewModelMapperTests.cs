@@ -77,15 +77,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenOldEndDateIsMapped()
-        {
-            var result = await _fixture.Map();
-
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.EndDate, result.OldEndDate);
-        }
-
-
-        [Test]
         public async Task ThenOldPriceIsMapped()
         {
             var result = await _fixture.Map();
@@ -108,15 +99,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var expectedStartDate = new MonthYearModel(_fixture.request.StartDate);
 
             Assert.AreEqual(expectedStartDate.MonthYear, result.NewStartDate);
-        }
-
-        [Test]
-        public async Task ThenNewEndDateIsMapped()
-        {
-            var result = await _fixture.Map();
-            var expectedEndDate = new MonthYearModel(_fixture.request.EndDate);
-
-            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEndDate);
         }
 
         [Test]
@@ -165,7 +147,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Fixture fixture = new Fixture();
             request = fixture.Create<ConfirmRequest>();
             request.StartDate = "012020";
-            request.EndDate = "112020";
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             trainingProgramme = fixture.Create<Standard>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();

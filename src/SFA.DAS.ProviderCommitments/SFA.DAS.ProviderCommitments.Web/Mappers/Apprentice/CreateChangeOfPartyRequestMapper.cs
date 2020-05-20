@@ -15,8 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ChangeOfPartyRequestType = ChangeOfPartyRequestType.ChangeEmployer,
                 NewPartyId = source.AccountLegalEntityId,
                 NewPrice = source.NewPrice,
-                NewStartDate = source.NewStartDateTime,
-                NewEndDate = source.NewEndDateTime
+                NewStartDate = source.NewStartDateTime
             });
         }
     }
