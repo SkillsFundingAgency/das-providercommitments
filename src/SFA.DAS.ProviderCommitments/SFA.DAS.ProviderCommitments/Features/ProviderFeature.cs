@@ -8,5 +8,6 @@
         public const string ChangeOfEmployer = Prefix + "ChangeOfEmployer";
         public const string ManageApprenticesV2 = Prefix + ManageApprenticesV2WithoutPrefix;
         public const string ManageApprenticesV2WithoutPrefix = "ManageApprenticesV2";
+        public const string CohortSummariesV2 = Prefix+"CohortSummariesV2";
     }
 }

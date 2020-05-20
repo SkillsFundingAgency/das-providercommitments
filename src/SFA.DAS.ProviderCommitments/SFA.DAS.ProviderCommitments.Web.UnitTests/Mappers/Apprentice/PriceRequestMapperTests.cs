@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using AutoFixture;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
@@ -45,15 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.ViewModel.StartDate, result.StartDate);
-        }
-
-        [Test]
-        public async Task ThenEndDateIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.EndDate.MonthYear, result.EndDate);
+            Assert.AreEqual(_fixture.ViewModel.StartDate.MonthYear, result.StartDate);
         }
     }
 
@@ -61,18 +55,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     {
         private readonly PriceRequestMapper _sut;
         
-        public EndDateViewModel ViewModel { get; }
+        public DatesViewModel ViewModel { get; }
 
         public PriceRequestMapperFixture()
         {
-            ViewModel = new EndDateViewModel
+            ViewModel = new DatesViewModel
             {
                 ApprenticeshipHashedId = "DFE546SD",
                 ProviderId = 2350,
                 EmployerAccountLegalEntityPublicHashedId = "DFE348FD",
-                StartDate = "012020",
-                EndMonth = 6,
-                EndYear = 2020,
+                StopDate = DateTime.UtcNow.AddDays(-5),
+                StartMonth = 6,
+                StartYear = 2020,
             };
             _sut = new PriceRequestMapper();
         }

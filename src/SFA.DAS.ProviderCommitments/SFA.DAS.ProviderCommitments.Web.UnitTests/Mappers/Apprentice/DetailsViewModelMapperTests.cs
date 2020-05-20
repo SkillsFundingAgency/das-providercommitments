@@ -348,15 +348,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
         }
 
-        [TestCase(Party.Employer)]
-        [TestCase(Party.Provider)]
-        public async Task ThenPendingChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
-        {
-            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, withParty);
-            await _fixture.Map();
-            Assert.AreEqual(withParty, _fixture.Result.PendingChangeOfPartyRequestWithParty);
-        }
-
         [Test]
         public async Task ThenAPendingChangeOfPartyOriginatingFromEmployerDoesNotSetHasPendingChangeOfPartyRequest()
         {
@@ -598,7 +589,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 return this;
             }
 
-            public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status, Party? withParty = null)
+            public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status)
             {
                 GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
                 {
@@ -609,8 +600,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             Id = 1,
                             ChangeOfPartyType = requestType,
                             OriginatingParty = requestType == ChangeOfPartyRequestType.ChangeEmployer ? Party.Provider : Party.Employer,
-                            Status = status,
-                            WithParty = withParty
+                            Status = status
                         }
                     }
                 };

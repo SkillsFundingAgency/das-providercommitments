@@ -12,14 +12,14 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
-    public class WhenPostingStartDate
+    public class WhenPostingDates
     {
-        private PostStartDateFixture _fixture;
+        private PostDatesFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new PostStartDateFixture();
+            _fixture = new PostDatesFixture();
         }
 
         [Test]
@@ -31,11 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenRedirectsToEndDateRoute()
+        public async Task ThenRedirectsToPriceRoute()
         {
             var result = await _fixture.Act();
 
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.EndDate));
+            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Price));
         }
 
         [Test]
@@ -48,17 +48,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
     }
 
-    internal class PostStartDateFixture
+    internal class PostDatesFixture
     {
         private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly EndDateRequest _request;
+        private readonly PriceRequest _request;
         private readonly ApprenticeController _sut;
-        private readonly StartDateViewModel _viewModel;
+        private readonly DatesViewModel _viewModel;
 
-        public PostStartDateFixture()
+        public PostDatesFixture()
         {
-            _viewModel = new StartDateViewModel
+            _viewModel = new DatesViewModel
             {
                 ApprenticeshipHashedId = "DF34WG2",
                 EmployerAccountLegalEntityPublicHashedId = "DFF41G",
@@ -66,8 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StartDate = new MonthYearModel("62020"),
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
-
-            _request = new EndDateRequest
+            _request = new PriceRequest
             {
                 ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = _viewModel.EmployerAccountLegalEntityPublicHashedId,
@@ -77,20 +76,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
-                .Setup(x => x.Map<EndDateRequest>(_viewModel))
+                .Setup(x => x.Map<PriceRequest>(_viewModel))
                 .ReturnsAsync(_request);
             _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
 
-        public Task<IActionResult> Act() => _sut.StartDate(_viewModel);
+        public Task<IActionResult> Act() => _sut.Dates(_viewModel);
 
-        public PostStartDateFixture SetEditModeOn()
+        public PostDatesFixture SetEditModeOn()
         {
             _viewModel.Price = 1;
             return this;
         }
 
+
         public void VerifyModelMapperWasCalled(Times times) =>
-            _modelMapperMock.Verify(x => x.Map<EndDateRequest>(_viewModel), times);
+            _modelMapperMock.Verify(x => x.Map<PriceRequest>(_viewModel), times);
     }
 }
