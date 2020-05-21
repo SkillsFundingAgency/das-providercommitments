@@ -52,9 +52,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("draft")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult Draft(CohortsByProviderRequest request)
+        public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
+            return View(draftViewModel);
         }
 
         [HttpGet]
