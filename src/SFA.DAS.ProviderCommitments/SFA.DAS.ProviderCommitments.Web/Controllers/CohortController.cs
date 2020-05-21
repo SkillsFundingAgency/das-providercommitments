@@ -70,9 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("with-transfer-sender")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithTransferSender(CohortsByProviderRequest request)
+        public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
+            return View(withTransferSenderViewModel);
         }
 
         [HttpGet]

@@ -76,6 +76,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Assert.NotNull(result);
             Assert.AreEqual(typeof(DraftViewModel), result.Model.GetType());
         }
+
+        [Test]
+        public async Task ForWithTransferSenderThenCallsModelMapper()
+        {
+            var f = new WhenGettingCohortsFixture();
+
+            await f.Sut.WithTransferSender(f.Request);
+
+            f.ModelMapperMock.Verify(x => x.Map<WithTransferSenderViewModel>(f.Request));
+        }
+
+        [Test]
+        public async Task ForWithTransferSenderThenReturnsWithTransferSenderViewModel()
+        {
+            var f = new WhenGettingCohortsFixture();
+
+            var result = await f.Sut.WithTransferSender(f.Request);
+
+            result.VerifyReturnsViewModel().WithModel<WithTransferSenderViewModel>();
+        }
     }
 
     public class WhenGettingCohortsFixture
@@ -86,6 +106,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public CohortsViewModel CohortsViewModel { get; }
         public ReviewViewModel ReviewViewModel { get; }
         public DraftViewModel DraftViewModel { get; }
+        public WithTransferSenderViewModel WithTransferSenderViewModel { get; }
 
         public WhenGettingCohortsFixture()
         {
@@ -94,10 +115,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             CohortsViewModel = new CohortsViewModel();
             ReviewViewModel = new ReviewViewModel();
             DraftViewModel = new DraftViewModel();
+            WithTransferSenderViewModel = new WithTransferSenderViewModel();
 
             ModelMapperMock.Setup(x => x.Map<CohortsViewModel>(Request)).ReturnsAsync(CohortsViewModel);
             ModelMapperMock.Setup(x => x.Map<ReviewViewModel>(Request)).ReturnsAsync(ReviewViewModel);
             ModelMapperMock.Setup(x => x.Map<DraftViewModel>(Request)).ReturnsAsync(DraftViewModel);
+            ModelMapperMock.Setup(x => x.Map<WithTransferSenderViewModel>(Request)).ReturnsAsync(WithTransferSenderViewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
         }
