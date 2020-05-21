@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -25,5 +26,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string CurrentEmployerName { get; set; }
         public DateTime CurrentStartDate { get; set; }
         public decimal CurrentPrice { get; set; }
+        public long? CohortId { get; set; }
+        public string CohortReference { get; set; }
+        public Party? WithParty { get; set; }
     }
 }

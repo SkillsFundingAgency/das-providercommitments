@@ -12,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
             RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId).NotEmpty();
             RuleFor(x => x.StartDate).Must(field => field.IsValidMonthYear());
+            RuleFor(x => x.EndDate).Must(field => field.IsValidMonthYear());
         }
     }
 }
