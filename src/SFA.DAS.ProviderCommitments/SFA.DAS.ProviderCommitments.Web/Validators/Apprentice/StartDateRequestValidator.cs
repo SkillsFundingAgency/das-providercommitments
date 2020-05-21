@@ -3,9 +3,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 {
-    public class DatesRequestValidator : AbstractValidator<DatesRequest>
+    public class StartDateRequestValidator : AbstractValidator<StartDateRequest>
     {
-        public DatesRequestValidator()
+        public StartDateRequestValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId).NotEmpty();

@@ -7,13 +7,13 @@ using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
-    public class PriceRequestValidatorTests
+    public class EndDateRequestValidatorTests
     {
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
         {
-            var request = new PriceRequest { ProviderId = providerId };
+            var request = new EndDateRequest { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("XYZ", true)]
         public void Validate_EmployerAccountLegalEntityPublicHashedId_ShouldBeValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
         {
-            var model = new PriceRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
+            var model = new EndDateRequest { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
 
             AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
         }
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("AB76V", true)]
         public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new PriceRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
+            var model = new EndDateRequest { ApprenticeshipHashedId = apprenticeshipHashedId };
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
@@ -46,25 +46,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("012002", true)]
         public void Validate_StartDate_ShouldBeValidated(string startDate, bool expectedValid)
         {
-            var model = new PriceRequest { StartDate = startDate };
+            var model = new EndDateRequest { StartDate = startDate };
             AssertValidationResult(request => request.StartDate, model, expectedValid);
         }
 
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XXXXXXX", false)]
-        [TestCase("1220", false)]
-        [TestCase("12002", true)]
-        [TestCase("012002", true)]
-        public void Validate_EndDate_ShouldBeValidated(string endDate, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<EndDateRequest, T>> property, EndDateRequest instance, bool expectedValid)
         {
-            var model = new PriceRequest { EndDate = endDate };
-            AssertValidationResult(request => request.EndDate, model, expectedValid);
-        }
-
-        private void AssertValidationResult<T>(Expression<Func<PriceRequest, T>> property, PriceRequest instance, bool expectedValid)
-        {
-            var validator = new PriceRequestValidator();
+            var validator = new EndDateRequestValidator();
 
             if (expectedValid)
             {
