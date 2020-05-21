@@ -6,23 +6,24 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [TestFixture]
-    public class ConfirmRequestMapperTests
+    public class EndDateViewModelToConfirmRequestMapperTests
     {
-        private ConfirmRequestMapper _mapper;
-        private PriceViewModel _source;
+        private EndDateViewModelToConfirmRequestMapper _mapper;
+        private EndDateViewModel _source;
         private Func<Task<ConfirmRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<PriceViewModel>();
+            _source = fixture.Build<EndDateViewModel>().With(x=>x.EndDate, new MonthYearModel("042020")).With(x=>x.StartDate, "012019").Create();
 
-            _mapper = new ConfirmRequestMapper(Mock.Of<ILogger<ConfirmRequestMapper>>());
+            _mapper = new EndDateViewModelToConfirmRequestMapper(Mock.Of<ILogger<EndDateViewModelToConfirmRequestMapper>>());
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -59,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewEndDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.EndDate, result.EndDate);
+            Assert.AreEqual(_source.EndDate.MonthYear, result.EndDate);
         }
 
         [Test]

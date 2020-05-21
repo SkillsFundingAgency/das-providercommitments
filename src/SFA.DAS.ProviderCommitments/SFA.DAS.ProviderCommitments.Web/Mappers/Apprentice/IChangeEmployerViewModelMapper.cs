@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -12,10 +13,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class IChangeEmployerViewModelMapper : IMapper<ChangeEmployerRequest, IChangeEmployerViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IEncodingService _encodingService;
 
-        public IChangeEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public IChangeEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _encodingService = encodingService;
         }
 
         public async Task<IChangeEmployerViewModel> Map(ChangeEmployerRequest source)
@@ -30,6 +33,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var apprenticeDetails = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
                 var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
 
+                var cohortReference = changeOfPartyRequest.CohortId.HasValue
+                    ? _encodingService.Encode(changeOfPartyRequest.CohortId.Value, EncodingType.CohortReference)
+                    : string.Empty;
+
                 return new ChangeEmployerRequestDetailsViewModel
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
@@ -40,7 +47,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerName = changeOfPartyRequest.EmployerName,
                     CurrentEmployerName = apprenticeDetails.EmployerName,
                     CurrentStartDate = apprenticeDetails.StartDate,
-                    CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice()
+                    CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
+                    CohortId = changeOfPartyRequest.CohortId,
+                    CohortReference = cohortReference,
+                    WithParty = changeOfPartyRequest.WithParty
                 };
             }
             else
