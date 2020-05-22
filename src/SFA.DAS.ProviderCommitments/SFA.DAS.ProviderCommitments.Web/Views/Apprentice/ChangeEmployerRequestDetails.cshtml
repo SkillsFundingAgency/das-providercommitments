@@ -48,6 +48,11 @@
                     <td id="start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatLongMonthWithoutDay()</td>
                 </tr>
                 <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training end date</th>
+                    <td id="current-start-date" class="govuk-table__cell">@Model.CurrentEndDate.ToGdsFormatLongMonthWithoutDay()</td>
+                    <td id="start-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatLongMonthWithoutDay()</td>
+                </tr>
+                <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
                     <td id="current-price" class="govuk-table__cell">@Model.CurrentPrice.ToGdsCostFormat()</td>
                     <td id="price" class="govuk-table__cell">@Model.Price.ToGdsCostFormat()</td>

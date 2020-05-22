@@ -125,6 +125,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task Then_With_ChangeEmployerRequestDetailsViewModel_EndDateIsMapped()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+            Assert.AreEqual(_fixture.EndDate, result.EndDate);
+        }
+
+        [Test]
         public async Task Then_With_ChangeEmployerRequestDetailsViewModel_PriceIsMapped()
         {
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
@@ -158,6 +167,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
             Assert.AreEqual(_fixture.Apprenticeship.StartDate, result.CurrentStartDate);
+        }
+
+        [Test]
+        public async Task Then_With_ChangeEmployerRequestDetailsViewModel_CurrentEndDateIsMapped()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+            Assert.AreEqual(_fixture.Apprenticeship.EndDate, result.CurrentEndDate);
         }
 
         [Test]
@@ -200,6 +218,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public string ApprenticeshipHashedId { get; set; }
         public string EmployerName { get; private set; }
         public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
         public int Price { get; private set; }
         public GetApprenticeshipResponse Apprenticeship { get; private set; }
         public GetPriceEpisodesResponse PriceEpisodes { get; private set; }
@@ -217,6 +236,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             ApprenticeshipHashedId = "SD23DS24";
             EmployerName = AutoFixture.Create<string>();
             StartDate = AutoFixture.Create<DateTime>();
+            EndDate = AutoFixture.Create<DateTime>();
             Price = AutoFixture.Create<int>();
             CohortReference = AutoFixture.Create<string>();
 
@@ -280,7 +300,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             Status = requestStatus.Value,
                             EmployerName = EmployerName,
                             Price = Price,
-                            StarDate = StartDate,
+                            StartDate = StartDate,
+                            EndDate = EndDate,
                             CohortId = AutoFixture.Create<long>(),
                             WithParty = AutoFixture.Create<Party>()
                         }
