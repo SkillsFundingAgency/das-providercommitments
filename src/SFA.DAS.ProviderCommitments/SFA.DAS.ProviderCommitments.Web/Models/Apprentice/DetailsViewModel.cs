@@ -30,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DataLockSummaryStatus DataLockStatus { get; set; }
         public bool HasPendingChangeOfPartyRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
+        public bool HasApprovedChangeOfPartyRequest { get; set; }
+        public string EncodedNewApprenticeshipId { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
         public TriageOption AvailableTriageOption { get; set; }

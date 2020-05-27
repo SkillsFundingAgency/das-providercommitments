@@ -357,6 +357,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(withParty, _fixture.Result.PendingChangeOfPartyRequestWithParty);
         }
 
+        [TestCase(Party.Employer)]
+        [TestCase(Party.Provider)]
+        public async Task ThenApprovedChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Approved, withParty);
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.HasApprovedChangeOfPartyRequest);
+        }
+
+        [TestCase(Party.Employer)]
+        [TestCase(Party.Provider)]
+        public async Task ThenEncodedNewApprenticeshipIdIsMappedCorrectly(Party withParty)
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Approved, withParty);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, _fixture.Result.EncodedNewApprenticeshipId);
+        }
+
         [Test]
         public async Task ThenAPendingChangeOfPartyOriginatingFromEmployerDoesNotSetHasPendingChangeOfPartyRequest()
         {
@@ -396,15 +414,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public string CohortReference { get; }
             public string AgreementId { get; }
             public string URL { get; }
+            public Fixture Fixture { get; }
+            public string EncodedNewApprenticeshipId { get; }
 
             public DetailsViewModelMapperFixture()
             {
-                var fixture = new Fixture();
-                Source = fixture.Create<DetailsRequest>();
-                ApiResponse = fixture.Create<GetApprenticeshipResponse>();
-                CohortReference = fixture.Create<string>();
-                AgreementId = fixture.Create<string>();
-                URL = fixture.Create<string>();
+                Fixture = new Fixture();
+                Source = Fixture.Create<DetailsRequest>();
+                ApiResponse = Fixture.Create<GetApprenticeshipResponse>();
+                CohortReference = Fixture.Create<string>();
+                AgreementId = Fixture.Create<string>();
+                URL = Fixture.Create<string>();
                 PriceEpisodesApiResponse = new GetPriceEpisodesResponse
                 {
                     PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
@@ -431,6 +451,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
+
+                EncodedNewApprenticeshipId = Fixture.Create<string>();
+                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedNewApprenticeshipId);
+
 
                 _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
                 _featureToggleService
@@ -610,7 +635,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             ChangeOfPartyType = requestType,
                             OriginatingParty = requestType == ChangeOfPartyRequestType.ChangeEmployer ? Party.Provider : Party.Employer,
                             Status = status,
-                            WithParty = withParty
+                            WithParty = withParty,
+                            NewApprenticeshipId = Fixture.Create<long>()
                         }
                     }
                 };
