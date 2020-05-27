@@ -1,0 +1,6 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+<div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
+    <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
+    <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">Review changes</a> </p>
+</div>

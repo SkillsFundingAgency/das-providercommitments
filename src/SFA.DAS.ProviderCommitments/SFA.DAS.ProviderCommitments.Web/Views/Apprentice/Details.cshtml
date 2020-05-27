@@ -14,114 +14,30 @@
 
         @if (Model.HasApprovedChangeOfPartyRequest)
         {
-            <div class="das-notification" id="das-changeofparty-links-div" tabindex="-1">
-                <p class="das-notification__body">
-                    This apprentice moved to a new employer with a new record created.
-                </p>
-                
-                @if(!string.IsNullOrEmpty(Model.EncodedNewApprenticeshipId))
-                {
-                    <p class="das-notification__body">
-                        <a id="continuation-link" class="govuk-link" href="@Url.Action("Details", new {Model.ProviderId, ApprenticeshipHashedId = Model.EncodedNewApprenticeshipId})">View changes</a>
-                    </p>
-                }
-            </div>
+            <partial name="DetailsPartials/_ContinuationLinksBanner" />
         }
         @if (Model.HasPendingChangeOfPartyRequest)
         {
-            <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
-                <p class="das-notification__body">
-                    @if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
-                    {
-                        <span id="change-of-party-status-text">There are changes to this apprentice's details that are waiting for approval by the new employer.</span>
-                    }
-                    else
-                    {
-                        <span id="change-of-party-status-text">The new employer has requested changes to this apprentice's details.</span>
-                    }
-                </p>
-
-                <p class="das-notification__body">
-                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
-                </p>
-            </div>
+            <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
         }
         @if (Model.HasProviderPendingUpdate)
         {
-            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
-                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
-                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
-            </div>
+            <partial name="DetailsPartials/_PendingProviderUpdateBanner" />
         }
         else if (Model.HasEmployerPendingUpdate)
         {
-            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
-                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
-                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">Review changes</a> </p>
-            </div>
+            <partial name="DetailsPartials/_PendingEmployerUpdateBanner" />
         }
-
-        @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
+        @if (Model.DataLockStatus != DetailsViewModel.DataLockSummaryStatus.None)
         {
-            <div class="das-notification" tabindex="-1">
-                <h3 class="das-notification__heading">Change request pending</h3>
-                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
-            </div>
-        }
-        else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
-        {
-            <div class="das-notification" tabindex="-1">
-                <h3 class="das-notification__heading">ILR data mismatch</h3>
-                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
-                @if (!Model.SuppressDataLockStatusReviewLink)
-                {
-                    <p class="das-notification__body">
-
-                        @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
-                        {
-                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
-                        }
-                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
-                        {
-                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
-                        }
-                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
-                        {
-                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
-                            <br/>
-                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
-                        }
-                    </p>
-                }
-            </div>
+            <partial name="DetailsPartials/_DataLockBanner" />
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
         {
-            <details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        Help with changes in apprentice's circumstances
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-
-                    <p class="govuk-body">
-                        If an apprentice you're training needs to move to a new employer, you should:
-
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>contact their original employer and ask them to stop the apprentice record</li>
-                            <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
-                        </ul>
-
-                        Once you've agreed these details, you can change the employer.<br/><br/>
-
-                        Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
-                    </p>
-                </div>
-            </details>
+            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
@@ -131,34 +47,34 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
-            </tr>
-
-            @if (Model.Status == ApprenticeshipStatus.Stopped)
-            {
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Stop applies from</th>
-                    <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
-            }
 
-            @if (Model.Status == ApprenticeshipStatus.Paused)
-            {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
-                    <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
-                </tr>
-            }
+                @if (Model.Status == ApprenticeshipStatus.Stopped)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Stop applies from</th>
+                        <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
 
-            @if (Model.Status == ApprenticeshipStatus.Completed)
-            {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Completion payment month</th>
-                    <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
-                </tr>
-            }
+                @if (Model.Status == ApprenticeshipStatus.Paused)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
+                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
+                    </tr>
+                }
+
+                @if (Model.Status == ApprenticeshipStatus.Completed)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Completion payment month</th>
+                        <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
             </tbody>
         </table>
 
@@ -174,29 +90,29 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
 
-            <tr class="govuk-table__row">
+                <tr class="govuk-table__row">
 
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
-                <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
-                <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                    @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
-                    {
-                        <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
-                    }
-                </td>
-            </tr>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
+                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
+                    <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
+                        @if (Model.Status == ApprenticeshipStatus.Stopped && Model.IsChangeOfEmployerEnabled)
+                        {
+                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                        }
+                    </td>
+                </tr>
 
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Reference</th>
-                <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Reference</th>
+                    <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
 
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Agreement ID</th>
-                <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Agreement ID</th>
+                    <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
             </tbody>
         </table>
 
@@ -214,41 +130,41 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
-                <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Date of birth</th>
-                <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Unique learner number</th>
-                <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-                <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Training start date</th>
-                <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Training end date</th>
-                <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Your reference</th>
-                <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Date of birth</th>
+                    <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training start date</th>
+                    <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training end date</th>
+                    <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+                </tr>
             </tbody>
         </table>
-        </div>
+    </div>
     </div>
 
 @section breadcrumb {

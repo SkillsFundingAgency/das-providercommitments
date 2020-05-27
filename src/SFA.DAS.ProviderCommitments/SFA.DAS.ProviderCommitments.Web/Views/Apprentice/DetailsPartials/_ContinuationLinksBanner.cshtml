@@ -1,0 +1,14 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+<div class="das-notification" id="das-changeofparty-links-div" tabindex="-1">
+    <p class="das-notification__body">
+        This apprentice moved to a new employer with a new record created.
+    </p>
+                
+    @if(!string.IsNullOrEmpty(Model.EncodedNewApprenticeshipId))
+    {
+        <p class="das-notification__body">
+            <a id="continuation-link" class="govuk-link" href="@Url.Action("Details", new {Model.ProviderId, ApprenticeshipHashedId = Model.EncodedNewApprenticeshipId})">View changes</a>
+        </p>
+    }
+</div>
