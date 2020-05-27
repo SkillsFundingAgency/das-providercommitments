@@ -52,25 +52,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("draft")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult Draft(CohortsByProviderRequest request)
+        public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
+            return View(draftViewModel);
         }
 
         [HttpGet]
         [Route("with-employer")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithEmployer(CohortsByProviderRequest request)
+        public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
+            return View(withEmployerViewModel);
         }
 
         [HttpGet]
         [Route("with-transfer-sender")]
         [DasAuthorize(ProviderFeature.CohortSummariesV2)]
-        public IActionResult WithTransferSender(CohortsByProviderRequest request)
+        public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
-            return View("NotImplemented");
+            var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
+            return View(withTransferSenderViewModel);
         }
 
         [HttpGet]
