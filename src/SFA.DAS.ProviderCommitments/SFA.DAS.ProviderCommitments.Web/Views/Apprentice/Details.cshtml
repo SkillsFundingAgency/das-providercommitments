@@ -12,7 +12,7 @@
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
 
-        @if (Model.HasApprovedChangeOfPartyRequest)
+        @if (Model.HasApprovedChangeOfPartyRequest || Model.IsContinuation)
         {
             <partial name="DetailsPartials/_ContinuationLinksBanner" />
         }

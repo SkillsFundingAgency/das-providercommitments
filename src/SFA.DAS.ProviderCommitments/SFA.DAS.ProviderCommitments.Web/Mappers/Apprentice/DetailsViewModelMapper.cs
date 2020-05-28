@@ -85,6 +85,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EncodedNewApprenticeshipId = approvedChangeOfPartyRequest?.NewApprenticeshipId != null
                         ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
                             EncodingType.ApprenticeshipId)
+                        : null,
+                    IsContinuation = data.Apprenticeship.IsContinuation && data.Apprenticeship.PreviousProviderId == source.ProviderId,
+                    EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
+                        ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
                         : null
                 };
             }

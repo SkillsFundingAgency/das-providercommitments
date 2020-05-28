@@ -375,6 +375,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, _fixture.Result.EncodedNewApprenticeshipId);
         }
 
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public async Task ThenIsContinuationIsMappedCorrectly(bool sameProvider, bool expectIsContinuation)
+        {
+            _fixture.WithPreviousApprenticeship(sameProvider);
+            await _fixture.Map();
+            Assert.AreEqual(expectIsContinuation,_fixture.Result.IsContinuation);
+        }
+
+        [Test]
+        public async Task ThenIfNoPreviousApprenticeshipThenIsContinuationIsMappedCorrectly()
+        {
+            _fixture.WithoutPreviousApprenticeship();
+            await _fixture.Map();
+            Assert.IsFalse(_fixture.Result.IsContinuation);
+        }
+
+        [Test]
+        public async Task ThenEncodedPreviousApprenticeshipIdIsMappedCorrectly()
+        {
+            _fixture.WithPreviousApprenticeship(true);
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.EncodedPreviousApprenticeshipId, _fixture.Result.EncodedPreviousApprenticeshipId);
+        }
+
         [Test]
         public async Task ThenAPendingChangeOfPartyOriginatingFromEmployerDoesNotSetHasPendingChangeOfPartyRequest()
         {
@@ -416,12 +441,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public string URL { get; }
             public Fixture Fixture { get; }
             public string EncodedNewApprenticeshipId { get; }
+            public string EncodedPreviousApprenticeshipId { get; }
 
             public DetailsViewModelMapperFixture()
             {
                 Fixture = new Fixture();
                 Source = Fixture.Create<DetailsRequest>();
                 ApiResponse = Fixture.Create<GetApprenticeshipResponse>();
+                ApiResponse.ProviderId = Source.ProviderId;
                 CohortReference = Fixture.Create<string>();
                 AgreementId = Fixture.Create<string>();
                 URL = Fixture.Create<string>();
@@ -453,9 +480,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
 
                 EncodedNewApprenticeshipId = Fixture.Create<string>();
-                _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
-                    .Returns(EncodedNewApprenticeshipId);
-
+                EncodedPreviousApprenticeshipId = Fixture.Create<string>();
 
                 _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
                 _featureToggleService
@@ -625,6 +650,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status, Party? withParty = null)
             {
+                var newApprenticeshipId = Fixture.Create<long>();
+
                 GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
                 {
                     ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>
@@ -636,11 +663,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             OriginatingParty = requestType == ChangeOfPartyRequestType.ChangeEmployer ? Party.Provider : Party.Employer,
                             Status = status,
                             WithParty = withParty,
-                            NewApprenticeshipId = Fixture.Create<long>()
+                            NewApprenticeshipId = newApprenticeshipId
                         }
                     }
                 };
 
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedNewApprenticeshipId);
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithPreviousApprenticeship(bool sameProvider)
+            {
+                ApiResponse.ContinuationOfId = Fixture.Create<long>();
+                ApiResponse.PreviousProviderId = sameProvider ? ApiResponse.ProviderId : ApiResponse.ProviderId + 1;
+
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.ContinuationOfId), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedPreviousApprenticeshipId);
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithoutPreviousApprenticeship()
+            {
+                ApiResponse.ContinuationOfId = null;
+                ApiResponse.PreviousProviderId = null;
                 return this;
             }
         }
