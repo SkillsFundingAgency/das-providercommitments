@@ -213,6 +213,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
             Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().Status, result.Status);
         }
+
+        [Test]
+        public async Task Then_With_ChangeEmployerRequestDetailsViewModel_EncodedNewApprenticeshipIdIsMapped()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Approved);
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+            Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, result.EncodedNewApprenticeshipId);
+        }
     }
 
     internal class IChangeEmployerViewModelMapperTestsFixture : Fixture
@@ -235,6 +244,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public IChangeEmployerViewModel Result { get; private set; }
         public Fixture AutoFixture { get; }
         public string CohortReference { get; }
+        public string EncodedNewApprenticeshipId { get; }
 
         public IChangeEmployerViewModelMapperTestsFixture()
         {
@@ -248,6 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             EndDate = AutoFixture.Create<DateTime>();
             Price = AutoFixture.Create<int>();
             CohortReference = AutoFixture.Create<string>();
+            EncodedNewApprenticeshipId = AutoFixture.Create<string>();
 
             _changeEmployerRequest = new ChangeEmployerRequest
             {
@@ -292,6 +303,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
                 .Returns(CohortReference);
 
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
+                .Returns(EncodedNewApprenticeshipId);
+
             _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object, _encodingService.Object);
         }
 
@@ -312,7 +326,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             StartDate = StartDate,
                             EndDate = EndDate,
                             CohortId = AutoFixture.Create<long>(),
-                            WithParty = AutoFixture.Create<Party>()
+                            WithParty = AutoFixture.Create<Party>(),
+                            NewApprenticeshipId = requestStatus == ChangeOfPartyRequestStatus.Approved
+                                ? AutoFixture.Create<long>()
+                                : default(long?)
                         }
                     }};
             }

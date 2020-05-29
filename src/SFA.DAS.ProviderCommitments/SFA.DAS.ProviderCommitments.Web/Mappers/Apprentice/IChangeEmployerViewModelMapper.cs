@@ -53,7 +53,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     CohortId = changeOfPartyRequest.CohortId,
                     CohortReference = cohortReference,
                     WithParty = changeOfPartyRequest.WithParty,
-                    Status = changeOfPartyRequest.Status
+                    Status = changeOfPartyRequest.Status,
+                    EncodedNewApprenticeshipId = changeOfPartyRequest.NewApprenticeshipId.HasValue
+                        ? _encodingService.Encode(changeOfPartyRequest.NewApprenticeshipId.Value,
+                            EncodingType.ApprenticeshipId)
+                        : string.Empty
                 };
             }
             else

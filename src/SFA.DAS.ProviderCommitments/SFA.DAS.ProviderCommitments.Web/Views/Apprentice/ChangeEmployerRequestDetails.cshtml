@@ -12,10 +12,16 @@
 
         <h1 class="govuk-heading-xl">View changes</h1>
 
-
         @if (Model.Status == ChangeOfPartyRequestStatus.Approved)
         {
-            <p><span id="new-employer">@Model.EmployerName</span> approved the new details.</p>
+            @if (!string.IsNullOrWhiteSpace(Model.EncodedNewApprenticeshipId))
+            {
+                <p><span id="new-employer">@Model.EmployerName</span> approved the <a id="continuation-link" class="govuk-link" href="@Url.Action("Details", new {Model.ProviderId, ApprenticeshipHashedId = Model.EncodedNewApprenticeshipId})">new details</a>.</p>
+            }
+            else
+            {
+                <p><span id="new-employer">@Model.EmployerName</span> approved the new details.</p>
+            }
         }
         else if (!Model.WithParty.HasValue)
         {
@@ -35,36 +41,38 @@
             }
         }
 
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-40"></th>
-                    <th class="govuk-table__header das-table-cell-width-30">Current details</th>
-                    <th class="govuk-table__header das-table-cell-width-30">Requested changes</th>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Employer</th>
-                    <td id="current-employer" class="govuk-table__cell">@Model.CurrentEmployerName</td>
-                    <td id="employer" class="govuk-table__cell">@Model.EmployerName</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Training start date</th>
-                    <td id="current-start-date" class="govuk-table__cell">@Model.CurrentStartDate.ToGdsFormatLongMonthWithoutDay()</td>
-                    <td id="start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatLongMonthWithoutDay()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Training end date</th>
-                    <td id="current-start-date" class="govuk-table__cell">@Model.CurrentEndDate.ToGdsFormatLongMonthWithoutDay()</td>
-                    <td id="start-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatLongMonthWithoutDay()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                    <td id="current-price" class="govuk-table__cell">@Model.CurrentPrice.ToGdsCostFormat()</td>
-                    <td id="price" class="govuk-table__cell">@Model.Price.ToGdsCostFormat()</td>
-                </tr>
-            </tbody>
-        </table>
-
+        @if (Model.Status != ChangeOfPartyRequestStatus.Approved)
+        {
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-40"></th>
+                        <th class="govuk-table__header das-table-cell-width-30">Current details</th>
+                        <th class="govuk-table__header das-table-cell-width-30">Requested changes</th>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Employer</th>
+                        <td id="current-employer" class="govuk-table__cell">@Model.CurrentEmployerName</td>
+                        <td id="employer" class="govuk-table__cell">@Model.EmployerName</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Training start date</th>
+                        <td id="current-start-date" class="govuk-table__cell">@Model.CurrentStartDate.ToGdsFormatLongMonthWithoutDay()</td>
+                        <td id="start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatLongMonthWithoutDay()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Training end date</th>
+                        <td id="current-start-date" class="govuk-table__cell">@Model.CurrentEndDate.ToGdsFormatLongMonthWithoutDay()</td>
+                        <td id="start-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatLongMonthWithoutDay()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                        <td id="current-price" class="govuk-table__cell">@Model.CurrentPrice.ToGdsCostFormat()</td>
+                        <td id="price" class="govuk-table__cell">@Model.Price.ToGdsCostFormat()</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
     </div>
 </div>
 

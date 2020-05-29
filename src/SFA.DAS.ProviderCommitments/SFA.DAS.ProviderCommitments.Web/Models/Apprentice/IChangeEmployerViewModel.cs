@@ -32,5 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string CohortReference { get; set; }
         public Party? WithParty { get; set; }
         public ChangeOfPartyRequestStatus Status { get; set; }
+        public string EncodedNewApprenticeshipId { get; set; }
     }
 }
