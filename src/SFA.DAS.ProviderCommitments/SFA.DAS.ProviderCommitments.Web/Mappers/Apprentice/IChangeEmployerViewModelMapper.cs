@@ -52,7 +52,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
                     CohortId = changeOfPartyRequest.CohortId,
                     CohortReference = cohortReference,
-                    WithParty = changeOfPartyRequest.WithParty
+                    WithParty = changeOfPartyRequest.WithParty,
+                    Status = changeOfPartyRequest.Status
                 };
             }
             else

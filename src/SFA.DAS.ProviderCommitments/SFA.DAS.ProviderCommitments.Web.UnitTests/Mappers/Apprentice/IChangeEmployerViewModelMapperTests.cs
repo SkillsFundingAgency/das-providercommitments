@@ -204,6 +204,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
             Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().WithParty, result.WithParty);
         }
+
+        [Test]
+        public async Task Then_With_ChangeEmployerRequestDetailsViewModel_StatusIsMapped()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Approved);
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
+            Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().Status, result.Status);
+        }
     }
 
     internal class IChangeEmployerViewModelMapperTestsFixture : Fixture

@@ -12,7 +12,12 @@
 
         <h1 class="govuk-heading-xl">View changes</h1>
 
-        @if (!Model.WithParty.HasValue)
+
+        @if (Model.Status == ChangeOfPartyRequestStatus.Approved)
+        {
+            <p><span id="new-employer">@Model.EmployerName</span> approved the new details.</p>
+        }
+        else if (!Model.WithParty.HasValue)
         {
             <p><span id="new-employer">@Model.EmployerName</span> are reviewing the new details.</p>
         }
