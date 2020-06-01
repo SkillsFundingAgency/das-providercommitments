@@ -33,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
         {
             var model = await _modelMapper.Map<CohortsViewModel>(request);
@@ -42,7 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("review")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
@@ -51,7 +49,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("draft")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
             var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
@@ -60,7 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("with-employer")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
             var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
@@ -69,7 +65,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("with-transfer-sender")]
-        [DasAuthorize(ProviderFeature.CohortSummariesV2)]
         public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
             var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
