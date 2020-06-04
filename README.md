@@ -18,11 +18,11 @@
 
 ## Getting Started
 
-* Clone das-providercommimtments repo
+* Clone this repo: https://github.com/SkillsFundingAgency/das-providercommitments
 * Open das-providercommitments solution
 * Obtain cloud config
 * Start Storage Emulator
-* Start (run under kestrel)
+* Run SFA.DAS.ProviderCommitments.Web project (run under kestrel)
 
 
 ## See Also
