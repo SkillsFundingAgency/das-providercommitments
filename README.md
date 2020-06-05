@@ -4,6 +4,8 @@
 
 Functionality within ProviderCommitments requires Commitments Api v2 (https://github.com/SkillsFundingAgency/das-commitments/blob/master/src/CommitmentsV2/readme.md)
 
+ProviderCommitments has no home or landing page. The user is typically redirected there at various points from Provider Apprenticeship Service (https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice)
+
 ## Getting Started
 
 * Clone this repo: https://github.com/SkillsFundingAgency/das-providercommitments
