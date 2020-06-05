@@ -4,7 +4,9 @@
 
 Functionality within ProviderCommitments requires Commitments Api v2 (https://github.com/SkillsFundingAgency/das-commitments/blob/master/src/CommitmentsV2/readme.md)
 
-ProviderCommitments has no home or landing page. The user is typically redirected there at various points from Provider Apprenticeship Service (https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice)
+ProviderCommitments has no home or landing page. The user is typically redirected there at various points from Provider Apprenticeship Service (https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice). However, a useful page is given below (where `10005077` is the UKPRN of the Provider):
+* Manage your apprentices: https://localhost:5001/10005077/apprentices
+
 
 ## Getting Started
 
