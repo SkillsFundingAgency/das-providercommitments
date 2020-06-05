@@ -1,5 +1,9 @@
 # Digital Apprenticeships Service
 
+## Context
+
+Functionality within ProviderCommitments requires Commitments Api v2 (https://github.com/SkillsFundingAgency/das-commitments/blob/master/src/CommitmentsV2/readme.md)
+
 ## Getting Started
 
 * Clone this repo: https://github.com/SkillsFundingAgency/das-providercommitments
