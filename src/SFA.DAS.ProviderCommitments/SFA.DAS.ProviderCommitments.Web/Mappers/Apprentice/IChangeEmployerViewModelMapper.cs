@@ -43,14 +43,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipId = source.ApprenticeshipId,
                     Price = changeOfPartyRequest.Price,
-                    StartDate = changeOfPartyRequest.StarDate,
+                    StartDate = changeOfPartyRequest.StartDate,
+                    EndDate = changeOfPartyRequest.EndDate,
                     EmployerName = changeOfPartyRequest.EmployerName,
                     CurrentEmployerName = apprenticeDetails.EmployerName,
                     CurrentStartDate = apprenticeDetails.StartDate,
+                    CurrentEndDate = apprenticeDetails.EndDate,
                     CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
                     CohortId = changeOfPartyRequest.CohortId,
                     CohortReference = cohortReference,
-                    WithParty = changeOfPartyRequest.WithParty
+                    WithParty = changeOfPartyRequest.WithParty,
+                    Status = changeOfPartyRequest.Status,
+                    EncodedNewApprenticeshipId = changeOfPartyRequest.NewApprenticeshipId.HasValue
+                        ? _encodingService.Encode(changeOfPartyRequest.NewApprenticeshipId.Value,
+                            EncodingType.ApprenticeshipId)
+                        : string.Empty
                 };
             }
             else
