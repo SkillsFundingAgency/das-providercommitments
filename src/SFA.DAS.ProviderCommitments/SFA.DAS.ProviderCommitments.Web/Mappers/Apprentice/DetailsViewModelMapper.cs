@@ -51,6 +51,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
+                var approvedChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
+                    x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Approved);
+
                 return new DetailsViewModel
                 {
                     ProviderId = source.ProviderId,
@@ -77,7 +80,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PauseDate = data.Apprenticeship.PauseDate,
                     CompletionDate = data.Apprenticeship.CompletionDate,
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
-                    PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty
+                    PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
+                    HasApprovedChangeOfPartyRequest = approvedChangeOfPartyRequest != null,
+                    EncodedNewApprenticeshipId = approvedChangeOfPartyRequest?.NewApprenticeshipId != null
+                        ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
+                            EncodingType.ApprenticeshipId)
+                        : null,
+                    IsContinuation = data.Apprenticeship.IsContinuation && data.Apprenticeship.PreviousProviderId == source.ProviderId,
+                    EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
+                        ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
+                        : null
                 };
             }
             catch (Exception e)
