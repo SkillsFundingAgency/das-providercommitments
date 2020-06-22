@@ -1,30 +1,24 @@
 # Digital Apprenticeships Service
 
-## Employer Apprenticeship Service
+## Context
 
-|               |               |
-| ------------- | ------------- |
-|![crest](https://assets.publishing.service.gov.uk/government/assets/crests/org_crest_27px-916806dcf065e7273830577de490d5c7c42f36ddec83e907efe62086785f24fb.png)|Employer Apprenticeship Service|
-| Build | ![Build Status](https://sfa-gov-uk.visualstudio.com/_apis/public/build/definitions/c39e0c0b-7aff-4606-b160-3566f3bbce23/101/badge) |
-| Web  | https://manage-apprenticeships.service.gov.uk/  |
+Functionality within ProviderCommitments requires Commitments Api v2 (https://github.com/SkillsFundingAgency/das-commitments/blob/master/src/CommitmentsV2/readme.md)
 
-## Approvals
-
-|               |               |
-| ------------- | ------------- |
-|![crest](https://assets.publishing.service.gov.uk/government/assets/crests/org_crest_27px-916806dcf065e7273830577de490d5c7c42f36ddec83e907efe62086785f24fb.png)| Account API |
-| Client  | [![NuGet Badge](https://buildstats.info/nuget/SFA.DAS.Account.Api.Client)](https://www.nuget.org/packages/SFA.DAS.Account.Api.Client)  |
+ProviderCommitments has no home or landing page. The user is typically redirected there at various points from Provider Apprenticeship Service (https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice). However, a useful page is given below (where `10005077` is the UKPRN of the Provider):
+* Manage your apprentices: https://localhost:5001/10005077/apprentices
 
 
 ## Getting Started
 
-* Clone das-providercommimtments repo
-* Open das-providercommitments solution
-* Obtain cloud config
-* Start Storage Emulator
-* Start (run under kestrel)
+* Clone this repo: https://github.com/SkillsFundingAgency/das-providercommitments
+* Obtain cloud config for:
+  * SFA.DAS.ProviderCommitments
+  * SFA.DAS.ProviderUrlHelper
+  * SFA.DAS.Encoding
+  * SFA.DAS.Reservations.Api.Client
+* Start Microsoft Azure Storage Emulator
+* Run SFA.DAS.ProviderCommitments.Web project (run under kestrel)
 
 
 ## See Also
-* [Configuration Requirements](docs/ConfigurationRequirements.md "Configuration Requirements")
 * [Using Hashes in Controller Methods](docs/UnhashingModelBinding.md "Unhashing Model Binding")
