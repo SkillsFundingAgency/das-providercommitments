@@ -119,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
 
             _commitmentsApiClientMock
-                .Setup(x => x.GetAccountLegalEntity(Request.AccountLegalEntityId, default))
+                .Setup(x => x.GetAccountLegalEntity(Request.AccountLegalEntityId, default(CancellationToken)))
                 .ReturnsAsync(AccountLegalEntityResponse);
             
             _sut = new EndDateViewModelMapper(_commitmentsApiClientMock.Object);

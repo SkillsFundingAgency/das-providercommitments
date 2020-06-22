@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -29,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClientMock
-                .Setup(x => x.GetApprenticeship(_source.ApprenticeshipId, default))
+                .Setup(x => x.GetApprenticeship(_source.ApprenticeshipId, default(CancellationToken)))
                 .ReturnsAsync(_getApprenticeshipApiResponse);
                 
             _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object);
