@@ -1,6 +1,9 @@
-﻿@{
+﻿@model string
+
+@{
     ViewData["Title"] = "Change of employer requested";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/sent";
+    ViewBag.GaData.Org = Model;
 }
 
 <div class="govuk-grid-row">

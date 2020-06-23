@@ -207,6 +207,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
             await _commitmentApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
+            TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
             return RedirectToRoute(RouteNames.ApprenticeSent, new { viewModel.ApprenticeshipHashedId });
         }
 
@@ -215,7 +216,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public IActionResult Sent()
         {
-            return View();
+            var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
+            return View(nameof(Sent), model);
         }
     }
 }
