@@ -22,5 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
         public bool InEditMode => Price.HasValue;
+        public string LegalEntityName { get; set; }
     }
 }
