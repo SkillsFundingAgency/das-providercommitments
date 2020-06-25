@@ -80,6 +80,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task Then_With_InformViewModel_LegalEntityNameIsMapped()
+        {
+            await _fixture.Act();
+            var result = _fixture.VerifyResult<InformViewModel>();
+            Assert.AreEqual(_fixture.Apprenticeship.EmployerName, result.LegalEntityName);
+        }
+
+        [Test]
         public async Task Then_With_ChangeEmployerRequestDetailsViewModel_ProviderIdIsMapped()
         {
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);

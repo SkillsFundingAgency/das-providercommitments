@@ -61,6 +61,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
         }
 
+
+        [Test]
+        public async Task ThenLegalEntityNameIsMapped()
+        {
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(_fixture.Response.EmployerName, result.LegalEntityName);
+        }
+
         [TestCase("")]
         [TestCase("042019")]
         public async Task ThenStartDateIsMapped(string startDate)
@@ -121,7 +130,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             };
             Response = new GetApprenticeshipResponse
             {
-                StopDate = DateTime.UtcNow.AddDays(-5)
+                StopDate = DateTime.UtcNow.AddDays(-5),
+                EmployerName = "TestName"
             };
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClientMock

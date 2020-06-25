@@ -26,10 +26,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var legalEntities = await GetLegalEntitiesWithCreatePermission(source.ProviderId);
-            var apprenticeShip = await apprenticeshipTask;
-            var filteredLegalEntities = legalEntities.Where(x => x.AccountLegalEntityId != apprenticeShip.AccountLegalEntityId);
+            var apprenticeship = await apprenticeshipTask;
+            var filteredLegalEntities = legalEntities.Where(x => x.AccountLegalEntityId != apprenticeship.AccountLegalEntityId);
             return new SelectEmployerViewModel
             {
+                LegalEntityName = apprenticeship.EmployerName,
                 AccountProviderLegalEntities = (filteredLegalEntities.Select(x => new AccountProviderLegalEntityViewModel
                 {
                     EmployerAccountLegalEntityName = x.AccountLegalEntityName,

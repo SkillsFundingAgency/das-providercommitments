@@ -28,9 +28,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                                     && x.ChangeOfPartyType == ChangeOfPartyRequestType.ChangeEmployer
                                                     && (x.Status == ChangeOfPartyRequestStatus.Pending || x.Status == ChangeOfPartyRequestStatus.Approved));
 
+            var apprenticeDetails = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
+
             if (changeOfPartyRequest != null)
             {
-                var apprenticeDetails = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
                 var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
 
                 var cohortReference = changeOfPartyRequest.CohortId.HasValue
@@ -66,7 +67,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     ProviderId = source.ProviderId,
-                    ApprenticeshipId = source.ApprenticeshipId
+                    ApprenticeshipId = source.ApprenticeshipId,
+                    LegalEntityName = apprenticeDetails.EmployerName
                 };
             }
         }

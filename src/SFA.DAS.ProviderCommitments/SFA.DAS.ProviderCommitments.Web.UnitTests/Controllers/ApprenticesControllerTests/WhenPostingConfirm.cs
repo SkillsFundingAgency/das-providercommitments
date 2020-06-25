@@ -1,6 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Azure.Documents;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -29,6 +32,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             await _fixture.Act();
             _fixture.VerifyChangeOfPartyRequestCreated();
+        }
+
+        [Test]
+        public async Task WithValidModel_NewEmployerName_Is_Stored_In_TempData()
+        {
+            await _fixture.Act();
+
+            _fixture.VerifyNewEmployerNameIsStoredInTempData();
         }
 
         [Test]
@@ -64,10 +75,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     ApprenticeshipHashedId = "DF34WG2",
                     ProviderId = 2342,
                     AccountLegalEntityPublicHashedId = "DFF41G",
-                    NewStartDate = "62020"
+                    NewStartDate = "62020",
+                    NewEmployerName = "TestEmployerName"
                 };
 
+                var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+
                 _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
+
+                _sut.TempData = tempData;
             }
 
             public Task<IActionResult> Act() => _sut.Confirm(_viewModel);
@@ -77,6 +93,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _apiClient.Verify(x => x.CreateChangeOfPartyRequest(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
                     It.Is<CreateChangeOfPartyRequestRequest>(r => r == _mapperResult),
                     It.IsAny<CancellationToken>()));
+            }
+
+            public void VerifyNewEmployerNameIsStoredInTempData()
+            {
+                var newEmployerName = _sut.TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
+                Assert.NotNull(newEmployerName);
+                Assert.AreEqual(_viewModel.NewEmployerName, newEmployerName);
             }
         }
     }

@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
+        public string LegalEntityName { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public decimal? Price { get; set; }
