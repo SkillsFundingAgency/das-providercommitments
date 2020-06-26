@@ -27,11 +27,7 @@
     <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="4.1.1500" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
-<<<<<<< HEAD
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.37" />
-=======
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.35" />
->>>>>>> master
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
     <PackageReference Include="StructureMap" Version="4.7.0" />
