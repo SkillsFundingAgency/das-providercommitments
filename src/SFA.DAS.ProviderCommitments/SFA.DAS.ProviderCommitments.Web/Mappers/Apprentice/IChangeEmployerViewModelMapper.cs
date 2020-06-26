@@ -28,9 +28,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                                     && x.ChangeOfPartyType == ChangeOfPartyRequestType.ChangeEmployer
                                                     && (x.Status == ChangeOfPartyRequestStatus.Pending || x.Status == ChangeOfPartyRequestStatus.Approved));
 
+            var apprenticeDetails = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
+
             if (changeOfPartyRequest != null)
             {
-                var apprenticeDetails = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
                 var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
 
                 var cohortReference = changeOfPartyRequest.CohortId.HasValue
@@ -43,14 +44,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipId = source.ApprenticeshipId,
                     Price = changeOfPartyRequest.Price,
-                    StartDate = changeOfPartyRequest.StarDate,
+                    StartDate = changeOfPartyRequest.StartDate,
+                    EndDate = changeOfPartyRequest.EndDate,
                     EmployerName = changeOfPartyRequest.EmployerName,
                     CurrentEmployerName = apprenticeDetails.EmployerName,
                     CurrentStartDate = apprenticeDetails.StartDate,
+                    CurrentEndDate = apprenticeDetails.EndDate,
                     CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
                     CohortId = changeOfPartyRequest.CohortId,
                     CohortReference = cohortReference,
-                    WithParty = changeOfPartyRequest.WithParty
+                    WithParty = changeOfPartyRequest.WithParty,
+                    Status = changeOfPartyRequest.Status,
+                    EncodedNewApprenticeshipId = changeOfPartyRequest.NewApprenticeshipId.HasValue
+                        ? _encodingService.Encode(changeOfPartyRequest.NewApprenticeshipId.Value,
+                            EncodingType.ApprenticeshipId)
+                        : string.Empty
                 };
             }
             else
@@ -59,7 +67,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 {
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     ProviderId = source.ProviderId,
-                    ApprenticeshipId = source.ApprenticeshipId
+                    ApprenticeshipId = source.ApprenticeshipId,
+                    LegalEntityName = apprenticeDetails.EmployerName
                 };
             }
         }

@@ -7,105 +7,38 @@
 @{
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
+    ViewBag.GaData.Org = Model.Employer;
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
+
+        @if (Model.HasApprovedChangeOfPartyRequest || Model.IsContinuation)
+        {
+            <partial name="DetailsPartials/_ContinuationLinksBanner" />
+        }
         @if (Model.HasPendingChangeOfPartyRequest)
         {
-            <div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
-                <p class="das-notification__body">
-                    @if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
-                    {
-                        <span id="change-of-party-status-text">There are changes to this apprentice's details that are waiting for approval by the new employer.</span>
-                    }
-                    else
-                    {
-                        <span id="change-of-party-status-text">The new employer has requested changes to this apprentice's details.</span>
-                    }
-                </p>
-
-                <p class="das-notification__body">
-                    <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
-                </p>
-            </div>
+            <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
         }
         @if (Model.HasProviderPendingUpdate)
         {
-            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
-                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
-                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/undo")" class="govuk-link">View changes</a> </p>
-            </div>
+            <partial name="DetailsPartials/_PendingProviderUpdateBanner" />
         }
         else if (Model.HasEmployerPendingUpdate)
         {
-            <div class="das-notification" id="das-pendingUpdate-div" tabindex="-1">
-                <p class="das-notification__body" id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that you need to review.</p>
-                <p class="das-notification__body" id="das-pendingUpdate-div-undo-link"><a href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/review")" class="govuk-link">Review changes</a> </p>
-            </div>
+            <partial name="DetailsPartials/_PendingEmployerUpdateBanner" />
         }
-
-        @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
+        @if (Model.DataLockStatus != DetailsViewModel.DataLockSummaryStatus.None)
         {
-            <div class="das-notification" tabindex="-1">
-                <h3 class="das-notification__heading">Change request pending</h3>
-                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
-            </div>
-        }
-        else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
-        {
-            <div class="das-notification" tabindex="-1">
-                <h3 class="das-notification__heading">ILR data mismatch</h3>
-                <p class="das-notification__body">Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
-                @if (!Model.SuppressDataLockStatusReviewLink)
-                {
-                    <p class="das-notification__body">
-
-                        @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
-                        {
-                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details</a>
-                        }
-                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
-                        {
-                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details</a>
-                        }
-                        else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
-                        {
-                            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View course mismatch</a>
-                            <br />
-                            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
-                        }
-                    </p>
-                }
-            </div>
+            <partial name="DetailsPartials/_DataLockBanner" />
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
         {
-            <details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        Help with changes in apprentice's circumstances
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-
-                    <p class="govuk-body">
-                        If an apprentice you're training needs to move to a new employer, you should:
-
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>contact their original employer and ask them to stop the apprentice record</li>
-                            <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
-                        </ul>
-
-                        Once you've agreed these details, you can change the employer.<br /><br />
-
-                        Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
-                    </p>
-                </div>
-            </details>
+            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
@@ -233,7 +166,7 @@
             </tbody>
         </table>
     </div>
-</div>
+    </div>
 
 @section breadcrumb {
     <a id="back-link" class="govuk-back-link" asp-route="@RouteNames.ApprenticesIndex" asp-route-fromsearch="true">Back</a>

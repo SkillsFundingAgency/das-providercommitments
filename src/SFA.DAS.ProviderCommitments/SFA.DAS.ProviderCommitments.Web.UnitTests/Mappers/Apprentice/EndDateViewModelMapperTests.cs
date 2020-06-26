@@ -30,6 +30,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenLegalEntityNameIsMapped()
+        {
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(_fixture.AccountLegalEntityResponse.LegalEntityName, result.LegalEntityName);
+        }
+
+        [Test]
         public async Task ThenProviderIdIsMapped()
         {
             var result = await _fixture.Act();
@@ -88,21 +96,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     class EndDateViewModelMapperFixture
     {
+        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
         private readonly EndDateViewModelMapper _sut;
 
         public EndDateRequest Request { get; }
+
+        public AccountLegalEntityResponse AccountLegalEntityResponse { get; }
 
         public EndDateViewModelMapperFixture()
         {
             Request = new EndDateRequest
             {
+                AccountLegalEntityId = 143,
                 ApprenticeshipHashedId = "SF45G54",
                 ApprenticeshipId = 234,
                 ProviderId = 645621,
                 EmployerAccountLegalEntityPublicHashedId = "GD35SD35",
                 StartDate = "122019"
             };
-            _sut = new EndDateViewModelMapper();
+
+            AccountLegalEntityResponse = new AccountLegalEntityResponse {LegalEntityName = "TestName"};
+            _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+
+            _commitmentsApiClientMock
+                .Setup(x => x.GetAccountLegalEntity(Request.AccountLegalEntityId, default(CancellationToken)))
+                .ReturnsAsync(AccountLegalEntityResponse);
+            
+            _sut = new EndDateViewModelMapper(_commitmentsApiClientMock.Object);
         }
 
         public Task<EndDateViewModel> Act() => _sut.Map(Request);
