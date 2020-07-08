@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
 {
@@ -12,9 +9,8 @@ namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
     {
         public IModelBinder GetBinder(ModelBinderProviderContext bindingContext)
         {
-            var bind = (bindingContext.Metadata as DefaultModelMetadata);
-            var isErrorSuppressModelBoundProperty = (bindingContext.Metadata as DefaultModelMetadata)?.Attributes?.PropertyAttributes?.Where(x => x.GetType() == typeof(SuppressArgumentExceptionAttribute))?.Count() > 0;
-            if (isErrorSuppressModelBoundProperty)
+            var isArgumentExcpSuppressModelBoundProperty = (bindingContext.Metadata as DefaultModelMetadata)?.Attributes?.PropertyAttributes?.Where(x => x.GetType() == typeof(SuppressArgumentExceptionAttribute))?.Count() > 0;
+            if (isArgumentExcpSuppressModelBoundProperty)
             {
                 var errorSuppressModelBinder = new SuppressArgumentExceptionModelBinder();
                 return errorSuppressModelBinder;

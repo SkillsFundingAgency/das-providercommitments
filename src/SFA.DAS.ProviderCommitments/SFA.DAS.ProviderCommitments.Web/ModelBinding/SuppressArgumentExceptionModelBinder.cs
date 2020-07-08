@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using System;
 using System.ComponentModel;
