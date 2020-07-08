@@ -2,15 +2,15 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Attributes
 {
-    public class ErrorSuppressBinderAttribute : Attribute
+    public class SuppressArgumentExceptionAttribute : Attribute
     {
         public string PropertyName { get; set; }
-        public string ErrorMessage { get; set; }
+        public string CustomErrorMessage { get; set; }
 
-        public ErrorSuppressBinderAttribute(string propertyName, string errorMessage)
+        public SuppressArgumentExceptionAttribute(string propertyName, string customErrorMessage)
         {
             PropertyName = propertyName;
-            ErrorMessage = errorMessage;
+            CustomErrorMessage = customErrorMessage;
         }
     }
 }

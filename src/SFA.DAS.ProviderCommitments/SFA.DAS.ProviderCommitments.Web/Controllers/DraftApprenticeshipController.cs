@@ -15,7 +15,6 @@ using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -47,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = request.ProviderId,
                 CohortReference = request.CohortReference,
                 CohortId = request.CohortId,
-                StartDate = new MonthYearModel1(request.StartMonthYear),
+                StartDate = new MonthYearModel(request.StartMonthYear),
                 ReservationId = request.ReservationId,
                 CourseCode = request.CourseCode
             };

@@ -21,9 +21,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public MonthYearModel StartDate { get; set; }
         public DateTime? StopDate { get; set; }
 
-        [ErrorSuppressBinder(nameof(StartDate), "The start date is not valid")]
+        [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
         public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
-        [ErrorSuppressBinder(nameof(StartDate), "The start date is not valid")]
+        [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public string LegalEntityName { get; set; }

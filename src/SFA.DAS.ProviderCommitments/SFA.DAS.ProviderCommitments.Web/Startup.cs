@@ -87,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             options.Filters.Add(new AuthorizeFilter(policy));
             options.Filters.Add<AuthorizationFilter>(int.MaxValue);
-            options.ModelBinderProviders.Insert(0, new ErrorSuppressModelBinderProvider());
+            options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
             options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
             
         }

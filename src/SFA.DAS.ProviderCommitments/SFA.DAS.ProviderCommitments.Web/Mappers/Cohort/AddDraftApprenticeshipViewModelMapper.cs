@@ -7,7 +7,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -30,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
-                StartDate = new MonthYearModel1(source.StartMonthYear),
+                StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
                 Courses = await GetCourses(ale.LevyStatus),
