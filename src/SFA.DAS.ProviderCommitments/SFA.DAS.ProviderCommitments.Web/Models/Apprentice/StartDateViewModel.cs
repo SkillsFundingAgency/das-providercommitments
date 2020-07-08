@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.ProviderCommitments.Web.Attributes;
 using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -19,7 +20,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? Price { get; set; }
         public MonthYearModel StartDate { get; set; }
         public DateTime? StopDate { get; set; }
+
+        [ErrorSuppressBinder(nameof(StartDate), "The start date is not valid")]
         public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
+        [ErrorSuppressBinder(nameof(StartDate), "The start date is not valid")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public string LegalEntityName { get; set; }
