@@ -27,8 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
                 bindingContext.ModelState.TryAddModelError(
                   errorSuppressBinderAttribute.PropertyName,
                   errorSuppressBinderAttribute.CustomErrorMessage);
-
             }
+
             return Task.CompletedTask;
         }
     }
