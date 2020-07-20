@@ -53,8 +53,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
     Contents: |
-     azure\**
-     src\**\*.dacpac
+     azure/**
     TargetFolder: '$(build.artifactstagingdirectory)/publish'
     OverWrite: true
 
