@@ -53,7 +53,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
     Contents: |
-     azure\**
+     azure/**
     TargetFolder: '$(build.artifactstagingdirectory)/publish'
     OverWrite: true
 
