@@ -19,6 +19,9 @@ using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using StructureMap;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
+using SFA.DAS.Authorization.Mvc.Filters;
+using SFA.DAS.Authorization.Mvc.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -83,7 +86,10 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .Build();
 
             options.Filters.Add(new AuthorizeFilter(policy));
-            options.AddAuthorization();
+            options.Filters.Add<AuthorizationFilter>(int.MaxValue);
+            options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
+            options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
+            
         }
 
         public void ConfigureContainer(Registry registry)
