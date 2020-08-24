@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.ProviderCommitments.Web.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -11,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string LegalEntityName { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        [SuppressArgumentException(nameof(Price), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public decimal? Price { get; set; }
         public bool InEditMode { get; set; }
     }
