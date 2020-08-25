@@ -82,6 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
 
         [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
+        [SuppressArgumentException(nameof(Cost), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public int? Cost { get; set; }
 
         [Display(Name = "Reference (optional)")]
