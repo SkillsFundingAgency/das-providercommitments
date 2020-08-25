@@ -53,10 +53,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase(null, false)]
         [TestCase(0, false)]
         [TestCase(1, true)]
-        [TestCase(1.4, false)]
         [TestCase(100000, true)]
         [TestCase(100001, false)]
-        public void Validate_Price_ShouldBeValidated(decimal? price, bool expectedValid)
+        public void Validate_Price_ShouldBeValidated(int? price, bool expectedValid)
         {
             var model = new PriceViewModel { Price = price };
             AssertValidationResult(request => request.Price, model, expectedValid);
