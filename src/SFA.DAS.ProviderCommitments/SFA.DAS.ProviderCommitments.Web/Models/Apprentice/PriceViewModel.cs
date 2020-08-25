@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         [SuppressArgumentException(nameof(Price), "Total agreed apprenticeship price must be 7 numbers or fewer")]
-        public decimal? Price { get; set; }
+        public int? Price { get; set; }
         public bool InEditMode { get; set; }
     }
 }
