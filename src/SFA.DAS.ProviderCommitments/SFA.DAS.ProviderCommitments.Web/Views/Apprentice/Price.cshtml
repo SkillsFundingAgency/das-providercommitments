@@ -21,7 +21,7 @@
                 <label class="govuk-label" for="price">Enter the price in whole pounds.</label>
                 <span class="govuk-hint">For example, for &pound;1,500 enter 1500.</span>
                 @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
-                <input asp-for="Price" type="number" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
+                <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
             </div>
             <button id="save-and-continue-button" class="govuk-button" type="submit" data-module="govuk-button">
                 Save and continue
