@@ -8,6 +8,9 @@
         "sharedFrontendAppServicePlanName": {
             "type": "string"
         },
+        "sharedFrontEndSubnetResourceId": {
+            "type": "string"
+        },
         "sharedAppServicePlanResourceGroup": {
             "type": "string"
         },
@@ -116,8 +119,8 @@
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedAppServicePlanResourceGroup')]"
                     },
-                    "deployStagingSlot": {
-                        "value": true
+                    "subnetResourceId": {
+                        "value": "[parameters('sharedFrontEndSubnetResourceId')]"
                     },
                     "appServiceAppSettings": {
                         "value": [
