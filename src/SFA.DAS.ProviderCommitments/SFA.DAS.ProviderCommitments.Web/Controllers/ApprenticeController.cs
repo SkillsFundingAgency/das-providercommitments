@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
             var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm-employer", Name = RouteNames.ApprenticeConfirmEmployer)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> StartDate(StartDateRequest request)
         {
             var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> StartDate(StartDateViewModel viewModel)
         {
             if (viewModel.InEditMode)
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> EndDate(EndDateRequest request)
         {
             var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
@@ -93,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> EndDate(EndDateViewModel viewModel)
         {
             if (viewModel.InEditMode)
@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ApprenticeDetailsV2)]
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
@@ -119,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("download", Name = RouteNames.DownloadApprentices)]
-        //[DasAuthorize(ProviderFeature.ManageApprenticesV2)]
+        [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Download(DownloadRequest request)
         {
             var downloadViewModel = await _modelMapper.Map<DownloadViewModel>(request);
@@ -127,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
-        //[DasAuthorize(ProviderFeature.ManageApprenticesV2)]
+        [DasAuthorize(ProviderFeature.ManageApprenticesV2)]
         public async Task<IActionResult> Index(IndexRequest request)
         {
             IndexRequest savedRequest = null;
@@ -155,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ChangeEmployer)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
             var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
@@ -165,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/select-employer", Name = RouteNames.ApprenticeSelectEmployer)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
         {
             var viewModel = await _modelMapper.Map<SelectEmployerViewModel>(request);
@@ -175,7 +175,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticePrice)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Price(PriceRequest request)
         {
             var model = await _modelMapper.Map<PriceViewModel>(request);
@@ -184,7 +184,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/price", Name = RouteNames.ApprenticePrice)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
             var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
@@ -193,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Confirm(ConfirmRequest request)
         {
             var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
@@ -202,7 +202,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
             var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
@@ -213,7 +213,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer/sent", Name = RouteNames.ApprenticeSent)]
-        //[DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public IActionResult Sent()
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
