@@ -59,6 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddNavigationBarSettings(Configuration)
                 .EnableGoogleAnalytics()
+                .EnableCookieBanner()
                 .AddZenDeskSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
