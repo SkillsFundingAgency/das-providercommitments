@@ -348,6 +348,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
         }
 
+        [TestCase(null, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Rejected, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Pending, true)]
+        public async Task ThenHasChangeOfPRoviderRequestPendingIsMappedCorrectly(ChangeOfPartyRequestStatus? status, bool expectHasPending)
+        {
+            if (status.HasValue)
+            {
+                _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeProvider, status.Value);
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfProviderRequest);
+        }
+
         [TestCase(Party.Employer)]
         [TestCase(Party.Provider)]
         public async Task ThenPendingChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
@@ -408,6 +425,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
+        }
+
+        [Test]
+        public async Task ThenAPendingChangeOfPartyOriginatingFromProviderDoesNotSetHasPendingChangeOfProviderRequest()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending);
+
+            await _fixture.Map();
+
+            Assert.IsFalse(_fixture.Result.HasPendingChangeOfProviderRequest);
         }
 
         [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
