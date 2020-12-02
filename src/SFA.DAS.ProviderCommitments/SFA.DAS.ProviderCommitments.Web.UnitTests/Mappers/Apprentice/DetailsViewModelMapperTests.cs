@@ -348,6 +348,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
         }
 
+        [TestCase(null, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Rejected, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, false)]
+        [TestCase(ChangeOfPartyRequestStatus.Pending, true)]
+        public async Task ThenHasChangeOfProviderRequestPendingIsMappedCorrectly(ChangeOfPartyRequestStatus? status, bool expectHasPending)
+        {
+            if (status.HasValue)
+            {
+                _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeProvider, status.Value);
+            }
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfProviderRequest);
+        }
+
         [TestCase(Party.Employer)]
         [TestCase(Party.Provider)]
         public async Task ThenPendingChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
@@ -401,6 +418,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenIfNextApprenticeshipThenHasContinuationIsMappedCorrectly()
+        {
+            _fixture.WithNextApprenticeship();
+            await _fixture.Map();
+            Assert.IsTrue(_fixture.Result.HasContinuation);
+        }
+
+        [Test]
+        public async Task ThenIfNoNextApprenticeshipThenHasContinuationIsMappedCorrectly()
+        {
+            _fixture.WithoutNextApprenticeship();
+            await _fixture.Map();
+            Assert.IsFalse(_fixture.Result.HasContinuation);
+        }
+
+        [Test]
         public async Task ThenAPendingChangeOfPartyOriginatingFromEmployerDoesNotSetHasPendingChangeOfPartyRequest()
         {
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeProvider, ChangeOfPartyRequestStatus.Pending);
@@ -408,6 +441,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
+        }
+
+        [Test]
+        public async Task ThenAPendingChangeOfPartyOriginatingFromProviderDoesNotSetHasPendingChangeOfProviderRequest()
+        {
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending);
+
+            await _fixture.Map();
+
+            Assert.IsFalse(_fixture.Result.HasPendingChangeOfProviderRequest);
         }
 
         [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
@@ -442,6 +485,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public Fixture Fixture { get; }
             public string EncodedNewApprenticeshipId { get; }
             public string EncodedPreviousApprenticeshipId { get; }
+            public string EncodedNextApprenticeshipId { get; }
 
             public DetailsViewModelMapperFixture()
             {
@@ -689,6 +733,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             {
                 ApiResponse.ContinuationOfId = null;
                 ApiResponse.PreviousProviderId = null;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithNextApprenticeship()
+            {
+                ApiResponse.ContinuedById = Fixture.Create<long>();
+
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.ContinuedById), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedNextApprenticeshipId);
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithoutNextApprenticeship()
+            {
+                ApiResponse.ContinuedById = null;
                 return this;
             }
         }
