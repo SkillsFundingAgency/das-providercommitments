@@ -134,7 +134,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenProviderRefIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Reference, _fixture.Result.ProviderRef);
+            Assert.AreEqual(_fixture.ApiResponse.ProviderReference, _fixture.Result.ProviderRef);
         }
 
         [Test]
