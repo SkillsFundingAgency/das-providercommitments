@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         {
             var episodes = priceEpisodes.ToList();
 
-            var episode = episodes.SingleOrDefault(x =>
+            var episode = episodes.FirstOrDefault(x =>
                 x.FromDate <= effectiveDate && (x.ToDate == null || x.ToDate >= effectiveDate));
 
             return episode?.Cost ?? episodes.First().Cost;
