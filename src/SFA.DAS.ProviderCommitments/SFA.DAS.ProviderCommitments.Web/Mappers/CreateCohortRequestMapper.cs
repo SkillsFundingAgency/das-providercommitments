@@ -3,7 +3,6 @@ using System.Threading;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
-using SFA.DAS.Apprenticeships.Api.Types.Exceptions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
             if (accountLegalEntity is null)
             {
-                throw new EntityNotFoundException($"AccountLegalEntity {source.AccountLegalEntityId} not found", null);
+                throw new Exception($"AccountLegalEntity {source.AccountLegalEntityId} not found", null);
             }
 
             return new CreateCohortRequest

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Client;
-using SFA.DAS.Apprenticeships.Api.Types;
-using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
@@ -17,45 +19,45 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
     {
         private GetTrainingCoursesQueryHandler _handler;
 
-        private Mock<ITrainingProgrammeApiClient> _iTrainingProgrammeApiClient;
+        private Mock<ICommitmentsApiClient> _iTrainingProgrammeApiClient;
 
-        private Standard[] _standards;
-        private Framework[] _frameworks;
+        private List<TrainingProgramme> _standards;
+        private List<TrainingProgramme> _allTrainingProgrammes;
         [SetUp]
         public void Arrange()
         {
-
-            var standard = new Standard
+            _standards = new List<TrainingProgramme>();
+            _allTrainingProgrammes = new List<TrainingProgramme>();
+    
+            var standard = new TrainingProgramme
             {
                 EffectiveFrom = new DateTime(2016, 01, 01),
                 EffectiveTo = new DateTime(2016, 12, 31),
-                Title = "Title"
+                Name = "Title"
             };
 
-            var framework = new Framework
+            var framework = new TrainingProgramme
             {
                 EffectiveFrom = new DateTime(2017, 01, 01),
                 EffectiveTo = new DateTime(2017, 12, 31),
-                Title = "Title",
-                FrameworkName = "Name",
-                PathwayName = "Name"
+                Name = "Title"
             };
 
-            _standards = new Standard[1] {standard};
-            _frameworks = new Framework[1] {framework};
+            _standards.Add(standard);
+            _allTrainingProgrammes = new List<TrainingProgramme> {standard, framework};
 
-            _iTrainingProgrammeApiClient = new Mock<ITrainingProgrammeApiClient>();
+            _iTrainingProgrammeApiClient = new Mock<ICommitmentsApiClient>();
             
-            _iTrainingProgrammeApiClient.Setup(x => x.GetFrameworkTrainingProgrammes())
-                .ReturnsAsync(new List<Framework>
+            _iTrainingProgrammeApiClient.Setup(x => x.GetAllTrainingProgrammeStandards(CancellationToken.None))
+                .ReturnsAsync(new GetAllTrainingProgrammeStandardsResponse
                 {
-                    framework
+                    TrainingProgrammes = _standards
                 });
 
-            _iTrainingProgrammeApiClient.Setup(x => x.GetStandardTrainingProgrammes())
-                .ReturnsAsync(new List<Standard>
+            _iTrainingProgrammeApiClient.Setup(x => x.GetAllTrainingProgrammes(CancellationToken.None))
+                .ReturnsAsync(new GetAllTrainingProgrammesResponse()
                 {
-                    standard
+                    TrainingProgrammes = _allTrainingProgrammes
                 });
 
             _handler = new GetTrainingCoursesQueryHandler(_iTrainingProgrammeApiClient.Object);
@@ -70,8 +72,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length, result.TrainingCourses.Length);
-            Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
+            Assert.AreEqual(_standards.Count, result.TrainingCourses.Length);
+            result.TrainingCourses[0].Should().BeEquivalentTo(_standards[0]);
         }
 
         [Test]
@@ -83,9 +85,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
                 EffectiveDate = null
             }, new CancellationToken());
 
-            Assert.AreEqual(_standards.Length + _frameworks.Length, result.TrainingCourses.Length);
-            Assert.IsTrue(result.TrainingCourses.Any(x => x is Standard));
-            Assert.IsTrue(result.TrainingCourses.Any(x => x is Framework));
+            result.TrainingCourses.Should().BeEquivalentTo(_allTrainingProgrammes);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetTrainingCoursesTests
             }, new CancellationToken());
 
             Assert.AreEqual(1, result.TrainingCourses.Length);
-            Assert.IsInstanceOf<Standard>(result.TrainingCourses[0]);
+            result.TrainingCourses[0].Should().BeEquivalentTo(_standards[0]);
         }
 
         [Test]

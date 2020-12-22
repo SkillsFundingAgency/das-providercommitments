@@ -1,11 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.Kernel;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -23,7 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private Mock<IMediator> _mediator;
         private AccountLegalEntityResponse _accountLegalEntityResponse;
-        private GetTrainingCoursesQueryRequest _trainingCoursesQueryRequest;
         private GetTrainingCoursesQueryResponse _trainingCoursesQueryResponse;
 
         [SetUp]
@@ -31,15 +28,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new Fixture();
 
-            fixture.Customizations.Add(
-                new TypeRelay(
-                    typeof(SFA.DAS.Apprenticeships.Api.Types.ITrainingProgramme),
-                    typeof(Standard)));
-
             _source = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().With(x => x.StartMonthYear, "042020").Create();
             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
-            _trainingCoursesQueryRequest = fixture.Create<GetTrainingCoursesQueryRequest>();
             _trainingCoursesQueryResponse = fixture.Create<GetTrainingCoursesQueryResponse>();
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
