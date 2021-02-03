@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -102,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.Courses = courses;
         }
 
-        private async Task<ITrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
+        private async Task<TrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
             {

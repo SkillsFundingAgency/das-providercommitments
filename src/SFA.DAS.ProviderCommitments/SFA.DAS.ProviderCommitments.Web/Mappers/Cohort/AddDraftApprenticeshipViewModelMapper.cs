@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -37,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private async Task<ITrainingProgramme[]> GetCourses(ApprenticeshipEmployerType levyStatus)
+        private async Task<TrainingProgramme[]> GetCourses(ApprenticeshipEmployerType levyStatus)
         {
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = levyStatus != ApprenticeshipEmployerType.NonLevy });
             return result.TrainingCourses;

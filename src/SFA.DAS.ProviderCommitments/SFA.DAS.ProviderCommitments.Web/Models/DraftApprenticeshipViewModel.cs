@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -88,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }
 
-        public ITrainingProgramme[] Courses { get; set; }
+        public TrainingProgramme[] Courses { get; set; }
 
         public bool IsContinuation { get; set; }
     }

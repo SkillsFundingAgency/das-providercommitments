@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Client;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Models;
@@ -14,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -155,7 +154,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public ConfirmRequest request { get; }
 
-        public ITrainingProgramme trainingProgramme;
+        public TrainingProgramme trainingProgramme;
         public GetApprenticeshipResponse getApprenticeshipResponse { get; set; }
         public AccountLegalEntityResponse accountLegalEntityResponse { get; set; }
         public GetPriceEpisodesResponse priceEpisodesResponse { get; set; }
@@ -167,7 +166,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             request.StartDate = "012020";
             request.EndDate = "112020";
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
-            trainingProgramme = fixture.Create<Standard>();
+            trainingProgramme = fixture.Create<TrainingProgramme>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
             priceEpisodesResponse = new GetPriceEpisodesResponse
             {
@@ -178,23 +177,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             };
 
             var commitmentAiClient = new Mock<ICommitmentsApiClient>();
-            var trainingProgrammeApiClient = new Mock<ITrainingProgrammeApiClient>();
 
             commitmentAiClient.Setup(x => x.GetApprenticeship(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => getApprenticeshipResponse);
             commitmentAiClient.Setup(x => x.GetAccountLegalEntity(request.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
             commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => priceEpisodesResponse);
-            trainingProgrammeApiClient.Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode)).ReturnsAsync(() => trainingProgramme);
+            commitmentAiClient
+                .Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode, CancellationToken.None))
+                .ReturnsAsync(()=> new
+                    GetTrainingProgrammeResponse
+                    {
+                        TrainingProgramme  = trainingProgramme
+                    } );
 
-            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, trainingProgrammeApiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>());
+            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>());
         }
 
         public ConfirmViewModelMapperFixture SetPriceBand(int fundingCap, DateTime startDate)
         {
-            trainingProgramme = new Standard
+            trainingProgramme = new TrainingProgramme()
             {
-                FundingPeriods = new System.Collections.Generic.List<FundingPeriod>
+                FundingPeriods = new System.Collections.Generic.List<TrainingProgrammeFundingPeriod>
                 {
-                    new FundingPeriod
+                    new TrainingProgrammeFundingPeriod
                     {
                           EffectiveFrom =startDate.AddDays(-1),
                           EffectiveTo = startDate.AddDays(1),
