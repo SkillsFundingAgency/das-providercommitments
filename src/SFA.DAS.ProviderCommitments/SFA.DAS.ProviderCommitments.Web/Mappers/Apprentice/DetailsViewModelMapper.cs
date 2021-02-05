@@ -54,6 +54,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var approvedChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Approved);
 
+                var pendingChangeOfProviderRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
+                    x.OriginatingParty == Party.Employer && x.Status == ChangeOfPartyRequestStatus.Pending);
+
                 return new DetailsViewModel
                 {
                     ProviderId = source.ProviderId,
@@ -69,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     CourseName = data.Apprenticeship.CourseName,
                     StartDate = data.Apprenticeship.StartDate,
                     EndDate = data.Apprenticeship.EndDate,
-                    ProviderRef = data.Apprenticeship.Reference,
+                    ProviderRef = data.Apprenticeship.ProviderReference,
                     Cost = data.PriceEpisodes.PriceEpisodes.GetPrice(),
                     AllowEditApprentice = allowEditApprentice,
                     HasProviderPendingUpdate = data.HasProviderUpdates,
@@ -82,11 +85,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasApprovedChangeOfPartyRequest = approvedChangeOfPartyRequest != null,
+                    HasPendingChangeOfProviderRequest = pendingChangeOfProviderRequest != null,
                     EncodedNewApprenticeshipId = approvedChangeOfPartyRequest?.NewApprenticeshipId != null
                         ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
                             EncodingType.ApprenticeshipId)
                         : null,
                     IsContinuation = data.Apprenticeship.IsContinuation && data.Apprenticeship.PreviousProviderId == source.ProviderId,
+                    HasContinuation = data.Apprenticeship.HasContinuation,
                     EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
                         ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
                         : null
