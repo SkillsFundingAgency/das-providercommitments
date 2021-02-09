@@ -6,6 +6,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoFixture.NUnit3" Version="4.8.0" />
     <PackageReference Include="CompareNETObjects" Version="4.59.0" />
@@ -16,7 +20,7 @@
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="6.1.0" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="6.2.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.Testing" Version="3.0.22" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />

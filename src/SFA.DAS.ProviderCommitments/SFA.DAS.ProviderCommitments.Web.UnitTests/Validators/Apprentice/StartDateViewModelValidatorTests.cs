@@ -1,5 +1,7 @@
 ﻿using FluentValidation.TestHelper;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
@@ -11,6 +13,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
     [TestFixture]
     public class StartDateViewModelValidatorTests
     {
+        private Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
+
+        [SetUp]
+        public void Arrange()
+        {
+            _mockAcademicYearDateProvider = new Mock<IAcademicYearDateProvider>();
+            _mockAcademicYearDateProvider.Setup(p => p.CurrentAcademicYearStartDate).Returns(new DateTime(2019, 8, 1));
+        }
+
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void ThenProviderIdIsValidated(long providerId, bool expectedValid)
@@ -115,15 +126,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("082020", "072021", true)]
         public void AndStartDateIsComparedAgainstEndDate_ThenShouldGetExpectedResult(string startDate, string endDate, bool expected)
         {
-            DateTime? stopDate = new DateTime(2019, 1, 1);
+            DateTime? stopDate = new DateTime(2020, 1, 1);
             MonthYearModel start = new MonthYearModel(startDate);
             var model = new StartDateViewModel { StartDate = start, StopDate = stopDate, EndDate = endDate };
             AssertValidationResult(request => request.StartDate, model, expected);
         }
 
+        [TestCase("082020", true)]
+        [TestCase("072021", true)]
+        [TestCase("082021", false)]
+        public void AndStartDateIsComparedAgainstAcademicYear_ThenShouldGetExpectedResult(string startDate, bool expected)
+        {
+            DateTime? stopDate = new DateTime(2020, 1, 1);
+            MonthYearModel start = new MonthYearModel(startDate);
+            var model = new StartDateViewModel { StartDate = start, StopDate = stopDate };
+            AssertValidationResult(request => request.StartDate, model, expected);
+        }
+
         private void AssertValidationResult<T>(Expression<Func<StartDateViewModel, T>> property, StartDateViewModel instance, bool expectedValid)
         {
-            var validator = new StartDateViewModelValidator();
+            var validator = new StartDateViewModelValidator(_mockAcademicYearDateProvider.Object);
 
             if (expectedValid)
             {
