@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .WithMessage("Enter a start date prior to the new training end date")
                 .When(a => a.EndDate != null && a.StartDate.HasValue && a.StartDate.IsValid);
             RuleFor(x => x.StartDate)
-                .Must((y, _) => y.StartDate.Date < (new MonthYearModel(_academicYearDateProvider.CurrentAcademicYearStartDate.AddYears(2).ToString("MMyyyy")).Date))
+                .Must((y, _) => y.StartDate.Date <= (new MonthYearModel(_academicYearDateProvider.CurrentAcademicYearEndDate.AddYears(1).ToString("MMyyyy")).Date))
                 .WithMessage("The start date must be no later than one year after the end of the current teaching year")
                 .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
         }

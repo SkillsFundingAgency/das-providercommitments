@@ -19,7 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         public void Arrange()
         {
             _mockAcademicYearDateProvider = new Mock<IAcademicYearDateProvider>();
-            _mockAcademicYearDateProvider.Setup(p => p.CurrentAcademicYearStartDate).Returns(new DateTime(2019, 8, 1));
+
+            _mockAcademicYearDateProvider.Setup(p => p.CurrentAcademicYearEndDate).Returns(new DateTime(2020, 7, 31));
         }
 
         [TestCase(0, false)]
