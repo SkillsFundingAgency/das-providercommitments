@@ -42,7 +42,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.StartDate)
                 .Must((y, _) => y.StartDate.Date <= (new MonthYearModel(_academicYearDateProvider.CurrentAcademicYearEndDate.AddYears(1).ToString("MMyyyy")).Date))
                 .WithMessage("The start date must be no later than one year after the end of the current teaching year")
-                .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
+                .When(a => a.StartDate.HasValue && a.StartDate.IsValid)
+                .Unless(a => a.EndDate != null && a.StartDate.Date > new MonthYearModel(a.EndDate).Date);
         }
     }
 }
