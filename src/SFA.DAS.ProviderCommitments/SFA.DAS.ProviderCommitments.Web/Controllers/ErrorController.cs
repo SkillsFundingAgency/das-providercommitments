@@ -3,7 +3,7 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
-    [HideNavigationBar]
+    [HideNavigationBar(hideAccountHeader: false, hideNavigationLinks: true)]
     public class ErrorController : Controller
     {
         [Route("error")]

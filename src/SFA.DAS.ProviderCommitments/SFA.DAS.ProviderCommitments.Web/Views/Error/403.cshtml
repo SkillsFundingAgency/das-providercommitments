@@ -3,5 +3,7 @@
     ViewBag.GaData.Vpv = "/error/403";
 }
 
-<h1 class="govuk-heading-xl">Access denied</h1>
-<p class="govuk-body">Your account does not have sufficient privileges.</p>
+<h1 class="govuk-heading-xl">You do not have permission to access this page</h1>
+<p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an account owner.</p>
+
+<a id="back-link" class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink("/account")">Go back to home page</a>
