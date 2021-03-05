@@ -7,6 +7,7 @@ using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Handlers;
 using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.CommitmentsV2.Services.Shared;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -40,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
+            For<IAcademicYearDateProvider>().Use<AcademicYearDateProvider>().Singleton();
             For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
 

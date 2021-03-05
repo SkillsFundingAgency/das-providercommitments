@@ -6,6 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         
-        public long? AccountLegalEntityId { get; set; }
+        public long AccountLegalEntityId { get; set; }
     }
 }

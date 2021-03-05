@@ -8,8 +8,10 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -19,11 +21,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
+        private readonly ICommitmentsApiClient _commitmentApiClient;
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
+            _commitmentApiClient = commitmentApiClient;
         }
 
         [HttpGet]
@@ -43,26 +47,54 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                return RedirectToAction("Dates", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
+        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Dates(DatesRequest request)
+        public async Task<IActionResult> StartDate(StartDateRequest request)
         {
-            var viewModel = await _modelMapper.Map<DatesViewModel>(request);
+            var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
 
             return View(viewModel);
         }
 
         [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/dates", Name = RouteNames.ApprenticeDates)]
+        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Dates(DatesViewModel viewModel)
+        public async Task<IActionResult> StartDate(StartDateViewModel viewModel)
+        {
+            if (viewModel.InEditMode)
+            {
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
+
+            }
+            else
+            {
+                var request = await _modelMapper.Map<EndDateRequest>(viewModel);
+                return RedirectToAction(nameof(EndDate), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, StartDate = viewModel.StartDate.MonthYear });
+            }
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> EndDate(EndDateRequest request)
+        {
+            var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
+        public async Task<IActionResult> EndDate(EndDateViewModel viewModel)
         {
             if (viewModel.InEditMode)
             {
@@ -73,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             else
             {
                 var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, StartDate = viewModel.StartDate.MonthYear });
+                return RedirectToAction(nameof(Price), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, StartDate = viewModel.StartDate, EndDate = viewModel.EndDate.MonthYear });
             }
         }
 
@@ -122,13 +154,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ApprenticeInform)]
+        [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ChangeEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public async Task<IActionResult> Inform(InformRequest request)
+        public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
-            var viewModel = await _modelMapper.Map<InformViewModel>(request);
-
-            return View(viewModel);
+            var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
+            var viewName = viewModel is InformViewModel ? "Inform" : "ChangeEmployerRequestDetails";
+            return View(viewName, viewModel);
         }
 
         [HttpGet]
@@ -156,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
             var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirm, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.Price });
+            return RedirectToRoute(RouteNames.ApprenticeConfirm, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.EndDate, request.Price });
         }
 
         [HttpGet]
@@ -171,8 +203,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
-        public IActionResult Confirm(ConfirmViewModel viewModel)
+        public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
+            var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
+            await _commitmentApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
+            TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
             return RedirectToRoute(RouteNames.ApprenticeSent, new { viewModel.ApprenticeshipHashedId });
         }
 
@@ -181,7 +216,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship, ProviderFeature.ChangeOfEmployer)]
         public IActionResult Sent()
         {
-            return View();
+            var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
+            return View(nameof(Sent), model);
         }
     }
 }

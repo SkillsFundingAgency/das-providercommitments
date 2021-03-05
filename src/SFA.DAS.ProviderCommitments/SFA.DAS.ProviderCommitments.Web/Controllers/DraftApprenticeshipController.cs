@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -9,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -101,9 +101,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.Courses = courses;
         }
 
-        private async Task<ITrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
+        private async Task<TrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
         {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = !cohortDetails.IsFundedByTransfer });
+            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
+            {
+                IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
+                                     cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
+                                    || cohortDetails.IsLinkedToChangeOfPartyRequest
+            });
 
             return result.TrainingCourses;
         }

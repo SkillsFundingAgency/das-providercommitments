@@ -13,7 +13,6 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
     {
         public ConfigurationRegistry()
         {
-            AddConfiguration<ApprenticeshipInfoServiceConfiguration>(ProviderCommitmentsConfigurationKeys.ApprenticeshipInfoServiceConfiguration);
             AddConfiguration<AuthenticationSettings>(ProviderCommitmentsConfigurationKeys.AuthenticationSettings);
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
             AddConfiguration<CommitmentPermissionsApiClientConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);

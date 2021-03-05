@@ -3,7 +3,11 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Moq;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -13,6 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private PriceViewModelMapper _mapper;
         private PriceRequest _source;
         private Func<Task<PriceViewModel>> _act;
+        private Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private GetApprenticeshipResponse _getApprenticeshipApiResponse;
 
         [SetUp]
         public void Arrange()
@@ -20,7 +26,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var fixture = new Fixture();
             _source = fixture.Build<PriceRequest>().Without(x=>x.Price).Create();
 
-            _mapper = new PriceViewModelMapper();
+            _getApprenticeshipApiResponse = new GetApprenticeshipResponse {EmployerName = "TestName"};
+
+            _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClientMock
+                .Setup(x => x.GetApprenticeship(_source.ApprenticeshipId, default(CancellationToken)))
+                .ReturnsAsync(_getApprenticeshipApiResponse);
+                
+            _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object);
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -44,6 +57,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _act();
             Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+        }
+
+        [Test]
+        public async Task ThenLegalEntityNameIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_getApprenticeshipApiResponse.EmployerName, result.LegalEntityName);
         }
 
         [Test]

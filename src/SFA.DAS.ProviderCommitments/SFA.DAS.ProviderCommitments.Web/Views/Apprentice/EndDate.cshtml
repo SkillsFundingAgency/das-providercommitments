@@ -1,0 +1,96 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.EndDateViewModel
+
+@{
+    ViewData["Title"] = "New training end date";
+    ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
+    ViewBag.GaData.Org = Model.LegalEntityName;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="_ValidationSummary" />
+
+        <h1 class="govuk-heading-xl">New training end date</h1>
+
+        <p class="govuk-body">The new training date must be after the new start date.</p>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header"></th>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-50">New training start date</th>
+                    <td id="stop-date" class="govuk-table__cell">@Model.StartDateTime.ToGdsFormatWithoutDay()</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <form novalidate method="post">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date-hint">
+                @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+                @Html.HiddenFor(x => x.StartDate)
+                @Html.HiddenFor(x => x.Price)
+
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndDate,"govuk-form-group--error")">
+
+                    <span id="end-date-hint" class="govuk-hint">
+                        For example, 04 2020
+                    </span>
+
+                    @if (!ViewContext.ModelState.IsValid)
+                    {
+                        <span id="error-message-EndDate" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(x => x.EndDate)
+                        </span>
+                    }
+
+                    <div class="govuk-date-input" id="end-date">
+
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label govuk-date-input__label" for="end-date-month">
+                                    Month
+                                </label>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-input--error")" id="end-date-month" asp-for="EndMonth" type="number" pattern="[0-9]*" inputmode="numeric">
+                            </div>
+                        </div>
+
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label govuk-date-input__label" for="end-date-year">
+                                    Year
+                                </label>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-input--error")" id="send-date-year" asp-for="EndYear" type="number" pattern="[0-9]*" inputmode="numeric">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="save-and-continue-button" class="govuk-button" type="submit" data-module="govuk-button">
+                    Save and continue
+                </button>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    @if (Model.InEditMode)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price })">Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeStartDate, new {Model.EmployerAccountLegalEntityPublicHashedId})">Back</a>
+    }
+}

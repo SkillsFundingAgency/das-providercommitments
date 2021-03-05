@@ -34,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = apiResponse.Uln,
                 CourseCode = apiResponse.CourseCode,
                 Cost = apiResponse.Cost,
-                Reference = apiResponse.Reference
+                Reference = apiResponse.Reference,
+                IsContinuation = apiResponse.IsContinuation
             };
         }
     }

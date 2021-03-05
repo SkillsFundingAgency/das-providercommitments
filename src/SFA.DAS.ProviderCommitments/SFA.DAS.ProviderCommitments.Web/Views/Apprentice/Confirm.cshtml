@@ -5,6 +5,7 @@
 @{
     ViewBag.Title = "Confirm the information before sending your request";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
+    ViewBag.GaData.Org = Model.NewEmployerName;
 }
 
 <div class="govuk-grid-row">
@@ -28,7 +29,6 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice name</th>
                     <td class="govuk-table__cell das-table-cell-width-40">@Model.ApprenticeName</td>
                     <td class="govuk-table__cell">&nbsp;</td>
-                    </td>
                 </tr>
             </tbody>
         </table>
@@ -43,6 +43,11 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Training start date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.OldStartDate)</td>
+                    <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training end date</th>
+                    <td class="govuk-table__cell">@DisplayDate(Model.OldEndDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">
@@ -67,16 +72,23 @@
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New training start date</th>
-                    <td class="govuk-table__cell">@DisplayDate(Model.NewStartDate.Date.Value)</td>
+                    <td class="govuk-table__cell">@DisplayDate(Model.NewStartDateTime)</td>
                     <td class="govuk-table__cell">
-                        <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeDates, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
+                        <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeStartDate, new { EmployerAccountLegalEntityPublicHashedId = Model.AccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate, EndDate = Model.NewEndDate, Price = Model.NewPrice})">Change</a>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">New training end date</th>
+                    <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
+                    <td class="govuk-table__cell">
+                        <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, new { EmployerAccountLegalEntityPublicHashedId = Model.AccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate, EndDate = Model.NewEndDate, Price = Model.NewPrice})">Change</a>
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New agreed apprenticeship price</th>
                     <td class="govuk-table__cell">@Model.NewPrice.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell">
-                        <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear, Price = Model.NewPrice})">Change</a>
+                        <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { EmployerAccountLegalEntityPublicHashedId = Model.AccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate, EndDate = Model.NewEndDate, Price = Model.NewPrice})">Change</a>
                     </td>
                 </tr>
             </tbody>
@@ -87,9 +99,10 @@
 <form method="post">
 
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+    @Html.HiddenFor(x => x.AccountLegalEntityPublicHashedId)
     @Html.HiddenFor(x => x.NewPrice)
     @Html.HiddenFor(x => x.NewStartDate)
+    @Html.HiddenFor(x => x.NewEndDate)
     @Html.HiddenFor(x => x.ApprenticeshipHashedId)
 
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
@@ -105,8 +118,7 @@
     }
 }
 
-
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.EmployerAccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate.MonthYear})">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { EmployerAccountLegalEntityPublicHashedId = Model.AccountLegalEntityPublicHashedId, StartDate = Model.NewStartDate, EndDate = Model.NewEndDate })">Back</a>
 }

@@ -6,12 +6,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     {
         private readonly GetDraftApprenticeshipResponse _editDraftApprenticeshipDetails;
         private readonly EditDraftApprenticeshipRequest _editDraftApprenticeshipRequest;
+        private readonly GetCohortResponse _cohortResponse;
         private readonly DraftApprenticeshipController _controller;
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
         private readonly Mock<IMediator> _mediator;
@@ -73,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _courseResponse = new GetTrainingCoursesQueryResponse
             {
-                TrainingCourses = new ITrainingProgramme[0]
+                TrainingCourses = new TrainingProgramme[0]
             };
 
             _addModel = new AddDraftApprenticeshipViewModel
@@ -91,6 +92,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 DraftApprenticeshipId = _draftApprenticeshipId,
                 DraftApprenticeshipHashedId = _draftApprenticeshipHashedId
             };
+
+            _cohortResponse = autoFixture.Build<GetCohortResponse>()
+                .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy)
+                .With(x => x.ChangeOfPartyRequestId, default(long?))
+                .Create();
 
             _apiModelException = new CommitmentsApiModelException(new List<ErrorDetail>()
                 {new ErrorDetail("Name", "Cannot be more than...")});
@@ -115,7 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(autoFixture.Build<GetCohortResponse>().Create());
+                .ReturnsAsync(_cohortResponse);
 
             _controller = new DraftApprenticeshipController(_mediator.Object,
                 _linkGenerator.Object, _commitmentsApiClient.Object, _modelMapper.Object);
@@ -148,6 +154,38 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupProviderIdOnEditRequest(long providerId)
         {
             _editDraftApprenticeshipRequest.ProviderId = providerId;
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupCohortFundedByTransfer(bool transferFunded)
+        {
+            if (transferFunded)
+            {
+                _cohortResponse.TransferSenderId = 9879;
+            }
+            else
+            {
+                _cohortResponse.TransferSenderId = null;
+            }
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetCohortWithChangeOfParty(bool isChangeOfParty)
+        {
+            if (isChangeOfParty)
+            {
+                _cohortResponse.ChangeOfPartyRequestId = 12345;
+            }
+            else
+            {
+                _cohortResponse.ChangeOfPartyRequestId = null;
+            }
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupLevyStatus(ApprenticeshipEmployerType status)
+        {
+            _cohortResponse.LevyStatus = status;
             return this;
         }
 

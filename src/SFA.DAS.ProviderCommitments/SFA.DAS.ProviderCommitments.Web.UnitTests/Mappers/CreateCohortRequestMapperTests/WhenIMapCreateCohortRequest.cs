@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Types.Exceptions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -145,20 +144,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
-        public void AndWhenTheAccountLegalEntityIdIsNullThenShouldThrowInvalidOperationException()
-        {
-            _source.AccountLegalEntityId = null;
-
-            Assert.ThrowsAsync<InvalidOperationException>(() => _act());
-        }
-
-        [Test]
         public void AndWhenTheAccountLegalEntityIsNotFoundThenShouldThrowInvalidOperationException()
         {
             _mockCommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((AccountLegalEntityResponse) null);
 
-            Assert.ThrowsAsync<EntityNotFoundException>(() => _act());
+            Assert.ThrowsAsync<Exception>(() => _act());
         }
     }
 }

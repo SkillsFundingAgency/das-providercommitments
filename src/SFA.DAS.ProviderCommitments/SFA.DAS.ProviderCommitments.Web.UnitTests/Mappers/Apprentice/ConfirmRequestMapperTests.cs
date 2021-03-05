@@ -56,6 +56,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenNewEndDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EndDate, result.EndDate);
+        }
+
+        [Test]
         public async Task ThenNewPriceIsMappedCorrectly()
         {
             var result = await _act();

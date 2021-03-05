@@ -15,9 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.Price).NotEmpty().WithMessage("Enter the new agreed apprenticeship price");
             RuleFor(x => x.Price).GreaterThanOrEqualTo(1).WithMessage("Enter the new agreed apprenticeship price");
             RuleFor(x => x.Price).LessThanOrEqualTo(100000).WithMessage("The new agreed apprenticeship price must be £100,000 or less");
-            RuleFor(x => x.Price).Must(x => decimal.ToInt32(x.Value) == x.Value)
-                .When(x => x.Price.HasValue)
-                .WithMessage("The value '{PropertyValue}' is not valid for the new agreed apprenticeship price");
         }
     }
 }

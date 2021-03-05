@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderRelationships.Api.Client;
@@ -78,12 +79,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private readonly long _apprenticeshipId;
         private readonly GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
 
+        public GetApprenticeshipResponse GetApprenticeshipApiResponse { get; }
+
         public SelectEmployerViewModelMapperFixture()
         {
             _providerId = 123;
             _accountLegalEntityId = 457;
             _apprenticeshipId = 1;
-        _request = new SelectEmployerRequest { ProviderId = _providerId, ApprenticeshipId = _apprenticeshipId};
+            _request = new SelectEmployerRequest { ProviderId = _providerId, ApprenticeshipId = _apprenticeshipId };
             _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
@@ -111,6 +114,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 }
             };
 
+            GetApprenticeshipApiResponse = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse
+            {
+                AccountLegalEntityId = _accountLegalEntityId,
+                EmployerName = "TestName"
+            };
+
             _providerRelationshipsApiClientMock = new Mock<IProviderRelationshipsApiClient>();
             _providerRelationshipsApiClientMock
                 .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
@@ -121,10 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentApiClientMock = new Mock<ICommitmentsApiClient>();
 
             _commitmentApiClientMock.Setup(x => x.GetApprenticeship(_apprenticeshipId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse
-                {
-                    AccountLegalEntityId = _accountLegalEntityId
-                });
+                .ReturnsAsync(GetApprenticeshipApiResponse);
 
             _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object, _commitmentApiClientMock.Object);
         }
@@ -146,7 +152,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
         {
             _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y => 
+                It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y =>
                     y.Ukprn == _request.ProviderId &&
                     y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
         }
@@ -159,11 +165,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Assert_SelectEmployerViewModelCorrectlyMapped(Web.Models.Apprentice.SelectEmployerViewModel result)
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
+            Assert.AreEqual(GetApprenticeshipApiResponse.EmployerName, result.LegalEntityName);
             Assert.AreEqual(filteredLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
 
             foreach (var entity in filteredLegalEntities)
             {
-                Assert.True(result.AccountProviderLegalEntities.Any(x => 
+                Assert.True(result.AccountProviderLegalEntities.Any(x =>
                     x.EmployerAccountLegalEntityName == entity.AccountLegalEntityName &&
                     x.EmployerAccountLegalEntityPublicHashedId == entity.AccountLegalEntityPublicHashedId &&
                     x.EmployerAccountName == entity.AccountName &&

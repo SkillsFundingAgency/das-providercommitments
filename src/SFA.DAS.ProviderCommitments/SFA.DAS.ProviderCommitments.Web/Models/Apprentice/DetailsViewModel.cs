@@ -13,6 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Reference { get; set; }
         public ApprenticeshipStatus Status { get; set; }
         public DateTime? StopDate { get; set; }
+        public DateTime? PauseDate { get; set; }
+        public DateTime? CompletionDate { get; set; }
         public string AgreementId { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Uln { get; set; }
@@ -26,6 +28,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasProviderPendingUpdate { get; set; }
         public bool HasEmployerPendingUpdate { get; set; }
         public DataLockSummaryStatus DataLockStatus { get; set; }
+        public bool HasPendingChangeOfPartyRequest { get; set; }
+        public Party? PendingChangeOfPartyRequestWithParty { get; set; }
+        public bool HasApprovedChangeOfPartyRequest { get; set; }
+        public bool HasPendingChangeOfProviderRequest { get; set; }
+        public string EncodedNewApprenticeshipId { get; set; }
+        public bool IsContinuation { get; set; }
+        public bool HasContinuation { get; set; }
+        public string EncodedPreviousApprenticeshipId { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
         public TriageOption AvailableTriageOption { get; set; }

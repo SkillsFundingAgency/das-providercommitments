@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Api.Client;
-using SFA.DAS.Apprenticeships.Api.Types;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtensionsTests
@@ -11,29 +9,32 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
     [TestFixture]
     public class WhenDeterminingFundingCap
     {
-        private Mock<ITrainingProgramme> _course;
+        private TrainingProgramme _course;
 
         [SetUp]
         public void Arrange()
         {
-            _course = new Mock<ITrainingProgramme>();
-            _course.Setup(x => x.EffectiveFrom).Returns(new DateTime(2018, 03, 01));
-            _course.Setup(x => x.EffectiveTo).Returns(new DateTime(2019, 03, 31));
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>
+            _course = new TrainingProgramme
             {
-                new FundingPeriod
+                Name = "Test",
+                EffectiveFrom = new DateTime(2018, 03, 01),
+                EffectiveTo = new DateTime(2019, 03, 31),
+                FundingPeriods = new List<TrainingProgrammeFundingPeriod>
                 {
-                    EffectiveFrom = new DateTime(2018,03,01),
-                    EffectiveTo = new DateTime(2018,07,31),
-                    FundingCap = 5000
-                },
-                new FundingPeriod
-                {
-                    EffectiveFrom = new DateTime(2018,08,01),
-                    EffectiveTo = null,
-                    FundingCap = 2000
+                    new TrainingProgrammeFundingPeriod
+                    {
+                        EffectiveFrom = new DateTime(2018,03,01),
+                        EffectiveTo = new DateTime(2018,07,31),
+                        FundingCap = 5000
+                    },
+                    new TrainingProgrammeFundingPeriod
+                    {
+                        EffectiveFrom = new DateTime(2018,08,01),
+                        EffectiveTo = null,
+                        FundingCap = 2000
+                    }
                 }
-            });
+            };
         }
 
         [TestCase("2018-05-15", 5000, Description = "Within first funding band")]
@@ -43,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         public void ThenTheApplicableFundingPeriodIsUsed(DateTime effectiveDate, int expectCap)
         {
             //Act
-            var result = _course.Object.FundingCapOn(effectiveDate);
+            var result = _course.FundingCapOn(effectiveDate);
 
             //Assert
             Assert.AreEqual(expectCap, result);
@@ -59,21 +60,21 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
             var courseAndFundingBandStart = new DateTime(2020, 2, 20);
             var courseAndFundingBandEnd = (DateTime?)null;
 
-            _course.Setup(x => x.EffectiveFrom).Returns(courseAndFundingBandStart);
-            _course.Setup(x => x.EffectiveTo).Returns(courseAndFundingBandEnd);
+            _course.EffectiveFrom = courseAndFundingBandStart;
+            _course.EffectiveTo = courseAndFundingBandEnd;
 
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>
+            _course.FundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = courseAndFundingBandStart,
                     EffectiveTo = courseAndFundingBandEnd,
                     FundingCap = 1
                 }
-            });
+            };
 
             //Act
-            var result = _course.Object.FundingCapOn(effectiveDate);
+            var result = _course.FundingCapOn(effectiveDate);
 
             //Assert
             Assert.AreEqual(expectCap, result);
@@ -85,30 +86,27 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         [TestCase("2020-01-01", 2, Description = "Within second open-ended funding band")]
         public void AndFirstFundingPeriodHasNullEffectiveFromThenTheApplicableFundingPeriodIsUsed(DateTime effectiveDate, int expectCap)
         {
-            var courseAndFundingBandStart = (DateTime?)null;
-            var courseAndFundingBandEnd = (DateTime?)null;
+            _course.EffectiveFrom = null;
+            _course.EffectiveTo = null;
 
-            _course.Setup(x => x.EffectiveFrom).Returns(courseAndFundingBandStart);
-            _course.Setup(x => x.EffectiveTo).Returns(courseAndFundingBandEnd);
-
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>
+            _course.FundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
-                    EffectiveFrom = courseAndFundingBandStart,
+                    EffectiveFrom = null,
                     EffectiveTo = new DateTime(2018,07,31),
                     FundingCap = 1
                 },
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = new DateTime(2018,08,01),
-                    EffectiveTo = courseAndFundingBandEnd,
+                    EffectiveTo = null,
                     FundingCap = 2
                 }
-            });
+            };
 
             //Act
-            var result = _course.Object.FundingCapOn(effectiveDate);
+            var result = _course.FundingCapOn(effectiveDate);
 
             //Assert
             Assert.AreEqual(expectCap, result);
@@ -125,33 +123,33 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
             var courseAndFundingBandStart = new DateTime(2018, 08, 15);
             var courseAndFundingBandEnd = new DateTime(2018, 08, 25);
 
-            _course.Setup(x => x.EffectiveFrom).Returns(courseAndFundingBandStart);
-            _course.Setup(x => x.EffectiveTo).Returns(courseAndFundingBandEnd);
+            _course.EffectiveFrom = courseAndFundingBandStart;
+            _course.EffectiveTo = courseAndFundingBandEnd;
 
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>
+            _course.FundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = courseAndFundingBandStart,
                     EffectiveTo = new DateTime(2018,08,15),
                     FundingCap = 1
                 },
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = new DateTime(2018,08,16),
                     EffectiveTo = new DateTime(2018,08,16),
                     FundingCap = 2
                 },
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = new DateTime(2018,08,17),
                     EffectiveTo = courseAndFundingBandEnd,
                     FundingCap = 3
                 }
-            });
+            };
 
             //Act
-            var result = _course.Object.FundingCapOn(effectiveDate);
+            var result = _course.FundingCapOn(effectiveDate);
 
             //Assert
             Assert.AreEqual(expectCap, result);
@@ -164,36 +162,33 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         [TestCase("2020-01-01", 3, Description = "Within third open-ended funding band")]
         public void AndFirstFundingPeriodHasNullEffectiveFromAndMultipleBandsInMonthThenTheApplicableFundingPeriodIsUsed(DateTime effectiveDate, int expectCap)
         {
-            var courseAndFundingBandStart = (DateTime?)null;
-            var courseAndFundingBandEnd = (DateTime?)null;
+            _course.EffectiveFrom = null;
+            _course.EffectiveTo = null;
 
-            _course.Setup(x => x.EffectiveFrom).Returns(courseAndFundingBandStart);
-            _course.Setup(x => x.EffectiveTo).Returns(courseAndFundingBandEnd);
-
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>
+            _course.FundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
-                    EffectiveFrom = courseAndFundingBandStart,
+                    EffectiveFrom = null,
                     EffectiveTo = new DateTime(2018,08,15),
                     FundingCap = 1
                 },
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = new DateTime(2018,08,16),
                     EffectiveTo = new DateTime(2018,08,20),
                     FundingCap = 2
                 },
-                new FundingPeriod
+                new TrainingProgrammeFundingPeriod
                 {
                     EffectiveFrom = new DateTime(2018,08,21),
-                    EffectiveTo = courseAndFundingBandEnd,
+                    EffectiveTo = null,
                     FundingCap = 3
                 }
-            });
+            };
 
             //Act
-            var result = _course.Object.FundingCapOn(effectiveDate);
+            var result = _course.FundingCapOn(effectiveDate);
 
             //Assert
             Assert.AreEqual(expectCap, result);
@@ -203,10 +198,10 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         public void IfThereAreNoFundingPeriodsThenCapShouldBeZero()
         {
             //Arrange
-            _course.Setup(x => x.FundingPeriods).Returns(new List<FundingPeriod>());
+            _course.FundingPeriods = new List<TrainingProgrammeFundingPeriod>();
 
             //Act
-            var result = _course.Object.FundingCapOn(new DateTime(2018, 05, 15));
+            var result = _course.FundingCapOn(new DateTime(2018, 05, 15));
 
             //Assert
             Assert.AreEqual(0, result);
@@ -216,7 +211,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Extensions.ITrainingCourseExtens
         public void FundingPeriodsAreEffectiveUntilTheEndOfTheDay()
         {
             //Act
-            var result = _course.Object.FundingCapOn(new DateTime(2018, 7, 31, 23, 59, 59));
+            var result = _course.FundingCapOn(new DateTime(2018, 7, 31, 23, 59, 59));
 
             //Assert
             Assert.AreEqual(5000, result);
