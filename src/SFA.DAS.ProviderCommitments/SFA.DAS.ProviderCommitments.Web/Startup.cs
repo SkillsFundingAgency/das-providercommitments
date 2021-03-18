@@ -1,6 +1,5 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -48,14 +48,16 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddHttpContextAccessor()
                 .AddDasHealthChecks()
                 .AddProviderIdamsAuthentication(Configuration)
-                .AddDasAuthorization()
                 .AddMemoryCache()
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
                     options.AddValidation();
-                    ConfigureAuthorization(options);
+                    options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
+                    options.Filters.Add<AuthorizationFilter>(int.MaxValue);
+                    options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
+                    options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
                 })
                 .AddNavigationBarSettings(Configuration)
                 .EnableGoogleAnalytics()
@@ -64,6 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+
+            services.AddAuthorizationService();
 
             services
                 .AddUrlHelper()
@@ -77,28 +81,11 @@ namespace SFA.DAS.ProviderCommitments.Web
             });
         }
 
-        /// <summary>
-        ///     Override in integration tests to override authorization behaviour.
-        /// </summary>
-        protected virtual void ConfigureAuthorization(MvcOptions options)
-        {
-            var policy = new AuthorizationPolicyBuilder()
-                .RequireProviderInRouteMatchesProviderInClaims()
-                .Build();
-
-            options.Filters.Add(new AuthorizeFilter(policy));
-            options.Filters.Add<AuthorizationFilter>(int.MaxValue);
-            options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
-            options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
-            
-        }
-
         public void ConfigureContainer(Registry registry)
         {
             IoC.Initialize(registry);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
@@ -128,7 +115,6 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             logger.Log(LogLevel.Information, "Application start up configure is complete");
-
         }
     }
 }

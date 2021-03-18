@@ -1,8 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
@@ -27,24 +29,46 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
         {
             var actionContext = _actionContextAccessor.ActionContext;
 
-            if (actionContext.RouteData.Values.TryGetValue("ProviderId", out var providerIdSpecifiedInRoute))
+            if (!HasServiceAuthorization(context))
             {
-                var currentUsersProviderId = context.User.Claims.FirstOrDefault(claim => string.Equals(claim.Type,Constants.ClaimTypes.UKPrn, StringComparison.OrdinalIgnoreCase));
+                context.Fail();
+            }
+            else if (actionContext.RouteData.Values.TryGetValue("ProviderId", out var providerIdSpecifiedInRoute))
+            {
+                var currentUsersProviderId = context.User.Claims.FirstOrDefault(claim => claim.Type == ProviderClaims.Ukprn);
 
                 if (currentUsersProviderId == null)
                 {
                     context.Fail();
-                    return Task.CompletedTask;
                 }
-
-                if (currentUsersProviderId.Value != providerIdSpecifiedInRoute.ToString())
+                else if (currentUsersProviderId.Value != providerIdSpecifiedInRoute.ToString())
                 {
                     context.Fail();
-                    return Task.CompletedTask;
+                }
+                else
+                {
+                    context.Succeed(requirement);
                 }
             }
-            context.Succeed(requirement);
+
             return Task.CompletedTask;
+        }
+
+        private bool HasServiceAuthorization(AuthorizationHandlerContext context)
+        {
+            static bool ServiceClaimFinderPredicate(Claim c)
+            {
+                return c.Type.Equals(ProviderClaims.Service);
+            }
+
+            if (context.User.HasClaim(ServiceClaimFinderPredicate))
+            {
+                var serviceClaims = context.User.FindAll(ServiceClaimFinderPredicate);
+
+                return serviceClaims.Any(claim => claim.Value.IsServiceClaim());
+            }
+
+            return false;
         }
     }
 }
