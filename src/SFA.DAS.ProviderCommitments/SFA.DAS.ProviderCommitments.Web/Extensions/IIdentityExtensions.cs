@@ -5,7 +5,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
-    public static class IdentityExtensions
+    public static class IIdentityExtensions
     {
         public static string Upn(this IIdentity identity)
         {
