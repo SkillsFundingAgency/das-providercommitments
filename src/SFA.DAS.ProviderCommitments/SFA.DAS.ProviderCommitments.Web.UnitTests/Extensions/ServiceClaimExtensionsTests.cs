@@ -63,5 +63,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             bool result = claimsPrincipal.HasPermission(minimumServiceClaim);
             Assert.AreEqual(expected, result);
         }
+
+        [TestCase(ServiceClaim.DAA, new string[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAB, new string[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAC, new string[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAV, new string[] {"DCS", "DCFT"}, false)]
+        public void ShouldHandleNonDasClaimPermissions(ServiceClaim minimumServiceClaim, string[] actualServiceClaims, bool expected)
+        {
+            var claims = actualServiceClaims.Select(a => new Claim(ProviderClaims.Service, a));
+
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            bool result = claimsPrincipal.HasPermission(minimumServiceClaim);
+            Assert.AreEqual(expected, result);
+        }
     }
 }

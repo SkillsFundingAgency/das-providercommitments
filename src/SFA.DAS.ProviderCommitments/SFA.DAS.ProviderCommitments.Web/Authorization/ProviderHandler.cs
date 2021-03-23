@@ -56,19 +56,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
         private bool HasServiceAuthorization(AuthorizationHandlerContext context)
         {
-            static bool ServiceClaimFinderPredicate(Claim c)
-            {
-                return c.Type.Equals(ProviderClaims.Service);
-            }
-
-            if (context.User.HasClaim(ServiceClaimFinderPredicate))
-            {
-                var serviceClaims = context.User.FindAll(ServiceClaimFinderPredicate);
-
-                return serviceClaims.Any(claim => claim.Value.IsServiceClaim());
-            }
-
-            return false;
+            var serviceClaims = context.User.FindAll(c => c.Type.Equals(ProviderClaims.Service));
+            return serviceClaims.Any(claim => claim.Value.IsServiceClaim());
         }
     }
 }
