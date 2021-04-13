@@ -6,7 +6,10 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -21,15 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _fixture = new GetChangeEmployerPageFixture();
         }
 
-        [TestCase(typeof(InformViewModel), "Inform")]
-        [TestCase(typeof(ChangeEmployerRequestDetailsViewModel), "ChangeEmployerRequestDetails")]
-        public async Task Then_Returns_Appropriate_View(Type mapperResultType, string expectedViewName)
+        [TestCase(typeof(InformViewModel), RouteNames.ChangeEmployerInform)]
+        [TestCase(typeof(ChangeEmployerRequestDetailsViewModel), RouteNames.ChangeEmployerDetails)]
+        public async Task Then_Returns_Appropriate_Redirect(Type mapperResultType, string expectedViewName)
         {
             _fixture.WithMapperResult(mapperResultType);
             var result = await _fixture.Act();
-            var view = result.VerifyReturnsViewModel();
-            Assert.AreEqual(expectedViewName, view.ViewName);
-            Assert.AreEqual(mapperResultType, view.Model.GetType());
+            var redirectToRouteResult = result.VerifyReturnsRedirectToRouteResult();
+            Assert.AreEqual(expectedViewName, redirectToRouteResult.RouteName);
         }
     }
 
@@ -67,7 +69,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapper
                 .Setup(x => x.Map<IChangeEmployerViewModel>(_request))
                 .ReturnsAsync(_informViewModel);
-            _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+
+            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
+            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
+
+            _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>())
+            {
+                TempData = tempData
+            };
         }
 
         public GetChangeEmployerPageFixture WithMapperResult(Type mapperResultType)
