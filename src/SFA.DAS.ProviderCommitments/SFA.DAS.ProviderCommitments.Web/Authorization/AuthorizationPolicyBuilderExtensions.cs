@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     public static class AuthorizationPolicy
     {
-        public static void AddAuthorizationService(this IServiceCollection services)
+        public static IServiceCollection AddAuthorizationService(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
             {
@@ -55,6 +55,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IAuthorizationHandler, ProviderHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
+
+            return services;
         }
     }
 }
