@@ -8,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
+using SFA.DAS.EmployerCommitmentsV2.Web.Remove;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -26,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<PasAccountApiClientRegistry>();
+            registry.IncludeRegistry<LocalDevRegistry>();
         }
     }
 }
