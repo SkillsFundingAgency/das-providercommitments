@@ -42,15 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [RequireQueryParameter("ReservationId")]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = new AddDraftApprenticeshipViewModel
-            {
-                ProviderId = request.ProviderId,
-                CohortReference = request.CohortReference,
-                CohortId = request.CohortId,
-                StartDate = new MonthYearModel(request.StartMonthYear),
-                ReservationId = request.ReservationId,
-                CourseCode = request.CourseCode
-            };
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
 
             await AddLegalEntityAndCoursesToModel(model);
 

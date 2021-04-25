@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -15,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
+                Email = source.Email,
                 DateOfBirth = source.DateOfBirth.Date,
                 Uln = source.Uln,
                 CourseCode = source.CourseCode,

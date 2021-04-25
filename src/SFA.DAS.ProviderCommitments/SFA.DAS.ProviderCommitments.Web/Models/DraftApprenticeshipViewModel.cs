@@ -38,6 +38,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
         [Display(Name = "Date of birth")]
         [DataType(DataType.Date)]
         public DateModel DateOfBirth { get; }
@@ -89,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Reference { get; set; }
 
         public TrainingProgramme[] Courses { get; set; }
-
         public bool IsContinuation { get; set; }
+        public bool ShowEmail { get; set; }
     }
 }

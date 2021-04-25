@@ -34,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReservationId = source.ReservationId.Value,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
+                Email = source.Email,
                 DateOfBirth = source.DateOfBirth.Date,
                 UniqueLearnerNumber = source.Uln,
                 CourseCode = source.CourseCode,

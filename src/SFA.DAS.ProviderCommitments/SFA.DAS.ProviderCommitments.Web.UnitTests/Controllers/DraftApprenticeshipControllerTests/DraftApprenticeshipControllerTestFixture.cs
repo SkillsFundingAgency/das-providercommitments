@@ -115,6 +115,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<EditDraftApprenticeshipViewModel>()))
                 .ReturnsAsync(_updateDraftApprenticeshipRequest);
 
+            _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(It.IsAny<ReservationsAddDraftApprenticeshipRequest>()))
+                .ReturnsAsync(_addModel);
+
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                 .Returns<string>(input => input);
@@ -226,21 +229,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture VerifyAddViewHasCohortWithAReservationId()
-        {
-            Assert.IsInstanceOf<ViewResult>(_actionResult);
-            Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult) _actionResult).Model);
-
-            var model = ((ViewResult) _actionResult).Model as AddDraftApprenticeshipViewModel;
-            Assert.AreEqual(_providerId, model.ProviderId);
-            Assert.AreEqual(_cohortId, model.CohortId);
-            Assert.AreEqual(_cohortReference, model.CohortReference);
-            Assert.IsNotNull(model.ReservationId);
-            Assert.AreEqual(_reservationsAddDraftApprenticeshipRequest.ReservationId, model.ReservationId);
-
-            return this;
-        }
-
         public DraftApprenticeshipControllerTestFixture VerifyEditDraftApprenticeshipViewModelIsSentToViewResult()
         {
             Assert.IsInstanceOf<ViewResult>(_actionResult);
@@ -296,6 +284,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyMappingToApiTypeIsCalled()
         {
             _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipRequest>(_addModel), Times.Once);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyMappingFromReservationAddRequestIsCalled()
+        {
+            _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_reservationsAddDraftApprenticeshipRequest), Times.Once);
             return this;
         }
 

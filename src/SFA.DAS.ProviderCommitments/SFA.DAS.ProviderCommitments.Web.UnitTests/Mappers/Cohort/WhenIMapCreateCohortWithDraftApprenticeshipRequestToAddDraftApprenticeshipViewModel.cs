@@ -4,9 +4,11 @@ using AutoFixture;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -19,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private AddDraftApprenticeshipViewModelMapper _mapper;
         private CreateCohortWithDraftApprenticeshipRequest _source;
         private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private Mock<IAuthorizationService> _authorizationService;
         private Mock<IMediator> _mediator;
         private AccountLegalEntityResponse _accountLegalEntityResponse;
         private GetTrainingCoursesQueryResponse _trainingCoursesQueryResponse;
@@ -36,12 +39,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetAccountLegalEntity(_source.AccountLegalEntityId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_accountLegalEntityResponse);
-            
+
+            _authorizationService = new Mock<IAuthorizationService>();
+
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_trainingCoursesQueryResponse);
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object);
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object, _authorizationService.Object);
         }
 
         [Test]
@@ -101,5 +106,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.ReservationId, result.ReservationId);
         }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenShowEmailIsMappedCorrectly(bool showEmail)
+        {
+            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(showEmail, result.ShowEmail);
+        }
+
     }
 }
