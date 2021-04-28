@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class EditDraftApprenticeshipRequest
+    public class ViewDraftApprenticeshipRequest
     {
         public DraftApprenticeshipRequest Request { get; set; }
         public GetCohortResponse Cohort { get; set; }

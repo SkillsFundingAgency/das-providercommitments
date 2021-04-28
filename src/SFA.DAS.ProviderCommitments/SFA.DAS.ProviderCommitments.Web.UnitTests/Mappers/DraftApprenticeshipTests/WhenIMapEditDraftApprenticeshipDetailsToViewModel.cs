@@ -7,12 +7,11 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprenticeshipDetailsToViewModelMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests
 {
     [TestFixture]
     public class WhenIMapEditDraftApprenticeshipDetailsToViewModel
@@ -23,7 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         private GetDraftApprenticeshipResponse _apiResponse;
         private Mock<IAuthorizationService> _authorizationService;
         private string _cohortReference;
-        private string _encodedDraftApprenticeshipId;
 
         [SetUp]
         public void Arrange()
@@ -31,12 +29,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var fixture = new Fixture();
 
             _cohortReference = fixture.Create<string>();
-            _encodedDraftApprenticeshipId = fixture.Create<string>();
-            var encodingService = new Mock<IEncodingService>();
-            encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
-                .Returns(_cohortReference);
-            encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
-                .Returns(_encodedDraftApprenticeshipId);
 
             _apiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
             var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -46,38 +38,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
 
             _authorizationService = new Mock<IAuthorizationService>();
 
-            _mapper = new EditDraftApprenticeshipViewModelMapper(encodingService.Object, commitmentsApiClient.Object, _authorizationService.Object);
+            _mapper = new EditDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object);
             _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
-            _act = async () => await _mapper.Map(TestHelper.Clone(_source));
+            _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
         }
 
         [Test]
         public async Task ThenDraftApprenticeshipIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.DraftApprenticeshipId, result.DraftApprenticeshipId);
-        }
-
-        [Test]
-        public async Task ThenDraftApprenticeshipHashedIdIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_encodedDraftApprenticeshipId, result.DraftApprenticeshipHashedId);
+            Assert.AreEqual(_source.Request.DraftApprenticeshipId, result.DraftApprenticeshipId);
         }
 
         [Test]
         public async Task ThenCohortIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.CohortId, result.CohortId);
+            Assert.AreEqual(_source.Request.CohortId, result.CohortId);
         }
 
         [Test]
         public async Task ThenCohortReferenceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_cohortReference, result.CohortReference);
+            Assert.AreEqual(_source.Request.CohortReference, result.CohortReference);
         }
 
         [Test]
@@ -165,7 +150,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.AreEqual(_source.Request.ProviderId, result.ProviderId);
         }
 
         [TestCase(true)]
@@ -181,7 +166,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         [TestCase(false)]
         public async Task ThenShowEmailIsMappedCorrectly(bool showEmail)
         {
-            _authorizationService.Setup(x=>x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
+            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
             var result = await _act();
             Assert.AreEqual(showEmail, result.ShowEmail);
         }

@@ -2,38 +2,33 @@
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class EditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipRequest, EditDraftApprenticeshipViewModel>
+    public class EditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipRequest, IDraftApprenticeshipViewModel>
     {
-        private readonly IEncodingService _encodingService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-
         private readonly IAuthorizationService _authorizationService;
 
-
-        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
+        public EditDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
         {
-            _encodingService = encodingService;
             _commitmentsApiClient = commitmentsApiClient;
             _authorizationService = authorizationService;
         }
 
-        public async Task<EditDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
+        public async Task<IDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
         {
-            var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId.Value, source.DraftApprenticeshipId.Value);
+            var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
 
             return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate)
             {
-                DraftApprenticeshipId = source.DraftApprenticeshipId,
-                DraftApprenticeshipHashedId = _encodingService.Encode(apiResponse.Id, EncodingType.ApprenticeshipId),
-                CohortId = source.CohortId.Value,
-                CohortReference = _encodingService.Encode(source.CohortId.Value, EncodingType.CohortReference),
-                ProviderId = source.ProviderId,
+                DraftApprenticeshipId = source.Request.DraftApprenticeshipId,
+                DraftApprenticeshipHashedId = source.Request.DraftApprenticeshipHashedId,
+                CohortId = source.Request.CohortId,
+                CohortReference = source.Request.CohortReference, 
+                ProviderId = source.Request.ProviderId,
                 ReservationId = apiResponse.ReservationId,
                 FirstName = apiResponse.FirstName,
                 LastName = apiResponse.LastName,
