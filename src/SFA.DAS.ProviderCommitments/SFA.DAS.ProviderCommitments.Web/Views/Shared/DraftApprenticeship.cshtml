@@ -53,7 +53,7 @@ else
             @if (Model.ShowEmail)
             {
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
-                    <label asp-for="LastName" class="govuk-label">Email</label>
+                    <label asp-for="LastName" class="govuk-label">Email address</label>
                     @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
                     <input asp-for="Email" class="govuk-input"/>
                 </div>
