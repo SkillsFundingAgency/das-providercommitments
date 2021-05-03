@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
@@ -11,10 +13,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         private readonly IEncodingService _encodingService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, ICommitmentsApiClient commitmentsApiClient)
+        private readonly IAuthorizationService _authorizationService;
+
+
+        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
         {
             _encodingService = encodingService;
             _commitmentsApiClient = commitmentsApiClient;
+            _authorizationService = authorizationService;
         }
 
         public async Task<EditDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
@@ -31,11 +37,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReservationId = apiResponse.ReservationId,
                 FirstName = apiResponse.FirstName,
                 LastName = apiResponse.LastName,
+                Email = apiResponse.Email,
                 Uln = apiResponse.Uln,
                 CourseCode = apiResponse.CourseCode,
                 Cost = apiResponse.Cost,
                 Reference = apiResponse.Reference,
-                IsContinuation = apiResponse.IsContinuation
+                IsContinuation = apiResponse.IsContinuation,
+                ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
             };
         }
     }

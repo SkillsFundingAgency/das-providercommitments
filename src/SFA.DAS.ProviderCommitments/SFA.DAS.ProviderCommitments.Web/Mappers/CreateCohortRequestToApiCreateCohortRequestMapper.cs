@@ -16,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
+                Email = source.Email,
                 DateOfBirth = source.DateOfBirth,
                 Uln = source.UniqueLearnerNumber,
                 CourseCode = source.CourseCode,
