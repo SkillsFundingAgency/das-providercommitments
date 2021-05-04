@@ -217,9 +217,9 @@ else
                         </a>
                     </th>
                     <th scope="col" class="govuk-table__header">
-                        <a class="@(Model.FilterModel.SortField == "LegalEntityName" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
+                        <a class="@(Model.FilterModel.SortField == "Name" ? Model.SortedByHeaderClassName : IndexViewModel.HeaderClassName)"
                            asp-route="@RouteNames.ApprenticesIndex"
-                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("LegalEntityName")"
+                           asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Name")"
                            title="Sort the table by name">
                             Employer
                         </a>
