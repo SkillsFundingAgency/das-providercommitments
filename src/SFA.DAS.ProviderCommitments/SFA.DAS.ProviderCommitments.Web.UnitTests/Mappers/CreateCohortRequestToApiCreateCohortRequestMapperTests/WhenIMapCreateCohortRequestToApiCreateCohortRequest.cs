@@ -59,6 +59,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestT
         }
 
         [Test]
+        public async Task ThenEmailIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.Email, result.Email);
+        }
+
+        [Test]
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);

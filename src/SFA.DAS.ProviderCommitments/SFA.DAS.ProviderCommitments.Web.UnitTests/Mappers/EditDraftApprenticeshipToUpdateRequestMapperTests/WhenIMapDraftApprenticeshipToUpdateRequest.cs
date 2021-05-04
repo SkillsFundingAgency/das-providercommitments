@@ -56,6 +56,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         }
 
         [Test]
+        public async Task ThenEmailIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.Email, result.Email);
+        }
+
+        [Test]
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             var result = await _act();

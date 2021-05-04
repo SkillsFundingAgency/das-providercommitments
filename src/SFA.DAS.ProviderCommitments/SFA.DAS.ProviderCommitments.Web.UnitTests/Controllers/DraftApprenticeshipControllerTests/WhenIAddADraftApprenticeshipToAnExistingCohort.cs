@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task IfCalledViaReservationsItShouldReturnAddDraftApprenticeshipViewWithCohortAndWithAReservationId()
         {
             await _fixture.AddDraftApprenticeshipWithReservation();
-            _fixture.VerifyAddViewHasCohortWithAReservationId()
+            _fixture.VerifyMappingFromReservationAddRequestIsCalled()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
         }
