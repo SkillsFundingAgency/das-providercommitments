@@ -3,7 +3,7 @@ using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class EditDraftApprenticeshipViewModel : DraftApprenticeshipViewModel, IAuthorizationContextModel
+    public class EditDraftApprenticeshipViewModel : DraftApprenticeshipViewModel, IDraftApprenticeshipViewModel, IAuthorizationContextModel
     {
         public EditDraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate) : base(dateOfBirth, startDate, endDate)
         {

@@ -22,8 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 {
     public class DraftApprenticeshipControllerTestFixture
     {
-        private readonly GetDraftApprenticeshipResponse _editDraftApprenticeshipDetails;
-        private readonly EditDraftApprenticeshipRequest _editDraftApprenticeshipRequest;
+        private readonly GetDraftApprenticeshipResponse _draftApprenticeshipDetails;
+        private readonly DraftApprenticeshipRequest _draftApprenticeshipRequest;
         private readonly GetCohortResponse _cohortResponse;
         private readonly DraftApprenticeshipController _controller;
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
@@ -43,6 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly int _providerId;
         private readonly string _cohortReference;
         private readonly string _draftApprenticeshipHashedId;
+        private ViewDraftApprenticeshipViewModel _viewModel;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -54,12 +55,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _cohortReference = autoFixture.Create<string>();
             _draftApprenticeshipHashedId = autoFixture.Create<string>();
 
-            _editDraftApprenticeshipRequest = autoFixture.Build<EditDraftApprenticeshipRequest>()
+            _draftApprenticeshipRequest = autoFixture.Build<DraftApprenticeshipRequest>()
                 .With(x => x.CohortId, _cohortId)
                 .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
                 .Create();
-                
-            _editDraftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
+
+            _draftApprenticeshipDetails = autoFixture.Build<GetDraftApprenticeshipResponse>()
                 .Create();
 
             _createAddDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest();
@@ -93,6 +94,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 DraftApprenticeshipHashedId = _draftApprenticeshipHashedId
             };
 
+            _viewModel = new ViewDraftApprenticeshipViewModel
+            {
+                ProviderId = _providerId,
+                CohortReference = _cohortReference
+            };
+
             _cohortResponse = autoFixture.Build<GetCohortResponse>()
                 .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy)
                 .With(x => x.ChangeOfPartyRequestId, default(long?))
@@ -108,9 +115,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipRequest>(It.IsAny<AddDraftApprenticeshipViewModel>()))
                 .ReturnsAsync(_createAddDraftApprenticeshipRequest);
-
-            _modelMapper.Setup(x => x.Map<EditDraftApprenticeshipViewModel>(It.IsAny<EditDraftApprenticeshipRequest>()))
-                .ReturnsAsync(_editModel);
 
             _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<EditDraftApprenticeshipViewModel>()))
                 .ReturnsAsync(_updateDraftApprenticeshipRequest);
@@ -138,7 +142,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
         {
-            _actionResult = await _controller.EditDraftApprenticeship(_editDraftApprenticeshipRequest);
+            _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+                .ReturnsAsync(_editModel);
+            _actionResult = await _controller.ViewEditDraftApprenticeship(_draftApprenticeshipRequest);
+            return this;
+        }
+
+        public async Task<DraftApprenticeshipControllerTestFixture> ViewDraftApprenticeship()
+        {
+            _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
+                .ReturnsAsync(_viewModel);
+            _actionResult = await _controller.ViewEditDraftApprenticeship(_draftApprenticeshipRequest);
             return this;
         }
 
@@ -156,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupProviderIdOnEditRequest(long providerId)
         {
-            _editDraftApprenticeshipRequest.ProviderId = providerId;
+            _draftApprenticeshipRequest.ProviderId = providerId;
             return this;
         }
 
@@ -195,7 +209,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
             _commitmentsApiClient
-                .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_editDraftApprenticeshipDetails);
+                .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_draftApprenticeshipDetails);
             return this;
         }
 
@@ -225,7 +239,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _commitmentsApiClient
                 .Setup(pcs => pcs.GetCohort(_cohortId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetCohortResponse {CohortId = _cohortId, TransferSenderId = 1});
+                .ReturnsAsync(new GetCohortResponse { CohortId = _cohortId, TransferSenderId = 1 });
             return this;
         }
 
@@ -237,11 +251,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyViewDraftApprenticeshipViewModelIsSentToViewResult()
+        {
+            Assert.IsInstanceOf<ViewResult>(_actionResult);
+            Assert.IsInstanceOf<ViewDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
+
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyEditDraftApprenticeshipViewModelHasProviderIdSet()
         {
             Assert.IsInstanceOf<EditDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
             var model = ((ViewResult)_actionResult).Model as EditDraftApprenticeshipViewModel;
-            Assert.AreEqual(_editDraftApprenticeshipRequest.ProviderId, model.ProviderId);
+            Assert.AreEqual(_draftApprenticeshipRequest.ProviderId, model.ProviderId);
 
             return this;
         }
@@ -249,9 +271,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyAddViewWasReturnedAndHasErrors()
         {
             Assert.IsInstanceOf<ViewResult>(_actionResult);
-            Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult) _actionResult).Model);
+            Assert.IsInstanceOf<AddDraftApprenticeshipViewModel>(((ViewResult)_actionResult).Model);
 
-            var view = ((ViewResult) _actionResult);
+            var view = ((ViewResult)_actionResult);
             Assert.AreEqual(1, view.ViewData.ModelState.ErrorCount);
 
             return this;
@@ -315,7 +337,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
         {
-            var redirectResult = (RedirectResult) _actionResult;
+            var redirectResult = (RedirectResult)_actionResult;
             Assert.AreEqual($"{_providerId}/apprentices/{_cohortReference}/Details", redirectResult.Url);
 
             return this;
@@ -332,7 +354,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _mediator
                 .Verify(m => m.Send(
                     It.Is<GetTrainingCoursesQueryRequest>(request => request.IncludeFrameworks == expectFrameworkCoursesToBeRequested),
-                    It.IsAny<CancellationToken>()), 
+                    It.IsAny<CancellationToken>()),
                  Times.Once);
             return this;
         }

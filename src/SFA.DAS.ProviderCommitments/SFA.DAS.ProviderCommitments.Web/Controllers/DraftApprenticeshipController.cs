@@ -63,19 +63,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return Redirect(url);
         }
 
-        [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/edit")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipRequest request)
-        {
-            var model = await _modelMapper.Map<EditDraftApprenticeshipViewModel>(request);
-
-            model.ProviderId = request.ProviderId;
-            await AddLegalEntityAndCoursesToModel(model);
-            return View(model);
-        }
-
         [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}")]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
@@ -85,6 +74,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
             return Redirect(url);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}")]
+        [Route("{DraftApprenticeshipHashedId}/edit")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+
+            if (model is EditDraftApprenticeshipViewModel editModel)
+            {
+                await AddLegalEntityAndCoursesToModel(editModel);
+                return View("EditDraftApprenticeship", editModel);
+            }
+            
+            return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)

@@ -8,13 +8,13 @@ using SFA.DAS.ProviderCommitments.Web.Validators;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
 {
     [TestFixture()]
-    public class EditDraftApprenticeshipRequestValidatorTests
+    public class DraftApprenticeshipRequestValidatorTests
     {
-        [TestCase(null, false)]
+        [TestCase(0, false)]
         [TestCase(1, true)]
-        public void Validate_CohortId_ShouldBeValidated(int? cohortId, bool expectedValid)
+        public void Validate_CohortId_ShouldBeValidated(int cohortId, bool expectedValid)
         {
-            var model = new EditDraftApprenticeshipRequest { CohortId = cohortId};
+            var model = new DraftApprenticeshipRequest { CohortId = cohortId };
             AssertValidationResult(request => request.CohortId, model, expectedValid);
         }
 
@@ -24,15 +24,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase("XYZ", true)]
         public void Validate_CohortReference_ShouldBeValidated(string cohortReference, bool expectedValid)
         {
-            var model = new EditDraftApprenticeshipRequest { CohortReference = cohortReference };
+            var model = new DraftApprenticeshipRequest { CohortReference = cohortReference };
             AssertValidationResult(request => request.CohortReference, model, expectedValid);
         }
 
-        [TestCase(null, false)]
+        [TestCase(0, false)]
         [TestCase(1, true)]
-        public void Validate_DraftApprenticeshipId_ShouldBeValidated(int? id, bool expectedValid)
+        public void Validate_DraftApprenticeshipId_ShouldBeValidated(int id, bool expectedValid)
         {
-            var model = new EditDraftApprenticeshipRequest { DraftApprenticeshipId = id };
+            var model = new DraftApprenticeshipRequest { DraftApprenticeshipId = id };
             AssertValidationResult(request => request.DraftApprenticeshipId, model, expectedValid);
         }
 
@@ -42,13 +42,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase("XYZ", true)]
         public void Validate_DraftApprenticeshipHashedId_ShouldBeValidated(string reference, bool expectedValid)
         {
-            var model = new EditDraftApprenticeshipRequest { DraftApprenticeshipHashedId = reference };
+            var model = new DraftApprenticeshipRequest { DraftApprenticeshipHashedId = reference };
             AssertValidationResult(request => request.DraftApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<EditDraftApprenticeshipRequest, T>> property, EditDraftApprenticeshipRequest instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<DraftApprenticeshipRequest, T>> property, DraftApprenticeshipRequest instance, bool expectedValid)
         {
-            var validator = new EditDraftApprenticeshipRequestValidator();
+            var validator = new DraftApprenticeshipRequestValidator();
 
             if (expectedValid)
             {
