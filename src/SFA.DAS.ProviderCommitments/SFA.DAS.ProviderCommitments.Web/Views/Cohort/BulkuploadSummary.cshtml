@@ -1,0 +1,85 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.BulkUploadSummaryViewModel
+
+@{
+    ViewBag.Title = "Confirm Employer";
+    ViewBag.GaData.Vpv = "/unapproved/add/confirm-employer";
+
+    var legalEntities = Model.BulkUploadResponse.Results.Select(x => x.LegalEntityId).Distinct();
+    List<SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.BulkCreateResult> cohortResulsts = new List<SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.BulkCreateResult>();
+
+
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" role="main">
+        <div class="govuk-grid-row">
+            <form method="post">
+                @foreach (var legalEntity in legalEntities)
+                {
+                    { cohortResulsts = Model.BulkUploadResponse.Results.Where(x => x.LegalEntityId == legalEntity).ToList(); }
+
+
+                    <b>
+                        @cohortResulsts.First().LegalEntityName
+                    </b>
+
+                    <table class="govuk-table das-table--responsive">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header das-table-cell-width-25">Cohort</th>
+                                <th scope="col" class="govuk-table__header das-table-cell-width-25">Standard</th>
+                                <th scope="col" class="govuk-table__header das-table-cell-width-25">Apprentice Added</th>
+                                <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var cohort in cohortResulsts)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell" data-label="Employer"> @cohort.CohortReference</td>
+                                    <td class="govuk-table__cell" data-label="Account name">--Not sure about this--</td>
+                                    <td class="govuk-table__cell" data-label="Agreement ID">@cohortResulsts.Count() </td>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                                        <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{cohort.CohortReference}/details")">View cohort</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                          Choose an option
+                        </legend>
+               
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="CohortAction" value="0" type="radio" class="govuk-radios__input" id="cohortAction-approve" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                   Approve and send to employer
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="CohortAction" value="1" type="radio" class="govuk-radios__input" id="cohortAction-send" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    Send to employer to review
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </form>
+        </div>
+    </main>
+</div>
+
+@section breadcrumb
+{
+    @Html.ActionLink("Back", "SelectEmployer", new { Model.ProviderId }, new { id = "back-link", @class = "govuk-back-link" })
+}

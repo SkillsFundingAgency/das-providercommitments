@@ -5,9 +5,9 @@ using System;
 
 namespace SFA.DAS.EmployerCommitmentsV2.Web.Remove
 {
-    public class LocalDevRegistry : Registry
+    public class LocalDevRegistry1 : Registry
     {
-        public LocalDevRegistry()
+        public LocalDevRegistry1()
         {
             var value = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (value == "Development")

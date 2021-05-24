@@ -3,6 +3,7 @@ using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
 using SFA.DAS.Http;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using System;
 
 namespace SFA.DAS.CommitmentsV2.Api.Client
@@ -31,7 +32,7 @@ namespace SFA.DAS.CommitmentsV2.Api.Client
                 httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
 
                 var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
-                return new CommitmentsApiClient(restHttpClient);
+                return new CommitmentsApiClient2(restHttpClient);
             }
             else
             {

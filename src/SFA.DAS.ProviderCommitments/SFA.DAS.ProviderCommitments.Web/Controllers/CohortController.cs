@@ -12,6 +12,12 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using SFA.DAS.Encoding;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -22,16 +28,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IEncodingService _encodingService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
-            ICommitmentsApiClient commitmentsApiClient)
+            ICommitmentsApiClient commitmentsApiClient,
+            IEncodingService encodingService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
+            _encodingService = encodingService;
         }
 
         [HttpGet]
@@ -137,6 +146,112 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
+        }
+
+
+
+        [HttpGet]
+        [Route("add/bulk-upload")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> Bulkupload(BulkUploadRequest request)
+        {
+            var model = await _modelMapper.Map<BulkUploadViewModel>(request);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/bulk-upload")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> Bulkupload(BulkUploadViewModel viewModel)
+        {
+            BulkUploader bulkUploader = new BulkUploader(_encodingService);
+            var uploadFile = bulkUploader.ValidateFileStructure(viewModel, viewModel.ProviderId);
+
+            var client = (_commitmentApiClient as LocalDevRegistry.CommitmentsApiClient2);
+
+           var request = new BulkUploadValidatorRequest();
+            request.BulkUploadApprenticeships = new List<BulkUploadApprenticeship>();
+
+            foreach (var app in uploadFile.Data)
+            {
+
+                var apprenticeship = new BulkUploadApprenticeship();
+                apprenticeship.LastName = app.ApprenticeshipViewModel.LastName;
+                apprenticeship.FirstName = app.ApprenticeshipViewModel.FirstName;
+                apprenticeship.DateOfBirth = app.ApprenticeshipViewModel.DateOfBirth;
+                apprenticeship.StartDate = app.ApprenticeshipViewModel.StartDate;
+                apprenticeship.EndDate = app.ApprenticeshipViewModel.EndDate;
+                apprenticeship.LastName = app.ApprenticeshipViewModel.LastName;
+                apprenticeship.Cost = app.ApprenticeshipViewModel.Cost;
+                apprenticeship.CourseCode = app.ApprenticeshipViewModel.CourseCode;
+                apprenticeship.ULN = app.ApprenticeshipViewModel.ULN;
+                apprenticeship.LegalEntityId = app.ApprenticeshipViewModel.LegalEntityId;
+                apprenticeship.ProviderId = viewModel.ProviderId;
+                apprenticeship.CohortRef = app.ApprenticeshipViewModel.CohortRef;
+
+                request.BulkUploadApprenticeships.Add(apprenticeship);
+            }
+
+
+           var result = await client.BulkUpload(request, CancellationToken.None);
+
+            TempData["UploadResult"] = JsonConvert.SerializeObject(result);
+
+            return await Task.FromResult(RedirectToAction("BulkuploadSummary", new { viewModel.ProviderId }));
+        }
+
+        [HttpGet]
+        [Route("add/bulk-upload-summary")]
+       
+        public IActionResult BulkuploadSummary(BulkUploadSummaryRequest summary)
+        {
+            object o;
+            TempData.TryGetValue("UploadResult", out o);
+            var bulkuploadResponse = JsonConvert.DeserializeObject<BulkUploadResponse>((string)o);
+           
+                var result = new BulkUploadSummaryViewModel
+            {
+                ProviderId = summary.ProviderId,
+                BulkUploadResponse =bulkuploadResponse
+            };
+
+            TempData["UploadResult"] = TempData["UploadResult"];
+
+            return View(result);
+        }
+
+        [HttpPost]
+        [Route("add/bulk-upload-summary")]
+
+        public async Task<IActionResult> BulkuploadSummary(BulkUploadSummaryViewModel summary)
+        {
+            object o;
+            TempData.TryGetValue("UploadResult", out o);
+            var bulkuploadResponse = JsonConvert.DeserializeObject<BulkUploadResponse>((string)o);
+            TempData["UploadResult"] = TempData["UploadResult"];
+
+            //var result = new BulkUploadSummaryViewModel
+            //{
+            //    ProviderId = summary.ProviderId,
+            //    BulkUploadResponse = bulkuploadResponse
+            //};
+
+            var cohortIds = bulkuploadResponse.Results.Select(x => x.CohortId);
+
+            var request = new BulkCohortActionRequest
+            {
+                CohortAction = summary.CohortAction,
+                CohortIds = cohortIds.ToList()
+            };
+
+            var client = (_commitmentApiClient as LocalDevRegistry.CommitmentsApiClient2);
+
+            await client.BulkAction(request, CancellationToken.None);
+
+            return RedirectToAction("Cohorts", new { summary.ProviderId });
         }
     }
 }

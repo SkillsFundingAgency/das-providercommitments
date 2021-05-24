@@ -39,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var hasRelationshipTask = _providerRelationshipsApiClient.HasRelationshipWithPermission(new HasRelationshipWithPermissionRequest { Ukprn = source.ProviderId, Operation = Operation.CreateCohort });
                 var providerAgreement = _pasAccountApiClient.GetAgreement(source.ProviderId);
 
-                await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerAgreement);
+                await Task.WhenAll(getCohortsTask, hasRelationshipTask);
+                await providerAgreement;
                 return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result, providerAgreement.Result.Status);
             }
 

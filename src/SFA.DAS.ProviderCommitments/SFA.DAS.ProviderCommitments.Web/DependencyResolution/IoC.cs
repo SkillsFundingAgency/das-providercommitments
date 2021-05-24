@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<PasAccountApiClientRegistry>();
-            registry.IncludeRegistry<LocalDevRegistry>();
+            registry.IncludeRegistry<LocalDevRegistry1>();
         }
     }
 }
