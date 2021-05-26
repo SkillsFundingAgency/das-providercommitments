@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -13,7 +11,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests
 {
@@ -43,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<EditDraftApprenticeshipRequest>()))
                 .ReturnsAsync(new EditDraftApprenticeshipViewModel());
 
-            _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(It.IsAny<ViewDraftApprenticeshipRequest>()))
+            _modelMapper.Setup(x => x.Map<ViewDraftApprenticeshipViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
                 .ReturnsAsync(new ViewDraftApprenticeshipViewModel());
 
             _mapper = new IDraftApprenticeshipDetailsViewModelMapper(_apiClient.Object, _modelMapper.Object);

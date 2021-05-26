@@ -64,7 +64,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}")]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> EditDraftApprenticeship(EditDraftApprenticeshipViewModel model)
@@ -77,7 +76,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}")]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
@@ -91,6 +89,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             
             return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}")]
+        [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
+        public async Task<IActionResult> ViewDraftApprenticeship(DraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<ViewDraftApprenticeshipViewModel>(request);
+
+            return View("ViewDraftApprenticeship", model);
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)

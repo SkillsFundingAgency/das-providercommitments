@@ -7,7 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class ViewDraftApprenticeshipViewModelMapper : IMapper<ViewDraftApprenticeshipRequest, IDraftApprenticeshipViewModel>
+    public class ViewDraftApprenticeshipViewModelMapper : IMapper<DraftApprenticeshipRequest, ViewDraftApprenticeshipViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IAuthorizationService _authorizationService;
@@ -18,17 +18,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _authorizationService = authorizationService;
         }
 
-        public async Task<IDraftApprenticeshipViewModel> Map(ViewDraftApprenticeshipRequest source)
+        public async Task<ViewDraftApprenticeshipViewModel> Map(DraftApprenticeshipRequest source)
         {
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
 
             var trainingCourse = string.IsNullOrWhiteSpace(draftApprenticeship.CourseCode) ? null
                 : await _commitmentsApiClient.GetTrainingProgramme(draftApprenticeship.CourseCode);
 
             var result = new ViewDraftApprenticeshipViewModel
             {
-                ProviderId = source.Request.ProviderId,
-                CohortReference = source.Request.CohortReference,
+                ProviderId = source.ProviderId,
+                CohortReference = source.CohortReference,
                 FirstName = draftApprenticeship.FirstName,
                 LastName = draftApprenticeship.LastName,
                 Email = draftApprenticeship.Email,
