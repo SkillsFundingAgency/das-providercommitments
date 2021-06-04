@@ -23,11 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
             if (cohort.WithParty != Party.Provider)
             {
-                return await _modelMapper.Map<IDraftApprenticeshipViewModel>(new ViewDraftApprenticeshipRequest
-                {
-                    Cohort = cohort,
-                    Request = source
-                });
+                return await _modelMapper.Map<ViewDraftApprenticeshipViewModel>(source);
             }
 
             return await _modelMapper.Map<IDraftApprenticeshipViewModel>(new EditDraftApprenticeshipRequest
