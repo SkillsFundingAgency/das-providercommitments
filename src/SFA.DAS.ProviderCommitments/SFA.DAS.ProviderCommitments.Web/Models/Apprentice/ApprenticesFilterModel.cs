@@ -17,12 +17,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? SelectedEndDate { get; set; }
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
+        public Alerts? SelectedAlert { get; set; }
 
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
         public IEnumerable<ApprenticeshipStatus> StatusFilters { get; set; } = new List<ApprenticeshipStatus>();
         public IEnumerable<DateTime> StartDateFilters { get; set; } = new List<DateTime>();
         public IEnumerable<DateTime> EndDateFilters { get; set; } = new List<DateTime>();
+        public IEnumerable<Alerts> AlertFilters { get; set; } = new List<Alerts>();
+
 
         private const int PageSize = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
@@ -40,7 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                                               || !string.IsNullOrWhiteSpace(SelectedCourse)
                                               || SelectedStatus.HasValue
                                               || SelectedStartDate.HasValue
-                                              || SelectedEndDate.HasValue;
+                                              || SelectedEndDate.HasValue
+                                              || SelectedAlert.HasValue;
 
         public HtmlString FiltersUsedMessage => this.GetFiltersUsedMessage();
 

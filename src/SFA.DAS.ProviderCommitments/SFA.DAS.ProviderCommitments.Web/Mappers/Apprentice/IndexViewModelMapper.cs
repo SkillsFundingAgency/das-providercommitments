@@ -33,7 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CourseName = source.SelectedCourse,
                 Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
-                EndDate = source.SelectedEndDate
+                EndDate = source.SelectedEndDate,
+             // TODO   Alert = source.SelectedAlert
             });
 
             var statusFilters = new[]
@@ -43,6 +44,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipStatus.Paused, 
                 ApprenticeshipStatus.Stopped,
                 ApprenticeshipStatus.Completed
+            };
+
+            var alertFilters = new[]
+            {
+                Alerts.IlrDataMismatch,
+                Alerts.ChangesPending,
+                Alerts.ChangesRequested,
+                Alerts.ChangesForReview 
             };
 
             var filterModel = new ApprenticesFilterModel
@@ -59,7 +68,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedStatus = source.SelectedStatus,
                 SelectedStartDate = source.SelectedStartDate,
                 SelectedEndDate = source.SelectedEndDate,
-                StatusFilters = statusFilters
+                StatusFilters = statusFilters,
+                AlertFilters = alertFilters
             };
 
             if (response.TotalApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch)
