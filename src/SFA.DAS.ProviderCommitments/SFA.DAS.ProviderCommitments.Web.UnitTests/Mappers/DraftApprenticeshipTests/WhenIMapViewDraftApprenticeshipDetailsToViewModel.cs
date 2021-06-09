@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
     public class WhenIMapViewDraftApprenticeshipDetailsToViewModel
     {
         private ViewDraftApprenticeshipViewModelMapper _mapper;
-        private ViewDraftApprenticeshipRequest _source;
+        private DraftApprenticeshipRequest _source;
         private Func<Task<ViewDraftApprenticeshipViewModel>> _act;
         private GetDraftApprenticeshipResponse _apiResponse;
         private GetTrainingProgrammeResponse _apiTrainingProgrammeResponse;
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _authorizationService = new Mock<IAuthorizationService>();
 
             _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object);
-            _source = fixture.Build<ViewDraftApprenticeshipRequest>().Create();
+            _source = fixture.Build<DraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as ViewDraftApprenticeshipViewModel;
         }
@@ -51,14 +51,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.ProviderId, result.ProviderId);
+            Assert.AreEqual(_source.ProviderId, result.ProviderId);
         }
 
         [Test]
         public async Task ThenCohortReferenceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.CohortReference, result.CohortReference);
+            Assert.AreEqual(_source.CohortReference, result.CohortReference);
         }
 
         [Test]
