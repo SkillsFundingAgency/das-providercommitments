@@ -13,6 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
         public string Status { get; set; }
+        public string StatusClass { get; set; }
         public IEnumerable<string> Alerts { get; set; }
     }
 }

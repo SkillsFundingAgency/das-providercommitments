@@ -281,7 +281,9 @@ else
                             @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
                         </td>
                         <td class="govuk-table__cell" data-label="Status">
-                            @apprenticeship.Status
+                            <strong class="govuk-tag @apprenticeship.StatusClass">
+                                @apprenticeship.Status
+                            </strong>
                         </td>
                         <td class="govuk-table__cell" data-label="Alerts">
                             @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
