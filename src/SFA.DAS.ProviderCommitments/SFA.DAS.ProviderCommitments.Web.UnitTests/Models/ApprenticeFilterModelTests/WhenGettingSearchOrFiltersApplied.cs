@@ -76,6 +76,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
         }
 
         [Test]
+        public void And_Has_SelectedAlert_Then_True()
+        {
+            var filterModel = new ApprenticesFilterModel
+            {
+                SelectedAlert = Alerts.IlrDataMismatch
+            };
+
+            filterModel.SearchOrFiltersApplied.Should().BeTrue();
+        }
+
+        [Test]
         public void And_No_Search_Or_Filter_Then_False()
         {
             var filterModel = new ApprenticesFilterModel();
