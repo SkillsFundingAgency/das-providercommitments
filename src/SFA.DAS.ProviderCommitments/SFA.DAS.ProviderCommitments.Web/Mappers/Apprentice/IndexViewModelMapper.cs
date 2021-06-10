@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate,
-             // TODO   Alert = source.SelectedAlert
+                Alert = source.SelectedAlert
             });
 
             var statusFilters = new[]
