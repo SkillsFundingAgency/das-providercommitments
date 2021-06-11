@@ -1,5 +1,4 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
@@ -14,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 case ApprenticeshipStatus.Paused: return "govuk-tag--grey";
                 case ApprenticeshipStatus.Live: return "govuk-tag--blue";
                 case ApprenticeshipStatus.Completed: return "govuk-tag--green";
-                default: return String.Empty;
+                default: return string.Empty;
             }
         }
     }
