@@ -48,10 +48,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var alertFilters = new[]
             {
-                Alerts.IlrDataMismatch,
+                Alerts.ChangesForReview ,
                 Alerts.ChangesPending,
                 Alerts.ChangesRequested,
-                Alerts.ChangesForReview 
+                Alerts.IlrDataMismatch,
             };
 
             var filterModel = new ApprenticesFilterModel
@@ -68,6 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedStatus = source.SelectedStatus,
                 SelectedStartDate = source.SelectedStartDate,
                 SelectedEndDate = source.SelectedEndDate,
+                SelectedAlert = source.SelectedAlert,
                 StatusFilters = statusFilters,
                 AlertFilters = alertFilters
             };
