@@ -143,6 +143,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 routeData.Add(nameof(SelectedEndDate), SelectedEndDate.Value.ToString("yyyy-MM-dd"));
             }
 
+            if (SelectedAlert.HasValue)
+            {
+                routeData.Add(nameof(SelectedAlert), SelectedAlert.Value.ToString());
+            }
+
             return routeData;
         }
         

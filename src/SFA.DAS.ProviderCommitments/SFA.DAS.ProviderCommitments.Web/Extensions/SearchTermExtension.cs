@@ -66,6 +66,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 filters.Add(WebUtility.HtmlEncode(model.SelectedEndDate.Value.ToGdsFormatWithoutDay()));
             }
 
+            if (model.SelectedAlert.HasValue)
+            {
+                filters.Add(WebUtility.HtmlEncode(model.SelectedAlert.Value.GetDescription()));
+            }
+
             return filters;
         }
     }
