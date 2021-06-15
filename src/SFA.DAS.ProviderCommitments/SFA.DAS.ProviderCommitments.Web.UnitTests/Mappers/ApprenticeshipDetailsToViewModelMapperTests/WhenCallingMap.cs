@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
         {
             var result = await mapper.Map(source);
 
-            result.Status.Should().Be(source.ApprenticeshipStatus.GetDescription());
+            result.Status.Should().Be(source.ApprenticeshipStatus);
         }
 
         [Test, MoqAutoData]
