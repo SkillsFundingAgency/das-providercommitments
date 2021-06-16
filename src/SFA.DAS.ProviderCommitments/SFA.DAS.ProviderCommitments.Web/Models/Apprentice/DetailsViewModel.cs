@@ -34,7 +34,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasApprovedChangeOfPartyRequest { get; set; }
         public bool HasPendingChangeOfProviderRequest { get; set; }
         public string EncodedNewApprenticeshipId { get; set; }
-        public bool IsContinuation { get; set; }
         public bool HasContinuation { get; set; }
         public string EncodedPreviousApprenticeshipId { get; set; }
         public List<EmployerHistory> EmployerHistory { get; set; }

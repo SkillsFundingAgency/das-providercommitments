@@ -90,7 +90,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
                             EncodingType.ApprenticeshipId)
                         : null,
-                    IsContinuation = data.Apprenticeship.IsContinuation && data.Apprenticeship.PreviousProviderId == source.ProviderId,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
                         ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
