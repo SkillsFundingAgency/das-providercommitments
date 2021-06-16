@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -104,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<GetDataLocksResponse.DataLock> dataLocks)
+        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<DataLock> dataLocks)
         {
             if (!hasHadDataLockSuccess)
             {

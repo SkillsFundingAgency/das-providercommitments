@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -511,7 +510,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 GetDataLocksResponse = new GetDataLocksResponse
                 {
-                    DataLocks = new List<GetDataLocksResponse.DataLock>()
+                    DataLocks = new List<DataLock>()
                 };
 
                 GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
@@ -601,15 +600,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { 
-                    new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { 
+                    new DataLock
                     {
                         Id = 1,
                         TriageStatus = TriageStatus.Unknown,
                         DataLockStatus = Status.Fail,
                         IsResolved = true
                     },
-                    new GetDataLocksResponse.DataLock
+                    new DataLock
                     {
                         Id = 2,
                         TriageStatus = TriageStatus.Unknown,
@@ -622,7 +621,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -636,7 +635,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithAnotherDataLock(DataLockErrorCode errorCode)
             {
                 var dataLocks = GetDataLocksResponse.DataLocks.ToList();
-                dataLocks.Add(new GetDataLocksResponse.DataLock
+                dataLocks.Add(new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -651,7 +650,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedAndPassingDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -663,7 +662,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = triageStatus,
