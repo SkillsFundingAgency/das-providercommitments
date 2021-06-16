@@ -12,11 +12,6 @@
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
     <div class="govuk-grid-column-two-thirds">
-
-        @if (Model.HasApprovedChangeOfPartyRequest || Model.IsContinuation)
-        {
-            <partial name="DetailsPartials/_ContinuationLinksBanner" />
-        }
         @if (Model.HasPendingChangeOfPartyRequest)
         {
             <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
@@ -48,34 +43,34 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
+                <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
+            </tr>
+
+            @if (Model.Status == ApprenticeshipStatus.Stopped)
+            {
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
+                    <th scope="row" class="govuk-table__header">Stop applies from</th>
+                    <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                 </tr>
+            }
 
-                @if (Model.Status == ApprenticeshipStatus.Stopped)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Stop applies from</th>
-                        <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
-                    </tr>
-                }
+            @if (Model.Status == ApprenticeshipStatus.Paused)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
+                    <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
+                </tr>
+            }
 
-                @if (Model.Status == ApprenticeshipStatus.Paused)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
-                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
-                    </tr>
-                }
-
-                @if (Model.Status == ApprenticeshipStatus.Completed)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Completion payment month</th>
-                        <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
-                    </tr>
-                }
+            @if (Model.Status == ApprenticeshipStatus.Completed)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Completion payment month</th>
+                    <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
+                </tr>
+            }
             </tbody>
         </table>
 
@@ -91,32 +86,59 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
 
-                <tr class="govuk-table__row">
+            <tr class="govuk-table__row">
 
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
-                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
-                    <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                        @if (Model.Status == ApprenticeshipStatus.Stopped && 
-                             Model.IsChangeOfEmployerEnabled && 
-                             !Model.HasPendingChangeOfProviderRequest && 
-                             !Model.HasContinuation)
+                <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
+                <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
+                <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
+                    @if (Model.Status == ApprenticeshipStatus.Stopped && 
+                         Model.IsChangeOfEmployerEnabled && 
+                         !Model.HasPendingChangeOfProviderRequest && 
+                         !Model.HasContinuation)
+                    {
+                        <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                    }
+                </td>
+            </tr>
+
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Reference</th>
+                <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Agreement ID</th>
+                <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            
+            @if (Model.EmployerHistory != null && Model.EmployerHistory.Count > 1)
+            {
+                <tr>
+                    <th scope="row" class="govuk-table__header">Employer history</th>
+                    <td id="cohort-reference" class="govuk-table__cell">
+                        @foreach (var employer in Model.EmployerHistory)
                         {
-                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                            <p class="govuk-body">
+                                @if (employer.ShowLink)
+                                {
+                                    <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@employer.HashedApprenticeshipId">
+                                        @employer.EmployerName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>@employer.EmployerName</span>
+                                }
+                                <br />
+                                <span class="govuk-body-s">@employer.FromDate.ToString("MMM yyyy") to @employer.ToDate.ToString("MMM yyyy")</span>
+                            </p>
                         }
                     </td>
-                </tr>
-
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Reference</th>
-                    <td id="apprenticeship-reference" class="govuk-table__cell">@Model.Reference</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Agreement ID</th>
-                    <td id="apprenticeship-agreement-id" class="govuk-table__cell">@Model.AgreementId</td>
-                    <td class="govuk-table__cell"></td>
-                </tr>
+            }
             </tbody>
         </table>
 
@@ -134,42 +156,42 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
-                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Date of birth</th>
-                    <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Unique learner number</th>
-                    <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-                    <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Training start date</th>
-                    <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Training end date</th>
-                    <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Your reference</th>
-                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
-                </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
+                <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Date of birth</th>
+                <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Unique learner number</th>
+                <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Training start date</th>
+                <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Training end date</th>
+                <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Your reference</th>
+                <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+            </tr>
             </tbody>
         </table>
     </div>
-    </div>
+</div>
 
 @section breadcrumb {
     <a id="back-link" class="govuk-back-link" asp-route="@RouteNames.ApprenticesIndex" asp-route-fromsearch="true">Back</a>
