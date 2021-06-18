@@ -16,7 +16,7 @@
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="7.13.2" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="7.29.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.Testing" Version="3.0.22" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />

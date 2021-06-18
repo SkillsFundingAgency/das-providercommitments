@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 SelectedStatus = ApprenticeshipStatus.WaitingToStart,
                 SelectedStartDate = DateTime.Today,
                 SelectedEndDate = DateTime.Today,
+                SelectedAlert = Alerts.IlrDataMismatch,
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 3,
                 SortField = "gsd",
                 ReverseSort = false
@@ -43,6 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                         {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
                         {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
                         {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
+                        {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()},
                         {nameof(filterModel.SortField), filterModel.SortField},
                         {nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString()},
                         {nameof(filterModel.PageNumber), (i+1).ToString() }
