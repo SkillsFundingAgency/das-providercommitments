@@ -8,12 +8,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
     [TestFixture]
     public class DataLockStatusExtensionsTests
     {
-        private GetDataLocksResponse.DataLock _dataLock;
+        private DataLock _dataLock;
 
         [SetUp]
         public void Arrange()
         {
-            _dataLock = new GetDataLocksResponse.DataLock();
+            _dataLock = new DataLock();
         }
 
         [TestCase(DataLockErrorCode.Dlock03, true)]
