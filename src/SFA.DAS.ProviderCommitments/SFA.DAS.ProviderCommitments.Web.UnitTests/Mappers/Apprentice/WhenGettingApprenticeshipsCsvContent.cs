@@ -35,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     apiRequest.EmployerName == csvRequest.SelectedEmployer &&
                     apiRequest.CourseName == csvRequest.SelectedCourse &&
                     apiRequest.Status == csvRequest.SelectedStatus &&
+                    apiRequest.Alert == csvRequest.SelectedAlert &&
                     apiRequest.StartDate == csvRequest.SelectedStartDate &&
                     apiRequest.EndDate == csvRequest.SelectedEndDate),
                 It.IsAny<CancellationToken>()));

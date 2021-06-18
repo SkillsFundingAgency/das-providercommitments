@@ -10,8 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
     public class WhenGettingRouteData
     {
         [Test, AutoData]
-        public void Then_Contains_Item_For_Each_Search_And_Filter_Value(
-            ApprenticesFilterModel filterModel)
+        public void Then_Contains_Item_For_Each_Search_And_Filter_Value(ApprenticesFilterModel filterModel)
         {
             filterModel.RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
             {
@@ -20,7 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
                 {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
                 {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
-                {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")}
+                {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
+                {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()}
             });
         }
 

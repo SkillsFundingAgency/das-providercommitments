@@ -16,7 +16,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="CsvHelper" Version="12.3.2" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="7.30.0" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="7.34.0" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />
   </ItemGroup>
 
