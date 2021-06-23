@@ -21,22 +21,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
         private readonly ILogger<DetailsViewModelMapper> _logger;
-        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
-
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService,
-            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService, ILogger<DetailsViewModelMapper> logger)
+             ILogger<DetailsViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
-            _logger = logger;
-            _featureTogglesService = featureTogglesService;
+            _logger = logger;            
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             try
-            {
-                var isChangeOfEmployerEnabled = _featureTogglesService.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer))?.IsEnabled ?? false;
+            {                
                 var data = await GetApprenticeshipData(source.ApprenticeshipId);
                 var dataLockSummaryStatus = data.DataLocks.DataLocks.GetDataLockSummaryStatus();
                 
@@ -79,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
-                    IsChangeOfEmployerEnabled = isChangeOfEmployerEnabled && !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
+                    IsChangeOfEmployerEnabled = !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
                     PauseDate = data.Apprenticeship.PauseDate,
                     CompletionDate = data.Apprenticeship.CompletionDate,
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,

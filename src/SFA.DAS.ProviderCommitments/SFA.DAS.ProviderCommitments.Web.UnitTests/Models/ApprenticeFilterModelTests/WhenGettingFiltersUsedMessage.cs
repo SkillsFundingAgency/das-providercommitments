@@ -158,5 +158,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                              $", <strong>{selectedCourse}</strong>" +
                              $" and <strong>{selectedStartDate.ToGdsFormatWithoutDay()}</strong>");
         }
+
+        [Test, AutoData]
+        public void And_No_Search_And_SelectedAlert_Then_SelectedAlert(Alerts selectedAlert)
+        {
+            var filterModel = new ApprenticesFilterModel
+            {
+                SelectedAlert = selectedAlert
+            };
+
+            filterModel.FiltersUsedMessage.Value.Should().Be($"matching <strong>{selectedAlert.GetDescription()}</strong>");
+        }
+
     }
 }

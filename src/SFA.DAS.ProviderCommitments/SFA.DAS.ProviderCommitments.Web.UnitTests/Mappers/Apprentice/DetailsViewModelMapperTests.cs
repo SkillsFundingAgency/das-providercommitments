@@ -14,9 +14,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -317,18 +314,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenChangeOfEmployerEnabledIsMappedCorrectly(bool enabled)
-        {
-            _fixture.WithChangeOfEmployerToggle(enabled);
-
-            await _fixture.Map();
-
-            Assert.AreEqual(enabled, _fixture.Result.IsChangeOfEmployerEnabled);
-        }
+        }   
 
         [TestCase(null, false)]
         [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
@@ -441,8 +427,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(ChangeOfPartyRequestStatus.Withdrawn, true)]
         public async Task ThenPendingOrApprovedChangeOfPartyRequestPreventsChangeOfEmployer(ChangeOfPartyRequestStatus status, bool expectChangeEmployerEnabled)
         {
-            _fixture
-                .WithChangeOfEmployerToggle(true)
+            _fixture                
                 .WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, status);
             await _fixture.Map();
             Assert.AreEqual(expectChangeEmployerEnabled, _fixture.Result.IsChangeOfEmployerEnabled);
@@ -468,8 +453,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
 
-            private readonly Mock<IEncodingService> _encodingService;
-            private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleService;
+            private readonly Mock<IEncodingService> _encodingService;            
             public string CohortReference { get; }
             public string AgreementId { get; }
             public string URL { get; }
@@ -521,16 +505,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 EncodedNewApprenticeshipId = Fixture.Create<string>();
                 EncodedPreviousApprenticeshipId = Fixture.Create<string>();
-
-                _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-                _featureToggleService
-                    .Setup(x => x.GetFeatureToggle(It.IsAny<string>()))
-                    .Returns(new ProviderFeatureToggle()
-                    {
-                        Feature = nameof(ProviderFeature.ChangeOfEmployer),
-                        IsEnabled = false,
-                        Whitelist = null
-                    });
             }
 
             public async Task<DetailsViewModelMapperFixture> Map()
@@ -554,7 +528,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
                 return this;
@@ -676,20 +650,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             {
                 ApiResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
                 return this;
-            }
-
-            public DetailsViewModelMapperFixture WithChangeOfEmployerToggle(bool enabled)
-            {
-                _featureToggleService
-                    .Setup(x => x.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer)))
-                    .Returns(new ProviderFeatureToggle()
-                    {
-                        Feature = nameof(ProviderFeature.ChangeOfEmployer),
-                        IsEnabled = enabled,
-                        Whitelist = null
-                    });
-                return this;
-            }
+            }           
 
             public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status, Party? withParty = null)
             {
