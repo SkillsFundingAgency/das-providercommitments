@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -86,11 +86,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
                             EncodingType.ApprenticeshipId)
                         : null,
-                    IsContinuation = data.Apprenticeship.IsContinuation && data.Apprenticeship.PreviousProviderId == source.ProviderId,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
                         ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
-                        : null
+                        : null,
+                    EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
+                        .Select(coe => new EmployerHistory
+                        {
+                            EmployerName = coe.EmployerName,
+                            FromDate = coe.StartDate.Value,
+                            ToDate = coe.StopDate.HasValue ? coe.StopDate.Value : coe.EndDate.Value,
+                            HashedApprenticeshipId = _encodingService.Encode(coe.ApprenticeshipId, EncodingType.ApprenticeshipId),
+                            ShowLink = source.ApprenticeshipId != coe.ApprenticeshipId
+                        }).ToList()
                 };
             }
             catch (Exception e)
@@ -100,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<GetDataLocksResponse.DataLock> dataLocks)
+        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<DataLock> dataLocks)
         {
             if (!hasHadDataLockSuccess)
             {
@@ -129,31 +137,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             bool HasProviderUpdates, 
             bool HasEmployerUpdates,
             GetDataLocksResponse DataLocks,
-            GetChangeOfPartyRequestsResponse ChangeOfPartyRequests)> 
+            GetChangeOfPartyRequestsResponse ChangeOfPartyRequests,
+            GetChangeOfEmployerChainResponse ChangeofEmployerChain)> 
             GetApprenticeshipData(long apprenticeshipId)
         {
             var detailsResponseTask = _commitmentApiClient.GetApprenticeship(apprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var pendingUpdatesTask = _commitmentApiClient.GetApprenticeshipUpdates(apprenticeshipId,
-                new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest
-                    { Status = ApprenticeshipUpdateStatus.Pending });
+            var pendingUpdatesTask = _commitmentApiClient.GetApprenticeshipUpdates(apprenticeshipId, new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest { Status = ApprenticeshipUpdateStatus.Pending });
             var dataLocksTask = _commitmentApiClient.GetApprenticeshipDatalocksStatus(apprenticeshipId);
             var changeOfPartyRequestsTask = _commitmentApiClient.GetChangeOfPartyRequests(apprenticeshipId);
+            var changeOfEmployerChainTask = _commitmentApiClient.GetChangeOfEmployerChain(apprenticeshipId);
 
-            await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask, dataLocksTask);
-
-            var detailsResponse = await detailsResponseTask;
-            var priceEpisodes = await priceEpisodesTask;
-            var pendingUpdates = await pendingUpdatesTask;
-            var dataLocks = await dataLocksTask;
-            var changeOfPartyRequests = await changeOfPartyRequestsTask;
-
-            return (detailsResponse, 
-                priceEpisodes, 
-                pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider),
-                pendingUpdates.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer),
-                dataLocks,
-                changeOfPartyRequests);
+            await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask, dataLocksTask, changeOfEmployerChainTask, changeOfPartyRequestsTask);
+            
+            return (detailsResponseTask.Result,
+                priceEpisodesTask.Result,
+                pendingUpdatesTask.Result.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider),
+                pendingUpdatesTask.Result.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer),
+                dataLocksTask.Result,
+                changeOfPartyRequestsTask.Result,
+                changeOfEmployerChainTask.Result);
         }
     }
 }

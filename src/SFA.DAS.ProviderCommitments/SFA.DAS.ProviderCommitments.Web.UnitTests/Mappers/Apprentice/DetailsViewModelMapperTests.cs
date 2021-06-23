@@ -377,23 +377,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, _fixture.Result.EncodedNewApprenticeshipId);
         }
 
-        [TestCase(true, true)]
-        [TestCase(false, false)]
-        public async Task ThenIsContinuationIsMappedCorrectly(bool sameProvider, bool expectIsContinuation)
-        {
-            _fixture.WithPreviousApprenticeship(sameProvider);
-            await _fixture.Map();
-            Assert.AreEqual(expectIsContinuation,_fixture.Result.IsContinuation);
-        }
-
-        [Test]
-        public async Task ThenIfNoPreviousApprenticeshipThenIsContinuationIsMappedCorrectly()
-        {
-            _fixture.WithoutPreviousApprenticeship();
-            await _fixture.Map();
-            Assert.IsFalse(_fixture.Result.IsContinuation);
-        }
-
         [Test]
         public async Task ThenEncodedPreviousApprenticeshipIdIsMappedCorrectly()
         {
@@ -450,6 +433,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectChangeEmployerEnabled, _fixture.Result.IsChangeOfEmployerEnabled);
         }
 
+        [Test]
+        public async Task ThenIfChangeOfEmployerChainThenEmployerHistoryIsMappedCorrectly()
+        {
+            _fixture.WithChangeOfEmployerChain();
+            await _fixture.Map();
+            Assert.IsNotNull(_fixture.Result.EmployerHistory);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -460,6 +451,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
+            public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             public string CohortReference { get; }
@@ -494,12 +486,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 GetDataLocksResponse = new GetDataLocksResponse
                 {
-                    DataLocks = new List<GetDataLocksResponse.DataLock>()
+                    DataLocks = new List<DataLock>()
                 };
 
                 GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
                 {
                     ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>()
+                };
+
+                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
+                {
+                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
                 };
 
                 _encodingService = new Mock<IEncodingService>();
@@ -527,6 +524,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 apiClient.Setup(x => x.GetChangeOfPartyRequests(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfPartyRequestsResponse);
+
+                apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
@@ -574,15 +574,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { 
-                    new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { 
+                    new DataLock
                     {
                         Id = 1,
                         TriageStatus = TriageStatus.Unknown,
                         DataLockStatus = Status.Fail,
                         IsResolved = true
                     },
-                    new GetDataLocksResponse.DataLock
+                    new DataLock
                     {
                         Id = 2,
                         TriageStatus = TriageStatus.Unknown,
@@ -595,7 +595,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -609,7 +609,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithAnotherDataLock(DataLockErrorCode errorCode)
             {
                 var dataLocks = GetDataLocksResponse.DataLocks.ToList();
-                dataLocks.Add(new GetDataLocksResponse.DataLock
+                dataLocks.Add(new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -624,7 +624,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedAndPassingDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -636,7 +636,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
             {
-                GetDataLocksResponse.DataLocks = new List<GetDataLocksResponse.DataLock> { new GetDataLocksResponse.DataLock
+                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
                 {
                     Id = 1,
                     TriageStatus = triageStatus,
@@ -668,6 +668,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             Status = status,
                             WithParty = withParty,
                             NewApprenticeshipId = newApprenticeshipId
+                        }
+                    }
+                };
+
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedNewApprenticeshipId);
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithChangeOfEmployerChain()
+            {
+                var newApprenticeshipId = Fixture.Create<long>();
+
+                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
+                {
+                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>
+                    {
+                        new GetChangeOfEmployerChainResponse.ChangeOfEmployerLink
+                        {
+                            ApprenticeshipId = newApprenticeshipId,
+                            EmployerName = Fixture.Create<string>(),
+                            StartDate = Fixture.Create<DateTime>(),
+                            EndDate = Fixture.Create<DateTime>(),
+                            StopDate = Fixture.Create<DateTime>(),
+                            CreatedOn = Fixture.Create<DateTime>()
                         }
                     }
                 };
