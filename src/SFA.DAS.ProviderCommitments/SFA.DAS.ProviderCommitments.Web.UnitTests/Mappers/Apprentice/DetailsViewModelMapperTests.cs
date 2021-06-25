@@ -14,10 +14,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -318,18 +314,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenChangeOfEmployerEnabledIsMappedCorrectly(bool enabled)
-        {
-            _fixture.WithChangeOfEmployerToggle(enabled);
-
-            await _fixture.Map();
-
-            Assert.AreEqual(enabled, _fixture.Result.IsChangeOfEmployerEnabled);
-        }
+        }   
 
         [TestCase(null, false)]
         [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
@@ -392,23 +377,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, _fixture.Result.EncodedNewApprenticeshipId);
         }
 
-        [TestCase(true, true)]
-        [TestCase(false, false)]
-        public async Task ThenIsContinuationIsMappedCorrectly(bool sameProvider, bool expectIsContinuation)
-        {
-            _fixture.WithPreviousApprenticeship(sameProvider);
-            await _fixture.Map();
-            Assert.AreEqual(expectIsContinuation,_fixture.Result.IsContinuation);
-        }
-
-        [Test]
-        public async Task ThenIfNoPreviousApprenticeshipThenIsContinuationIsMappedCorrectly()
-        {
-            _fixture.WithoutPreviousApprenticeship();
-            await _fixture.Map();
-            Assert.IsFalse(_fixture.Result.IsContinuation);
-        }
-
         [Test]
         public async Task ThenEncodedPreviousApprenticeshipIdIsMappedCorrectly()
         {
@@ -459,11 +427,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(ChangeOfPartyRequestStatus.Withdrawn, true)]
         public async Task ThenPendingOrApprovedChangeOfPartyRequestPreventsChangeOfEmployer(ChangeOfPartyRequestStatus status, bool expectChangeEmployerEnabled)
         {
-            _fixture
-                .WithChangeOfEmployerToggle(true)
+            _fixture                
                 .WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, status);
             await _fixture.Map();
             Assert.AreEqual(expectChangeEmployerEnabled, _fixture.Result.IsChangeOfEmployerEnabled);
+        }
+
+        [Test]
+        public async Task ThenIfChangeOfEmployerChainThenEmployerHistoryIsMappedCorrectly()
+        {
+            _fixture.WithChangeOfEmployerChain();
+            await _fixture.Map();
+            Assert.IsNotNull(_fixture.Result.EmployerHistory);
         }
 
         public class DetailsViewModelMapperFixture
@@ -476,9 +451,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
+            public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
 
-            private readonly Mock<IEncodingService> _encodingService;
-            private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleService;
+            private readonly Mock<IEncodingService> _encodingService;            
             public string CohortReference { get; }
             public string AgreementId { get; }
             public string URL { get; }
@@ -519,22 +494,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>()
                 };
 
+                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
+                {
+                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
+                };
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
 
                 EncodedNewApprenticeshipId = Fixture.Create<string>();
                 EncodedPreviousApprenticeshipId = Fixture.Create<string>();
-
-                _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-                _featureToggleService
-                    .Setup(x => x.GetFeatureToggle(It.IsAny<string>()))
-                    .Returns(new ProviderFeatureToggle()
-                    {
-                        Feature = nameof(ProviderFeature.ChangeOfEmployer),
-                        IsEnabled = false,
-                        Whitelist = null
-                    });
             }
 
             public async Task<DetailsViewModelMapperFixture> Map()
@@ -555,7 +525,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfPartyRequests(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfPartyRequestsResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _featureToggleService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetChangeOfEmployerChainResponse);
+
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
                 return this;
@@ -677,20 +650,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             {
                 ApiResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
                 return this;
-            }
-
-            public DetailsViewModelMapperFixture WithChangeOfEmployerToggle(bool enabled)
-            {
-                _featureToggleService
-                    .Setup(x => x.GetFeatureToggle(nameof(ProviderFeature.ChangeOfEmployer)))
-                    .Returns(new ProviderFeatureToggle()
-                    {
-                        Feature = nameof(ProviderFeature.ChangeOfEmployer),
-                        IsEnabled = enabled,
-                        Whitelist = null
-                    });
-                return this;
-            }
+            }           
 
             public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status, Party? withParty = null)
             {
@@ -708,6 +668,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             Status = status,
                             WithParty = withParty,
                             NewApprenticeshipId = newApprenticeshipId
+                        }
+                    }
+                };
+
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
+                    .Returns(EncodedNewApprenticeshipId);
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithChangeOfEmployerChain()
+            {
+                var newApprenticeshipId = Fixture.Create<long>();
+
+                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
+                {
+                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>
+                    {
+                        new GetChangeOfEmployerChainResponse.ChangeOfEmployerLink
+                        {
+                            ApprenticeshipId = newApprenticeshipId,
+                            EmployerName = Fixture.Create<string>(),
+                            StartDate = Fixture.Create<DateTime>(),
+                            EndDate = Fixture.Create<DateTime>(),
+                            StopDate = Fixture.Create<DateTime>(),
+                            CreatedOn = Fixture.Create<DateTime>()
                         }
                     }
                 };

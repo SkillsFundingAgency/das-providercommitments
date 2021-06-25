@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
 
@@ -33,9 +34,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasApprovedChangeOfPartyRequest { get; set; }
         public bool HasPendingChangeOfProviderRequest { get; set; }
         public string EncodedNewApprenticeshipId { get; set; }
-        public bool IsContinuation { get; set; }
         public bool HasContinuation { get; set; }
         public string EncodedPreviousApprenticeshipId { get; set; }
+        public List<EmployerHistory> EmployerHistory { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
         public TriageOption AvailableTriageOption { get; set; }
@@ -52,5 +53,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Update,
             Both
         }
+    }
+
+    public class EmployerHistory
+    {
+        public string EmployerName { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public string HashedApprenticeshipId { get; set; }
+        public bool ShowLink { get; set; }
     }
 }
