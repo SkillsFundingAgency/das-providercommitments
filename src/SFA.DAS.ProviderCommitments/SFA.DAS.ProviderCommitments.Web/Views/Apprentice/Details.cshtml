@@ -44,34 +44,40 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
-            </tr>
-
-            @if (Model.Status == ApprenticeshipStatus.Stopped)
-            {
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Stop applies from</th>
-                    <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
-            }
+                @if (Model.ShowConfirmationStatus)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice Confirmation</th>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus</td>
+                    </tr>
+                }
+                @if (Model.Status == ApprenticeshipStatus.Stopped)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Stop applies from</th>
+                        <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
 
-            @if (Model.Status == ApprenticeshipStatus.Paused)
-            {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
-                    <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
-                </tr>
-            }
+                @if (Model.Status == ApprenticeshipStatus.Paused)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
+                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
+                    </tr>
+                }
 
-            @if (Model.Status == ApprenticeshipStatus.Completed)
-            {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Completion payment month</th>
-                    <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
-                </tr>
-            }
+                @if (Model.Status == ApprenticeshipStatus.Completed)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Completion payment month</th>
+                        <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
+                    </tr>
+                }
             </tbody>
         </table>
 
