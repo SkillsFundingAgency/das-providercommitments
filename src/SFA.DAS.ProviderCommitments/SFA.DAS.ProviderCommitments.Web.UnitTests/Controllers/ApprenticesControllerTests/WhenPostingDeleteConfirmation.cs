@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
               .Setup(x => x.Map<DeleteDraftApprenticeshipRequest>(_viewModel))
               .ReturnsAsync(_mapperResult);
 
-            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CommitmentHashedId}/Details"; 
+            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details"; 
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 

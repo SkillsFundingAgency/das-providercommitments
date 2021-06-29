@@ -24,8 +24,7 @@
             <fieldset class="govuk-fieldset">
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.ApprenticeshipName)
-                @Html.HiddenFor(m => m.DateOfBirth)
-                @Html.HiddenFor(m => m.CommitmentId)
+                @Html.HiddenFor(m => m.DateOfBirth)                
 
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.DeleteConfirmed, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
@@ -62,5 +61,5 @@
 
 @section breadcrumb {   
 
-    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CommitmentHashedId}/Details")">Cancel and go back</a>
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/Details")">Cancel and go back</a>
 }

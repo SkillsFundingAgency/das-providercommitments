@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
-            RuleFor(x => x.CommitmentHashedId).NotEmpty();            
+            RuleFor(x => x.CohortReference).NotEmpty();            
         }
     }
 }

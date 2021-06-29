@@ -27,19 +27,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             try
             {                
-                var apprenticeshipId = _encodingService.Decode(source.ApprenticeshipHashedId, EncodingType.ApprenticeshipId);
-                var commitmentId = _encodingService.Decode(source.CommitmentHashedId, EncodingType.CohortReference);
+                var apprenticeshipId = _encodingService.Decode(source.ApprenticeshipHashedId, EncodingType.ApprenticeshipId);                
+                var commitmentId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
                 var draftApprenticeshipResponse = await _commitmentApiClient.GetDraftApprenticeship(commitmentId, apprenticeshipId, CancellationToken.None);
 
                 return new DeleteConfirmationViewModel
                 {
                     ProviderId = source.ProviderId,
-                    CommitmentHashedId = source.CommitmentHashedId,
+                    CohortReference = source.CohortReference,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     ApprenticeshipName = $"{draftApprenticeshipResponse.FirstName} {draftApprenticeshipResponse.LastName}",
-                    DateOfBirth = draftApprenticeshipResponse.DateOfBirth,
-                    ApprenticeshipId = apprenticeshipId,
-                    CommitmentId = commitmentId
+                    DateOfBirth = draftApprenticeshipResponse.DateOfBirth
                 };
             }
             catch (Exception ex)

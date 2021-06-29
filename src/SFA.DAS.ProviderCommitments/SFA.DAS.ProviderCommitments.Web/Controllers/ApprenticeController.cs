@@ -256,8 +256,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{CohortReference}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
@@ -266,7 +265,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]        
-        [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        [Route("{CohortReference}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
@@ -276,15 +275,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("ViewEditDraftApprenticeship", "DraftApprenticeship", new DraftApprenticeshipRequest
                 {
                     ProviderId = viewModel.ProviderId,
-                    CohortReference = viewModel.CommitmentHashedId, 
+                    CohortReference = viewModel.CohortReference, 
                     DraftApprenticeshipHashedId = viewModel.ApprenticeshipHashedId 
                 });
             }
 
             var request = await _modelMapper.Map<DeleteDraftApprenticeshipRequest>(viewModel);
-            await _commitmentApiClient.DeleteDraftApprenticeship(viewModel.CommitmentId, viewModel.ApprenticeshipId, request, CancellationToken.None);           
+            await _commitmentApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.ApprenticeshipId, request, CancellationToken.None);           
 
-            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CommitmentHashedId}/Details";
+            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
             return Redirect(url);        
         }

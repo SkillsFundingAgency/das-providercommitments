@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_deleteConfirmationRequest.CommitmentHashedId, result.CommitmentHashedId);
+            Assert.AreEqual(_deleteConfirmationRequest.CohortReference, result.CohortReference);
         }
 
 
