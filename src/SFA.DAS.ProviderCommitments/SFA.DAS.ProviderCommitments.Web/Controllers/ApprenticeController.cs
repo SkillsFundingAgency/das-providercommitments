@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -23,12 +26,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
-        private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly ILinkGenerator _urlHelper;
+        private readonly ICommitmentsApiClient _commitmentApiClient;        
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ILinkGenerator urlHelper, ICommitmentsApiClient commitmentApiClient)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
+            _urlHelper = urlHelper;
             _commitmentApiClient = commitmentApiClient;
         }
 
@@ -248,6 +253,36 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
+        }
+
+        [HttpGet]
+        [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
+        {
+            var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
+            return View(viewModel);
+        }
+
+        [HttpPost]        
+        [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
+        {          
+            if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
+            {
+                return RedirectToAction("ViewEditDraftApprenticeship", "DraftApprenticeship", new DraftApprenticeshipRequest
+                {
+                    ProviderId = viewModel.ProviderId,
+                    CohortReference = viewModel.CommitmentHashedId, 
+                    DraftApprenticeshipHashedId = viewModel.ApprenticeshipHashedId 
+                });
+            }
+
+            var request = await _modelMapper.Map<DeleteDraftApprenticeshipRequest>(viewModel);
+            await _commitmentApiClient.DeleteDraftApprenticeship(viewModel.CommitmentId, viewModel.ApprenticeshipId, request, CancellationToken.None);           
+
+            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CommitmentHashedId}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);        
         }
     }
 }

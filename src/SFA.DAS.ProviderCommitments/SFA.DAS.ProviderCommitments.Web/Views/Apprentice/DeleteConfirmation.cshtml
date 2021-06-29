@@ -1,0 +1,66 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DeleteConfirmationViewModel
+
+@{
+
+    ViewBag.Title = "Confirm Delete";    
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/confirm-delete";
+    ViewBag.GaData.Org = Model.ApprenticeshipName;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Confirm apprentice deletion</h1>
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-0">@Model.ApprenticeshipName</h2>
+        @if (Model.DateOfBirth.HasValue)
+        {
+            <p class="secondary-text heading-small">@Model.DateOfBirth.Value.ToGdsFormat()</p>
+        }        
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ApprenticeshipName)
+                @Html.HiddenFor(m => m.DateOfBirth)
+                @Html.HiddenFor(m => m.CommitmentId)
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.DeleteConfirmed, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Are you sure you want to delete the record for @Model.ApprenticeshipName?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.DeleteConfirmed, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DeleteConfirmed) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="DeleteConfirmed" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                    Yes, delete the record
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="DeleteConfirmed" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    No, don't delete this apprentice
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {   
+
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CommitmentHashedId}/Details")">Cancel and go back</a>
+}
