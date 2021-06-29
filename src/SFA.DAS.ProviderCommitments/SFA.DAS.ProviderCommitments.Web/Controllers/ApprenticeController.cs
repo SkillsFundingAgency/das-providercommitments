@@ -257,6 +257,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
             var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
@@ -265,6 +267,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]        
         [Route("{commitmentHashedId}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
         {          
             if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
