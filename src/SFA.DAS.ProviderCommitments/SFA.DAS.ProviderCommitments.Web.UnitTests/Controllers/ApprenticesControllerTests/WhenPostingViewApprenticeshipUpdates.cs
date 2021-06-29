@@ -36,6 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public async Task WithUndoChanges_Changes_Undone_Message_Is_Stored_In_TempData()
         {
+            _fixture = _fixture.WithUndoChanges();
+
             await _fixture.Act();
 
             _fixture.VerifyChangesUndoneFlashMessageStoredInTempData();
@@ -44,14 +46,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public async Task WithUndoChanges_RedirectToSent()
         {
+            _fixture = _fixture.WithUndoChanges();
+
             var result = await _fixture.Act();
+
             result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
         }
 
         [Test]
         public async Task WithLeaveChanges_RedirectToSent()
         {
+            _fixture = _fixture.WithLeaveChanges();
+
             var result = await _fixture.Act();
+
             result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
         }
 
@@ -90,6 +98,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             }
 
             public Task<IActionResult> Act() => _sut.ViewApprenticeshipUpdates(_viewModel);
+
+            public WhenPostingViewApprenticeshipUpdatesFixture WithUndoChanges()
+            {
+                _viewModel.UndoChanges = true;
+                return this;
+            }
+
+            public WhenPostingViewApprenticeshipUpdatesFixture WithLeaveChanges()
+            {
+                _viewModel.UndoChanges = false;
+                return this;
+            }
 
             public void VerifyUndoChangesCalled()
             {
