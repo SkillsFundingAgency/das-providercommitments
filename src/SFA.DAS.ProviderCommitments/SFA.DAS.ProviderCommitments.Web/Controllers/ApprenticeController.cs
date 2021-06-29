@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/changes/view")]
+        [Route("{apprenticeshipHashedId}/changes/view", Name = RouteNames.ApprenticeViewApprenticeshipUpdates)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesRequest request)
         {
@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 TempData.AddFlashMessage(ChangesUndoneFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             }
 
-            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToRoute(RouteNames.ApprenticeDetail, new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
