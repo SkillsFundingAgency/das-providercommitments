@@ -1,0 +1,22 @@
+﻿@{
+    // the _Layout view is contained in the package SFA.DAS.Provider.Shared.UI
+    Layout = "_Layout.cshtml";
+}
+
+<partial name="_FlashMessagePartial" />
+@RenderBody()
+
+@section Styles
+{
+    @RenderSection("Styles", required: false)
+}
+
+@section breadcrumb
+{
+    @RenderSection("breadcrumb", required: false)
+}
+
+@section Scripts
+{
+    @RenderSection("Scripts", required: false)
+}

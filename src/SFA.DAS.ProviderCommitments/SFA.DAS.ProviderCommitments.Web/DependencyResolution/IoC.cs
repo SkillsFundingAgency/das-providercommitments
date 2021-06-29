@@ -26,7 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<PasAccountApiClientRegistry>();
-            registry.IncludeRegistry<LocalDevRegistry.LocalDevRegistry>();
+
+            // Enable if you want to by pass MI locally.
+            registry.IncludeRegistry<LocalDevRegistry>();
         }
     }
 }
