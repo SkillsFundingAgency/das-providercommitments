@@ -467,6 +467,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.IsNotNull(_fixture.Result.EmployerHistory);
         }
 
+        [Test]
+        public async Task CheckEmailIsMappedCorrectly()
+        {
+            var email = "a@a.com";
+            _fixture.WithEmailPopulated(email);
+
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(email, _fixture.Result.Email);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -779,6 +790,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithoutNextApprenticeship()
             {
                 ApiResponse.ContinuedById = null;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithEmailPopulated(string email)
+            {
+                ApiResponse.Email = email;
                 return this;
             }
         }
