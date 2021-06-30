@@ -128,9 +128,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId
                 });
             }
-
-            var request = await _modelMapper.Map<DeleteDraftApprenticeshipRequest>(viewModel);
-            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, request, CancellationToken.None);
+            
+            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
 
             var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CohortReference}/Details";
             var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
