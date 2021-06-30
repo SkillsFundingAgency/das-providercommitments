@@ -62,6 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                    Email = data.Apprenticeship.Email,
                     Employer = data.Apprenticeship.EmployerName,
                     Reference = _encodingService.Encode(data.Apprenticeship.CohortId, EncodingType.CohortReference),
                     Status = data.Apprenticeship.Status,
