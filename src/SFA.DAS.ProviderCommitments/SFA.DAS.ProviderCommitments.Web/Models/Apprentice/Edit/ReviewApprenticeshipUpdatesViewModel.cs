@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         [JsonIgnore]
         public long ApprenticeshipId { get; set; }
         public string ProviderName { get; set; }
+        public string EmployerName { get; set; }
         public BaseEdit OriginalApprenticeship { get; set; }
         public BaseEdit ApprenticeshipUpdates { get; set; }
     }

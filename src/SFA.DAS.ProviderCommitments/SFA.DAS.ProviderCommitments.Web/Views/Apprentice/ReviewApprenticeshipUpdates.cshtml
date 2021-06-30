@@ -1,11 +1,10 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.ReviewApprenticeshipUpdatesViewModel
 
 @{
-    ViewBag.Title = "View changes";
+    ViewBag.Title = "Review changes";
     ViewBag.Section = "apprentices";
-    ViewBag.PageID = "view-changes";
+    ViewBag.PageID = "review-changes";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +15,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-width-container">
-        <h1 class="govuk-heading-xl"> @ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
         <form method="POST">
 
             @Html.AntiForgeryToken()
@@ -24,14 +23,14 @@
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
 
             <partial name="ApprenticeshipUpdatesPartials/_ViewOriginalApprenticeshipForApprenticeshipUpdates" for="OriginalApprenticeship" />
-            <p>@Model.ProviderName are reviewing these changes:</p>
+            <p>@Model.EmployerName have suggested these changes:</p>
             <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
 
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.AcceptChanges,  "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h1 class="govuk-fieldset__heading">
-                            Do you want to undo these changes?
+                            Are you happy to approve these changes?
                         </h1>
                     </legend>
                     <div class="govuk-radios">
@@ -39,13 +38,13 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="AcceptChanges" name="AcceptChanges" type="radio" value="true">
                             <label class="govuk-label govuk-radios__label" for="AcceptChanges">
-                                Yes, undo these changes
+                                Yes, approve these changes
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="AcceptChanges-no" name="AcceptChanges" type="radio" value="false">
                             <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
-                                No, keep these changes
+                                No, reject these changes
                             </label>
                         </div>
                     </div>
