@@ -271,6 +271,9 @@ else
                             Planned end date
                         </a>
                     </th>
+                    <th scope="col" class="govuk-table__header">
+                        Status
+                    </th>
                     @if (Model.ShowApprenticeConfirmationColumn)
                     {
                         <th scope="col" class="govuk-table__header">
@@ -278,13 +281,10 @@ else
                                asp-route="@RouteNames.ApprenticesIndex"
                                asp-all-route-data="@Model.FilterModel.BuildSortRouteData("ConfirmationStatus")"
                                title="Sort the table by status">
-                                Apprentice Status
+                                Apprentice confirmation
                             </a>
                         </th>
                     }
-                    <th scope="col" class="govuk-table__header">
-                        Status
-                    </th>
                     <th scope="col" class="govuk-table__header">
                         Alerts
                     </th>
@@ -313,18 +313,18 @@ else
                         </td>
                         <td class="govuk-table__cell" data-label="Planned end date">
                             @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
-                        </td>
-                        @if (Model.ShowApprenticeConfirmationColumn)
-                        {
-                            <td class="govuk-table__cell" data-label="Apprentice Status">
-                                @apprenticeship.ConfirmationStatus
-                            </td>
-                        }                        
+                        </td>                                        
                         <td class="govuk-table__cell" data-label="Status">
                             <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
                                 @apprenticeship.Status.GetDescription()
                             </strong>
                         </td>
+                        @if (Model.ShowApprenticeConfirmationColumn)
+                        {
+                            <td class="govuk-table__cell" data-label="Apprentice confirmation">
+                                @apprenticeship.ConfirmationStatus
+                            </td>
+                        }        
                         <td class="govuk-table__cell" data-label="Alerts">
                             @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                             {
