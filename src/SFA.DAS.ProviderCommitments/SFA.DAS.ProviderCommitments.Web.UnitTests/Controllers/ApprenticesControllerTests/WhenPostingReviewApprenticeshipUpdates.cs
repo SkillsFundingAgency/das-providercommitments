@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithAcceptChanges_UndoChanges_Is_Called()
+        public async Task WithAcceptChanges_AcceptChanges_Is_Called()
         {
             _fixture = _fixture.WithAcceptChanges();
 
@@ -38,9 +38,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithRejectChanges_UndoChanges_Is_Called()
+        public async Task WithRejectChanges_RejectChanges_Is_Called()
         {
-            _fixture = _fixture.WithAcceptChanges();
+            _fixture = _fixture.WithRejectChanges();
 
             await _fixture.Act();
 
@@ -48,13 +48,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithAcceptChanges_Changes_Accepted_Message_Is_Stored_In_TempData()
+        public async Task WithAcceptChanges_ChangesApproved_Message_Is_Stored_In_TempData()
         {
             _fixture = _fixture.WithAcceptChanges();
 
             await _fixture.Act();
 
-            _fixture.VerifyChangesAcceptedFlashMessageStoredInTempData();
+            _fixture.VerifyChangesApprovedFlashMessageStoredInTempData();
         }
 
         [Test]
@@ -145,11 +145,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     It.IsAny<CancellationToken>()));
             }
 
-            public void VerifyChangesAcceptedFlashMessageStoredInTempData()
+            public void VerifyChangesApprovedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
                 Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesAcceptedFlashMessage);
+                Assert.AreEqual(flashMessage, ApprenticeController.ChangesApprovedFlashMessage);
             }
 
             public void VerifyChangesRejectedFlashMessageStoredInTempData()

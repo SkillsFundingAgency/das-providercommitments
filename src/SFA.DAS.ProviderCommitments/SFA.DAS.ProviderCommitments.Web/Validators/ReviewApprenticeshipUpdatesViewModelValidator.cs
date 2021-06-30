@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         public ReviewApprenticeshipUpdatesViewModelValidator()
         {
             RuleFor(r => r.AcceptChanges).NotNull()
-                .WithMessage("Confirm if you want to accept these changes");
+                .WithMessage("Confirm if you want to approve these changes");
         }
     }
 }

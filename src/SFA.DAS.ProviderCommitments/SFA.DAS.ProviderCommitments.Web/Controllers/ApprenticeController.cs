@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         
-        public const string ChangesAcceptedFlashMessage = "Changes accepted";
+        public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
 
         public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 await _commitmentsApiClient.AcceptApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
 
-                TempData.AddFlashMessage(ChangesAcceptedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                TempData.AddFlashMessage(ChangesApprovedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             }
             else if (!viewModel.AcceptChanges.Value)
             {
