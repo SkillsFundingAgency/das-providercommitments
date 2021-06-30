@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
+using MediatR;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
+    [TestFixture]
     public class WhenGettingDeleteConfirmationRequest
     {
-        public ApprenticeController Sut { get; set; }
+        public DraftApprenticeshipController Sut { get; set; }
         private Mock<IModelMapper> _modelMapperMock;
         private DeleteConfirmationViewModel _viewModel;
         private DeleteConfirmationRequest _request;
@@ -29,11 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
               .Setup(x => x.Map<DeleteConfirmationViewModel>(_request))
               .ReturnsAsync(_viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object);
         }
 
         [Test]
-        public async Task ThenCallModelMapper()
+        public async Task Then_Call_ModelMapper()
         {
             //Act
             await Sut.DeleteConfirmation(_request);
@@ -43,13 +45,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task ThenReturnsView()
+        public async Task Then_Returns_View()
         {
-           //Act
-           var result = await Sut.DeleteConfirmation(_request);
+            //Act
+            var result = await Sut.DeleteConfirmation(_request);
 
-           //Assert
-           result.VerifyReturnsViewModel().WithModel<DeleteConfirmationViewModel>();
+            //Assert
+            result.VerifyReturnsViewModel().WithModel<DeleteConfirmationViewModel>();
         }
     }
 }

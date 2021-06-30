@@ -9,25 +9,27 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using System.Threading;
+using MediatR;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
+    [TestFixture]
     public class WhenPostingDeleteConfirmation
     {
-        public ApprenticeController Sut { get; set; }
+        public DraftApprenticeshipController Sut { get; set; }
         private string RedirectUrl;
         private Mock<ICommitmentsApiClient> _apiClient;
         private Mock<IModelMapper> _modelMapperMock;
-        private DeleteConfirmationViewModel _viewModel;        
+        private DeleteConfirmationViewModel _viewModel;
         private Mock<ILinkGenerator> _linkGenerator;
         private DeleteDraftApprenticeshipRequest _mapperResult;
 
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();            
+            var _autoFixture = new Fixture();
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = _autoFixture.Create<DeleteConfirmationViewModel>();            
+            _viewModel = _autoFixture.Create<DeleteConfirmationViewModel>();
             _apiClient = new Mock<ICommitmentsApiClient>();
             _apiClient.Setup(x => x.DeleteDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<DeleteDraftApprenticeshipRequest>(),
                 It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
@@ -37,11 +39,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
               .Setup(x => x.Map<DeleteDraftApprenticeshipRequest>(_viewModel))
               .ReturnsAsync(_mapperResult);
 
-            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details"; 
+            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _linkGenerator.Object, _apiClient.Object);
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _linkGenerator.Object, _apiClient.Object, _modelMapperMock.Object);
         }
 
         [Test]

@@ -253,39 +253,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
-        }
-
-        [HttpGet]
-        [Route("{CohortReference}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
-        {
-            var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
-            return View(viewModel);
-        }
-
-        [HttpPost]        
-        [Route("{CohortReference}/{apprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
-        {          
-            if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
-            {
-                return RedirectToAction("ViewEditDraftApprenticeship", "DraftApprenticeship", new DraftApprenticeshipRequest
-                {
-                    ProviderId = viewModel.ProviderId,
-                    CohortReference = viewModel.CohortReference, 
-                    DraftApprenticeshipHashedId = viewModel.ApprenticeshipHashedId 
-                });
-            }
-
-            var request = await _modelMapper.Map<DeleteDraftApprenticeshipRequest>(viewModel);
-            await _commitmentApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.ApprenticeshipId, request, CancellationToken.None);           
-
-            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CohortReference}/Details";
-            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            return Redirect(url);        
-        }
+        }       
     }
 }

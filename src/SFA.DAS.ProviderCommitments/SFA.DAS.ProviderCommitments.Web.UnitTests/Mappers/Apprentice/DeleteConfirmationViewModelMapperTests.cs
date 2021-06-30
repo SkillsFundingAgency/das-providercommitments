@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_deleteConfirmationRequest.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.AreEqual(_deleteConfirmationRequest.DraftApprenticeshipHashedId, result.DraftApprenticeshipHashedId);
         }
 
         [Test]

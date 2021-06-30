@@ -31,7 +31,7 @@
 
             @if (!Model.IsContinuation)
             {
-                <a class="govuk-button govuk-button--warning das-float-right" href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, ApprenticeshipHashedId =  Model.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })"> Delete</a>
+                <a class="govuk-button govuk-button--warning das-float-right" href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId =  Model.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })"> Delete</a>
             }
 
             <p class="govuk-body govuk-!-margin-bottom-0">

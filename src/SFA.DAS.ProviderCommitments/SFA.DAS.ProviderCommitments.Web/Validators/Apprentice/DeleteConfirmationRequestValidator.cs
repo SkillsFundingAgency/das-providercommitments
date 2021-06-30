@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
         public DeleteConfirmationRequestValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
-            RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
+            RuleFor(x => x.DraftApprenticeshipHashedId).NotEmpty();
             RuleFor(x => x.CohortReference).NotEmpty();            
         }
     }

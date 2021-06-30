@@ -25,8 +25,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         [TestCase("XYZ", true)]
         public void Validate_ApprenticeshipHashedId_ShouldBeValidated(string apprenticeshipHashedId, bool expectedValid)
         {
-            var model = new DeleteConfirmationViewModel() { ApprenticeshipHashedId = apprenticeshipHashedId };
-            AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
+            var model = new DeleteConfirmationViewModel() { DraftApprenticeshipHashedId = apprenticeshipHashedId };
+            AssertValidationResult(request => request.DraftApprenticeshipHashedId, model, expectedValid);
         }
 
         [TestCase(null, false)]

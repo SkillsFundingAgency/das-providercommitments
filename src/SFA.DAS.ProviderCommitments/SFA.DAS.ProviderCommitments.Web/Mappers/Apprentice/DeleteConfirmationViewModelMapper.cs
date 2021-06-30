@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             try
             {                
-                var apprenticeshipId = _encodingService.Decode(source.ApprenticeshipHashedId, EncodingType.ApprenticeshipId);                
+                var apprenticeshipId = _encodingService.Decode(source.DraftApprenticeshipHashedId, EncodingType.ApprenticeshipId);                
                 var commitmentId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
                 var draftApprenticeshipResponse = await _commitmentApiClient.GetDraftApprenticeship(commitmentId, apprenticeshipId, CancellationToken.None);
 
@@ -35,14 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 {
                     ProviderId = source.ProviderId,
                     CohortReference = source.CohortReference,
-                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                    DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
                     ApprenticeshipName = $"{draftApprenticeshipResponse.FirstName} {draftApprenticeshipResponse.LastName}",
                     DateOfBirth = draftApprenticeshipResponse.DateOfBirth
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error mapping apprenticeship {source.ApprenticeshipHashedId} to DeleteConfirmationViewModel");
+                _logger.LogError(ex, $"Error mapping apprenticeship {source.DraftApprenticeshipHashedId} to DeleteConfirmationViewModel");
                 throw;
             }
         }
