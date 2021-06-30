@@ -42,6 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ApprenticeshipUpdates = apprenticeshipUpdates,
                     OriginalApprenticeship = originalApprenticeship,
                     ProviderName = apprenticeship.ProviderName,
+                    EmployerName = apprenticeship.EmployerName,
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId
                 };

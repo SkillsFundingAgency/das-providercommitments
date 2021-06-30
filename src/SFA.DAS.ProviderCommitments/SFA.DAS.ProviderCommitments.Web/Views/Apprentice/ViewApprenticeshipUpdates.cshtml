@@ -16,7 +16,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-width-container">
-        <h1 class="govuk-heading-xl"> @ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
         <form method="POST">
 
             @Html.AntiForgeryToken()
@@ -24,7 +24,7 @@
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
 
             <partial name="ApprenticeshipUpdatesPartials/_ViewOriginalApprenticeshipForApprenticeshipUpdates" for="OriginalApprenticeship" />
-            <p>@Model.ProviderName are reviewing these changes:</p>
+            <p>@Model.EmployerName are reviewing these changes:</p>
             <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
 
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.UndoChanges,  "govuk-form-group--error")">
