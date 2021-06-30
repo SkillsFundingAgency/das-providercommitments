@@ -25,15 +25,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
-        private readonly IModelMapper _modelMapper;
-        private readonly ILinkGenerator _urlHelper;
+        private readonly IModelMapper _modelMapper;        
         private readonly ICommitmentsApiClient _commitmentApiClient;        
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ILinkGenerator urlHelper, ICommitmentsApiClient commitmentApiClient)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
         {
             _modelMapper = modelMapper;
-            _cookieStorage = cookieStorage;
-            _urlHelper = urlHelper;
+            _cookieStorage = cookieStorage;            
             _commitmentApiClient = commitmentApiClient;
         }
 

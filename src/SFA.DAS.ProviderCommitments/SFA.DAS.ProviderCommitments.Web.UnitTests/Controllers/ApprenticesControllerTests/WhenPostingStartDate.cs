@@ -80,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock
                 .Setup(x => x.Map<EndDateRequest>(_viewModel))
                 .ReturnsAsync(_request);
-            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
 
         public Task<IActionResult> Act() => _sut.StartDate(_viewModel);
