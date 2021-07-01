@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.ReviewApprenticeshipUpdatesViewModel
 
 @{
@@ -55,6 +56,7 @@
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                     Continue
                 </button>
+                <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new DetailsRequest{ ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" id="cancel-button">Cancel and return</a>
             </div>
         </form>
     </div>
