@@ -34,59 +34,52 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 var update = updates.ApprenticeshipUpdates.First();
 
-                var apprenticeshipUpdates = GetApprenticeshipUpdates(update);
-                var originalApprenticeship = await GetOriginalApprenticeship(apprenticeship, update.Cost.HasValue);
-
-                return new ReviewApprenticeshipUpdatesViewModel
+                if (!string.IsNullOrWhiteSpace(update.FirstName + update.LastName))
                 {
-                    ApprenticeshipUpdates = apprenticeshipUpdates,
-                    OriginalApprenticeship = originalApprenticeship,
+                    update.FirstName = string.IsNullOrWhiteSpace(update.FirstName) ? apprenticeship.FirstName : update.FirstName;
+                    update.LastName = string.IsNullOrWhiteSpace(update.LastName) ? apprenticeship.LastName : update.LastName;
+                }
+
+                var vm = new ReviewApprenticeshipUpdatesViewModel
+                {
                     ProviderName = apprenticeship.ProviderName,
                     EmployerName = apprenticeship.EmployerName,
                     ProviderId = source.ProviderId,
-                    ApprenticeshipHashedId = source.ApprenticeshipHashedId
+                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                    ApprenticeshipUpdates = new BaseEdit
+                    {
+                        FirstName = update.FirstName,
+                        LastName = update.LastName,
+                        DateOfBirth = update.DateOfBirth,
+                        Cost = update.Cost,
+                        StartDate = update.StartDate,
+                        EndDate = update.EndDate,
+                        CourseCode = update.TrainingCode,
+                        CourseName = update.TrainingName,
+                    },
+                    OriginalApprenticeship = new BaseEdit
+                    {
+                        FirstName = apprenticeship.FirstName,
+                        LastName = apprenticeship.LastName,
+                        DateOfBirth = apprenticeship.DateOfBirth,
+                        ULN = apprenticeship.Uln,
+                        StartDate = apprenticeship.StartDate,
+                        EndDate = apprenticeship.EndDate,
+                        CourseCode = apprenticeship.CourseCode,
+                        CourseName = apprenticeship.CourseName
+                    }
                 };
+
+                if (update.Cost.HasValue)
+                {
+                    var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
+                    vm.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
+                }
+
+                return vm;
             }
 
             throw new Exception("Multiple pending updates found");
-        }
-
-        private static BaseEdit GetApprenticeshipUpdates(GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate update)
-        {
-            return new BaseEdit
-            {
-                FirstName = update.FirstName,
-                LastName = update.LastName,
-                DateOfBirth = update.DateOfBirth,
-                Cost = update.Cost,
-                StartDate = update.StartDate,
-                EndDate = update.EndDate,
-                CourseCode = update.TrainingCode,
-                CourseName = update.TrainingName
-            };
-        }
-
-        private async Task<BaseEdit> GetOriginalApprenticeship(GetApprenticeshipResponse apprenticeship, bool costChanged)
-        {
-            var OriginalApprenticeship = new BaseEdit
-            {
-                FirstName = apprenticeship.FirstName,
-                LastName = apprenticeship.LastName,
-                DateOfBirth = apprenticeship.DateOfBirth,
-                ULN = apprenticeship.Uln,
-                StartDate = apprenticeship.StartDate,
-                EndDate = apprenticeship.EndDate,
-                CourseCode = apprenticeship.CourseCode,
-                CourseName = apprenticeship.CourseName
-            };
-
-            if (costChanged)
-            {
-                var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(apprenticeship.Id);
-                OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
-            }
-
-            return OriginalApprenticeship;
         }
     }
 }
