@@ -12,6 +12,7 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -137,6 +138,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [Route("{cohortReference}/details/delete")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> Delete(DeleteCohortRequest request)
+        {
+            var model = await _modelMapper.Map<DeleteCohortViewModel>(request);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{cohortReference}/details/delete")]
+        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> Delete([FromServices] IAuthenticationService authenticationService, DeleteCohortViewModel viewModel)
+        {
+            if (viewModel.Confirm.Value)
+            {
+                CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
+                await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
+                return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+            }
+
+            return Redirect(_urlHelper.CohortDetails(viewModel.ProviderId, viewModel.CohortReference));
         }
     }
 }
