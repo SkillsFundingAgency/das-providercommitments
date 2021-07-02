@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -22,13 +25,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
-        private readonly IModelMapper _modelMapper;
-        private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IModelMapper _modelMapper;        
+        private readonly ICommitmentsApiClient _commitmentApiClient;        
 
         public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
         {
             _modelMapper = modelMapper;
-            _cookieStorage = cookieStorage;
+            _cookieStorage = cookieStorage;            
             _commitmentApiClient = commitmentApiClient;
         }
 
@@ -248,6 +251,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
-        }
+        }       
     }
 }
