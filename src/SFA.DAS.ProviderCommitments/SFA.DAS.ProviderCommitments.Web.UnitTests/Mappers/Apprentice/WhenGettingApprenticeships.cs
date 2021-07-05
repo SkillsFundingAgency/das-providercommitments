@@ -6,10 +6,12 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
@@ -239,6 +241,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(1, result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value));
 
             Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
+        }
+
+        [Test, MoqAutoData]
+        public async Task ThenShowsApprenticeConfirmationColumn(
+            bool show,
+            [Frozen] Mock<IAuthorizationService> mockAuthorizationService,
+            IndexViewModelMapper mapper)
+        {
+            var request = new IndexRequest { PageNumber = 0 };
+            mockAuthorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
+                .ReturnsAsync(show);
+
+            var viewModel = await mapper.Map(request);
+
+            viewModel.ShowApprenticeConfirmationColumn.Should().Be(show);
         }
     }
 }
