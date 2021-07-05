@@ -8,6 +8,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {

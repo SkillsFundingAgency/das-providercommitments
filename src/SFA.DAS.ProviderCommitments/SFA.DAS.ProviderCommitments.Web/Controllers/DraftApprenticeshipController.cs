@@ -16,6 +16,9 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -26,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IModelMapper _modelMapper;
+        private readonly IModelMapper _modelMapper;        
 
         public DraftApprenticeshipController(IMediator mediator,
             ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper)
@@ -34,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _mediator = mediator;
             _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
-            _modelMapper = modelMapper;
+            _modelMapper = modelMapper;            
         }
 
         [HttpGet]
@@ -99,6 +102,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = await _modelMapper.Map<ViewDraftApprenticeshipViewModel>(request);
 
             return View("ViewDraftApprenticeship", model);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
+        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
+        {
+            var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
+        public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
+        {
+            if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
+            {
+                return RedirectToAction("ViewEditDraftApprenticeship", "DraftApprenticeship", new DraftApprenticeshipRequest
+                {
+                    ProviderId = viewModel.ProviderId,
+                    CohortReference = viewModel.CohortReference,
+                    DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId
+                });
+            }
+            
+            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
+
+            var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CohortReference}/Details";
+            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
+            return Redirect(url);
         }
 
         private async Task AddLegalEntityAndCoursesToModel(DraftApprenticeshipViewModel model)
