@@ -1,22 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -25,14 +24,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class ApprenticeController : Controller
     {
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
-        private readonly IModelMapper _modelMapper;        
-        private readonly ICommitmentsApiClient _commitmentApiClient;        
+        private readonly IModelMapper _modelMapper;
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        
+        public const string ChangesUndoneFlashMessage = "Changes undone";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
         {
             _modelMapper = modelMapper;
-            _cookieStorage = cookieStorage;            
-            _commitmentApiClient = commitmentApiClient;
+            _cookieStorage = cookieStorage;
+            _commitmentsApiClient = commitmentsApiClient;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -68,6 +69,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
             return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/changes/view", Name = RouteNames.ApprenticeViewApprenticeshipUpdates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ViewApprenticeshipUpdatesViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/changes/view")]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesViewModel viewModel)
+        {
+            if (viewModel.UndoChanges.Value)
+            {
+                var request = new UndoApprenticeshipUpdatesRequest
+                {
+                    ApprenticeshipId = viewModel.ApprenticeshipId,
+                    ProviderId = viewModel.ProviderId
+                };
+
+                await _commitmentsApiClient.UndoApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+
+                TempData.AddFlashMessage(ChangesUndoneFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+            }
+
+            return RedirectToRoute(RouteNames.ApprenticeDetail, new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -238,7 +271,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
             var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
-            await _commitmentApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
+            await _commitmentsApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
             return RedirectToRoute(RouteNames.ApprenticeSent, new { viewModel.ApprenticeshipHashedId });
         }

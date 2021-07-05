@@ -6,7 +6,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
 using SFA.DAS.Http;
 
-namespace SFA.DAS.ProviderCommitments.Web.LocalDevRegistry
+namespace SFA.DAS.ProviderCommitments.Web
 {
     public class LocalDevApiClientFactory : ICommitmentsApiClientFactory, ICommitmentPermissionsApiClientFactory
     {
