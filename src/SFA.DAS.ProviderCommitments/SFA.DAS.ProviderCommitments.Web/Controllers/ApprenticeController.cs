@@ -30,11 +30,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentApiClient)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
-            _commitmentsApiClient = commitmentApiClient;
+            _commitmentsApiClient = commitmentsApiClient;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -297,6 +297,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
-        }
+        }       
     }
 }
