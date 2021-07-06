@@ -26,7 +26,11 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
             registry.IncludeRegistry<PasAccountApiClientRegistry>();
-            registry.IncludeRegistry<LocalDevRegistry.LocalDevRegistry>();
+
+            // Enable if you want to bypass MI locally, if enabled the 'Provider' role claim 
+            // will not be supplied by MI when no Bearer token has been generated and the Commitments
+            // API will need to obtain a 'Provider' role claim internally for local development
+            //registry.IncludeRegistry<LocalDevRegistry>();
         }
     }
 }

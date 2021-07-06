@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -152,6 +154,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(null)]
+        [TestCase(ConfirmationStatus.Unconfirmed)]
+        [TestCase(ConfirmationStatus.Confirmed)]
+        [TestCase(ConfirmationStatus.Overdue)]
+        public async Task ThenConfirmationStatusIsMappedCorrectly(ConfirmationStatus? status)
+        {
+            _fixture.WithApprenticeshipConfirmationStatus(status);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(status, _fixture.Result.ConfirmationStatus);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenShowConfirmationStatusIsMappedCorrectly(bool show)
+        {
+            _fixture.WithShowConfirmationStatus(show);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(show, _fixture.Result.ShowConfirmationStatus);
         }
 
         [TestCase]
@@ -454,6 +480,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
+            private readonly Mock<IAuthorizationService> _authorizationService;            
             public string CohortReference { get; }
             public string AgreementId { get; }
             public string URL { get; }
@@ -503,6 +530,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
 
+                _authorizationService = new Mock<IAuthorizationService>();
+
+
                 EncodedNewApprenticeshipId = Fixture.Create<string>();
                 EncodedPreviousApprenticeshipId = Fixture.Create<string>();
             }
@@ -528,7 +558,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _authorizationService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
                 return this;
@@ -538,6 +568,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApprenticeshipStatus status)
             {
                 ApiResponse.Status = status;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithApprenticeshipConfirmationStatus(
+                ConfirmationStatus? status)
+            {
+                ApiResponse.ConfirmationStatus = status;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithShowConfirmationStatus(bool show)
+            {
+                _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
+                    .ReturnsAsync(show);
                 return this;
             }
 
