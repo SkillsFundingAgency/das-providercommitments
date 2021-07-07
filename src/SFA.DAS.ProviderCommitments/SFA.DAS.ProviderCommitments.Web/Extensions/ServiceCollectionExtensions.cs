@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using SFA.DAS.CommitmentsV2.Shared.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.ProviderCommitments.Configuration;
 
@@ -13,7 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 .AddAzureTableStorage(
                     ProviderCommitmentsConfigurationKeys.Encoding,
                     ProviderCommitmentsConfigurationKeys.ProviderCommitments,
-                    ConfigurationKeys.CommitmentsSharedConfiguration,
                     ProviderCommitmentsConfigurationKeys.PasAccountApiClient));
         }
     }
