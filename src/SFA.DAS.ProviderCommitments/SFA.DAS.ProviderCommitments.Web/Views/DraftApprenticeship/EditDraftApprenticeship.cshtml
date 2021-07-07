@@ -1,4 +1,5 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 
 @{
     ViewData["Title"] = "Apprenticeships";
@@ -27,9 +28,10 @@
             <partial name="DraftApprenticeship" for="@Model" />
             <button type="submit" class="govuk-button">Save</button>
 
+
             @if (!Model.IsContinuation)
             {
-                <a class="govuk-button govuk-button--warning das-float-right" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/{Model.DraftApprenticeshipHashedId}/delete")">Delete</a>
+                <a class="govuk-button govuk-button--warning das-float-right" href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId =  Model.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })"> Delete</a>
             }
 
             <p class="govuk-body govuk-!-margin-bottom-0">

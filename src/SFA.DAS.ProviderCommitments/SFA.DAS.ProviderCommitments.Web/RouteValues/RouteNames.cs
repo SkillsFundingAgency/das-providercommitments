@@ -5,6 +5,7 @@
         public const string ApprenticesIndex = "apprentices-index";
         public const string DownloadApprentices = "apprentices-download";
         public const string ApprenticeDetail = "apprentice-details";
+        public const string ApprenticeViewApprenticeshipUpdates = "apprentice-view-apprentice-updates";
         public const string ChangeEmployer = "apprentice-change-employer";
         public const string ChangeEmployerInform = "apprentice-change-employer-inform";
         public const string ChangeEmployerDetails = "apprentice-change-employer-details";
@@ -15,5 +16,6 @@
         public const string ApprenticePrice = "apprentice-price";
         public const string ApprenticeConfirm = "apprentice-confirm";
         public const string ApprenticeSent = "apprentice-sent";
+        public const string ApprenticeDelete = "apprentice-delete";
     }
 }

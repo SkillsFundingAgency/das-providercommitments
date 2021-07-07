@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
