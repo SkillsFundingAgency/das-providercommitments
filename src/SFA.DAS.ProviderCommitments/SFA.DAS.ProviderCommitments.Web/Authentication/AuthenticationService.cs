@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
@@ -42,6 +43,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             values = claims.Select(c => c.Value).ToList();
 
             return values.Any();
+        }
+
+        public UserInfo UserInfo
+        {
+            get
+            {
+                if (IsUserAuthenticated())
+                {
+                    return new UserInfo
+                    {
+                        UserId = UserId,
+                        UserDisplayName = UserName,
+                        UserEmail = UserEmail
+                    };
+                }
+
+                return null;
+            }
         }
 
         private string GetUserClaimAsString(string claim)

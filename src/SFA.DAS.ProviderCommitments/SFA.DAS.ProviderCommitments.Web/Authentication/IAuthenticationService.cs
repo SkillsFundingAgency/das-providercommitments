@@ -1,3 +1,4 @@
+using SFA.DAS.CommitmentsV2.Types;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
@@ -10,5 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
         string UserName { get; }
         string UserId { get; }
         string UserEmail { get; }
+        UserInfo UserInfo { get; }
     }
 }
