@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
@@ -22,6 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             fixture.VerifyMapperWasCalled();
         }
+
         [Test]
         public async Task ThenReturnsView()
         {

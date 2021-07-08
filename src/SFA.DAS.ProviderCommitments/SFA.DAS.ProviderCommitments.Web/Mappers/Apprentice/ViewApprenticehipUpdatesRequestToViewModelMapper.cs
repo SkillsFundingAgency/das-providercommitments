@@ -21,10 +21,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var updatesTask = _commitmentsApiClient.GetApprenticeshipUpdates(source.ApprenticeshipId,
                    new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest { Status = CommitmentsV2.Types.ApprenticeshipUpdateStatus.Pending });
+
             var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
+
             await Task.WhenAll(updatesTask, apprenticeshipTask);
+
             var updates = updatesTask.Result;
             var apprenticeship = apprenticeshipTask.Result;
+
             if (updates.ApprenticeshipUpdates.Count == 1)
             {
                 var update = updates.ApprenticeshipUpdates.First();
@@ -63,13 +67,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         CourseName = apprenticeship.CourseName
                     }
                 };
+
                 if (update.Cost.HasValue)
                 {
                     var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
                     vm.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
                 }
+
                 return vm;
             }
+
             throw new Exception("Multiple pending updates found");
         }
     }

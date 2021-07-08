@@ -2,10 +2,10 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.ViewApprenticeshipUpdatesViewModel
 
-@{ 
+@{
     ViewBag.Title = "View changes";
     ViewBag.Section = "apprentices";
-    ViewBag.PageID = "view-changes"; 
+    ViewBag.PageID = "view-changes";
 }
 
 <div class="govuk-grid-row">
@@ -13,6 +13,7 @@
         <partial name="_ValidationSummary" />
     </div>
 </div>
+
 <div class="govuk-grid-row">
     <div class="govuk-width-container">
         <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
@@ -50,6 +51,7 @@
                     </div>
                 </fieldset>
             </div>
+
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                     Continue
