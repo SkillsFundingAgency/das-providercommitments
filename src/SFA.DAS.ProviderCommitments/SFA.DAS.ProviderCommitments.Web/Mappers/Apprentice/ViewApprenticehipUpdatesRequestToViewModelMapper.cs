@@ -32,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             if (updates.ApprenticeshipUpdates.Count == 1)
             {
                 var update = updates.ApprenticeshipUpdates.First();
+
                 if (!string.IsNullOrWhiteSpace(update.FirstName + update.LastName))
                 {
                     update.FirstName = string.IsNullOrWhiteSpace(update.FirstName) ? apprenticeship.FirstName : update.FirstName;
