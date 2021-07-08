@@ -74,6 +74,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("{apprenticeshipHashedId}/changes/view", Name = RouteNames.ApprenticeViewApprenticeshipUpdates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ViewApprenticeshipUpdatesViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/changes/view")]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesViewModel viewModel)
+        {
+            if (viewModel.UndoChanges.Value)
+            {
+                var request = new UndoApprenticeshipUpdatesRequest
+                {
+                    ApprenticeshipId = viewModel.ApprenticeshipId,
+                    ProviderId = viewModel.ProviderId
+                };
+
+                await _commitmentsApiClient.UndoApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+
+                TempData.AddFlashMessage(ChangesUndoneFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+            }
+
+            return RedirectToRoute(RouteNames.ApprenticeDetail, new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
         [Route("{apprenticeshipHashedId}/changes/review", Name = RouteNames.ApprenticeReviewApprenticeshipUpdates)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesRequest request)
