@@ -1,0 +1,95 @@
+﻿@inject SFA.DAS.ProviderUrlHelper.ILinkGenerator LinkGenerator
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DeleteCohortViewModel
+
+
+@{
+    ViewBag.Title = "Confirm Delete Cohort";
+    ViewBag.PageId = "confirm-delete-cohort";
+    ViewBag.GaData.Vpv = "unapproved/cohort/details/delete";
+    ViewBag.GaData.Org = Model.EmployerAccountName;
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <partial name="_ValidationSummary" />
+                <h1 class="govuk-heading-xl">Confirm cohort deletion</h1>
+                <p class="govuk-body">You are about to delete the following cohort:</p>
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key"> Employer </dt>
+                                <dd class="govuk-summary-list__value">@Model.EmployerAccountName</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key"> Cohort reference </dt>
+                                <dd class="govuk-summary-list__value"> @Model.CohortReference</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key"> Number of apprentices </dt>
+                                <dd class="govuk-summary-list__value">@Model.NumberOfApprenticeships</dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Apprenticeships</dt>
+                                @if (!Model.ApprenticeshipTrainingProgrammes.Any())
+                                {
+                                    <dd class="govuk-summary-list__value">0</dd>
+                                }
+                                else
+                                {
+                                    <dd class="govuk-summary-list__value">@Model.ApprenticeshipTrainingProgrammes.First()</dd>
+                                }
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <form method="post">
+                    <fieldset class="govuk-fieldset">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.ProviderId)
+                        @Html.HiddenFor(x => x.CohortReference)
+
+                        <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    Are you sure you want to delete this entire cohort and all the apprentices in it?
+                                </legend>
+                                @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                                <div class="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                            Yes, delete cohort
+                                        </label>
+
+                                    </div>
+
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                            No, don't delete cohort
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <button id="continue-button"class="govuk-button" type="submit" data-module="govuk-button">
+                            Continue
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.CohortDetails(Model.ProviderId, Model.CohortReference)">Cancel and go back</a>
+}
+

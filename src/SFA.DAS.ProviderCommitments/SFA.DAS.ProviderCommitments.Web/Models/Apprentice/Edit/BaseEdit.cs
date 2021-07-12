@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public string ULN { get; set; }
         public string CourseName { get; set; }
         public decimal? Cost { get; set; }
-        public string EmployerReference { get; set; }
+        public string ProviderReference { get; set; }
 
         [JsonIgnore]
         public DateTime? DateOfBirth

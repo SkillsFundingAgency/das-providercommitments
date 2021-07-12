@@ -77,12 +77,12 @@
 
                     </tr>
                 }
-                @if (Model.ApprenticeshipUpdates.EmployerReference != Model.OriginalApprenticeship.EmployerReference)
+                @if (Model.ApprenticeshipUpdates.ProviderReference != Model.OriginalApprenticeship.ProviderReference)
                 {
                     <tr>
                         <th scope="row" class="govuk-table__header">Reference</th>
-                        <td class="govuk-table__cell">@Model.OriginalApprenticeship.EmployerReference</td>
-                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.EmployerReference</td>
+                        <td class="govuk-table__cell">@Model.OriginalApprenticeship.ProviderReference</td>
+                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.ProviderReference</td>
 
                     </tr>
                 }
