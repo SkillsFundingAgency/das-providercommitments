@@ -167,6 +167,13 @@
                 <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
                 <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
             </tr>
+            @if (!string.IsNullOrEmpty(Model.Email))
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Email address</th>
+                    <td id="apprentice-email" class="govuk-table__cell das-table-cell-width-55">@Model.Email</td>
+                </tr>
+            }
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Date of birth</th>
                 <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
