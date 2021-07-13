@@ -271,9 +271,6 @@ else
                             Planned end date
                         </a>
                     </th>
-                    <th scope="col" class="govuk-table__header">
-                        Status
-                    </th>
                     @if (Model.ShowApprenticeConfirmationColumn)
                     {
                         <th scope="col" class="govuk-table__header">
@@ -286,6 +283,9 @@ else
                         </th>
                     }
                     <th scope="col" class="govuk-table__header">
+                        Status
+                    </th>
+                    <th scope="col" class="govuk-table__header">
                         Alerts
                     </th>
                 </tr>
@@ -293,51 +293,51 @@ else
             <tbody class="govuk-table__body">
                 @foreach (var apprenticeship in Model.Apprenticeships)
                 {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" data-label="Apprentice name">
-                            <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                                @apprenticeship.ApprenticeName
-                            </a>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Apprentice name">
+                        <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
+                            @apprenticeship.ApprenticeName
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell" data-label="ULN">
+                        @apprenticeship.Uln
+                    </td>
+                    <td class="govuk-table__cell" data-label="Employer">
+                        @apprenticeship.EmployerName
+                    </td>
+                    <td class="govuk-table__cell" data-label="Apprenticeship training course">
+                        @apprenticeship.CourseName
+                    </td>
+                    <td class="govuk-table__cell" data-label="Planned start date">
+                        @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
+                    </td>
+                    <td class="govuk-table__cell" data-label="Planned end date">
+                        @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
+                    </td>
+                    @if (Model.ShowApprenticeConfirmationColumn)
+                    {
+                        <td class="govuk-table__cell" data-label="Apprentice confirmation">
+                            @apprenticeship.ConfirmationStatus.ToDisplayString()
                         </td>
-                        <td class="govuk-table__cell" data-label="ULN">
-                            @apprenticeship.Uln
-                        </td>
-                        <td class="govuk-table__cell" data-label="Employer">
-                            @apprenticeship.EmployerName
-                        </td>
-                        <td class="govuk-table__cell" data-label="Apprenticeship training course">
-                            @apprenticeship.CourseName
-                        </td>
-                        <td class="govuk-table__cell" data-label="Planned start date">
-                            @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay()
-                        </td>
-                        <td class="govuk-table__cell" data-label="Planned end date">
-                            @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
-                        </td>                                        
-                        <td class="govuk-table__cell" data-label="Status">
-                            <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
-                                @apprenticeship.Status.GetDescription()
-                            </strong>
-                        </td>
-                        @if (Model.ShowApprenticeConfirmationColumn)
+                    }
+                    <td class="govuk-table__cell" data-label="Status">
+                        <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
+                            @apprenticeship.Status.GetDescription()
+                        </strong>
+                    </td>
+                    <td class="govuk-table__cell" data-label="Alerts">
+                        @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
                         {
-                            <td class="govuk-table__cell" data-label="Apprentice confirmation">
-                                @apprenticeship.ConfirmationStatus.ToDisplayString()
-                            </td>
-                        }        
-                        <td class="govuk-table__cell" data-label="Alerts">
-                            @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
+                            <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
+                                @apprenticeship.Alerts.ElementAt(i)
+                            </a>
+                            @if (i < apprenticeship.Alerts.Count() - 1)
                             {
-                                <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                                    @apprenticeship.Alerts.ElementAt(i)
-                                </a>
-                                @if (i < apprenticeship.Alerts.Count() - 1)
-                                {
-                                    <br />
-                                }
+                                <br />
                             }
-                        </td>
-                    </tr>
+                        }
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
