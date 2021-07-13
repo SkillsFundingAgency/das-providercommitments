@@ -31,30 +31,7 @@
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
-
-        @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
-        {
-            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
-        }
-        
-        @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
-        {
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        Help with changes in apprentice’s circumstances
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    If your apprentice has not confirmed their apprenticeship within the 14 day deadline, you should:
-                    <ul>
-                        <li>
-                            contact the apprentice to complete their apprenticeship confirmation
-                        </li>
-                    </ul>
-                </div>
-            </details>
-        }
+        <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
