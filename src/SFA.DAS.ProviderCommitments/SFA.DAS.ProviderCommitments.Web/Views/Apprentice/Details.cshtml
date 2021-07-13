@@ -36,6 +36,25 @@
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
+        
+        @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
+        {
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Help with changes in apprentice’s circumstances
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    If your apprentice has not confirmed their apprenticeship within the 14 day deadline, you should:
+                    <ul>
+                        <li>
+                            contact the apprentice to complete their apprenticeship confirmation
+                        </li>
+                    </ul>
+                </div>
+            </details>
+        }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
@@ -52,7 +71,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
-                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus</td>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
                     </tr>
                 }
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
