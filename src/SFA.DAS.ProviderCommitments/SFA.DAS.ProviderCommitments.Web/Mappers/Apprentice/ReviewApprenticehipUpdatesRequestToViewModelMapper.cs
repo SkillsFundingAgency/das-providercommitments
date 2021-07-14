@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
@@ -8,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ViewApprenticehipUpdatesRequestToViewModelMapper : IMapper<ViewApprenticeshipUpdatesRequest, ViewApprenticeshipUpdatesViewModel>
+    public class ReviewApprenticehipUpdatesRequestToViewModelMapper : IMapper<ReviewApprenticeshipUpdatesRequest, ReviewApprenticeshipUpdatesViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public ViewApprenticehipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ReviewApprenticehipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<ViewApprenticeshipUpdatesViewModel> Map(ViewApprenticeshipUpdatesRequest source)
+        public async Task<ReviewApprenticeshipUpdatesViewModel> Map(ReviewApprenticeshipUpdatesRequest source)
         {
             var updatesTask = _commitmentsApiClient.GetApprenticeshipUpdates(source.ApprenticeshipId,
                    new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest { Status = CommitmentsV2.Types.ApprenticeshipUpdateStatus.Pending });
@@ -39,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     update.LastName = string.IsNullOrWhiteSpace(update.LastName) ? apprenticeship.LastName : update.LastName;
                 }
 
-                var vm = new ViewApprenticeshipUpdatesViewModel
+                var vm = new ReviewApprenticeshipUpdatesViewModel
                 {
                     ProviderName = apprenticeship.ProviderName,
                     EmployerName = apprenticeship.EmployerName,

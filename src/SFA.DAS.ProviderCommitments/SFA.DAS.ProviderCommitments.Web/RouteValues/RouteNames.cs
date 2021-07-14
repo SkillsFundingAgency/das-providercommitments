@@ -5,6 +5,7 @@
         public const string ApprenticesIndex = "apprentices-index";
         public const string DownloadApprentices = "apprentices-download";
         public const string ApprenticeDetail = "apprentice-details";
+        public const string ApprenticeReviewApprenticeshipUpdates = "apprentice-review-apprentice-updates";
         public const string ApprenticeViewApprenticeshipUpdates = "apprentice-view-apprentice-updates";
         public const string ChangeEmployer = "apprentice-change-employer";
         public const string ChangeEmployerInform = "apprentice-change-employer-inform";
