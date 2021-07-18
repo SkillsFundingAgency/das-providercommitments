@@ -20,5 +20,7 @@
         public const string ApprenticeDelete = "apprentice-delete";
         public const string ConfirmRestart = "confirm-restart";
         public const string RequestRestart = "request-restart";
+        public const string UpdateDateLock = "update-datalock";
+        public const string UpdateDataLockConfirm = "update-datalock-confirm";
     }
 }

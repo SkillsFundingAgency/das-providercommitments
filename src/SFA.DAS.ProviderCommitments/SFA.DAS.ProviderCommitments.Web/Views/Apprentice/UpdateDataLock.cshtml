@@ -1,0 +1,235 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.UpdateDateLockViewModel
+
+@{
+    ViewBag.Title = "Apprenticeship data mismatch";
+    ViewBag.PageID = "datalock-details-change";
+    ViewBag.ZenDeskLabel = "matp-ILR data mismatch";
+}
+
+<div class="govuk-grid-row">
+    <div class="column-full">
+
+        <partial name="_ValidationSummary" />
+
+        <h1 class="heading-xlarge">Details of ILR data mismatch</h1>
+        <table class="mismatch-desc">
+            <tr>
+                <td class="first-child">Name</td>
+                <td class="first-child">@Model.FirstName @Model.LastName</td>
+            </tr>
+            <tr>
+                <td>Unique learner number</td>
+                <td>@Model.ULN</td>
+            </tr>
+            <tr>
+                <td>Date of birth</td>
+                <td>
+                    @if (Model.DateOfBirth.HasValue)
+                    {
+                        @Model.DateOfBirth.Value.ToGdsFormat()
+                    }
+                </td>
+            </tr>
+        </table>
+
+        @{ var count = 0; }
+
+        @foreach (var dl in Model.CourseDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.ToDate.HasValue
+                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
+                : $"{dl.FromDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="heading-small">Mismatch @count </h2>
+            }
+            <div class="grid-row">
+                <div class="column-one-half">
+
+                    <table class="app-data">
+                        <caption class="heading-small">Apprenticeship service</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="first-child">Period</th>
+                                <th class="numeric first-child" scope="col">Apprenticeship <br />training course</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row">From<br /> @dasPricePeriod</td>
+                                <td class="numeric">@dl.TrainingName</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="column-one-half">
+                    <table class="app-data ILR-submission">
+                        <caption class="heading-small">ILR submission</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="first-child">Period</th>
+                                <th class="numeric first-child" scope="col">Apprenticeship <br />training course</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row">From<br /> @ilrPricePeriod</td>
+                                <td class="numeric">@dl.IlrTrainingName</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        }
+
+        @foreach (var dl in Model.PriceDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.ToDate.HasValue
+                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
+                : $"{dl.FromDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="heading-small">Mismatch @count </h2>
+            }
+            <div class="grid-row">
+                <div class="column-one-half">
+
+                    <table class="app-data">
+                        <caption class="heading-small">Apprenticeship service</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="first-child">Price period</th>
+                                <th class="numeric first-child" scope="col">Total apprenticeship <br />training price</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row">From<br /> @dasPricePeriod</td>
+                                <td class="numeric">@dl.Cost.FormatCost()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="column-one-half">
+                    <table class="app-data ILR-submission">
+                        <caption class="heading-small">ILR submission</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="first-child">Price period</th>
+                                <th class="numeric first-child" scope="col">Total apprenticeship <br />training price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row">From<br />@ilrPricePeriod</td>
+                                <td class="numeric">@dl.IlrTotalCost.FormatCost()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            How do you want to fix the mismatch?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="Confirm" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-Confirm">
+                                    Request these details are updated to match the ILR
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="None" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-None" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-None">
+                                    Leave for now
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="fix-mismatch" class="govuk-button" type="submit" data-module="govuk-button">
+                    Continue
+                </button>
+            </fieldset>
+        </form>
+
+        @*</div>
+        </div>
+
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <form method="POST" action="@Url.Action("UpdateDataLock")" novalidate="novalidate">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <fieldset>
+                            <h2 class="heading-medium">How do you want to fix the mismatch?</h2>
+                            <legend class="visually-hidden">How do you want to fix the mismatch?</legend>
+                            <div class="form-group @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "error")">
+                                @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, "Please choose an option", new { id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
+                                <label class="block-label selection-button-radio" for="@RadioButtonId(SubmitStatusViewModel.Confirm)">
+                                    @Html.RadioButtonFor(m => m.SubmitStatusViewModel, SubmitStatusViewModel.Confirm, new { id = RadioButtonId(SubmitStatusViewModel.Confirm) })
+                                    <span>Request these details are updated to match the ILR</span>
+                                </label>
+
+                                <label class="block-label selection-button-radio" for="@RadioButtonId(SubmitStatusViewModel.None)">
+                                    @Html.RadioButtonFor(m => m.SubmitStatusViewModel, SubmitStatusViewModel.None, new { id = RadioButtonId(SubmitStatusViewModel.None) })
+                                    <span>Leave for now</span>
+                                </label>
+                            </div>
+
+                            <input type="submit" class="button" id="fix-mismatch" value="Continue" />
+                        </fieldset>
+                    </div>
+                </form>*@
+    </div>
+</div>
+
+
+@*@functions
+{
+    public string RadioButtonId(SubmitStatusViewModel statusViewModel)
+    {
+        return $"{Html.IdFor(m => m.SubmitStatusViewModel)}-{statusViewModel}";
+    }
+}*@
+
+@section breadcrumb {
+    <div class="breadcrumbs">
+        <a href="@Url.Action("Details", "Apprentice")" aria-label="Back to apprentice details" class="back-link">Back to apprentice details</a>
+    </div>
+}

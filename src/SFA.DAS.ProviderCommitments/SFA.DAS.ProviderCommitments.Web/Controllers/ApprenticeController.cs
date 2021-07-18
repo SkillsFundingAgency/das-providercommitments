@@ -378,5 +378,49 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
+        public async Task<ActionResult> UpdateDataLock(UpdateDateLockRequest request)
+        {
+            var viewModel = await _modelMapper.Map<UpdateDateLockViewModel>(request);
+            return View("UpdateDataLock", viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public IActionResult UpdateDataLock(UpdateDateLockViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
+            {
+                return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
+        [Route("confirm", Name = "UpdateDataLockConfirm")]        
+        public async Task<ActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ConfirmDataLockChangesViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public IActionResult ConfirmDataLockChangesPost(ConfirmDataLockChangesViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
+            {
+                //TODO : new api call to call -- TriageStatus.Change
+                //Task TriageDataLocks(long apprenticeshipId, TriageDataLocksRequest request, CancellationToken cancellationToken = default);
+                //var provider = _commitmentsApiClient.GetProvider(viewModel.ProviderId);
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
     }
 }
