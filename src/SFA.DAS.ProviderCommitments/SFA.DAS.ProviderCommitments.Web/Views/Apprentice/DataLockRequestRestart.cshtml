@@ -1,0 +1,95 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DataLockRequestRestartViewModel
+
+@{
+    ViewBag.Title = "Request restart";    
+    ViewBag.GaData.Vpv = "/apprentices/datalock/request-restart";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Details of ILR data mismatch</h1>
+        <table class="govuk-table">
+            <tbody>
+                <tr>
+                    <td class="first-child">Name</td>
+                    <td id="name" class="first-child"> @Model.FirstName @Model.LastName</td>
+                </tr>
+                <tr>
+                    <td>Unique learner number</td>
+                    <td id="uln">@Model.ULN</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col"  class="govuk-table__header">Period</th>
+                    <th scope="col"  class="govuk-table__header">Apprenticeship service</th>
+                    <th scope="col"  class="govuk-table__header">ILR submission</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr>
+                    <td id="ilr-date" class="govuk-table__cell">
+                        @if (Model.IlrEffectiveFromDate.HasValue)
+                        {
+                            var dateDetails = Model.IlrEffectiveToDate.HasValue
+                                ? $"From {Model.IlrEffectiveFromDate.Value.ToGdsFormat()} to {Model.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                                : $"From {Model.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+                            @dateDetails
+                        }
+                        else
+                        {
+                            <span>--</span>
+                        }
+                    </td>
+                    <td id="course-name" class="govuk-table__cell">@Model.CourseName </td>
+                    <td id="new-course-name" class="govuk-table__cell">@Model.NewCourseName </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()                
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            How do you want to fix the mismatch?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="Confirm" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-Confirm">
+                                    Ask the employer to fix the mismatch
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="None" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-None" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-None">
+                                    I'll update the ILR later
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="fix-mismatch" class="govuk-button" type="submit" data-module="govuk-button">
+                    Continue
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {    
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details" class="back-link">Back to apprentice details</a>    
+}

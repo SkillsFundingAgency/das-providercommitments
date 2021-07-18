@@ -330,6 +330,53 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
-        }       
+        }
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/datalock/requestrestart", Name = RouteNames.RequestRestart)]
+        public async Task<IActionResult> DataLockRequestRestart(DataLockRequestRestartRequest request)
+        {
+            var viewModel = await _modelMapper.Map<DataLockRequestRestartViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]        
+        [Route("{apprenticeshipHashedId}/datalock/requestrestart", Name = RouteNames.RequestRestart)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public IActionResult DataLockRequestRestart(DataLockRequestRestartViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel.HasValue && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
+            {
+                return RedirectToAction( "ConfirmRestart", new DatalockConfirmRestartRequest { ApprenticeshipHashedId=viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
+            }          
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]        
+        [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
+        public IActionResult ConfirmRestart(DatalockConfirmRestartRequest request)
+        {            
+            var viewModel = new DatalockConfirmRestartViewModel { ApprenticeshipHashedId = request.ApprenticeshipHashedId, ProviderId = request.ProviderId };
+            return View("DataLockConfirmRestart", viewModel);
+        }
+
+        [HttpPost]        
+        [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public ActionResult ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        {            
+            if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
+            {
+                //TODO : new api call to call
+                //Task TriageDataLocks(long apprenticeshipId, TriageDataLocksRequest request, CancellationToken cancellationToken = default);
+                //var provider = _commitmentsApiClient.GetProvider(viewModel.ProviderId);
+                
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
     }
 }

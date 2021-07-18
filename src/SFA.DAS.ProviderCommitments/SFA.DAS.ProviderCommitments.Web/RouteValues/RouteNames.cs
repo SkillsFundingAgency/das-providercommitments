@@ -18,5 +18,7 @@
         public const string ApprenticeConfirm = "apprentice-confirm";
         public const string ApprenticeSent = "apprentice-sent";
         public const string ApprenticeDelete = "apprentice-delete";
+        public const string ConfirmRestart = "confirm-restart";
+        public const string RequestRestart = "request-restart";
     }
 }

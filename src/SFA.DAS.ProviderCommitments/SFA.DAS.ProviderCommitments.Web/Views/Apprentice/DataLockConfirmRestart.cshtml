@@ -1,0 +1,59 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DatalockConfirmRestartViewModel
+
+@{
+    ViewBag.Title = "Restart apprenticeship";
+    ViewBag.GaData.Vpv = "/apprentices/datalock/confirm-restart";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Change apprentice details</h1>
+        <p>To update this apprentice's training details in the apprenticeship service, the employer needs to do the following: </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Change the apprentice's status to stopped</li>
+            <li>Create a new record for the apprentice, using the updated training course details - you will need to approve this once it's been added</li>
+        </ul>
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()                
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SendRequestToEmployer, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Do you want to ask the employer to make these changes?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.SendRequestToEmployer, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SendRequestToEmployer) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="SendRequestToEmployer" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                    Yes, request this change
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SendRequestToEmployer" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    No, leave for now
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="finish" class="govuk-button" type="submit" data-module="govuk-button">
+                    Finish
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details" class="back-link">Back to apprentice details</a>
+
+    
+}
