@@ -366,11 +366,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]        
         [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public ActionResult ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        public async Task<ActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
             {              
-                _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });                
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });                
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
