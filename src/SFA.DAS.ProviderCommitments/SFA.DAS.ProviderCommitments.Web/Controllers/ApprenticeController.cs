@@ -366,7 +366,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]        
         [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<ActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        public async Task<IActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
             {              

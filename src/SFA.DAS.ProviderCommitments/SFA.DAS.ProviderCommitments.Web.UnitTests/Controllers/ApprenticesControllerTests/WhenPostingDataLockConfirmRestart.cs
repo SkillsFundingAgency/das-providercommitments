@@ -7,6 +7,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -32,10 +33,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
 
         [Test]
-        public void Then_Redirect_To_Details_Page()
+        public async Task Then_Redirect_To_Details_Page()
         {
             //Act
-            var result = _sut.ConfirmRestart(_viewModel);
+            var result = await _sut.ConfirmRestart(_viewModel);
 
             //Assert
             result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
