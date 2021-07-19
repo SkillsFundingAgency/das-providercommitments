@@ -2,9 +2,11 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -12,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private ApprenticeController _sut;
         private Mock<IModelMapper> _modelMapperMock;
+        private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
         private DatalockConfirmRestartRequest _request;
         private DatalockConfirmRestartViewModel _viewModel;
 
@@ -21,9 +24,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var fixture = new Fixture();
             _request = fixture.Create<DatalockConfirmRestartRequest>();
             _viewModel = fixture.Create<DatalockConfirmRestartViewModel>();
+            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();            
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<DatalockConfirmRestartViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object);
         }
 
 
@@ -38,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public void Then_Redirect_To_ConfirmRestart_Page()
+        public void Then_TriageDataLocks_Api_Called()
         {
             //Arrange
             _viewModel.SendRequestToEmployer = true;
@@ -46,8 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             //Act
             var result = _sut.ConfirmRestart(_viewModel);
 
-            //Assert
-            //Verify the api been called
+            //Assert                
+            _mockCommitmentsApiClient.Verify(x => x.TriageDataLocks(It.IsAny<long>(), It.IsAny<TriageDataLocksRequest>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
