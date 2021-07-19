@@ -369,11 +369,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public ActionResult ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
-            {
-                //TODO : new api call to call
-                //Task TriageDataLocks(long apprenticeshipId, TriageDataLocksRequest request, CancellationToken cancellationToken = default);
-                //var provider = _commitmentsApiClient.GetProvider(viewModel.ProviderId);
-                
+            {              
+                _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });                
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });

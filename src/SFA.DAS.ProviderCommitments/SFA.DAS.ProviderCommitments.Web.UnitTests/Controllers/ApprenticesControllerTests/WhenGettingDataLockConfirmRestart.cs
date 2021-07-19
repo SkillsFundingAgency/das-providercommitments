@@ -12,31 +12,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     [TestFixture]
     public class WhenGettingDataLockConfirmRestart
     {
-        private ApprenticeController _sut;
-        private Mock<IModelMapper> _modelMapperMock;
-        private DatalockConfirmRestartRequest _request;
-        private DatalockConfirmRestartViewModel _viewModel;
+        private ApprenticeController _sut;        
+        private DatalockConfirmRestartRequest _request;        
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _request = fixture.Create<DatalockConfirmRestartRequest>();
-            _viewModel = fixture.Create<DatalockConfirmRestartViewModel>();
-            _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock.Setup(x => x.Map<DatalockConfirmRestartViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
-        }
-
-        [Test]
-        public void ThenCallsModelMapper()
-        {
-            //Act
-             _sut.ConfirmRestart(_request);
-
-            //Assert
-            _modelMapperMock.Verify(x => x.Map<DatalockConfirmRestartViewModel>(_request));
-        }
+            _request = fixture.Create<DatalockConfirmRestartRequest>();                    
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+        }   
 
         [Test]
         public void ThenReturnsView()

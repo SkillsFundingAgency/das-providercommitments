@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.ModelBinding;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -21,8 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ULN { get; set; }
         public string CourseName { get; set; }
         public long ProviderId { get; set; }
-        public string ProviderName { get; set; }
-        public BaseEdit OriginalApprenticeship { get; set; }
+        public string ProviderName { get; set; }        
         public string NewCourseCode { get; internal set; }
         public string NewCourseName { get; internal set; }        
         public DateTime? IlrEffectiveFromDate { get; internal set; }

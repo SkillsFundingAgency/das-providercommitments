@@ -19,11 +19,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DataLockRequestRestartViewModel> Map(DataLockRequestRestartRequest source)
         {
-            var dataLockSummariesTask = _commitmentsApiClient
-                .GetApprenticeshipDatalockSummariesStatus(source.ApprenticeshipId);
+            var dataLockSummariesTask = _commitmentsApiClient.GetApprenticeshipDatalockSummariesStatus(source.ApprenticeshipId);
 
-            var apprenticeshipTask = _commitmentsApiClient
-                .GetApprenticeship(source.ApprenticeshipId);
+            var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
             var trainingProgrammesTask = _commitmentsApiClient.GetAllTrainingProgrammes();
 
