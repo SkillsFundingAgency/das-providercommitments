@@ -42,6 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public TriageOption AvailableTriageOption { get; set; }
         public ConfirmationStatus? ConfirmationStatus { get; set; }
         public bool ShowConfirmationStatus { get; set; }
+        public string Email { get; set; }
         public enum DataLockSummaryStatus
         {
             None,
