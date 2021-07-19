@@ -24,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         public async Task<ConfirmEditApprenticeshipViewModel> Map(EditApprenticeshipRequestViewModel source)
         {
             source.ApprenticeshipId = _encodingService.Decode(source.ApprenticeshipHashedId, EncodingType.ApprenticeshipId);
-            source.AccountId = _encodingService.Decode(source.AccountHashedId, EncodingType.AccountId);
 
             var apprenticeshipTask = _commitmentApi.GetApprenticeship(source.ApprenticeshipId);
             var priceEpisodesTask = _commitmentApi.GetPriceEpisodes(source.ApprenticeshipId);

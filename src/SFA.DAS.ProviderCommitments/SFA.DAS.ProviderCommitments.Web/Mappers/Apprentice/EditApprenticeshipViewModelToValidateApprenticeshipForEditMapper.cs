@@ -12,7 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var result = new ValidateApprenticeshipForEditRequest
             {
-                EmployerAccountId = source.AccountId,
                 ApprenticeshipId = source.ApprenticeshipId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
@@ -22,7 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderReference = source.ProviderReference,
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
-                TrainingCode = source.CourseCode
+                TrainingCode = source.CourseCode,
+                ProviderId = source.ProviderId
             };
             return Task.FromResult(result);
         }
