@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -366,11 +367,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]        
         [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public ActionResult ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        public async Task<ActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
-            {              
-                _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });                
+            {
+                //try
+                //{
+                    //TODO : change to RESTART
+                    await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Unknown });
+                //}
+                //catch(Exception ex)
+                //{
+                //    var message = ex;
+                //    //return View("DataLockConfirmRestart", viewModel);
+                    
+                //    //throw ex;
+                //}
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
@@ -407,13 +419,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public IActionResult ConfirmDataLockChangesPost(ConfirmDataLockChangesViewModel viewModel)
+        public async Task<IActionResult> ConfirmDataLockChangesPost(ConfirmDataLockChangesViewModel viewModel)
         {
             if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
             {
-                //TODO : new api call to call -- TriageStatus.Change
-                //Task TriageDataLocks(long apprenticeshipId, TriageDataLocksRequest request, CancellationToken cancellationToken = default);
-                //var provider = _commitmentsApiClient.GetProvider(viewModel.ProviderId);
+                try
+                {
+                   await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Change });
+                }
+                catch(Exception ex)
+                {
+                    var message = ex.InnerException;
+                }
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });

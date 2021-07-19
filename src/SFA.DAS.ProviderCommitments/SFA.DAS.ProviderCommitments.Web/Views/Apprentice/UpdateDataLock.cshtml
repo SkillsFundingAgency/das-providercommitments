@@ -9,12 +9,12 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="column-full">
+    <div class="govuk-grid-column-two-thirds">
 
         <partial name="_ValidationSummary" />
 
-        <h1 class="heading-xlarge">Details of ILR data mismatch</h1>
-        <table class="mismatch-desc">
+        <h1 class="govuk-heading-xl">Details of ILR data mismatch</h1>
+        <table class="govuk-table">
             <tr>
                 <td class="first-child">Name</td>
                 <td class="first-child">@Model.FirstName @Model.LastName</td>
@@ -53,39 +53,41 @@
                 <h2 class="heading-small">Mismatch @count </h2>
             }
             <div class="grid-row">
-                <div class="column-one-half">
+                <div class="column-one-half"  >
 
-                    <table class="app-data">
+                    <table class="govuk-table">
+                        @*SORT OUT THE STYLE*@
                         <caption class="heading-small">Apprenticeship service</caption>
                         <thead>
                             <tr>
-                                <th scope="col" class="first-child">Period</th>
-                                <th class="numeric first-child" scope="col">Apprenticeship <br />training course</th>
+                                <th scope="col" class="first-child govuk-table__header">Period</th>
+                                <th class="numeric first-child govuk-table__header" scope="col">Apprenticeship <br />training course</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td scope="row">From<br /> @dasPricePeriod</td>
-                                <td class="numeric">@dl.TrainingName</td>
+                                <td scope="row"  class="govuk-table__cell">From<br /> @dasPricePeriod</td>
+                                <td class="numeric govuk-table__cell">@dl.TrainingName</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="column-one-half">
-                    <table class="app-data ILR-submission">
+                    <table class="govuk-table">
+                        @*SORT OUT THE STYLE*@
                         <caption class="heading-small">ILR submission</caption>
                         <thead>
                             <tr>
-                                <th scope="col" class="first-child">Period</th>
-                                <th class="numeric first-child" scope="col">Apprenticeship <br />training course</th>
+                                <th scope="col" class="first-child ">Period</th>
+                                <th class="numeric first-child govuk-table__header" scope="col">Apprenticeship <br />training course</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td scope="row">From<br /> @ilrPricePeriod</td>
-                                <td class="numeric">@dl.IlrTrainingName</td>
+                                <td scope="row"  class="govuk-table__cell">From<br /> @ilrPricePeriod</td>
+                                <td class="numeric govuk-table__cell">@dl.IlrTrainingName</td>
                             </tr>
                         </tbody>
                     </table>
@@ -110,40 +112,40 @@
             {
                 <h2 class="heading-small">Mismatch @count </h2>
             }
-            <div class="grid-row">
-                <div class="column-one-half">
+            <div class="govuk-grid-row">
+                <div class="govuk-column-one-half">
 
-                    <table class="app-data">
+                    <table  class="govuk-table">     @*SORT OUT THE STYLE*@
                         <caption class="heading-small">Apprenticeship service</caption>
                         <thead>
                             <tr>
-                                <th scope="col" class="first-child">Price period</th>
-                                <th class="numeric first-child" scope="col">Total apprenticeship <br />training price</th>
+                                <th scope="col" class="govuk-table__header">Price period</th>
+                                <th class="numeric first-child govuk-table__header" scope="col">Total apprenticeship <br />training price</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td scope="row">From<br /> @dasPricePeriod</td>
-                                <td class="numeric">@dl.Cost.FormatCost()</td>
+                                <td scope="row" class="govuk-table__cell">From<br /> @dasPricePeriod</td>
+                                <td class="numeric govuk-table__cell">@dl.Cost.FormatCost()</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="column-one-half">
-                    <table class="app-data ILR-submission">
+                <div class="govuk-column-one-half">        @*SORT OUT THE STYLE*@
+                    <table class="govuk-table">
                         <caption class="heading-small">ILR submission</caption>
                         <thead>
                             <tr>
-                                <th scope="col" class="first-child">Price period</th>
-                                <th class="numeric first-child" scope="col">Total apprenticeship <br />training price</th>
+                                <th scope="col" class="govuk-table__header">Price period</th>
+                                <th class="numeric first-child" scope="col" class="govuk-table__header">Total apprenticeship <br />training price</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td scope="row">From<br />@ilrPricePeriod</td>
-                                <td class="numeric">@dl.IlrTotalCost.FormatCost()</td>
+                                <td scope="row" class="govuk-table__cell">From<br />@ilrPricePeriod</td>
+                                <td class="numeric govuk-table__cell">@dl.IlrTotalCost.FormatCost()</td>
                             </tr>
                         </tbody>
                     </table>

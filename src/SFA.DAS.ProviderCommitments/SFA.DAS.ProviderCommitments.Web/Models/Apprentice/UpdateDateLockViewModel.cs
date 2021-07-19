@@ -21,12 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? DateOfBirth { get; set; }
         public string CourseName { get; set; }
         public long ProviderId { get; set; }
-        public string ProviderName { get; set; }        
-
-        public SubmitStatusViewModel? SubmitStatusViewModel { get; set; }
-
-        //public DateTime? IlrEffectiveFromDate { get; internal set; }
-        //public DateTime? IlrEffectiveToDate { get; internal set; }
+        public string ProviderName { get; set; }
+        public SubmitStatusViewModel? SubmitStatusViewModel { get; set; }       
         public IEnumerable<PriceHistoryViewModel> PriceDataLocks { get; set; }
 
         public IEnumerable<CourseDataLockViewModel> CourseDataLocks { get; set; }
@@ -61,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? IlrActualStartDate { get; set; }
 
         public DateTime? IlrEffectiveFromDate { get; set; }
-        public DateTime? IlrEffectiveToDate { get; set; }
+        public DateTime? IlrPriceEffectiveToDate { get; set; }
 
         public decimal? IlrTotalCost { get; set; }
 
