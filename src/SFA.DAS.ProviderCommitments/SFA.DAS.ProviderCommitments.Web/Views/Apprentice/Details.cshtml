@@ -31,11 +31,7 @@
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
-
-        @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
-        {
-            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
-        }
+        <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
@@ -52,7 +48,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
-                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus</td>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
                     </tr>
                 }
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
