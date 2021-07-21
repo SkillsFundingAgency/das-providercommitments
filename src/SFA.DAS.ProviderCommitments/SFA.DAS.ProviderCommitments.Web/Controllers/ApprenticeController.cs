@@ -394,6 +394,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
             {
                 return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        public async Task<IActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        {            
+            if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
+            {
+                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);                
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
