@@ -35,7 +35,7 @@
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
-        @if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
+        @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
@@ -101,10 +101,7 @@
                 <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
                 <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
                 <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                    @if (Model.Status == ApprenticeshipStatus.Stopped && 
-                         Model.IsChangeOfEmployerEnabled && 
-                         !Model.HasPendingChangeOfProviderRequest && 
-                         !Model.HasContinuation)
+                    @if (Model.ShowChangeEmployerLink)
                     {
                         <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                     }
