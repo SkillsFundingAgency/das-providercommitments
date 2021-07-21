@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public const string ChangesRejectedFlashMessage = "Changes rejected";
         public const string ChangesUndoneFlashMessage = "Changes undone";
         private const string ApprenticeChangesSentToEmployer = "Change saved and sent to employer to approve";
-        private const string ApprenticeUpdated = "Apprentice updated";
+        private const string ApprenticeUpdated = "Change saved (re-approval not required)";
 
         public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
         {
