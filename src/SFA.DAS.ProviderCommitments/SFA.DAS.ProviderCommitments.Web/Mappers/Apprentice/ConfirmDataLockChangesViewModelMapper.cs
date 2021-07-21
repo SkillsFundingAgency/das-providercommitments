@@ -7,8 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -38,7 +37,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = apprenticeshipTask.Result;
             var trainingProgrammes = trainingProgrammesTask.Result;
 
-            var dataLockSummary = MapDataLockSummary(dataLockSummaries, trainingProgrammes);
+            //var dataLockSummary = MapDataLockSummary(dataLockSummaries, trainingProgrammes);
+            var dataLockSummary = dataLockSummaries.MapDataLockSummary(trainingProgrammes);
 
             var dataLocksPrice = dataLockSummaries
                                   .DataLocksWithCourseMismatch
@@ -57,12 +57,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = apprenticeship.ProviderId,
                 ProviderName = apprenticeship.ProviderName,
                 EmployerName = apprenticeship.EmployerName,
-                CourseDataLocks = MapCourseDataLock(apprenticeship, dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes),
-                PriceDataLocks = MapPriceDataLock(priceEpisodes.PriceEpisodes, dataLocksPrice)
+                CourseDataLocks = apprenticeship.MapCourseDataLock(dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes), //MapCourseDataLock(apprenticeship, dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes),
+                PriceDataLocks = priceEpisodes.PriceEpisodes.MapPriceDataLock(dataLocksPrice)   //MapPriceDataLock(priceEpisodes.PriceEpisodes, dataLocksPrice)
             };
         }
 
-        private IEnumerable<CourseDataLockViewModel> MapCourseDataLock(GetApprenticeshipResponse apprenticeship, IList<DataLockViewModel> dataLockWithCourseMismatch, IReadOnlyCollection<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes)
+        /*private IEnumerable<CourseDataLockViewModel> MapCourseDataLock(GetApprenticeshipResponse apprenticeship, IList<DataLockViewModel> dataLockWithCourseMismatch, IReadOnlyCollection<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes)
         {
             if (apprenticeship.HasHadDataLockSuccess) return new CourseDataLockViewModel[0];
 
@@ -174,6 +174,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TriageStatusViewModel = (TriageStatusViewModel)dataLock.TriageStatus,
                 DataLockErrorCode = dataLock.ErrorCode
             };
-        }
+        }*/
     }
 }

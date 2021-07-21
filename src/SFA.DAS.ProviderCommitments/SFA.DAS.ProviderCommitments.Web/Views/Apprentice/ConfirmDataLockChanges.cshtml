@@ -4,31 +4,31 @@
 
 
 @{
-    ViewBag.Title = "Change apprentice details";
-    ViewBag.PageID = "confirm-datalock-changes";
+    ViewBag.Title = "Change apprentice details";    
+    ViewBag.GaData.Vpv = "/apprentices/datalock/confirm-update";
 }
 
-<div class="grid-row">
-    <div class="column-full">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <partial name="_ValidationSummary" />
 
-        <h1 class="heading-xlarge">Change apprentice details</h1>
+        <h1 class="govuk-heading-xl">Change apprentice details</h1>
 
         <p>A request will be sent to @Model.EmployerName to approve the following @PluraliseString(Model.TotalChanges, "change") in the apprenticeship service.</p>
 
-        <table class="mismatch-desc">
-            <tbody>
-                <tr>
-                    <td class="first-child">Name</td>
-                    <td class="first-child"> @Model.FirstName @Model.LastName</td>
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td scope="row" class="govuk-table__header">Name</td>
+                    <td class="govuk-table__cell"> @Model.FirstName @Model.LastName</td>
                 </tr>
-                <tr>
-                    <td>Unique learner number</td>
-                    <td>@Model.ULN</td>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td class="govuk-table__cell">@Model.ULN</td>
                 </tr>
-                <tr>
-                    <td>Apprenticeship training course</td>
-                    <td>@Model.CourseName</td>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <td class="govuk-table__cell">@Model.CourseName</td>
                 </tr>
             </tbody>
         </table>
@@ -51,28 +51,24 @@
             {
                 <h2 class="heading-small">Change @count</h2>
             }
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Currently</th>
-                        <th>Change to</th>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">Currently</th>
+                        <th scope="col" class="govuk-table__header">Change to</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="govuk-table__body">
                     <tr>
-                        <td>Period</td>
-                        <td>
-                            From @dasPricePeriod
-                        </td>
-                        <td>From @ilrPricePeriod</td>
+                        <td class="govuk-table__cell">Period</td>
+                        <td class="govuk-table__cell">From @dasPricePeriod </td>
+                        <td class="govuk-table__cell">From @ilrPricePeriod</td>
                     </tr>
                     <tr>
-                        <td>Apprenticeship training course</td>
-                        <td>
-                            @dl.TrainingName
-                        </td>
-                        <td>@dl.IlrTrainingName</td>
+                        <td class="govuk-table__cell">Apprenticeship training course</td>
+                        <td class="govuk-table__cell"> @dl.TrainingName </td>
+                        <td class="govuk-table__cell">@dl.IlrTrainingName</td>
                     </tr>
                 </tbody>
             </table>
@@ -96,28 +92,28 @@
                 <h2 class="heading-small">Change @count</h2>
             }
 
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Currently</th>
-                        <th>Change to</th>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">Currently</th>
+                        <th scope="col" class="govuk-table__header">Change to</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="govuk-table__body">
                     <tr>
-                        <td>Price period</td>
-                        <td>
+                        <td class="govuk-table__cell">Price period</td>
+                        <td class="govuk-table__cell">
                             From @dasPricePeriod
                         </td>
-                        <td>From @ilrPricePeriod</td>
+                        <td class="govuk-table__cell">From @ilrPricePeriod</td>
                     </tr>
                     <tr>
-                        <td>Total apprenticeship training price</td>
-                        <td>
+                        <td class="govuk-table__cell">Total apprenticeship training price</td>
+                        <td class="govuk-table__cell">
                             @dl.Cost.FormatCost()
                         </td>
-                        <td>@dl.IlrTotalCost.Value.FormatCost()</td>
+                        <td class="govuk-table__cell">@dl.IlrTotalCost.Value.FormatCost()</td>
                     </tr>
                 </tbody>
             </table>
@@ -153,63 +149,23 @@
                         </div>
                     </fieldset>
                 </div>
+              
 
-                <div class="grid-row" id="cont-cancel">
-                    <div class="column-full">
-                        <input type="submit" class="button continue" id="fix-mismatch" value="Finish" />
-                        <a href="@Url.Action("Details", "Apprentice")" aria-label="Cancel" class="cancel"> Cancel</a>
-                    </div>
+                <div class="govuk-button-group" id="cont-cancel">
+                    <button class="govuk-button" data-module="govuk-button" type="submit" id="finish-button">
+                        Finish
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" id="cancel-button">Cancel</a>
                 </div>
+
             </fieldset>
-        </form>
-
-    @*</div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-
-        <form method="POST" action="@Url.Action("ConfirmDataLockChangesPost")" novalidate="novalidate">
-
-            @Html.AntiForgeryToken()
-
-            <div class="form-group">
-
-                <fieldset>
-                    <h2 class="heading-medium">Do you want to request @GetThisChangeText(Model.TotalChanges)?</h2>
-                    <legend class="visually-hidden">How do you want to fix the mismatch?</legend>
-                    <div class="form-group @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "error")">
-                        @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, "Please choose an option", new { id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
-                        <label class="block-label selection-button-radio" for="@RadioButtonId(SubmitStatusViewModel.Confirm)">
-                            @Html.RadioButtonFor(m => m.SubmitStatusViewModel, SubmitStatusViewModel.Confirm, new { id = RadioButtonId(SubmitStatusViewModel.Confirm) })
-                            <span>Yes, request @GetThisChangeText(Model.TotalChanges)</span>
-                        </label>
-
-                        <label class="block-label selection-button-radio" for="@RadioButtonId(SubmitStatusViewModel.None)">
-                            @Html.RadioButtonFor(m => m.SubmitStatusViewModel, SubmitStatusViewModel.None, new { id = RadioButtonId(SubmitStatusViewModel.None) })
-                            <span>No, leave for now</span>
-                        </label>
-                    </div>
-
-                    <div class="grid-row" id="cont-cancel">
-                        <div class="column-full">
-                            <input type="submit" class="button continue" id="fix-mismatch" value="Finish" />
-                            <a href="@Url.Action("Details", "ManageApprentices")" aria-label="Cancel" class="cancel"> Cancel</a>
-                        </div>
-                    </div>
-
-                </fieldset>
-            </div>
-        </form>*@
-
+        </form>      
     </div>
 </div>
 
 
 @functions
 {
-    
-
     public string GetThisChangeText(int count)
     {
         return count > 1 ? "these changes" : "this change";
@@ -221,8 +177,7 @@
     }
 }
 
+
 @section breadcrumb {
-    <div class="breadcrumbs">
-        <a href="@Url.Action("Details", "Apprentice")" aria-label="Back to apprentice details" class="back-link">Back to apprentice details</a>
-    </div>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details" >Back to apprentice details</a>
 }

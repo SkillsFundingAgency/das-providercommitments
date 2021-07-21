@@ -371,18 +371,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
             {
-                //try
-                //{
-                    //TODO : change to RESTART
-                    await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Unknown });
-                //}
-                //catch(Exception ex)
-                //{
-                //    var message = ex;
-                //    //return View("DataLockConfirmRestart", viewModel);
-                    
-                //    //throw ex;
-                //}
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });
+                
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
@@ -397,7 +387,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
+        //[Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public IActionResult UpdateDataLock(UpdateDateLockViewModel viewModel)
         {
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
@@ -409,8 +400,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
-        [Route("confirm", Name = "UpdateDataLockConfirm")]        
+        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]               
         public async Task<ActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesRequest request)
         {
             var viewModel = await _modelMapper.Map<ConfirmDataLockChangesViewModel>(request);
@@ -418,19 +408,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> ConfirmDataLockChangesPost(ConfirmDataLockChangesViewModel viewModel)
+        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
+        //[Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesViewModel viewModel)
         {
             if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
             {
-                try
-                {
+                //try
+                //{
                    await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Change });
-                }
-                catch(Exception ex)
-                {
-                    var message = ex.InnerException;
-                }
+                //}
+                //catch(Exception ex)
+                //{
+                //    var message = ex.InnerException;
+                //}
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });

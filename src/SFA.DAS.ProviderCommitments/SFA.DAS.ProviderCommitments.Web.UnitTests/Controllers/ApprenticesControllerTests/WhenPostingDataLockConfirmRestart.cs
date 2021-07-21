@@ -31,15 +31,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
 
-        [Test]
-        public void Then_Redirect_To_Details_Page()
-        {
-            //Act
-            var result = _sut.ConfirmRestart(_viewModel);
+        //[Test]
+        //public void Then_Redirect_To_Details_Page()
+        //{
+        //    //Act
+        //    var result = _sut.ConfirmRestart(_viewModel);
 
-            //Assert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
-        }
+        //    //Assert
+        //    result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+        //}
 
         [Test]
         public void Then_TriageDataLocks_Api_Called()
