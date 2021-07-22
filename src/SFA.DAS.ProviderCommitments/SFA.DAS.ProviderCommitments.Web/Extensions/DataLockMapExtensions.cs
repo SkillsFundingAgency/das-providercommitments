@@ -68,16 +68,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                        .OrderByDescending(m => m.FromDate)
                        .FirstOrDefault(m => m.FromDate <= dataLock.IlrEffectiveFromDate);
 
-                   return new PriceHistoryViewModel
-                   {
-                       ApprenticeshipId = previousPriceEpisode.ApprenticeshipId,
-                       FromDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, //CurrentStartDate
-                       ToDate = previousPriceEpisode?.ToDate, //CurrentEndDate
-                       Cost = previousPriceEpisode?.Cost ?? default(decimal), //CurrentCost
-                       IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
-                       IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
-                       IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
-                   };
+                   //if (previousPriceEpisode != null)
+                   //{
+                       return new PriceHistoryViewModel
+                       {
+                           ApprenticeshipId = previousPriceEpisode.ApprenticeshipId,
+                           FromDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, //CurrentStartDate
+                           ToDate = previousPriceEpisode?.ToDate, //CurrentEndDate
+                           Cost = previousPriceEpisode?.Cost ?? default(decimal), //CurrentCost
+                           IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
+                           IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
+                           IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
+                       };
+                   //}
+                   //else
+                   //{
+                   //    return new PriceHistoryViewModel
+                   //    {
+                   //        IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
+                   //        IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
+                   //        IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
+                   //    };
+                   //}
                }).ToList();
         }
 

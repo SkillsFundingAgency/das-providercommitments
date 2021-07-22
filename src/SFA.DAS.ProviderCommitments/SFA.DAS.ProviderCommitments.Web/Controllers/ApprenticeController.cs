@@ -371,8 +371,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {            
             if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
             {
-                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Restart });
-                
+                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
@@ -394,12 +394,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
             {
                 return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
-        public async Task<IActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
-        {            
-            if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
-            {
-                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
-                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);                
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
@@ -420,18 +414,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
             {
-                //try
-                //{
-                   await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, new TriageDataLocksRequest { TriageStatus = CommitmentsV2.Types.TriageStatus.Change });
-                //}
-                //catch(Exception ex)
-                //{
-                //    var message = ex.InnerException;
-                //}
+                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);               
             }
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
-
     }
 }
