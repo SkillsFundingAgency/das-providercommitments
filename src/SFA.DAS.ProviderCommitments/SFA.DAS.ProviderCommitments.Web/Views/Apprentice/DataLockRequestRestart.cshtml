@@ -55,7 +55,7 @@
 
         <form method="post">
             <fieldset class="govuk-fieldset">
-                @Html.AntiForgeryToken()                
+                @Html.AntiForgeryToken()
 
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
@@ -80,11 +80,15 @@
                             </div>
                         </div>
                     </fieldset>
+                </div>               
+
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button" type="submit" id="fix-mismatch">
+                        Continue
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" id="cancel-button">Cancel</a>
                 </div>
 
-                <button id="fix-mismatch" class="govuk-button" type="submit" data-module="govuk-button">
-                    Continue
-                </button>
             </fieldset>
         </form>
     </div>
