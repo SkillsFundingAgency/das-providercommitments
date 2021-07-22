@@ -19,106 +19,108 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         private GetApprenticeshipResponse _apprenticeshipResponse;
         private GetAllTrainingProgrammesResponse _allTrainingProgrammeResponse;        
         private List<DataLock> _dataLocksWithCourseMismatch;
-        private List<DataLock> _dataLocksWithOnlyPriceMismatch;
+        private List<DataLock> _dataLocksWithPriceMismatch;
         private List<PriceEpisode> _priceEpisodes;
 
         [SetUp]
-        public void Arrange()
+        public void Init()
         {
             _fixture = new Fixture();
-            _dataLocksWithCourseMismatch = new List<DataLock>();
-            _dataLocksWithOnlyPriceMismatch = new List<DataLock>();
-            _priceEpisodes = new List<PriceEpisode>();
-            List<TrainingProgramme> TrainingProgrammes = new List<TrainingProgramme>();
-
-
-            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
-              .Create();
-
-            _priceEpisodes.Add(new PriceEpisode {ApprenticeshipId =123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M });
+            _priceEpisodes = new List<PriceEpisode>
+            {
+                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M }
+            };
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                  .With(x => x.PriceEpisodes, _priceEpisodes)
                 .Create();
 
-            TrainingProgrammes.Add(new TrainingProgramme { CourseCode = "111", ProgrammeType = ProgrammeType.Standard, Name = "Training 111" });
+            List<TrainingProgramme> TrainingProgrammes = new List<TrainingProgramme>
+            {
+                new TrainingProgramme { Name = "DevOps engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
+            };
             _allTrainingProgrammeResponse = _fixture.Build<GetAllTrainingProgrammesResponse>()
                 .With(x => x.TrainingProgrammes, TrainingProgrammes)
                 .Create();
 
             _apprenticeshipResponse = _fixture.Build<GetApprenticeshipResponse>()
-             .With(p => p.CourseCode, "111")
-             .With(p => p.CourseName, "Training 111")             
-             .With(p => p.EndDate, DateTime.Now.Date.AddDays(100))
+             .With(p => p.CourseCode, "548")
+             .With(p => p.CourseName, "DevOps engineer")             
+             .With(p => p.EndDate, DateTime.Now.Date.AddDays(360))
+             .With(p => p.HasHadDataLockSuccess, false)
              .Create();
         }
 
         [Test]
-        public void TestMapPriceDataLock()
+        public void PriceDataLock_IsMapped()
         {
             //Act
-            _dataLocksWithOnlyPriceMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock07, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTotalCost = 1500.00M });
+            _dataLocksWithPriceMismatch = new List<DataLock>
+            {
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock07, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    ApprenticeshipId = 123, 
+                    IlrTotalCost = 1500.00M 
+                }
+            };
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
               .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
+              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
             var result = _priceEpisodesResponse.PriceEpisodes.MapPriceDataLock(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch);
 
             //Assert
             var test = result.FirstOrDefault().ApprenticeshipId;
-            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().FromDate);
-            Assert.AreEqual(null, result.FirstOrDefault().ToDate);
-            Assert.AreEqual(1000.0M, result.FirstOrDefault().Cost);
+            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().CurrentStartDate);
+            Assert.AreEqual(null, result.FirstOrDefault().CurrentEndDate);
+            Assert.AreEqual(1000.0M, result.FirstOrDefault().CurrentCost);
             Assert.AreEqual(DateTime.Now.Date.AddDays(7), result.FirstOrDefault().IlrEffectiveFromDate);
             Assert.AreEqual(null, result.FirstOrDefault().IlrEffectiveToDate);
             Assert.AreEqual(1500.00M, result.FirstOrDefault().IlrTotalCost);
         }
 
-
         [Test]
-        public void TestMapPriceDataLock_with_no_price_episodes() //TODO : Is this possible There is a Datalock -- but no price history
+        public void Multiple_PriceDataLocks_AreMapped()
         {
-            //Act
-            _dataLocksWithOnlyPriceMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock07, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTotalCost = 1500.00M });
+            //Arrange
+            _dataLocksWithPriceMismatch = new List<DataLock>
+            {
+                new DataLock 
+                    { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock07, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    ApprenticeshipId = 123, 
+                    IlrTotalCost = 1500.00M 
+                },
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock07, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    ApprenticeshipId = 123, 
+                    IlrTotalCost = 1300.00M 
+                }
+            };
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
               .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
+              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
-            _priceEpisodesResponse.PriceEpisodes = new List<PriceEpisode>();
-
-            var result = _priceEpisodesResponse.PriceEpisodes.MapPriceDataLock(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch);
-
-            //Assert
-            var test = result;           
-        }
-
-
-        [Test]
-        public void TestMapPrice_DataLocks()
-        {
-            //Act
-            _dataLocksWithOnlyPriceMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock07, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTotalCost = 1500.00M });
-            _dataLocksWithOnlyPriceMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock07, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTotalCost = 1300.00M });
-            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
-              .Create();
-
-            _priceEpisodes = new List<PriceEpisode>();
-            _priceEpisodes.Add(new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M });
-            _priceEpisodes.Add(new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1200.0M });
+            _priceEpisodes = new List<PriceEpisode>
+            {
+                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M },
+                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1200.0M }
+            };
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                  .With(x => x.PriceEpisodes, _priceEpisodes)
                 .Create();
 
-
+            //Act
             var result = _priceEpisodesResponse.PriceEpisodes.MapPriceDataLock(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch);
 
             //Assert
@@ -126,41 +128,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         }
 
         [Test]
-        public void Test_MapDataLockSummary()
-        {            
+        public void DataLockSummary_IsMapped()
+        {
             //Arrange
-            _dataLocksWithCourseMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04, IlrTrainingCourseCode = "111" });
+            _dataLocksWithCourseMismatch = new List<DataLock>
+            {
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock04, 
+                    IlrTrainingCourseCode = "548" 
+                }
+            };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
               .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
+              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
             //Act
             var result = _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse);
 
             //Assert
-            var test = result;
+            Assert.AreEqual(1, result.DataLockWithCourseMismatch.Count());
         }
 
 
         [Test]
-        public void Test_MapDataLockSummary_exception()
+        public void DataLockSummary_Throws_Exception_If_DataLock_CourseCode_Not_Exists()
         {
             //Arrange
-            _dataLocksWithCourseMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04});
+            _dataLocksWithCourseMismatch = new List<DataLock>
+            {
+                new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04 }
+            };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
               .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
+              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
             var expectedMessage = $"Datalock {_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().Id} IlrTrainingCourseCode {_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrTrainingCourseCode} not found; possible expiry";
 
-            //Act
-            //var result = _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse);
+            //Act            
             var exception = Assert.Throws<InvalidOperationException>(() => _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse));
 
             //Assert
@@ -170,17 +180,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
 
         [Test]
-        public void TestMap_Course_DataLock()
+        public void CourseDataLock_IsMapped()
         {
             //Arrange
-            _apprenticeshipResponse.HasHadDataLockSuccess = false;
-
-            _dataLocksWithCourseMismatch.Add(
-                new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), IlrTrainingCourseCode = "111"  });
+            _dataLocksWithCourseMismatch = new List<DataLock>
+            {
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock04, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    IlrTrainingCourseCode = "548" 
+                }
+            };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
               .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
+              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
             //Act
@@ -189,38 +205,40 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             //Assert
             var test = result.FirstOrDefault();
-            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().FromDate);
-            Assert.AreEqual(null, result.FirstOrDefault().ToDate);
-            Assert.AreEqual("Training 111", result.FirstOrDefault().TrainingName);
+            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().CurrentStartDate);
+            Assert.AreEqual(null, result.FirstOrDefault().CurrentEndDate);
+            Assert.AreEqual("DevOps engineer", result.FirstOrDefault().CurrentTrainingName);
             Assert.AreEqual(DateTime.Now.Date.AddDays(7), result.FirstOrDefault().IlrEffectiveFromDate);
             Assert.AreEqual(null, result.FirstOrDefault().IlrEffectiveToDate);
-            Assert.AreEqual("Training 111", result.FirstOrDefault().IlrTrainingName);
+            Assert.AreEqual("DevOps engineer", result.FirstOrDefault().IlrTrainingName);
         }
 
-
         [Test]
-        public void TestMap_Course_DataLocks()
+        public void Multiple_CourseDataLocks_AreMapped()
         {
-
             //Arrange
-            _apprenticeshipResponse.HasHadDataLockSuccess = false;
-
-            _dataLocksWithCourseMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTrainingCourseCode = "111" });
-            _dataLocksWithCourseMismatch.Add(
-               new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04, IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), ApprenticeshipId = 123, IlrTrainingCourseCode = "111" });
+            _dataLocksWithCourseMismatch = new List<DataLock>
+            {
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock04, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    ApprenticeshipId = 123, 
+                    IlrTrainingCourseCode = "548" 
+                },
+                new DataLock { 
+                    IsResolved = false, 
+                    DataLockStatus = Status.Fail, 
+                    ErrorCode = DataLockErrorCode.Dlock05, 
+                    IlrEffectiveFromDate = DateTime.Now.Date.AddDays(7), 
+                    ApprenticeshipId = 123, 
+                    IlrTrainingCourseCode = "548" 
+                }
+            };
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithOnlyPriceMismatch)
-              .Create();
-
-            _priceEpisodes = new List<PriceEpisode>();
-            _priceEpisodes.Add(new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M });
-            _priceEpisodes.Add(new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1200.0M });
-            _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
-                 .With(x => x.PriceEpisodes, _priceEpisodes)
-                .Create();
-
+              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)              
+              .Create();           
 
             //Act
             var dataLockSummary = _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse);
@@ -229,6 +247,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Assert
             Assert.AreEqual(2, result.Count());
         }
-
     }
 }

@@ -37,16 +37,16 @@
 
         @{ var count = 0; }
         @foreach (var dl in Model.CourseDataLocks)
-         {
+        {
             count++;
 
             var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
                 ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
                 : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
 
-            var dasPricePeriod = dl.ToDate.HasValue
-                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
-                : $"{dl.FromDate.ToGdsFormat()} onwards";
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
 
             if (Model.TotalChanges > 1)
             {
@@ -54,7 +54,7 @@
             }
             <div class="govuk-grid-row">
 
-                <div style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
+                <div  class="column-one-half" style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
                     <table class="govuk-table">                        
                         <caption class="govuk-table__caption govuk-table__caption--m">Apprenticeship service</caption>
                         <thead>
@@ -66,13 +66,13 @@
                         <tbody>
                             <tr>
                                 <td class="govuk-table__cell">From<br /> @dasPricePeriod</td>
-                                <td class="govuk-table__cell">@dl.TrainingName</td>
+                                <td class="govuk-table__cell">@dl.CurrentTrainingName</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div style="float: left; padding: 0 15px; width: 45%"> @*SORT OUT THE STYLE*@
+                <div  class="column-one-half" style="float: left; padding: 0 15px; width: 45%"> @*SORT OUT THE STYLE*@
                     <table class="govuk-table">                                    
                         <caption class="govuk-table__caption govuk-table__caption--m">ILR submission</caption>
                         <thead>
@@ -100,17 +100,17 @@
                 ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
                 : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
 
-            var dasPricePeriod = dl.ToDate.HasValue
-                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
-                : $"{dl.FromDate.ToGdsFormat()} onwards";
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
 
             if (Model.TotalChanges > 1)
             {
                 <h2 class="heading-small">Mismatch @count </h2>
             }
             <div class="govuk-grid-row">
-                <div style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
 
+                <div  class="column-one-half" style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
                     <table class="govuk-table">
                         <caption class="govuk-table__caption govuk-table__caption--m">Apprenticeship service</caption>
                         <thead>
@@ -122,13 +122,13 @@
                         <tbody>
                             <tr>
                                 <td class="govuk-table__cell">From<br /> @dasPricePeriod</td>
-                                <td  class="govuk-table__cell">@dl.Cost.FormatCost()</td>
+                                <td  class="govuk-table__cell">@dl.CurrentCost.FormatCost()</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
+                <div  class="column-one-half" style="float: left; padding: 0 15px; width: 45%">@*SORT OUT THE STYLE*@
                     <table class="govuk-table">
                         <caption class="govuk-table__caption govuk-table__caption--m">ILR submission</caption>
                         <thead>

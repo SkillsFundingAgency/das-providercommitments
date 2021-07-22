@@ -19,21 +19,17 @@ else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnres
 
         @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
         {
-            <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details</a>
-            <br />
-            <a id="triage-link-restart" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock/requestrestart")" class="govuk-link triage-link">View details V1</a>
+            <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details</a>            
         }
         else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
         {
-            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View details V1</a>
-            <br />
-            <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details V2</a>
+            <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details</a>
         }
         else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
         {
             <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View course mismatch</a>
-            <br />
-            <a id="triage-link-update" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/datalock")" class="govuk-link triage-link">View price mismatch</a>
+            <br />            
+            <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View price mismatch</a>
         }
     </p>
         }

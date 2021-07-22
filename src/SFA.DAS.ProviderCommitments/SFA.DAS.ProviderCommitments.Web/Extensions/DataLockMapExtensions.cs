@@ -15,48 +15,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
             var result = new List<CourseDataLockViewModel>();
 
-            //return dataLockWithCourseMismatch
-            //  .Select(dataLock =>
-            //  {
-            //      var previousPriceEpisode = priceEpisodes
-            //          .OrderByDescending(m => m.FromDate)
-            //          .FirstOrDefault(m => m.FromDate <= dataLock.IlrEffectiveFromDate);
+            return dataLockWithCourseMismatch
+              .Select(dataLock =>
+              {
+                  var previousPriceEpisode = priceEpisodes
+                      .OrderByDescending(m => m.FromDate)
+                      .FirstOrDefault(m => m.FromDate <= dataLock.IlrEffectiveFromDate);
 
-            //      return new CourseDataLockViewModel
-            //      {
-            //          FromDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, //CurrentStartDate
-            //          ToDate = previousPriceEpisode?.ToDate, //CurrentEndDate
-            //          TrainingName = apprenticeship.CourseName,
-            //          ApprenticeshipStartDate = apprenticeship.StartDate,
-            //          IlrTrainingName = dataLock.IlrTrainingCourseName,
-            //          IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
-            //          IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate
-            //      };
-            //  }).ToList();
+                  return new CourseDataLockViewModel
+                  {
+                      CurrentStartDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue,
+                      CurrentEndDate = previousPriceEpisode?.ToDate,
+                      CurrentTrainingName = apprenticeship.CourseName,
+                      IlrTrainingName = dataLock.IlrTrainingCourseName,
+                      IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
+                      IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate
+                  };
 
-
-            foreach (var datalock in dataLockWithCourseMismatch)
-            {
-                var priceHistory = priceEpisodes
-                    .OrderByDescending(x => x.FromDate)
-                    .FirstOrDefault(x => x.FromDate <= datalock.IlrEffectiveFromDate.Value);
-
-                result.Add(new CourseDataLockViewModel
-                {
-                    FromDate = priceHistory?.FromDate ?? DateTime.MinValue,
-                    ToDate = priceHistory?.ToDate,
-                    TrainingName = apprenticeship.CourseName,
-                    ApprenticeshipStartDate = apprenticeship.StartDate,
-                    IlrTrainingName = datalock.IlrTrainingCourseName,
-                    IlrEffectiveFromDate = datalock.IlrEffectiveFromDate,
-                    IlrEffectiveToDate = datalock.IlrPriceEffectiveToDate
-                });
-            }
-
-            return result;
+              }).ToList();           
         }
 
-        public static IEnumerable<PriceHistoryViewModel> MapPriceDataLock(this IReadOnlyCollection<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes, IEnumerable<DataLock> dataLockWithOnlyPriceMismatch)
+        public static IEnumerable<PriceDataLockViewModel> MapPriceDataLock(this IReadOnlyCollection<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes, IEnumerable<DataLock> dataLockWithOnlyPriceMismatch)
         {
             var dataLocks = dataLockWithOnlyPriceMismatch
                 .OrderBy(x => x.IlrEffectiveFromDate);
@@ -67,29 +46,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                    var previousPriceEpisode = priceEpisodes
                        .OrderByDescending(m => m.FromDate)
                        .FirstOrDefault(m => m.FromDate <= dataLock.IlrEffectiveFromDate);
-
-                   //if (previousPriceEpisode != null)
-                   //{
-                       return new PriceHistoryViewModel
-                       {
-                           ApprenticeshipId = previousPriceEpisode.ApprenticeshipId,
-                           FromDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, //CurrentStartDate
-                           ToDate = previousPriceEpisode?.ToDate, //CurrentEndDate
-                           Cost = previousPriceEpisode?.Cost ?? default(decimal), //CurrentCost
-                           IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
-                           IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
-                           IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
-                       };
-                   //}
-                   //else
-                   //{
-                   //    return new PriceHistoryViewModel
-                   //    {
-                   //        IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
-                   //        IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
-                   //        IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
-                   //    };
-                   //}
+                   
+                    return new PriceDataLockViewModel
+                    {
+                        ApprenticeshipId = previousPriceEpisode.ApprenticeshipId,
+                        CurrentStartDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, 
+                        CurrentEndDate = previousPriceEpisode?.ToDate,
+                        CurrentCost = previousPriceEpisode?.Cost ?? default(decimal),
+                        IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate ?? DateTime.MinValue,
+                        IlrEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
+                        IlrTotalCost = dataLock.IlrTotalCost ?? default(decimal)
+                    };
+                  
                }).ToList();
         }
 
@@ -118,19 +86,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         private static DataLockViewModel MapDataLockStatus(DataLock dataLock, TrainingProgramme training)
         {
             return new DataLockViewModel
-            {
-                //DataLockEventId = dataLock.DataLockEventId,
+            {                
                 DataLockEventDatetime = dataLock.DataLockEventDatetime,
                 PriceEpisodeIdentifier = dataLock.PriceEpisodeIdentifier,
                 ApprenticeshipId = dataLock.ApprenticeshipId,
-                IlrTrainingCourseCode = dataLock.IlrTrainingCourseCode,
-                //IlrTrainingType = (TrainingType)dataLock.IlrTrainingType,
+                IlrTrainingCourseCode = dataLock.IlrTrainingCourseCode,                
                 IlrTrainingCourseName = training.Name,
                 IlrActualStartDate = dataLock.IlrActualStartDate,
                 IlrEffectiveFromDate = dataLock.IlrEffectiveFromDate,
                 IlrPriceEffectiveToDate = dataLock.IlrPriceEffectiveToDate,
-                IlrTotalCost = dataLock.IlrTotalCost,
-                TriageStatusViewModel = (TriageStatusViewModel)dataLock.TriageStatus,
+                IlrTotalCost = dataLock.IlrTotalCost,                
                 DataLockErrorCode = dataLock.ErrorCode
             };
         }

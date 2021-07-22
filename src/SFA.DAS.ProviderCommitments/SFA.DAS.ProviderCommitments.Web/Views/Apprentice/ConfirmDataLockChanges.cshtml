@@ -43,9 +43,9 @@
                 ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
                 : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
 
-            var dasPricePeriod = dl.ToDate.HasValue
-                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
-                : $"{dl.FromDate.ToGdsFormat()} onwards";
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
 
             if (Model.TotalChanges > 1)
             {
@@ -67,7 +67,7 @@
                     </tr>
                     <tr>
                         <td class="govuk-table__cell">Apprenticeship training course</td>
-                        <td class="govuk-table__cell"> @dl.TrainingName </td>
+                        <td class="govuk-table__cell"> @dl.CurrentTrainingName </td>
                         <td class="govuk-table__cell">@dl.IlrTrainingName</td>
                     </tr>
                 </tbody>
@@ -83,9 +83,9 @@
                 ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
                 : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
 
-            var dasPricePeriod = dl.ToDate.HasValue
-                ? $"{dl.FromDate.ToGdsFormat()} to {dl.ToDate.Value.ToGdsFormat()}"
-                : $"{dl.FromDate.ToGdsFormat()} onwards";
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
 
             if (Model.TotalChanges > 1)
             {
@@ -111,7 +111,7 @@
                     <tr>
                         <td class="govuk-table__cell">Total apprenticeship training price</td>
                         <td class="govuk-table__cell">
-                            @dl.Cost.FormatCost()
+                            @dl.CurrentCost.FormatCost()
                         </td>
                         <td class="govuk-table__cell">@dl.IlrTotalCost.Value.FormatCost()</td>
                     </tr>

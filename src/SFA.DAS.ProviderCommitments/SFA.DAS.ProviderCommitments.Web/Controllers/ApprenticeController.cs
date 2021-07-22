@@ -380,7 +380,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
-        public async Task<ActionResult> UpdateDataLock(UpdateDateLockRequest request)
+        public async Task<IActionResult> UpdateDataLock(UpdateDateLockRequest request)
         {
             var viewModel = await _modelMapper.Map<UpdateDateLockViewModel>(request);
             return View("UpdateDataLock", viewModel);
@@ -388,7 +388,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
-        //[Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public IActionResult UpdateDataLock(UpdateDateLockViewModel viewModel)
         {
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
@@ -409,7 +409,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
-        //[Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesViewModel viewModel)
         {
             if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)

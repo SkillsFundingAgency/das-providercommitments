@@ -10,35 +10,34 @@ using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
-    public class WhenPostingDataLockConfirmRestart
+    public class WhenPostingConfirmDataLockChanges
     {
         private ApprenticeController _sut;
         private Mock<IModelMapper> _modelMapperMock;
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        private DatalockConfirmRestartRequest _request;
-        private DatalockConfirmRestartViewModel _viewModel;
+        private ConfirmDataLockChangesRequest _request;
+        private ConfirmDataLockChangesViewModel _viewModel;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _request = fixture.Create<DatalockConfirmRestartRequest>();
-            _viewModel = fixture.Create<DatalockConfirmRestartViewModel>();
-            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();            
+            _request = fixture.Create<ConfirmDataLockChangesRequest>();
+            _viewModel = fixture.Create<ConfirmDataLockChangesViewModel>();
+            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock.Setup(x => x.Map<DatalockConfirmRestartViewModel>(_request)).ReturnsAsync(_viewModel);
+            _modelMapperMock.Setup(x => x.Map<ConfirmDataLockChangesViewModel>(_request)).ReturnsAsync(_viewModel);
             _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object);
         }
-
 
         [Test]
         public void Then_TriageDataLocks_Api_Called()
         {
             //Arrange
-            _viewModel.SendRequestToEmployer = true;
+            _viewModel.SubmitStatusViewModel = SubmitStatusViewModel.Confirm;
 
             //Act
-            var result = _sut.ConfirmRestart(_viewModel);
+            var result = _sut.ConfirmDataLockChanges(_viewModel);
 
             //Assert                
             _mockCommitmentsApiClient.Verify(x => x.TriageDataLocks(It.IsAny<long>(), It.IsAny<TriageDataLocksRequest>(), It.IsAny<CancellationToken>()), Times.Once);

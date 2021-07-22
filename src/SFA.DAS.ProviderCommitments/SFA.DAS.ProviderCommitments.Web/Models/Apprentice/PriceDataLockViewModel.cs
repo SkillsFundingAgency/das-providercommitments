@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
-    public class PriceHistoryViewModel
+    public class PriceDataLockViewModel
     {
         public long ApprenticeshipId { get; set; }
 
-        public decimal Cost { get; set; } // CurrentCost
+        public decimal CurrentCost { get; set; }
 
-        public DateTime FromDate { get; set; } //CurrentStartDate
+        public DateTime CurrentStartDate { get; set; }
 
-        public DateTime? ToDate { get; set; } // CurrentEndDate
+        public DateTime? CurrentEndDate { get; set; }
 
         public DateTime? IlrEffectiveFromDate { get; set; }
 
