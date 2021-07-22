@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice; 
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+@using SFA.DAS.ProviderCommitments.Web.Extensions;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
 @{
@@ -73,21 +74,21 @@
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="BirthDay" class="govuk-label govuk-date-input__label">Day</label>
-                                    <input asp-for="BirthDay" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="31"
+                                    <input asp-for="BirthDay" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="31"
                                            class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-day">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="BirthMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                    <input asp-for="BirthMonth" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
+                                    <input asp-for="BirthMonth" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
                                            class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-month">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="BirthYear" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="BirthYear" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
+                                    <input asp-for="BirthYear" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
                                            class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" id="dob-year">
                                 </div>
                             </div>
@@ -150,14 +151,14 @@
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="StartMonth" class="govuk-label govuk-date-input__label length-limit">Month</label>
-                                    <input asp-for="StartMonth" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
+                                    <input asp-for="StartMonth" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
                                            class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="startDate-month">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="StartYear" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
+                                    <input asp-for="StartYear" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
                                            class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" id="startDate-year" />
                                 </div>
                             </div>
@@ -191,14 +192,14 @@
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
-                                    <input asp-for="EndMonth" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
+                                    <input asp-for="EndMonth" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
                                            class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="endDate-month" />
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label asp-for="EndYear" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="EndYear" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
+                                    <input asp-for="EndYear" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
                                            class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" id="endDate-year" />
                                 </div>
                             </div>
@@ -213,26 +214,26 @@
 
                 <dl class="das-definition-list">
                     <dt asp-for="Cost" class="das-definition-list__title">Total agreed apprenticeship price (excluding VAT)</dt>
-                    <dd class="das-definition-list__definition" id="cost">@Model.Cost</dd>
+                    <dd class="das-definition-list__definition" id="cost"><span class="govuk-body govuk-!-font-weight-bold">£ </span>@Model.Cost.FormatCost()</dd>
                     @Html.HiddenFor(x => x.Cost)
                 </dl>
 
                 <div class="govuk-inset-text das-inset-text--highlight">
-                    If you want to change the total agreed apprenticeship price, you'll need to ask your training provider to make the changes on your behalf.
-                    We'll ask you to approve any changes they make.
+                    If you want to change the total agreed apprenticeship price, you'll need to make the price change in your ILR
+                    submission first. Once you've submitted your updated ILR, you'll see an option to update the price in the apprenticeship service.
                 </div>
             }
             else
             {
-        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
-            <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
-            <span id="price-hint" class="govuk-hint">
-                Enter the price, including any end-point assessment costs, in whole pounds. <br /> For example, for £1,500 enter 1500
-            </span>
-            @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span>
-            <input asp-for="Cost" class="govuk-input govuk-input--width-5" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number"/>
-        </div>
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
+                    <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
+                    <span id="price-hint" class="govuk-hint">
+                        Enter the price, including any end-point assessment costs, in whole pounds. <br /> For example, for £1,500 enter 1500
+                    </span>
+                    @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
+                    <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                    <input asp-for="Cost" class="govuk-input govuk-input--width-5" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
+                </div>
             }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
