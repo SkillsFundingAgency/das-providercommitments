@@ -29,15 +29,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test, MoqAutoData]
-        public async Task EmployerAccountId_IsMapped(
-            EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
-        {
-            var result = await mapper.Map(request);
-
-            Assert.AreEqual(request.AccountId, result.EmployerAccountId);
-        }
-
-        [Test, MoqAutoData]
         public async Task FirstName_IsMapped(
             EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
@@ -71,6 +62,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await mapper.Map(request);
 
             Assert.AreEqual(request.ULN, result.ULN);
+        }
+
+        [Test, MoqAutoData]
+        public async Task ProviderId_IsMapped(
+              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.ProviderId, result.ProviderId);
         }
 
         [Test, MoqAutoData]

@@ -15,10 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         protected Fixture _autoFixture;
 
-        protected readonly Mock<IModelMapper> _mockMapper;
-        protected readonly Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        protected readonly Mock<ILinkGenerator> _mockLinkGenerator;
-        protected readonly Mock<IUrlHelper> _mockUrlHelper;
+        protected Mock<IModelMapper> _mockMapper;
+        protected Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        protected Mock<ILinkGenerator> _mockLinkGenerator;
+        protected Mock<IUrlHelper> _mockUrlHelper;
 
         protected readonly ApprenticeController _controller;
 

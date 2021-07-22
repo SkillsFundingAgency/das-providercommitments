@@ -30,9 +30,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public string ApprenticeshipHashedId { get; set; }
         [JsonIgnore]
         public long ApprenticeshipId { get; set; }
-        public string AccountHashedId { get; set; }
-        [JsonIgnore]
-        public long AccountId { get; set; }
         public string ULN { get; set; }
         public string TrainingName { get; set; }
 
