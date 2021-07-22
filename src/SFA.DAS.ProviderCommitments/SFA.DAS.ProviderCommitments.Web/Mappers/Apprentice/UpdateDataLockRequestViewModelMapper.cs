@@ -53,8 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CourseName = apprenticeship.CourseName,
                 ProviderId = apprenticeship.ProviderId,
                 ProviderName = apprenticeship.ProviderName,              
-                CourseDataLocks = apprenticeship.MapCourseDataLock(dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes),  //MapCourseDataLock(apprenticeship, dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes),
-                PriceDataLocks = priceEpisodes.PriceEpisodes.MapPriceDataLock(dataLocksPrice)    //MapPriceDataLock(priceEpisodes.PriceEpisodes, dataLocksPrice)
+                CourseDataLocks = apprenticeship.MapCourseDataLock(dataLockSummary.DataLockWithCourseMismatch, priceEpisodes.PriceEpisodes),
+                PriceDataLocks = priceEpisodes.PriceEpisodes.MapPriceDataLock(dataLocksPrice)
             };
         }
     }

@@ -19,7 +19,7 @@ else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnres
 
         @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
         {
-            <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details</a>            
+            <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link triage-link">View details</a>
         }
         else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
         {

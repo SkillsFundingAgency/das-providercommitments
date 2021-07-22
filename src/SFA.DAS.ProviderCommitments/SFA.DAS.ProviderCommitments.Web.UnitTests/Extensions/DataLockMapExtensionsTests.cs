@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             List<TrainingProgramme> TrainingProgrammes = new List<TrainingProgramme>
             {
-                new TrainingProgramme { Name = "DevOps engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
+                new TrainingProgramme { Name = "Software engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
             };
             _allTrainingProgrammeResponse = _fixture.Build<GetAllTrainingProgrammesResponse>()
                 .With(x => x.TrainingProgrammes, TrainingProgrammes)
@@ -65,21 +65,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                     IlrTotalCost = 1500.00M 
                 }
             };
-            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
+            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()              
               .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
             var result = _priceEpisodesResponse.PriceEpisodes.MapPriceDataLock(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch);
 
             //Assert
-            var test = result.FirstOrDefault().ApprenticeshipId;
-            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().CurrentStartDate);
-            Assert.AreEqual(null, result.FirstOrDefault().CurrentEndDate);
-            Assert.AreEqual(1000.0M, result.FirstOrDefault().CurrentCost);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(7), result.FirstOrDefault().IlrEffectiveFromDate);
-            Assert.AreEqual(null, result.FirstOrDefault().IlrEffectiveToDate);
-            Assert.AreEqual(1500.00M, result.FirstOrDefault().IlrTotalCost);
+            var priceDataLock = result.FirstOrDefault();
+            Assert.AreEqual(_priceEpisodes.FirstOrDefault().FromDate, priceDataLock.CurrentStartDate);
+            Assert.AreEqual(null, priceDataLock.CurrentEndDate);
+            Assert.AreEqual(_priceEpisodes.FirstOrDefault().Cost, priceDataLock.CurrentCost);
+            Assert.AreEqual(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrEffectiveFromDate, priceDataLock.IlrEffectiveFromDate);
+            Assert.AreEqual(null, priceDataLock.IlrEffectiveToDate);
+            Assert.AreEqual(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrTotalCost, priceDataLock.IlrTotalCost);
         }
 
         [Test]
@@ -106,8 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                     IlrTotalCost = 1300.00M 
                 }
             };
-            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
+            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()              
               .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
               .Create();
 
@@ -142,8 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
+              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)              
               .Create();
 
             //Act
@@ -164,8 +161,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
-              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)
-              .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
+              .With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch)              
               .Create();
 
             var expectedMessage = $"Datalock {_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().Id} IlrTrainingCourseCode {_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrTrainingCourseCode} not found; possible expiry";
@@ -204,13 +200,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var result = _apprenticeshipResponse.MapCourseDataLock(dataLockSummary.DataLockWithCourseMismatch, _priceEpisodes);
 
             //Assert
-            var test = result.FirstOrDefault();
-            Assert.AreEqual(DateTime.Now.Date, result.FirstOrDefault().CurrentStartDate);
-            Assert.AreEqual(null, result.FirstOrDefault().CurrentEndDate);
-            Assert.AreEqual("DevOps engineer", result.FirstOrDefault().CurrentTrainingName);
-            Assert.AreEqual(DateTime.Now.Date.AddDays(7), result.FirstOrDefault().IlrEffectiveFromDate);
-            Assert.AreEqual(null, result.FirstOrDefault().IlrEffectiveToDate);
-            Assert.AreEqual("DevOps engineer", result.FirstOrDefault().IlrTrainingName);
+            var courseDataLock = result.FirstOrDefault();
+            Assert.AreEqual(_priceEpisodes.FirstOrDefault().FromDate, courseDataLock.CurrentStartDate);
+            Assert.AreEqual(null, courseDataLock.CurrentEndDate);
+            Assert.AreEqual(_apprenticeshipResponse.CourseName, courseDataLock.CurrentTrainingName);
+            Assert.AreEqual(dataLockSummary.DataLockWithCourseMismatch.FirstOrDefault().IlrEffectiveFromDate, courseDataLock.IlrEffectiveFromDate);
+            Assert.AreEqual(null, courseDataLock.IlrEffectiveToDate);
+            Assert.AreEqual(_allTrainingProgrammeResponse.TrainingProgrammes.FirstOrDefault().Name, courseDataLock.IlrTrainingName);
         }
 
         [Test]
