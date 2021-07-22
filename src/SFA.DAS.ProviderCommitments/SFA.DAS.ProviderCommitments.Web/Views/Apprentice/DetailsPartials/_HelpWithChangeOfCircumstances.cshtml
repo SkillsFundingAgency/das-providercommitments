@@ -1,28 +1,24 @@
 ﻿@using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+<details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            Help with changes in apprentice's circumstances
+        </span>
+    </summary>
+    <div class="govuk-details__text">
 
-@if (Model.IsChangeOfEmployerEnabled && Model.Status != ApprenticeshipStatus.Completed)
-{
-    <details id="change-of-employer-details" class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                Help with changes in apprentice's circumstances
-            </span>
-        </summary>
-        <div class="govuk-details__text">
+        <p class="govuk-body">
+            If an apprentice you're training needs to move to a new employer, you should:
 
-            <p class="govuk-body">
-                If an apprentice you're training needs to move to a new employer, you should:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>contact their original employer and ask them to stop the apprentice record</li>
+                <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
+            </ul>
 
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>contact their original employer and ask them to stop the apprentice record</li>
-                    <li>speak to the new employer to agree new training dates, price and request permission to move the apprentice to their apprenticeship service account</li>
-                </ul>
+            Once you've agreed these details, you can change the employer.<br /><br />
 
-                Once you've agreed these details, you can change the employer.<br /><br />
-
-                Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
-            </p>
-        </div>
-    </details>
-}
+            Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.
+        </p>
+    </div>
+</details>

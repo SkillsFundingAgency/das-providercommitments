@@ -31,8 +31,12 @@
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
-        <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
-
+    
+        @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
+        {
+            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
+        }
+    
         @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
         {
             <details class="govuk-details" data-module="govuk-details">
