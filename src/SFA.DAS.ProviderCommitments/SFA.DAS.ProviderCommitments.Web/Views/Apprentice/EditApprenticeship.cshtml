@@ -249,7 +249,7 @@
 
                 <dl class="das-definition-list">
                     <dt asp-for="Cost" class="das-definition-list__title">Total agreed apprenticeship price (excluding VAT)</dt>
-                    <dd class="das-definition-list__definition" id="cost"><span class="govuk-body govuk-!-font-weight-bold">£ </span>@Model.Cost.FormatCost()</dd>
+                    <dd class="das-definition-list__definition" id="cost">@Model.Cost.FormatCost()</dd>
                     @Html.HiddenFor(x => x.Cost)
                 </dl>
 
