@@ -54,6 +54,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             vm.OriginalApprenticeship.FirstName = apprenticeship.FirstName;
             vm.OriginalApprenticeship.LastName = apprenticeship.LastName;
 
+            if (source.Email != apprenticeship.Email)
+            {
+                vm.Email = source.Email;
+            }
+            vm.OriginalApprenticeship.Email = apprenticeship.Email;
+
             if (source.DateOfBirth.Date != apprenticeship.DateOfBirth)
             {
                 vm.BirthDay = source.BirthDay;

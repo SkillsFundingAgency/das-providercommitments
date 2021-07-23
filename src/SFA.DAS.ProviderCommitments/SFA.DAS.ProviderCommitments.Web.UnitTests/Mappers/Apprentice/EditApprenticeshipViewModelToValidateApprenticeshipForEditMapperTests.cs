@@ -47,6 +47,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test, MoqAutoData]
+        public async Task Email_IsMapped(
+            EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Email, result.Email);
+        }
+
+        [Test, MoqAutoData]
         public async Task DateOfBirth_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
