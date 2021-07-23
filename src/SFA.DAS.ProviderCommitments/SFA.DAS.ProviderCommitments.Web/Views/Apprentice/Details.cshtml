@@ -158,8 +158,7 @@
                 {
                     if (isV2Edit)
                     {
-                        <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a> <br />
-                        <a id="edit-apprentice-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/edit")" class="govuk-link govuk-body">Edit apprentice - V1</a>
+                        <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a>
                     }
                     else
                     {
