@@ -13,6 +13,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.Authorization.CommitmentPermissions.Options;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -166,5 +167,51 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return Redirect(_urlHelper.CohortDetails(viewModel.ProviderId, viewModel.CohortReference));
         }
+
+        [Route("{cohortReference}")]
+        [DasAuthorize(CommitmentOperation.AccessCohort)]
+        public async Task<IActionResult> Details(DetailsRequest request)
+        {
+            var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+            return View(viewModel);
+        }
+
+        //[Route("{cohortReference}")]
+        //[DasAuthorize(CommitmentOperation.AccessCohort)]
+        //[HttpPost]
+        //public async Task<IActionResult> Details(DetailsViewModel viewModel)
+        //{
+        //    switch (viewModel.Selection)
+        //    {
+        //        case CohortDetailsOptions.Send:
+        //            {
+        //                var request = await _modelMapper.Map<SendCohortRequest>(viewModel);
+        //                await _commitmentsApiClient.SendCohort(viewModel.CohortId, request);
+        //                return RedirectToAction("Sent", new { viewModel.CohortReference, viewModel.AccountHashedId });
+        //            }
+        //        case CohortDetailsOptions.Approve:
+        //            {
+        //                var request = await _modelMapper.Map<ApproveCohortRequest>(viewModel);
+        //                await _commitmentsApiClient.ApproveCohort(viewModel.CohortId, request);
+        //                return RedirectToAction("Approved", new { viewModel.CohortReference, viewModel.AccountHashedId });
+        //            }
+        //        case CohortDetailsOptions.ViewEmployerAgreement:
+        //            {
+        //                var request = await _modelMapper.Map<ViewEmployerAgreementRequest>(viewModel);
+        //                if (request.AgreementHashedId == null)
+        //                {
+        //                    return Redirect(_linkGenerator.AccountsLink($"accounts/{request.AccountHashedId}/agreements/"));
+        //                }
+        //                return Redirect(_linkGenerator.AccountsLink(
+        //                $"accounts/{request.AccountHashedId}/agreements/{request.AgreementHashedId}/about-your-agreement"));
+        //            }
+        //        case CohortDetailsOptions.Homepage:
+        //            {
+        //                return Redirect(_linkGenerator.AccountsLink($"accounts/{viewModel.AccountHashedId}/teams"));
+        //            }
+        //        default:
+        //            throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
+        //    }
+        //}
     }
 }

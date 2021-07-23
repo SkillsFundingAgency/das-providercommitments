@@ -1,0 +1,70 @@
+﻿using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.CommitmentsV2.Types;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+{
+    public class DetailsViewModel : IAuthorizationContextModel
+    {
+        public string ProviderId { get; set; }
+        public Party WithParty { get; set; }
+        public string CohortReference { get; set; }
+        public long CohortId { get; set; }
+        public string AccountLegalEntityHashedId { get; set; }
+        public string LegalEntityName { get; set; }
+        public string ProviderName { get; set; }
+        public string Message { get; set; }
+        public string TransferSenderHashedId { get; set; }
+        public int DraftApprenticeshipsCount
+        {
+            get
+            {
+                return Courses?.SelectMany(c => c.DraftApprenticeships).Count() ?? 0;
+            }
+        }
+
+        public IReadOnlyCollection<DetailsViewCourseGroupingModel> Courses { get; set; }
+        public string PageTitle { get; set; }
+        public CohortDetailsOptions? Selection { get; set; }
+        public string SendMessage { get; set; }
+        public string ApproveMessage { get; set; }
+        public bool IsApprovedByEmployer{ get; set; }
+        public int TotalCost => Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
+        public string DisplayTotalCost => TotalCost.ToGdsCostFormat();
+        public bool IsAgreementSigned { get; set; }
+        public string OptionsTitle => IsAgreementSigned && IsCompleteForProvider ? "Approve these details?" : "Choose an option";
+        public bool ShowViewAgreementOption => !IsAgreementSigned;
+        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider;
+        public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
+        public bool ShowGotoHomePageOption => !IsCompleteForProvider && IsAgreementSigned;
+        public bool IsReadOnly => WithParty != Party.Employer;
+        public bool IsCompleteForProvider { get; set; }
+        public bool ShowAddAnotherApprenticeOption { get; set; }
+        public string SendBackToProviderOptionMessage
+        {
+            get
+            {
+                if (!IsAgreementSigned)
+                {
+                    return "Send to the training provider to review or add details";
+                }
+                if (!ProviderCanApprove)
+                {
+                    return "Request changes from training provider";
+                }
+                return "No, request changes from training provider";
+            }
+        }
+    }
+
+    public enum CohortDetailsOptions
+    {
+        Send,
+        Approve,
+        ViewEmployerAgreement,
+        Homepage
+    }
+
+}
