@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ViewApprenticehipUpdatesRequestToViewModelMapper : IMapper<ViewApprenticeshipUpdatesRequest, ViewApprenticeshipUpdatesViewModel>
+    public class ViewApprenticeshipUpdatesRequestToViewModelMapper : IMapper<ViewApprenticeshipUpdatesRequest, ViewApprenticeshipUpdatesViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public ViewApprenticehipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ViewApprenticeshipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
