@@ -139,9 +139,8 @@
             <p>
                 @if (Model.ShowAddAnotherApprenticeOption)
                 {
-                    <a href="@Url.ReservationsLink($"accounts/{Model.AccountHashedId}/reservations/{Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&transferSenderId={Model.TransferSenderHashedId}")" class="govuk-link add-apprentice">Add another apprentice</a>
+                    <a href="@Url.ReservationsLink($"accounts/{Model.ProviderId}/reservations/{Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&transferSenderId={Model.TransferSenderHashedId}")" class="govuk-link add-apprentice">Add another apprentice</a>
                 }
-                <a asp-action="ConfirmDelete" asp-route-AccountHashedId="@Model.AccountHashedId" asp-route-CohortReference="@Model.CohortReference" class="govuk-link das-float-right">Delete this group</a>
             </p>
 
             <hr class="govuk-section-break govuk-section-break--l">
@@ -166,12 +165,12 @@
                                 </div>
                             }
 
-                            @if (Model.EmployerCanApprove)
+                            @if (Model.ProviderCanApprove)
                             {
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="radio-approve" name="selection" type="radio" value="@CohortDetailsOptions.Approve" data-aria-controls="conditional-approve">
                                     <label class="govuk-label govuk-radios__label" for="radio-approve">
-                                        Yes, approve and notify training provider
+                                        Yes, approve and notify employer
                                     </label>
                                 </div>
                             }
@@ -217,9 +216,9 @@
 
                 <button type="submit" id="continue-button" class="govuk-button">Save and submit</button>
 
-                <p>
+                @*<p>
                     <a href="@Url.RouteUrl("Review", new {Model.AccountHashedId })" class="govuk-link">Save and exit</a>
-                </p>
+                </p>*@
 
             </form>
         }
