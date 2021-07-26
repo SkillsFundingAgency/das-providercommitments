@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice; 
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+@using SFA.DAS.ProviderCommitments.Web.Extensions;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
 @{
@@ -73,22 +74,19 @@
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label for="dob-day" class="govuk-label govuk-date-input__label">Day</label>
-                                    <input asp-for="BirthDay" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="31"
-                                           class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-day">
+                                    <input asp-for="BirthDay" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-day">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label for="dob-month" class="govuk-label govuk-date-input__label">Month</label>
-                                    <input asp-for="BirthMonth" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12"
-                                           class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-month">
+                                    <input asp-for="BirthMonth" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" id="dob-month">
                                 </div>
                             </div>
                             <div class="govuk-date-input__item">
                                 <div class="govuk-form-group">
                                     <label for="dob-year" class="govuk-label govuk-date-input__label">Year</label>
-                                    <input asp-for="BirthYear" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999"
-                                           class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" id="dob-year">
+                                    <input asp-for="BirthYear" type="number" inputmode="numeric" pattern="[0-9]*" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" id="dob-year">
                                 </div>
                             </div>
                         </div>
@@ -214,13 +212,13 @@
 
                 <dl class="das-definition-list">
                     <dt asp-for="Cost" class="das-definition-list__title">Total agreed apprenticeship price (excluding VAT)</dt>
-                    <dd class="das-definition-list__definition" id="cost">@Model.Cost</dd>
+                    <dd class="das-definition-list__definition" id="cost">@Model.Cost.FormatCost()</dd>
                     @Html.HiddenFor(x => x.Cost)
                 </dl>
 
                 <div class="govuk-inset-text das-inset-text--highlight">
-                    If you want to change the total agreed apprenticeship price, you'll need to ask your training provider to make the changes on your behalf.
-                    We'll ask you to approve any changes they make.
+                    If you want to change the total agreed apprenticeship price, you'll need to make the price change in your ILR
+                    submission first. Once you've submitted your updated ILR, you'll see an option to update the price in the apprenticeship service.
                 </div>
             }
             else
@@ -233,6 +231,7 @@
                     @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
                     <span class="govuk-body govuk-!-font-weight-bold">£ </span>
                     <input asp-for="Cost" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number"/>
+
                 </div>
             }
 

@@ -24,24 +24,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime EndDate { get; set; }
         public string ProviderRef { get; set; }
         public decimal Cost { get; set; }
-        public bool IsChangeOfEmployerEnabled { get; set; }
         public bool AllowEditApprentice { get; set; }
         public bool HasProviderPendingUpdate { get; set; }
         public bool HasEmployerPendingUpdate { get; set; }
         public DataLockSummaryStatus DataLockStatus { get; set; }
         public bool HasPendingChangeOfPartyRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
-        public bool HasApprovedChangeOfPartyRequest { get; set; }
-        public bool HasPendingChangeOfProviderRequest { get; set; }
-        public string EncodedNewApprenticeshipId { get; set; }
         public bool HasContinuation { get; set; }
-        public string EncodedPreviousApprenticeshipId { get; set; }
+        public bool ShowChangeEmployerLink => (Status == ApprenticeshipStatus.Stopped &&
+                                               !HasContinuation);
         public List<EmployerHistory> EmployerHistory { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
         public TriageOption AvailableTriageOption { get; set; }
         public ConfirmationStatus? ConfirmationStatus { get; set; }
         public bool ShowConfirmationStatus { get; set; }
+        public string Email { get; set; }
         public enum DataLockSummaryStatus
         {
             None,

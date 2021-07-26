@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
         public ConfirmEditApprenticeshipViewModelValidator()
         {
             RuleFor(r => r.ConfirmChanges).NotNull()
-                .WithMessage("Select an option");
+                .WithMessage("Confirm if you want to make these changes");
         }
     }
 }
