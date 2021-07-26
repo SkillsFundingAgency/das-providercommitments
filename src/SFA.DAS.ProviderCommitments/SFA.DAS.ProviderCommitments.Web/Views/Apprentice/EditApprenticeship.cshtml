@@ -49,12 +49,12 @@
             else
             {
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
-                    <label for="firstName" class="govuk-label govuk-!-font-weight-bold">First name</label>
+                    <label for="firstName" class="govuk-label govuk-label--s">First name</label>
                     @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName) })
                     <input asp-for="FirstName" class="govuk-input govuk-!-width-two-thirds" id="firstName" />
                 </div>
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
-                    <label for="lastName" class="govuk-label govuk-!-font-weight-bold">Last name</label>
+                    <label for="lastName" class="govuk-label govuk-label--s">Last name</label>
                     @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName) })
                     <input asp-for="LastName" class="govuk-input govuk-!-width-two-thirds" id="lastName" />
                 </div>
@@ -99,7 +99,7 @@
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
 
             <dl class="das-definition-list">
-                <dt asp-for="ULN" class="das-definition-list__title">Unique learner number</dt>
+                <dt class="das-definition-list__title">Unique learner number</dt>
                 <dd class="das-definition-list__definition" id="uln">@Model.ULN</dd>
                 @Html.HiddenFor(x => x.ULN)
             </dl>
@@ -108,7 +108,7 @@
             @if (Model.IsLockedForUpdate || Model.IsUpdateLockedForStartDateAndCourse || Model.IsContinuation)
             {
                 <dl class="das-definition-list">
-                    <dt asp-for="TrainingName" class="das-definition-list__title">Apprenticeship training course</dt>
+                    <dt class="das-definition-list__title">Apprenticeship training course</dt>
                     <dd class="das-definition-list__definition" id="trainingName">@Model.TrainingName </dd>
                     @Html.HiddenFor(x => x.CourseCode)
                     @Html.HiddenFor(x => x.TrainingName)
@@ -117,10 +117,10 @@
             else
             {
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
-                    <label for="trainingCourse" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
+                    <label for="trainingCourse" class="govuk-label govuk-label--s">Apprenticeship training course</label>
                     <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
                     @Html.ValidationMessageFor(m => m.CourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.CourseCode) })
-                    <select class="govuk-select govuk-!-width-three-quarters" asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "CourseCode", "Name"))" aria-describedby="course-name-hint" id="trainingCourse">
+                    <select class="govuk-select govuk-!-width-three-quarters das-autocomplete" asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "CourseCode", "Name"))" aria-describedby="course-name-hint" id="trainingCourse">
                         <option value="">Please select</option>
                     </select>
                 </div>
@@ -225,15 +225,15 @@
             }
             else
             {
-        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
-            <label for="cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
-            <span id="price-hint" class="govuk-hint">
-                Enter the price, including any end-point assessment costs, in whole pounds. <br /> For example, for £1,500 enter 1500
-            </span>
-            @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span>
-            <input asp-for="Cost" class="govuk-input govuk-input--width-5" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number"/>
-        </div>
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
+                    <label for="cost" class="govuk-label govuk-label--s">Total agreed apprenticeship price (excluding VAT)</label>
+                    <span id="price-hint" class="govuk-hint">
+                        Enter the price, including any end-point assessment costs, in whole pounds. <br /> For example, for £1,500 enter 1500
+                    </span>
+                    @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
+                    <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                    <input asp-for="Cost" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number"/>
+                </div>
             }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
@@ -241,7 +241,7 @@
                 <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="20">
                     <div class="govuk-form-group">
                         <h1 class="govuk-label-wrapper">
-                            <label class="govuk-label govuk-!-font-weight-bold" for="with-hint">
+                            <label class="govuk-label govuk-label--s" for="with-hint">
                                 Reference (optional)
                             </label>
                         </h1>
