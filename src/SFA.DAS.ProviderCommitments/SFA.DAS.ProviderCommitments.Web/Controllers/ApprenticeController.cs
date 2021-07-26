@@ -30,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
         public const string ChangesUndoneFlashMessage = "Changes undone";
+        private const string ApprenticeChangesSentToEmployer = "Change saved and sent to employer to approve";
+        private const string ApprenticeUpdated = "Change saved (re-approval not required)";
 
         public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
         {
@@ -330,6 +332,66 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
             return View(nameof(Sent), model);
-        }       
+        }
+
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit")]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequest request)
+        {
+            var viewModel = await _modelMapper.Map<EditApprenticeshipRequestViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit")]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequestViewModel viewModel)
+        {
+            var validationRequest = await _modelMapper.Map<ValidateApprenticeshipForEditRequest>(viewModel);
+            await _commitmentsApiClient.ValidateApprenticeshipForEdit(validationRequest);
+
+            TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
+            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit/confirm")]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ConfirmEditApprenticeship()
+        {
+            var editApprenticeshipRequestViewModel = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>("EditApprenticeshipRequestViewModel");
+            var viewModel = await _modelMapper.Map<ConfirmEditApprenticeshipViewModel>(editApprenticeshipRequestViewModel);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit/confirm")]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ConfirmEditApprenticeship(ConfirmEditApprenticeshipViewModel viewModel)
+        {
+            if (viewModel.ConfirmChanges.Value)
+            {
+                var request = await _modelMapper.Map<EditApprenticeshipApiRequest>(viewModel);
+                var result = await _commitmentsApiClient.EditApprenticeship(request);
+
+                if (result.NeedReapproval)
+                {
+                    TempData.AddFlashMessage(ApprenticeChangesSentToEmployer, ITempDataDictionaryExtensions.FlashMessageLevel.Info);
+                }
+                else
+                {
+                    TempData.AddFlashMessage(ApprenticeUpdated, ITempDataDictionaryExtensions.FlashMessageLevel.Info);
+                }
+            }
+
+            return RedirectToAction(nameof(Details), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
     }
 }
