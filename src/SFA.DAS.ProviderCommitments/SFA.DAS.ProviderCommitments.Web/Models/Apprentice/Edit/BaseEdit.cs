@@ -16,9 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
             }
         }
         [FromRoute]
-        public string AccountHashedId { get; set; }
-        [JsonIgnore]
-        public long AccountId { get; set; }
+        public long ProviderId { get; set; }
         [FromRoute]
         public string ApprenticeshipHashedId { get; set; }
         [JsonIgnore]
