@@ -22,6 +22,17 @@
 
                     </tr>
                 }
+                @if (!string.IsNullOrWhiteSpace(Model.ApprenticeshipUpdates.Email))
+                {
+                    <tr>
+                        <th scope="row" class="govuk-table__header">Email</th>
+                        <td class="govuk-table__cell">
+                            @Model.OriginalApprenticeship.Email
+                        </td>
+                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.Email</td>
+
+                    </tr>
+                }
                 @if (Model.ApprenticeshipUpdates.DateOfBirth.HasValue)
                 {
                     <tr>
