@@ -39,6 +39,34 @@
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
+    
+        @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
+        {
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Help with your apprentice’s overdue confirmation
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        If your apprentice has not confirmed their apprenticeship details within the 14 day deadline, you should:
+
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>
+                                contact the apprentice to complete their apprenticeship confirmation
+                            </li>
+                            <div>
+                                Or
+                            </div>
+                            <li>
+                                contact the apprentice’s employer to ask the apprentice to complete their apprenticeship confirmation
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </details>
+        }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
         <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
@@ -55,7 +83,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
-                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus</td>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
                     </tr>
                 }
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
@@ -158,8 +186,7 @@
                 {
                     if (isV2Edit)
                     {
-                        <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a> <br />
-                        <a id="edit-apprentice-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/edit")" class="govuk-link govuk-body">Edit apprentice - V1</a>
+                        <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a>
                     }
                     else
                     {
