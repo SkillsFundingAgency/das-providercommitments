@@ -5,9 +5,9 @@ using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
-    public class LocalDevRegistry : Registry
+    public class LocalRegistry : Registry
     {
-        public LocalDevRegistry()
+        public LocalRegistry()
         {
             var value = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             if (value == "Development")

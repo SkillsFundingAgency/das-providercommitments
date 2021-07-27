@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class DetailsViewModel : IAuthorizationContextModel
     {
-        public string ProviderId { get; set; }
+        public long ProviderId { get; set; }
         public Party WithParty { get; set; }
         public string CohortReference { get; set; }
         public long CohortId { get; set; }
@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
         public bool ShowGotoHomePageOption => !IsCompleteForProvider && IsAgreementSigned;
-        public bool IsReadOnly => WithParty != Party.Employer;
+        public bool IsReadOnly => WithParty != Party.Provider;
         public bool IsCompleteForProvider { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }
         public string SendBackToProviderOptionMessage
