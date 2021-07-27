@@ -2,9 +2,9 @@
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types.Dtos;
-using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
+using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
@@ -19,35 +19,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IEncodingService _encodingService;
-        private readonly IAccountApiClient _accountsApiClient;
+        private readonly IPasAccountApiClient _pasAccountsApiClient;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IAccountApiClient accountsApiClient)
+            IPasAccountApiClient pasAccountApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
-            _accountsApiClient = accountsApiClient;
+            _pasAccountsApiClient = pasAccountApiClient;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
             GetCohortResponse cohort;
 
-            Task<bool> IsAgreementSigned(long providerId)
-            {
-                return Task.FromResult(true);
-                //var request = new AgreementSignedRequest
-                //{
-                //    AccountLegalEntityId = accountLegalEntityId
-                //};
-
-                //if (cohort.IsFundedByTransfer)
-                //{
-                //    request.AgreementFeatures = new AgreementFeature[] { AgreementFeature.Transfers };
-                //}
-
-                //return _commitmentsApiClient.IsAgreementSigned(request);
-            }
+            var agreementStatus = await _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
             var cohortTask = _commitmentsApiClient.GetCohort(source.CohortId);
             var draftApprenticeshipsTask = _commitmentsApiClient.GetDraftApprenticeships(source.CohortId);
@@ -58,8 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var draftApprenticeships = (await draftApprenticeshipsTask).DraftApprenticeships;
 
             var courses = GroupCourses(draftApprenticeships);
-            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Employer ? "Approve" : "View";
-            var isAgreementSigned = await IsAgreementSigned(cohort.AccountLegalEntityId);
+            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Approve" : "View";
+            var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel
             {
