@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     public class WhenPostingConfirmEditApprenticeshipTests
     {
         private const string EditApprenticeNeedReapproval = "Change saved and sent to employer to approve";
-        private const string EditApprenticeshipUpdated = "Apprentice updated";
+        private const string EditApprenticeshipUpdated = "Change saved (re-approval not required)";
         private WhenPostingConfirmEditApprenticeshipTestsFixture fixture;
 
         [SetUp]

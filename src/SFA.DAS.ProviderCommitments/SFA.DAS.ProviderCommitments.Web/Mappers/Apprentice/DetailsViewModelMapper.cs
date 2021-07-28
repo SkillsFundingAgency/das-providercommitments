@@ -51,17 +51,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
-                var approvedChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
-                    x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Approved);
-
-                var pendingChangeOfProviderRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
-                    x.OriginatingParty == Party.Employer && x.Status == ChangeOfPartyRequestStatus.Pending);
-
                 return new DetailsViewModel
                 {
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                    Email = data.Apprenticeship.Email,
                     Employer = data.Apprenticeship.EmployerName,
                     Reference = _encodingService.Encode(data.Apprenticeship.CohortId, EncodingType.CohortReference),
                     Status = data.Apprenticeship.Status,
@@ -81,21 +76,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
                     AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
-                    IsChangeOfEmployerEnabled = !data.ChangeOfPartyRequests.ChangeOfPartyRequests.Any(x => x.OriginatingParty == Party.Provider && (x.Status == ChangeOfPartyRequestStatus.Approved || x.Status == ChangeOfPartyRequestStatus.Pending)),
                     PauseDate = data.Apprenticeship.PauseDate,
                     CompletionDate = data.Apprenticeship.CompletionDate,
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
-                    HasApprovedChangeOfPartyRequest = approvedChangeOfPartyRequest != null,
-                    HasPendingChangeOfProviderRequest = pendingChangeOfProviderRequest != null,
-                    EncodedNewApprenticeshipId = approvedChangeOfPartyRequest?.NewApprenticeshipId != null
-                        ? _encodingService.Encode(approvedChangeOfPartyRequest.NewApprenticeshipId.Value,
-                            EncodingType.ApprenticeshipId)
-                        : null,
                     HasContinuation = data.Apprenticeship.HasContinuation,
-                    EncodedPreviousApprenticeshipId = data.Apprenticeship.ContinuationOfId.HasValue && data.Apprenticeship.PreviousProviderId == source.ProviderId
-                        ? _encodingService.Encode(data.Apprenticeship.ContinuationOfId.Value, EncodingType.ApprenticeshipId)
-                        : null,
                     EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
                         .Select(coe => new EmployerHistory
                         {

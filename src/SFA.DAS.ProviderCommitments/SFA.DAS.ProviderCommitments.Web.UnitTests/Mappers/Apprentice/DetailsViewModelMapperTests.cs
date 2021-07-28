@@ -359,23 +359,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
         }
 
-        [TestCase(null, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Rejected, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Pending, true)]
-        public async Task ThenHasChangeOfProviderRequestPendingIsMappedCorrectly(ChangeOfPartyRequestStatus? status, bool expectHasPending)
-        {
-            if (status.HasValue)
-            {
-                _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeProvider, status.Value);
-            }
-
-            await _fixture.Map();
-
-            Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfProviderRequest);
-        }
-
         [TestCase(Party.Employer)]
         [TestCase(Party.Provider)]
         public async Task ThenPendingChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
@@ -383,32 +366,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, withParty);
             await _fixture.Map();
             Assert.AreEqual(withParty, _fixture.Result.PendingChangeOfPartyRequestWithParty);
-        }
-
-        [TestCase(Party.Employer)]
-        [TestCase(Party.Provider)]
-        public async Task ThenApprovedChangeOfPartyRequestWithPartyIsMappedCorrectly(Party withParty)
-        {
-            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Approved, withParty);
-            await _fixture.Map();
-            Assert.IsTrue(_fixture.Result.HasApprovedChangeOfPartyRequest);
-        }
-
-        [TestCase(Party.Employer)]
-        [TestCase(Party.Provider)]
-        public async Task ThenEncodedNewApprenticeshipIdIsMappedCorrectly(Party withParty)
-        {
-            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Approved, withParty);
-            await _fixture.Map();
-            Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, _fixture.Result.EncodedNewApprenticeshipId);
-        }
-
-        [Test]
-        public async Task ThenEncodedPreviousApprenticeshipIdIsMappedCorrectly()
-        {
-            _fixture.WithPreviousApprenticeship(true);
-            await _fixture.Map();
-            Assert.AreEqual(_fixture.EncodedPreviousApprenticeshipId, _fixture.Result.EncodedPreviousApprenticeshipId);
         }
 
         [Test]
@@ -436,27 +393,52 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
         }
-
-        [Test]
-        public async Task ThenAPendingChangeOfPartyOriginatingFromProviderDoesNotSetHasPendingChangeOfProviderRequest()
+        
+        public async Task WhenNoNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
         {
-            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending);
+            //Arrange 
+            _fixture
+                .WithApprenticeshipStatus(ApprenticeshipStatus.Stopped)
+                .WithoutNextApprenticeship();
 
+            //Act
             await _fixture.Map();
 
-            Assert.IsFalse(_fixture.Result.HasPendingChangeOfProviderRequest);
+            //Assert
+            Assert.AreEqual(true, _fixture.Result.ShowChangeEmployerLink);
         }
 
-        [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Pending, false)]
-        [TestCase(ChangeOfPartyRequestStatus.Rejected, true)]
-        [TestCase(ChangeOfPartyRequestStatus.Withdrawn, true)]
-        public async Task ThenPendingOrApprovedChangeOfPartyRequestPreventsChangeOfEmployer(ChangeOfPartyRequestStatus status, bool expectChangeEmployerEnabled)
+        public async Task WhenNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
         {
-            _fixture                
-                .WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, status);
+            //Arrange 
+            _fixture
+                .WithApprenticeshipStatus(ApprenticeshipStatus.Stopped)
+                .WithNextApprenticeship();
+
+            //Act
             await _fixture.Map();
-            Assert.AreEqual(expectChangeEmployerEnabled, _fixture.Result.IsChangeOfEmployerEnabled);
+
+            //Assert
+            Assert.AreEqual(false, _fixture.Result.ShowChangeEmployerLink);
+        }
+
+        [TestCase(ApprenticeshipStatus.Stopped, true)]
+        [TestCase(ApprenticeshipStatus.Paused, false)]
+        [TestCase(ApprenticeshipStatus.Live, false)]
+        [TestCase(ApprenticeshipStatus.WaitingToStart, false)]
+        [TestCase(ApprenticeshipStatus.Completed, false)]
+        public async Task WhenApprenticeStatusThenShowChangeEmployerLinkIsMappedCorrectly(ApprenticeshipStatus apprenticeshipStatus, bool expected)
+        {
+            //Arrange
+            _fixture
+                .WithApprenticeshipStatus(apprenticeshipStatus)
+                .WithoutNextApprenticeship();
+
+            //Act
+            await _fixture.Map();
+
+            //Assert
+            Assert.AreEqual(expected, _fixture.Result.ShowChangeEmployerLink);
         }
 
         [Test]
@@ -465,6 +447,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfEmployerChain();
             await _fixture.Map();
             Assert.IsNotNull(_fixture.Result.EmployerHistory);
+        }
+
+        [Test]
+        public async Task CheckEmailIsMappedCorrectly()
+        {
+            var email = "a@a.com";
+            _fixture.WithEmailPopulated(email);
+
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(email, _fixture.Result.Email);
         }
 
         public class DetailsViewModelMapperFixture
@@ -779,6 +772,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithoutNextApprenticeship()
             {
                 ApiResponse.ContinuedById = null;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithEmailPopulated(string email)
+            {
+                ApiResponse.Email = email;
                 return this;
             }
         }
