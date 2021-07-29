@@ -166,5 +166,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return Redirect(_urlHelper.CohortDetails(viewModel.ProviderId, viewModel.CohortReference));
         }
+
+        [HttpGet]
+        [Route("{cohortReference}/Acknowledgement")]
+        public async Task<ActionResult> Acknowledgement(AcknowledgementRequest request)
+        {
+            var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
+            return View(model);
+        }
+
     }
 }
