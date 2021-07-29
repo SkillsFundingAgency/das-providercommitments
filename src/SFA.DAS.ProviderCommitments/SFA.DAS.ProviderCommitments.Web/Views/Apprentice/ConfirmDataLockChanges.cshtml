@@ -1,0 +1,183 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmDataLockChangesViewModel
+
+
+@{
+    ViewBag.Title = "Change apprentice details";    
+    ViewBag.GaData.Vpv = "/apprentices/datalock/confirm-update";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <partial name="_ValidationSummary" />
+
+        <h1 class="govuk-heading-xl">Change apprentice details</h1>
+
+        <p>A request will be sent to @Model.EmployerName to approve the following @PluraliseString(Model.TotalChanges, "change") in the apprenticeship service.</p>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td scope="row" class="govuk-table__header">Name</td>
+                    <td class="govuk-table__cell"> @Model.FirstName @Model.LastName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td class="govuk-table__cell">@Model.ULN</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <td class="govuk-table__cell">@Model.CourseName</td>
+                </tr>
+            </tbody>
+        </table>
+
+        @{ var count = 0; }
+
+        @foreach (var dl in Model.CourseDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="govuk-heading-s">Change @count</h2>
+            }
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">Currently</th>
+                        <th scope="col" class="govuk-table__header">Change to</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr>
+                        <td class="govuk-table__cell">Period</td>
+                        <td class="govuk-table__cell">From @dasPricePeriod </td>
+                        <td class="govuk-table__cell">From @ilrPricePeriod</td>
+                    </tr>
+                    <tr>
+                        <td class="govuk-table__cell">Apprenticeship training course</td>
+                        <td class="govuk-table__cell"> @dl.CurrentTrainingName </td>
+                        <td class="govuk-table__cell">@dl.IlrTrainingName</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        }
+
+        @foreach (var dl in Model.PriceDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="govuk-heading-s">Change @count</h2>
+            }
+
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">Currently</th>
+                        <th scope="col" class="govuk-table__header">Change to</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr>
+                        <td class="govuk-table__cell">Price period</td>
+                        <td class="govuk-table__cell">
+                            From @dasPricePeriod
+                        </td>
+                        <td class="govuk-table__cell">From @ilrPricePeriod</td>
+                    </tr>
+                    <tr>
+                        <td class="govuk-table__cell">Total apprenticeship training price</td>
+                        <td class="govuk-table__cell">
+                            @dl.CurrentCost.FormatCost()
+                        </td>
+                        <td class="govuk-table__cell">@dl.IlrTotalCost.Value.FormatCost()</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        }
+
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Do you want to request @GetThisChangeText(Model.TotalChanges)?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="Confirm" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-Confirm">
+                                    Yes, request @GetThisChangeText(Model.TotalChanges)
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="None" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-None" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-None">
+                                    No, leave for now
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+              
+
+                <div class="govuk-button-group" id="cont-cancel">
+                    <button class="govuk-button" data-module="govuk-button" type="submit" id="finish-button">
+                        Finish
+                    </button>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" id="cancel-button">Cancel</a>
+                </div>
+
+            </fieldset>
+        </form>      
+    </div>
+</div>
+
+
+@functions
+{
+    public string GetThisChangeText(int count)
+    {
+        return count > 1 ? "these changes" : "this change";
+    }
+
+    string PluraliseString(int errorCount, string str)
+    {
+        return errorCount > 1 ? $"{str}s" : str;
+    }
+}
+
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details" >Back to apprentice details</a>
+}
