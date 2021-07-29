@@ -12,5 +12,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             if (!cost.HasValue) return string.Empty;
             return $"£{cost.Value:n0}";
         }
+
+        public static string FormatCost(this decimal value)
+        {
+            return $"£{value:n0}";
+        }
     }
 }

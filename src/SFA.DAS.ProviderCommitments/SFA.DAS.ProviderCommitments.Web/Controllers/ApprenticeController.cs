@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -334,7 +335,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(nameof(Sent), model);
         }
 
-
         [HttpGet]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Route("{apprenticeshipHashedId}/edit")]
@@ -392,6 +392,101 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/datalock/requestrestart", Name = RouteNames.RequestRestart)]
+        public async Task<IActionResult> DataLockRequestRestart(DataLockRequestRestartRequest request)
+        {
+            var viewModel = await _modelMapper.Map<DataLockRequestRestartViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]        
+        [Route("{apprenticeshipHashedId}/datalock/requestrestart", Name = RouteNames.RequestRestart)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public IActionResult DataLockRequestRestart(DataLockRequestRestartViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel.HasValue && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
+            {
+                return RedirectToAction( "ConfirmRestart", new DatalockConfirmRestartRequest { ApprenticeshipHashedId=viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
+            }          
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]        
+        [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public IActionResult ConfirmRestart(DatalockConfirmRestartRequest request)
+        {            
+            var viewModel = new DatalockConfirmRestartViewModel { ApprenticeshipHashedId = request.ApprenticeshipHashedId, ProviderId = request.ProviderId };
+            return View("DataLockConfirmRestart", viewModel);
+        }
+
+        [HttpPost]        
+        [Route("{apprenticeshipHashedId}/datalock/confirmrestart", Name = RouteNames.ConfirmRestart)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<ActionResult> ConfirmRestart(DatalockConfirmRestartViewModel viewModel)
+        {            
+            if (viewModel.SendRequestToEmployer.HasValue && viewModel.SendRequestToEmployer.Value)
+            {
+                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<IActionResult> UpdateDataLock(UpdateDateLockRequest request)
+        {
+            var viewModel = await _modelMapper.Map<UpdateDateLockViewModel>(request);
+            return View("UpdateDataLock", viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/datalock", Name = RouteNames.UpdateDateLock)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public IActionResult UpdateDataLock(UpdateDateLockViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
+            {
+                return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<ActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ConfirmDataLockChangesViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/datalock/confirm", Name = RouteNames.UpdateDataLockConfirm)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        public async Task<IActionResult> ConfirmDataLockChanges(ConfirmDataLockChangesViewModel viewModel)
+        {
+            if (viewModel.SubmitStatusViewModel != null && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
+            {
+                var request = await _modelMapper.Map<TriageDataLocksRequest>(viewModel);
+                await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
+            }
+
+            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
     }
 }
