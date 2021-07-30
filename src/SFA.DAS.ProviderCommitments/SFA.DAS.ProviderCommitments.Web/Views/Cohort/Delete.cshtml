@@ -90,6 +90,8 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.CohortDetails(Model.ProviderId, Model.CohortReference)">Cancel and go back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { Model.ProviderId, Model.CohortReference })
+      
+       ">Cancel and go back</a>
 }
 

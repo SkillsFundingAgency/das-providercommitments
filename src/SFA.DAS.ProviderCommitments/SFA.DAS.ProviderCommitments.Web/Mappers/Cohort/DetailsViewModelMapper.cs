@@ -33,17 +33,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             GetCohortResponse cohort;
 
-            var agreementStatus = await _pasAccountsApiClient.GetAgreement(source.ProviderId);
-
             var cohortTask = _commitmentsApiClient.GetCohort(source.CohortId);
             var draftApprenticeshipsTask = _commitmentsApiClient.GetDraftApprenticeships(source.CohortId);
+            var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
-            await Task.WhenAll(cohortTask, draftApprenticeshipsTask);
+            await Task.WhenAll(cohortTask, draftApprenticeshipsTask, agreementStatusTask);
 
             cohort = await cohortTask;
             var draftApprenticeships = (await draftApprenticeshipsTask).DraftApprenticeships;
+            var agreementStatus = await agreementStatusTask;
 
-            var courses = GroupCourses(draftApprenticeships);
+            var courses = await GroupCourses(draftApprenticeships);
             var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
@@ -58,17 +58,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 TransferSenderHashedId = cohort.TransferSenderId == null ? null : _encodingService.Encode(cohort.TransferSenderId.Value, EncodingType.PublicAccountId),
                 Message = cohort.LatestMessageCreatedByProvider,
                 Courses = courses,
-                PageTitle = draftApprenticeships.Count == 1
-                    ? $"{viewOrApprove} apprentice details"
-                    : $"{viewOrApprove} {draftApprenticeships.Count} apprentices' details",
+                PageTitle = draftApprenticeships.Count > 1
+                    ? $"{viewOrApprove} {draftApprenticeships.Count} apprentices' details"
+                    : $"{viewOrApprove} apprentice details",
                 IsApprovedByEmployer = cohort.IsApprovedByEmployer,
                 IsAgreementSigned = isAgreementSigned,
                 IsCompleteForProvider = cohort.IsCompleteForProvider,
-                ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest
+                ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest,
+                AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
+                && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
+                && !cohort.IsLinkedToChangeOfPartyRequest,
+                IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest
             };
         }
 
-        private IReadOnlyCollection<DetailsViewCourseGroupingModel> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships)
+        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships)
         {
             var groupedByCourse = draftApprenticeships
                 .GroupBy(a => new { a.CourseCode, a.CourseName })
@@ -90,7 +94,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             DateOfBirth = a.DateOfBirth,
                             EndDate = a.EndDate,
                             StartDate = a.StartDate,
-                            OriginalStartDate = a.OriginalStartDate
+                            OriginalStartDate = a.OriginalStartDate,
+                            ULN = a.Uln
                         })
                 .ToList()
                 })
@@ -98,14 +103,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 .ToList();
 
             PopulateFundingBandExcessModels(groupedByCourse);
+            await CheckUlnOverlap(groupedByCourse);
 
             return groupedByCourse;
+        }
+
+        private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups)
+        {
+            var results = courseGroups.Select(courseGroup => SetUlnOverlap(courseGroup.DraftApprenticeships));
+            return Task.WhenAll(results);
         }
 
         private void PopulateFundingBandExcessModels(List<DetailsViewCourseGroupingModel> courseGroups)
         {
             var results = courseGroups.Select(courseGroup => SetFundingBandCap(courseGroup.CourseCode, courseGroup.DraftApprenticeships)).ToList();
-
             Task.WhenAll(results).Wait();
 
             foreach (var courseGroup in courseGroups)
@@ -121,6 +132,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
                     courseGroup.FundingBandExcess =
                         new FundingBandExcessModel(apprenticesExceedingFundingBand.Count, fundingExceededValues, fundingBandCapExcessHeader, fundingBandCapExcessLabel);
+                }
+            }
+        }
+
+        private async Task SetUlnOverlap(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships)
+        {
+           foreach (var draftApprenticeship in draftApprenticeships)
+            {
+                if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
+                {
+                        var result = await _commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
+                        {
+                            EndDate = draftApprenticeship.EndDate.Value,
+                            StartDate = draftApprenticeship.StartDate.Value,
+                            ULN = draftApprenticeship.ULN,
+                            ApprenticeshipId = draftApprenticeship.Id
+                        });
+
+                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingEndDate;
                 }
             }
         }

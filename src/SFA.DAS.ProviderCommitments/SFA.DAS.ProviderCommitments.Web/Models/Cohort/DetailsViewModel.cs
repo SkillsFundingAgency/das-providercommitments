@@ -34,37 +34,46 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public int TotalCost => Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
         public string DisplayTotalCost => TotalCost.ToGdsCostFormat();
         public bool IsAgreementSigned { get; set; }
-        public string OptionsTitle => IsAgreementSigned && IsCompleteForProvider ? "Approve these details?" : "Choose an option";
+        public string OptionsTitle => IsAgreementSigned && IsCompleteForProvider ? "Approve these details?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
-        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider;
+        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
-        public bool ShowGotoHomePageOption => !IsCompleteForProvider && IsAgreementSigned;
+     //   public bool ShowGotoHomePageOption => ;
         public bool IsReadOnly => WithParty != Party.Provider;
         public bool IsCompleteForProvider { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }
-        public string SendBackToProviderOptionMessage
+        public bool AllowBulkUpload { get; set; }
+        public string SendBackToEmployerOptionMessage
         {
             get
             {
-                if (!IsAgreementSigned)
-                {
-                    return "Send to the training provider to review or add details";
-                }
                 if (!ProviderCanApprove)
                 {
-                    return "Request changes from training provider";
+                    return "Yes, send to employer to review or add details";
                 }
-                return "No, request changes from training provider";
+                return "No, send to employer to review or add details";
             }
         }
+
+        public bool HasOverlappingUln
+        {
+            get
+            {
+                return Courses != null
+                    && Courses.Count > 0
+                    && Courses.Any(x => x.DraftApprenticeships != null
+                    && x.DraftApprenticeships.Any(x => x.HasOverlappingUln));
+            }
+        }
+
+        public bool IsLinkedToChangeOfPartyRequest { get; set; }
     }
 
     public enum CohortDetailsOptions
     {
         Send,
         Approve,
-        ViewEmployerAgreement,
-        Homepage
+        ApprenticeRequest
     }
 
 }
