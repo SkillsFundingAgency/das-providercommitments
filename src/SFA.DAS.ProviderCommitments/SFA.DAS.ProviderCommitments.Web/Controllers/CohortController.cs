@@ -211,5 +211,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
         }
+
+        [HttpGet]
+        [Route("{cohortReference}/Acknowledgement")]
+        public async Task<ActionResult> Acknowledgement(AcknowledgementRequest request)
+        {
+            var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
+            return View(model);
+        }
+
     }
 }

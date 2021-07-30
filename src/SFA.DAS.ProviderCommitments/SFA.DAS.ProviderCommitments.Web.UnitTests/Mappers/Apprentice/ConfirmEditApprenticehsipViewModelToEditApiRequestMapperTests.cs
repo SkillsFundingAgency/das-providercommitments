@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     public class ConfirmEditApprenticehsipViewModelToEditApiRequestMapperTests
     {
-        private ConfirmEditApprenticehsipViewModelToEditApiRequestMapper mapper;
+        private ConfirmEditApprenticeshipViewModelToEditApiRequestMapper mapper;
         ConfirmEditApprenticeshipViewModel request;
 
         [SetUp]
@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                  .With(x => x.BirthDay, DateTime.Now.Day)
                  .Create();
 
-            mapper = new ConfirmEditApprenticehsipViewModelToEditApiRequestMapper();
+            mapper = new ConfirmEditApprenticeshipViewModelToEditApiRequestMapper();
         }
 
         [Test]
@@ -52,6 +52,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await mapper.Map(request);
 
             Assert.AreEqual(request.LastName, result.LastName);
+        }
+
+        [Test]
+        public async Task Email_IsMapped()
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Email, result.Email);
         }
 
         [Test]

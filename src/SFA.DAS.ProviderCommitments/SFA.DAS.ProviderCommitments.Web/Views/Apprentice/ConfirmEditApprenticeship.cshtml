@@ -25,6 +25,7 @@
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
             @Html.HiddenFor(x => x.FirstName)
             @Html.HiddenFor(x => x.LastName)
+            @Html.HiddenFor(x => x.Email)
             @Html.HiddenFor(x => x.StartMonth)
             @Html.HiddenFor(x => x.StartYear)
             @Html.HiddenFor(x => x.EndMonth)
@@ -76,6 +77,15 @@
 
                             </tr>
                         }
+                        @if (!string.IsNullOrWhiteSpace(Model.Email))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Email address</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.Email</td>
+                                <td class="govuk-table__cell">@Model.Email</td>
+
+                            </tr>
+                        }
                         @if (Model.DateOfBirth.HasValue)
                         {
                             <tr>
@@ -123,7 +133,6 @@
 
                             </tr>
                         }
-
 
                         @if (Model.ProviderReference != Model.OriginalApprenticeship.ProviderReference)
                         {

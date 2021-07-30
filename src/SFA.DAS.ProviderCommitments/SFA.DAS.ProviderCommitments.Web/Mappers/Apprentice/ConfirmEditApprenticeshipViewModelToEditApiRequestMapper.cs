@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ConfirmEditApprenticehsipViewModelToEditApiRequestMapper : IMapper<ConfirmEditApprenticeshipViewModel, EditApprenticeshipApiRequest>
+    public class ConfirmEditApprenticeshipViewModelToEditApiRequestMapper : IMapper<ConfirmEditApprenticeshipViewModel, EditApprenticeshipApiRequest>
     {
         public Task<EditApprenticeshipApiRequest> Map(ConfirmEditApprenticeshipViewModel source)
         {
@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = source.ProviderId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
+                Email = source.Email,
                 DateOfBirth = source.DateOfBirth,
                 Cost = source.Cost,
                 ProviderReference = source.ProviderReference,

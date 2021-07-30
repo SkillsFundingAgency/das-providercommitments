@@ -1,0 +1,185 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.UpdateDateLockViewModel
+
+@{
+    ViewBag.Title = "Apprenticeship data mismatch";    
+    ViewBag.GaData.Vpv = "/apprentices/datalock/update";    
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Details of ILR data mismatch</h1>
+        <table class="govuk-table govuk-!-margin-bottom-9">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Name</th>
+                    <td class="govuk-table__cell">@Model.FirstName @Model.LastName</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td class="govuk-table__cell">@Model.ULN</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Date of birth</th>
+                    <td class="govuk-table__cell">
+                        @if (Model.DateOfBirth.HasValue)
+                        {
+                            @Model.DateOfBirth.Value.ToGdsFormat()
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @{ var count = 0; }
+        @foreach (var dl in Model.CourseDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="govuk-heading-s">Mismatch @count </h2>
+            }
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                    <table class="govuk-table">                        
+                        <caption class="govuk-table__caption govuk-table__caption--m">Apprenticeship service</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="govuk-table__header">Period</th>
+                                <th scope="col" class="govuk-table__header">Apprenticeship <br />training course</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="govuk-table__cell">From<br /> @dasPricePeriod</td>
+                                <td class="govuk-table__cell">@dl.CurrentTrainingName</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="govuk-grid-column-one-half"> 
+                    <table class="govuk-table">                                    
+                        <caption class="govuk-table__caption govuk-table__caption--m">ILR submission</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="govuk-table__header">Period</th>
+                                <th scope="col" class="govuk-table__header">Apprenticeship <br />training course</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="govuk-table__cell">From<br /> @ilrPricePeriod</td>
+                                <td class="govuk-table__cell">@dl.IlrTrainingName</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+         }
+
+        @foreach (var dl in Model.PriceDataLocks)
+        {
+            count++;
+
+            var ilrPricePeriod = dl.IlrEffectiveToDate.HasValue
+                ? $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} to {dl.IlrEffectiveToDate.Value.ToGdsFormat()}"
+                : $"{dl.IlrEffectiveFromDate.Value.ToGdsFormat()} onwards";
+
+            var dasPricePeriod = dl.CurrentEndDate.HasValue
+                ? $"{dl.CurrentStartDate.ToGdsFormat()} to {dl.CurrentEndDate.Value.ToGdsFormat()}"
+                : $"{dl.CurrentStartDate.ToGdsFormat()} onwards";
+
+            if (Model.TotalChanges > 1)
+            {
+                <h2 class="govuk-heading-s">Mismatch @count </h2>
+            }
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half"> 
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">Apprenticeship service</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="govuk-table__header">Price period</th>
+                                <th scope="col" class="govuk-table__header">Total apprenticeship <br />training price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="govuk-table__cell">From<br /> @dasPricePeriod</td>
+                                <td  class="govuk-table__cell">@dl.CurrentCost.FormatCost()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="govuk-grid-column-one-half"> 
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">ILR submission</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="govuk-table__header">Price period</th>
+                                <th scope="col" class="govuk-table__header">Total apprenticeship <br />training price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="govuk-table__cell">From<br />@ilrPricePeriod</td>
+                                <td class="govuk-table__cell">@dl.IlrTotalCost.FormatCost()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+          </div>
+        }
+
+        <form method="post" action="@Url.Action("UpdateDataLock")">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SubmitStatusViewModel, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            How do you want to fix the mismatch?
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.SubmitStatusViewModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SubmitStatusViewModel) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="Confirm" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-Confirm" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-Confirm">
+                                    Request these details are updated to match the ILR
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SubmitStatusViewModel" value="None" type="radio" class="govuk-radios__input" id="SubmitStatusViewModel-None" />
+                                <label class="govuk-label govuk-radios__label" for="SubmitStatusViewModel-None">
+                                    Leave for now
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="fix-mismatch" class="govuk-button" type="submit" data-module="govuk-button">
+                    Continue
+                </button>
+            </fieldset>
+        </form>       
+    </div>
+</div>
+
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details">Back to apprentice details</a>
+}

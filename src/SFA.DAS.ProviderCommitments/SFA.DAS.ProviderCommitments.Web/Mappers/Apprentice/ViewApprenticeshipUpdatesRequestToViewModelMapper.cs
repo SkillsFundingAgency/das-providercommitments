@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ViewApprenticehipUpdatesRequestToViewModelMapper : IMapper<ViewApprenticeshipUpdatesRequest, ViewApprenticeshipUpdatesViewModel>
+    public class ViewApprenticeshipUpdatesRequestToViewModelMapper : IMapper<ViewApprenticeshipUpdatesRequest, ViewApprenticeshipUpdatesViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public ViewApprenticehipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ViewApprenticeshipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
@@ -49,6 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     {
                         FirstName = update.FirstName,
                         LastName = update.LastName,
+                        Email = update.Email,
                         DateOfBirth = update.DateOfBirth,
                         Cost = update.Cost,
                         StartDate = update.StartDate,
@@ -60,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     {
                         FirstName = apprenticeship.FirstName,
                         LastName = apprenticeship.LastName,
+                        Email = apprenticeship.Email,
                         DateOfBirth = apprenticeship.DateOfBirth,
                         ULN = apprenticeship.Uln,
                         StartDate = apprenticeship.StartDate,
