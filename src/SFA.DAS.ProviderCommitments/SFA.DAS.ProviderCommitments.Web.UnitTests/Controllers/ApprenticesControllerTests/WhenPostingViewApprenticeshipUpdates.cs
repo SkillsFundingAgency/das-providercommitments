@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -6,6 +7,8 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -74,6 +77,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
+            public UserInfo UserInfo;
+            public Mock<IAuthenticationService> AuthenticationService { get; }
 
             public WhenPostingViewApprenticeshipUpdatesFixture()
             {
@@ -91,13 +96,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 };
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+                var autoFixture = new Fixture();
+                UserInfo = autoFixture.Create<UserInfo>();
+                AuthenticationService = new Mock<IAuthenticationService>();
+                AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
 
                 _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
 
                 _sut.TempData = tempData;
             }
 
-            public Task<IActionResult> Act() => _sut.ViewApprenticeshipUpdates(_viewModel);
+            public Task<IActionResult> Act() => _sut.ViewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);
 
             public WhenPostingViewApprenticeshipUpdatesFixture WithUndoChanges()
             {
@@ -114,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyUndoChangesCalled()
             {
                 _apiClient.Verify(x => x.UndoApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.IsAny<UndoApprenticeshipUpdatesRequest>(),
+                    It.Is<UndoApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
                     It.IsAny<CancellationToken>()));
             }
 
