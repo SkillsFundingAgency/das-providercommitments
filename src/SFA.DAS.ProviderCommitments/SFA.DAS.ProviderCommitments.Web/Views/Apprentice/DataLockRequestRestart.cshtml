@@ -11,14 +11,14 @@
         <partial name="_ValidationSummary" />
         <h1 class="govuk-heading-xl">Details of ILR data mismatch</h1>
         <table class="govuk-table">
-            <tbody>
-                <tr>
-                    <td class="first-child">Name</td>
-                    <td id="name" class="first-child"> @Model.FirstName @Model.LastName</td>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">                    
+                    <th scope="row" class="govuk-table__header">Name</th>
+                    <td id="name" class="govuk-table__cell"> @Model.FirstName @Model.LastName</td>
                 </tr>
-                <tr>
-                    <td>Unique learner number</td>
-                    <td id="uln">@Model.ULN</td>
+                <tr class="govuk-table__row">                    
+                    <th scope="row" class="govuk-table__header">Unique learner number</th>
+                    <td id="uln" class="govuk-table__cell">@Model.ULN</td>
                 </tr>
             </tbody>
         </table>
