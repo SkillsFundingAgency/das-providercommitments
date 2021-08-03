@@ -34,11 +34,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public int TotalCost => Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
         public string DisplayTotalCost => TotalCost.ToGdsCostFormat();
         public bool IsAgreementSigned { get; set; }
-        public string OptionsTitle => IsAgreementSigned && IsCompleteForProvider ? "Approve these details?" : "Submit to employer?";
+        public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
         public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
-     //   public bool ShowGotoHomePageOption => ;
         public bool IsReadOnly => WithParty != Party.Provider;
         public bool IsCompleteForProvider { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }

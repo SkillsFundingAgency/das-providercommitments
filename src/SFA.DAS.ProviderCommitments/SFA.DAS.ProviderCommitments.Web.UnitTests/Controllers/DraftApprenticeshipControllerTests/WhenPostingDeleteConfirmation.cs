@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var result = await Sut.DeleteConfirmation(_viewModel);
 
             //Assert           
-            result.VerifyReturnsRedirect().WithUrl(RedirectUrl);
+            result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
         }
     }
 }

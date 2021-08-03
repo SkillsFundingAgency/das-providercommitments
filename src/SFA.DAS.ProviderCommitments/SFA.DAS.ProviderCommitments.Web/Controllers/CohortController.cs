@@ -195,7 +195,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {
                         var request = await _modelMapper.Map<SendCohortRequest>(viewModel);
                         await _commitmentApiClient.SendCohort(viewModel.CohortId, request);
-                        return RedirectToAction("Sent", new { viewModel.CohortReference, viewModel.ProviderId });
+                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus =  SaveStatus.AmendAndSend});
                     }
                 case CohortDetailsOptions.Approve:
                     {

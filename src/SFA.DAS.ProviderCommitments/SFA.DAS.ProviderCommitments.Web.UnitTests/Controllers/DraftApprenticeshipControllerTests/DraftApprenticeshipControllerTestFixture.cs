@@ -337,8 +337,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
         {
-            var redirectResult = (RedirectResult)_actionResult;
-            Assert.AreEqual($"{_providerId}/apprentices/{_cohortReference}/Details", redirectResult.Url);
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
 
             return this;
         }
