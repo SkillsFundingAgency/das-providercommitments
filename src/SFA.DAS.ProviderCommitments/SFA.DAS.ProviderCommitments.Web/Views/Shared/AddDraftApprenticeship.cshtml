@@ -48,9 +48,7 @@
             @if (Model.CohortReference != null)
             {
         <p class="govuk-body govuk-!-margin-bottom-0">
-            @*<a class="govuk-body govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/details")">Cancel</a>*@
             <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
-
         </p>
             }
         </form>

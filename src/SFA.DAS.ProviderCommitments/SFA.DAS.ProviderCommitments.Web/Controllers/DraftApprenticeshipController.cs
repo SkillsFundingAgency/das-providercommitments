@@ -61,10 +61,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            //var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
-            //var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            //return Redirect(url);
-
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
@@ -75,9 +71,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
-            //var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{model.CohortReference}/Details";
-            //var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            //return Redirect(url);
 
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
@@ -131,10 +124,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             
             await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
-
-            //var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{viewModel.CohortReference}/Details";
-            //var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            //return Redirect(url);
 
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }

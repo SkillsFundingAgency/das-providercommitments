@@ -60,7 +60,5 @@
 </div>
 
 @section breadcrumb {
-
-    @*<a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/Details")">Cancel and go back</a>*@
     <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel and go back</a>
 }

@@ -99,9 +99,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
             var response = await _mediator.Send(request);
-            //var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-            //var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            //return Redirect(url);
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
@@ -137,9 +134,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var request = await _modelMapper.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(viewModel);
                 var response = await _commitmentApiClient.CreateCohort(request);
 
-                //var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{response.CohortReference}/Details";
-                //var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                //return Redirect(url);
                 return RedirectToAction(nameof(Details), new { viewModel.ProviderId, response.CohortReference });
             }
 
@@ -170,7 +164,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("Cohorts", new { viewModel.ProviderId });
             }
 
-            // return Redirect(_urlHelper.CohortDetails(viewModel.ProviderId, viewModel.CohortReference));
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
