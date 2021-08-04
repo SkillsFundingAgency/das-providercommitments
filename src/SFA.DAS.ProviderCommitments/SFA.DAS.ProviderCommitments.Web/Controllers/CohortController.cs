@@ -182,6 +182,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Details(DetailsViewModel viewModel)
         {
+
             switch (viewModel.Selection)
             {
                 case CohortDetailsOptions.Send:
@@ -194,7 +195,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {
                         var request = await _modelMapper.Map<ApproveCohortRequest>(viewModel);
                         await _commitmentApiClient.ApproveCohort(viewModel.CohortId, request);
-                        return RedirectToAction("Approved", new { viewModel.CohortReference, viewModel.ProviderId });
+                        var saveStatus = viewModel.IsApprovedByEmployer && string.IsNullOrEmpty(viewModel.TransferSenderHashedId) ? SaveStatus.Approve : SaveStatus.ApproveAndSend;
+                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = saveStatus });
                     }
                 case CohortDetailsOptions.ApprenticeRequest:
                     {
