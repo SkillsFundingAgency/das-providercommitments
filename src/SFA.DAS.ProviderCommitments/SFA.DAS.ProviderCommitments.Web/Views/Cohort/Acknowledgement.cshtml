@@ -14,9 +14,9 @@
         <dl class="govuk-summary-list govuk-summary-list">
 
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Cohort reference</dt>
-                <dd class="govuk-summary-list__value">@Model.CohortReference</dd>
-             </div>
+            <dt class="govuk-summary-list__key">Cohort reference</dt>
+            <dd class="govuk-summary-list__value">@Model.CohortReference</dd>
+    </div>
 
     @if (Model.CohortApproved)
     {
@@ -57,10 +57,14 @@
         {
             <ul class="list list-bullet text">
                 <li>
-                    You’ll receive a notification when the funding employer approves or rejects the transfer request.
+                    <p class="govuk-body">
+                        You’ll receive a notification when the funding employer approves or rejects the transfer request.
+                    </p>
                 </li>
                 <li>
-                    Once the transfer request is approved, you'll be able to <a href="@Url.Action("Index", "Apprentice", new { Model.ProviderId})">view and manage the apprentices</a>
+                    <p class="govuk-body">
+                        Once the transfer request is approved, you'll be able to <a href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
+                    </p>
                 </li>
             </ul>
         }
@@ -68,7 +72,7 @@
         {
             <p class="govuk-body" id="changeMainCopy">
                 Your cohort has been approved. To update the details for any apprentices in this cohort you will need to
-                <a  class="govuk-link"   href="@Url.Action("Index", "Apprentice", new { Model.ProviderId})"> manage your apprentices</a>.
+                <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new { Model.ProviderId})"> manage your apprentices</a>.
             </p>
         }
 
@@ -101,11 +105,11 @@
         }
 
     }
-    <a class="govuk-link"  href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})"> Go to apprentice requests</a>
+    <a class="govuk-link" href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})"> Go to apprentice requests</a>
 
     <br />
     <br />
 
-    <a class="govuk-link"  href="@Url.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
+    <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
 </div>
 </div>
