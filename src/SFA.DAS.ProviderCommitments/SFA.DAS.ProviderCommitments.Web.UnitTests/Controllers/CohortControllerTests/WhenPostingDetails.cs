@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task And_User_Selected_Approve_Then_User_Is_Redirected_To_Confirmation_Page()
         {
             await _fixture.Post(CohortDetailsOptions.Approve);
-            _fixture.VerifyRedirectedToApprovalConfirmation();
+            _fixture.VerifyRedirectedToAcknowledgement();
         }
 
         [Test]
@@ -150,11 +150,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     Times.Once);
             }
 
-            public void VerifyRedirectedToApprovalConfirmation()
+            public void VerifyRedirectedToAcknowledgement()
             {
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
-                Assert.AreEqual("Approved", redirect.ActionName);
+                Assert.AreEqual("Acknowledgement", redirect.ActionName);
             }
 
             public void VerifyRedirectedToApprenticeRequest()
