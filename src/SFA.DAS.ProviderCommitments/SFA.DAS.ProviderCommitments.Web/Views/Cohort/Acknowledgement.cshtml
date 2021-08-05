@@ -63,7 +63,7 @@
                 </li>
                 <li>
                     <p class="govuk-body">
-                        Once the transfer request is approved, you'll be able to <a href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
+                        Once the transfer request is approved, you'll be able to <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
                     </p>
                 </li>
             </ul>
@@ -89,7 +89,7 @@
     {
         @if (Model.WhatHappensNext.Count == 1)
         {
-            <p id="changeMainCopy" class="govuk-body">
+            <p id="changeMainCopy2" class="govuk-body">
                 @Model.WhatHappensNext.First()
             </p>
         }
@@ -99,7 +99,12 @@
             <ul class="list-bullet">
                 @foreach (var bulletPoint in Model.WhatHappensNext)
                 {
-                    <li>@bulletPoint</li>
+                    <li>
+                        <p class="govuk-body">
+                            @bulletPoint
+                        </p>
+
+                    </li>
                 }
             </ul>
         }
