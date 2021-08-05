@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 EmployerName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 CohortId = source.CohortId,
-                Message = cohort.LatestMessageCreatedByProvider,
+                Message = string.IsNullOrWhiteSpace(cohort.LatestMessageCreatedByProvider)? "No message added" : cohort.LatestMessageCreatedByProvider,
                 WhatHappensNext = new List<string>(),
                 WithParty = cohort.WithParty,
                 IsTransfer = cohort.TransferSenderId.HasValue,

@@ -71,6 +71,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task WhenNoMessageIsSpecifiedMessageIsMappedCorrectly()
+        {
+            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
+            fixture.Cohort.LatestMessageCreatedByProvider = string.Empty;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("No message added", result.Message);
+        }
+
+        [Test]
         public async Task CohortReferenceIsMappedCorrectly()
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
