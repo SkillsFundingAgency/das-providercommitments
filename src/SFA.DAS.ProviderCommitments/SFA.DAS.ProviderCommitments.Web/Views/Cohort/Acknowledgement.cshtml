@@ -1,0 +1,112 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.Controllers
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.AcknowledgementViewModel
+
+@{
+    ViewBag.Title = @Model.PageTitle;
+    ViewBag.GaData.Vpv = "/unapproved/Acknowledgement";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">@Model.PageTitle</h1>
+        </div>
+        <dl class="govuk-summary-list govuk-summary-list">
+
+            <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Cohort reference</dt>
+            <dd class="govuk-summary-list__value">@Model.CohortReference</dd>
+    </div>
+
+    @if (Model.CohortApproved)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Employer </dt>
+            <dd class="govuk-summary-list__value">@Model.EmployerName</dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Approved by</dt>
+            <dd class="govuk-summary-list__value">@Model.ProviderName</dd>
+        </div>
+    }
+    else
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Sent to </dt>
+            <dd class="govuk-summary-list__value">@Model.EmployerName</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">On behalf of</dt>
+            <dd class="govuk-summary-list__value">@Model.ProviderName</dd>
+        </div>
+
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Message</dt>
+            <dd class="govuk-summary-list__value">@Model.Message</dd>
+        </div>
+    }
+    </dl>
+
+
+    <h2 class="govuk-heading-m">What happens next</h2>
+
+    @if (Model.CohortApproved)
+    {
+        @if (Model.IsTransfer && Model.ChangeOfPartyRequestId == null)
+        {
+
+            <p class="govuk-body">
+                You’ll receive a notification when the funding employer approves or rejects the transfer request.
+            </p>
+
+            <p class="govuk-body">
+                Once the transfer request is approved, you'll be able to <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
+            </p>
+
+        }
+        else
+        {
+            <p class="govuk-body" id="changeMainCopy">
+                Your cohort has been approved. To update the details for any apprentices in this cohort you will need to
+                <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new { Model.ProviderId})"> manage your apprentices</a>.
+            </p>
+        }
+
+        @if (Model.ShowApprenticeEmail)
+        {
+            <p class="govuk-body">
+                Your apprentice will now receive an email alert inviting them to the My apprenticeship service where they will review and confirm their apprenticeship details.
+            </p>
+        }
+
+
+    }
+    else
+    {
+        @if (Model.WhatHappensNext.Count == 1)
+        {
+            <p id="changeMainCopy2" class="govuk-body">
+                @Model.WhatHappensNext.First()
+            </p>
+        }
+
+        else if (Model.WhatHappensNext.Count > 1)
+        {
+            @foreach (var bulletPoint in Model.WhatHappensNext)
+            {
+                <p class="govuk-body">
+                    @bulletPoint
+                </p>
+            }
+        }
+
+    }
+    <a class="govuk-link" href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})"> Go to apprentice requests</a>
+
+    <br />
+    <br />
+
+    <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
+</div>
+</div>
