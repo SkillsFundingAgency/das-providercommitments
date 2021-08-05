@@ -209,6 +209,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{cohortReference}/Acknowledgement")]
+        [DasAuthorize(CommitmentOperation.AccessCohort)]
         public async Task<ActionResult> Acknowledgement(AcknowledgementRequest request)
         {
             var model = await _modelMapper.Map<AcknowledgementViewModel>(request);

@@ -75,7 +75,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     ? "Cohort approved and sent to employer"
                     : "Cohort sent to employer for review";
             }
-
           
             return result;
         }

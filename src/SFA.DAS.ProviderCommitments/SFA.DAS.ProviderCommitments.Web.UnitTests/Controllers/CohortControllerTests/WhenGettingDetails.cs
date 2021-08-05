@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         [TestCase(Party.Employer)]
         [TestCase(Party.TransferSender)]
-        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithEmployer(Party withParty)
+        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithProvider(Party withParty)
         {
             _fixture.WithParty(withParty);
             await _fixture.GetDetails();
