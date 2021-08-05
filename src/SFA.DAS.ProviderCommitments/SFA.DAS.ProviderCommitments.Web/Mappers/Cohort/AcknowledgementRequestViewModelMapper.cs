@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 WhatHappensNext = new List<string>(),
                 WithParty = cohort.WithParty,
                 IsTransfer = cohort.TransferSenderId.HasValue,
-                CohortApproved = cohort.IsApprovedByProvider && cohort.IsApprovedByProvider,
+                CohortApproved = cohort.IsApprovedByProvider && cohort.IsApprovedByEmployer,
                 ChangeOfPartyRequestId = cohort.ChangeOfPartyRequestId,
                 ShowApprenticeEmail  = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
             };
