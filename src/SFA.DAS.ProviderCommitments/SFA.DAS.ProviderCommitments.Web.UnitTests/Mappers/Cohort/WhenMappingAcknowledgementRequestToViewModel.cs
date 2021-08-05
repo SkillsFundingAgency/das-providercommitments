@@ -133,9 +133,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 case ExpectedWhatHappensNextType.TransferFirstApproval:
                     expectedWhatHappensNext = new[]
                     {
-                        "The employer will receive your cohort and will either confirm the information is correct or contact you to suggest changes.",
+                        "The employer will review the cohort and either approve or contact you with an update.",
                         "Once the employer approves the cohort, a transfer request will be sent to the funding employer to review.",
-                        "You will receive a notification once the funding employer approves or rejects the transfer request. You can view the progress of a request from the 'With transfer sending employers' status screen."
+                        "You’ll receive a notification when the funding employer approves or rejects the transfer request."
                     };
                     break;
                 case ExpectedWhatHappensNextType.EmployerWillReview:
@@ -153,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
 
         [TestCase(true, true,  SaveStatus.Approve, "Cohort approved")]
-        [TestCase(false, false, SaveStatus.ApproveAndSend, "Cohort approved and sent to employer")]
+        [TestCase(true, false, SaveStatus.ApproveAndSend, "Cohort approved and sent to employer")]
         [TestCase(false, false, SaveStatus.AmendAndSend, "Cohort sent to employer for review")]
         public async Task ThenPageTitleMappedCorrectly(bool isApprovedByProvider, bool isApprovedByEmployer, SaveStatus saveStatus, string expectedText)
         {

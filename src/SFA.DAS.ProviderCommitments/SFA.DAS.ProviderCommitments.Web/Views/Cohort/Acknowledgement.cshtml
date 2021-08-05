@@ -55,18 +55,15 @@
     {
         @if (Model.IsTransfer && Model.ChangeOfPartyRequestId == null)
         {
-            <ul class="list list-bullet text">
-                <li>
-                    <p class="govuk-body">
-                        You’ll receive a notification when the funding employer approves or rejects the transfer request.
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body">
-                        Once the transfer request is approved, you'll be able to <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
-                    </p>
-                </li>
-            </ul>
+
+            <p class="govuk-body">
+                You’ll receive a notification when the funding employer approves or rejects the transfer request.
+            </p>
+
+            <p class="govuk-body">
+                Once the transfer request is approved, you'll be able to <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
+            </p>
+
         }
         else
         {
@@ -96,17 +93,12 @@
 
         else if (Model.WhatHappensNext.Count > 1)
         {
-            <ul class="list-bullet">
-                @foreach (var bulletPoint in Model.WhatHappensNext)
-                {
-                    <li>
-                        <p class="govuk-body">
-                            @bulletPoint
-                        </p>
-
-                    </li>
-                }
-            </ul>
+            @foreach (var bulletPoint in Model.WhatHappensNext)
+            {
+                <p class="govuk-body">
+                    @bulletPoint
+                </p>
+            }
         }
 
     }
