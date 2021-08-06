@@ -42,7 +42,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 WhatHappensNext = new List<string>(),
                 WithParty = cohort.WithParty,
                 IsTransfer = cohort.TransferSenderId.HasValue,
-                CohortApproved = cohort.IsApprovedByProvider && cohort.IsApprovedByProvider,
+
+                CohortApproved = cohort.IsApprovedByProvider && cohort.IsApprovedByEmployer,
                 ChangeOfPartyRequestId = cohort.ChangeOfPartyRequestId,
                 ShowApprenticeEmail  = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
             };
@@ -52,9 +53,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 case SaveStatus.ApproveAndSend when (cohort.TransferSenderId.HasValue && cohort.ChangeOfPartyRequestId == null):
                     result.WhatHappensNext.AddRange(new[]
                     {
-                        "The employer will receive your cohort and will either confirm the information is correct or contact you to suggest changes.",
+                        "The employer will review the cohort and either approve or contact you with an update.",
                         "Once the employer approves the cohort, a transfer request will be sent to the funding employer to review.",
-                        "You will receive a notification once the funding employer approves or rejects the transfer request. You can view the progress of a request from the 'With transfer sending employers' status screen."
+                        "You’ll receive a notification when the funding employer approves or rejects the transfer request."
                     });
                     break;
                 case SaveStatus.ApproveAndSend:

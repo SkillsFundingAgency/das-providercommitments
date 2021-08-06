@@ -13,6 +13,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -94,6 +97,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
+            public UserInfo UserInfo;
+            public Mock<IAuthenticationService> AuthenticationService { get; }
 
             public WhenPostingReviewApprenticeshipUpdatesFixture()
             {
@@ -112,12 +117,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
 
+                var autoFixture = new Fixture();
+                UserInfo = autoFixture.Create<UserInfo>();
+                AuthenticationService = new Mock<IAuthenticationService>();
+                AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
+
                 _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
 
                 _sut.TempData = tempData;
             }
 
-            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(_viewModel);
+            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithAcceptChanges()
             {
@@ -134,14 +144,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyAcceptChangesCalled()
             {
                 _apiClient.Verify(x => x.AcceptApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.IsAny<AcceptApprenticeshipUpdatesRequest>(),
+                    It.Is<AcceptApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
                     It.IsAny<CancellationToken>()));
             }
 
             public void VerifyRejectChangesCalled()
             {
                 _apiClient.Verify(x => x.RejectApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.IsAny<RejectApprenticeshipUpdatesRequest>(),
+                    It.Is<RejectApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
                     It.IsAny<CancellationToken>()));
             }
 

@@ -90,14 +90,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{apprenticeshipHashedId}/changes/view")]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> ViewApprenticeshipUpdates(ViewApprenticeshipUpdatesViewModel viewModel)
+        public async Task<IActionResult> ViewApprenticeshipUpdates([FromServices] IAuthenticationService authenticationService, ViewApprenticeshipUpdatesViewModel viewModel)
         {
             if (viewModel.UndoChanges.Value)
             {
                 var request = new UndoApprenticeshipUpdatesRequest
                 {
                     ApprenticeshipId = viewModel.ApprenticeshipId,
-                    ProviderId = viewModel.ProviderId
+                    ProviderId = viewModel.ProviderId,
+                    UserInfo = authenticationService.UserInfo
                 };
 
                 await _commitmentsApiClient.UndoApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
@@ -122,14 +123,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{apprenticeshipHashedId}/changes/review")]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesViewModel viewModel)
+        public async Task<IActionResult> ReviewApprenticeshipUpdates([FromServices] IAuthenticationService authenticationService, ReviewApprenticeshipUpdatesViewModel viewModel)
         {
             if (viewModel.AcceptChanges.Value)
             {
                 var request = new AcceptApprenticeshipUpdatesRequest
                 {
                     ApprenticeshipId = viewModel.ApprenticeshipId,
-                    ProviderId = viewModel.ProviderId
+                    ProviderId = viewModel.ProviderId,
+                    UserInfo = authenticationService.UserInfo
                 };
 
                 await _commitmentsApiClient.AcceptApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
@@ -141,7 +143,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var request = new RejectApprenticeshipUpdatesRequest
                 {
                     ApprenticeshipId = viewModel.ApprenticeshipId,
-                    ProviderId = viewModel.ProviderId
+                    ProviderId = viewModel.ProviderId,
+                    UserInfo = authenticationService.UserInfo
                 };
 
                 await _commitmentsApiClient.RejectApprenticeshipUpdates(viewModel.ApprenticeshipId, request);

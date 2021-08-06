@@ -215,6 +215,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
             return View(model);
         }
-
     }
 }
