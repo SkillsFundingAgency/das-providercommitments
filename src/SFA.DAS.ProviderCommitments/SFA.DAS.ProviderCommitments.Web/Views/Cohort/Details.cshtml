@@ -8,6 +8,12 @@
     ViewBag.GaData.Vpv = "/unapproved/cohort";
     ViewBag.GaData.Org = Model.LegalEntityName;
     var bulkUploadUrl = Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{ Model.CohortReference}/UploadApprenticeships");
+    var reservationUrl = $"{Model.ProviderId}/reservations/{ Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}";
+
+    if (!string.IsNullOrWhiteSpace(Model.TransferSenderHashedId))
+    {
+        reservationUrl += "&transferSenderId={Model.TransferSenderHashedId}";
+    }
 }
 
 @if ((!Model.IsAgreementSigned)
@@ -182,7 +188,7 @@
             <p>
                 @if (Model.ShowAddAnotherApprenticeOption)
                 {
-                    <a href="@Url.ReservationsLink($"accounts/{Model.ProviderId}/reservations/{Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&transferSenderId={Model.TransferSenderHashedId}")" class="govuk-link add-apprentice">Add another apprentice</a>
+                    <a href="@Url.ReservationsLink(reservationUrl)" class="govuk-link add-apprentice">Add another apprentice</a>
                 }
                 <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { @Model.CohortReference, @Model.ProviderId })">
                     Delete this cohort
