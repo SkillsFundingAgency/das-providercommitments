@@ -94,6 +94,16 @@
                     </p>
                 </div>
             }
+            if (@course.EmailOverlaps != null)
+            {
+                <div class="govuk-inset-text das-inset-text--highlight">
+                    <h3 class="govuk-heading-s">@course.EmailOverlaps.DisplayEmailOverlapsMessage</h3>
+                    <p>
+                        Please address this before proceeding
+                    </p>
+                </div>
+            }
+
             if (@course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
             {
                 <div class="govuk-inset-text das-inset-text--highlight">
@@ -119,7 +129,18 @@
                     @foreach (var draftApprenticeship in course.DraftApprenticeships)
                     {
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.DisplayName</td>
+                            <td class="govuk-table__cell" data-label="Name">
+                                @if (draftApprenticeship.HasOverlappingEmail)
+                                {
+                                    <span class="das-table-cell--highlight">
+                                        @draftApprenticeship.DisplayName
+                                    </span>
+                                }
+                                else
+                                {
+                                    @draftApprenticeship.DisplayName
+                                }
+                            </td>
                             <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.ULN</td>
                             <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                             <td class="govuk-table__cell" data-label="Training dates">

@@ -477,6 +477,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(1000, result.Courses.First().DraftApprenticeships.First().FundingBandCap);
             Assert.AreEqual(true, result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap);
         }
+
+
+        [Test]
+        public async Task EmailOverlapIsMappedCorrectlyToDraftApprenticeshipAndToSummaryLine()
+        {
+            var f = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
+            var apprenticeshipId = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.First().Id;
+
+            var result = await f.Map();
+            var course = result.Courses.FirstOrDefault(x => x.DraftApprenticeships.Any(y => y.Id == apprenticeshipId));
+
+            Assert.NotNull(course);
+            Assert.NotNull(course.EmailOverlaps);
+            Assert.AreEqual(1, course.EmailOverlaps.NumberOfEmailOverlaps);
+            Assert.AreEqual(1, course.DraftApprenticeships.Count(x => x.HasOverlappingEmail));
+            Assert.AreEqual(apprenticeshipId, course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id);
+        }
+
+        [Test]
+        public async Task EmailOverlapIsMappedCorrectlyToDraftApprenticeshipsAndToSummaryLineWhenTwoEmailOverlapsExistOnSameCourse()
+        {
+            var f = new DetailsViewModelMapperTestsFixture().WithTwoEmailOverlappingOnSameCourse();
+            var apprenticeshipId1 = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.First().Id;
+            var apprenticeshipId2 = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.Last().Id;
+
+            var result = await f.Map();
+            var course = result.Courses.FirstOrDefault();
+
+            Assert.NotNull(course);
+            Assert.NotNull(course.EmailOverlaps);
+            Assert.AreEqual(2, course.EmailOverlaps.NumberOfEmailOverlaps);
+            Assert.AreEqual(2, course.DraftApprenticeships.Count(x => x.HasOverlappingEmail));
+            Assert.IsTrue(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId1).HasOverlappingEmail);
+            Assert.IsTrue(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId2).HasOverlappingEmail);
+        }
+
+        [Test]
+        public async Task EmployerCanApproveIsMappedCorrectlyWhenThereAreEmailOverlaps()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
+            var result = await fixture.Map();
+            Assert.IsFalse(result.IsCompleteForProvider);
+        }
     }
 
     public class DetailsViewModelMapperTestsFixture
@@ -492,6 +535,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
+        public GetEmailOverlapsResponse EmailOverlapResponse;
 
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
@@ -510,6 +554,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);
             DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
+            EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -540,6 +585,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     RequestMessage = new HttpRequestMessage(),
                     ReasonPhrase = "Url not found"
                 }, "Course not found"));
+            CommitmentsApiClient.Setup(x => x.GetEmailOverlapChecks(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(EmailOverlapResponse);
 
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
@@ -578,6 +625,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(numberOfApprenticeships).ToArray();
             DraftApprenticeshipsResponse.DraftApprenticeships = draftApprenticeships;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture WithOneEmailOverlapping()
+        {
+            CreateThisNumberOfApprenticeships(10);
+            var first = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            var emailOverlap = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, first.Id).Create();
+            EmailOverlapResponse.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap };
+
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture WithTwoEmailOverlappingOnSameCourse()
+        {
+            var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(5).ToArray();
+            foreach (var draftApprenticeship in draftApprenticeships)
+            {
+                draftApprenticeship.CourseCode = "ABC";
+                draftApprenticeship.CourseName = "ABC Name";
+            }
+            DraftApprenticeshipsResponse.DraftApprenticeships = draftApprenticeships;
+            var first = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            var last = DraftApprenticeshipsResponse.DraftApprenticeships.Last();
+            var emailOverlap1 = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, first.Id).Create();
+            var emailOverlap2 = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, last.Id).Create();
+            EmailOverlapResponse.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap1, emailOverlap2 };
+
             return this;
         }
 
