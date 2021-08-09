@@ -10,6 +10,9 @@ using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using System.Threading;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -43,7 +46,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _linkGenerator.Object, _apiClient.Object, _modelMapperMock.Object);
+            Sut.TempData = tempData;
         }
 
         [Test]
@@ -61,6 +66,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public async Task Then_WithValidModel_WithConfirmDeleteTrue_ShouldStoreSuccessMessageInTempData()
+        {
+            //Arrange
+            _viewModel.DeleteConfirmed = true;
+
+            //Act
+            var result = await Sut.DeleteConfirmation(_viewModel);
+
+            //Assert           
+            var flashMessage = Sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
+            Assert.NotNull(flashMessage);
+            Assert.AreEqual(flashMessage, DraftApprenticeshipController.DraftApprenticeDeleted);
+        }
+
+        [Test]
         public async Task Then_WithValidModel_WithConfirmDeleteFalse_ShouldNotDeleteDraftApprenticeship()
         {
             //Arrange
@@ -74,6 +94,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               It.IsAny<DeleteDraftApprenticeshipRequest>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
+        [Test]
+        public async Task Then_WithValidModel_WithConfirmDeleteFalse_ShouldNotStoreSuccessMessageInTempData()
+        {
+            //Arrange
+            _viewModel.DeleteConfirmed = false;
+
+            //Act
+            var result = await Sut.DeleteConfirmation(_viewModel);
+
+            //Assert           
+            var flashMessage = Sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
+            Assert.IsNull(flashMessage);
+        }
 
         [Test]
         public async Task Then_WithValidModel_WithConfirmDeleteFalse_ShouldRedirectToEditApprenticeship()
