@@ -66,6 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         }
 
         public bool IsLinkedToChangeOfPartyRequest { get; set; }
+        public string Status { get; set; }
     }
 
     public enum CohortDetailsOptions
