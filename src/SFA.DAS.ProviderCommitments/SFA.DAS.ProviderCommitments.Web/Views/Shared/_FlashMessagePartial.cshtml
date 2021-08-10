@@ -6,13 +6,13 @@
 
     @if (level == ITempDataDictionaryExtensions.FlashMessageLevel.Info)
     {
-        <div class="govuk-grid-column-two-thirds das-notification govuk-!-margin-bottom-4 das-notification--info" tabindex="-1">
+        <div class="das-notification govuk-!-margin-bottom-4 das-notification--info" tabindex="-1">
             <h3 class="das-notification__heading">@message</h3>
         </div>
     }
     @if (level == ITempDataDictionaryExtensions.FlashMessageLevel.Success)
     {
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-4 govuk-panel govuk-panel--confirmation">
+        <div class="govuk-!-margin-bottom-4 govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
                 @message
             </h1>
