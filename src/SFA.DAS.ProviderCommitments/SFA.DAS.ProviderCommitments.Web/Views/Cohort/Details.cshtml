@@ -88,7 +88,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName</h3>
-                if (@course.FundingBandExcess != null)
+                @if (course.FundingBandExcess != null)
                 {
                     <div class="govuk-inset-text das-inset-text--highlight">
                         <h3 class="govuk-heading-s">@course.FundingBandExcess.FundingBandCapExcessHeader</h3>
@@ -99,7 +99,7 @@
                         </p>
                     </div>
                 }
-                if (@course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
+                @if (course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
                 {
                     <div class="govuk-inset-text das-inset-text--highlight">
                         <h3 class="govuk-heading-s">Apprenticeship can't have overlapping training dates</h3>
