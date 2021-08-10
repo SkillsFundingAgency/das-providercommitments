@@ -78,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             if (cohort.TransferSenderId.HasValue &&
                 cohort.TransferApprovalStatus == CommitmentsV2.Types.TransferApprovalStatus.Pending)
             {
-                if (cohort.IsApprovedByProvider && cohort.IsApprovedByEmployer)
+                if (cohort.WithParty == CommitmentsV2.Types.Party.TransferSender)
                 {
                     return "Pending - with funding employer";
                 }

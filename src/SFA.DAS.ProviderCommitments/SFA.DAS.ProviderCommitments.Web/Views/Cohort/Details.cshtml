@@ -122,7 +122,7 @@
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.DisplayName</td>
-                            <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.ULN</td>
+                            <td class="govuk-table__cell" data-label="Name">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
                             <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                             <td class="govuk-table__cell" data-label="Training dates">
                                 @if (draftApprenticeship.HasOverlappingUln)

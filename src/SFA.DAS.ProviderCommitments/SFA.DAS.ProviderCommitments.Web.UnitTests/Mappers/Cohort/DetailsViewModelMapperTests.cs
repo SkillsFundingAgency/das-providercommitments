@@ -483,7 +483,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetTransferSender();
+                .SetTransferSender()
+                .SetCohortWithParty(Party.TransferSender);
 
             fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
             fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Pending;
