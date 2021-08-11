@@ -94,6 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                     new Claim(ProviderClaims.DisplayName, "Test-U-Good Corporation"),
                     new Claim(ProviderClaims.Service, "DAA"),
                     new Claim(ProviderClaims.Ukprn, "10005077"),
+                    new Claim(ProviderClaims.Upn, "10005077"),
                     new Claim(ProviderClaims.Email, "test+10005077@test.com"),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, "Provider")
                 };
