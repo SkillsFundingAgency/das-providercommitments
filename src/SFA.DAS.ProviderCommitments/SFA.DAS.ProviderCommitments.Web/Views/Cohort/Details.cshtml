@@ -85,31 +85,29 @@
 
     @foreach (var course in Model.Courses)
     {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName</h3>
-                @if (course.FundingBandExcess != null)
-                {
-                    <div class="govuk-inset-text das-inset-text--highlight">
-                        <h3 class="govuk-heading-s">@course.FundingBandExcess.FundingBandCapExcessHeader</h3>
-                        <p>
-                            @course.FundingBandExcess.FundingBandCapExcessLabel
-                            <text><a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>@course.FundingBandExcess.DisplaySingleFundingBandCap</text>
-                            You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
-                        </p>
-                    </div>
-                }
-                @if (course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
-                {
-                    <div class="govuk-inset-text das-inset-text--highlight">
-                        <h3 class="govuk-heading-s">Apprenticeship can't have overlapping training dates</h3>
-                        <p>
-                            You must update training dates to be able to approve
-                        </p>
-                    </div>
-                }
+
+        <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName</h3>
+        @if (course.FundingBandExcess != null)
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@course.FundingBandExcess.FundingBandCapExcessHeader</h3>
+                <p>
+                    @course.FundingBandExcess.FundingBandCapExcessLabel
+                    <span><a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands" class="govuk-link">funding band maximum</a>@course.FundingBandExcess.DisplaySingleFundingBandCap</span>
+                    You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
+                </p>
             </div>
-        </div>
+        }
+        @if (course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">Apprenticeship can't have overlapping training dates</h3>
+                <p>
+                    You must update training dates to be able to approve
+                </p>
+            </div>
+        }
+    
         <table class="govuk-table das-table--responsive">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
