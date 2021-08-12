@@ -13,6 +13,8 @@
     @Html.HiddenFor(x => x.BirthYear)
     @Html.HiddenFor(x => x.Uln)
     @Html.HiddenFor(x => x.CourseCode)
+    <input type="hidden" asp-for="StandardUId"/>
+    <input type="hidden" asp-for="HasStandardOptions"/>
 
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
@@ -133,6 +135,9 @@ else
         </legend>
         <span id="start-date-hint" class="govuk-hint">
             For example, 09 2017
+        </span>
+        <span id="start-date-hint" class="govuk-hint">
+            The standard version will be based on the planned training start date provided
         </span>
         @Html.ValidationMessageFor(m => m.StartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
         <div class="govuk-date-input">

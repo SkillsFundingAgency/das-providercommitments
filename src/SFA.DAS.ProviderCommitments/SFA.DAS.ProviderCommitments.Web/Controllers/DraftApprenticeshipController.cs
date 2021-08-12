@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,6 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -76,6 +76,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+            
+            if (draftApprenticeship.HasStandardOptions && !draftApprenticeship.StandardUId.Equals(model.StandardUId, StringComparison.CurrentCultureIgnoreCase))
+            {
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, model.DraftApprenticeshipId});
+            }
+            
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 

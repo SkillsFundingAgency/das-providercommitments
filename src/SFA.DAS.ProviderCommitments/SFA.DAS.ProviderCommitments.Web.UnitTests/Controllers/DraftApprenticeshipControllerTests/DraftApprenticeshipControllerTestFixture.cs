@@ -16,7 +16,6 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
-using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -91,7 +90,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 CohortId = _cohortId,
                 CohortReference = _cohortReference,
                 DraftApprenticeshipId = _draftApprenticeshipId,
-                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId
+                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId,
+                StandardUId = "OldId"
             };
 
             _viewModel = new ViewDraftApprenticeshipViewModel
@@ -210,6 +210,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _commitmentsApiClient
                 .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_draftApprenticeshipDetails);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetUpStandardToReturnOptions()
+        {
+            _draftApprenticeshipDetails.HasStandardOptions = true;
+            _draftApprenticeshipDetails.StandardUId = _editModel.StandardUId;
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetNewStandardSelected()
+        {
+            _editModel.StandardUId = "newid";
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetUpStandardToReturnNoOptions()
+        {
+            _draftApprenticeshipDetails.HasStandardOptions = false;
             return this;
         }
 
@@ -339,6 +358,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
 
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
+            
             return this;
         }
 

@@ -24,8 +24,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingTheDraftApprenticeIsSuccessful()
+        public async Task AndWhenSavingAndNoStandardOptionsTheDraftApprenticeIsSuccessful()
         {
+            _fixture.SetUpStandardToReturnNoOptions().SetupCommitmentsApiToReturnADraftApprentice();
+            
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
@@ -37,6 +39,46 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _fixture.SetupUpdatingToThrowCommitmentsApiException();
             Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToEditDraftApprenticeship());
+        }
+
+        [Test]
+        public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptionsAndIdIsDifferent()
+        {
+            _fixture.SetUpStandardToReturnOptions()
+                .SetNewStandardSelected()
+                .SetupCommitmentsApiToReturnADraftApprentice();
+            
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
+                .VerifyApiUpdateMethodIsCalled()
+                .VerifyRedirectToSelectOptionsPage();
+        }
+
+        [Test]
+        public async Task AndWhenOptionsButStandardIsTheSameThenRedirectsToCohortDetails()
+        {
+            _fixture
+                .SetUpStandardToReturnOptions()
+                .SetupCommitmentsApiToReturnADraftApprentice();
+            
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
+                .VerifyApiUpdateMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+        
+        [Test]
+        public async Task AndWhenNoOptionsButStandardIsDifferentThenRedirectsToCohortDetails()
+        {
+            _fixture
+                .SetNewStandardSelected()
+                .SetUpStandardToReturnNoOptions()
+                .SetupCommitmentsApiToReturnADraftApprentice();
+            
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
+                .VerifyApiUpdateMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
         }
     }
 }
