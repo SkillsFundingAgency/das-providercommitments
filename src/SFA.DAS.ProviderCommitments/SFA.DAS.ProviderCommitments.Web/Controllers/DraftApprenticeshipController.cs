@@ -63,8 +63,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
             request.UserId = User.Upn();
 
-            await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
-
+            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+            
+            if (draftApprenticeship.HasStandardOptions)
+            {
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, response.DraftApprenticeshipId});
+            }
+            
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 

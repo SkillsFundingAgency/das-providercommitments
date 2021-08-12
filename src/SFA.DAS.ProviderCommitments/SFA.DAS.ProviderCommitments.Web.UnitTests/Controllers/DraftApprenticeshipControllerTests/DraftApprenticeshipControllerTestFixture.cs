@@ -129,6 +129,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_cohortResponse);
+            _commitmentsApiClient.Setup(
+                x => x.AddDraftApprenticeship(_addModel.CohortId.Value, _createAddDraftApprenticeshipRequest, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new AddDraftApprenticeshipResponse
+                {
+                    DraftApprenticeshipId = _draftApprenticeshipId
+                });
 
             _controller = new DraftApprenticeshipController(_mediator.Object,
                 _linkGenerator.Object, _commitmentsApiClient.Object, _modelMapper.Object);
@@ -209,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
             _commitmentsApiClient
-                .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_draftApprenticeshipDetails);
+                .Setup(x => x.GetDraftApprenticeship(It.IsAny<long>(), _draftApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(_draftApprenticeshipDetails);
             return this;
         }
 
