@@ -20,7 +20,9 @@
        ||
        (!Model.IsCompleteForProvider && !Model.IsReadOnly)
        ||
-       Model.HasOverlappingUln)
+       Model.HasOverlappingUln 
+       ||
+       Model.HasEmailOverlaps)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -47,6 +49,10 @@
                         @if (Model.HasOverlappingUln)
                         {
                             <li>There are no overlapping training dates for you apprentices</li>
+                        }
+                        @if (Model.HasEmailOverlaps)
+                        {
+                            <li>Each apprentice has a unique email address</li>
                         }
                     </ul>
                 </div>

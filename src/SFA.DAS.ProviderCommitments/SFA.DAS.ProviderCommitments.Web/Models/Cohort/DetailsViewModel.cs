@@ -40,6 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
         public bool IsReadOnly => WithParty != Party.Provider;
         public bool IsCompleteForProvider { get; set; }
+        public bool HasEmailOverlaps { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }
         public bool AllowBulkUpload { get; set; }
         public string SendBackToEmployerOptionMessage

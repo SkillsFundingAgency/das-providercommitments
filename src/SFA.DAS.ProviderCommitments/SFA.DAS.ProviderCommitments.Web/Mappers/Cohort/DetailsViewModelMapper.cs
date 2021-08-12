@@ -66,7 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     : $"{viewOrApprove} apprentice details",
                 IsApprovedByEmployer = cohort.IsApprovedByEmployer,
                 IsAgreementSigned = isAgreementSigned,
-                IsCompleteForProvider = cohort.IsCompleteForProvider && !emailOverlaps.Any(),
+                IsCompleteForProvider = cohort.IsCompleteForProvider,
+                HasEmailOverlaps = emailOverlaps.Any(),
                 ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest,
                 AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
                 && cohort.WithParty == CommitmentsV2.Types.Party.Provider 

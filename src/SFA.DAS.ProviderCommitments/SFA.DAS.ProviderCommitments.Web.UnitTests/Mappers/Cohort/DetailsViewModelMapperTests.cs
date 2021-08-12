@@ -514,11 +514,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task EmployerCanApproveIsMappedCorrectlyWhenThereAreEmailOverlaps()
+        public async Task HasEmailOverlapsIsMappedCorrectlyWhenThereAreEmailOverlaps()
         {
             var fixture = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
             var result = await fixture.Map();
-            Assert.IsFalse(result.IsCompleteForProvider);
+            Assert.IsTrue(result.HasEmailOverlaps);
         }
     }
 
