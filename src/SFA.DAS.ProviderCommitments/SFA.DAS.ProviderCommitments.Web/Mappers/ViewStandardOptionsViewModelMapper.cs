@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         public async Task<ViewSelectOptionsViewModel> Map(SelectOptionsRequest source)
         {
             var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-            var options = await _commitmentsApiClient.GetStandardOptions(draftApprenticeship.StandardUId);
+            var trainingProgramme = await _commitmentsApiClient.GetTrainingProgrammeVersionByStandardUId(draftApprenticeship.StandardUId);
 
             return new ViewSelectOptionsViewModel
             {
@@ -29,8 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
                 TrainingCourseName = draftApprenticeship.TrainingCourseName,
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
-                Options = options.Options != null ? options.Options.ToList() : new List<string>(),
-                StandardIFateLink = ""
+                Options = trainingProgramme.TrainingProgramme.Options != null ? trainingProgramme.TrainingProgramme.Options.ToList() : new List<string>(),
+                StandardPageUrl = trainingProgramme.TrainingProgramme.StandardPageUrl
             };
         }
     }

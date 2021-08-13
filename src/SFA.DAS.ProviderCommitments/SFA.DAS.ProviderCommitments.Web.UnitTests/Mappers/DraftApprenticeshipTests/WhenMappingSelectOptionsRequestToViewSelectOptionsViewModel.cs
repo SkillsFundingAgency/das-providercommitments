@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
     public class WhenMappingSelectOptionsRequestToViewSelectOptionsViewModel
     {
         private GetDraftApprenticeshipResponse _draftApprenticeshipApiResponse;
-        private GetStandardOptionsResponse _standardOptionsResponse;
+        private GetTrainingProgrammeResponse _standardOptionsResponse;
         private SelectOptionsRequest _selectOptionsRequest;
         private ViewStandardOptionsViewModelMapper _mapper;
         private Func<Task<ViewSelectOptionsViewModel>> _act;
@@ -27,12 +27,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var fixture = new Fixture();
             _draftApprenticeshipApiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
-            _standardOptionsResponse = fixture.Build<GetStandardOptionsResponse>().Create();
+            _standardOptionsResponse = fixture.Build<GetTrainingProgrammeResponse>().Create();
             _selectOptionsRequest = fixture.Build<SelectOptionsRequest>().Create();
             
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient
-                .Setup(x => x.GetStandardOptions(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
+                .Setup(x => x.GetTrainingProgrammeVersionByStandardUId(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
                 .ReturnsAsync(_standardOptionsResponse);
             _commitmentsApiClient
                 .Setup(x => x.GetDraftApprenticeship(_selectOptionsRequest.CohortId, _selectOptionsRequest.DraftApprenticeshipId, CancellationToken.None))
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var result = await _act();
             
-            Assert.AreEqual(_standardOptionsResponse.Options.ToList(), result.Options);
+            Assert.AreEqual(_standardOptionsResponse.TrainingProgramme.Options.ToList(), result.Options);
         }
 
         [Test]
@@ -110,15 +110,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         [Test]
         public async Task Then_The_Standard_IFate_Link_Is_Mapped()
         {
+            var result = await _act();
             
+            Assert.AreEqual(_standardOptionsResponse.TrainingProgramme.StandardPageUrl, result.StandardPageUrl);
         }
 
         [Test]
         public async Task Then_If_No_Options_Empty_List_Returned()
         {
-            _standardOptionsResponse.Options = null;
+            _standardOptionsResponse.TrainingProgramme.Options = null;
             _commitmentsApiClient
-                .Setup(x => x.GetStandardOptions(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
+                .Setup(x => x.GetTrainingProgrammeVersionByStandardUId(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
                 .ReturnsAsync(_standardOptionsResponse);
             
             var result = await _act();

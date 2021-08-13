@@ -13,6 +13,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourseName { get ; set ; }
         public string TrainingCourseVersion { get ; set ; }
         public string SelectedOption { get ; set ; }
-        public string StandardIFateLink { get ; set ; }
+        public string StandardPageUrl { get ; set ; }
     }
 }
