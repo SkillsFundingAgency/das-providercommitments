@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -19,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private SelectOptionsRequest _selectOptionsRequest;
         private ViewStandardOptionsViewModelMapper _mapper;
         private Func<Task<ViewSelectOptionsViewModel>> _act;
+        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
 
         [SetUp]
         public void Arrange()
@@ -28,15 +30,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _standardOptionsResponse = fixture.Build<GetStandardOptionsResponse>().Create();
             _selectOptionsRequest = fixture.Build<SelectOptionsRequest>().Create();
             
-            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            commitmentsApiClient
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient
                 .Setup(x => x.GetStandardOptions(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
                 .ReturnsAsync(_standardOptionsResponse);
-            commitmentsApiClient
+            _commitmentsApiClient
                 .Setup(x => x.GetDraftApprenticeship(_selectOptionsRequest.CohortId, _selectOptionsRequest.DraftApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(_draftApprenticeshipApiResponse);
 
-            _mapper = new ViewStandardOptionsViewModelMapper(commitmentsApiClient.Object);
+            _mapper = new ViewStandardOptionsViewModelMapper(_commitmentsApiClient.Object);
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_selectOptionsRequest));
         }
@@ -87,6 +89,41 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             
             Assert.AreEqual(_selectOptionsRequest.ProviderId, result.ProviderId);
+        }
+
+        [Test]
+        public async Task Then_The_TrainingCourseName_Is_Mapped()
+        {
+            var result = await _act();
+            
+            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseName, result.TrainingCourseName);
+        }
+
+        [Test]
+        public async Task Then_The_Standard_Version_Is_Mapped()
+        {
+            var result = await _act();
+            
+            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseVersion, result.TrainingCourseVersion);
+        }
+        
+        [Test]
+        public async Task Then_The_Standard_IFate_Link_Is_Mapped()
+        {
+            
+        }
+
+        [Test]
+        public async Task Then_If_No_Options_Empty_List_Returned()
+        {
+            _standardOptionsResponse.Options = null;
+            _commitmentsApiClient
+                .Setup(x => x.GetStandardOptions(_draftApprenticeshipApiResponse.StandardUId, CancellationToken.None))
+                .ReturnsAsync(_standardOptionsResponse);
+            
+            var result = await _act();
+
+            result.Options.Should().BeEmpty();
         }
     }
 }

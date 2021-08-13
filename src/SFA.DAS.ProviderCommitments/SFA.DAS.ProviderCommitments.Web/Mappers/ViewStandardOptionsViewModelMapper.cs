@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -26,7 +27,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ProviderId = source.ProviderId,
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                Options = options.Options.ToList()
+                TrainingCourseName = draftApprenticeship.TrainingCourseName,
+                TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
+                Options = options.Options != null ? options.Options.ToList() : new List<string>(),
+                StandardIFateLink = ""
             };
         }
     }
