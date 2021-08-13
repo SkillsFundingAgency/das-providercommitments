@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class ViewSelectOptionsViewModel
+    public class ViewSelectOptionsViewModel : IAuthorizationContextModel, IDraftApprenticeshipViewModel
     {
         public List<string> Options { get ; set ; }
         public long CohortId { get ; set ; }

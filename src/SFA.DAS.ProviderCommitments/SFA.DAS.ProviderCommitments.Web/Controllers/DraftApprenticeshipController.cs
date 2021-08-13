@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -132,6 +132,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return View("SelectStandardOption", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/select-options")]
+        public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
+        {
+            var draftApprenticeship = await _modelMapper.Map<EditDraftApprenticeshipViewModel>(model);
+            var request = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(draftApprenticeship);
+
+            request.CourseOption = model.SelectedOption == "-1" ? string.Empty : model.SelectedOption;
+            
+            await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
+            
+            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpGet]
