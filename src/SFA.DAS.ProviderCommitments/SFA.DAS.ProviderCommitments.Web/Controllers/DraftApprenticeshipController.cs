@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -107,6 +108,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             
             return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/select-options")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectOptions(SelectOptionsRequest request)
+        {
+            var model = await _modelMapper.Map<ViewSelectOptionsViewModel>(request);
+
+            if (!model.Options.Any())
+            {
+                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            }
+
+            return View("SelectStandardOption", model);
         }
 
         [HttpGet]

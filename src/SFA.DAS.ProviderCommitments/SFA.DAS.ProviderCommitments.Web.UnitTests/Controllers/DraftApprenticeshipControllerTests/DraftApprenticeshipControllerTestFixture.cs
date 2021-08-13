@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.Dsl;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -43,6 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly string _cohortReference;
         private readonly string _draftApprenticeshipHashedId;
         private ViewDraftApprenticeshipViewModel _viewModel;
+        private readonly SelectOptionsRequest _selectOptionsRequest;
+        private readonly ViewSelectOptionsViewModel _viewSelectOptionsViewModel;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -56,6 +59,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _draftApprenticeshipRequest = autoFixture.Build<DraftApprenticeshipRequest>()
                 .With(x => x.CohortId, _cohortId)
+                .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
+                .Create();
+            
+            _selectOptionsRequest = autoFixture.Build<SelectOptionsRequest>()
+                .With(c=>c.CohortId, _cohortId)
                 .With(x => x.DraftApprenticeshipId, _draftApprenticeshipId)
                 .Create();
 
@@ -99,6 +107,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ProviderId = _providerId,
                 CohortReference = _cohortReference
             };
+
+            _viewSelectOptionsViewModel = autoFixture.Build<ViewSelectOptionsViewModel>().Create();
 
             _cohortResponse = autoFixture.Build<GetCohortResponse>()
                 .With(x => x.LevyStatus, ApprenticeshipEmployerType.Levy)
@@ -159,6 +169,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
                 .ReturnsAsync(_viewModel);
             _actionResult = await _controller.ViewEditDraftApprenticeship(_draftApprenticeshipRequest);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture ReturnNoMappedOptions()
+        {
+            _viewSelectOptionsViewModel.Options = new List<string>();
+            return this;
+        }
+
+        public async Task<DraftApprenticeshipControllerTestFixture> ViewStandardOptions()
+        {
+            _modelMapper.Setup(x => x.Map<ViewSelectOptionsViewModel>(_selectOptionsRequest))
+                .ReturnsAsync(_viewSelectOptionsViewModel);
+            
+            _actionResult = await _controller.SelectOptions(_selectOptionsRequest);
             return this;
         }
 
@@ -371,6 +396,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
             
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifySelectOptionsViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.AreEqual("SelectStandardOption",viewResult.ViewName);
+            var model = viewResult.Model as ViewSelectOptionsViewModel;
+            Assert.IsNotNull(model);
             return this;
         }
 
