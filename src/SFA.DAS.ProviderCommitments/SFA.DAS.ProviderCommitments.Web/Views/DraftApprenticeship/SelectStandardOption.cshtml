@@ -15,15 +15,15 @@
         </div>
         <table class="govuk-table">
             <tr class="govuk-table__row">
-                <th class="govuk-table__header das-table-cell-width-50" scope="row">Apprenticeship training course</th>
-                <td class="govuk-table__cell das-table-cell-width-50">@Model.TrainingCourseName</td>
+                <th class="govuk-table__header" scope="row">Apprenticeship training course</th>
+                <td class="govuk-table__cell">@Model.TrainingCourseName</td>
             </tr>
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="row">Version</th>
                 <td class="govuk-table__cell">@Model.TrainingCourseVersion</td>
             </tr>
         </table>
-        <form method="post">
+        <form method="post"  action="@Url.Action("PostSelectOptions")">
             <input asp-for="CohortId" type="hidden"/>
             <input asp-for="ProviderId" type="hidden"/>
             <input asp-for="CohortReference" type="hidden"/>
@@ -49,7 +49,7 @@
                         }
                         <div class="govuk-radios__divider">or</div>
                         <div class="govuk-radios__item">
-                            <input asp-for="SelectedOption" value="" type="radio" class="govuk-radios__input" id="option-confirmlater"/>
+                            <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater"/>
                             <label class="govuk-label govuk-radios__label" for="option-confirmlater">
                                 Confirm option at a later date
                             </label>
