@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
-    public class WhenISelectAnOption
+    public class WhenIViewStandardOptions
     {
         private DraftApprenticeshipControllerTestFixture _fixture;
 

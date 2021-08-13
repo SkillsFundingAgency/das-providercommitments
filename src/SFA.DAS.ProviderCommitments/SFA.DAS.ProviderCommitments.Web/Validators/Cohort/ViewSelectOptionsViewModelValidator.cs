@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
     {
         public ViewSelectOptionsViewModelValidator ()
         {
-            RuleFor(x => x.SelectedOption).NotNull().WithMessage("You must choose an option");
+            RuleFor(x => x.SelectedOption).NotNull().WithMessage("Select an option");
         }
     }
 }
