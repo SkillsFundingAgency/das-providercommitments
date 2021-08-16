@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 return TotalNumberOfApprenticeshipsFound < potentialValue ? TotalNumberOfApprenticeshipsFound: potentialValue;
             }
         }
-        public bool ShowSearch = true; // CHAS! => TotalNumberOfApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch;
+        public bool ShowSearch => TotalNumberOfApprenticeships >= Constants.ApprenticesSearch.NumberOfApprenticesRequiredForSearch;
 
         public bool SearchOrFiltersApplied => !string.IsNullOrWhiteSpace(SearchTerm)
                                               || !string.IsNullOrWhiteSpace(SelectedEmployer)
