@@ -2,6 +2,8 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
 
 @Html.HiddenFor(x => x.ReservationId)
+<input type="hidden" asp-for="StandardUId"/>
+<input type="hidden" asp-for="HasStandardOptions"/>
 
 @if (Model.IsContinuation)
 {
@@ -13,9 +15,7 @@
     @Html.HiddenFor(x => x.BirthYear)
     @Html.HiddenFor(x => x.Uln)
     @Html.HiddenFor(x => x.CourseCode)
-    <input type="hidden" asp-for="StandardUId"/>
-    <input type="hidden" asp-for="HasStandardOptions"/>
-
+    
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
         <dd class="das-definition-list__definition">@Model.FirstName @Model.LastName</dd>

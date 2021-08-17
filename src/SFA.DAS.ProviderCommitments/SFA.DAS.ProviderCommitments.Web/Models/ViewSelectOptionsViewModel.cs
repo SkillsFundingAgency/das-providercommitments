@@ -3,7 +3,7 @@ using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class ViewSelectOptionsViewModel : IAuthorizationContextModel, IDraftApprenticeshipViewModel
+    public class ViewSelectOptionsViewModel : IAuthorizationContextModel
     {
         public List<string> Options { get ; set ; }
         public long CohortId { get ; set ; }
