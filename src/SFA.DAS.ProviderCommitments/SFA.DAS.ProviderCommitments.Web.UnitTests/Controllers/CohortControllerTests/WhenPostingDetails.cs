@@ -11,6 +11,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -54,6 +57,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         }
 
         [Test]
+        public void And_User_Doesnot_Have_Permission_To_Approve_Then_UnAuthorizedException_IsThrown()
+        {
+            _fixture.SetUpIsAuthorized(false);
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => _fixture.Post(CohortDetailsOptions.Approve));
+        }
+
+        [Test]
+        public void And_User_Doesnot_Have_Permission_To_Send_Then_UnAuthorizedException_IsThrown()
+        {
+            _fixture.SetUpIsAuthorized(false);
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => _fixture.Post(CohortDetailsOptions.Send));
+        }
+
+        [Test]
+        public void And_User_Have_Permission_To_Approve_Then_No_Exception_Is_Thrown()
+        {
+            _fixture.SetUpIsAuthorized(true);
+            Assert.DoesNotThrowAsync(() => _fixture.Post(CohortDetailsOptions.Approve));
+        }
+
+        [Test]
+        public void And_User_Have_Permission_To_Send_Then_No_Exception_Is_Thrown()
+        {
+            _fixture.SetUpIsAuthorized(true);
+            Assert.DoesNotThrowAsync(() => _fixture.Post(CohortDetailsOptions.Send));
+        }
+
+        [Test]
         public async Task And_User_Selected_ApprenticeRequest_Then_User_Is_Redirected_To_ApprenticeRequest()
         {
             await _fixture.Post(CohortDetailsOptions.ApprenticeRequest);
@@ -73,6 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             private readonly string _linkGeneratorResult;
             private readonly SendCohortRequest _sendCohortApiRequest;
             private readonly ApproveCohortRequest _approveCohortApiRequest;
+            private readonly Mock<IPolicyAuthorizationWrapper> _policyAuthorizationWrapper;
 
             public WhenPostingDetailsFixture()
             {
@@ -80,6 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
                 var modelMapper = new Mock<IModelMapper>();
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+                _policyAuthorizationWrapper = new Mock<IPolicyAuthorizationWrapper>();
                 var linkGenerator = new Mock<ILinkGenerator>();
 
                 _cohortId = autoFixture.Create<long>();
@@ -109,6 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 _commitmentsApiClient.Setup(x => x.ApproveCohort(It.Is<long>(c => c == _cohortId),
                         It.Is<ApproveCohortRequest>(r => r == _approveCohortApiRequest), It.IsAny<CancellationToken>()))
                     .Returns(Task.CompletedTask);
+                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<System.Security.Claims.ClaimsPrincipal>(), It.IsAny<string>())).ReturnsAsync(true);
 
                 _linkGeneratorResult = autoFixture.Create<string>();
 
@@ -124,7 +158,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             public async Task Post(CohortDetailsOptions option)
             {
                 _viewModel.Selection = option;
-                _result = await _controller.Details(_viewModel);
+              
+                _result = await _controller.Details(_policyAuthorizationWrapper.Object, _viewModel);
             }
 
             public void VerifyCohortSentToProvider()
@@ -162,6 +197,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
                 Assert.AreEqual("Cohorts", redirect.ActionName);
+            }
+
+            internal void SetUpIsAuthorized(bool isAuhtorized)
+            {
+                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<System.Security.Claims.ClaimsPrincipal>(), It.IsAny<string>()))
+                    .ReturnsAsync(isAuhtorized);
             }
         }
     }

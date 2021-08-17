@@ -29,7 +29,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IMediator _mediator;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IModelMapper _modelMapper;        
+        private readonly IModelMapper _modelMapper;
+
+        public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator,
             ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper)
@@ -43,6 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
@@ -54,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
@@ -102,7 +106,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
+        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
             var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
@@ -110,7 +115,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]        
+        [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
         {
             if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
@@ -122,9 +128,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId
                 });
             }
-            
-            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
 
+            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
+            TempData.AddFlashMessage(DraftApprenticeDeleted, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
 

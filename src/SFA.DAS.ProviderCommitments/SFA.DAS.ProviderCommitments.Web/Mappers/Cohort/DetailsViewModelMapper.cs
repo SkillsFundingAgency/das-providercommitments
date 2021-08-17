@@ -72,8 +72,86 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
                 && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
                 && !cohort.IsLinkedToChangeOfPartyRequest,
-                IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest
+                IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
+                Status = GetCohortStatus(cohort, draftApprenticeships)
             };
+        }
+
+        private string GetCohortStatus(GetCohortResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
+        {
+            if (cohort.TransferSenderId.HasValue &&
+                cohort.TransferApprovalStatus == CommitmentsV2.Types.TransferApprovalStatus.Pending)
+            {
+                if (cohort.WithParty == CommitmentsV2.Types.Party.TransferSender)
+                {
+                    return "Pending - with funding employer";
+                }
+                else if (cohort.WithParty == CommitmentsV2.Types.Party.Employer)
+                {
+                    return GetEmployerOnlyStatus(cohort);
+                }
+                else if (cohort.WithParty == CommitmentsV2.Types.Party.Provider)
+                {
+                    return GetProviderOnlyStatus(cohort);
+                }
+            }
+            else if (cohort.IsApprovedByEmployer && cohort.IsApprovedByProvider)
+            {
+                return "Approved";
+            }
+            else if (cohort.WithParty == CommitmentsV2.Types.Party.Provider)
+            {
+                return GetProviderOnlyStatus(cohort);
+            }
+            else if (cohort.WithParty == CommitmentsV2.Types.Party.Employer)
+            {
+                return GetEmployerOnlyStatus(cohort);
+            }
+
+            return "New request";
+        }
+
+        private static string GetProviderOnlyStatus(GetCohortResponse cohort)
+        {
+            if (cohort.LastAction == CommitmentsV2.Types.LastAction.None)
+            {
+                return "New request";
+            }
+            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Amend)
+            {
+                return "Ready for review";
+            }
+            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Approve)
+            {
+                if (!cohort.IsApprovedByProvider && !cohort.IsApprovedByEmployer)
+                    return "Ready for review";
+
+                return "Ready for approval";
+            }
+            else
+            {
+                return "New request";
+            }
+        }
+
+        private static string GetEmployerOnlyStatus(GetCohortResponse cohort)
+        {
+            if (cohort.LastAction == CommitmentsV2.Types.LastAction.None)
+            {
+                return "New request";
+            }
+            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Amend)
+            {
+                return "Under review with employer";
+            }
+            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Approve)
+            {
+                return "With Employer for approval";
+            }
+            else
+            {
+                return "Under review with employer";
+            }
         }
 
         private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps)
@@ -168,7 +246,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             ApprenticeshipId = draftApprenticeship.Id
                         });
 
-                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingEndDate;
+                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingStartDate;
                 }
             }
         }

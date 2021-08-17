@@ -17,6 +17,7 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -169,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [Route("{cohortReference}/details")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
@@ -178,21 +179,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [Route("{cohortReference}/details")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]
-        public async Task<IActionResult> Details(DetailsViewModel viewModel)
+        public async Task<IActionResult> Details([FromServices] IPolicyAuthorizationWrapper authorizationService, DetailsViewModel viewModel)
         {
-
             switch (viewModel.Selection)
             {
                 case CohortDetailsOptions.Send:
                     {
+                        await ValidateAuthorization(authorizationService);
                         var request = await _modelMapper.Map<SendCohortRequest>(viewModel);
                         await _commitmentApiClient.SendCohort(viewModel.CohortId, request);
-                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus =  SaveStatus.AmendAndSend});
+                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = SaveStatus.AmendAndSend });
                     }
                 case CohortDetailsOptions.Approve:
                     {
+                        await ValidateAuthorization(authorizationService);
                         var request = await _modelMapper.Map<ApproveCohortRequest>(viewModel);
                         await _commitmentApiClient.ApproveCohort(viewModel.CohortId, request);
                         var saveStatus = viewModel.IsApprovedByEmployer && string.IsNullOrEmpty(viewModel.TransferSenderHashedId) ? SaveStatus.Approve : SaveStatus.ApproveAndSend;
@@ -214,6 +216,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
             return View(model);
+        }
+
+        private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
+        {
+            var result = await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+
+            if (!result)
+            {
+                throw new UnauthorizedAccessException("User not allowed");
+            }
         }
     }
 }

@@ -478,7 +478,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(true, result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap);
         }
 
-
         [Test]
         public async Task EmailOverlapIsMappedCorrectlyToDraftApprenticeshipAndToSummaryLine()
         {
@@ -519,6 +518,99 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
             var result = await fixture.Map();
             Assert.IsTrue(result.HasEmailOverlaps);
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_PendingApproval_From_TransferSender()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetTransferSender()
+                .SetCohortWithParty(Party.TransferSender);
+
+            fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
+            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Pending;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Pending - with funding employer", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_WithProvider_And_New_Cohort()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Provider); 
+
+            fixture.Cohort.LastAction = LastAction.None;
+            
+            var result = await fixture.Map();
+            Assert.AreEqual("New request", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_With_Provider_But_Without_Employer_Approval()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Provider);
+
+            fixture.Cohort.LastAction = LastAction.Amend;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Ready for review", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_With_Provider_With_Employer_Approval()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Provider);
+
+            fixture.Cohort.LastAction = LastAction.Approve;
+            fixture.Cohort.IsApprovedByEmployer = true;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Ready for approval", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_WithEmployer_And_New_Cohort()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Employer);
+
+            fixture.Cohort.LastAction = LastAction.None;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("New request", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_With_Employer_But_Without_Employer_Approval()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Employer);
+
+            fixture.Cohort.LastAction = LastAction.Amend;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Under review with employer", result.Status);
+        }
+
+        [Test]
+        public async Task StatusIsMappedCorrectly_When_With_Employer_With_Employer_Approval()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetCohortWithParty(Party.Employer);
+
+            fixture.Cohort.LastAction = LastAction.Approve;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("With Employer for approval", result.Status);
         }
     }
 
