@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithConfirmFalse();
 
             var result = await fixture.Act();
-            result.VerifyReturnsRedirect().WithUrl(fixture.RedirectUrl);
+            result.VerifyReturnsRedirectToActionResult().WithActionName("Details"); ;
          
         }
 

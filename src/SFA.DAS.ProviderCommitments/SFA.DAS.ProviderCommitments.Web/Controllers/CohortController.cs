@@ -13,6 +13,11 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.Authorization.CommitmentPermissions.Options;
+using System;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -95,9 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
             var response = await _mediator.Send(request);
-            var cohortDetailsUrl = $"{model.ProviderId}/apprentices/{response.CohortReference}/Details";
-            var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-            return Redirect(url);
+            return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
         [HttpGet]
@@ -132,9 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var request = await _modelMapper.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(viewModel);
                 var response = await _commitmentApiClient.CreateCohort(request);
 
-                var cohortDetailsUrl = $"{viewModel.ProviderId}/apprentices/{response.CohortReference}/Details";
-                var url = _urlHelper.ProviderApprenticeshipServiceLink(cohortDetailsUrl);
-                return Redirect(url);
+                return RedirectToAction(nameof(Details), new { viewModel.ProviderId, response.CohortReference });
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
@@ -164,16 +165,67 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("Cohorts", new { viewModel.ProviderId });
             }
 
-            return Redirect(_urlHelper.CohortDetails(viewModel.ProviderId, viewModel.CohortReference));
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
+        }
+
+        [Route("{cohortReference}/details")]
+        [DasAuthorize(CommitmentOperation.AccessCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
+        public async Task<IActionResult> Details(DetailsRequest request)
+        {
+            var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+            return View(viewModel);
+        }
+
+        [Route("{cohortReference}/details")]
+        [DasAuthorize(CommitmentOperation.AccessCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
+        [HttpPost]
+        public async Task<IActionResult> Details([FromServices] IPolicyAuthorizationWrapper authorizationService, DetailsViewModel viewModel)
+        {
+            switch (viewModel.Selection)
+            {
+                case CohortDetailsOptions.Send:
+                    {
+                        await ValidateAuthorization(authorizationService);
+                        var request = await _modelMapper.Map<SendCohortRequest>(viewModel);
+                        await _commitmentApiClient.SendCohort(viewModel.CohortId, request);
+                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = SaveStatus.AmendAndSend });
+                    }
+                case CohortDetailsOptions.Approve:
+                    {
+                        await ValidateAuthorization(authorizationService);
+                        var request = await _modelMapper.Map<ApproveCohortRequest>(viewModel);
+                        await _commitmentApiClient.ApproveCohort(viewModel.CohortId, request);
+                        var saveStatus = viewModel.IsApprovedByEmployer && string.IsNullOrEmpty(viewModel.TransferSenderHashedId) ? SaveStatus.Approve : SaveStatus.ApproveAndSend;
+                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = saveStatus });
+                    }
+                case CohortDetailsOptions.ApprenticeRequest:
+                    {
+                        return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
+            }
         }
 
         [HttpGet]
         [Route("{cohortReference}/Acknowledgement")]
+        [DasAuthorize(CommitmentOperation.AccessCohort)]
         public async Task<ActionResult> Acknowledgement(AcknowledgementRequest request)
         {
             var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
             return View(model);
         }
 
+        private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
+        {
+            var result = await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+
+            if (!result)
+            {
+                throw new UnauthorizedAccessException("User not allowed");
+            }
+        }
     }
 }

@@ -34,9 +34,9 @@
                 <a class="govuk-button govuk-button--warning das-float-right" href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId =  Model.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })"> Delete</a>
             }
 
-            <p class="govuk-body govuk-!-margin-bottom-0">
-                <a class="govuk-body govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/details")">Cancel</a>
-            </p>
+        <p class="govuk-body govuk-!-margin-bottom-0">
+            <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
+        </p>
         </form>
 
     </div>
