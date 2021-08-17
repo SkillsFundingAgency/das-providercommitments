@@ -196,16 +196,6 @@
             </tbody>
         </table>
         }
-
-        @if (course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
-        {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">Apprenticeship can't have overlapping training dates</h3>
-                <p>
-                    You must update training dates to be able to approve
-                </p>
-            </div>
-        }
     
         <table class="govuk-table das-table--responsive">
             <thead class="govuk-table__head">

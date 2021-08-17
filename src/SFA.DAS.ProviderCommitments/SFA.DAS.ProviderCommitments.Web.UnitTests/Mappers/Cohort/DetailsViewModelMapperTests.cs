@@ -518,6 +518,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
             var result = await fixture.Map();
             Assert.IsTrue(result.HasEmailOverlaps);
+        }
 
         [Test]
         public async Task StatusIsMappedCorrectly_When_PendingApproval_From_TransferSender()
