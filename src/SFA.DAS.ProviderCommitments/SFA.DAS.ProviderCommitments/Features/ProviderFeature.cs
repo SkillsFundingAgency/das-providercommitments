@@ -8,6 +8,5 @@
         public const string ManageApprenticesV2 = Prefix + ManageApprenticesV2WithoutPrefix;
         public const string ManageApprenticesV2WithoutPrefix = "ManageApprenticesV2";
         public const string ApprenticeEmail = Prefix + "ApprenticeEmail";
-        public const string EditApprenticeV2 = Prefix + "EditApprenticeV2";
     }
 }
