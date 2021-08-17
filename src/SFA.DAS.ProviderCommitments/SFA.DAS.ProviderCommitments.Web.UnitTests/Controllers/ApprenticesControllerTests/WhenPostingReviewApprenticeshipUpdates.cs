@@ -125,8 +125,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
 
                 _sut.TempData = tempData;
-
-
             }
 
             public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);

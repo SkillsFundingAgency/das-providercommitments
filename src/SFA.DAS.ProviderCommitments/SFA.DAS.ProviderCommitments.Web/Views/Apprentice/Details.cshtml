@@ -11,7 +11,6 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
-    var isV2Edit = authorisationService.IsAuthorized(SFA.DAS.ProviderCommitments.Features.ProviderFeature.EditApprenticeV2);
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -184,14 +183,7 @@
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @if (Model.AllowEditApprentice)
                 {
-                    if (isV2Edit)
-                    {
-                        <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a>
-                    }
-                    else
-                    {
-                        <a id="edit-apprentice-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/manage/{Model.ApprenticeshipHashedId}/edit")" class="govuk-link govuk-body">Edit apprentice</a>
-                    }
+                    <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a>
                 }
             </div>
         </div>

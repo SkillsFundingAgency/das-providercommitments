@@ -55,7 +55,6 @@
     {
         @if (Model.IsTransfer && Model.ChangeOfPartyRequestId == null)
         {
-
             <p class="govuk-body">
                 You’ll receive a notification when the funding employer approves or rejects the transfer request.
             </p>
@@ -63,7 +62,6 @@
             <p class="govuk-body">
                 Once the transfer request is approved, you'll be able to <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new {Model.ProviderId})">view and manage the apprentices.</a>
             </p>
-
         }
         else
         {
@@ -86,6 +84,7 @@
     {
         @if (Model.WhatHappensNext.Count == 1)
         {
+
             <p id="changeMainCopy2" class="govuk-body">
                 @Model.WhatHappensNext.First()
             </p>
@@ -93,6 +92,7 @@
 
         else if (Model.WhatHappensNext.Count > 1)
         {
+
             @foreach (var bulletPoint in Model.WhatHappensNext)
             {
                 <p class="govuk-body">

@@ -36,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();
             For<IAuthorizationContextProvider>().Use<AuthorizationContextProvider>();
             For<ILinkGenerator>().Use<LinkGenerator>().Singleton();
+            For<IPolicyAuthorizationWrapper>().Use<PolicyAuthorizationWrapper>();
             For<IAcademicYearDateProvider>().Use<AcademicYearDateProvider>().Singleton();
             For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);

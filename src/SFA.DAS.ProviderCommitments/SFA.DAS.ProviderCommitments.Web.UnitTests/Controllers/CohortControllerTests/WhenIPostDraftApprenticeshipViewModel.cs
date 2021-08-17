@@ -110,14 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public UnapprovedControllerTestFixture VerifyUserRedirection()
             {
-                var redirectResult = (RedirectResult)_actionResult;
-
-                //1. verify that user was redirected to where the link gen said
-                Assert.AreEqual(_linkGeneratorRedirectUrl, redirectResult.Url);
-
-                //2. verify that we asked the link generator to gen a link to the correct page
-                Assert.AreEqual($"{_model.ProviderId}/apprentices/{_createCohortResponse.CohortReference}/Details", _linkGeneratorParameter);
-
+                _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
                 return this;
             }
         }
