@@ -5,7 +5,7 @@
 
 @{
 
-    ViewBag.Title = "Confirm Delete";    
+    ViewBag.Title = "Confirm Delete";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/confirm-delete";
     ViewBag.GaData.Org = Model.ApprenticeshipName;
 }
@@ -18,13 +18,13 @@
         @if (Model.DateOfBirth.HasValue)
         {
             <p class="secondary-text heading-small">@Model.DateOfBirth.Value.ToGdsFormat()</p>
-        }        
+        }
 
         <form method="post">
             <fieldset class="govuk-fieldset">
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.ApprenticeshipName)
-                @Html.HiddenFor(m => m.DateOfBirth)                
+                @Html.HiddenFor(m => m.DateOfBirth)
 
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.DeleteConfirmed, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
@@ -59,7 +59,6 @@
     </div>
 </div>
 
-@section breadcrumb {   
-
-    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/Details")">Cancel and go back</a>
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel and go back</a>
 }
