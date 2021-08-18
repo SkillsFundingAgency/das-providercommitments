@@ -151,7 +151,7 @@
                                 @draftApprenticeship.DisplayName
                             }
                         </td>
-                        <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.ULN</td>
+                        <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
                         <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                         <td class="govuk-table__cell" data-label="Training dates">
                             @if (draftApprenticeship.HasOverlappingUln)
@@ -195,68 +195,7 @@
                 }
             </tbody>
         </table>
-        }
-    
-        <table class="govuk-table das-table--responsive">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Name</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Unique learner number</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-15">Date of birth</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Training dates</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10"><span class="govuk-visually-hidden">Action</span></th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-            @foreach (var draftApprenticeship in course.DraftApprenticeships)
-            {
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-label="Name">@draftApprenticeship.DisplayName</td>
-                    <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                    <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
-                    <td class="govuk-table__cell" data-label="Training dates">
-                        @if (draftApprenticeship.HasOverlappingUln)
-                        {
-                            <span class="das-table-cell--highlight">
-                                @draftApprenticeship.DisplayTrainingDates
-                            </span>
-                        }
-                        else
-                        {
-                            @draftApprenticeship.DisplayTrainingDates
-                        }
-                    </td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Price">
-                        @if (@draftApprenticeship.ExceedsFundingBandCap)
-                        {
-                            <span class="das-table-cell--highlight">
-                                @draftApprenticeship.DisplayCost
-                            </span>
-                        }
-                        else
-                        {
-                            @draftApprenticeship.DisplayCost
-                        }
-                    </td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">
-                        <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
-                            @(Model.IsReadOnly ? "View" : "Edit")
-                            <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
-                        </a>
-                        @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
-                        {
-                            <br /><br />
-                            <a class="govuk-link delete-apprentice"
-                                href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
-                                Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
-                            </a>
-                        }
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+        }        
     }
 
     <table class="govuk-table">
