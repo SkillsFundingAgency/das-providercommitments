@@ -23,46 +23,46 @@
                 <td class="govuk-table__cell">@Model.TrainingCourseVersion</td>
             </tr>
         </table>
-        <form method="post"  action="@Url.Action("PostSelectOptions")">
-            <input asp-for="CohortId" type="hidden"/>
-            <input asp-for="ProviderId" type="hidden"/>
-            <input asp-for="CohortReference" type="hidden"/>
-            <input asp-for="DraftApprenticeshipId" type="hidden"/>
-            <input asp-for="DraftApprenticeshipHashedId" type="hidden"/>
-            <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SelectedOption, "govuk-form-group--error")">
-                <fieldset class="govuk-fieldset" aria-describedby="select-standard-hint">
-                    <legend class="govuk-visually-hidden">Select a standard option from the list</legend>
-                    <div id="select-standard-hint" class="govuk-hint">
-                        Select an option
-                    </div>
-                    @Html.ValidationMessageFor(m => m.SelectedOption, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption)})
-                    <div class="govuk-radios">
-                        @foreach (var option in Model.Options)
-                        {
-                            <div class="govuk-radios__item">
-                                <input asp-for="SelectedOption" value="@option" type="radio" class="govuk-radios__input" id="option-@option"/>
-                                <label class="govuk-label govuk-radios__label" for="option-@option">
-                                    @option
-                                </label>
-
-                            </div>    
-                        }
-                        <div class="govuk-radios__divider">or</div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater"/>
-                            <label class="govuk-label govuk-radios__label" for="option-confirmlater">
-                                Confirm option at a later date
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
-                Confirm and continue
-            </button>
-        </form>
     </div>
 </div>
+<form method="post"  action="@Url.Action("PostSelectOptions")">
+    <input asp-for="CohortId" type="hidden"/>
+    <input asp-for="ProviderId" type="hidden"/>
+    <input asp-for="CohortReference" type="hidden"/>
+    <input asp-for="DraftApprenticeshipId" type="hidden"/>
+    <input asp-for="DraftApprenticeshipHashedId" type="hidden"/>
+    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.SelectedOption, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="select-standard-hint">
+            <legend class="govuk-visually-hidden">Select a standard option from the list</legend>
+            <div id="select-standard-hint" class="govuk-hint">
+                Select an option
+            </div>
+            @Html.ValidationMessageFor(m => m.SelectedOption, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption)})
+            <div class="govuk-radios">
+                @foreach (var option in Model.Options)
+                {
+                    <div class="govuk-radios__item">
+                        <input asp-for="SelectedOption" value="@option" type="radio" class="govuk-radios__input" id="option-@option"/>
+                        <label class="govuk-label govuk-radios__label" for="option-@option">
+                            @option
+                        </label>
+
+                    </div>    
+                }
+                <div class="govuk-radios__divider">or</div>
+                <div class="govuk-radios__item">
+                    <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater"/>
+                    <label class="govuk-label govuk-radios__label" for="option-confirmlater">
+                        Confirm option at a later date
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
+        Confirm and continue
+    </button>
+</form>
 
 
 @section breadcrumb
