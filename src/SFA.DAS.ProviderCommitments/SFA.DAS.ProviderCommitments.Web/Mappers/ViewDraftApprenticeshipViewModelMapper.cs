@@ -39,10 +39,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = draftApprenticeship.StartDate,
                 EndDate = draftApprenticeship.EndDate,
                 Reference = draftApprenticeship.Reference,
-                ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
+                ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
+                TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
+                TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion
             };
 
             return result;
+        }
+
+        private string GetCourseOption(string draftApprenticeshipTrainingCourseOption)
+        {
+            return draftApprenticeshipTrainingCourseOption switch
+            {
+                null => string.Empty,
+                "" => "To be confirmed",
+                _ => draftApprenticeshipTrainingCourseOption
+            };
         }
     }
 }
