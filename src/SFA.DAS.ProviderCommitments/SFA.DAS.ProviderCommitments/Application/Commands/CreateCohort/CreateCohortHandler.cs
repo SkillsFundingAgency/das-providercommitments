@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
 
             var apprenticeships = await _apiClient.GetDraftApprenticeships(apiResult.CohortId, cancellationToken);
 
-            long? hasStandardOptions = null;
+            long? draftApprenticeshipId = null;
             if (apprenticeships.DraftApprenticeships.Count == 1)
             {
                 var draftApprenticeship = await _apiClient.GetDraftApprenticeship(apiResult.CohortId,
@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
                 
                 if (draftApprenticeship.HasStandardOptions)
                 {
-                    hasStandardOptions = draftApprenticeship.Id;
+                    draftApprenticeshipId = draftApprenticeship.Id;
                 }
             }
             
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
             {
                 CohortId = apiResult.CohortId,
                 CohortReference = apiResult.CohortReference,
-                DraftApprenticeshipId = hasStandardOptions
+                DraftApprenticeshipId = draftApprenticeshipId
             };
         }
 
