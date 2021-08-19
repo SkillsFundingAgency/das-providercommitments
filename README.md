@@ -19,6 +19,15 @@ ProviderCommitments has no home or landing page. The user is typically redirecte
 * Start Microsoft Azure Storage Emulator
 * Run SFA.DAS.ProviderCommitments.Web project (run under kestrel)
 
+#### LocalRunning
+You can also stub the provider authentication by setting the following in the `appsettings.json`
+
+```
+  "UseStubProviderAuth": true,
+  "UseLocalRegistry": true
+```
+
+The use local registry also loads the development container registration for non MI API usage
 
 ## See Also
 * [Using Hashes in Controller Methods](docs/UnhashingModelBinding.md "Unhashing Model Binding")

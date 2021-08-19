@@ -139,5 +139,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(showEmail, result.ShowEmail);
         }
+        
+        [Test]
+        public async Task ThenTheVersionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingCourseVersion, result.TrainingCourseVersion);
+        }
+        
+        
+        [Test]
+        public async Task ThenTheSelectedOptionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingCourseOption, result.TrainingCourseOption);
+        }
+        
+        [Test]
+        public async Task ThenTheSelectedOptionIsDisplayedAsToBeConfirmedIfEmpty()
+        {
+            _apiResponse.TrainingCourseOption = string.Empty;
+            var result = await _act();
+            Assert.AreEqual("To be confirmed", result.TrainingCourseOption);
+        }
+        
+        [Test]
+        public async Task ThenTheSelectedOptionIsDisplayedAsEmptyIfNullFromApi()
+        {
+            _apiResponse.TrainingCourseOption = null;
+            var result = await _act();
+            Assert.AreEqual("", result.TrainingCourseOption);
+        }
     }
 }

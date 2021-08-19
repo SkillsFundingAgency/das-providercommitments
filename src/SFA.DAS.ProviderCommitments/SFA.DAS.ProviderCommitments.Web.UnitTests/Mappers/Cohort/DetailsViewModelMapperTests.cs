@@ -567,6 +567,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .SetCohortWithParty(Party.Employer);
 
             fixture.Cohort.LastAction = LastAction.Approve;
+            
 
             var result = await fixture.Map();
             Assert.AreEqual("With Employer for approval", result.Status);

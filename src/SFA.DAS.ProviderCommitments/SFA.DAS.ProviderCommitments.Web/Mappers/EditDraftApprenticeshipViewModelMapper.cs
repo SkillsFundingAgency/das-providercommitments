@@ -35,9 +35,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Email = apiResponse.Email,
                 Uln = apiResponse.Uln,
                 CourseCode = apiResponse.CourseCode,
+                HasStandardOptions = apiResponse.HasStandardOptions,
                 Cost = apiResponse.Cost,
                 Reference = apiResponse.Reference,
                 IsContinuation = apiResponse.IsContinuation,
+                StandardUId = apiResponse.StandardUId,
                 ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
             };
         }
