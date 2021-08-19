@@ -19,5 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool ShowEmail { get; set; }
         public string TrainingCourseVersion { get ; set ; }
         public string TrainingCourseOption { get ; set ; }
+        public bool HasTrainingCourseOption { get ; set ; }
     }
 }
