@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using System;
+using SFA.DAS.Encoding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -152,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 _controller = new CohortController(Mock.Of<IMediator>(),
                      modelMapper.Object,
                      linkGenerator.Object,
-                    _commitmentsApiClient.Object);
+                    _commitmentsApiClient.Object, Mock.Of<IEncodingService>());
             }
 
             public async Task Post(CohortDetailsOptions option)

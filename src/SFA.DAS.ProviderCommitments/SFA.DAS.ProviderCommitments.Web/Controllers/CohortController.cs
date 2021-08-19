@@ -16,6 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.Encoding;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 
@@ -28,16 +29,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IEncodingService _encodingService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
-            ICommitmentsApiClient commitmentsApiClient)
+            ICommitmentsApiClient commitmentsApiClient,
+            IEncodingService encodingService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
+            _encodingService = encodingService;
         }
 
         [HttpGet]
@@ -100,6 +104,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
             var response = await _mediator.Send(request);
+
+            if (response.DraftApprenticeshipId.HasValue)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                    EncodingType.ApprenticeshipId);
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId , response.CohortReference});
+            }
+            
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
