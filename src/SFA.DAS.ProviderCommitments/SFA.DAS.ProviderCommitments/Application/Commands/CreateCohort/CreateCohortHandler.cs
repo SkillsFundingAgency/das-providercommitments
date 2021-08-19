@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
@@ -30,10 +31,22 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
             var apiRequest = await _mapper.Map(request).ConfigureAwait(false);
             var apiResult = await _apiClient.CreateCohort(apiRequest, cancellationToken).ConfigureAwait(false);
 
+            var apprenticeships = await _apiClient.GetDraftApprenticeships(apiResult.CohortId, cancellationToken);
+
+            var hasStandardOptions = false;
+            if (apprenticeships.DraftApprenticeships.Count == 1)
+            {
+                var draftApprenticeship = await _apiClient.GetDraftApprenticeship(apiResult.CohortId,
+                    apprenticeships.DraftApprenticeships.First().Id, cancellationToken);
+                
+                hasStandardOptions = draftApprenticeship.HasStandardOptions;
+            }
+            
             return new CreateCohortResponse
             {
                 CohortId = apiResult.CohortId,
-                CohortReference = apiResult.CohortReference
+                CohortReference = apiResult.CohortReference,
+                HasStandardOptions = hasStandardOptions
             };
         }
 
