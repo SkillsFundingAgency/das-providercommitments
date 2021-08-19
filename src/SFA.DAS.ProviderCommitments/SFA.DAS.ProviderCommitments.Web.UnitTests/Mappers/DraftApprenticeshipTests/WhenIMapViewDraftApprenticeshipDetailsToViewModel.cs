@@ -170,5 +170,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual("", result.TrainingCourseOption);
         }
+        
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ThenHasOptionsIsMappedCorrectly(bool hasOptions)
+        {
+            _apiResponse.HasStandardOptions = hasOptions;
+            var result = await _act();
+            Assert.AreEqual(hasOptions, result.HasTrainingCourseOption);
+        }
     }
 }

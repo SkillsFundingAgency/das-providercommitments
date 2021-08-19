@@ -41,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Reference = draftApprenticeship.Reference,
                 ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
                 TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
-                TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion
+                TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
+                HasTrainingCourseOption = draftApprenticeship.HasStandardOptions
             };
 
             return result;
