@@ -221,7 +221,15 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
 
             public CreateCohortHandlerFixture VerifyHasOptionsValue(bool hasOptions)
             {
-                Assert.AreEqual(hasOptions, _result.HasStandardOptions);
+                if (hasOptions)
+                {
+                    Assert.IsNotNull(_result.DraftApprenticeshipId);    
+                }
+                else
+                {
+                    Assert.IsNull(_result.DraftApprenticeshipId);
+                }
+                
                 return this;
             }
         }
