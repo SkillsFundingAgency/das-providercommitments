@@ -127,5 +127,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
 
             result.Options.Should().BeEmpty();
         }
+
+        [Test]
+        public async Task Then_The_Selected_Option_Is_Mapped()
+        {
+            var result = await _act();
+            
+            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseOption, result.SelectedOption);
+        }
+
+        [Test]
+        public async Task Then_If_The_Selected_Option_Is_Empty_Then_Set_To_Minus_One()
+        {
+            _draftApprenticeshipApiResponse.TrainingCourseOption = "";
+                
+            var result = await _act();
+            
+            Assert.AreEqual("-1", result.SelectedOption);
+        }
+        
+        
+        [Test]
+        public async Task Then_If_The_Selected_Option_Is_Null_Then_Set_To_Null()
+        {
+            _draftApprenticeshipApiResponse.TrainingCourseOption = null;
+                
+            var result = await _act();
+            
+            Assert.IsNull(result.SelectedOption);
+        }
     }
 }
