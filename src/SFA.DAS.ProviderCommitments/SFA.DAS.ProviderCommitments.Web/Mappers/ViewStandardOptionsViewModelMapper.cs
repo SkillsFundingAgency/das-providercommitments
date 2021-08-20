@@ -30,7 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 TrainingCourseName = draftApprenticeship.TrainingCourseName,
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
                 Options = trainingProgramme.TrainingProgramme.Options != null ? trainingProgramme.TrainingProgramme.Options.ToList() : new List<string>(),
-                StandardPageUrl = trainingProgramme.TrainingProgramme.StandardPageUrl
+                StandardPageUrl = trainingProgramme.TrainingProgramme.StandardPageUrl,
+                SelectedOption = draftApprenticeship.TrainingCourseOption == string.Empty ? "-1" : draftApprenticeship.TrainingCourseOption
             };
         }
     }

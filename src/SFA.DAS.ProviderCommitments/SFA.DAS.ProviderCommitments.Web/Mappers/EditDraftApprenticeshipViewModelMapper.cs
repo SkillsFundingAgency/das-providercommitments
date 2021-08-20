@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Cost = apiResponse.Cost,
                 Reference = apiResponse.Reference,
                 IsContinuation = apiResponse.IsContinuation,
-                StandardUId = apiResponse.StandardUId,
+                TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
                 ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
             };
         }

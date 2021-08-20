@@ -153,13 +153,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_source.Request.ProviderId, result.ProviderId);
         }
 
-        [Test]
-        public async Task ThenTheStandardUIdIsMapped()
-        {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.StandardUId, result.StandardUId);
-        }
-
         [TestCase(true)]
         [TestCase(false)]
         public async Task ThenTheTrainingCourseOptionIsMapped(bool hasStandardOptions)
@@ -187,6 +180,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
             var result = await _act();
             Assert.AreEqual(showEmail, result.ShowEmail);
+        }
+
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingCourseOption, result.TrainingCourseOption);
+        }
+        
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMappedToMinusOneIfEmpty()
+        {
+            _apiResponse.TrainingCourseOption = string.Empty;
+            var result = await _act();
+            Assert.AreEqual("-1", result.TrainingCourseOption);
         }
     }
 }

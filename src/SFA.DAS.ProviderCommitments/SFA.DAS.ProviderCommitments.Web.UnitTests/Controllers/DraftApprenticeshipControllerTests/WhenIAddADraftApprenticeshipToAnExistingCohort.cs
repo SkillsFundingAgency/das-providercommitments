@@ -83,7 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _fixture
                 .SetUpStandardToReturnOptions()
-                .SetNewStandardSelected()
                 .SetupCommitmentsApiToReturnADraftApprentice();
             
             await _fixture.PostToAddDraftApprenticeship();

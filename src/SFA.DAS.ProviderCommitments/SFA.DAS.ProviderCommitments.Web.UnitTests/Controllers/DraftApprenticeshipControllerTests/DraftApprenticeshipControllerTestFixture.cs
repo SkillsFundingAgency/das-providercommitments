@@ -108,8 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 CohortId = _cohortId,
                 CohortReference = _cohortReference,
                 DraftApprenticeshipId = _draftApprenticeshipId,
-                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId,
-                StandardUId = "OldId"
+                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId
             };
 
             _viewModel = new ViewDraftApprenticeshipViewModel
@@ -305,13 +304,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetUpStandardToReturnOptions()
         {
             _draftApprenticeshipDetails.HasStandardOptions = true;
-            _draftApprenticeshipDetails.StandardUId = _editModel.StandardUId;
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture SetNewStandardSelected()
-        {
-            _editModel.StandardUId = "newid";
             return this;
         }
 
