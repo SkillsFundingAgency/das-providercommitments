@@ -95,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
             
-            if (draftApprenticeship.HasStandardOptions && !draftApprenticeship.StandardUId.Equals(model.StandardUId, StringComparison.CurrentCultureIgnoreCase))
+            if (draftApprenticeship.HasStandardOptions)
             {
                 return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference});
             }

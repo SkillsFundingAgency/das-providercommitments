@@ -153,13 +153,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_source.Request.ProviderId, result.ProviderId);
         }
 
-        [Test]
-        public async Task ThenTheStandardUIdIsMapped()
-        {
-            var result = await _act();
-            Assert.AreEqual(_apiResponse.StandardUId, result.StandardUId);
-        }
-
         [TestCase(true)]
         [TestCase(false)]
         public async Task ThenTheTrainingCourseOptionIsMapped(bool hasStandardOptions)

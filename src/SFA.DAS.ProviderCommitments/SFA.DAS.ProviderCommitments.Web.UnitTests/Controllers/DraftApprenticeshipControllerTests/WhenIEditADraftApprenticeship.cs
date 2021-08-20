@@ -42,10 +42,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptionsAndIdIsDifferent()
+        public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptions()
         {
             _fixture.SetUpStandardToReturnOptions()
-                .SetNewStandardSelected()
                 .SetupCommitmentsApiToReturnADraftApprentice();
             
             await _fixture.PostToEditDraftApprenticeship();
@@ -54,31 +53,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .VerifyRedirectToSelectOptionsPage();
         }
 
-        [Test]
-        public async Task AndWhenOptionsButStandardIsTheSameThenRedirectsToCohortDetails()
-        {
-            _fixture
-                .SetUpStandardToReturnOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
-            
-            await _fixture.PostToEditDraftApprenticeship();
-            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
-                .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
-        }
-        
-        [Test]
-        public async Task AndWhenNoOptionsButStandardIsDifferentThenRedirectsToCohortDetails()
-        {
-            _fixture
-                .SetNewStandardSelected()
-                .SetUpStandardToReturnNoOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
-            
-            await _fixture.PostToEditDraftApprenticeship();
-            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
-                .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
-        }
     }
 }
