@@ -103,23 +103,22 @@
                     You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
                 </p>
             </div>
-        }
+        }        
         if (@course.EmailOverlaps != null)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 class="govuk-heading-s">@course.EmailOverlaps.DisplayEmailOverlapsMessage</h3>
                 <p>
-                    Please address this before proceeding
+                    You must enter unique email addresses for each apprentice.
                 </p>
             </div>
         }
-
         if (@course.DraftApprenticeships.Any(x => x.HasOverlappingUln))
         {
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 class="govuk-heading-s">Apprenticeship can't have overlapping training dates</h3>
                 <p>
-                    you must update training dates to able to approve
+                    You must update the training dates to be able to approve.
                 </p>
             </div>
         }
@@ -140,15 +139,11 @@
                 {
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" data-label="Name">
+                            @draftApprenticeship.DisplayName
+
                             @if (draftApprenticeship.HasOverlappingEmail)
                             {
-                                <span class="das-table-cell--highlight">
-                                    @draftApprenticeship.DisplayName
-                                </span>
-                            }
-                            else
-                            {
-                                @draftApprenticeship.DisplayName
+                                <hr style="border-bottom: 5px solid #1d70b8" />
                             }
                         </td>
                         <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
