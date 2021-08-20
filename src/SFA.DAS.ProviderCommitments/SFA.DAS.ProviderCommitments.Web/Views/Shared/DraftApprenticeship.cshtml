@@ -3,6 +3,7 @@
 
 @Html.HiddenFor(x => x.ReservationId)
 <input type="hidden" asp-for="HasStandardOptions"/>
+<input type="hidden" asp-for="TrainingCourseOption"/>
 
 @if (Model.IsContinuation)
 {

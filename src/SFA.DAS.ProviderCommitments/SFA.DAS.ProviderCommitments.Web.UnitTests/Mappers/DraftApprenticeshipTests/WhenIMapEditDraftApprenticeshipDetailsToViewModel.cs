@@ -181,5 +181,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(showEmail, result.ShowEmail);
         }
+
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingCourseOption, result.TrainingCourseOption);
+        }
+        
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMappedToMinusOneIfEmpty()
+        {
+            _apiResponse.TrainingCourseOption = string.Empty;
+            var result = await _act();
+            Assert.AreEqual("-1", result.TrainingCourseOption);
+        }
     }
 }
