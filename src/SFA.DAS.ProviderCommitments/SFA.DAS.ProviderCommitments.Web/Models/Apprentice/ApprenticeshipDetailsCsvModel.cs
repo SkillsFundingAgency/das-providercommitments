@@ -35,6 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ProviderRef { get; private set; }
         [Name("Agreement ID")]
         public string AgreementId { get; private set; }
+        [Name("Apprentice Confirmation")]
+        public string ApprenticeConfirmation { get; private set; }
         [Name("Status")]
         public string Status { get ; private set ; }
 
@@ -52,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 CourseName = model.CourseName,
                 PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
                 PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
+                ApprenticeConfirmation = model.ConfirmationStatus?.GetDescription(),
                 Status = model.ApprenticeshipStatus.GetDescription(),
                 Alerts = GenerateAlerts(model.Alerts),
                 ProviderRef = model.ProviderRef,
