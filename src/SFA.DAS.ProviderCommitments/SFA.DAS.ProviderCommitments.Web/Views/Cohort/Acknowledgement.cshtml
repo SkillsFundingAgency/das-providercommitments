@@ -70,15 +70,9 @@
                 <a class="govuk-link" href="@Url.Action("Index", "Apprentice", new { Model.ProviderId})"> manage your apprentices</a>.
             </p>
         }
-
-        @if (Model.ShowApprenticeEmail)
-        {
-            <p class="govuk-body">
-                Your apprentice will now receive an email alert inviting them to the My apprenticeship service where they will review and confirm their apprenticeship details.
-            </p>
-        }
-
-
+        <p class="govuk-body">
+            Your apprentice will now receive an email alert inviting them to the My apprenticeship service where they will review and confirm their apprenticeship details.
+        </p>
     }
     else
     {

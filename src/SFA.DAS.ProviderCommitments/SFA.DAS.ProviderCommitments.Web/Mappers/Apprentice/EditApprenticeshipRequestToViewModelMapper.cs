@@ -7,8 +7,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -17,14 +15,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IAcademicYearDateProvider _academicYearDateProvider;
         private readonly ICurrentDateTime _currentDateTime;
-        private readonly IAuthorizationService _authorizationService;
 
-        public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime, IAuthorizationService authorizationService)
+        public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _academicYearDateProvider = academicYearDateProvider;
             _currentDateTime = currentDateTime;
-            _authorizationService = authorizationService;
         }
         public async Task<EditApprenticeshipRequestViewModel> Map(EditApprenticeshipRequest source)
         {
@@ -68,8 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TrainingName = courseDetails.TrainingProgramme.Name,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerName = apprenticeship.EmployerName,
-                ProviderId = apprenticeship.ProviderId,
-                ShowApprenticeEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
+                ProviderId = apprenticeship.ProviderId
             };
 
             return result;

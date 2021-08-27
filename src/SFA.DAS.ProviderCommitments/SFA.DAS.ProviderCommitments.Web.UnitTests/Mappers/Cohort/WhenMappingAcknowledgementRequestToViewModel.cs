@@ -88,19 +88,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(fixture.Source.CohortReference, result.CohortReference);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ShowApprenticeEmailIsMappedCorrectly(bool expected)
-        {
-            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
-            fixture.AuthorizationService
-                .Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
-                .ReturnsAsync(expected);
-
-            var result = await fixture.Map();
-            Assert.AreEqual(expected, result.ShowApprenticeEmail);
-        }
-
         public enum ExpectedWhatHappensNextType
         {
             TransferFirstApproval,
@@ -182,7 +169,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public AcknowledgementViewModel Result;
         public Mock<ICommitmentsApiClient> CommitmentsApiClient;
         public Mock<IEncodingService> EncodingService;
-        public Mock<IAuthorizationService> AuthorizationService;
         public GetCohortResponse Cohort;
         public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
         private Fixture _autoFixture;
@@ -203,9 +189,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(DraftApprenticeshipsResponse);
 
             EncodingService = new Mock<IEncodingService>();
-            AuthorizationService = new Mock<IAuthorizationService>();
 
-            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, AuthorizationService.Object);
+            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
             Source = _autoFixture.Create<AcknowledgementRequest>();
         }
 
