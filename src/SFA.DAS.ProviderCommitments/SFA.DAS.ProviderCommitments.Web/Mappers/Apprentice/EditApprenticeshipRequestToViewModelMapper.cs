@@ -47,6 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, commitment);
 
+            
             var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate)
             {
                 FirstName = apprenticeship.FirstName,
@@ -64,7 +65,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TrainingName = courseDetails.TrainingProgramme.Name,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerName = apprenticeship.EmployerName,
-                ProviderId = apprenticeship.ProviderId
+                ProviderId = apprenticeship.ProviderId,
+                EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice
             };
 
             return result;
