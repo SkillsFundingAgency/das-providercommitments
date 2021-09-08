@@ -39,7 +39,6 @@
             </div>
             @Html.ValidationMessageFor(m => m.SelectedOption, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption)})
             <div class="govuk-radios">
-                <p>@Model.SelectedOption</p>
                 @foreach (var option in Model.Options)
                 {
                     <div class="govuk-radios__item">
