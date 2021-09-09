@@ -190,44 +190,66 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
-                <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
             @if (!string.IsNullOrEmpty(Model.Email))
             {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Email address</th>
-                    <td id="apprentice-email" class="govuk-table__cell das-table-cell-width-55">@Model.Email</td>
-                </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header das-table-cell-width-45">Email address</th>
+                <td id="apprentice-email" class="govuk-table__cell das-table-cell-width-55">@Model.Email</td>
+                <td class="govuk-table__cell"></td>
+            </tr>
             }
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Date of birth</th>
                 <td id="apprentice-dob" class="govuk-table__cell">@Model.DateOfBirth.ToGdsFormat()</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Unique learner number</th>
                 <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
                 <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
+                <td class="govuk-table__cell"></td>
             </tr>
+            @if (!string.IsNullOrEmpty(Model.Version))
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Version</th>
+                    <td id="apprentice-course" class="govuk-table__cell">@Model.Version</td>
+                    <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
+                        @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
+                        {
+                            <a id="change-version-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ChangeVersion)">Change</a>
+                        }
+                    </td>
+                </tr>
+            }
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Training start date</th>
                 <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.ToGdsFormatWithoutDay()</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Training end date</th>
                 <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
                 <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Your reference</th>
                 <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             </tbody>
         </table>

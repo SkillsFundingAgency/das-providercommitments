@@ -67,6 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DateOfBirth = data.Apprenticeship.DateOfBirth,
                     Uln = data.Apprenticeship.Uln,
                     CourseName = data.Apprenticeship.CourseName,
+                    Version = data.Apprenticeship.Version,
                     StartDate = data.Apprenticeship.StartDate,
                     EndDate = data.Apprenticeship.EndDate,
                     ProviderRef = data.Apprenticeship.ProviderReference,
@@ -81,6 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasContinuation = data.Apprenticeship.HasContinuation,
+                    ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),
                     EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
                         .Select(coe => new EmployerHistory
                         {
@@ -148,6 +150,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 dataLocksTask.Result,
                 changeOfPartyRequestsTask.Result,
                 changeOfEmployerChainTask.Result);
+        }
+
+        private async Task<bool> HasNewerVersions(GetApprenticeshipResponse apprenticeship)
+        {
+            if (int.TryParse(apprenticeship.CourseCode, out var standardId))
+            {
+                var versionResponse = await _commitmentApiClient.GetTrainingProgrammeVersions(standardId.ToString());
+
+                if (versionResponse.TrainingProgrammeVersions.Where(v => decimal.Parse(v.Version) > decimal.Parse(apprenticeship.Version)).Count() > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

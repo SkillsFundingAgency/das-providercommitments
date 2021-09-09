@@ -96,11 +96,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (source.CourseCode != apprenticeship.CourseCode)
             {
-                var courseDetails = await _commitmentApi.GetTrainingProgramme(source.CourseCode);
                 vm.CourseCode = source.CourseCode;
-                vm.CourseName = courseDetails?.TrainingProgramme.Name;
             }
             vm.OriginalApprenticeship.CourseCode = apprenticeship.CourseCode;
+
+            if (source.Version != apprenticeship.Version || source.CourseCode != apprenticeship.CourseCode)
+            {
+                vm.Version = source.Version;
+            }
+            vm.OriginalApprenticeship.Version = apprenticeship.Version;
+
+            if (source.TrainingName != apprenticeship.CourseName)
+            {
+                vm.CourseName = source.TrainingName;
+            }
             vm.OriginalApprenticeship.CourseName = apprenticeship.CourseName;
 
             return vm;
