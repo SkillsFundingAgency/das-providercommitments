@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
     {
         public ChangeVersionViewModelValidator()
         {
-            RuleFor(x => x.SelectedVersion).NotNull().WithMessage("Select a version");
+            RuleFor(x => x.SelectedVersion).NotEmpty().WithMessage("Select a version");
         }
     }
 }

@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = await Controller.ChangeVersion(_request);
 
-            return result as OkObjectResult;
+            return result as ViewResult;
         }
 
         public void VerifyMapperWasCalled()
