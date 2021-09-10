@@ -156,12 +156,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             if (int.TryParse(apprenticeship.CourseCode, out var standardId))
             {
-                var versionResponse = await _commitmentApiClient.GetTrainingProgrammeVersions(standardId.ToString());
+                var latestVersionResponse = await _commitmentApiClient.GetTrainingProgramme(standardId.ToString());
 
-                if (versionResponse.TrainingProgrammeVersions.Where(v => decimal.Parse(v.Version) > decimal.Parse(apprenticeship.Version)).Count() > 0)
-                {
+                if (apprenticeship.StandardUId != latestVersionResponse.TrainingProgramme.StandardUId)
                     return true;
-                }
             }
 
             return false;

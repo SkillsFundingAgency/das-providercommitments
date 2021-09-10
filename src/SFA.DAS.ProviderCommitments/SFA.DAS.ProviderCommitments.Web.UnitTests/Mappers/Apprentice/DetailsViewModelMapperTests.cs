@@ -487,6 +487,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(true, _fixture.Result.ShowChangeVersionLink);
         }
 
+        [Test]
+        public async Task And_NoNewerVersionExists_Then_ShowChangeVersionLinkIsFalse()
+        {
+            _fixture.WithoutNewerVersions();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -498,7 +508,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
-            public GetTrainingProgrammeVersionsResponse GetTrainingProgrammeVersionsResponse { get; private set; }
+            public GetTrainingProgrammeResponse GetTrainingProgrammeResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -547,9 +557,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
                 };
                 
-                GetTrainingProgrammeVersionsResponse = new GetTrainingProgrammeVersionsResponse()
+                GetTrainingProgrammeResponse = new GetTrainingProgrammeResponse()
                 {
-                    TrainingProgrammeVersions = new List<TrainingProgramme>()
+                    TrainingProgramme = new TrainingProgramme()
                 };
 
                 _encodingService = new Mock<IEncodingService>();
@@ -584,8 +594,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
-                apiClient.Setup(x => x.GetTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(GetTrainingProgrammeVersionsResponse);
+                apiClient.Setup(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetTrainingProgrammeResponse);
 
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _authorizationService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
@@ -602,20 +612,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithNewerVersions()
             {
                 ApiResponse.CourseCode = "1";
-                ApiResponse.Version = "1.0";
-
-                var currentTrainingProgramme = Fixture.Build<TrainingProgramme>()
-                    .With(x => x.CourseCode, "1")
-                    .With(x => x.Version, "1.0").Create();
+                ApiResponse.StandardUId = "ST0001_1.0";
 
                 var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
                     .With(x => x.CourseCode, "1")
-                    .With(x => x.Version, "1.1").Create();
+                    .With(x => x.StandardUId, "ST0001_1.1").Create();
 
-                GetTrainingProgrammeVersionsResponse.TrainingProgrammeVersions = new List<TrainingProgramme>
-                {
-                    currentTrainingProgramme, newerTrainingProgramme
-                };
+                GetTrainingProgrammeResponse.TrainingProgramme = newerTrainingProgramme;
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithoutNewerVersions()
+            {
+                ApiResponse.CourseCode = "1";
+                ApiResponse.StandardUId = "ST0001_1.0";
+
+                var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
+                    .With(x => x.CourseCode, "1")
+                    .With(x => x.StandardUId, "ST0001_1.0").Create();
+
+                GetTrainingProgrammeResponse.TrainingProgramme = newerTrainingProgramme;
 
                 return this;
             }

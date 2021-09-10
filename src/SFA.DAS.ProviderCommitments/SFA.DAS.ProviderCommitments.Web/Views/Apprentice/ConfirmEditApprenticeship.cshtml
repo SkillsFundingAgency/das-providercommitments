@@ -198,10 +198,10 @@
 @section breadcrumb {
     @if (!string.IsNullOrEmpty(Model.Version) && string.IsNullOrEmpty(Model.CourseCode) && !Model.StartDate.HasValue)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeVersion)">Back</a>
     }
     else
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { ProviderId = Model.ProviderId ,ApprenticeshipHashedId = Model.ApprenticeshipHashedId })">Back to apprentice details</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId ,ApprenticeshipHashedId = Model.ApprenticeshipHashedId })">Back to apprentice details</a>
     }
 }

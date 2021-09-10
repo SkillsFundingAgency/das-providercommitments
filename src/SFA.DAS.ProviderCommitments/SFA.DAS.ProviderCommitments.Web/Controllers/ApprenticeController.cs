@@ -393,6 +393,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> ChangeVersion(ChangeVersionRequest request)
         {
             var viewModel = await _modelMapper.Map<ChangeVersionViewModel>(request);
+
+            var editViewModel = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>("EditApprenticeshipRequestViewModel");
+
+            if (editViewModel != null)
+            {
+                viewModel.SelectedVersion = editViewModel.Version;
+            }
+
             return View(viewModel);
         }
 
