@@ -104,6 +104,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task Version_IsMapped()
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Version, result.Version);
+        }
+
+        [Test]
         public async Task Reference_IsMapped()
         {
             var result = await mapper.Map(request);

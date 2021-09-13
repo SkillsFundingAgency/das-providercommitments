@@ -115,6 +115,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenVersionIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Version, _fixture.Result.Version);
+        }
+
+        [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             await _fixture.Map();
@@ -460,6 +467,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(email, _fixture.Result.Email);
         }
 
+        [Test]
+        public async Task And_ApprenticeshipIsAFramework_Then_ShowChangeVersionLinkIsFalse()
+        {
+            _fixture.WithFramework();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
+        }
+
+        [Test]
+        public async Task And_NewerVersionExists_Then_ShowChangeVersionLinkIsTrue()
+        {
+            _fixture.WithNewerVersions();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(true, _fixture.Result.ShowChangeVersionLink);
+        }
+
+        [Test]
+        public async Task And_NoNewerVersionExists_Then_ShowChangeVersionLinkIsFalse()
+        {
+            //_fixture.WithoutNewerVersions();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -471,6 +508,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
+            public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -518,6 +556,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 {
                     ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
                 };
+                
+                GetNewerTrainingProgrammeVersionsResponse = new GetNewerTrainingProgrammeVersionsResponse()
+                {
+                    NewerVersions = new List<TrainingProgramme>()
+                };
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
@@ -551,9 +594,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
+                apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
+
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _authorizationService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithFramework()
+            {
+                ApiResponse.CourseCode = "123-1-2";
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithNewerVersions()
+            {
+                ApiResponse.StandardUId = "ST0001_1.0";
+
+                var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
+                    .With(x => x.CourseCode, "1")
+                    .With(x => x.StandardUId, "ST0001_1.1").Create();
+
+                GetNewerTrainingProgrammeVersionsResponse.NewerVersions = new List<TrainingProgramme> { newerTrainingProgramme };
+
                 return this;
             }
 

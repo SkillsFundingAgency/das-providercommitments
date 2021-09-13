@@ -10,6 +10,7 @@
         public const string ChangeEmployer = "apprentice-change-employer";
         public const string ChangeEmployerInform = "apprentice-change-employer-inform";
         public const string ChangeEmployerDetails = "apprentice-change-employer-details";
+        public const string ChangeVersion = "change-version";
         public const string ApprenticeSelectEmployer = "apprentice-select-employer";
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";
         public const string ApprenticeStartDate = "apprentice-start-date";

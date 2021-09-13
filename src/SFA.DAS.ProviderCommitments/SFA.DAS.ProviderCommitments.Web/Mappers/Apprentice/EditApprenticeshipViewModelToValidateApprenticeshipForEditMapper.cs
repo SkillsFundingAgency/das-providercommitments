@@ -23,7 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
                 TrainingCode = source.CourseCode,
-                ProviderId = source.ProviderId
+                ProviderId = source.ProviderId,
+                Version = source.Version
             };
             return Task.FromResult(result);
         }

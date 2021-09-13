@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime DateOfBirth { get; set; }
         public string Uln { get; set; }
         public string CourseName { get; set; }
+        public string Version { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string ProviderRef { get; set; }
@@ -40,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public ConfirmationStatus? ConfirmationStatus { get; set; }
         public bool ShowConfirmationStatus { get; set; }
         public string Email { get; set; }
+        public bool ShowChangeVersionLink { get; set; }
         public enum DataLockSummaryStatus
         {
             None,
