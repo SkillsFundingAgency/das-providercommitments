@@ -90,6 +90,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("ChooseCohort")]
+        public async Task<IActionResult> ChooseCohort(CohortsByProviderRequest request)
+        {
+            var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
+            return View(chooseCohortViewModel);
+        }
+        
         [HttpPost]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
