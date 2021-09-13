@@ -7,6 +7,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         private ChangeVersionRequest _request;
         private GetApprenticeshipResponse _getApprenticeshipResponse;
-        private GetTrainingProgrammeVersionsResponse _getTrainingProgrammeVersionsResponse;
+        private GetTrainingProgrammeResponse _getCurrentVersionResponse;
+        private GetNewerTrainingProgrammeVersionsResponse _getNewerVersionsResponse;
 
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
 
@@ -37,15 +39,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     .With(x => x.StandardUId, "ST0001_1.1")
                 .Create();
 
-            _getTrainingProgrammeVersionsResponse = GetTrainingProgrammeVersions();
+            var currentTrainingProgramme = _fixture.Build<TrainingProgramme>().Create();
+
+            _getCurrentVersionResponse = new GetTrainingProgrammeResponse
+            {
+                TrainingProgramme = currentTrainingProgramme
+            };
+
+            var newerVersion = _fixture.Build<TrainingProgramme>()
+                .With(x => x.Version, "1.2")
+                .Create();
+
+            _getNewerVersionsResponse = new GetNewerTrainingProgrammeVersionsResponse
+            {
+                NewerVersions = new List<TrainingProgramme> { newerVersion }
+            };
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
             _mockCommitmentsApiClient.Setup(c => c.GetApprenticeship(_request.ApprenticeshipId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_getApprenticeshipResponse);
 
-            _mockCommitmentsApiClient.Setup(c => c.GetTrainingProgrammeVersions(_getApprenticeshipResponse.CourseCode, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_getTrainingProgrammeVersionsResponse);
+            _mockCommitmentsApiClient.Setup(c => c.GetTrainingProgrammeVersionByStandardUId(_getApprenticeshipResponse.StandardUId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_getCurrentVersionResponse);
+
+            _mockCommitmentsApiClient.Setup(c => c.GetNewerTrainingProgrammeVersions(_getApprenticeshipResponse.StandardUId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_getNewerVersionsResponse);
 
             _mapper = new ChangeVersionViewModelMapper(_mockCommitmentsApiClient.Object);
         }
@@ -61,12 +80,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task Then_CurrentVersionInfoIsMapped()
         {
-            var currentVersion = _getTrainingProgrammeVersionsResponse.TrainingProgrammeVersions.FirstOrDefault(x => x.Version == _getApprenticeshipResponse.Version);
-
             var viewModel = await _mapper.Map(_request);
 
-            viewModel.StandardTitle.Should().Be(currentVersion.Name);
-            viewModel.StandardUrl.Should().Be(currentVersion.StandardPageUrl);
+            viewModel.StandardTitle.Should().Be(_getCurrentVersionResponse.TrainingProgramme.Name);
+            viewModel.StandardUrl.Should().Be(_getCurrentVersionResponse.TrainingProgramme.StandardPageUrl);
         }
 
         [Test]
@@ -76,26 +93,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             viewModel.NewerVersions.Count().Should().Be(1);
             viewModel.NewerVersions.Should().Contain("1.2");
-        }
-
-        private GetTrainingProgrammeVersionsResponse GetTrainingProgrammeVersions()
-        {
-            var versions = _fixture.CreateMany<TrainingProgramme>(3).ToList();
-
-            foreach (var version in versions)
-            {
-                version.CourseCode = "1";
-            }
-
-            versions[0].Version = "1.0";
-            versions[1].Version = "1.1";
-            versions[1].StandardUId = "ST0001_1.1";
-            versions[2].Version = "1.2";
-
-            return new GetTrainingProgrammeVersionsResponse
-            {
-                TrainingProgrammeVersions = versions
-            };
         }
     }
 }

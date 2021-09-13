@@ -490,7 +490,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task And_NoNewerVersionExists_Then_ShowChangeVersionLinkIsFalse()
         {
-            _fixture.WithoutNewerVersions();
+            //_fixture.WithoutNewerVersions();
 
             await _fixture.Map();
 
@@ -508,7 +508,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetDataLocksResponse GetDataLocksResponse { get; private set; }
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
-            public GetTrainingProgrammeResponse GetTrainingProgrammeResponse { get; private set; }
+            public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -557,9 +557,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
                 };
                 
-                GetTrainingProgrammeResponse = new GetTrainingProgrammeResponse()
+                GetNewerTrainingProgrammeVersionsResponse = new GetNewerTrainingProgrammeVersionsResponse()
                 {
-                    TrainingProgramme = new TrainingProgramme()
+                    NewerVersions = new List<TrainingProgramme>()
                 };
 
                 _encodingService = new Mock<IEncodingService>();
@@ -594,8 +594,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
-                apiClient.Setup(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(GetTrainingProgrammeResponse);
+                apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _authorizationService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
@@ -611,28 +611,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithNewerVersions()
             {
-                ApiResponse.CourseCode = "1";
                 ApiResponse.StandardUId = "ST0001_1.0";
 
                 var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
                     .With(x => x.CourseCode, "1")
                     .With(x => x.StandardUId, "ST0001_1.1").Create();
 
-                GetTrainingProgrammeResponse.TrainingProgramme = newerTrainingProgramme;
-
-                return this;
-            }
-
-            public DetailsViewModelMapperFixture WithoutNewerVersions()
-            {
-                ApiResponse.CourseCode = "1";
-                ApiResponse.StandardUId = "ST0001_1.0";
-
-                var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
-                    .With(x => x.CourseCode, "1")
-                    .With(x => x.StandardUId, "ST0001_1.0").Create();
-
-                GetTrainingProgrammeResponse.TrainingProgramme = newerTrainingProgramme;
+                GetNewerTrainingProgrammeVersionsResponse.NewerVersions = new List<TrainingProgramme> { newerTrainingProgramme };
 
                 return this;
             }

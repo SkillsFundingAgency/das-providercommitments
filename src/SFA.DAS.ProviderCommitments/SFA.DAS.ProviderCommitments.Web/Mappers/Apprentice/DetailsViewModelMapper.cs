@@ -154,11 +154,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         private async Task<bool> HasNewerVersions(GetApprenticeshipResponse apprenticeship)
         {
-            if (int.TryParse(apprenticeship.CourseCode, out var standardId))
+            if (apprenticeship.StandardUId != null)
             {
-                var latestVersionResponse = await _commitmentApiClient.GetTrainingProgramme(standardId.ToString());
+                var newerVersions = await _commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
 
-                if (apprenticeship.StandardUId != latestVersionResponse.TrainingProgramme.StandardUId)
+                if (newerVersions != null && newerVersions.NewerVersions.Count() > 0)
                     return true;
             }
 
