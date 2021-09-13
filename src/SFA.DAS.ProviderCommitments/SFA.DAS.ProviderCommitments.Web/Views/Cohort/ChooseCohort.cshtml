@@ -1,4 +1,7 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ChooseCohortViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ChooseCohortViewModel
 
 @{
     ViewData["Title"] = "Choose Cohort";
@@ -12,7 +15,18 @@
             <table class="govuk-table das-table--responsive">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header das-table-cell-width-25">Employer</th>
+                        <th scope="col" class="govuk-table__header das-table-cell-width-25"></th>
+                        
+                        <th scope="col" class="govuk-table__header">
+                            <a class="@(Model.SortField == "Employer" ? Model.SortedByHeaderClassName : ChooseCohortViewModel.HeaderClassName)"
+                               asp-route="@RouteNames.ApprenticesIndex"
+                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Employer")"
+                               title="Sort the table by Employer">
+                                Employer
+                            </a>
+                        </th>
+                        
+
                         <th scope="col" class="govuk-table__header das-table-cell-width-10">Cohort</th>
                         <th scope="col" class="govuk-table__header das-table-cell-width-10">Status</th>
                         <th scope="col" class="govuk-table__header das-table-cell-width-25 govuk-table__header--numeric">Number of apprentices</th>

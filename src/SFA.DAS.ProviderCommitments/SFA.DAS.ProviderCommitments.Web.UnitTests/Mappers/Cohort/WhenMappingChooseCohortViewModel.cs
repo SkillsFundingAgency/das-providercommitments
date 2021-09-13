@@ -19,12 +19,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingChooseCohortViewModel
     {
         [Test]
-        public async Task OnlyTheCohortsInDraftWithProviderAreMapped()
+        public async Task CohortsInDraftWithProviderAreMapped()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
             await fixture.Map();
 
-            fixture.Verify_OnlyTheCohorts_InDraftWithProvider_Are_Mapped();
+            fixture.Verify_Cohorts_InDraftWithProvider_Are_Mapped();
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Cohorts_InDraftWithProvider_Are_Mapped()
         {
-            Assert.AreEqual(2, ChooseCohortViewModel.Cohorts.Count());
+            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
 
             Assert.IsNotNull(GetCohortInReviewViewModel(5));
             Assert.IsNotNull(GetCohortInReviewViewModel(6));
@@ -168,6 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 1,
                     ProviderId = 1,
                     LegalEntityName = "Employer1",
+                    AccountLegalEntityPublicHashedId = "100A",
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
@@ -180,6 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 2,
                     ProviderId = 1,
                     LegalEntityName = "Employer2",
+                    AccountLegalEntityPublicHashedId = "200B",
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
                     WithParty = Party.Provider,
@@ -192,6 +194,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 3,
                     ProviderId = 1,
                     LegalEntityName = "Employer3",
+                    AccountLegalEntityPublicHashedId = "300C",
                     NumberOfDraftApprentices = 300,
                     IsDraft = true,
                     WithParty = Party.Employer,
@@ -203,6 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 4,
                     ProviderId = 1,
                     LegalEntityName = "Employer4",
+                    AccountLegalEntityPublicHashedId = "400D",
                     NumberOfDraftApprentices = 400,
                     IsDraft = false,
                     WithParty = Party.Employer,
@@ -214,6 +218,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      AccountId = 5,
                      ProviderId = 1,
                      LegalEntityName = "Employer5",
+                     AccountLegalEntityPublicHashedId = "500E",
                      NumberOfDraftApprentices = 500,
                      IsDraft = true,
                      WithParty = Party.Provider,
@@ -225,6 +230,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      AccountId = 6,
                      ProviderId = 1,
                      LegalEntityName = "Employer6",
+                     AccountLegalEntityPublicHashedId = "600F",
                      NumberOfDraftApprentices = 600,
                      IsDraft = true,
                      WithParty = Party.Provider,

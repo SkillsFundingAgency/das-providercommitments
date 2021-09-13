@@ -38,8 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
                         Status = y.GetStatus() == CohortStatus.Review ? "Ready to review" : "Draft",
                         NumberOfApprentices = y.NumberOfDraftApprentices,
-                       // AccountLegalEntityPublicHashedId = y.AccountLegalEntityPublicHashedId
-                    }).ToList()
+                        AccountLegalEntityPublicHashedId = y.AccountLegalEntityPublicHashedId
+                    }).ToList(),
+                FilterModel = new ChooseCohortFilterModel()
+
             };
 
             return chooseCohortViewModel;
