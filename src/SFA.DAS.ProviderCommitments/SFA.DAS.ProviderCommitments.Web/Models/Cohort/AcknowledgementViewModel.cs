@@ -16,7 +16,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool CohortApproved { get; set; }
         public bool IsTransfer { get;  set; }
         public long? ChangeOfPartyRequestId { get;  set; }
-        public bool ShowApprenticeEmail { get; set; }
         public Party WithParty { get; set; }
     }
 }

@@ -93,6 +93,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         public TrainingProgramme[] Courses { get; set; }
         public bool IsContinuation { get; set; }
-        public bool ShowEmail { get; set; }
     }
 }

@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
@@ -18,12 +12,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly IEncodingService _encodingService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IAuthorizationService _authorizationService;
 
-        public AcknowledgementRequestViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingSummary, IAuthorizationService authorizationService)
+        public AcknowledgementRequestViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingSummary)
         {
             _encodingService = encodingSummary;
-            _authorizationService = authorizationService;
             _commitmentsApiClient = commitmentApiClient;
         }
 
@@ -44,8 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 IsTransfer = cohort.TransferSenderId.HasValue,
 
                 CohortApproved = cohort.IsApprovedByProvider && cohort.IsApprovedByEmployer,
-                ChangeOfPartyRequestId = cohort.ChangeOfPartyRequestId,
-                ShowApprenticeEmail  = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
+                ChangeOfPartyRequestId = cohort.ChangeOfPartyRequestId
             };
 
             switch (source.SaveStatus)
