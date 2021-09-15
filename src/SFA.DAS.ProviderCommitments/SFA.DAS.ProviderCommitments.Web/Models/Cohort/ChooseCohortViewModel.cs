@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public const string HeaderClassName = "das-table__sort";
 
-        public ChooseCohortFilterModel FilterModel { get; set; } 
+        public ChooseCohortFilterModel FilterModel { get; set; } = new ChooseCohortFilterModel();
 
         public void SortedByHeader()
         {

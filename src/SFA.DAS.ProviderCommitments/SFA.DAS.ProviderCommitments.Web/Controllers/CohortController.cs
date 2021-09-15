@@ -92,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("ChooseCohort", Name = RouteNames.ChooseCohort)]
+        [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
         public async Task<IActionResult> ChooseCohort(ChooseCohortByProviderRequest request)
         {
             var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
