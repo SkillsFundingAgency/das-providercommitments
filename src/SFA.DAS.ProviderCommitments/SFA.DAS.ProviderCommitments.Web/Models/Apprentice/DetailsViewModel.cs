@@ -39,7 +39,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
         public TriageOption AvailableTriageOption { get; set; }
         public ConfirmationStatus? ConfirmationStatus { get; set; }
-        public bool ShowConfirmationStatus { get; set; }
         public string Email { get; set; }
         public bool ShowChangeVersionLink { get; set; }
         public enum DataLockSummaryStatus

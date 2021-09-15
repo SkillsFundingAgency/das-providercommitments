@@ -10,12 +10,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     public class ViewDraftApprenticeshipViewModelMapper : IMapper<DraftApprenticeshipRequest, ViewDraftApprenticeshipViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IAuthorizationService _authorizationService;
 
-        public ViewDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
+        public ViewDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
-            _authorizationService = authorizationService;
         }
 
         public async Task<ViewDraftApprenticeshipViewModel> Map(DraftApprenticeshipRequest source)
@@ -39,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = draftApprenticeship.StartDate,
                 EndDate = draftApprenticeship.EndDate,
                 Reference = draftApprenticeship.Reference,
-                ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
                 TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
                 HasTrainingCourseOption = draftApprenticeship.HasStandardOptions

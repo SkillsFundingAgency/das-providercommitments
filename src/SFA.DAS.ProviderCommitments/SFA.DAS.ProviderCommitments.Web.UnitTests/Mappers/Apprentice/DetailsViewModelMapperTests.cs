@@ -15,7 +15,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -174,17 +173,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.AreEqual(status, _fixture.Result.ConfirmationStatus);
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenShowConfirmationStatusIsMappedCorrectly(bool show)
-        {
-            _fixture.WithShowConfirmationStatus(show);
-
-            await _fixture.Map();
-
-            Assert.AreEqual(show, _fixture.Result.ShowConfirmationStatus);
         }
 
         [TestCase]
@@ -597,7 +585,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, _authorizationService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
                 return this;
@@ -633,13 +621,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ConfirmationStatus? status)
             {
                 ApiResponse.ConfirmationStatus = status;
-                return this;
-            }
-
-            public DetailsViewModelMapperFixture WithShowConfirmationStatus(bool show)
-            {
-                _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
-                    .ReturnsAsync(show);
                 return this;
             }
 

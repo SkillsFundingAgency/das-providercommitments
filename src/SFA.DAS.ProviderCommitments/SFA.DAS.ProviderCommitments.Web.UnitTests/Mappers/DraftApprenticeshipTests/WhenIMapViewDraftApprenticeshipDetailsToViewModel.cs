@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -21,7 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private Func<Task<ViewDraftApprenticeshipViewModel>> _act;
         private GetDraftApprenticeshipResponse _apiResponse;
         private GetTrainingProgrammeResponse _apiTrainingProgrammeResponse;
-        private Mock<IAuthorizationService> _authorizationService;
 
         [SetUp]
         public void Arrange()
@@ -39,9 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             commitmentsApiClient.Setup(x => x.GetTrainingProgramme(_apiResponse.CourseCode, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_apiTrainingProgrammeResponse);
 
-            _authorizationService = new Mock<IAuthorizationService>();
-
-            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object);
+            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object);
             _source = fixture.Build<DraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as ViewDraftApprenticeshipViewModel;
@@ -130,15 +125,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(_apiResponse.Reference, result.Reference);
         }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenShowEmailIsMappedCorrectly(bool showEmail)
-        {
-            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
-            var result = await _act();
-            Assert.AreEqual(showEmail, result.ShowEmail);
-        }
         
         [Test]
         public async Task ThenTheVersionIsMapped()
@@ -146,8 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(_apiResponse.TrainingCourseVersion, result.TrainingCourseVersion);
         }
-        
-        
+                
         [Test]
         public async Task ThenTheSelectedOptionIsMapped()
         {
