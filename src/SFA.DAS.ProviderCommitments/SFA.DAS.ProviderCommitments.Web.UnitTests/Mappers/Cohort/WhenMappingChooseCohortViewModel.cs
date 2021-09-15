@@ -86,7 +86,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         public Mock<IEncodingService> EncodingService { get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public CohortsByProviderRequest DraftRequest { get; set; }
+        public ChooseCohortByProviderRequest ChooseCohortByProviderRequest { get; set; }
         public GetCohortsResponse GetCohortsResponse { get; set; }
         public ChooseCohortViewModelMapper Mapper { get; set; }
         public ChooseCohortViewModel ChooseCohortViewModel { get; set; }
@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             EncodingService = new Mock<IEncodingService>();
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
-            DraftRequest = new CohortsByProviderRequest() { ProviderId = ProviderId };
+            ChooseCohortByProviderRequest = new ChooseCohortByProviderRequest() { ProviderId = ProviderId };
             GetCohortsResponse = CreateGetCohortsResponse();
 
             CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
@@ -109,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task<WhenMappingChooseCohortViewModelFixture> Map()
         {
-            ChooseCohortViewModel = await Mapper.Map(DraftRequest);
+            ChooseCohortViewModel = await Mapper.Map(ChooseCohortByProviderRequest);
             return this;
         }
 

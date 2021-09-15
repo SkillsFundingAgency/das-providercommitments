@@ -12,5 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string Status { get; set; }
         public int NumberOfApprentices { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

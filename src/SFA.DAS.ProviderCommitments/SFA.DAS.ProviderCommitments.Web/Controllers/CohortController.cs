@@ -18,6 +18,7 @@ using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -91,10 +92,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("ChooseCohort")]
-        public async Task<IActionResult> ChooseCohort(CohortsByProviderRequest request)
+        [Route("ChooseCohort", Name = RouteNames.ChooseCohort)]
+        public async Task<IActionResult> ChooseCohort(ChooseCohortByProviderRequest request)
         {
             var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
+            chooseCohortViewModel.SortedByHeader();
+
             return View(chooseCohortViewModel);
         }
         

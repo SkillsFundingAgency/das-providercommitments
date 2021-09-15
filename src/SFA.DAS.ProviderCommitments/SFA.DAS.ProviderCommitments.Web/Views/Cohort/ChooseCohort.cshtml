@@ -4,52 +4,96 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ChooseCohortViewModel
 
 @{
-    ViewData["Title"] = "Choose Cohort";
+    ViewData["Title"] = "Choose a cohort";
     ViewBag.GaData.Vpv = "/unapproved/ChooseCohort";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
-            <h1 class="govuk-heading-xl">Choose a Cohort</h1>
+
+            <h1 class="govuk-heading-xl">Choose a cohort</h1>
+
             <table class="govuk-table das-table--responsive">
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header das-table-cell-width-25"></th>
-                        
-                        <th scope="col" class="govuk-table__header">
-                            <a class="@(Model.SortField == "Employer" ? Model.SortedByHeaderClassName : ChooseCohortViewModel.HeaderClassName)"
-                               asp-route="@RouteNames.ApprenticesIndex"
-                               asp-all-route-data="@Model.FilterModel.BuildSortRouteData("Employer")"
-                               title="Sort the table by Employer">
-                                Employer
-                            </a>
-                        </th>
-                        
 
-                        <th scope="col" class="govuk-table__header das-table-cell-width-10">Cohort</th>
-                        <th scope="col" class="govuk-table__header das-table-cell-width-10">Status</th>
+                    <tr class="govuk-table__row">
+
+                        @if (Model.Cohorts.Any())
+                        {
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                <a class="@(Model.FilterModel.SortField == nameof(ChooseCohortSummaryViewModel.EmployerName) ? Model.SortedByHeaderClassName : ChooseCohortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.ChooseCohort"
+                                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData(nameof(ChooseCohortSummaryViewModel.EmployerName))"
+                                   title="Sort the table by Employer">
+                                    Employer
+                                </a>
+                            </th>
+
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                <a class="@(Model.FilterModel.SortField == nameof(ChooseCohortSummaryViewModel.CohortReference) ? Model.SortedByHeaderClassName : ChooseCohortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.ChooseCohort"
+                                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData(nameof(ChooseCohortSummaryViewModel.CohortReference))"
+                                   title="Sort the table by Cohort">
+                                    Cohort
+                                </a>
+                            </th>
+
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                <a class="@(Model.FilterModel.SortField == nameof(ChooseCohortSummaryViewModel.Status) ? Model.SortedByHeaderClassName : ChooseCohortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.ChooseCohort"
+                                   asp-all-route-data="@Model.FilterModel.BuildSortRouteData(nameof(ChooseCohortSummaryViewModel.Status))"
+                                   title="Sort the table by Status">
+                                    Status
+                                </a>
+                            </th>
+                        }
+                        else
+                        {
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">Employer</th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">Cohort</th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">Status</th>
+                        }
+
                         <th scope="col" class="govuk-table__header das-table-cell-width-25 govuk-table__header--numeric">Number of apprentices</th>
                         <th scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-15"></th>
                     </tr>
+
                 </thead>
                 <tbody class="govuk-table__body">
                     @foreach (var cohort in Model.Cohorts)
                     {
-                    <tr class="govuk-table__row" data-cohort="@cohort.CohortReference">
-                        <td class="govuk-table__cell" data-label="Employer">@cohort.EmployerName</td>
-                        <td class="govuk-table__cell" data-label="Reference">@cohort.CohortReference</td>
-                        <td class="govuk-table__cell" data-label="Last Message">@cohort.Status</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Number of apprentices">@cohort.NumberOfApprentices</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="">
-                            <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.Action("ConfirmEmployer", "Cohort", new { Model.ProviderId, EmployerAccountLegalEntityPublicHashedId = cohort.AccountLegalEntityPublicHashedId })">Select</a>
-                        </td>
-                    </tr>
+                        <tr class="govuk-table__row" data-cohort="@cohort.CohortReference">
+                            <td class="govuk-table__cell" data-label="Employer">@cohort.EmployerName</td>
+                            <td class="govuk-table__cell" data-label="Reference">@cohort.CohortReference</td>
+                            <td class="govuk-table__cell" data-label="Last Message">@cohort.Status</td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Number of apprentices">@cohort.NumberOfApprentices</td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="">
+                                <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.Action("Details", new { Model.ProviderId, cohort.CohortReference})">Select</a>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
+
+            @if (!Model.Cohorts.Any())
+            {
+                <p class="govuk-body" style="text-align: center;">You need to create a cohort to add apprentice details</p>
+
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible  govuk-!-margin-bottom-8">
+
+                <form action="@Url.Action("SelectEmployer", "Cohort", new {ProviderId = Model.ProviderId})">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Create a cohort
+                    </button>
+                </form>
+            }
+
         </div>
     </div>
+
+
+
 </div>
 
 @section breadcrumb

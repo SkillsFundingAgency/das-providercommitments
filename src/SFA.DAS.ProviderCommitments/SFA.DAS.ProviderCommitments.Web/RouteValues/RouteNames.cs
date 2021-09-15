@@ -22,5 +22,6 @@
         public const string RequestRestart = "request-restart";
         public const string UpdateDateLock = "update-datalock";
         public const string UpdateDataLockConfirm = "update-datalock-confirm";
+        public const string ChooseCohort = "choose-a-cohort";
     }
 }
