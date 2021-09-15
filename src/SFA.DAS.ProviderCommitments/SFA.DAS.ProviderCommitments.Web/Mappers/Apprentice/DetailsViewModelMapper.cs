@@ -150,7 +150,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 var newerVersions = await _commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
 
-                if (newerVersions != null && newerVersions.NewerVersions.Count() > 0)
+                if (newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Count() > 0)
                     return true;
             }
 
