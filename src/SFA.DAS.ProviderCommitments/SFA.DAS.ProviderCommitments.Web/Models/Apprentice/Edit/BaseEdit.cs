@@ -27,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public string ULN { get; set; }
         public string CourseName { get; set; }
         public string Version { get; set; }
+        public string Option { get; set; }
         public decimal? Cost { get; set; }
         public string ProviderReference { get; set; }
 
