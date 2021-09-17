@@ -77,7 +77,7 @@
                     <input asp-for="LastName" class="govuk-input govuk-!-width-two-thirds" id="lastName" />
                 </div>
 
-                @if (!string.IsNullOrEmpty(Model.Email))
+                @if (!string.IsNullOrEmpty(Model.Email) || Model.EmailShouldBePresent)
                 {
                     @if (!Model.EmailAddressConfirmedByApprentice)
                     {
