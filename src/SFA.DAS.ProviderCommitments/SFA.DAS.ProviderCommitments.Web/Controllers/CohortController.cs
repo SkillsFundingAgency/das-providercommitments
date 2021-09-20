@@ -96,8 +96,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> ChooseCohort(ChooseCohortByProviderRequest request)
         {
             var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
-            chooseCohortViewModel.SortedByHeader();
-
             return View(chooseCohortViewModel);
         }
         

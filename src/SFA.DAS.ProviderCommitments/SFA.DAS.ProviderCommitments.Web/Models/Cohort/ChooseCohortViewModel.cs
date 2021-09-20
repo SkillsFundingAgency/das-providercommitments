@@ -7,24 +7,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     {
         public long ProviderId { get; set; }
 
-        public string SortedByHeaderClassName { get; set; }
+        public string SortedByHeaderClassName
+        {
+            get
+            {
+                string sortedByHeaderClassName = HeaderClassName;
+
+                if (FilterModel.ReverseSort)
+                {
+                    sortedByHeaderClassName += " das-table__sort--desc";
+                }
+                else
+                {
+                    sortedByHeaderClassName += " das-table__sort--asc";
+                }
+
+                return sortedByHeaderClassName;
+            }
+        }
 
         public const string HeaderClassName = "das-table__sort";
 
         public ChooseCohortFilterModel FilterModel { get; set; } = new ChooseCohortFilterModel();
-
-        public void SortedByHeader()
-        {
-            SortedByHeaderClassName += HeaderClassName;
-            if (FilterModel.ReverseSort)
-            {
-                SortedByHeaderClassName += " das-table__sort--desc";
-            }
-            else
-            {
-                SortedByHeaderClassName += " das-table__sort--asc";
-            }
-        }
 
         public IEnumerable<ChooseCohortSummaryViewModel> Cohorts { get; set; }
     }

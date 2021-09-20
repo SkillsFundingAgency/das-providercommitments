@@ -49,24 +49,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     CreatedOn = y.CreatedOn
                 }).ToList();
 
+           var sortedCohorts = GetSortedCohorts(filterModel, cohorts);
 
-            //Apply Sorting
-           List<ChooseCohortSummaryViewModel> sortedCohorts;
-
-            if (string.IsNullOrWhiteSpace(filterModel.SortField))
-            {
-                sortedCohorts = cohorts.OrderBy(z => z.CreatedOn).ToList();
-            }
-            else
-            {
-                PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(ChooseCohortSummaryViewModel)).Find(filterModel.SortField,true);
-
-                sortedCohorts = filterModel.ReverseSort ?
-                    cohorts.OrderByDescending(z => prop.GetValue(z)).ToList() :
-                    cohorts.OrderBy(z => prop.GetValue(z)).ToList();
-            }
-            
-            var chooseCohortViewModel = new ChooseCohortViewModel
+           var chooseCohortViewModel = new ChooseCohortViewModel
             {
                 ProviderId = source.ProviderId,
                 Cohorts = sortedCohorts,
@@ -74,6 +59,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
 
             return chooseCohortViewModel;
+        }
+
+        private static List<ChooseCohortSummaryViewModel> GetSortedCohorts(ChooseCohortFilterModel filterModel, List<ChooseCohortSummaryViewModel> cohorts)
+        {
+            List<ChooseCohortSummaryViewModel> sortedCohorts;
+
+            if (string.IsNullOrWhiteSpace(filterModel.SortField))
+            {
+                sortedCohorts = cohorts.OrderBy(z => z.CreatedOn).ToList();
+            }
+            else
+            {
+                PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(ChooseCohortSummaryViewModel))
+                    .Find(filterModel.SortField, true);
+
+                sortedCohorts = filterModel.ReverseSort
+                    ? cohorts.OrderByDescending(z => prop.GetValue(z)).ToList()
+                    : cohorts.OrderBy(z => prop.GetValue(z)).ToList();
+            }
+
+            return sortedCohorts;
         }
     }
 }
