@@ -2,7 +2,6 @@
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
@@ -16,18 +15,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _authorizationService = authorizationService;
         }
 
-        public async Task<AddDraftApprenticeshipViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
+        public Task<AddDraftApprenticeshipViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
         {
-            return new AddDraftApprenticeshipViewModel
+            return Task.FromResult(new AddDraftApprenticeshipViewModel
             {
                 ProviderId = source.ProviderId,
                 CohortReference = source.CohortReference,
                 CohortId = source.CohortId,
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId,
-                CourseCode = source.CourseCode,
-                ShowEmail = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
-            };
+                CourseCode = source.CourseCode
+            });
         }
     }
 }

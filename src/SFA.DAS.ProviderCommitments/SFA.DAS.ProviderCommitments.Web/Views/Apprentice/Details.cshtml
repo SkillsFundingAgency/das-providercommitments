@@ -39,7 +39,7 @@
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances"/>
         }
     
-        @if (Model.ShowConfirmationStatus && Model.ConfirmationStatus == ConfirmationStatus.Overdue)
+        @if (Model.ConfirmationStatus == ConfirmationStatus.Overdue)
         {
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
@@ -78,13 +78,10 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
-                @if (Model.ShowConfirmationStatus)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
-                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
-                    </tr>
-                }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
+                </tr>
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
                 {
                     <tr class="govuk-table__row">

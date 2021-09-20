@@ -244,20 +244,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
         }
-
-        [Test, MoqAutoData]
-        public async Task ThenShowsApprenticeConfirmationColumn(
-            bool show,
-            [Frozen] Mock<IAuthorizationService> mockAuthorizationService,
-            IndexViewModelMapper mapper)
-        {
-            var request = new IndexRequest { PageNumber = 0 };
-            mockAuthorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
-                .ReturnsAsync(show);
-
-            var viewModel = await mapper.Map(request);
-
-            viewModel.ShowApprenticeConfirmationColumn.Should().Be(show);
-        }
     }
 }
