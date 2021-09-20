@@ -448,6 +448,48 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(email, _fixture.Result.Email);
         }
 
+        [TestCase(false, Party.None, false, false)]
+        [TestCase(true, Party.None, false, true)]
+        [TestCase(false, Party.Employer, false, false)]
+        [TestCase(false, Party.Provider, false, true)]
+        [TestCase(false, Party.None, true, true)]
+        [TestCase(true, Party.Employer, false, true)]
+        [TestCase(true, Party.Provider, false, true)]
+        [TestCase(true, Party.None, true, true)]
+        [TestCase(false, Party.Employer, true, true)]
+        [TestCase(false, Party.Provider, true, true)]
+        public async Task CheckActionRequiredBannerIsShownCorrectly(bool unresolvedDataLocks, Party? party, bool employerUpdate, bool expected)
+        {
+            if(unresolvedDataLocks) _fixture.WithUnresolvedAndFailedDataLocks();
+            if (employerUpdate) _fixture.WithPendingUpdatesForEmployer();
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, party);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expected, _fixture.Result.ShowActionRequiredBanner);
+        }
+
+        [TestCase(false, Party.None, false, false)]
+        [TestCase(true, Party.None, false, true)]
+        [TestCase(false, Party.Employer, false, true)]
+        [TestCase(false, Party.Provider, false, false)]
+        [TestCase(false, Party.None, true, true)]
+        [TestCase(true, Party.Employer, false, true)]
+        [TestCase(true, Party.Provider, false, true)]
+        [TestCase(true, Party.None, true, true)]
+        [TestCase(false, Party.Employer, true, true)]
+        [TestCase(false, Party.Provider, true, true)]
+        public async Task CheckChangesToThisApprenticeshipBannerIsShownCorrectly(bool unresolvedDataLocks, Party? party, bool providerUpdate, bool expected)
+        {
+            if (unresolvedDataLocks) _fixture.WithUnResolvedDataLocksInTriage(TriageStatus.Change);
+            if (providerUpdate) _fixture.WithPendingUpdatesForProvider();
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, party);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expected, _fixture.Result.ShowChangesToThisApprenticeshipBanner);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;

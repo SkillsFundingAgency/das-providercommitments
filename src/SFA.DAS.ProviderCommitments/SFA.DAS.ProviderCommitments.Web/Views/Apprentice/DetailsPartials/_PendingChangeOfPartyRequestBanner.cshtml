@@ -1,19 +1,18 @@
 ﻿@using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
-<div class="das-notification" id="das-pendingChangeOfPartyRequest-div" tabindex="-1">
-    <p class="das-notification__body">
-        @if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
-        {
-            <span id="change-of-party-status-text">There are changes to this apprentice's details that are waiting for approval by the new employer.</span>
-        }
-        else
-        {
-            <span id="change-of-party-status-text">The new employer has requested changes to this apprentice's details.</span>
-        }
-    </p>
 
-    <p class="das-notification__body">
+@if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
+{
+    <div class="govuk-inset-text">
+        <p id="change-of-party-status-text">You have made a change of employer request. It’s now with the new employer for review.</p>
+        <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
+    </div>
+}
+else
+{
+    <p class="govuk-notification-banner__heading">
+        <span id="change-of-party-status-text">The new employer has reviewed the change of provider request. You need to review the new details. </span>
         <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
     </p>
-</div>
+}
