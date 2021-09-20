@@ -22,7 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = source.StartDate,
                 EndDate = source.EndDate,
                 CourseCode = source.CourseCode,
-                Version = source.Version
+                Version = source.Version,
+                Option = source.Option
             });
         }
     }

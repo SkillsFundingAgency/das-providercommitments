@@ -2,6 +2,7 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -43,7 +44,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TrainingName = apprenticeship.CourseName != newStandardVersion.Name ? newStandardVersion.Name : apprenticeship.CourseName,
                 Version = source.SelectedVersion,
                 ProviderReference = apprenticeship.ProviderReference,
-                ProviderId = source.ProviderId
+                ProviderId = source.ProviderId,
+                HasOptions = newStandardVersion.Options.Any()
             };
 
             return editRequestViewModel;

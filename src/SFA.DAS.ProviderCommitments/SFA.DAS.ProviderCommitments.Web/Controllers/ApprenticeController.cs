@@ -16,7 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -341,7 +341,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Route("{apprenticeshipHashedId}/edit")]
+        [Route("{apprenticeshipHashedId}/edit", Name = RouteNames.EditApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequest request)
         {
@@ -377,12 +377,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 viewModel.Version = trainingProgramme.Version;
                 viewModel.TrainingName = trainingProgramme.Name;
+                viewModel.HasOptions = trainingProgramme.Options.Any();
             }
 
             var validationRequest = await _modelMapper.Map<ValidateApprenticeshipForEditRequest>(viewModel);
             await _commitmentsApiClient.ValidateApprenticeshipForEdit(validationRequest);
 
             TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
+
+            if (viewModel.HasOptions)
+            {
+                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            }
+
             return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
@@ -413,6 +420,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var editApprenticeshipRequestViewModel = await _modelMapper.Map<EditApprenticeshipRequestViewModel>(viewModel);
 
             TempData.Put("EditApprenticeshipRequestViewModel", editApprenticeshipRequestViewModel);
+
+            if (editApprenticeshipRequestViewModel.HasOptions)
+            {
+                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId});
+            }
+
+            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit/change-option", Name = RouteNames.ChangeOption)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOption(ChangeOptionRequest request)
+        {
+            var viewModel = await _modelMapper.Map<ChangeOptionViewModel>(request);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/edit/change-option")]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOption(ChangeOptionViewModel viewModel)
+        {
+            var editViewModel = await _modelMapper.Map<EditApprenticeshipRequestViewModel>(viewModel);
+
+            TempData.Put("EditApprenticeshipRequestViewModel", editViewModel);
 
             return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
@@ -450,7 +486,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 }
             }
 
+            TempData.Remove("EditApprenticeshipRequestViewModel");
+
             return RedirectToAction(nameof(Details), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/cancel-change-of-circumstance", Name = RouteNames.CancelInProgressChangeOfCircumstance)]
+        public IActionResult CancelChangeOfCircumstance(CancelChangeOfCircumstanceRequest request)
+        {
+            TempData.Remove("EditApprenticeshipRequestViewModel");
+
+            return RedirectToAction(nameof(Details), new { request.ProviderId, request.ApprenticeshipHashedId });
         }
 
         [HttpGet]

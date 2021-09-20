@@ -60,6 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     Uln = data.Apprenticeship.Uln,
                     CourseName = data.Apprenticeship.CourseName,
                     Version = data.Apprenticeship.Version,
+                    Option = data.Apprenticeship.Option,
                     StartDate = data.Apprenticeship.StartDate,
                     EndDate = data.Apprenticeship.EndDate,
                     ProviderRef = data.Apprenticeship.ProviderReference,
@@ -75,6 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),
+                    HasOptions = await HasOptions(data.Apprenticeship.StandardUId),
                     EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
                         .Select(coe => new EmployerHistory
                         {
@@ -152,6 +154,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
                 if (newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Count() > 0)
                     return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> HasOptions(string standardUId)
+        {
+            if (!string.IsNullOrEmpty(standardUId))
+            {
+                var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
+
+                return trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count() > 1;
             }
 
             return false;

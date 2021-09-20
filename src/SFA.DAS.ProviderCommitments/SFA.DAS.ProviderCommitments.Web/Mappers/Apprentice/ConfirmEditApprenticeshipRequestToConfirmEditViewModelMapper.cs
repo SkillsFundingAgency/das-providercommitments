@@ -112,6 +112,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             vm.OriginalApprenticeship.CourseName = apprenticeship.CourseName;
 
+            if (source.Option != apprenticeship.Option)
+            {
+                vm.Option = source.Option;
+            }
+            vm.OriginalApprenticeship.Option = apprenticeship.Option;
+
+            if (source.HasOptions)
+            {
+                vm.ReturnToChangeOption = source.HasOptions;
+            }
+            else
+            {
+                vm.ReturnToChangeVersion = !string.IsNullOrEmpty(vm.Version) && string.IsNullOrEmpty(vm.CourseCode) && !vm.StartDate.HasValue;
+            }
+
             return vm;
         }
     }

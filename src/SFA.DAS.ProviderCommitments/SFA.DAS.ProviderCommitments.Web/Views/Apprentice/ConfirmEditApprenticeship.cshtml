@@ -20,7 +20,6 @@
         <div class="govuk-width-container">
             <h1 class="govuk-heading-xl"> @ViewBag.Title</h1>
 
-
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
@@ -37,6 +36,7 @@
             @Html.HiddenFor(x => x.Cost)
             @Html.HiddenFor(x => x.CourseCode)
             @Html.HiddenFor(x => x.Version)
+            @Html.HiddenFor(x => x.Option)
             @Html.HiddenFor(x => x.ProviderReference)
 
             <div class="govuk-grid-row">
@@ -137,6 +137,40 @@
                                     </td>
                                 </tr>
                             }
+                            @if (Model.Option != Model.OriginalApprenticeship.Option)
+                            {
+                                <tr>
+                                    <th scope="row" class="govuk-table__header">Option</th>
+                                    <td class="govuk-table__cell">
+                                        @if (Model.OriginalApprenticeship.Option == string.Empty)
+                                        {
+                                            <span> To be confirmed </span>
+                                        }
+                                        else if (Model.OriginalApprenticeship.Option == null)
+                                        {
+                                            <span> Not applicable </span>
+                                        }
+                                        else
+                                        {
+                                            <span> @Model.OriginalApprenticeship.Option</span>
+                                        }
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        @if (Model.Option == string.Empty)
+                                        {
+                                            <span> To be confirmed </span>
+                                        }
+                                        else if (Model.Option == null)
+                                        {
+                                            <span> Not applicable </span>
+                                        }
+                                        else
+                                        {
+                                            <span> @Model.Option</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
                             @if (Model.Cost.HasValue)
                             {
                                 <tr>
@@ -196,7 +230,11 @@
 
 
 @section breadcrumb {
-    @if (!string.IsNullOrEmpty(Model.Version) && string.IsNullOrEmpty(Model.CourseCode) && !Model.StartDate.HasValue)
+    @if (Model.ReturnToChangeOption)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeOption)">Back</a>
+    }
+    else if (Model.ReturnToChangeVersion)
     {
         <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeVersion)">Back</a>
     }
