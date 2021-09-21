@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CsvHelper.Configuration.Attributes;
-using Microsoft.AspNetCore.Razor.Language;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
@@ -35,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ProviderRef { get; private set; }
         [Name("Agreement ID")]
         public string AgreementId { get; private set; }
-        [Name("Apprentice Confirmation")]
+        [Name("Apprentice confirmation")]
         public string ApprenticeConfirmation { get; private set; }
         [Name("Status")]
         public string Status { get ; private set ; }
@@ -65,7 +64,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}"
             };
         }
-
 
         private static string GenerateAlerts(IEnumerable<Alerts> alerts)
         {
