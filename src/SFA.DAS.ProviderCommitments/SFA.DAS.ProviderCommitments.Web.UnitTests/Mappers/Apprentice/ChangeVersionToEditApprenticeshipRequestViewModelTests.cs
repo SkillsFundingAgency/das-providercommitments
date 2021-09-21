@@ -84,6 +84,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             result.TrainingName.Should().Be(_getApprenticeshipResponse.CourseName);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Then_HasOptionsIsMappedCorrectly(bool hasOptions)
+        {
+            if (hasOptions == false)
+                _getVersionResponse.TrainingProgramme.Options = new List<string>();
+
+            var result = await _mapper.Map(_viewModel);
+
+            result.HasOptions.Should().Be(hasOptions);
+        }
+
         [Test]
         public async Task VerifyGetApprenticeship()
         {
