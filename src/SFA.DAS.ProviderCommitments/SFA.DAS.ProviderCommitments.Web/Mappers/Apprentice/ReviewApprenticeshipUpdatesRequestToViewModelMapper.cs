@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         CourseCode = apprenticeship.CourseCode,
                         CourseName = apprenticeship.CourseName,
                         Version = apprenticeship.Version,
-                        Option = update.Option
+                        Option = apprenticeship.Option
                     }
                 };
 
