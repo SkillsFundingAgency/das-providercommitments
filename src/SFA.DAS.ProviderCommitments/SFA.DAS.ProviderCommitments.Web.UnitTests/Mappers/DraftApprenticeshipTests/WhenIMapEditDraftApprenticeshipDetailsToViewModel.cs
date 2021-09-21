@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -160,15 +159,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.IsContinuation = isContinuation;
             var result = await _act();
             Assert.AreEqual(_apiResponse.IsContinuation, result.IsContinuation);
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenShowEmailIsMappedCorrectly(bool showEmail)
-        {
-            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
-            var result = await _act();
-            Assert.AreEqual(showEmail, result.ShowEmail);
         }
     }
 }
