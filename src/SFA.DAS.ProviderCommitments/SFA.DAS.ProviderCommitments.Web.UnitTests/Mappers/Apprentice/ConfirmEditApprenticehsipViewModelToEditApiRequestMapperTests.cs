@@ -111,6 +111,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(request.Version, result.Version);
         }
 
+        [Test, MoqAutoData]
+        public async Task Option_IsMapped()
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Option, result.Option);
+        }
+
         [Test]
         public async Task Reference_IsMapped()
         {

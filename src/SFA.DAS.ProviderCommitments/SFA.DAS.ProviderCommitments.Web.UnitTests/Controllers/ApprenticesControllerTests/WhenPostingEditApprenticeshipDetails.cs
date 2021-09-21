@@ -10,6 +10,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +37,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .Create();
 
             _standardVersionResponse = _autoFixture.Build<GetTrainingProgrammeResponse>()
-                .With(x => x.TrainingProgramme, _autoFixture.Build<TrainingProgramme>().With(x => x.Version, "1.0").Create())
+                .With(x => x.TrainingProgramme, _autoFixture.Build<TrainingProgramme>()
+                    .With(x => x.Version, "1.0")
+                    .With(x => x.Options, new List<string>())
+                    .Create())
                 .Create();
 
             _frameworkResponse = _autoFixture.Create<GetTrainingProgrammeResponse>();
@@ -137,10 +141,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task VerifyRedirectedToConfirmEditApprenticeship()
+        public async Task And_StandardVersionHasNoOptions_VerifyRedirectedToConfirmEditApprenticeship()
         {
             var result = await _fixture.EditApprenticeship(_viewModel);
-            _fixture.VerifyRedirectedToAction(result);
+            _fixture.VerifyRedirectedToConfirmEditApprenticeship(result);
+        }
+
+        [Test]
+        public async Task And_NewStandardVersionHasOptions_VerifyRedirectedToChangeOption()
+        {
+            _viewModel.CourseCode = _autoFixture.Create<int>().ToString();
+            _standardVersionResponse.TrainingProgramme.Options = _autoFixture.Create<List<string>>();
+            _fixture.SetUpGetCalculatedTrainingProgrammeVersion(_viewModel, _standardVersionResponse);
+
+            var result = await _fixture.EditApprenticeship(_viewModel);
+
+            _fixture.VerifyRedirectedToChangeOption(result);
         }
     }
 
@@ -205,9 +221,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockMapper.Verify(x => x.Map<ValidateApprenticeshipForEditRequest>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
         }
 
-        public void VerifyRedirectedToAction(IActionResult actionResult)
+        public void VerifyRedirectedToConfirmEditApprenticeship(IActionResult actionResult)
         {
             actionResult.VerifyReturnsRedirectToActionResult().WithActionName("ConfirmEditApprenticeship");
+        }
+
+        public void VerifyRedirectedToChangeOption(IActionResult actionResult)
+        {
+            actionResult.VerifyReturnsRedirectToActionResult().WithActionName("ChangeOption");
         }
     }
 }

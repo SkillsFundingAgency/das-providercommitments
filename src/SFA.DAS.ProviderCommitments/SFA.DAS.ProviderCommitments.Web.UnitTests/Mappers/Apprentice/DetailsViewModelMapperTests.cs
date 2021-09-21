@@ -114,6 +114,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenOptionIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Option, _fixture.Result.Option);
+        }
+
+        [Test]
         public async Task ThenVersionIsMappedCorrectly()
         {
             await _fixture.Map();
@@ -203,6 +210,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.IsFalse(_fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task When_ApprenticeshipIsStandard_Then_HasOptionIsMappedCorrectly(bool hasOptions)
+        {
+            if (hasOptions)
+                _fixture.WithOptions();
+
+            await _fixture.Map();
+
+            Assert.AreEqual(hasOptions, _fixture.Result.HasOptions);
+        }
+
+        [Test]
+        public async Task When_ApprenticeshipIsFramework_Then_HasOptionsIsFalse()
+        {
+            _fixture.WithFramework();
+
+            await _fixture.Map();
+
+            Assert.False(_fixture.Result.HasOptions);
         }
 
         [TestCase(true)]
@@ -497,6 +526,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
+            public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -550,12 +580,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     NewerVersions = new List<TrainingProgramme>()
                 };
 
+                GetTrainingProgrammeByStandardUIdResponse = new GetTrainingProgrammeResponse();
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
 
                 _authorizationService = new Mock<IAuthorizationService>();
-
 
                 EncodedNewApprenticeshipId = Fixture.Create<string>();
                 EncodedPreviousApprenticeshipId = Fixture.Create<string>();
@@ -585,6 +616,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
+                apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
+
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
@@ -606,6 +640,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     .With(x => x.StandardUId, "ST0001_1.1").Create();
 
                 GetNewerTrainingProgrammeVersionsResponse.NewerVersions = new List<TrainingProgramme> { newerTrainingProgramme };
+
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithOptions()
+            {
+                ApiResponse.StandardUId = "ST0001_1.0";
+
+                var trainingProgramme = Fixture.Build<TrainingProgramme>()
+                    .With(x => x.Options, Fixture.Create<List<string>>())
+                    .Create();
+
+                GetTrainingProgrammeByStandardUIdResponse.TrainingProgramme = trainingProgramme;
 
                 return this;
             }
