@@ -73,15 +73,37 @@
                         </td>
                     </tr>
                 }
-                @if (Model.ApprenticeshipUpdates.Option != null)
+                @if (Model.ApprenticeshipUpdates.Option != Model.OriginalApprenticeship.Option)
                 {
                     <tr>
                         <th scope="row" class="govuk-table__header">Option</th>
                         <td class="govuk-table__cell">
-                            @(Model.OriginalApprenticeship.Option != string.Empty ? Model.OriginalApprenticeship.Option : "To be confirmed")
+                            @if (!string.IsNullOrEmpty(Model.OriginalApprenticeship.Option))
+                            {
+                                <span> @Model.OriginalApprenticeship.Option </span>
+                            }
+                            else if (Model.OriginalApprenticeship.Option == string.Empty)
+                            {
+                                <span> To be confirmed </span>
+                            }
+                            else
+                            {
+                                <span> Not applicable</span>
+                            }
                         </td>
                         <td class="govuk-table__cell">
-                            @(Model.ApprenticeshipUpdates.Option != string.Empty ? Model.ApprenticeshipUpdates.Option : "To be confirmed")
+                            @if (!string.IsNullOrEmpty(Model.ApprenticeshipUpdates.Option))
+                            {
+                                <span> @Model.ApprenticeshipUpdates.Option </span>
+                            }
+                            else if (Model.ApprenticeshipUpdates.Option == string.Empty)
+                            {
+                                <span> To be confirmed </span>
+                            }
+                            else
+                            {
+                                <span> Not applicable</span>
+                            }
                         </td>
                     </tr>
                 }
