@@ -227,6 +227,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("add/select-journey")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/select-journey")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyViewModel viewModel)
+        {
+            if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.ExistingCohort)
+            {
+                return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+            }
+            else if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
+            {
+                return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
         {
             var result = await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
