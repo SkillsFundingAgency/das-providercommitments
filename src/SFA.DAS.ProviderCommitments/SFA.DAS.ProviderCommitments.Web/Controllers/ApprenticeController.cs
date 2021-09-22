@@ -356,9 +356,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequestViewModel viewModel)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(viewModel.ApprenticeshipId);
+            var triggerCalculate = viewModel.CourseCode != apprenticeship.CourseCode ||
+                (viewModel.CourseCode == apprenticeship.CourseCode && apprenticeship.StartDate <= viewModel.StartDate.Date.Value);
 
-            if (viewModel.CourseCode != apprenticeship.CourseCode || 
-                (viewModel.CourseCode == apprenticeship.CourseCode && apprenticeship.StartDate <= viewModel.StartDate.Date.Value))
+            if (triggerCalculate)
             {
                 TrainingProgramme trainingProgramme;
 
@@ -382,6 +383,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var validationRequest = await _modelMapper.Map<ValidateApprenticeshipForEditRequest>(viewModel);
             await _commitmentsApiClient.ValidateApprenticeshipForEdit(validationRequest);
+
+            if(triggerCalculate)
+            {
+                viewModel.Option = null;
+            }
 
             TempData.Put("EditApprenticeshipRequestViewModel", viewModel);
 
