@@ -109,15 +109,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
-
-            if (model is EditDraftApprenticeshipViewModel editModel)
+            try
             {
-                await AddLegalEntityAndCoursesToModel(editModel);
-                return View("EditDraftApprenticeship", editModel);
+                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+
+                if (model is EditDraftApprenticeshipViewModel editModel)
+                {
+                    await AddLegalEntityAndCoursesToModel(editModel);
+                    return View("EditDraftApprenticeship", editModel);
+                }
+
+                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
             }
-            
-            return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+            }
         }
 
         [HttpGet]

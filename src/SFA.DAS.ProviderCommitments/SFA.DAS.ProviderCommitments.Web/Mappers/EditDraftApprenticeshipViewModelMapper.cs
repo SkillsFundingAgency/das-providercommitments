@@ -2,6 +2,8 @@
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Http;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
@@ -17,27 +19,39 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<IDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
         {
-            var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
-
-            return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate)
+            try
             {
-                DraftApprenticeshipId = source.Request.DraftApprenticeshipId,
-                DraftApprenticeshipHashedId = source.Request.DraftApprenticeshipHashedId,
-                CohortId = source.Request.CohortId,
-                CohortReference = source.Request.CohortReference, 
-                ProviderId = source.Request.ProviderId,
-                ReservationId = apiResponse.ReservationId,
-                FirstName = apiResponse.FirstName,
-                LastName = apiResponse.LastName,
-                Email = apiResponse.Email,
-                Uln = apiResponse.Uln,
-                CourseCode = apiResponse.CourseCode,
-                HasStandardOptions = apiResponse.HasStandardOptions,
-                Cost = apiResponse.Cost,
-                Reference = apiResponse.Reference,
-                IsContinuation = apiResponse.IsContinuation,
-                TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption
-            };
+                var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
+
+                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate)
+                {
+                    DraftApprenticeshipId = source.Request.DraftApprenticeshipId,
+                    DraftApprenticeshipHashedId = source.Request.DraftApprenticeshipHashedId,
+                    CohortId = source.Request.CohortId,
+                    CohortReference = source.Request.CohortReference,
+                    ProviderId = source.Request.ProviderId,
+                    ReservationId = apiResponse.ReservationId,
+                    FirstName = apiResponse.FirstName,
+                    LastName = apiResponse.LastName,
+                    Email = apiResponse.Email,
+                    Uln = apiResponse.Uln,
+                    CourseCode = apiResponse.CourseCode,
+                    HasStandardOptions = apiResponse.HasStandardOptions,
+                    Cost = apiResponse.Cost,
+                    Reference = apiResponse.Reference,
+                    IsContinuation = apiResponse.IsContinuation,
+                    TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption
+                };
+            }
+            catch (RestHttpClientException restEx)
+            {
+                if (restEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new DraftApprenticeshipNotFoundException(
+                        $"DraftApprenticeship Id: {source.Request.DraftApprenticeshipId} not found", restEx);
+                }
+                throw;
+            }
         }
     }
 }
