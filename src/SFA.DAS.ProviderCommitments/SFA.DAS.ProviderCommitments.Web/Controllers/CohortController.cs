@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -91,14 +89,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
-        public async Task<IActionResult> ChooseCohort(ChooseCohortByProviderRequest request)
-        {
-            var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
-            return View(chooseCohortViewModel);
-        }
-        
         [HttpPost]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
@@ -112,6 +102,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
+        [HttpGet]
+        [Route("choose-cohort", Name = RouteNames.ChooseCohort)]
+        public async Task<IActionResult> ChooseCohort(ChooseCohortByProviderRequest request)
+        {
+            var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
+            return View(chooseCohortViewModel);
+        }
+        
         [HttpGet]
         [Route("add/select-employer")]
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
@@ -225,6 +223,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = await _modelMapper.Map<AcknowledgementViewModel>(request);
             return View(model);
+        }
+
+        [HttpGet]
+        [Route("add/select-journey")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/select-journey")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyViewModel viewModel)
+        {
+            if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.ExistingCohort)
+            {
+                return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+            }
+            else if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
+            {
+                return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
