@@ -51,8 +51,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task VerifyReturnToConfirmEditApprenticeship()
+        public async Task And_VersionHasOptions_Then_VerifyRedirectToChangeOption()
         {
+            _editRequestViewModel.HasOptions = true;
+
+            var result = await _fixture.ChangeVersion(_viewModel);
+
+            result.VerifyReturnsRedirectToActionResult().WithActionName("ChangeOption");
+        }
+
+        [Test]
+        public async Task And_VersionHasNoOptions_Then_VerifyRedirectToConfirmEditApprenticeship()
+        {
+            _editRequestViewModel.HasOptions = false;
+
             var result = await _fixture.ChangeVersion(_viewModel);
 
             _fixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);

@@ -73,6 +73,40 @@
                         </td>
                     </tr>
                 }
+                @if (Model.ApprenticeshipUpdates.Option != Model.OriginalApprenticeship.Option || !string.IsNullOrEmpty(Model.ApprenticeshipUpdates.CourseCode))
+                {
+                    <tr>
+                        <th scope="row" class="govuk-table__header">Option</th>
+                        <td class="govuk-table__cell">
+                            @if (Model.OriginalApprenticeship.Option == null)
+                            {
+                                <span> Not applicable</span>
+                            }
+                            else if (Model.OriginalApprenticeship.Option == string.Empty)
+                            {
+                                <span> To be confirmed </span>
+                            }
+                            else
+                            {
+                                <span> @Model.OriginalApprenticeship.Option </span>
+                            }
+                        </td>
+                        <td class="govuk-table__cell">
+                            @if (Model.ApprenticeshipUpdates.Option == null)
+                            {
+                                <span> Not applicable</span>
+                            }
+                            else if (Model.ApprenticeshipUpdates.Option == string.Empty)
+                            {
+                                <span> To be confirmed </span>
+                            }
+                            else
+                            {
+                                <span> @Model.ApprenticeshipUpdates.Option </span>
+                            }
+                        </td>
+                    </tr>
+                }
                 @if (Model.ApprenticeshipUpdates.StartDate.HasValue)
                 {
                     <tr>

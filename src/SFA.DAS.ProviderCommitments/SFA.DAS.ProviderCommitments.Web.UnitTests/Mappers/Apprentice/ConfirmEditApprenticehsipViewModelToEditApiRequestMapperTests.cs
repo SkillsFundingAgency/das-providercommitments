@@ -11,14 +11,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class ConfirmEditApprenticehsipViewModelToEditApiRequestMapperTests
     {
         private ConfirmEditApprenticeshipViewModelToEditApiRequestMapper mapper;
-        ConfirmEditApprenticeshipViewModel request;
+        ConfirmEditApprenticeshipViewModel viewModel;
 
         [SetUp]
         public void SetUp()
         {
             var fixture = new Fixture();
 
-            request = fixture.Build<ConfirmEditApprenticeshipViewModel>()
+            viewModel = fixture.Build<ConfirmEditApprenticeshipViewModel>()
                  .With(x => x.StartMonth, DateTime.Now.Month)
                  .With(x => x.StartYear, DateTime.Now.Year)
                  .With(x => x.EndMonth, DateTime.Now.Month)
@@ -34,89 +34,106 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task ApprenticeshipId_IsMapped()
         {
-            var result = await mapper.Map(request);
-            Assert.AreEqual(request.ApprenticeshipId, result.ApprenticeshipId);
+            var result = await mapper.Map(viewModel);
+            Assert.AreEqual(viewModel.ApprenticeshipId, result.ApprenticeshipId);
         }
 
         [Test]
         public async Task FirstName_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.FirstName, result.FirstName);
+            Assert.AreEqual(viewModel.FirstName, result.FirstName);
         }
 
         [Test]
         public async Task LastName_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.LastName, result.LastName);
+            Assert.AreEqual(viewModel.LastName, result.LastName);
         }
 
         [Test]
         public async Task Email_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.Email, result.Email);
+            Assert.AreEqual(viewModel.Email, result.Email);
         }
 
         [Test]
         public async Task Dob_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.DateOfBirth, result.DateOfBirth);
+            Assert.AreEqual(viewModel.DateOfBirth, result.DateOfBirth);
         }
 
         [Test]
         public async Task StartDate_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.StartDate, result.StartDate);
+            Assert.AreEqual(viewModel.StartDate, result.StartDate);
         }
 
 
         [Test]
         public async Task EndDate_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.EndDate, result.EndDate);
+            Assert.AreEqual(viewModel.EndDate, result.EndDate);
         }
 
         [Test]
         public async Task Course_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.CourseCode, result.CourseCode);
+            Assert.AreEqual(viewModel.CourseCode, result.CourseCode);
         }
 
         [Test]
         public async Task Cost_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.Cost, result.Cost);
+            Assert.AreEqual(viewModel.Cost, result.Cost);
         }
 
         [Test]
         public async Task Version_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.Version, result.Version);
+            Assert.AreEqual(viewModel.Version, result.Version);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Option_IsMapped()
+        {
+            var result = await mapper.Map(viewModel);
+
+            Assert.AreEqual(viewModel.Option, result.Option);
+        }
+
+        [Test]
+        public async Task When_OptionIsTBC_Option_IsMapped()
+        {
+            viewModel.Option = "TBC";
+            var result = await mapper.Map(viewModel);
+
+            Assert.AreEqual(string.Empty, result.Option);
         }
 
         [Test]
         public async Task Reference_IsMapped()
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(request.ProviderReference, result.ProviderReference);
+            Assert.AreEqual(viewModel.ProviderReference, result.ProviderReference);
         }
     }
 }

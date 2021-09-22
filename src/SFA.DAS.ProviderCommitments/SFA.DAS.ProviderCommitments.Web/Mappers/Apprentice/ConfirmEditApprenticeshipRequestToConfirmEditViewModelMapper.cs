@@ -3,9 +3,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -111,6 +108,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 vm.CourseName = source.TrainingName;
             }
             vm.OriginalApprenticeship.CourseName = apprenticeship.CourseName;
+
+            vm.Option = source.Option == string.Empty ? "TBC" : source.Option;
+            vm.OriginalApprenticeship.Option = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option; ;
+
+            if (source.HasOptions)
+            {
+                vm.ReturnToChangeOption = source.HasOptions;
+            }
+            else
+            {
+                vm.ReturnToChangeVersion = !string.IsNullOrEmpty(vm.Version) && string.IsNullOrEmpty(vm.CourseCode) && !vm.StartDate.HasValue;
+            }
 
             return vm;
         }

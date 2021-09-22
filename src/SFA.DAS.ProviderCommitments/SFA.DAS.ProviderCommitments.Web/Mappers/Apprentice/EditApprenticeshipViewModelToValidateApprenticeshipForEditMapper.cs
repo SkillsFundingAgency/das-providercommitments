@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System.Threading.Tasks;
 
-
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper : IMapper<EditApprenticeshipRequestViewModel, ValidateApprenticeshipForEditRequest>
@@ -24,7 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EndDate = source.EndDate.Date,
                 TrainingCode = source.CourseCode,
                 ProviderId = source.ProviderId,
-                Version = source.Version
+                Version = source.Version,
+                Option = source.Option == "TBC" ? string.Empty : source.Option
             };
             return Task.FromResult(result);
         }
