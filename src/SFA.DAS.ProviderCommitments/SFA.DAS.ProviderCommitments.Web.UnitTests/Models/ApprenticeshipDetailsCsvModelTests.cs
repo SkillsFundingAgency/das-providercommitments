@@ -111,6 +111,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
             result.DateOfBirth.Should().Be(source.DateOfBirth.ToString("d MMM yyyy"));
         }
+
+        [Test, AutoData]
+        public void Then_Maps_ApprenticeConfirmation(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+            [Frozen] Mock<IEncodingService> encodingService,
+            ApprenticeshipDetailsCsvModel model)
+        {
+            var result = model.Map(source, encodingService.Object);
+
+            result.ApprenticeConfirmation.Should().Be(source.ConfirmationStatus.GetDescription());
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_Null_ApprenticeConfirmation(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+            [Frozen] Mock<IEncodingService> encodingService,
+            ApprenticeshipDetailsCsvModel model)
+        {
+            source.ConfirmationStatus = null;
+            var result = model.Map(source, encodingService.Object);
+
+            result.ApprenticeConfirmation.Should().Be("N/A");
+        }
+
         [Test, AutoData]
         public void Then_Maps_Status(
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,

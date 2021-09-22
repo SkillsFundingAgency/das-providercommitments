@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? SelectedStartDate { get; set; }
         public DateTime? SelectedEndDate { get; set; }
         public Alerts? SelectedAlert { get; set; }
+        public ConfirmationStatus? SelectedApprenticeConfirmation { get; set; }
         public int PageNumber { get; set; }
     }
 }
