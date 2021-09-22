@@ -137,7 +137,7 @@
                                     </td>
                                 </tr>
                             }
-                            @if (Model.Option != Model.OriginalApprenticeship.Option || (!string.IsNullOrWhiteSpace(Model.CourseCode) && Model.Option == "N/A"))
+                            @if (Model.Option != Model.OriginalApprenticeship.Option || (!string.IsNullOrWhiteSpace(Model.CourseCode) && Model.Option == "TBC"))
                             {
                                 <tr>
                                     <th scope="row" class="govuk-table__header">Option</th>
@@ -146,7 +146,7 @@
                                         {
                                             <span> Not applicable </span>
                                         }
-                                        else if (Model.OriginalApprenticeship.Option == "N/A")
+                                        else if (Model.OriginalApprenticeship.Option == "TBC")
                                         {
                                             <span> To be confirmed </span>
                                         }
@@ -160,7 +160,7 @@
                                         {
                                             <span> Not applicable </span>
                                         }
-                                        else if (Model.Option == "N/A")
+                                        else if (Model.Option == "TBC")
                                         {
                                             <span> To be confirmed </span>
                                         }

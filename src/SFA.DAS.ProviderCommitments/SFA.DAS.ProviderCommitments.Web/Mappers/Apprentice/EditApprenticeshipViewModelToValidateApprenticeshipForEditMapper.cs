@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TrainingCode = source.CourseCode,
                 ProviderId = source.ProviderId,
                 Version = source.Version,
-                Option = source.Option == "N/A" ? string.Empty : source.Option
+                Option = source.Option == "TBC" ? string.Empty : source.Option
             };
             return Task.FromResult(result);
         }

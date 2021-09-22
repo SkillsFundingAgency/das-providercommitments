@@ -109,8 +109,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             vm.OriginalApprenticeship.CourseName = apprenticeship.CourseName;
 
-            vm.Option = source.Option == string.Empty ? "N/A" : source.Option;
-            vm.OriginalApprenticeship.Option = apprenticeship.Option == string.Empty ? "N/A" : apprenticeship.Option; ;
+            vm.Option = source.Option == string.Empty ? "TBC" : source.Option;
+            vm.OriginalApprenticeship.Option = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option; ;
 
             if (source.HasOptions)
             {

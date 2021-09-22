@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                CurrentOption = apprenticeship.Option == string.Empty ? "N/A" : apprenticeship.Option,
+                CurrentOption = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option,
                 SelectedVersion = selectedVersion,
                 SelectedOption = selectedOption,
                 SelectedVersionName = standardVersion.TrainingProgramme.Name,
