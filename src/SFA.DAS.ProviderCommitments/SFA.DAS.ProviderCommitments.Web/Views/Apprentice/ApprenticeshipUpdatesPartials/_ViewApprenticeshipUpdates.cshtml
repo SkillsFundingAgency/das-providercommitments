@@ -61,7 +61,7 @@
                         <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.CourseName</td>
                     </tr>
                 }
-                @if (!string.IsNullOrWhiteSpace(Model.ApprenticeshipUpdates.Version) || !string.IsNullOrWhiteSpace(Model.ApprenticeshipUpdates.CourseCode))
+                @if (Model.ApprenticeshipUpdates.Version != Model.ApprenticeshipUpdates.Version || !string.IsNullOrWhiteSpace(Model.ApprenticeshipUpdates.CourseCode))
                 {
                     <tr>
                         <th scope="row" class="govuk-table__header">Version</th>

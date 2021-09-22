@@ -111,7 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             if (source.Option != apprenticeship.Option)
             {
-                vm.Option = source.Option;
+                vm.Option = source.Option == string.Empty ? "N/A" : source.Option;
             }
             vm.OriginalApprenticeship.Option = apprenticeship.Option;
 
