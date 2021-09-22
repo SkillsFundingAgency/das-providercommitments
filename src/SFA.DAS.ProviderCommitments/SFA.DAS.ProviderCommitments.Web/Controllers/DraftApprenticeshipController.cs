@@ -21,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -160,8 +161,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
-            var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
-            return View(viewModel);
+            try
+            {
+                var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
+                return View(viewModel);
+            }
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { deleteConfirmationRequest.ProviderId, deleteConfirmationRequest.CohortReference });
+            }
         }
 
         [HttpPost]

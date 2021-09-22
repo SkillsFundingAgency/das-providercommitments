@@ -6,6 +6,8 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using SFA.DAS.Http;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -25,9 +27,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<DeleteConfirmationViewModel> Map(DeleteConfirmationRequest source)
         {
+            long apprenticeshipId = 0;
             try
             {                
-                var apprenticeshipId = _encodingService.Decode(source.DraftApprenticeshipHashedId, EncodingType.ApprenticeshipId);                
+                apprenticeshipId = _encodingService.Decode(source.DraftApprenticeshipHashedId, EncodingType.ApprenticeshipId);                
                 var commitmentId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
                 var draftApprenticeshipResponse = await _commitmentApiClient.GetDraftApprenticeship(commitmentId, apprenticeshipId, CancellationToken.None);
 
@@ -39,6 +42,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ApprenticeshipName = $"{draftApprenticeshipResponse.FirstName} {draftApprenticeshipResponse.LastName}",
                     DateOfBirth = draftApprenticeshipResponse.DateOfBirth
                 };
+            }
+            catch (RestHttpClientException restEx)
+            {
+                _logger.LogError(restEx, $"Error mapping apprenticeship {source.DraftApprenticeshipHashedId} to DeleteConfirmationViewModel");
+
+                if (restEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new DraftApprenticeshipNotFoundException(
+                        $"DraftApprenticeship Id: {apprenticeshipId} not found", restEx);
+                }
+                throw;
             }
             catch (Exception ex)
             {
