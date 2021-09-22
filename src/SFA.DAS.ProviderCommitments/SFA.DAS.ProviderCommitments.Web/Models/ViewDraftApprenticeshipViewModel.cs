@@ -16,6 +16,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime? EndDate { get; set; }
         public int? Cost { get; set; }
         public string Reference { get; set; }
-        public bool ShowEmail { get; set; }
     }
 }

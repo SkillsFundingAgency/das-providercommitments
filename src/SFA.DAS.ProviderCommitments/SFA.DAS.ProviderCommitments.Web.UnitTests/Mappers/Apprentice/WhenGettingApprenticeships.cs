@@ -68,6 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         apiRequest.SearchTerm == webRequest.SearchTerm && 
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
+                        apiRequest.ApprenticeConfirmationStatus == webRequest.SelectedApprenticeConfirmation &&
                         apiRequest.Status == webRequest.SelectedStatus &&
                         apiRequest.StartDate == webRequest.SelectedStartDate &&
                         apiRequest.EndDate == webRequest.SelectedEndDate),
@@ -174,6 +175,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(request.SelectedStatus, viewModel.FilterModel.SelectedStatus);
             Assert.AreEqual(request.SelectedStartDate, viewModel.FilterModel.SelectedStartDate);
             Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
+            Assert.AreEqual(request.SelectedApprenticeConfirmation, viewModel.FilterModel.SelectedApprenticeConfirmation);
         }
 
         [Test, MoqAutoData]
@@ -241,21 +243,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(1, result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value));
 
             Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
-        }
-
-        [Test, MoqAutoData]
-        public async Task ThenShowsApprenticeConfirmationColumn(
-            bool show,
-            [Frozen] Mock<IAuthorizationService> mockAuthorizationService,
-            IndexViewModelMapper mapper)
-        {
-            var request = new IndexRequest { PageNumber = 0 };
-            mockAuthorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail))
-                .ReturnsAsync(show);
-
-            var viewModel = await mapper.Map(request);
-
-            viewModel.ShowApprenticeConfirmationColumn.Should().Be(show);
         }
     }
 }

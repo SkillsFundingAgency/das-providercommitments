@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -14,13 +12,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _client;
         private readonly IModelMapper _modelMapper;
-        private readonly IAuthorizationService _authorizationService;
 
-        public IndexViewModelMapper(ICommitmentsApiClient client, IModelMapper modelMapper, IAuthorizationService authorizationService)
+        public IndexViewModelMapper(ICommitmentsApiClient client, IModelMapper modelMapper)
         {
             _client = client;
             _modelMapper = modelMapper;
-            _authorizationService = authorizationService;
         }
 
         public async Task<IndexViewModel> Map(IndexRequest source)
@@ -38,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate,
-                Alert = source.SelectedAlert
+                Alert = source.SelectedAlert,
+                ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation
             });
 
             var statusFilters = new[]
@@ -73,6 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedStartDate = source.SelectedStartDate,
                 SelectedEndDate = source.SelectedEndDate,
                 SelectedAlert = source.SelectedAlert,
+                SelectedApprenticeConfirmation = source.SelectedApprenticeConfirmation,
                 StatusFilters = statusFilters,
                 AlertFilters = alertFilters
             };
@@ -99,8 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 Apprenticeships = apprenticeships,
-                FilterModel = filterModel,
-                ShowApprenticeConfirmationColumn = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)
+                FilterModel = filterModel
             };
         }
     }

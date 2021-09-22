@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -10,10 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -21,15 +17,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
-        private readonly IAuthorizationService _authorizationService;
         private readonly ILogger<DetailsViewModelMapper> _logger;
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService,
-            IAuthorizationService authorizationService,
              ILogger<DetailsViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
-            _authorizationService = authorizationService;
             _logger = logger;            
         }
 
@@ -61,7 +54,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     Reference = _encodingService.Encode(data.Apprenticeship.CohortId, EncodingType.CohortReference),
                     Status = data.Apprenticeship.Status,
                     ConfirmationStatus = data.Apprenticeship.ConfirmationStatus,
-                    ShowConfirmationStatus = await _authorizationService.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail),
                     StopDate = data.Apprenticeship.StopDate,
                     AgreementId = _encodingService.Encode(data.Apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     DateOfBirth = data.Apprenticeship.DateOfBirth,

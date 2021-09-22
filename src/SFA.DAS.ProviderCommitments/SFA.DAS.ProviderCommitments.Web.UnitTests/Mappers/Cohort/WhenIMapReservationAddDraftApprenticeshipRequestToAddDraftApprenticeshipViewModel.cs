@@ -69,14 +69,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.ReservationId, result.ReservationId);
         }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenShowEmailIsMappedCorrectly(bool showEmail)
-        {
-            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.ApprenticeEmail)).ReturnsAsync(showEmail);
-            var result = await _mapper.Map(_source);
-            Assert.AreEqual(showEmail, result.ShowEmail);
-        }
     }
 }
