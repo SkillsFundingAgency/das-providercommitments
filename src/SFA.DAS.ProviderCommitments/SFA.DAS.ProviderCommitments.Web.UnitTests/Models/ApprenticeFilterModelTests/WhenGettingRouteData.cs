@@ -20,7 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
                 {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
                 {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
-                {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()}
+                {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()},
+                {nameof(filterModel.SelectedApprenticeConfirmation), filterModel.SelectedApprenticeConfirmation.ToString()}
             });
         }
 
