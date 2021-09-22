@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -53,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 CourseName = model.CourseName,
                 PlannedStartDate = model.StartDate.ToGdsFormatWithoutDay(),
                 PlannedEndDate = model.EndDate.ToGdsFormatWithoutDay(),
-                ApprenticeConfirmation = model.ConfirmationStatus?.GetDescription(),
+                ApprenticeConfirmation = model.ConfirmationStatus.ToDisplayString(),
                 Status = model.ApprenticeshipStatus.GetDescription(),
                 Alerts = GenerateAlerts(model.Alerts),
                 ProviderRef = model.ProviderRef,

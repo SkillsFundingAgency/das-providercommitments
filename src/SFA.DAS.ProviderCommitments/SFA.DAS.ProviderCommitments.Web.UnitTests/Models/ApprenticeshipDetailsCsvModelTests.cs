@@ -130,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
             source.ConfirmationStatus = null;
             var result = model.Map(source, encodingService.Object);
 
-            result.ApprenticeConfirmation.Should().BeNull();
+            result.ApprenticeConfirmation.Should().Be("N/A");
         }
 
         [Test, AutoData]
