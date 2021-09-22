@@ -78,9 +78,9 @@
                     <tr>
                         <th scope="row" class="govuk-table__header">Option</th>
                         <td class="govuk-table__cell">
-                            @if (!string.IsNullOrEmpty(Model.OriginalApprenticeship.Option))
+                            @if (Model.OriginalApprenticeship.Option == null)
                             {
-                                <span> @Model.OriginalApprenticeship.Option </span>
+                                <span> Not applicable</span>
                             }
                             else if (Model.OriginalApprenticeship.Option == string.Empty)
                             {
@@ -88,13 +88,13 @@
                             }
                             else
                             {
-                                <span> Not applicable</span>
+                        <span> Model.OriginalApprenticeship.Option </span>
                             }
                         </td>
                         <td class="govuk-table__cell">
-                            @if (!string.IsNullOrEmpty(Model.ApprenticeshipUpdates.Option))
+                            @if (Model.ApprenticeshipUpdates.Option == null)
                             {
-                                <span> @Model.ApprenticeshipUpdates.Option </span>
+                                <span> Not applicable</span>
                             }
                             else if (Model.ApprenticeshipUpdates.Option == string.Empty)
                             {
@@ -102,7 +102,7 @@
                             }
                             else
                             {
-                                <span> Not applicable</span>
+                                <span> @Model.ApprenticeshipUpdates.Option </span>
                             }
                         </td>
                     </tr>
