@@ -35,6 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
+        public async Task VerifyTempDataStored()
+        {
+            await _fixture.ChangeOption(_viewModel);
+
+            _fixture.VerifyTempDataStored();
+        }
+
+        [Test]
         public async Task VerifyRedirectToConfirmEditApprenticeship()
         {
             var result = await _fixture.ChangeOption(_viewModel);
@@ -59,6 +67,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public void VerifyMapperIsCalled()
         {
             _mockMapper.Verify(x => x.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeOptionViewModel>()), Times.Once());
+        }
+
+        public void VerifyTempDataStored()
+        {
+            _controller.TempData.ContainsKey("EditApprenticeshipRequestViewModel").Should().BeTrue();
         }
 
         public void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
