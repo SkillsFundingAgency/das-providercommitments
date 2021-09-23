@@ -43,6 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Email { get; set; }
         public bool ShowChangeVersionLink { get; set; }
         public bool HasOptions { get; set; }
+        public bool SingleOption { get; set; }
         public enum DataLockSummaryStatus
         {
             None,
