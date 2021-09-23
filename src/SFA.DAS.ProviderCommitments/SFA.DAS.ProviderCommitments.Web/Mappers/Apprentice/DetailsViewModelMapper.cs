@@ -41,6 +41,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     !data.HasEmployerUpdates &&
                     dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
+                // If It's completed or stopped and option is null, dont show options as it could predate standard versioning
+                // even if the version has options
+                var apprenticeshipStopped = data.Apprenticeship.Status == ApprenticeshipStatus.Completed || data.Apprenticeship.Status == ApprenticeshipStatus.Stopped;
+                var preDateStandardVersioning = apprenticeshipStopped && data.Apprenticeship.Option == null;
+                (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
+                var showOptions = hasOptions && !preDateStandardVersioning;
+
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
@@ -76,7 +83,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),
-                    HasOptions = await HasOptions(data.Apprenticeship.StandardUId),
+                    HasOptions = showOptions,
+                    SingleOption = singleOption,
                     EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
                         .Select(coe => new EmployerHistory
                         {
@@ -159,16 +167,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return false;
         }
 
-        private async Task<bool> HasOptions(string standardUId)
+        private async Task<(bool singleOption, bool hasOptions)> HasOptions(string standardUId)
         {
             if (!string.IsNullOrEmpty(standardUId))
             {
                 var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
 
-                return trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count() > 1;
+                var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count();
+                return (optionsCount == 1, optionsCount > 0);
             }
 
-            return false;
+            return (false,false);
         }
     }
 }

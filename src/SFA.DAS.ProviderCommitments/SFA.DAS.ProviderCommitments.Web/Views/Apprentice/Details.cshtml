@@ -234,7 +234,7 @@
                         <th scope="row" class="govuk-table__header">Option</th>
                         <td id="apprentice-course" class="govuk-table__cell">@(!string.IsNullOrEmpty(Model.Option) ? Model.Option : "To be confirmed")</td>
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                            @if (Model.AllowEditApprentice && Model.HasOptions)
+                            @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
                             {
                                 <a id="change-version-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ChangeOption)">Change</a>
                             }
