@@ -41,6 +41,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     !data.HasEmployerUpdates &&
                     dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
 
+                // If It's completed or stopped and option is null, dont show options as it could predate standard versioning
+                // even if the version has options
+                var apprenticeshipStopped = data.Apprenticeship.Status == ApprenticeshipStatus.Completed || data.Apprenticeship.Status == ApprenticeshipStatus.Stopped;
+                var preDateStandardVersioning = apprenticeshipStopped && data.Apprenticeship.Option == null;
+                var optionsExist = await HasOptions(data.Apprenticeship.StandardUId);
+                var hasOptions = optionsExist && !preDateStandardVersioning;
+
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
@@ -76,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),
-                    HasOptions = await HasOptions(data.Apprenticeship.StandardUId),
+                    HasOptions = hasOptions,
                     EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
                         .Select(coe => new EmployerHistory
                         {
