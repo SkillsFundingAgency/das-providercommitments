@@ -19,6 +19,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderUrlHelper.Core;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -137,14 +138,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/confirm-employer")]
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
-                var request = await _modelMapper.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(viewModel);
-                var response = await _commitmentApiClient.CreateCohort(request);
-
-                return RedirectToAction(nameof(Details), new { viewModel.ProviderId, response.CohortReference });
+                return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
