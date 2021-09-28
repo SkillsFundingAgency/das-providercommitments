@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
 
             var cohorts = cohortsResponse.Cohorts
-                .Where(x => x.GetStatus() == CohortStatus.Draft || x.GetStatus() == CohortStatus.Review)
+                .Where(x => (x.GetStatus() == CohortStatus.Draft || x.GetStatus() == CohortStatus.Review) && !x.IsLinkedToChangeOfPartyRequest)
                 .Select(y => new ChooseCohortSummaryViewModel
                 {
                     EmployerName = y.LegalEntityName,

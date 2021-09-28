@@ -33,7 +33,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new WhenMappingChooseCohortViewModelFixture();
             await fixture.Map();
 
-            fixture.Verify_Cohorts_InReviewWithProvider_Are_Mapped();
+            fixture.Verify_OnlyCohortsNotRelatedToChangeOfPartyAreMapped();
+        }
+
+        [Test]
+        public async Task OnlyCohortsNotRelatedToChangeOfPartyAreMapped()
+        {
+            var fixture = new WhenMappingChooseCohortViewModelFixture();
+            await fixture.Map();
+
+            fixture.Verify_Cohorts_InDraftWithProvider_Are_Mapped();
         }
 
         [Test]
@@ -169,7 +178,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsNotNull(GetCohortInReviewViewModel(6));
         }
 
-        public void Verify_Cohorts_InReviewWithProvider_Are_Mapped()
+        public void Verify_OnlyCohortsNotRelatedToChangeOfPartyAreMapped()
+        {
+            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
+            Assert.IsNull(GetCohortInReviewViewModel(7));
+        }
+
+        public void Verify_CohortsInReviewWithProviderAreMapped()
         {
             Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
 
@@ -212,16 +227,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(ProviderId, ChooseCohortViewModel.ProviderId);
         }
 
-        public void Verify_Ordered_By_DateCreatedAscending()
-        {
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.Last().EmployerName);
-        }
-
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_Ordered_By_EmployerNameDescending()
@@ -317,7 +326,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      IsDraft = true,
                      WithParty = Party.Provider,
                      CreatedOn = DateTime.Now.AddHours(-1)
+                 },
+                 new CohortSummary
+                 {
+                     CohortId = 7,
+                     AccountId = 7,
+                     ProviderId = 1,
+                     LegalEntityName = "Employer7",
+                     AccountLegalEntityPublicHashedId = "700F",
+                     NumberOfDraftApprentices = 700,
+                     IsDraft = true,
+                     WithParty = Party.Provider,
+                     CreatedOn = DateTime.Now.AddHours(-1),
+                      IsLinkedToChangeOfPartyRequest = true
                  }
+
             };
 
             return new GetCohortsResponse(cohorts);
