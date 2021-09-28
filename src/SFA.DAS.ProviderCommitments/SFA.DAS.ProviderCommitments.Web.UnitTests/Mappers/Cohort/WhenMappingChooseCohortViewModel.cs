@@ -82,12 +82,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task Then_Cohort_OrderBy_OnDateCreated_Correctly()
+        public async Task Then_By_Default_Cohort_Should_Be_OrderBy_OnDateCreated_Descending_Correctly()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
             await fixture.Map();
 
-            fixture.Verify_Ordered_By_DateCreatedAscending();
+            fixture.Verify_Ordered_By_DateCreatedDescending();
         }
 
         [Test]
@@ -217,6 +217,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.First().EmployerName);
             Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.Last().EmployerName);
         }
+
+        public void Verify_Ordered_By_DateCreatedDescending()
+        {
+            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+        }
+
         public void Verify_Ordered_By_EmployerNameDescending()
         {
             Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
