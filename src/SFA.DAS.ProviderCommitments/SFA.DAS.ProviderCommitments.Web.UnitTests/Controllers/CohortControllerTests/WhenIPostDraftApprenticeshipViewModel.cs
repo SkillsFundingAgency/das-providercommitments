@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -41,6 +43,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirection();
         }
 
+        [Test]
+        public async Task ThenTheUserIsRedirectedToStandardOptionsIfAvailable()
+        {
+            _fixture.SetupHasOptions();
+            await _fixture.PostDraftApprenticeshipViewModel();
+            _fixture.VerifyUserRedirectSelectOption();
+        }
+
         private class UnapprovedControllerTestFixture
         {
             private readonly CohortController _controller;
@@ -53,21 +63,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private IActionResult _actionResult;
             private readonly string _linkGeneratorRedirectUrl;
             private string _linkGeneratorParameter;
+            private Fixture _autoFixture;
+            private readonly Mock<IEncodingService> _encodingService;
+            private readonly string _draftApprenticeshipHashedId;
 
             public UnapprovedControllerTestFixture()
             {
-                var autoFixture = new Fixture();
+                _autoFixture = new Fixture();
 
+                _draftApprenticeshipHashedId = _autoFixture.Create<string>();
                 _mediator = new Mock<IMediator>();
                 _mockModelMapper = new Mock<IModelMapper>();
                 _linkGenerator = new Mock<ILinkGenerator>();
+                _encodingService = new Mock<IEncodingService>();
 
                 _model = new AddDraftApprenticeshipViewModel
                 {
-                    ProviderId = autoFixture.Create<int>(),
-                    EmployerAccountLegalEntityPublicHashedId = autoFixture.Create<string>(),
-                    AccountLegalEntityId = autoFixture.Create<long>(),
-                    ReservationId = autoFixture.Create<Guid>()
+                    ProviderId = _autoFixture.Create<int>(),
+                    EmployerAccountLegalEntityPublicHashedId = _autoFixture.Create<string>(),
+                    AccountLegalEntityId = _autoFixture.Create<long>(),
+                    ReservationId = _autoFixture.Create<Guid>()
                 };
 
                 _createCohortRequest = new CreateCohortRequest();
@@ -77,25 +92,43 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _createCohortResponse = new CreateCohortResponse
                 {
-                    CohortId = autoFixture.Create<long>(),
-                    CohortReference = autoFixture.Create<string>()
+                    CohortId = _autoFixture.Create<long>(),
+                    CohortReference = _autoFixture.Create<string>(),
+                    DraftApprenticeshipId = null
                 };
 
                 _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(_createCohortResponse);
 
-                _linkGeneratorRedirectUrl = autoFixture.Create<string>();
+                _linkGeneratorRedirectUrl = _autoFixture.Create<string>();
                 _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                     .Returns(_linkGeneratorRedirectUrl)
                     .Callback((string value) => _linkGeneratorParameter = value);
                     
                 
-                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>());
+                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), _encodingService.Object);
             }
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()
             {
                 _actionResult = await _controller.AddDraftApprenticeship(_model);
+                return this;
+            }
+
+            public UnapprovedControllerTestFixture SetupHasOptions()
+            {
+                var draftApprenticeshipId = _autoFixture.Create<long>();
+
+                _encodingService.Setup(x => x.Encode(draftApprenticeshipId, EncodingType.ApprenticeshipId))
+                    .Returns(_draftApprenticeshipHashedId);
+                
+                _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new CreateCohortResponse
+                    {
+                        CohortId = _autoFixture.Create<long>(),
+                        CohortReference = _autoFixture.Create<string>(),
+                        DraftApprenticeshipId = draftApprenticeshipId
+                    });
                 return this;
             }
 
@@ -111,6 +144,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             public UnapprovedControllerTestFixture VerifyUserRedirection()
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+                return this;
+            }
+
+            public UnapprovedControllerTestFixture VerifyUserRedirectSelectOption()
+            {
+                _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
+                var result = _actionResult as RedirectToActionResult;
+                Assert.IsNotNull(result);
+                result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
                 return this;
             }
         }

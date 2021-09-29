@@ -110,5 +110,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var result = await _act();
             Assert.AreEqual(_source.Reference, result.Reference);
         }
+
+        [Test]
+        public async Task ThenTheCourseOptionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingCourseOption, result.CourseOption);
+        }
+
+        [Test]
+        public async Task ThenIfTheCourseOptionsIsMinusOneThenMappedToEmptyString()
+        {
+            _source.TrainingCourseOption = "-1";
+            var result = await _act();
+            Assert.AreEqual(string.Empty, result.CourseOption);
+        }
     }
 }
