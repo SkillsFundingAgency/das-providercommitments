@@ -14,7 +14,7 @@ variables:
   buildPlatform: 'anycpu'
 
 pool:
-  name: 'DAS - Continuous Integration'
+  name: 'DAS - Continuous Integration Agents'
 
 steps:
 - task: gittools.gitversion.gitversion-task.GitVersion@5
