@@ -42,7 +42,7 @@
                 @foreach (var option in Model.Options)
                 {
                     <div class="govuk-radios__item">
-                        <input asp-for="SelectedOption" value="@option" type="radio" class="govuk-radios__input" id="option-@option" @(option.Equals(Model.SelectedOption) ? "selected" : "")/>
+                        <input asp-for="SelectedOption" value="@option" type="radio" class="govuk-radios__input" id="option-@option" checked="@(option.Equals(Model.SelectedOption))"/>
                         <label class="govuk-label govuk-radios__label" for="option-@option">
                             @option
                         </label>
@@ -51,7 +51,7 @@
                 }
                 <div class="govuk-radios__divider">or</div>
                 <div class="govuk-radios__item">
-                    <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater" @(Model.SelectedOption == "-1" ? "selected" : "") />
+                    <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater"  checked="@(Model.SelectedOption == "-1")" />
                     <label class="govuk-label govuk-radios__label" for="option-confirmlater">
                         Confirm option at a later date
                     </label>
