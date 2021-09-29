@@ -9,6 +9,15 @@ pr: none
 workspace:
     clean: all
 
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.50
+    endpoint: SkillsFundingAgenc
+
 variables:
   buildConfiguration: 'release'
   buildPlatform: 'anycpu'
@@ -18,10 +27,7 @@ pool:
   demands: LATEST_DOTNET_VERSION -equals 3.1
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@5
-  displayName: GitVersion
-  inputs:
-    updateAssemblyInfo: true
+- template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
 - task: DotNetCoreCLI@2
   displayName: Restore
