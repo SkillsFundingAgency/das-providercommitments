@@ -154,11 +154,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
 
         [TestCase(true)]
         [TestCase(false)]
+        public async Task ThenTheTrainingCourseOptionIsMapped(bool hasStandardOptions)
+        {
+            _apiResponse.HasStandardOptions = hasStandardOptions;
+
+            var result = await _act();
+            
+            Assert.AreEqual(_apiResponse.HasStandardOptions, result.HasStandardOptions);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
         public async Task ThenIsContinuationIsMappedCorrectly(bool isContinuation)
         {
             _apiResponse.IsContinuation = isContinuation;
             var result = await _act();
             Assert.AreEqual(_apiResponse.IsContinuation, result.IsContinuation);
+        }
+
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMapped()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingCourseOption, result.TrainingCourseOption);
+        }
+        
+        [Test]
+        public async Task ThenTheTrainingCourseOptionIsMappedToMinusOneIfEmpty()
+        {
+            _apiResponse.TrainingCourseOption = string.Empty;
+            var result = await _act();
+            Assert.AreEqual("-1", result.TrainingCourseOption);
         }
     }
 }

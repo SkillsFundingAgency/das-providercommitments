@@ -127,6 +127,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(request.CourseCode, result.TrainingCode);
         }
 
+        [Test, MoqAutoData]
+        public async Task Version_IsMapped(
+        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Version, result.Version);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Option_IsMapped(
+        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.Option, result.Option);
+        }
+
+        [Test, MoqAutoData]
+        public async Task WhenOptionIsTBC_OptionIsMappedToEmptyString(
+        EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            request.Option = "TBC";
+
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(string.Empty, result.Option);
+        }
+
         public class DateCustomisation : ICustomization
         {
             public void Customize(IFixture fixture)

@@ -16,8 +16,10 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using System;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.Encoding;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderUrlHelper.Core;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -28,16 +30,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IEncodingService _encodingService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
-            ICommitmentsApiClient commitmentsApiClient)
+            ICommitmentsApiClient commitmentsApiClient,
+            IEncodingService encodingService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
+            _encodingService = encodingService;
         }
 
         [HttpGet]
@@ -100,6 +105,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
             var response = await _mediator.Send(request);
+
+            if (response.DraftApprenticeshipId.HasValue)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                    EncodingType.ApprenticeshipId);
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId , response.CohortReference});
+            }
+            
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
@@ -128,14 +141,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/confirm-employer")]
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
-                var request = await _modelMapper.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(viewModel);
-                var response = await _commitmentApiClient.CreateCohort(request);
-
-                return RedirectToAction(nameof(Details), new { viewModel.ProviderId, response.CohortReference });
+                return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });

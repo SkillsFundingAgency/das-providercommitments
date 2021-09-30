@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
@@ -21,6 +21,8 @@
 
             @Html.HiddenFor(x => x.ProviderId)
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
+            @Html.HiddenFor(x => x.Version)
+            @Html.HiddenFor(x => x.Option)
 
             @if (Model.IsContinuation)
             {
@@ -180,7 +182,8 @@
                             Planned training start date
                         </legend>
                         <span id="start-date-hint" class="govuk-hint">
-                            For example, 09 2017
+                            For example, 09 2017<br />
+                            The standard version will be based on the planned training start date provided
                         </span>
                         @Html.ValidationMessageFor(m => m.StartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
                         <div class="govuk-date-input">
@@ -298,7 +301,7 @@
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                     Update details
                 </button>
-                <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new DetailsRequest{ ProviderId = Model.ProviderId ,ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" id="cancel-button">Cancel and return</a>
+                <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance)" id="cancel-button">Cancel and return</a>
             </div>
 
         </form>

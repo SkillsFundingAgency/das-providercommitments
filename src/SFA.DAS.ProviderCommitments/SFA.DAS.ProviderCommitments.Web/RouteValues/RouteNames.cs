@@ -7,9 +7,13 @@
         public const string ApprenticeDetail = "apprentice-details";
         public const string ApprenticeReviewApprenticeshipUpdates = "apprentice-review-apprentice-updates";
         public const string ApprenticeViewApprenticeshipUpdates = "apprentice-view-apprentice-updates";
+        public const string CancelInProgressChangeOfCircumstance = "cancel-in-progress-change-of-circumstance";
         public const string ChangeEmployer = "apprentice-change-employer";
         public const string ChangeEmployerInform = "apprentice-change-employer-inform";
         public const string ChangeEmployerDetails = "apprentice-change-employer-details";
+        public const string ChangeVersion = "change-version";
+        public const string ChangeOption = "change-option";
+        public const string EditApprenticeship = "edit-apprenticeship";
         public const string ApprenticeSelectEmployer = "apprentice-select-employer";
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";
         public const string ApprenticeStartDate = "apprentice-start-date";

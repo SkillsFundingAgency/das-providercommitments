@@ -5,11 +5,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -18,33 +17,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenIPostConfirmEmployer
     {
         [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmFalse_ShouldRedirectToSelectEmployer()
+        public void PostConfirmEmployerViewModel_WithValidModel_WithConfirmFalse_ShouldRedirectToSelectEmployer()
         {
             var fixture = new PostConfirmEmployerFixture()
                 .WithConfirmFalse();
 
-            var result = await fixture.Act();
+            var result = fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("SelectEmployer");
         }
 
         [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ThenRequestIsMapped()
-        {
-            var fixture = new PostConfirmEmployerFixture()
-                .WithConfirmTrue();
-            await fixture.Act();
-            fixture.VerifyMapperIsCalled();
-        }
-
-        [Test]
-        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        public void PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
                 .WithConfirmTrue();
 
-            var result = await fixture.Act();
-            fixture.VerifyCohortCreated();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+            var result = fixture.Act();
+            fixture.VerifyReturnsRedirect(result);
         }
     }
 
@@ -80,11 +69,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .Setup(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_emptyCohortResponse);
 
-            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_emptyCohortResponse.CohortReference}/Details";
+            RedirectUrl = $"{_providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
             _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
+            _linkGenerator.Setup(x => x.ReservationsLink(RedirectUrl)).Returns(RedirectUrl);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object);
+            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, Mock.Of<IEncodingService>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
@@ -99,18 +88,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public PostConfirmEmployerFixture VerifyMapperIsCalled()
+        public void VerifyReturnsRedirect(IActionResult redirectResult)
         {
-            _mockModelMapper.Verify(x => x.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(_viewModel));
-            return this;
+            redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
         }
 
-        public PostConfirmEmployerFixture VerifyCohortCreated()
-        {
-            _commitmentApiClient.Verify(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()), Times.Once);
-            return this;
-        }
 
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_viewModel);
+        public IActionResult Act() => Sut.ConfirmEmployer(_viewModel);
     }
 }

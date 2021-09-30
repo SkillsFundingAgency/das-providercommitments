@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,6 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -19,6 +20,8 @@ using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -30,16 +33,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
+        private readonly IEncodingService _encodingService;
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator,
-            ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper)
+            ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService)
         {
             _mediator = mediator;
             _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
-            _modelMapper = modelMapper;            
+            _modelMapper = modelMapper;
+            _encodingService = encodingService;
         }
 
         [HttpGet]
@@ -63,8 +68,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
             request.UserId = User.Upn();
 
-            await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });    
+            }
+            
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+            
+            if (draftApprenticeship.HasStandardOptions)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, draftApprenticeshipHashedId , model.CohortReference});
+            }
+            
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
@@ -76,6 +94,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+            
+            if (draftApprenticeship.HasStandardOptions)
+            {
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference});
+            }
+            
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
@@ -84,15 +109,48 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
-
-            if (model is EditDraftApprenticeshipViewModel editModel)
+            try
             {
-                await AddLegalEntityAndCoursesToModel(editModel);
-                return View("EditDraftApprenticeship", editModel);
+                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+
+                if (model is EditDraftApprenticeshipViewModel editModel)
+                {
+                    await AddLegalEntityAndCoursesToModel(editModel);
+                    return View("EditDraftApprenticeship", editModel);
+                }
+
+                return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
             }
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+            }
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/select-options")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectOptions(SelectOptionsRequest request)
+        {
+            var model = await _modelMapper.Map<ViewSelectOptionsViewModel>(request);
+
+            if (!model.Options.Any())
+            {
+                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            }
+
+            return View("SelectStandardOption", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/select-options")]
+        public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
+        {
+            var request = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             
-            return View("ViewDraftApprenticeship", model as ViewDraftApprenticeshipViewModel);
+            await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
+            
+            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpGet]
@@ -110,8 +168,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
-            var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
-            return View(viewModel);
+            try
+            {
+                var viewModel = await _modelMapper.Map<DeleteConfirmationViewModel>(deleteConfirmationRequest);
+                return View(viewModel);
+            }
+            catch (Exception e) when (e is DraftApprenticeshipNotFoundException)
+            {
+                return RedirectToAction("Details", "Cohort", new { deleteConfirmationRequest.ProviderId, deleteConfirmationRequest.CohortReference });
+            }
         }
 
         [HttpPost]
