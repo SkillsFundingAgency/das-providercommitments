@@ -12,6 +12,7 @@ using System.Threading;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -47,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _linkGenerator.Object, _apiClient.Object, _modelMapperMock.Object);
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _linkGenerator.Object, _apiClient.Object, _modelMapperMock.Object, Mock.Of<IEncodingService>());
             Sut.TempData = tempData;
         }
 

@@ -34,7 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Status = source.SelectedStatus,
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate,
-                Alert = source.SelectedAlert
+                Alert = source.SelectedAlert,
+                ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation
             });
 
             var statusFilters = new[]
@@ -69,6 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedStartDate = source.SelectedStartDate,
                 SelectedEndDate = source.SelectedEndDate,
                 SelectedAlert = source.SelectedAlert,
+                SelectedApprenticeConfirmation = source.SelectedApprenticeConfirmation,
                 StatusFilters = statusFilters,
                 AlertFilters = alertFilters
             };

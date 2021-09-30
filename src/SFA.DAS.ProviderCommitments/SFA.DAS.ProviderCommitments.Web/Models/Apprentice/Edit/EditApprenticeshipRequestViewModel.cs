@@ -33,6 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public long ApprenticeshipId { get; set; }
         public string ULN { get; set; }
         public string TrainingName { get; set; }
+        public string Version { get; set; }
+        public string Option { get; set; }
 
         [SuppressArgumentException(nameof(Cost), "The apprenticeship price is not valid")]
         public decimal? Cost { get; set; }
@@ -80,5 +82,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public long ProviderId { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
         public bool EmailShouldBePresent { get; set; }
+        public bool HasOptions { get; set; }
     }
 }

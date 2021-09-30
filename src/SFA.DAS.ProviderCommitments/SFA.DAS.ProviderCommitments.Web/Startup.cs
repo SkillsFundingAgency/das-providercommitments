@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 })
                 .AddHttpContextAccessor()
                 .AddDasHealthChecks()
-                .AddProviderIdamsAuthentication(Configuration)
+                .AddProviderAuthentication(Configuration)
                 .AddMemoryCache()
                 .AddMvc(options =>
                 {
@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
         public void ConfigureContainer(Registry registry)
         {
-            IoC.Initialize(registry);
+            IoC.Initialize(registry, Configuration);
         }
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
