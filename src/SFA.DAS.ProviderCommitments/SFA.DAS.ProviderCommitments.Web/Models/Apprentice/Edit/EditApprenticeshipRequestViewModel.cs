@@ -81,6 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public bool IsEndDateLockedForUpdate { get; internal set; }
         public long ProviderId { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
+        public bool EmailShouldBePresent { get; set; }
         public bool HasOptions { get; set; }
     }
 }
