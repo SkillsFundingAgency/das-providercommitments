@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentValidation;
@@ -7,7 +8,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
 {
@@ -57,6 +61,36 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             _fixture.VerifyCohortReferenceWasReturned();
         }
         
+        
+        [Test]
+        public async Task ThenHasStandardOptionsIsTrueIfSingleApprenticeWithOptions()
+        {   
+            await _fixture.Act();
+
+            _fixture.VerifyHasOptionsValue(true);
+        }
+
+        [Test]
+        public async Task ThenHasStandardOptionsIsFalseIfMultipleApprentices()
+        {
+            _fixture.ReturnMultipleApprenticeships();
+            
+            await _fixture.Act();
+
+            _fixture.VerifyHasOptionsValue(false);
+        }
+        
+        
+        [Test]
+        public async Task ThenHasStandardOptionsIsFalseIfSingleApprenticeWithNoOptions()
+        {
+            _fixture.ReturnMultipleApprenticeships();
+            
+            await _fixture.Act();
+
+            _fixture.VerifyHasOptionsValue(false);
+        }
+        
         private class CreateCohortHandlerFixture
         {
             private readonly CreateCohortHandler _handler;
@@ -69,31 +103,71 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             private readonly ValidationResult _validationResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>> _mapper;
+            private readonly DraftApprenticeshipDto _draftResponse;
+            private Fixture _autoFixture;
 
 
             public CreateCohortHandlerFixture()
             {
-                var autoFixture = new Fixture();
+                _autoFixture = new Fixture();
 
-                _request = autoFixture.Create<CreateCohortRequest>();
+                _request = _autoFixture.Create<CreateCohortRequest>();
                 _requestClone = TestHelper.Clone(_request);
 
+                _draftResponse = _autoFixture.Build<DraftApprenticeshipDto>().Create();
+                
+                var getDraftApprenticeshipsResponse = new GetDraftApprenticeshipsResponse
+                {
+                    DraftApprenticeships = new List<DraftApprenticeshipDto>
+                    {
+                        _draftResponse
+                    }
+                };
+
+                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                    .With(c=>c.HasStandardOptions, true)
+                    .Create();
+                
+                
                 _validationResult = new ValidationResult();
                 _validator = new Mock<IValidator<CreateCohortRequest>>();
                 _validator.Setup(x => x.Validate(It.IsAny<CreateCohortRequest>()))
                     .Returns(_validationResult);
 
-                _apiResponse = autoFixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
+                _apiResponse = _autoFixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
                 _apiClient = new Mock<ICommitmentsApiClient>();
                 _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(_apiResponse);
-
+                _apiClient.Setup(x => x.GetDraftApprenticeships(_apiResponse.CohortId, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(getDraftApprenticeshipsResponse);
+                _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(getDraftApprenticeshipResponse);
+                
                 _mapper = new Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>>();
 
-                _apiRequest = autoFixture.Create<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>();
+                _apiRequest = _autoFixture.Create<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>();
                 _mapper.Setup(m => m.Map(_requestClone))
                     .ReturnsAsync(_apiRequest);
                 _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object, _mapper.Object);
+            }
+
+            public CreateCohortHandlerFixture ReturnMultipleApprenticeships()
+            {
+                var getDraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
+                _apiClient.Setup(x => x.GetDraftApprenticeships(_apiResponse.CohortId, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(getDraftApprenticeshipsResponse);
+                return this;
+            }
+            
+            
+            public CreateCohortHandlerFixture ReturnSingleApprenticeshipNoOptions()
+            {
+                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                    .With(c=>c.HasStandardOptions, false)
+                    .Create();
+                _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(getDraftApprenticeshipResponse);
+                return this;
             }
 
             public async Task Act()
@@ -142,6 +216,20 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             public CreateCohortHandlerFixture VerifyCohortReferenceWasReturned()
             {
                 Assert.AreEqual(_apiResponse.CohortReference, _result.CohortReference);
+                return this;
+            }
+
+            public CreateCohortHandlerFixture VerifyHasOptionsValue(bool hasOptions)
+            {
+                if (hasOptions)
+                {
+                    Assert.IsNotNull(_result.DraftApprenticeshipId);    
+                }
+                else
+                {
+                    Assert.IsNull(_result.DraftApprenticeshipId);
+                }
+                
                 return this;
             }
         }

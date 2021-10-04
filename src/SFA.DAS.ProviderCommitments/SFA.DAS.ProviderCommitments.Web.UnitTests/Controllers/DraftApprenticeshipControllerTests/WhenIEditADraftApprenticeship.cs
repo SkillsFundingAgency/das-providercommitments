@@ -24,8 +24,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingTheDraftApprenticeIsSuccessful()
+        public async Task AndWhenSavingAndNoStandardOptionsTheDraftApprenticeIsSuccessful()
         {
+            _fixture.SetUpStandardToReturnNoOptions().SetupCommitmentsApiToReturnADraftApprentice();
+            
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
@@ -38,5 +40,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.SetupUpdatingToThrowCommitmentsApiException();
             Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToEditDraftApprenticeship());
         }
+
+        [Test]
+        public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptions()
+        {
+            _fixture.SetUpStandardToReturnOptions()
+                .SetupCommitmentsApiToReturnADraftApprentice();
+            
+            await _fixture.PostToEditDraftApprenticeship();
+            _fixture.VerifyUpdateMappingToApiTypeIsCalled()
+                .VerifyApiUpdateMethodIsCalled()
+                .VerifyRedirectToSelectOptionsPage();
+        }
+
     }
 }
