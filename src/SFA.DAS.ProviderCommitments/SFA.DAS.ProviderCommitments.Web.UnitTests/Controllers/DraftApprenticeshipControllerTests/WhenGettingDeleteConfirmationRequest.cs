@@ -8,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
 using MediatR;
+using SFA.DAS.Encoding;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .Setup(x => x.Map<DeleteConfirmationViewModel>(_request))
               .ReturnsAsync(_viewModel);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object);
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>());
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.StructureMap;
+﻿using Microsoft.Extensions.Configuration;
+using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.StructureMap;
@@ -13,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
     public static class IoC
     {
-        public static void Initialize(Registry registry)
+        public static void Initialize(Registry registry, IConfiguration config)
         {
             registry.IncludeRegistry<AuthorizationRegistry>();
             registry.IncludeRegistry<AutoConfigurationRegistry>();
@@ -30,7 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             // Enable if you want to bypass MI locally, if enabled the 'Provider' role claim 
             // will not be supplied by MI when no Bearer token has been generated and the Commitments
             // API will need to obtain a 'Provider' role claim internally for local development
-            //registry.IncludeRegistry<LocalDevRegistry>();
+            if (config["UseLocalRegistry"] != null && bool.Parse(config["UseLocalRegistry"]))
+            {
+                registry.IncludeRegistry<LocalRegistry>();    
+            }
+            
         }
     }
 }
