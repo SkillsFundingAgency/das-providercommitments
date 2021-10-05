@@ -519,11 +519,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             if (unresolvedDataLocks) _fixture.WithUnResolvedDataLocksInTriage(TriageStatus.Change);
             if (providerUpdate) _fixture.WithPendingUpdatesForProvider();
-            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, party);
+            _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer,
+                ChangeOfPartyRequestStatus.Pending, party);
 
             await _fixture.Map();
 
             Assert.AreEqual(expected, _fixture.Result.ShowChangesToThisApprenticeshipBanner);
+        }
+
         [Test]
         public async Task And_ApprenticeshipIsAFramework_Then_ShowChangeVersionLinkIsFalse()
         {
