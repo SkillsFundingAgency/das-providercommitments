@@ -1,6 +1,6 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 <div class="govuk-inset-text">
-    <p id="das-pendingUpdate-div-body-text">There are changes to this apprentice's details that are waiting for approval by the employer.</p>
+    <p id="das-pendingUpdate-div-body-text">You have made a change which needs to be approved by the employer.</p>
     <a href="@Url.Action("ViewApprenticeshipUpdates", new { Model.ProviderId, Model.ApprenticeshipHashedId })" class="govuk-link" id="das-pendingUpdate-div-undo-link">View changes</a>
 </div>
