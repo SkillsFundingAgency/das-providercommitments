@@ -4,7 +4,7 @@
 @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
 {
     <div class="govuk-inset-text">
-        <p>Change request pending: Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
+        <p class="govuk-body"><span class="govuk-!-font-weight-bold">Change request pending:</span> Payment for @Model.ApprenticeName can't be made until this is resolved.</p>
     </div>
 }
 else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
