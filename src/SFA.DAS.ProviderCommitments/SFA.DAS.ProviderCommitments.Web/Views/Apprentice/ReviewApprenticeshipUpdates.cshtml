@@ -27,7 +27,7 @@
             <p>@Model.EmployerName have suggested these changes:</p>
             <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
 
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.AcceptChanges,  "govuk-form-group--error")">
+            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h1 class="govuk-fieldset__heading">
@@ -35,15 +35,15 @@
                         </h1>
                     </legend>
                     <div class="govuk-radios">
-                        @Html.ValidationMessageFor(m => m.AcceptChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.AcceptChanges) })
+                        @Html.ValidationMessageFor(m => m.ApproveChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveChanges) })
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="AcceptChanges" name="AcceptChanges" type="radio" value="true">
+                            <input class="govuk-radios__input" id="ApproveChanges" name="ApproveChanges" type="radio" value="true">
                             <label class="govuk-label govuk-radios__label" for="AcceptChanges">
                                 Yes, approve these changes
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="AcceptChanges-no" name="AcceptChanges" type="radio" value="false">
+                            <input class="govuk-radios__input" id="ApproveChanges-no" name="ApproveChanges" type="radio" value="false">
                             <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
                                 No, reject these changes
                             </label>
