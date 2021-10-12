@@ -93,7 +93,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                             ToDate = coe.StopDate.HasValue ? coe.StopDate.Value : coe.EndDate.Value,
                             HashedApprenticeshipId = _encodingService.Encode(coe.ApprenticeshipId, EncodingType.ApprenticeshipId),
                             ShowLink = source.ApprenticeshipId != coe.ApprenticeshipId
-                        }).ToList()
+                        }).ToList(),
+                    EmailShouldBePresent = data.Apprenticeship.EmailShouldBePresent
                 };
             }
             catch (Exception e)

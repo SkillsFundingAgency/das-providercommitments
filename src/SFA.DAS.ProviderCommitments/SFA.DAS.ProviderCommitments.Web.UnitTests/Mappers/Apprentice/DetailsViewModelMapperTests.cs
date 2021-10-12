@@ -527,6 +527,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expected, _fixture.Result.ShowChangesToThisApprenticeshipBanner);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task CheckEmailShouldBePresentIsMappedCorrectly(bool expected)
+        {
+            _fixture.WithEmailShouldBePresentPopulated(expected);
+
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(expected, _fixture.Result.EmailShouldBePresent);
+        }
+
         [Test]
         public async Task And_ApprenticeshipIsAFramework_Then_ShowChangeVersionLinkIsFalse()
         {
@@ -914,6 +925,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithEmailPopulated(string email)
             {
                 ApiResponse.Email = email;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
+            {
+                ApiResponse.EmailShouldBePresent =present;
                 return this;
             }
         }

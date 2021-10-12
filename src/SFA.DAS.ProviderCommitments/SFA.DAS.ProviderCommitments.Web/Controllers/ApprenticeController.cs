@@ -126,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> ReviewApprenticeshipUpdates([FromServices] IAuthenticationService authenticationService, ReviewApprenticeshipUpdatesViewModel viewModel)
         {
-            if (viewModel.AcceptChanges.Value)
+            if (viewModel.ApproveChanges.Value)
             {
                 var request = new AcceptApprenticeshipUpdatesRequest
                 {
@@ -139,7 +139,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 TempData.AddFlashMessage(ChangesApprovedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             }
-            else if (!viewModel.AcceptChanges.Value)
+            else if (!viewModel.ApproveChanges.Value)
             {
                 var request = new RejectApprenticeshipUpdatesRequest
                 {
