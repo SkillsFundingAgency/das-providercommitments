@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 TransferSenderHashedId = cohort.TransferSenderId == null ? null : _encodingService.Encode(cohort.TransferSenderId.Value, EncodingType.PublicAccountId),
-                Message = cohort.LatestMessageCreatedByProvider,
+                Message = cohort.LatestMessageCreatedByEmployer,
                 Courses = courses,
                 PageTitle = draftApprenticeships.Count > 1
                     ? $"{viewOrApprove} {draftApprenticeships.Count} apprentices' details"
