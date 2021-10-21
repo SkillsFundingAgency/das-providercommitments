@@ -3,8 +3,9 @@
   <PropertyGroup>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,22 +16,14 @@
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.8.1" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="3.1.20" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.1.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.0" />
     <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.58" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.58" />
@@ -43,7 +36,7 @@
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.47" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
-    <PackageReference Include="StructureMap" Version="4.7.0" />
+    <PackageReference Include="StructureMap" Version="4.7.1" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
 	<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
   </ItemGroup>

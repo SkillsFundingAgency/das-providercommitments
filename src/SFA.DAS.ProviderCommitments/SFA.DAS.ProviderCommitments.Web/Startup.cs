@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -27,14 +28,14 @@ namespace SFA.DAS.ProviderCommitments.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -64,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .EnableGoogleAnalytics()
                 .EnableCookieBanner()
                 .AddZenDeskSettings(Configuration)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
 
@@ -105,12 +106,13 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseStaticFiles()
                 .UseDasHealthChecks()
                 .UseCookiePolicy()
+                .UseRouting()
                 .UseAuthentication()
-                .UseMvc(routes =>
+                .UseEndpoints(builder =>
                 {
-                    routes.MapRoute(
+                    builder.MapControllerRoute(
                         name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
+                        pattern: "{controller=Home}/{action=Index}/{id?}");
                 })
                 .UseHealthChecks("/health-check"); 
 

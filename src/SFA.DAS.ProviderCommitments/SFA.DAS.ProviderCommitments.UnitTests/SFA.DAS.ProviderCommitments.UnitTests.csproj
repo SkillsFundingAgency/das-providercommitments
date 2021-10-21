@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,11 +14,11 @@
     <PackageReference Include="Moq" Version="4.10.1" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="CsvHelper" Version="12.3.2" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="7.88.0" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="7.88.0" />
-    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.165" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
   </ItemGroup>
 
   <ItemGroup>
