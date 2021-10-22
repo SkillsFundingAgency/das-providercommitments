@@ -38,9 +38,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public List<EmployerHistory> EmployerHistory { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
+
+        public bool ShowActionRequiredBanner => HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Provider ||
+                                                HasEmployerPendingUpdate ||
+                                                DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks;
+
+        public bool ShowChangesToThisApprenticeshipBanner => HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Employer ||
+                                                             HasProviderPendingUpdate ||
+                                                             DataLockStatus == DataLockSummaryStatus.AwaitingTriage;
+
         public TriageOption AvailableTriageOption { get; set; }
         public ConfirmationStatus? ConfirmationStatus { get; set; }
         public string Email { get; set; }
+        public bool EmailShouldBePresent { get; set; }
         public bool ShowChangeVersionLink { get; set; }
         public bool HasOptions { get; set; }
         public bool SingleOption { get; set; }

@@ -143,6 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public async Task And_StandardVersionHasNoOptions_VerifyRedirectedToConfirmEditApprenticeship()
         {
+            _viewModel.HasOptions = false;
             var result = await _fixture.EditApprenticeship(_viewModel);
             _fixture.VerifyRedirectedToConfirmEditApprenticeship(result);
         }
@@ -151,6 +152,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task And_NewStandardVersionHasOptions_VerifyRedirectedToChangeOption()
         {
             _viewModel.CourseCode = _autoFixture.Create<int>().ToString();
+            _viewModel.HasOptions = true;
             _standardVersionResponse.TrainingProgramme.Options = _autoFixture.Create<List<string>>();
             _fixture.SetUpGetCalculatedTrainingProgrammeVersion(_viewModel, _standardVersionResponse);
 

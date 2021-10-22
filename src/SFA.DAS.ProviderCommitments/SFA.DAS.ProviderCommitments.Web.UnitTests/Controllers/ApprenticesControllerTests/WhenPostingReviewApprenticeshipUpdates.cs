@@ -131,13 +131,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithAcceptChanges()
             {
-                _viewModel.AcceptChanges = true;
+                _viewModel.ApproveChanges = true;
                 return this;
             }
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithRejectChanges()
             {
-                _viewModel.AcceptChanges = false;
+                _viewModel.ApproveChanges = false;
                 return this;
             }
 
