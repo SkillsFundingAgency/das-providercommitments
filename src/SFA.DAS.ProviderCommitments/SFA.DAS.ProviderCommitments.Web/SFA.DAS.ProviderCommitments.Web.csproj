@@ -34,11 +34,11 @@
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.47" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="1.1.47" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.6" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
     <PackageReference Include="StructureMap" Version="4.7.1" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
-	<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
+	<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
   </ItemGroup>
 
 

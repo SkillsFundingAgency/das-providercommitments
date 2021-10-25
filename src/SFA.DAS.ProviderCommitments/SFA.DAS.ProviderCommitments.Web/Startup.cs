@@ -81,6 +81,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
+
+            services.AddProviderUiServiceRegistration(Configuration);
         }
 
         public void ConfigureContainer(Registry registry)
