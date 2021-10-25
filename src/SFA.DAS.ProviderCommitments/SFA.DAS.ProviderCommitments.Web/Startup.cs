@@ -1,5 +1,4 @@
-﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +71,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             services
                 .AddAuthorizationService()
                 .AddDataProtection(Environment)
-                .AddUrlHelper()
                 .AddHealthChecks();
 
             services.Configure<CookieTempDataProviderOptions>(options =>
