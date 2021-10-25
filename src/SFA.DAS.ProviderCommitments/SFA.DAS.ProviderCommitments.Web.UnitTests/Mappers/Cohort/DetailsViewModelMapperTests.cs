@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByProvider, result.Message);
+            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByEmployer, result.Message);
         }
 
         [TestCase(true, true, "No, send to employer to review or add details")]
