@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -73,6 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             services
                 .AddAuthorizationService()
                 .AddDataProtection(Environment)
+                .AddUrlHelper()
                 .AddHealthChecks();
 
             services.Configure<CookieTempDataProviderOptions>(options =>
@@ -83,12 +85,6 @@ namespace SFA.DAS.ProviderCommitments.Web
             });
 
             services.AddProviderUiServiceRegistration(Configuration);
-
-            services.AddScoped<IUrlHelper>(factory =>
-            {
-                var actionContext = factory.GetService<IActionContextAccessor>().ActionContext;
-                return new UrlHelper(actionContext);
-            });
         }
 
         public void ConfigureContainer(Registry registry)
