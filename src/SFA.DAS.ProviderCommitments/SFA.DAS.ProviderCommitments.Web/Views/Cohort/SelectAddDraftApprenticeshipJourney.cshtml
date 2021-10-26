@@ -1,0 +1,54 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectAddDraftApprenticeshipJourneyViewModel
+
+@{
+    ViewBag.Title = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/select-journey";
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <partial name="_ValidationSummary" />
+                <h1 class="govuk-heading-xl">Add apprentice details</h1>
+
+                <form method="post">
+                    <fieldset class="govuk-fieldset">
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(x => x.ProviderId)
+
+                        <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                            <fieldset class="govuk-fieldset">
+                                @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
+                                <div class="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
+                                            Add to an existing cohort
+                                        </label>
+                                    </div>
+
+                                    <div class="govuk-radios__item">
+                                        <input asp-for="Selection" value="NewCohort" type="radio" class="govuk-radios__input" id="confirm-NewCohort" />
+                                        <label class="govuk-label govuk-radios__label" for="confirm-NewCohort">
+                                            Create a new cohort
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <button class="govuk-button" type="submit" data-module="govuk-button">
+                            Continue
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
+}
