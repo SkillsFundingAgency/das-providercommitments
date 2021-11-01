@@ -17,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string ProviderName { get; set; }
         public string Message { get; set; }
         public string TransferSenderHashedId { get; set; }
+        public string EncodedPledgeApplicationId { get; set; }
         public int DraftApprenticeshipsCount
         {
             get

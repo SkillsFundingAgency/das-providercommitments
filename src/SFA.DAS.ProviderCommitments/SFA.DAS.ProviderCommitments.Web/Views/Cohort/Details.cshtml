@@ -8,7 +8,7 @@
     ViewBag.GaData.Vpv = "/unapproved/cohort";
     ViewBag.GaData.Org = Model.LegalEntityName;
     var bulkUploadUrl = Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{ Model.CohortReference}/UploadApprenticeships");
-    var reservationUrl = $"{Model.ProviderId}/reservations/{ Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}";
+    var reservationUrl = $"{Model.ProviderId}/reservations/{ Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&encodedPledgeApplicationId={Model.EncodedPledgeApplicationId}";
 
     if (!string.IsNullOrWhiteSpace(Model.TransferSenderHashedId))
     {
