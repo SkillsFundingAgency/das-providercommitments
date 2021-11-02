@@ -112,6 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseCookiePolicy()
                 .UseRouting()
                 .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(builder =>
                 {
                     builder.MapControllerRoute(
