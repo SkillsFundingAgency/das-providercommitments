@@ -3,5 +3,8 @@
     public class SelectEmployerRequest
     {
         public long ProviderId { get; set; }
+        public string SortField { get; set; }
+        public bool ReverseSort { get; set; }
+        public string SearchTerm { get; set; }
     }
 }

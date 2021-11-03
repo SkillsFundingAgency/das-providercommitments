@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 @inject ILinkGenerator LinkGenerator
 
@@ -12,30 +13,62 @@
         <h1 class="govuk-heading-xl">Choose an employer</h1>
         <p class="govuk-body">Choose an employer you want to add apprentice details on behalf of.</p>
 
-        <table class="govuk-table das-table--responsive">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Employer</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Account name</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Agreement ID</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"><span class="govuk-visually-hidden">Action</span></th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
+        <form method="get">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="selectedEmployer">Search employer name or account name</label>
+                <div class="das-search-form__group">
+                    <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.SelectEmployerFilterModel.SearchTerm">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+            @if (Model.AccountProviderLegalEntities.Count > 0 && !string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
+            {
+                <table class="govuk-table das-table--responsive das-table--double-arrows">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                <a class="das-table__sort" title="Sort by employer name" asp-route="@RouteNames.NewCohortSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountLegalEntityName")">
+                                    Employer
+                                </a>
 
-                @foreach (var viewModel in Model.AccountProviderLegalEntities)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
-                        <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
-                        <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                            <a href="@Url.Action("ConfirmEmployer", new {Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                <a class="das-table__sort" title="Sort the table by name" asp-route="@RouteNames.NewCohortSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountName")">
+                                    Account name
+                                </a>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                Agreement ID
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"><span class="govuk-visually-hidden">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var viewModel in Model.AccountProviderLegalEntities)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
+                                <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
+                                <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                                    <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <a class="" title="Clear search" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a>
+                <br />
+                <p class="govuk-body">0 employers match @Model.SelectEmployerFilterModel.SearchTerm</p>
+            }
+            </form>
     </div>
 </div>
 

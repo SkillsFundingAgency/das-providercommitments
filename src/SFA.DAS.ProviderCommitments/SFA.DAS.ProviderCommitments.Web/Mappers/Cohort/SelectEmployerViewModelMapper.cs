@@ -21,17 +21,87 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest source)
         {
+            List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities = await GetAccountProviderLegalEntities(source);
+
+            var filterModel = new SelectEmployerFilterModel
+            {
+                SearchTerm = source.SearchTerm,
+                ReverseSort = source.ReverseSort,
+                SortField = source.SortField,
+                Employers = accountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName + " - " + x.EmployerAccountName).ToList()
+            };
+
+            accountProviderLegalEntities = ApplySearch(source, accountProviderLegalEntities, filterModel);
+
+            accountProviderLegalEntities = ApplySort(accountProviderLegalEntities, filterModel);
+
             return new SelectEmployerViewModel
             {
-                AccountProviderLegalEntities = (await GetLegalEntitiesWithCreatePermission(source.ProviderId)).Select(x=>new AccountProviderLegalEntityViewModel
-                {
-                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
-                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
-                    EmployerAccountName = x.AccountName,
-                    EmployerAccountPublicHashedId = x.AccountPublicHashedId,
-                }).ToList(),
-                ProviderId = source.ProviderId
+                AccountProviderLegalEntities = accountProviderLegalEntities,
+                ProviderId = source.ProviderId,
+                SelectEmployerFilterModel = filterModel
             };
+        }
+
+        private async Task<List<AccountProviderLegalEntityViewModel>> GetAccountProviderLegalEntities(SelectEmployerRequest source)
+        {
+            return (await GetLegalEntitiesWithCreatePermission(source.ProviderId)).Select(x => new AccountProviderLegalEntityViewModel
+            {
+                EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                EmployerAccountName = x.AccountName,
+                EmployerAccountPublicHashedId = x.AccountPublicHashedId,
+            }).ToList();
+        }
+
+        private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)
+        {
+            if (!string.IsNullOrWhiteSpace(filterModel.SortField))
+            {
+                if (filterModel.SortField == "EmployerAccountLegalEntityName")
+                {
+                    accountProviderLegalEntities = (filterModel.ReverseSort
+                        ? accountProviderLegalEntities.OrderByDescending(x => x.EmployerAccountLegalEntityName)
+                        .ThenBy(x => x.EmployerAccountName)
+                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)
+
+                        : accountProviderLegalEntities.OrderBy(x => x.EmployerAccountLegalEntityName)
+                        .ThenBy(x => x.EmployerAccountName)
+                        .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)).ToList();
+                }
+                else
+                {
+                    accountProviderLegalEntities = (filterModel.ReverseSort
+                     ? accountProviderLegalEntities.OrderByDescending(x => x.EmployerAccountName)
+                      .ThenBy(x => x.EmployerAccountLegalEntityName)
+                      .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)
+
+                     : accountProviderLegalEntities.OrderBy(x => x.EmployerAccountName)
+                      .ThenBy(x => x.EmployerAccountLegalEntityName)
+                      .ThenBy(x => x.EmployerAccountLegalEntityPublicHashedId)).ToList();
+                }
+            }
+
+            return accountProviderLegalEntities;
+        }
+
+        private static List<AccountProviderLegalEntityViewModel> ApplySearch(SelectEmployerRequest source, List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)
+        {
+            if (!string.IsNullOrWhiteSpace(source.SearchTerm))
+            {
+                if (!string.IsNullOrWhiteSpace(filterModel.SearchAccountName))
+                {
+                    accountProviderLegalEntities.Where(x => x.EmployerAccountName.ToLower().Contains(filterModel.SearchEmployerName) || x.EmployerAccountLegalEntityPublicHashedId.Contains(filterModel.SearchAccountName));
+                }
+                else
+                {
+                    accountProviderLegalEntities = accountProviderLegalEntities.Where(x => x.EmployerAccountName.ToLower().Contains(filterModel.SearchEmployerName)
+                                                                                        ||
+                                                                                        x.EmployerAccountLegalEntityName.ToLower().Contains(filterModel.SearchEmployerName)).ToList();
+                }
+            }
+
+            return accountProviderLegalEntities;
         }
 
         private async Task<IEnumerable<AccountProviderLegalEntityDto>> GetLegalEntitiesWithCreatePermission(long providerId)
@@ -41,7 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 {
                     Ukprn = providerId,
                     Operation = Operation.CreateCohort
-                });
+                }); 
 
             if (result?.AccountProviderLegalEntities == null)
             {
