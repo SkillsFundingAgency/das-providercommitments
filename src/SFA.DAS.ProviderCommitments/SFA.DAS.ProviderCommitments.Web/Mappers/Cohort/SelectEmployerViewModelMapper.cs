@@ -91,7 +91,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 if (!string.IsNullOrWhiteSpace(filterModel.SearchAccountName))
                 {
-                    accountProviderLegalEntities.Where(x => x.EmployerAccountName.ToLower().Contains(filterModel.SearchEmployerName) || x.EmployerAccountLegalEntityPublicHashedId.Contains(filterModel.SearchAccountName));
+                    accountProviderLegalEntities = accountProviderLegalEntities.Where(x => x.EmployerAccountLegalEntityName.ToLower().Contains(filterModel.SearchEmployerName) 
+                    && x.EmployerAccountName.ToLower().Contains(filterModel.SearchAccountName)).ToList();
                 }
                 else
                 {
