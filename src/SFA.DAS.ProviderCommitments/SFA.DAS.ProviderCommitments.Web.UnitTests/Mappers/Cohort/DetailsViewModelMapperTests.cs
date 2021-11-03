@@ -110,6 +110,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task PledgeApplicationIdIsEncodedCorrectlyWhenThereIsAValue()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().SetPledgeApplicationIdAndItsExpectedHashedValue(567, "Z567Z");
+            var result = await fixture.Map();
+            Assert.AreEqual("Z567Z", result.EncodedPledgeApplicationId);
+        }
+
+        [Test]
+        public async Task PledgeApplicationIdIsNullWhenThereIsNoValue()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().SetPledgeApplicationIdAndItsExpectedHashedValue(null, null);
+            var result = await fixture.Map();
+            Assert.IsNull(result.EncodedPledgeApplicationId);
+        }
+
+        [Test]
         public async Task DraftApprenticeshipTotalCountIsReportedCorrectly()
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
@@ -702,6 +718,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 EncodingService.Setup(x => x.Encode(transferSenderId.Value, EncodingType.PublicAccountId))
                     .Returns(expectedHashedId);
+            }
+
+            return this;
+        }
+
+
+        public DetailsViewModelMapperTestsFixture SetPledgeApplicationIdAndItsExpectedHashedValue(int? pledgeApplicationId, string expectedEncodedId)
+        {
+            Cohort.PledgeApplicationId = pledgeApplicationId;
+            if (pledgeApplicationId.HasValue)
+            {
+                EncodingService.Setup(x => x.Encode(pledgeApplicationId.Value, EncodingType.PledgeApplicationId))
+                    .Returns(expectedEncodedId);
             }
 
             return this;
