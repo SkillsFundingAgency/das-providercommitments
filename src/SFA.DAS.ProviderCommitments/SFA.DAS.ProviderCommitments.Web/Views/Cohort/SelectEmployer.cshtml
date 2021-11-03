@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 @inject ILinkGenerator LinkGenerator
 
@@ -23,21 +24,25 @@
                     </div>
                 </div>
             </div>
-            @if (Model.AccountProviderLegalEntities.Count > 0 && !string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
+            @if (Model.AccountProviderLegalEntities.Count > 0)
             {
                 <table class="govuk-table das-table--responsive das-table--double-arrows">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header das-table-cell-width-25">
-                                <a class="das-table__sort" title="Sort by employer name" asp-route="@RouteNames.NewCohortSelectEmployer"
-                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountLegalEntityName")">
+                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)" 
+                                   title="Sort by employer name" 
+                                   asp-route="@RouteNames.NewCohortSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)">
                                     Employer
                                 </a>
 
                             </th>
                             <th scope="col" class="govuk-table__header das-table-cell-width-25">
-                                <a class="das-table__sort" title="Sort the table by name" asp-route="@RouteNames.NewCohortSelectEmployer"
-                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountName")">
+                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountNameConst)" 
+                                   title="Sort by account name" 
+                                   asp-route="@RouteNames.NewCohortSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountNameConst)">
                                     Account name
                                 </a>
                             </th>
