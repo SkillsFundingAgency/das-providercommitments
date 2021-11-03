@@ -4,8 +4,15 @@
     right: 10px;
 }
 
-@media (min-width: 40.0625em) {}
+.das-search-form__group .autocomplete__input {
+    height: 40px;
+}
+
+@media (min-width: 40.0625em) {
     .autocomplete__wrapper {
-        width: 66%
+        width: 66%;
+    }
+    .das-search-form__group .autocomplete__wrapper {
+        width: 100%;
     }
 }

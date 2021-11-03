@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 @inject ILinkGenerator LinkGenerator
 
@@ -15,9 +16,9 @@
 
         <form method="get">
             <div class="govuk-form-group">
-                <label class="govuk-label" for="selectedEmployer">Search employer name or account name</label>
+                <label class="govuk-label" for="searchTerm">Search employer name or account name</label>
                 <div class="das-search-form__group">
-                    <input class="govuk-input das-search-form__input" id="searchTerm" name="searchTerm" type="text" value="@Model.SelectEmployerFilterModel.SearchTerm">
+                    <input class="govuk-input das-search-form__input app-input-autocomplete" id="searchTerm" name="searchTerm" type="text" value="@Model.SelectEmployerFilterModel.SearchTerm">
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">Search</button>
                     </div>
@@ -28,23 +29,22 @@
                 <table class="govuk-table das-table--responsive das-table--double-arrows">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
                                 <a class="das-table__sort" title="Sort by employer name" asp-route="@RouteNames.NewCohortSelectEmployer"
                                    asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountLegalEntityName")">
                                     Employer
                                 </a>
 
                             </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
                                 <a class="das-table__sort" title="Sort the table by name" asp-route="@RouteNames.NewCohortSelectEmployer"
                                    asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData("EmployerAccountName")">
                                     Account name
                                 </a>
                             </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                            <th scope="col" colspan="2" class="govuk-table__header das-table-cell-width-30">
                                 Agreement ID
                             </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"><span class="govuk-visually-hidden">Action</span></th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
@@ -55,7 +55,9 @@
                                 <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                                 <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                                    <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                                    <a href="@Url.Action("ConfirmEmployer", new { Model.ProviderId, viewModel.EmployerAccountLegalEntityPublicHashedId })" class="govuk-link">
+                                        Select <span class="govuk-visually-hidden">@viewModel.EmployerAccountLegalEntityName</span>
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -64,13 +66,17 @@
             }
             else
             {
-                <a class="" title="Clear search" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a>
-                <br />
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NewCohortSelectEmployer">Clear search</a></p>
                 <p class="govuk-body">0 employers match @Model.SelectEmployerFilterModel.SearchTerm</p>
             }
             </form>
     </div>
 </div>
+
+<script>
+    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel.Employers));
+</script>
+
 
 @section breadcrumb
 {
