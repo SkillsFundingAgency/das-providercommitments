@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 SearchTerm = source.SearchTerm,
                 ReverseSort = source.ReverseSort,
-                SortField = source.SortField,
+                CurrentlySortedByField = source.SortField,
                 Employers = accountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName + " - " + x.EmployerAccountName).ToList()
             };
 
@@ -56,9 +56,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)
         {
-            if (!string.IsNullOrWhiteSpace(filterModel.SortField))
+            if (!string.IsNullOrWhiteSpace(filterModel.CurrentlySortedByField))
             {
-                if (filterModel.SortField == "EmployerAccountLegalEntityName")
+                if (filterModel.CurrentlySortedByField == SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)
                 {
                     accountProviderLegalEntities = (filterModel.ReverseSort
                         ? accountProviderLegalEntities.OrderByDescending(x => x.EmployerAccountLegalEntityName)
