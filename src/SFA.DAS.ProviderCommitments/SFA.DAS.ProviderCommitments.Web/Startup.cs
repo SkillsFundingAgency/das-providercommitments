@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web
         public IConfiguration Configuration { get; }
         public IHostingEnvironment Environment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the container.    
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
             services
                 .AddAuthorizationService()
-                .AddDataProtection(Environment)
+                .AddDataProtection(Configuration, Environment)
                 .AddUrlHelper()
                 .AddHealthChecks();
 
