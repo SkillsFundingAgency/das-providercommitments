@@ -126,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add/select-employer")]
+        [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
         [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)

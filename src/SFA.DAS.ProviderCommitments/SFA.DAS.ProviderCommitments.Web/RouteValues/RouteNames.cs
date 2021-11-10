@@ -27,5 +27,8 @@
         public const string UpdateDateLock = "update-datalock";
         public const string UpdateDataLockConfirm = "update-datalock-confirm";
         public const string ChooseCohort = "choose-a-cohort";
+        public const string NewCohortSelectEmployer = "new-cohort-select-employer";
     }
 }
+
+
