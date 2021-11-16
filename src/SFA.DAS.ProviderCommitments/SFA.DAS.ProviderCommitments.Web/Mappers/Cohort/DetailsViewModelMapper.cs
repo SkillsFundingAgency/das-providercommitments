@@ -47,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var emailOverlaps = (await emailOverlapsTask).ApprenticeshipEmailOverlaps.ToList();
 
             var courses = await GroupCourses(draftApprenticeships, emailOverlaps);
-            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Approve" : "View";
+            var viewOrApprove = cohort.WithParty == Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel
@@ -59,7 +59,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 TransferSenderHashedId = cohort.TransferSenderId == null ? null : _encodingService.Encode(cohort.TransferSenderId.Value, EncodingType.PublicAccountId),
-                Message = cohort.LatestMessageCreatedByProvider,
+                EncodedPledgeApplicationId = cohort.PledgeApplicationId == null ? null : _encodingService.Encode(cohort.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
+                Message = cohort.LatestMessageCreatedByEmployer,
                 Courses = courses,
                 PageTitle = draftApprenticeships.Count > 1
                     ? $"{viewOrApprove} {draftApprenticeships.Count} apprentices' details"
@@ -69,8 +70,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 IsCompleteForProvider = cohort.IsCompleteForProvider,
                 HasEmailOverlaps = emailOverlaps.Any(),
                 ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest,
-                AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
-                && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
+                AllowBulkUpload = cohort.LevyStatus == ApprenticeshipEmployerType.Levy 
+                && cohort.WithParty == Party.Provider 
                 && !cohort.IsLinkedToChangeOfPartyRequest,
                 IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
                 Status = GetCohortStatus(cohort, draftApprenticeships)

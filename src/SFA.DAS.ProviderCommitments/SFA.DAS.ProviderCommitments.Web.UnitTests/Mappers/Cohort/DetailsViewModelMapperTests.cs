@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByProvider, result.Message);
+            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByEmployer, result.Message);
         }
 
         [TestCase(true, true, "No, send to employer to review or add details")]
@@ -107,6 +107,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture().SetTransferSenderIdAndItsExpectedHashedValue(null, null);
             var result = await fixture.Map();
             Assert.IsNull(result.TransferSenderHashedId);
+        }
+
+        [Test]
+        public async Task PledgeApplicationIdIsEncodedCorrectlyWhenThereIsAValue()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().SetPledgeApplicationIdAndItsExpectedHashedValue(567, "Z567Z");
+            var result = await fixture.Map();
+            Assert.AreEqual("Z567Z", result.EncodedPledgeApplicationId);
+        }
+
+        [Test]
+        public async Task PledgeApplicationIdIsNullWhenThereIsNoValue()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().SetPledgeApplicationIdAndItsExpectedHashedValue(null, null);
+            var result = await fixture.Map();
+            Assert.IsNull(result.EncodedPledgeApplicationId);
         }
 
         [Test]
@@ -702,6 +718,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 EncodingService.Setup(x => x.Encode(transferSenderId.Value, EncodingType.PublicAccountId))
                     .Returns(expectedHashedId);
+            }
+
+            return this;
+        }
+
+
+        public DetailsViewModelMapperTestsFixture SetPledgeApplicationIdAndItsExpectedHashedValue(int? pledgeApplicationId, string expectedEncodedId)
+        {
+            Cohort.PledgeApplicationId = pledgeApplicationId;
+            if (pledgeApplicationId.HasValue)
+            {
+                EncodingService.Setup(x => x.Encode(pledgeApplicationId.Value, EncodingType.PledgeApplicationId))
+                    .Returns(expectedEncodedId);
             }
 
             return this;
