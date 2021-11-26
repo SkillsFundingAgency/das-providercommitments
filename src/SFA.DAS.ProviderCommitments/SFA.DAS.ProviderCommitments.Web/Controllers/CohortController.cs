@@ -235,6 +235,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/entry-method")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/entry-method")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
+        {
+            if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.BulkCsv)
+            {
+                return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+            }
+            else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
+            {
+                return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+        [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
