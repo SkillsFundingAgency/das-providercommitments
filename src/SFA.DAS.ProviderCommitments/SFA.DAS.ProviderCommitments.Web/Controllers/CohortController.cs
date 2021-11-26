@@ -254,7 +254,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
             {
-                return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { ProviderId = viewModel.ProviderId });
             }
             else
             {
