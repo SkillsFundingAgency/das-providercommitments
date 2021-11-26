@@ -25,13 +25,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public void Then_RedirectTo_ChooseCohort_When_Selected_Option_Is_BulkCsv()
+        public void Then_RedirectTo_FileUploadInform_When_Selected_Option_Is_BulkCsv()
         {
             var fixture = new WhenPostingSelectDraftApprenticeshipsEntryMethodFixture();
 
             var result = fixture.BulkCsv().Act();
 
-            result.VerifyReturnsRedirectToActionResult().WithActionName("ChooseCohort");
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadInform");
         }
     }
 

@@ -237,9 +237,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add/entry-method")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(long providerId)
         {
-            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = providerId };
             return View(model);
         }
 
@@ -250,7 +250,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.BulkCsv)
             {
-                return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(FileUploadInform), new { ProviderId = viewModel.ProviderId });
             }
             else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
             {
@@ -260,6 +260,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 throw new InvalidOperationException();
             }
+        }
+
+        [HttpGet]
+        [Route("add/file-upload/inform")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileUploadInform(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            return View();
         }
 
         [HttpGet]
