@@ -236,6 +236,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/entry-method")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
         {
@@ -264,6 +265,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/inform")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadInform(SelectAddDraftApprenticeshipJourneyRequest request)
         {
