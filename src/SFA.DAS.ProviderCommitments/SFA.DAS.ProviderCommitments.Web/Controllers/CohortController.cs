@@ -237,9 +237,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add/entry-method")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SelectDraftApprenticeshipsEntryMethod(long providerId)
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
         {
-            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = providerId };
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
             return View(model);
         }
 
