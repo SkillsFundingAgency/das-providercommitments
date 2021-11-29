@@ -1,0 +1,20 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadStartViewModel
+
+@{
+    ViewData["Title"] = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/file-upload/start";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Placeholder view</h1>
+    </div>
+</div>
+
+@section breadcrumb
+{
+<a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadInform", new { @Model.ProviderId })">Back</a>
+}

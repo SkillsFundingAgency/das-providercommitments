@@ -1,0 +1,49 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadStartViewModel
+
+@{
+    ViewData["Title"] = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/file-upload/inform";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Using file upload</h1>
+        <h2 class="govuk-heading-m">Before you start</h2>
+
+        <p class="govuk-body">There is a <a href="https://www.gov.uk/government/publications/apprenticeship-service-bulk-upload-specification" class="govuk-link govuk-link--no-visited-state">full specification</a> on uploading new apprentices using a CSV file on GOV.UK.</p>
+
+        <p class="govuk-body">
+            You will need to know the employer agreement ID, this can be found on your <a href="@LinkGenerator.ProviderApprenticeshipServiceLink($"/{Model.ProviderId}/agreements")" class="govuk-link govuk-link--no-visited-state">Organisations and agreements page</a>.
+        </p>
+
+        <p class="govuk-body">The CSV file is limited to 100 rows.</p>
+
+        <h2 class="govuk-heading-m">How it works</h2>
+
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>use file upload to add 1 or more apprentices for 1 or more employers</li>
+            <li>create new cohorts by leaving the 'CohortRef' field empty; the cohort reference will be created when you save or approve cohorts (provided you have the correct employer permissions)</li>
+            <li>make reservations automatically (provided you have the correct employer permissions)</li>
+            <li>add apprentices to existing cohorts that have not yet be approved by the employer</li>
+            <li>check for errors</li>
+        </ul>
+
+        <h2 class="govuk-heading-m">Creating a CSV file</h2>
+
+        <p class="govuk-body">You can:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>use your learner management system (LMS) to create a CSV file</li>
+            <li>download our <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/995464/ProviderBulkUploadSampleCSV_21Jun21.csv">template</a> if you do not use a LMS</li>
+        </ul>
+
+        <a id="change-the-employer-button" class="govuk-button" href="@Url.Action("FileUploadStart", new { @Model.ProviderId })">Continue to upload</a>
+    </div>
+</div>
+
+@section breadcrumb
+{
+<a id="back-link" class="govuk-back-link" href="@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })">Back</a>
+}

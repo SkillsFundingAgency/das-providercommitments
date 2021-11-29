@@ -238,6 +238,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/file-upload/inform")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileUploadInform(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new FileUploadStartViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route("add/file-upload/start")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileUploadStart(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new FileUploadStartViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
