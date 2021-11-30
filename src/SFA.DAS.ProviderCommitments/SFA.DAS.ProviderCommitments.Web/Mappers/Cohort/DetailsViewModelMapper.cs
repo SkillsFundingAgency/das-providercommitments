@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var agreementStatus = await agreementStatusTask;
             var emailOverlaps = (await emailOverlapsTask).ApprenticeshipEmailOverlaps.ToList();
 
-            var courses = await GroupCourses(draftApprenticeships, emailOverlaps);
+            var courses = await GroupCourses(draftApprenticeships, emailOverlaps, cohort);
             var viewOrApprove = cohort.WithParty == Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
@@ -155,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps)
+        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortResponse cohortResponse)
         {
             var groupedByCourse = draftApprenticeships
                 .GroupBy(a => new { a.CourseCode, a.CourseName })
@@ -179,7 +179,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             StartDate = a.StartDate,
                             OriginalStartDate = a.OriginalStartDate,
                             ULN = a.Uln,
-                            HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id)
+                            HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
+                            IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse)
                         })
                 .ToList()
                 })
@@ -192,6 +193,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             return groupedByCourse;
         }
+
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse) =>
+               !(
+                 string.IsNullOrWhiteSpace(draftApprenticeship.FirstName) || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
+                 || draftApprenticeship.DateOfBirth == null || string.IsNullOrWhiteSpace(draftApprenticeship.CourseName) || string.IsNullOrWhiteSpace(draftApprenticeship.Uln)
+                 || draftApprenticeship.StartDate == null || draftApprenticeship.EndDate == null || draftApprenticeship.Cost == null
+                 || (cohortResponse.ApprenticeEmailIsRequired && string.IsNullOrWhiteSpace(draftApprenticeship.Email) && !cohortResponse.IsLinkedToChangeOfPartyRequest)
+                );
 
         private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups)
         {
@@ -247,7 +256,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             ApprenticeshipId = draftApprenticeship.Id
                         });
 
-                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingStartDate;
+                    draftApprenticeship.HasOverlappingUln = true;
+                        //result.HasOverlappingEndDate || result.HasOverlappingStartDate;
                 }
             }
         }
