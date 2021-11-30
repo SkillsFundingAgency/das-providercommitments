@@ -256,8 +256,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             ApprenticeshipId = draftApprenticeship.Id
                         });
 
-                    draftApprenticeship.HasOverlappingUln = true;
-                        //result.HasOverlappingEndDate || result.HasOverlappingStartDate;
+                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingStartDate;
                 }
             }
         }
