@@ -55,6 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMemoryCache()
                 .AddMvc(options =>
                 {
+                    options.EnableEndpointRouting = false;
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
                     options.AddValidation();
@@ -104,22 +105,22 @@ namespace SFA.DAS.ProviderCommitments.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
                 .UseUnauthorizedAccessExceptionHandler()
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseDasHealthChecks()
                 .UseCookiePolicy()
-                .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(builder =>
+                .UseMvc(routes =>
                 {
-                    builder.MapControllerRoute(
+                    routes.MapRoute(
                         name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}");
+                        template: "{controller=Home}/{action=Index}/{id?}");
                 })
-                .UseHealthChecks("/health-check"); 
+                .UseHealthChecks("/health-check");
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             logger.Log(LogLevel.Information, "Application start up configure is complete");
