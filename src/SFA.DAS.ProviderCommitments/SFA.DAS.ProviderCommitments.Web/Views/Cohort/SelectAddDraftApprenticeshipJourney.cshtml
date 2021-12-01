@@ -44,5 +44,12 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
+    @if(Model.IsBulkUploadV2Enabled)
+    {
+<a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })>Back</a>
+    }
+    else
+    {
+<a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
+    }
 }
