@@ -7,6 +7,7 @@
         public const string ApprenticeDetailsV2 = Prefix + "ApprenticeDetailsV2";
         public const string ManageApprenticesV2 = Prefix + ManageApprenticesV2WithoutPrefix;
         public const string ManageApprenticesV2WithoutPrefix = "ManageApprenticesV2";
-        public const string BulkUploadV2 = Prefix + "BulkUploadV2";
+        public const string BulkUploadV2 = Prefix + BulkUploadV2WithoutPrefix;
+        public const string BulkUploadV2WithoutPrefix = "BulkUploadV2";
     }
 }

@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Add Apprentice";
-    ViewBag.GaData.Vpv = "/unapproved/add/select-journey";
+    ViewBag.GaData.Vpv = "/unapproved/add/entry-method";
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -20,17 +20,19 @@
                     @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
-                            <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
-                                Add to an existing cohort
+                            <input asp-for="Selection" value="BulkCsv" type="radio" class="govuk-radios__input" id="confirm-BulkCsv" />
+                            <label class="govuk-label govuk-radios__label" for="confirm-BulkCsv">
+                                Upload a CSV file
                             </label>
+                            <div id="upload-csv-hint" class="govuk-hint govuk-radios__hint">You can create or add to an existing cohort for 1 or more apprentices for 1 or more employers.</div>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="NewCohort" type="radio" class="govuk-radios__input" id="confirm-NewCohort" />
-                            <label class="govuk-label govuk-radios__label" for="confirm-NewCohort">
-                                Create a new cohort
+                            <input asp-for="Selection" value="Manual" type="radio" class="govuk-radios__input" id="confirm-Manual" />
+                            <label class="govuk-label govuk-radios__label" for="confirm-Manual">
+                                Manually
                             </label>
+                            <div id="manual-input-hint" class="govuk-hint govuk-radios__hint">You can add  additional apprentices to an existing cohort or create a new cohort.</div>
                         </div>
                     </div>
                 </fieldset>
@@ -44,12 +46,5 @@
 
 @section breadcrumb
 {
-    @if(Model.IsBulkUploadV2Enabled)
-    {
-<a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })>Back</a>
-    }
-    else
-    {
-<a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
-    }
+    <a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
 }
