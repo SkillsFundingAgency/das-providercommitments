@@ -1,26 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Authorization.ProviderPermissions.Options;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using System;
+using SFA.DAS.Authorization.Features.Services;
+using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.ProviderPermissions.Options;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
-using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using SFA.DAS.ProviderUrlHelper.Core;
+using SFA.DAS.ProviderUrlHelper;
+using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -31,18 +30,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
         private readonly IEncodingService _encodingService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
+            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService,
             IEncodingService encodingService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
+            _featureTogglesService = featureTogglesService;
             _encodingService = encodingService;
         }
 
@@ -103,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var chooseCohortViewModel = await _modelMapper.Map<ChooseCohortViewModel>(request);
             return View(chooseCohortViewModel);
         }
-        
+
         [HttpPost]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
@@ -119,9 +121,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
                     EncodingType.ApprenticeshipId);
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId , response.CohortReference});
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId, response.CohortReference });
             }
-            
+
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
@@ -238,6 +240,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/entry-method")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
+        {
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/entry-method")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
+        {
+            if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.BulkCsv)
+            {
+                return RedirectToAction(nameof(FileUploadInform), new { ProviderId = viewModel.ProviderId });
+            }
+            else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
+            {
+                return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { ProviderId = viewModel.ProviderId });
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+        [HttpGet]
         [Route("add/file-upload/inform")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -262,7 +293,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
         {
-            var model = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = request.ProviderId };
+            var model = new SelectAddDraftApprenticeshipJourneyViewModel
+            {
+                ProviderId = request.ProviderId,
+                IsBulkUploadV2Enabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix).IsEnabled
+            };
+
             return View(model);
         }
 
