@@ -10,6 +10,8 @@ using System.Threading;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.Authorization.Features.Services;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -73,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ReservationsLink(RedirectUrl)).Returns(RedirectUrl);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, Mock.Of<IEncodingService>());
+            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
