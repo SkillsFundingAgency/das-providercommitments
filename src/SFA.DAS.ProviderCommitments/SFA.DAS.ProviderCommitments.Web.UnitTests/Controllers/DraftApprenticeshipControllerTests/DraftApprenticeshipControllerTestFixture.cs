@@ -31,7 +31,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly GetTrainingCoursesQueryResponse _courseResponse;
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
@@ -146,10 +145,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             
             _modelMapper.Setup(x=>x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<ViewSelectOptionsViewModel>()))
                 .ReturnsAsync(_updateDraftApprenticeshipRequest);
-                
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
-                .Returns<string>(input => input);
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -165,8 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
-            _controller = new DraftApprenticeshipController(_mediator.Object,
-                _linkGenerator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object);
+            _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object);
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
