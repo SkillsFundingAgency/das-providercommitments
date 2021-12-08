@@ -49,14 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
-        {
-            var model = await _modelMapper.Map<CohortsViewModel>(request);
-            return View(model);
-        }
-
-        [HttpGet]
         [Route("review")]
+        [Route("")]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
