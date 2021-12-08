@@ -18,27 +18,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenGettingCohorts 
     {
         [Test]
-        public async Task ThenCallsModelMapper()
-        {
-            var f = new WhenGettingCohortsFixture();
-
-            await f.Sut.Cohorts(f.Request);
-
-            f.ModelMapperMock.Verify(x => x.Map<CohortsViewModel>(f.Request));
-        }
-
-        [Test]
-        public async Task ThenReturnsCohortsViewModel()
-        {
-            var f = new WhenGettingCohortsFixture();
-
-            var result = await f.Sut.Cohorts(f.Request) as ViewResult;
-
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(CohortsViewModel), result.Model.GetType());
-        }
-
-        [Test]
         public async Task ForReviewThenCallsModelMapper()
         {
             var f = new WhenGettingCohortsFixture();
@@ -128,6 +107,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public async Task<IActionResult> Act() => await Sut.Cohorts(Request);
+        public async Task<IActionResult> Act() => await Sut.Review(Request);
     }
 }
