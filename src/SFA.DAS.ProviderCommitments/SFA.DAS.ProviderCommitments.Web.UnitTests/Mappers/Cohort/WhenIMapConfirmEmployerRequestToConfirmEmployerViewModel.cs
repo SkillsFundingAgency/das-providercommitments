@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
 {
     [TestFixture]
-    public class WhenIMapConfrimEmployerRequestToConfirmEmployerViewModel
+    public class WhenIMapConfirmEmployerRequestToConfirmEmployerViewModel
     {
         private ConfirmEmployerRequestToViewModelMapper _mapper;
         private ConfirmEmployerRequest _source;
