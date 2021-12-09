@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -10,8 +12,11 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.PAS.Account.Api.ClientV2;
+using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderRelationships.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -86,6 +91,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         public Mock<IEncodingService> EncodingService { get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
+        public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
+        public Mock<IPasAccountApiClient> PasAccountApiClient { get; private set; }
+        public Mock<IUrlHelper> UrlHelper { get; }
         public CohortsByProviderRequest ReviewRequest { get; set; }
         public GetCohortsResponse GetCohortsResponse { get; set; }
         public ReviewRequestViewModelMapper Mapper { get; set; }
@@ -103,8 +111,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
             EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
+          
+            ProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
 
-            Mapper = new ReviewRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
+            PasAccountApiClient = new Mock<IPasAccountApiClient>();
+            PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = ProviderAgreementStatus.Agreed });
+
+            UrlHelper = new Mock<IUrlHelper>();
+            UrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
+
+            Mapper = new ReviewRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, UrlHelper.Object, PasAccountApiClient.Object, EncodingService.Object);
         }
 
         public async Task<WhenMappingReviewRequestToViewModelFixture> Map()

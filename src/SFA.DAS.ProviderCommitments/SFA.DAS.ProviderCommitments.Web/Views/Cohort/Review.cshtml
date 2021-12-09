@@ -8,7 +8,9 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
-            <h1 class="govuk-heading-xl">Apprentice details ready for review</h1>
+
+            @(await Html.PartialAsync("_ApprenticeshipRequestsHeaderPartial", Model.ApprenticeshipRequestsHeaderViewModel))
+
             <table class="govuk-table das-table--responsive">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -40,5 +42,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
 }

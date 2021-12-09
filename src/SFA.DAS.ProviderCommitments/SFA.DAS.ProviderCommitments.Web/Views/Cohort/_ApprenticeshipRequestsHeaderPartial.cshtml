@@ -1,0 +1,29 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ApprenticeshipRequestsHeaderViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-">
+        <div class="govuk-width-container">
+            @if (!Model.IsAgreementSigned)
+            {
+                <div class="govuk-inset-text das-inset-text--filled das-inset-text--highlight">
+                    Your organisation must have a signed <a id="agreementDetailsLink" target="_blank" href="https://skillsfunding.service.gov.uk/contracts">Education and Skills Funding Agency apprenticeship agreement</a>
+                    before you can approve apprentice requests.
+                </div>
+            }
+
+            <h1 class="govuk-heading-xl">Apprentice requests</h1>
+
+            <div class="das-tabs-boxes">
+                <ul class="das-tabs-boxes__list">
+                    @await Html.PartialAsync("_ApprenticeshipRequestsTab", Model.CohortsInReview)
+                    @await Html.PartialAsync("_ApprenticeshipRequestsTab", Model.CohortsWithEmployer)
+                    @if (Model.ShowDrafts)
+                    {
+                        @await Html.PartialAsync("_ApprenticeshipRequestsTab", Model.CohortsInDraft)
+                    }
+                    @await Html.PartialAsync("_ApprenticeshipRequestsTab", Model.CohortsWithTransferSender)
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
