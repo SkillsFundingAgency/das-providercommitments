@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using Moq;
@@ -230,9 +230,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             AuthorizationContextProvider = new AuthorizationContextProvider(HttpContextAccessor.Object, EncodingService.Object, AuthenticationService.Object);
 
             RoutingFeature.Setup(f => f.RouteData).Returns(RouteData);
-            HttpContextAccessor.Setup(c => c.HttpContext.Features[typeof(IRoutingFeature)]).Returns(RoutingFeature.Object);
-            HttpContextAccessor.Setup(c => c.HttpContext.Request.Query).Returns(new QueryCollection());
-            HttpContextAccessor.Setup(c => c.HttpContext.Request.Form).Returns(new FormCollection(new Dictionary<string, StringValues>()));
+            
+            var featureCollection = new Mock<IFeatureCollection>();
+            featureCollection.Setup(f => f.Get<IRoutingFeature>()).Returns(RoutingFeature.Object);
+            
+            var context = new Mock<HttpContext>();
+            context.Setup(c => c.Features).Returns(featureCollection.Object);
+            context.Setup(c => c.Request.Query).Returns(new QueryCollection());
+            context.Setup(c => c.Request.Form).Returns(new FormCollection(new Dictionary<string, StringValues>()));
+            
+            HttpContextAccessor.Setup(c => c.HttpContext).Returns(context.Object);
         }
 
         public IAuthorizationContext GetAuthorizationContext()

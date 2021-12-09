@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.HealthChecks
             await TestExceptionAsync(
                 f => f.SetWhoAmIFailure(),
                 f => f.CheckHealthAsync(),
-                (f, r) => r.Should().Throw<Exception>().Which.Should().Be(f.Exception));
+                (f, r) => r.Should().ThrowAsync<Exception>().Result.Which.Should().Be(f.Exception));
         }
     }
 
