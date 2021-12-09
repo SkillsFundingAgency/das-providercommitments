@@ -29,6 +29,7 @@
         public const string ChooseCohort = "choose-a-cohort";
         public const string NewCohortSelectEmployer = "new-cohort-select-employer";
         public const string ProviderSignOut = "provider-signout";
+        public const string CohortReview = "cohort-review";
     }
 }
 

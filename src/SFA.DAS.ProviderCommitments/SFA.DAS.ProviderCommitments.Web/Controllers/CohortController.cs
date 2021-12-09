@@ -49,11 +49,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("review")]
+        [Route("review", Name = RouteNames.CohortReview)]
         [Route("")]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
+            reviewViewModel.SortedByHeader();
+
             return View(reviewViewModel);
         }
 
@@ -177,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
-                return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                return RedirectToAction("Review", new { viewModel.ProviderId });
             }
 
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
@@ -217,7 +219,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     }
                 case CohortDetailsOptions.ApprenticeRequest:
                     {
-                        return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
                     }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));

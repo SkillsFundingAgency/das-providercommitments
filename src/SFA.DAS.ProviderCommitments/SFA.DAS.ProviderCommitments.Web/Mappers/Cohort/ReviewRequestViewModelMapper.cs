@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -55,10 +56,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var reviewViewModel = new ReviewViewModel
             {
                 ProviderId = source.ProviderId,
+                SortField = source.SortField,
+                ReverseSort = source.ReverseSort,
                 ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.Review, hasRelationship, providerAgreementStatus),
                 Cohorts = cohorts
                     .Where(x => x.GetStatus() == CohortStatus.Review)
-                    .OrderBy(z => z.CreatedOn)
                     .Select(y => new ReviewCohortSummaryViewModel
                     {
                         CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
@@ -66,7 +68,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         NumberOfApprentices = y.NumberOfDraftApprentices,
                         LastMessage = GetMessage(y.LatestMessageFromEmployer),
                         DateReceived = y.LatestMessageFromEmployer?.SentOn ?? y.CreatedOn
-                    }).ToList()
+                    })
+                    .ApplyOrder(source.SortField, source.ReverseSort)
+                    .ToList()
             };
 
             return reviewViewModel;
@@ -74,12 +78,58 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private string GetMessage(Message latestMessageFromProvider)
         {
-            if (!string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text))
+            return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text) 
+                ? latestMessageFromProvider.Text 
+                : "No message added";
+        }
+    }
+
+    public static class ReviewRequestViewModelMapperExtension
+    {
+        internal static IOrderedEnumerable<ReviewCohortSummaryViewModel> ApplyOrder(this IEnumerable<ReviewCohortSummaryViewModel> cohorts, string sortField, bool reverse)
+        {
+            switch (sortField)
             {
-                return latestMessageFromProvider.Text;
+                case "Employer":
+                {
+                    if (reverse)
+                        return cohorts
+                            .OrderByDescending(c => c.EmployerName)
+                            .ThenBy(c => c.DateReceived)
+                            .ThenBy(c => c.CohortReference);
+
+                    return cohorts
+                        .OrderBy(c => c.EmployerName)
+                        .ThenBy(c => c.DateReceived)
+                        .ThenBy(c => c.CohortReference);
+                }
+
+                case "CohortReference":
+                {
+                    return reverse 
+                        ? cohorts.OrderByDescending(c => c.CohortReference) 
+                        : cohorts.OrderBy(c => c.CohortReference);
+                }
+
+                case "DateReceived":
+                {
+                    if (reverse)
+                        return cohorts
+                            .OrderByDescending(c => c.DateReceived)
+                            .ThenBy(c => c.EmployerName)
+                            .ThenBy(c => c.CohortReference);
+
+                    return cohorts
+                        .OrderBy(c => c.DateReceived)
+                        .ThenBy(c => c.EmployerName)
+                        .ThenBy(c => c.CohortReference);
+                }
             }
 
-            return "No message added";
+            return cohorts
+                .OrderBy(c => c.DateReceived)
+                .ThenBy(c => c.EmployerName)
+                .ThenBy(c => c.CohortReference);
         }
     }
 }
