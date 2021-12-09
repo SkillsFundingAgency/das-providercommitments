@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 {
     public class WhenAddingGoogleAnalyticsInformation
     {
-        [Test, MoqAutoData]
+        [Test, DomainAutoData]
         public async Task ThenProviderIdIsAddedToViewBag(
             uint ukPrn,
             [ArrangeActionContext] ActionExecutingContext context,
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             Assert.AreEqual(ukPrn.ToString(), viewBagData.UkPrn);
         }
 
-        [Test, MoqAutoData]
+        [Test, DomainAutoData]
         public async Task AndContextIsNonController_ThenNoDataIsAddedToViewbag(
             long ukPrn,
             [ArrangeActionContext] ActionExecutingContext context,
