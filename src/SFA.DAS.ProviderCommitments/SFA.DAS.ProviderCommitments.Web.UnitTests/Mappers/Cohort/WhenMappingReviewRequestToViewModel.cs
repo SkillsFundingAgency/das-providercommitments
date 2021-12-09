@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IEncodingService> EncodingService { get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
         public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
-        public Mock<IPasAccountApiClient> PasAccountApiClient { get; private set; }
+        public Mock<IPasAccountApiClient> PasAccountApiClient { get; set; }
         public Mock<IUrlHelper> UrlHelper { get; }
         public CohortsByProviderRequest ReviewRequest { get; set; }
         public GetCohortsResponse GetCohortsResponse { get; set; }
