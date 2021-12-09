@@ -25,7 +25,8 @@
         </table>
     </div>
 </div>
-<form method="post"  action="@Url.Action("PostSelectOptions")">
+<form method="post" action="@Url.Action("PostSelectOptions")">
+    @Html.AntiForgeryToken()
     <input asp-for="CohortId" type="hidden"/>
     <input asp-for="ProviderId" type="hidden"/>
     <input asp-for="CohortReference" type="hidden"/>
@@ -51,7 +52,7 @@
                 }
                 <div class="govuk-radios__divider">or</div>
                 <div class="govuk-radios__item">
-                    <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater"  checked="@(Model.SelectedOption == "-1")" />
+                    <input asp-for="SelectedOption" value="-1" type="radio" class="govuk-radios__input" id="option-confirmlater" checked="@(Model.SelectedOption == "-1")"/>
                     <label class="govuk-label govuk-radios__label" for="option-confirmlater">
                         Confirm option at a later date
                     </label>

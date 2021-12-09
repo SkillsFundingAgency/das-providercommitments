@@ -16,7 +16,6 @@ using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
@@ -30,18 +29,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
-        public DraftApprenticeshipController(IMediator mediator,
-            ILinkGenerator urlHelper, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService)
+        public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService)
         {
             _mediator = mediator;
-            _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;

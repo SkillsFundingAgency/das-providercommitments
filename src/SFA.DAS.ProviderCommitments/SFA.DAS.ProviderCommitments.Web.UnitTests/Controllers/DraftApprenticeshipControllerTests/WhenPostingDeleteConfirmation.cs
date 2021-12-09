@@ -6,7 +6,6 @@ using AutoFixture;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using System.Threading;
 using MediatR;
@@ -25,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private Mock<ICommitmentsApiClient> _apiClient;
         private Mock<IModelMapper> _modelMapperMock;
         private DeleteConfirmationViewModel _viewModel;
-        private Mock<ILinkGenerator> _linkGenerator;
         private DeleteDraftApprenticeshipRequest _mapperResult;
 
         [SetUp]
@@ -44,11 +42,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .ReturnsAsync(_mapperResult);
 
             RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
-
+         
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _linkGenerator.Object, _apiClient.Object, _modelMapperMock.Object, Mock.Of<IEncodingService>());
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _apiClient.Object, _modelMapperMock.Object, Mock.Of<IEncodingService>());
             Sut.TempData = tempData;
         }
 

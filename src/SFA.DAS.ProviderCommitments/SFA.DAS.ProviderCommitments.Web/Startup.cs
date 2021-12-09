@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -27,14 +28,14 @@ namespace SFA.DAS.ProviderCommitments.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.    
         public void ConfigureServices(IServiceCollection services)
@@ -52,6 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddMemoryCache()
                 .AddMvc(options =>
                 {
+                    options.EnableEndpointRouting = false;
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
                     options.AddValidation();
@@ -64,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .EnableGoogleAnalytics()
                 .EnableCookieBanner()
                 .AddZenDeskSettings(Configuration)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
 
@@ -80,6 +82,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 options.Cookie.IsEssential = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
+
+            services.AddProviderUiServiceRegistration(Configuration);
         }
 
         public void ConfigureContainer(Registry registry)
@@ -99,6 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
                 .UseUnauthorizedAccessExceptionHandler()
                 .UseHttpsRedirection()
@@ -106,13 +111,14 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseDasHealthChecks()
                 .UseCookiePolicy()
                 .UseAuthentication()
+                .UseAuthorization()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
                         name: "default",
                         template: "{controller=Home}/{action=Index}/{id?}");
                 })
-                .UseHealthChecks("/health-check"); 
+                .UseHealthChecks("/health-check");
 
             var logger = loggerFactory.CreateLogger(nameof(Startup));
             logger.Log(LogLevel.Information, "Application start up configure is complete");
