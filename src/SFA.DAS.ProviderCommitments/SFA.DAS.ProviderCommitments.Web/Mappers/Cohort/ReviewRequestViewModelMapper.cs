@@ -64,7 +64,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         CohortReference = _encodingService.Encode(y.CohortId, EncodingType.CohortReference),
                         EmployerName = y.LegalEntityName,
                         NumberOfApprentices = y.NumberOfDraftApprentices,
-                        LastMessage = GetMessage(y.LatestMessageFromEmployer)
+                        LastMessage = GetMessage(y.LatestMessageFromEmployer),
+                        DateReceived = y.LatestMessageFromEmployer?.SentOn ?? y.CreatedOn
                     }).ToList()
             };
 

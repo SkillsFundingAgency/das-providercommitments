@@ -69,6 +69,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task Then_DateReceived_IsMapped_Correctly()
+        {
+            var fixture = new WhenMappingReviewRequestToViewModelFixture();
+            await fixture.Map();
+
+            fixture.Verify_DateReceived_Is_Mapped();
+        }
+
+        [Test]
         public async Task Then_Cohort_OrderBy_OnDateCreated_Correctly()
         {
             var fixture = new WhenMappingReviewRequestToViewModelFixture();
@@ -78,10 +87,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void Then_ProviderId_IsMapped()
+        public async Task Then_ProviderId_IsMapped()
         {
             var fixture = new WhenMappingReviewRequestToViewModelFixture();
-            fixture.Map();
+            await fixture.Map();
 
             fixture.Verify_ProviderId_IsMapped();
         }
@@ -100,6 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public ReviewViewModel ReviewViewModel { get; set; }
 
         public long ProviderId => 1;
+        public DateTime Now = DateTime.Now;
 
         public WhenMappingReviewRequestToViewModelFixture()
         {
@@ -163,6 +173,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual("This is latestMessage from employer", GetCohortInReviewViewModel(2).LastMessage);
         }
 
+        public void Verify_DateReceived_Is_Mapped()
+        {
+            Assert.AreEqual(Now.AddMinutes(-10), GetCohortInReviewViewModel(1).DateReceived);
+            Assert.AreEqual(Now.AddMinutes(-2), GetCohortInReviewViewModel(2).DateReceived);
+        }
+
         public void Verify_Ordered_By_DateCreatedDescending()
         {
             Assert.AreEqual("Employer1", ReviewViewModel.Cohorts.First().EmployerName);
@@ -187,7 +203,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = DateTime.Now.AddMinutes(-10)
+                    CreatedOn = Now.AddMinutes(-10)
                 },
                 new CohortSummary
                 {
@@ -198,8 +214,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = DateTime.Now.AddMinutes(-5),
-                    LatestMessageFromEmployer = new Message("This is latestMessage from employer", DateTime.Now.AddMinutes(-2))
+                    CreatedOn = Now.AddMinutes(-5),
+                    LatestMessageFromEmployer = new Message("This is latestMessage from employer", Now.AddMinutes(-2))
                 },
                 new CohortSummary
                 {
@@ -210,7 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 300,
                     IsDraft = true,
                     WithParty = Party.Employer,
-                    CreatedOn = DateTime.Now.AddMinutes(-1)
+                    CreatedOn = Now.AddMinutes(-1)
                 },
                  new CohortSummary
                 {
@@ -221,7 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 400,
                     IsDraft = false,
                     WithParty = Party.Employer,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = Now
                 },
             };
 

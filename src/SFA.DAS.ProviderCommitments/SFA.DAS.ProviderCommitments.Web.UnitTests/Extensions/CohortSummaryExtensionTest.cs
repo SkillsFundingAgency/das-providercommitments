@@ -216,15 +216,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 return CohortSummaries.GetCohortCardLinkViewModel(UrlHelper.Object, providerId, selectedCohortStatus, hasRelationship, providerAgreementStatus);
             }
 
-            private static List<CohortSummary> PopulateWith(List<CohortSummary> list, bool draft, Party withParty)
+            private static void PopulateWith(IEnumerable<CohortSummary> list, bool draft, Party withParty)
             {
                 foreach (var item in list)
                 {
                     item.IsDraft = draft;
                     item.WithParty = withParty;
                 }
-
-                return list;
             }
 
             private CohortSummary[] CreateGetCohortsResponse()
@@ -236,7 +234,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 PopulateWith(listInReview, false, Party.Provider);
 
                 var listWithEmployer = _fixture.CreateMany<CohortSummary>(3).ToList();
-                PopulateWith(listWithEmployer, false, Party.Employer).ToList();
+                PopulateWith(listWithEmployer, false, Party.Employer);
 
                 var listWithTransferSender = _fixture.CreateMany<CohortSummary>(2).ToList();
                 PopulateWith(listWithTransferSender, false, Party.TransferSender);
