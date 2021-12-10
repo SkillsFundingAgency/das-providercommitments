@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .Setup(x => x.Map<DeleteConfirmationViewModel>(_request))
               .ReturnsAsync(_viewModel);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>());
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>());
         }
 
         [Test]
