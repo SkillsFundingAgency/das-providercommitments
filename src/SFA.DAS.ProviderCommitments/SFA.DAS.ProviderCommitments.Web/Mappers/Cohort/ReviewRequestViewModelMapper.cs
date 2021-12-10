@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         }
     }
 
-    public static class ReviewRequestViewModelMapperExtension
+    internal static class ReviewRequestViewModelMapperExtension
     {
         internal static IOrderedEnumerable<ReviewCohortSummaryViewModel> ApplyOrder(this IEnumerable<ReviewCohortSummaryViewModel> cohorts, string sortField, bool reverse)
         {
