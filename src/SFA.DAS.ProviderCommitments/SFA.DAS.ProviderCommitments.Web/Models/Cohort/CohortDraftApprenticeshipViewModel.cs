@@ -17,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string ULN { get; set; }
         public bool HasOverlappingUln { get; set; }
         public bool HasOverlappingEmail { get; set; }
+        public bool IsComplete { get; set; }
 
         public bool ExceedsFundingBandCap
         {
