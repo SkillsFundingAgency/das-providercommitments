@@ -279,7 +279,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     IsDraft = false,
                     WithParty = Party.Provider,
                     CreatedOn = Now.AddMinutes(200)
-                },
+                }
             };
 
             return new GetCohortsResponse(cohorts);
