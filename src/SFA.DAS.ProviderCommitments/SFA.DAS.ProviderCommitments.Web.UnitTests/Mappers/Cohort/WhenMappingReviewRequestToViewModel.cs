@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("CohortReference", true, "5_Encoded", "1_Encoded")]
         [TestCase("DateReceived", false, "1_Encoded", "5_Encoded")]
         [TestCase("DateReceived", true, "5_Encoded", "1_Encoded")]
-        public async Task Then_Sort_IsApllied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
+        public async Task Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
         {
             var fixture = new WhenMappingReviewRequestToViewModelFixture().WithSortApplied(sortField, reverse);
             await fixture.Map();
