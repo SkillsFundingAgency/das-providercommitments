@@ -94,6 +94,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             fixture.Verify_ProviderId_IsMapped();
         }
+
+        [TestCase("", false, "1_Encoded", "5_Encoded")]
+        [TestCase("Employer", false, "5_Encoded", "2_Encoded")]
+        [TestCase("Employer", true, "2_Encoded", "5_Encoded")]
+        [TestCase("CohortReference", false, "1_Encoded", "5_Encoded")]
+        [TestCase("CohortReference", true, "5_Encoded", "1_Encoded")]
+        [TestCase("DateReceived", false, "1_Encoded", "5_Encoded")]
+        [TestCase("DateReceived", true, "5_Encoded", "1_Encoded")]
+        public async Task Then_Sort_IsApllied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
+        {
+            var fixture = new WhenMappingReviewRequestToViewModelFixture().WithSortApplied(sortField, reverse);
+            await fixture.Map();
+
+            fixture.Verify_Sort_IsApplied(expectedFirstId, expectedLastId);
+        }
     }
 
     public class WhenMappingReviewRequestToViewModelFixture
@@ -139,20 +154,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
+        public WhenMappingReviewRequestToViewModelFixture WithSortApplied(string sortField, bool reverse)
+        {
+            ReviewRequest.SortField = sortField;
+            ReviewRequest.ReverseSort = reverse;
+            return this;
+        }
+
         public void Verify_OnlyTheCohorts_ReadyForReviewForProvider_Are_Mapped()
         {
-            Assert.AreEqual(2, ReviewViewModel.Cohorts.Count());
+            Assert.AreEqual(3, ReviewViewModel.Cohorts.Count());
 
             Assert.IsNotNull(GetCohortInReviewViewModel(1));
             Assert.IsNotNull(GetCohortInReviewViewModel(2));
+            Assert.IsNotNull(GetCohortInReviewViewModel(5));
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
-            EncodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
+            EncodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(3));
 
             Assert.AreEqual("1_Encoded", GetCohortInReviewViewModel(1).CohortReference);
             Assert.AreEqual("2_Encoded", GetCohortInReviewViewModel(2).CohortReference);
+            Assert.AreEqual("5_Encoded", GetCohortInReviewViewModel(5).CohortReference);
         }
 
         public void Verify_EmployerName_Is_Mapped()
@@ -182,12 +206,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void Verify_Ordered_By_DateCreatedDescending()
         {
             Assert.AreEqual("Employer1", ReviewViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer2", ReviewViewModel.Cohorts.Last().EmployerName);
+            Assert.AreEqual("1_Employer5", ReviewViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_ProviderId_IsMapped()
         {
             Assert.AreEqual(ProviderId, ReviewViewModel.ProviderId);
+        }
+
+        public void Verify_Sort_IsApplied(string firstId, string lastId)
+        {
+            Assert.AreEqual(firstId, ReviewViewModel.Cohorts.First().CohortReference);
+            Assert.AreEqual(lastId, ReviewViewModel.Cohorts.Last().CohortReference);
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()
@@ -228,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Employer,
                     CreatedOn = Now.AddMinutes(-1)
                 },
-                 new CohortSummary
+                new CohortSummary
                 {
                     CohortId = 4,
                     AccountId = 4,
@@ -238,6 +268,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     IsDraft = false,
                     WithParty = Party.Employer,
                     CreatedOn = Now
+                },
+                new CohortSummary
+                {
+                    CohortId = 5,
+                    AccountId = 5,
+                    ProviderId = 1,
+                    LegalEntityName = "1_Employer5",
+                    NumberOfDraftApprentices = 300,
+                    IsDraft = false,
+                    WithParty = Party.Provider,
+                    CreatedOn = Now.AddMinutes(200)
                 },
             };
 
