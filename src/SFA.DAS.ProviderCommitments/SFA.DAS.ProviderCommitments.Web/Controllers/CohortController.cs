@@ -76,10 +76,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("with-transfer-sender")]
+        [Route("with-transfer-sender", Name = RouteNames.CohortWithTransferSender)]
         public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
             var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
+            withTransferSenderViewModel.SortedByHeader();
+
             return View(withTransferSenderViewModel);
         }
 
