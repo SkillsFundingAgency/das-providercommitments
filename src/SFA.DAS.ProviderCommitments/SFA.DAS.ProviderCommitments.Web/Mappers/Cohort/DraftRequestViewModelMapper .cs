@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ProviderId = source.ProviderId,
                 SortField = source.SortField,
                 ReverseSort = source.ReverseSort,
-                ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.WithEmployer, hasRelationship, providerAgreementStatus),
+                ApprenticeshipRequestsHeaderViewModel = cohorts.GetCohortCardLinkViewModel(_urlHelper, source.ProviderId, CohortStatus.Draft, hasRelationship, providerAgreementStatus),
                 Cohorts = cohorts
                     .Where(x => x.GetStatus() == CohortStatus.Draft)
                     .Select(y => new DraftCohortSummaryViewModel
