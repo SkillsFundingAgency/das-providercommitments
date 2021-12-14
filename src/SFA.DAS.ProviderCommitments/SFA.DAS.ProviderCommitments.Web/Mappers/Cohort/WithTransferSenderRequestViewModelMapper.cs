@@ -109,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         : cohorts.OrderBy(c => c.CohortReference);
                 }
 
-                case "DateCreated":
+                case "DateSentToEmployer":
                 {
                     if (reverse)
                         return cohorts

@@ -90,12 +90,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
         
         [TestCase("", false, "1_Encoded", "2_Encoded")]
-        [TestCase("Employer", false, "1_Encoded", "2_Encoded")]
+        [TestCase("Employer", false, "2_Encoded", "1_Encoded")]
         [TestCase("Employer", true, "1_Encoded", "2_Encoded")]
         [TestCase("CohortReference", false, "1_Encoded", "2_Encoded")]
         [TestCase("CohortReference", true, "2_Encoded", "1_Encoded")]
         [TestCase("DateSentToEmployer", false, "1_Encoded", "2_Encoded")]
-        [TestCase("DateSentToEmployer", true, "1_Encoded", "2_Encoded")]
+        [TestCase("DateSentToEmployer", true, "2_Encoded", "1_Encoded")]
         public void Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
         {
             _fixture.WithSortApplied(sortField, reverse);
@@ -270,6 +270,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 1,
                     TransferSenderId = 1,
                     TransferSenderName = "TransferSender1",
+                    LegalEntityName = "2",
                     ProviderName = "Provider1",
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
@@ -284,6 +285,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 2,
                     TransferSenderId = 2,
                     TransferSenderName = "TransferSender2",
+                    LegalEntityName = "1",
                     ProviderName = "Provider2",
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
@@ -299,6 +301,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 2,
                     TransferSenderId = 2,
                     TransferSenderName = "TransferSender2",
+                    LegalEntityName = "4",
                     ProviderName = "Provider3",
                     NumberOfDraftApprentices = 300,
                     IsDraft = false,
@@ -311,6 +314,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 1,
                     ProviderId = 4,
                     ProviderName = "Provider4",
+                    LegalEntityName = "3",
                     NumberOfDraftApprentices = 400,
                     IsDraft = true,
                     WithParty = Party.Employer,
