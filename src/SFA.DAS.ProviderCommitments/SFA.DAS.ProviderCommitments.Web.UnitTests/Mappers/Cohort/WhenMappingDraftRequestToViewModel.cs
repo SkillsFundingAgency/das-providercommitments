@@ -188,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.AreEqual(Now.AddMinutes(-5), GetCohortInReviewViewModel(5).DateCreated);
+            Assert.AreEqual(Now.AddMinutes(-3), GetCohortInReviewViewModel(5).DateCreated);
             Assert.AreEqual(Now.AddMinutes(-3), GetCohortInReviewViewModel(6).DateCreated);
         }
 
