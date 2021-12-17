@@ -288,6 +288,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Route("add/file-upload/start")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
+        {
+            var request = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+            await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
+
+            return RedirectToAction(nameof(Cohorts));
+        }
+
         [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
