@@ -31,6 +31,7 @@
         public const string ProviderSignOut = "provider-signout";
         public const string CohortReview = "cohort-review";
         public const string CohortWithTransferSender = "cohort-with-transfer-sender";
+        public const string CohortDraft = "cohort-draft";
     }
 }
 

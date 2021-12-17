@@ -60,10 +60,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("draft")]
+        [Route("draft", Name = RouteNames.CohortDraft)]
         public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
             var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
+            draftViewModel.SortedByHeader();
+
             return View(draftViewModel);
         }
 
