@@ -32,6 +32,7 @@
         public const string CohortReview = "cohort-review";
         public const string CohortWithTransferSender = "cohort-with-transfer-sender";
         public const string CohortDraft = "cohort-draft";
+        public const string CohortWithEmployer = "cohort-with-employer";
     }
 }
 

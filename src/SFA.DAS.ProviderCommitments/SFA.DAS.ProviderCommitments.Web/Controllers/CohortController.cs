@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("with-employer")]
+        [Route("with-employer", Name = RouteNames.CohortWithEmployer)]
         public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
             var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
