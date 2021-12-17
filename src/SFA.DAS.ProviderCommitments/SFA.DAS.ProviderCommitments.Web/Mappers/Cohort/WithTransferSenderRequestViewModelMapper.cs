@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         }
     }
 
-    internal static class DraftRequestViewModelMapperExtension
+    internal static class WithTransferSenderRequestViewModelMapperExtension
     {
         internal static IOrderedEnumerable<WithTransferSenderCohortSummaryViewModel> ApplyOrder(this IEnumerable<WithTransferSenderCohortSummaryViewModel> cohorts, string sortField, bool reverse)
         {
