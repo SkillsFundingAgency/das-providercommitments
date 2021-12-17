@@ -173,7 +173,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             {
                 Assert.IsNotNull(result.CohortsInReview);
                 Assert.AreEqual(4, result.CohortsInReview.Count);
-                Assert.AreEqual("Ready to review", result.CohortsInReview.Description);
+                Assert.AreEqual("Ready for review", result.CohortsInReview.Description);
                 UrlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "Review")));
             }
 

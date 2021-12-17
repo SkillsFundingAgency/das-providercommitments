@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                     selectedStatus == CohortStatus.Draft),
                 CohortsInReview = new ApprenticeshipRequestsTabViewModel(
                     cohorts.Count(x => x.GetStatus() == CohortStatus.Review),
-                    "Ready to review",
+                    "Ready for review",
                     urlHelper.Action("Review", "Cohort", new {providerId}),
                     CohortStatus.Review.ToString(),
                     selectedStatus == CohortStatus.Review),
