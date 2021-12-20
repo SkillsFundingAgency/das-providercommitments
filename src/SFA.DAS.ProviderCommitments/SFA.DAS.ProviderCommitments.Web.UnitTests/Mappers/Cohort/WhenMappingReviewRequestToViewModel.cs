@@ -95,13 +95,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Verify_ProviderId_IsMapped();
         }
 
-        [TestCase("", false, "1_Encoded", "5_Encoded")]
+        [TestCase("", false, "5_Encoded", "2_Encoded")]
         [TestCase("Employer", false, "5_Encoded", "2_Encoded")]
         [TestCase("Employer", true, "2_Encoded", "5_Encoded")]
         [TestCase("CohortReference", false, "1_Encoded", "5_Encoded")]
         [TestCase("CohortReference", true, "5_Encoded", "1_Encoded")]
-        [TestCase("DateReceived", false, "1_Encoded", "5_Encoded")]
-        [TestCase("DateReceived", true, "5_Encoded", "1_Encoded")]
+        [TestCase("DateReceived", false, "5_Encoded", "2_Encoded")]
+        [TestCase("DateReceived", true, "5_Encoded", "2_Encoded")]
         public async Task Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
         {
             var fixture = new WhenMappingReviewRequestToViewModelFixture().WithSortApplied(sortField, reverse);
@@ -205,8 +205,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.AreEqual("Employer1", ReviewViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("1_Employer5", ReviewViewModel.Cohorts.Last().EmployerName);
+            Assert.AreEqual("1_Employer5", ReviewViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer2", ReviewViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_ProviderId_IsMapped()

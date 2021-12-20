@@ -92,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("CohortReference", false, "5_Encoded", "6_Encoded")]
         [TestCase("CohortReference", true, "6_Encoded", "5_Encoded")]
         [TestCase("DateCreated", false, "5_Encoded", "6_Encoded")]
-        [TestCase("DateCreated", true, "6_Encoded", "5_Encoded")]
+        [TestCase("DateCreated", true, "5_Encoded", "6_Encoded")]
         public async Task Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
         {
             var fixture = new WhenMappingDraftRequestToViewModelFixture().WithSortApplied(sortField, reverse);

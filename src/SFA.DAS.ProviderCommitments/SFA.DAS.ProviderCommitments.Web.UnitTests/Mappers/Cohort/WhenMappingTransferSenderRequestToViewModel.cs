@@ -89,12 +89,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _fixture.Verify_DateCreated_Is_Mapped();
         }
         
-        [TestCase("", false, "1_Encoded", "2_Encoded")]
+        [TestCase("", false, "2_Encoded", "1_Encoded")]
         [TestCase("Employer", false, "2_Encoded", "1_Encoded")]
         [TestCase("Employer", true, "1_Encoded", "2_Encoded")]
         [TestCase("CohortReference", false, "1_Encoded", "2_Encoded")]
         [TestCase("CohortReference", true, "2_Encoded", "1_Encoded")]
-        [TestCase("DateSentToEmployer", false, "1_Encoded", "2_Encoded")]
+        [TestCase("DateSentToEmployer", false, "2_Encoded", "1_Encoded")]
         [TestCase("DateSentToEmployer", true, "2_Encoded", "1_Encoded")]
         public void Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
         {
@@ -177,8 +177,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Ordered_By_OnDateTransfered()
         {
-            Assert.AreEqual("1_Encoded", WithTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("2_Encoded", WithTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.AreEqual("2_Encoded", WithTransferSenderViewModel.Cohorts.First().CohortReference);
+            Assert.AreEqual("1_Encoded", WithTransferSenderViewModel.Cohorts.Last().CohortReference);
         }
 
         public void Verify_Ordered_By_OnDateCreated()
@@ -210,8 +210,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.AreEqual(Now.AddMinutes(-10), WithTransferSenderViewModel.Cohorts.First().DateSentToEmployer);
-            Assert.AreEqual(Now.AddMinutes(-7), WithTransferSenderViewModel.Cohorts.Last().DateSentToEmployer);
+            Assert.AreEqual(Now.AddMinutes(-7), WithTransferSenderViewModel.Cohorts.First().DateSentToEmployer);
+            Assert.AreEqual(Now.AddMinutes(-10), WithTransferSenderViewModel.Cohorts.Last().DateSentToEmployer);
         }
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)

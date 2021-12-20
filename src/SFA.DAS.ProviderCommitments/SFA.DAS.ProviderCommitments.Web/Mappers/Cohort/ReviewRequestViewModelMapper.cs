@@ -95,12 +95,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     if (reverse)
                         return cohorts
                             .OrderByDescending(c => c.EmployerName)
-                            .ThenBy(c => c.DateReceived)
+                            .ThenBy(c => c.DateReceived.Date)
                             .ThenBy(c => c.CohortReference);
 
                     return cohorts
                         .OrderBy(c => c.EmployerName)
-                        .ThenBy(c => c.DateReceived)
+                        .ThenBy(c => c.DateReceived.Date)
                         .ThenBy(c => c.CohortReference);
                 }
 
@@ -115,19 +115,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 {
                     if (reverse)
                         return cohorts
-                            .OrderByDescending(c => c.DateReceived)
+                            .OrderByDescending(c => c.DateReceived.Date)
                             .ThenBy(c => c.EmployerName)
                             .ThenBy(c => c.CohortReference);
 
                     return cohorts
-                        .OrderBy(c => c.DateReceived)
+                        .OrderBy(c => c.DateReceived.Date)
                         .ThenBy(c => c.EmployerName)
                         .ThenBy(c => c.CohortReference);
                 }
             }
 
             return cohorts
-                .OrderBy(c => c.DateReceived)
+                .OrderBy(c => c.DateReceived.Date)
                 .ThenBy(c => c.EmployerName)
                 .ThenBy(c => c.CohortReference);
         }

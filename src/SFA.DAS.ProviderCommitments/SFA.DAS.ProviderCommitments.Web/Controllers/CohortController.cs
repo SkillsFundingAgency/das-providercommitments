@@ -74,6 +74,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
             var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
+            withEmployerViewModel.SortedByHeader();
+
             return View(withEmployerViewModel);
         }
 
