@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -630,6 +631,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
             Assert.AreEqual("With Employer for approval", result.Status);
         }
+
+        [TestCase(nameof(DraftApprenticeshipDto.FirstName))]
+        [TestCase(nameof(DraftApprenticeshipDto.LastName))]
+        [TestCase(nameof(DraftApprenticeshipDto.CourseName))]
+        [TestCase(nameof(DraftApprenticeshipDto.DateOfBirth))]
+        [TestCase(nameof(DraftApprenticeshipDto.StartDate))]
+        [TestCase(nameof(DraftApprenticeshipDto.EndDate))]
+        [TestCase(nameof(DraftApprenticeshipDto.Cost))]
+        [TestCase(nameof(DraftApprenticeshipDto.Uln))]
+        public async Task IsCompleteMappedCorrectlyWhenAManadatoryFieldIsNull(string propertyName)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship()
+                .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            var result = await fixture.Map();
+            Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
+        }
     }
 
     public class DetailsViewModelMapperTestsFixture
@@ -776,6 +794,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var emailOverlap2 = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, last.Id).Create();
             EmailOverlapResponse.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap1, emailOverlap2 };
 
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetValueOfDraftApprenticeshipProperty(string propertyName, object value)
+        {
+            var draftApprenticeship = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+                PropertyInfo propertyInfo = draftApprenticeship.GetType().GetProperty(propertyName);
+                // make sure object has the property we are after
+                if (propertyInfo != null)
+                {
+                    propertyInfo.SetValue(draftApprenticeship, value, null);
+                }
+            }
+
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture CreateDraftApprenticeship()
+        {
+            var draftApprenticeship = _autoFixture.Create<DraftApprenticeshipDto>();
+
+            DraftApprenticeshipsResponse.DraftApprenticeships = new List<DraftApprenticeshipDto>() { draftApprenticeship };
             return this;
         }
 

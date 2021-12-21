@@ -9,10 +9,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static IWebHostBuilder ConfigureDasAppConfiguration(this IWebHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureAppConfiguration(c => c
-                .AddAzureTableStorage(
-                    ProviderCommitmentsConfigurationKeys.Encoding,
-                    ProviderCommitmentsConfigurationKeys.ProviderCommitments,
-                    ProviderCommitmentsConfigurationKeys.PasAccountApiClient));
+                .AddAzureTableStorage(options =>
+                {
+                    options.ConfigurationKeys = new[]
+                    {
+                        ProviderCommitmentsConfigurationKeys.ProviderCommitments
+                    };
+                    options.PreFixConfigurationKeys = false;
+                })
+                .AddAzureTableStorage(ProviderCommitmentsConfigurationKeys.Encoding, ProviderCommitmentsConfigurationKeys.PasAccountApiClient));
         }
     }
 }
