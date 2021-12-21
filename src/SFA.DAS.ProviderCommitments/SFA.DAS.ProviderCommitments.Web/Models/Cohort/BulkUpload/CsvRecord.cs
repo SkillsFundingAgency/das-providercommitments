@@ -20,7 +20,7 @@
 
         public string TotalPrice { get; set; }
 
-        public string EPAOrgID { get; set; }  // ToDO: Validate Startwith EPA...
+        public string EPAOrgID { get; set; }
 
         public string ProviderRef { get; set; }
 
