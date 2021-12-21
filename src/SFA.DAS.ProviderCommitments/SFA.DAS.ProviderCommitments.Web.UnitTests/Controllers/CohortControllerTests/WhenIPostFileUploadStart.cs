@@ -15,6 +15,7 @@ using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -65,7 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _commitmentApiClient
                 .Setup(x => x.BulkUploadDraftApprenticeships(It.IsAny<long>(), It.IsAny<BulkUploadAddDraftApprenticeshipsRequest>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(0));
 
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+            Sut.TempData = tempData;
         }
 
         public PostFileUploadStartFixture VerifyBulkApprenticeshipUploaded()
