@@ -45,40 +45,40 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
         public void CohortRefParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(100, result.DraftApprenticeshipRequest.First().CohortId);
-            Assert.AreEqual(100, result.DraftApprenticeshipRequest.Last().CohortId);
+            Assert.AreEqual(100, result.BulkUploadDraftApprenticeships.First().CohortId);
+            Assert.AreEqual(100, result.BulkUploadDraftApprenticeships.Last().CohortId);
         }
 
         [Test]
         public void AgreementIDParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(200, result.DraftApprenticeshipRequest.First().LegalEntityId);
-            Assert.AreEqual(200, result.DraftApprenticeshipRequest.Last().LegalEntityId);
+            Assert.AreEqual(200, result.BulkUploadDraftApprenticeships.First().LegalEntityId);
+            Assert.AreEqual(200, result.BulkUploadDraftApprenticeships.Last().LegalEntityId);
         }
 
         [Test]
         public void ULNParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual("8652496047", result.DraftApprenticeshipRequest.First().Uln);
-            Assert.AreEqual("6347198567", result.DraftApprenticeshipRequest.Last().Uln);
+            Assert.AreEqual("8652496047", result.BulkUploadDraftApprenticeships.First().Uln);
+            Assert.AreEqual("6347198567", result.BulkUploadDraftApprenticeships.Last().Uln);
         }
 
         [Test]
         public void FamilyNameParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual("Jones", result.DraftApprenticeshipRequest.First().LastName);
-            Assert.AreEqual("Smith", result.DraftApprenticeshipRequest.Last().LastName);
+            Assert.AreEqual("Jones", result.BulkUploadDraftApprenticeships.First().LastName);
+            Assert.AreEqual("Smith", result.BulkUploadDraftApprenticeships.Last().LastName);
         }
 
         [Test]
         public void GivenNamesParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual("Louise", result.DraftApprenticeshipRequest.First().FirstName);
-            Assert.AreEqual("Mark", result.DraftApprenticeshipRequest.Last().FirstName);
+            Assert.AreEqual("Louise", result.BulkUploadDraftApprenticeships.First().FirstName);
+            Assert.AreEqual("Mark", result.BulkUploadDraftApprenticeships.Last().FirstName);
         }
 
 
@@ -86,63 +86,63 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
         public void DateOfBirthParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(new DateTime(2000,1,1).Date, result.DraftApprenticeshipRequest.First().DateOfBirth.Value.Date);
-            Assert.AreEqual(new DateTime(2002, 2, 2).Date, result.DraftApprenticeshipRequest.Last().DateOfBirth.Value.Date);
+            Assert.AreEqual(new DateTime(2000,1,1).Date, result.BulkUploadDraftApprenticeships.First().DateOfBirth.Value.Date);
+            Assert.AreEqual(new DateTime(2002, 2, 2).Date, result.BulkUploadDraftApprenticeships.Last().DateOfBirth.Value.Date);
         }
 
         [Test]
         public void EmailAddressParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual("abc1@abc.com", result.DraftApprenticeshipRequest.First().Email);
-            Assert.AreEqual("abc2@abc.com", result.DraftApprenticeshipRequest.Last().Email);
+            Assert.AreEqual("abc1@abc.com", result.BulkUploadDraftApprenticeships.First().Email);
+            Assert.AreEqual("abc2@abc.com", result.BulkUploadDraftApprenticeships.Last().Email);
         }
 
         [Test]
         public void StdCodeParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual("57", result.DraftApprenticeshipRequest.First().CourseCode);
-            Assert.AreEqual("58", result.DraftApprenticeshipRequest.Last().CourseCode);
+            Assert.AreEqual("57", result.BulkUploadDraftApprenticeships.First().CourseCode);
+            Assert.AreEqual("58", result.BulkUploadDraftApprenticeships.Last().CourseCode);
         }
 
         [Test]
         public void StartDateParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(new DateTime(2017, 5, 1).Date, result.DraftApprenticeshipRequest.First().StartDate.Value.Date);
-            Assert.AreEqual(new DateTime(2018, 6, 1).Date, result.DraftApprenticeshipRequest.Last().StartDate.Value.Date);
+            Assert.AreEqual(new DateTime(2017, 5, 1).Date, result.BulkUploadDraftApprenticeships.First().StartDate.Value.Date);
+            Assert.AreEqual(new DateTime(2018, 6, 1).Date, result.BulkUploadDraftApprenticeships.Last().StartDate.Value.Date);
         }
 
         [Test]
         public void EndDateParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(new DateTime(2018, 5, 1).Date, result.DraftApprenticeshipRequest.First().EndDate.Value.Date);
-            Assert.AreEqual(new DateTime(2019, 6, 1).Date, result.DraftApprenticeshipRequest.Last().EndDate.Value.Date);
+            Assert.AreEqual(new DateTime(2018, 5, 1).Date, result.BulkUploadDraftApprenticeships.First().EndDate.Value.Date);
+            Assert.AreEqual(new DateTime(2019, 6, 1).Date, result.BulkUploadDraftApprenticeships.Last().EndDate.Value.Date);
         }
 
         [Test]
         public void TotalPriceParsedCorrectly()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(2000, result.DraftApprenticeshipRequest.First().Cost);
-            Assert.AreEqual(3333, result.DraftApprenticeshipRequest.Last().Cost);
+            Assert.AreEqual(2000, result.BulkUploadDraftApprenticeships.First().Cost);
+            Assert.AreEqual(3333, result.BulkUploadDraftApprenticeships.Last().Cost);
         }
 
-        //[Test]
-        //public void EPAOIsParsedCorrectly() & ProviderRef
-        //{
-        //    var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-        //    Assert.AreEqual(2000, result.DraftApprenticeshipRequest.First());
-        //    Assert.AreEqual(3333, result.DraftApprenticeshipRequest.Last().Cost);
-        //}
+        [Test]
+        public void ProviderRefIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
+            Assert.AreEqual("CX768", result.BulkUploadDraftApprenticeships.First().ProviderRef);
+            Assert.AreEqual("ZB657", result.BulkUploadDraftApprenticeships.Last().ProviderRef);
+        }
 
         [Test]
         public void CorrectNumberOfApprenticeshipMapped()
         {
             var result = _bulkUploadFileParser.CreateApiRequest(_proivderId, _file);
-            Assert.AreEqual(2, result.DraftApprenticeshipRequest.Count());
+            Assert.AreEqual(2, result.BulkUploadDraftApprenticeships.Count());
         }
     }
 }

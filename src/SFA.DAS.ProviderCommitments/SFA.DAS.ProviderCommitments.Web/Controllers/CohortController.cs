@@ -15,6 +15,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -297,6 +298,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
             await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
 
+            TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             return RedirectToAction(nameof(Cohorts));
         }
 

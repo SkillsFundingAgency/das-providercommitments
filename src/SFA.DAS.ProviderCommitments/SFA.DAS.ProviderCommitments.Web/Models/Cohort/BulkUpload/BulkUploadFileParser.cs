@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
                     return new BulkUploadAddDraftApprenticeshipsRequest
                     {
-                        DraftApprenticeshipRequest = csvReader.GetRecords<CsvRecord>()
+                        BulkUploadDraftApprenticeships = csvReader.GetRecords<CsvRecord>()
                             .ToList()
                             .Select(record => MapTo(record))
                     };
@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 LastName = record.FamilyName,
                 DateOfBirth = dateOfBirth,
                 Cost =  int.Parse(record.TotalPrice),
-                //ProviderRef = record.ProviderRef,
+                ProviderRef = record.ProviderRef,
                 StartDate = learnerStartDate,
                 EndDate = learnerEndDate,
                 CourseCode = record.StdCode,
