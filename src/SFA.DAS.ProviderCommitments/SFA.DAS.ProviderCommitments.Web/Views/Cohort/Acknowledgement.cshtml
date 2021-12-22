@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.Controllers
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.AcknowledgementViewModel
 
 @{
@@ -96,7 +96,7 @@
         }
 
     }
-    <a class="govuk-link" href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})"> Go to apprentice requests</a>
+    <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId})"> Go to apprentice requests</a>
 
     <br />
     <br />

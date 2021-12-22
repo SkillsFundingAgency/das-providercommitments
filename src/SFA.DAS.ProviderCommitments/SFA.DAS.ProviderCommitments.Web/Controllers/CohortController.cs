@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("review", Name = RouteNames.CohortReview)]
-        [Route("")]
+        [Route("", Name = RouteNames.Cohort)]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
