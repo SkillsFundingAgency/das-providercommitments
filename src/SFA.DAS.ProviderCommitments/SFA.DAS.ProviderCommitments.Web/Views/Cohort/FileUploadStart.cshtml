@@ -10,6 +10,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-grid-column-two-thirds">
+            <partial name="_ValidationSummary" />
             <form method="post" enctype="multipart/form-data">
                 <h1 class="govuk-heading-xl">Upload a CSV file</h1>
                 <div class="govuk-form-group govuk-!-margin-top-6">
@@ -20,7 +21,7 @@
                     @Html.ValidationMessageFor(m => m.Attachment, null, new { id = "error-message-" + Html.IdFor(m => m.Attachment) })
                     <input class="govuk-file-upload" id="attachment" accept=".csv" type="file" name="@Html.NameFor(m => m.Attachment)">
                 </div>
-              
+
                 <input class="button govuk-button" data-module="govuk-button" type="submit" value="Continue" id="submit-upload-apprentices">
             </form>
         </div>

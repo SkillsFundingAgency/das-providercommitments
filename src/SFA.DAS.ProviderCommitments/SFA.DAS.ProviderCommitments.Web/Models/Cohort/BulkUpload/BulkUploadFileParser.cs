@@ -37,6 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
                     return new BulkUploadAddDraftApprenticeshipsRequest
                     {
+                        ProviderId = providerId,
                         BulkUploadDraftApprenticeships = csvReader.GetRecords<CsvRecord>()
                             .ToList()
                             .Select(record => MapTo(record))
