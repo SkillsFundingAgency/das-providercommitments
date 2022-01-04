@@ -28,8 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(200);
             _bulkUploadFileParser = new BulkUploadFileParser(_encodingService.Object, Mock.Of<ILogger<BulkUploadFileParser>>());
             _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
-                            "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05,2018-05,2000,,CX768" + Environment.NewLine +
-                            "P9DD4P, XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06,2019-06,3333,EPA0001,ZB657";
+                            "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768" + Environment.NewLine +
+                            "P9DD4P, XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657";
 
             var fileName = "test.pdf";
             var stream = new MemoryStream();

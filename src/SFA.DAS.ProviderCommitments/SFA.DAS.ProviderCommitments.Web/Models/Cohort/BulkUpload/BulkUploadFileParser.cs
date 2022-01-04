@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record)
         {
             var dateOfBirth = GetValidDate(record.DateOfBirth, "yyyy-MM-dd");
-            var learnerStartDate = GetValidDate(record.StartDate, "yyyy-MM");
+            var learnerStartDate = GetValidDate(record.StartDate, "yyyy-MM-dd");
             var learnerEndDate = GetValidDate(record.EndDate, "yyyy-MM");
 
             return new BulkUploadAddDraftApprenticeshipRequest
@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 DateOfBirth = dateOfBirth,
                 Cost =  int.Parse(record.TotalPrice),
                 ProviderRef = record.ProviderRef,
-                StartDate = learnerStartDate,
+                StartDate = new DateTime(learnerStartDate.Value.Year, learnerEndDate.Value.Month, 1),
                 EndDate = learnerEndDate,
                 CourseCode = record.StdCode,
                 LegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId),
