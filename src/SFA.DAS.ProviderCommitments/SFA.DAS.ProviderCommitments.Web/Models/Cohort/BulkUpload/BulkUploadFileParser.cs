@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 DateOfBirth = dateOfBirth,
                 Cost =  int.Parse(record.TotalPrice),
                 ProviderRef = record.ProviderRef,
-                StartDate = new DateTime(learnerStartDate.Value.Year, learnerEndDate.Value.Month, 1),
+                StartDate = new DateTime(learnerStartDate.Value.Year, learnerStartDate.Value.Month, 1),
                 EndDate = learnerEndDate,
                 CourseCode = record.StdCode,
                 LegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId),
