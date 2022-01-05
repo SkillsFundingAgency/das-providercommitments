@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new PostFileUploadStartFixture();
 
             var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Cohorts"); ;
+            result.VerifyReturnsRedirectToActionResult().WithActionName("Review"); ;
          
         }
 

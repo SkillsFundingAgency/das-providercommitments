@@ -301,7 +301,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
 
             TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
-            return RedirectToAction(nameof(Cohorts));
+            return RedirectToAction(nameof(Review));
         }
 
         [HttpGet]
