@@ -1,4 +1,6 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.WithTransferSenderViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.Models
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.WithTransferSenderViewModel
 
 @{
     ViewData["Title"] = "Apprentice details with transfer sending employers";
@@ -9,38 +11,67 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-row">
         <div class="govuk-width-container">
-            <h1 class="govuk-heading-xl">Apprentice details with transfer sending employers</h1>
-            <table class="govuk-table das-table--responsive">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header das-table-cell-width-25">Employer</th>
-                        <th scope="col" class="govuk-table__header das-table-cell-width-25">Reference</th>
-                        <th scope="col" class="govuk-table__header das-table-cell-width-25 govuk-table__header--numeric">Number of apprentices</th>
-                        <th scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-25"></th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @foreach (var cohort in Model.Cohorts)
-                    {
 
+            @(await Html.PartialAsync("_ApprenticeshipRequestsHeaderPartial", Model.ApprenticeshipRequestsHeaderViewModel))
+
+            @if (Model.Cohorts.Count() > 0)
+            {
+                <table class="govuk-table das-table--responsive das-table--double-arrows das-table--condensed">
+                    <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" data-label="Employer">@cohort.EmployerName</td>
-                            <td class="govuk-table__cell" data-label="Reference">@cohort.CohortReference</td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Number of apprentices">@cohort.NumberOfApprentices</td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="">
-                                <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.Action("Details", new { Model.ProviderId, cohort.CohortReference})">Details</a>
-                            </td>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20">
+                                <a class="@(Model.SortField == "Employer" ? Model.SortedByHeaderClassName : SortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.CohortWithTransferSender"
+                                   asp-all-route-data="@Model.BuildSortRouteData("Employer")"
+                                   title="Sort the table by employer">
+                                    Employer
+                                </a>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20">
+                                <a class="@(Model.SortField == "CohortReference" ? Model.SortedByHeaderClassName : SortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.CohortWithTransferSender"
+                                   asp-all-route-data="@Model.BuildSortRouteData("CohortReference")"
+                                   title="Sort the table by cohort reference">
+                                    Cohort reference
+                                </a>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20">
+                                <a class="@(Model.SortField == "DateSentToEmployer" ? Model.SortedByHeaderClassName : SortViewModel.HeaderClassName)"
+                                   asp-route="@RouteNames.CohortWithTransferSender"
+                                   asp-all-route-data="@Model.BuildSortRouteData("DateSentToEmployer")"
+                                   title="Sort the table by date sent to employer">
+                                    Date sent to employer
+                                </a>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20 govuk-table__header--numeric">Number of apprentices</th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20 govuk-table__header--numeric"></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var cohort in Model.Cohorts)
+                        {
+                            <tr class="govuk-table__row" data-cohort="@cohort.CohortReference">
+                                <td class="govuk-table__cell" data-label="Employer">@cohort.EmployerName</td>
+                                <td class="govuk-table__cell" data-label="Reference">@cohort.CohortReference</td>
+                                <td class="govuk-table__cell" data-label="DateSentToEmployer">@cohort.DateSentToEmployer.ToString("d MMM yyyy")</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Number of apprentices">@cohort.NumberOfApprentices</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="">
+                                    <a id="details_link_@cohort.CohortReference" class="govuk-link cohort-details-link" href="@Url.Action("Details", new {Model.ProviderId, cohort.CohortReference})">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+        <p class="govuk-body govuk-!-font-weight-bold">You currently have 0 apprentices with transfer sending employers</p>
+            }
         </div>
     </div>
 </div>
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("Cohorts", "Cohort", new { Model.ProviderId})">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
 }
-
-

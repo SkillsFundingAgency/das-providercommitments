@@ -199,7 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
-                Assert.AreEqual("Cohorts", redirect.ActionName);
+                Assert.AreEqual("Review", redirect.ActionName);
             }
 
             internal void SetUpIsAuthorized(bool isAuhtorized)

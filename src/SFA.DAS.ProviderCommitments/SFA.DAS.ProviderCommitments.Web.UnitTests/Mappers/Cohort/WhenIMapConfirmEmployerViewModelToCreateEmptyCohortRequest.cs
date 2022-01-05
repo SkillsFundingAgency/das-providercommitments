@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
-    public class WhenIMapConfrimEmployerViewModelToCreateEmptyCohortRequest
+    public class WhenIMapConfirmEmployerViewModelToCreateEmptyCohortRequest
     {
         private ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper _mapper;
         private ConfirmEmployerViewModel _source;
