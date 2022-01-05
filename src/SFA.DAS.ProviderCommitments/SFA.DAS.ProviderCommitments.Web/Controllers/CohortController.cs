@@ -50,41 +50,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
-        {
-            var model = await _modelMapper.Map<CohortsViewModel>(request);
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("review")]
+        [Route("review", Name = RouteNames.CohortReview)]
+        [Route("", Name = RouteNames.Cohort)]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
+            reviewViewModel.SortedByHeader();
+
             return View(reviewViewModel);
         }
 
         [HttpGet]
-        [Route("draft")]
+        [Route("draft", Name = RouteNames.CohortDraft)]
         public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
             var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
+            draftViewModel.SortedByHeader();
+
             return View(draftViewModel);
         }
 
         [HttpGet]
-        [Route("with-employer")]
+        [Route("with-employer", Name = RouteNames.CohortWithEmployer)]
         public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
             var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
+            withEmployerViewModel.SortedByHeader();
+
             return View(withEmployerViewModel);
         }
 
         [HttpGet]
-        [Route("with-transfer-sender")]
+        [Route("with-transfer-sender", Name = RouteNames.CohortWithTransferSender)]
         public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
             var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
+            withTransferSenderViewModel.SortedByHeader();
+
             return View(withTransferSenderViewModel);
         }
 
@@ -184,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
-                return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                return RedirectToAction("Review", new { viewModel.ProviderId });
             }
 
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
@@ -224,7 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     }
                 case CohortDetailsOptions.ApprenticeRequest:
                     {
-                        return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
                     }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
