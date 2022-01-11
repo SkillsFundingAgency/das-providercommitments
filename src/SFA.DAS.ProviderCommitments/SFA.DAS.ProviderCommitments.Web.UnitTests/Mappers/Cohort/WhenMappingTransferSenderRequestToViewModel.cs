@@ -11,6 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using SFA.DAS.PAS.Account.Api.ClientV2;
+using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderRelationships.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -76,17 +81,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _fixture.Map();
             _fixture.Verify_Ordered_By_LatestMessageByProvider();
         }
+
+        [Test]
+        public void Then_DateCreated_IsMapped_Correctly() 
+        { 
+            _fixture.Map();
+            _fixture.Verify_DateCreated_Is_Mapped();
+        }
+        
+        [TestCase("", false, "2_Encoded", "1_Encoded")]
+        [TestCase("Employer", false, "2_Encoded", "1_Encoded")]
+        [TestCase("Employer", true, "1_Encoded", "2_Encoded")]
+        [TestCase("CohortReference", false, "1_Encoded", "2_Encoded")]
+        [TestCase("CohortReference", true, "2_Encoded", "1_Encoded")]
+        [TestCase("DateSentToEmployer", false, "2_Encoded", "1_Encoded")]
+        [TestCase("DateSentToEmployer", true, "2_Encoded", "1_Encoded")]
+        public void Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
+        {
+            _fixture.WithSortApplied(sortField, reverse);
+            _fixture.Map();
+            _fixture.Verify_Sort_IsApplied(expectedFirstId, expectedLastId);
+        }
     }
 
     public class WhenMappingTransferSenderRequestToViewModelFixture
     {
         public Mock<IEncodingService> EncodingService { get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
+        public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
+        public Mock<IPasAccountApiClient> PasAccountApiClient { get; set; }
+        public Mock<IUrlHelper> UrlHelper { get; }
         public CohortsByProviderRequest WithTransferSenderRequest { get; set; }
         public GetCohortsResponse GetCohortsResponse { get; set; }
         public WithTransferSenderRequestViewModelMapper Mapper { get; set; }
         public WithTransferSenderViewModel WithTransferSenderViewModel { get; set; }
         public long ProviderId => 1;
+        public DateTime Now = DateTime.Now;
 
         public WhenMappingTransferSenderRequestToViewModelFixture()
         {
@@ -99,12 +129,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
             EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
 
-            Mapper = new WithTransferSenderRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
+            ProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
+
+            PasAccountApiClient = new Mock<IPasAccountApiClient>();
+            PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = ProviderAgreementStatus.Agreed });
+
+            UrlHelper = new Mock<IUrlHelper>();
+            UrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
+
+            Mapper = new WithTransferSenderRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, UrlHelper.Object, PasAccountApiClient.Object, EncodingService.Object);
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture Map()
         {
             WithTransferSenderViewModel = Mapper.Map(WithTransferSenderRequest).Result;
+            return this;
+        }
+
+        public WhenMappingTransferSenderRequestToViewModelFixture WithSortApplied(string sortField, bool reverse)
+        {
+            WithTransferSenderRequest.SortField = sortField;
+            WithTransferSenderRequest.ReverseSort = reverse;
             return this;
         }
 
@@ -132,8 +177,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Ordered_By_OnDateTransfered()
         {
-            Assert.AreEqual("1_Encoded", WithTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("2_Encoded", WithTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.AreEqual("2_Encoded", WithTransferSenderViewModel.Cohorts.First().CohortReference);
+            Assert.AreEqual("1_Encoded", WithTransferSenderViewModel.Cohorts.Last().CohortReference);
         }
 
         public void Verify_Ordered_By_OnDateCreated()
@@ -163,6 +208,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        public void Verify_DateCreated_Is_Mapped()
+        {
+            Assert.AreEqual(Now.AddMinutes(-7), WithTransferSenderViewModel.Cohorts.First().DateSentToEmployer);
+            Assert.AreEqual(Now.AddMinutes(-10), WithTransferSenderViewModel.Cohorts.Last().DateSentToEmployer);
+        }
+
+        public void Verify_Sort_IsApplied(string firstId, string lastId)
+        {
+            Assert.AreEqual(firstId, WithTransferSenderViewModel.Cohorts.First().CohortReference);
+            Assert.AreEqual(lastId, WithTransferSenderViewModel.Cohorts.Last().CohortReference);
+        }
+
         public WhenMappingTransferSenderRequestToViewModelFixture MakeTheMessagesNull()
         {
             foreach (var c in GetCohortsResponse.Cohorts)
@@ -175,37 +232,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public WhenMappingTransferSenderRequestToViewModelFixture SetCreatedOn()
         {
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).CreatedOn = DateTime.Now.AddMinutes(-5);
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).CreatedOn = DateTime.Now.AddMinutes(-7);
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).CreatedOn = DateTime.Now.AddMinutes(-9);
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).CreatedOn = DateTime.Now.AddMinutes(-10);
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).CreatedOn = Now.AddMinutes(-5);
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).CreatedOn = Now.AddMinutes(-7);
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).CreatedOn = Now.AddMinutes(-9);
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).CreatedOn = Now.AddMinutes(-10);
             return this;
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture SetLatestMessageFromEmployer()
         {
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).LatestMessageFromEmployer =
-                new Message("1st Message", DateTime.Now.AddMinutes(-6));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).LatestMessageFromEmployer =
-                new Message("2nd Message", DateTime.Now.AddMinutes(-7));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).LatestMessageFromEmployer =
-                new Message("3rd Message", DateTime.Now.AddMinutes(-8));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).LatestMessageFromEmployer =
-                new Message("4th Message", DateTime.Now.AddMinutes(-9));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).LatestMessageFromEmployer = new Message("1st Message", Now.AddMinutes(-6));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).LatestMessageFromEmployer = new Message("2nd Message", Now.AddMinutes(-7));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).LatestMessageFromEmployer = new Message("3rd Message", Now.AddMinutes(-8));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).LatestMessageFromEmployer = new Message("4th Message", Now.AddMinutes(-9));
 
             return this;
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture SetLatestMessageFromProvider()
         {
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).LatestMessageFromProvider =
-                new Message("1st Message", DateTime.Now.AddMinutes(-6));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).LatestMessageFromProvider =
-                new Message("2nd Message", DateTime.Now.AddMinutes(-7));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).LatestMessageFromProvider =
-                new Message("3rd Message", DateTime.Now.AddMinutes(-8));
-            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).LatestMessageFromProvider =
-                new Message("4th Message", DateTime.Now.AddMinutes(-9));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 1).LatestMessageFromProvider = new Message("1st Message", Now.AddMinutes(-6));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 2).LatestMessageFromProvider = new Message("2nd Message", Now.AddMinutes(-7));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 3).LatestMessageFromProvider = new Message("3rd Message", Now.AddMinutes(-8));
+            GetCohortsResponse.Cohorts.First(x => x.CohortId == 4).LatestMessageFromProvider = new Message("4th Message", Now.AddMinutes(-9));
 
             return this;
         }
@@ -221,12 +270,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 1,
                     TransferSenderId = 1,
                     TransferSenderName = "TransferSender1",
+                    LegalEntityName = "2",
                     ProviderName = "Provider1",
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.TransferSender,
-                    LatestMessageFromEmployer = new Message("this is the last message from Employer", DateTime.Now.AddMinutes(-10)),
-                    LatestMessageFromProvider = new Message("This is latestMessage from provider", DateTime.Now.AddMinutes(-11))
+                    LatestMessageFromEmployer = new Message("this is the last message from Employer", Now.AddMinutes(-10)),
+                    LatestMessageFromProvider = new Message("This is latestMessage from provider", Now.AddMinutes(-11))
                 },
                 new CohortSummary
                 {
@@ -235,13 +285,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 2,
                     TransferSenderId = 2,
                     TransferSenderName = "TransferSender2",
+                    LegalEntityName = "1",
                     ProviderName = "Provider2",
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
                     WithParty = Party.TransferSender,
-                    CreatedOn = DateTime.Now.AddMinutes(-8),
-                    LatestMessageFromProvider = new Message("This is latestMessage from provider", DateTime.Now.AddMinutes(-8)),
-                    LatestMessageFromEmployer = new Message("This is latestMessage from Employer", DateTime.Now.AddMinutes(-7))
+                    CreatedOn = Now.AddMinutes(-8),
+                    LatestMessageFromProvider = new Message("This is latestMessage from provider", Now.AddMinutes(-8)),
+                    LatestMessageFromEmployer = new Message("This is latestMessage from Employer", Now.AddMinutes(-7))
                 },
                 new CohortSummary
                 {
@@ -250,11 +301,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 2,
                     TransferSenderId = 2,
                     TransferSenderName = "TransferSender2",
+                    LegalEntityName = "4",
                     ProviderName = "Provider3",
                     NumberOfDraftApprentices = 300,
                     IsDraft = false,
                     WithParty = Party.Employer,
-                    CreatedOn = DateTime.Now.AddMinutes(-1)
+                    CreatedOn = Now.AddMinutes(-1)
                 },
                  new CohortSummary
                 {
@@ -262,10 +314,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     AccountId = 1,
                     ProviderId = 4,
                     ProviderName = "Provider4",
+                    LegalEntityName = "3",
                     NumberOfDraftApprentices = 400,
                     IsDraft = true,
                     WithParty = Party.Employer,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = Now
                 },
             };
 

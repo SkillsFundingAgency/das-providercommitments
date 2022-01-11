@@ -308,7 +308,7 @@ Model.HasEmailOverlaps)
 
                 <button type="submit" id="continue-button" class="govuk-button">Save and submit</button>
                 <br />
-                <a class="govuk-link" id="save-and-exit-cohort" href="@Url.Action("Cohorts", new { @Model.ProviderId })">
+                <a class="govuk-link" id="save-and-exit-cohort" href="@Url.RouteUrl(RouteNames.Cohort, new { @Model.ProviderId })">
                     Save and exit
                 </a>
 

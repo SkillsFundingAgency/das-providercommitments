@@ -188,6 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
             return routeData;
         }
+
         public class PageLink
         {
             public string Label { get; set; }

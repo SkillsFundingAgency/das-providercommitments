@@ -15,6 +15,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -49,41 +50,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cohorts(CohortsByProviderRequest request)
-        {
-            var model = await _modelMapper.Map<CohortsViewModel>(request);
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("review")]
+        [Route("review", Name = RouteNames.CohortReview)]
+        [Route("", Name = RouteNames.Cohort)]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
+            reviewViewModel.SortedByHeader();
+
             return View(reviewViewModel);
         }
 
         [HttpGet]
-        [Route("draft")]
+        [Route("draft", Name = RouteNames.CohortDraft)]
         public async Task<IActionResult> Draft(CohortsByProviderRequest request)
         {
             var draftViewModel = await _modelMapper.Map<DraftViewModel>(request);
+            draftViewModel.SortedByHeader();
+
             return View(draftViewModel);
         }
 
         [HttpGet]
-        [Route("with-employer")]
+        [Route("with-employer", Name = RouteNames.CohortWithEmployer)]
         public async Task<IActionResult> WithEmployer(CohortsByProviderRequest request)
         {
             var withEmployerViewModel = await _modelMapper.Map<WithEmployerViewModel>(request);
+            withEmployerViewModel.SortedByHeader();
+
             return View(withEmployerViewModel);
         }
 
         [HttpGet]
-        [Route("with-transfer-sender")]
+        [Route("with-transfer-sender", Name = RouteNames.CohortWithTransferSender)]
         public async Task<IActionResult> WithTransferSender(CohortsByProviderRequest request)
         {
             var withTransferSenderViewModel = await _modelMapper.Map<WithTransferSenderViewModel>(request);
+            withTransferSenderViewModel.SortedByHeader();
+
             return View(withTransferSenderViewModel);
         }
 
@@ -183,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
-                return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                return RedirectToAction("Review", new { viewModel.ProviderId });
             }
 
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
@@ -223,7 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     }
                 case CohortDetailsOptions.ApprenticeRequest:
                     {
-                        return RedirectToAction("Cohorts", new { viewModel.ProviderId });
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
                     }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
@@ -286,6 +289,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = new FileUploadStartViewModel { ProviderId = request.ProviderId };
             return View(model);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/start")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
+        {
+            var request = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+            await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
+
+            TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+            return RedirectToAction(nameof(Review));
         }
 
         [HttpGet]
