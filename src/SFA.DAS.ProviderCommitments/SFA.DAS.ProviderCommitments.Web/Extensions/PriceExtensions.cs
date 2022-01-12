@@ -17,5 +17,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         {
             return $"£{value:n0}";
         }
+
+        public static string FormatCost(this int value)
+        {
+            return $"£{value:n0}";
+        }
     }
 }

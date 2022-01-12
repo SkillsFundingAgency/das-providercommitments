@@ -23,6 +23,9 @@ using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -76,6 +79,19 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddUrlHelper()
                 .AddHealthChecks();
 
+            if (Environment.IsDevelopment())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var config = Configuration.GetSection(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings).Get<DataProtectionConnectionStrings>();
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = config.RedisConnectionString;
+                });
+            }
+
             services.Configure<CookieTempDataProviderOptions>(options =>
             {
                 options.Cookie.HttpOnly = true;
@@ -84,6 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             });
 
             services.AddProviderUiServiceRegistration(Configuration);
+            services.AddSingleton<ICacheService, CacheService>();
         }
 
         public void ConfigureContainer(Registry registry)
