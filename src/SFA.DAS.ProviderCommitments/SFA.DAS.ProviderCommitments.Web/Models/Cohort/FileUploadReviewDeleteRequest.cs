@@ -2,14 +2,14 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class FileUploadCacheDeleteRequest
+    public class FileUploadReviewDeleteRequest
     {
         public long ProviderId { get; set; }
         public Guid CacheRequestId { get; set; }
-        public FileUploadCacheDeleteRedirect? RedirectTo { get; set; }
+        public FileUploadReviewDeleteRedirect? RedirectTo { get; set; }
     }
 
-    public enum FileUploadCacheDeleteRedirect
+    public enum FileUploadReviewDeleteRedirect
     {
         UploadAgain,
         Home

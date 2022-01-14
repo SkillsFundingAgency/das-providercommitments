@@ -85,10 +85,13 @@ namespace SFA.DAS.ProviderCommitments.Web
             }
             else
             {
-                var config = Configuration.GetSection(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings).Get<DataProtectionConnectionStrings>();
+                var redisConfig =
+                    Configuration.GetSection(ProviderCommitmentsConfigurationKeys.RedisCache).Get<RedisConnectionSettings>();
+                var bulkUploadconfig = 
+                    Configuration.GetSection(ProviderCommitmentsConfigurationKeys.BulkuploadCache).Get<BulkuploadCacheSettings>();
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = config.RedisConnectionString;
+                    options.Configuration = $"{redisConfig.RedisConnectionString}, {bulkUploadconfig.BulkUploadCacheDatabase}";
                 });
             }
 

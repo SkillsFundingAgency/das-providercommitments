@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadCacheRequestToCacheViewModelMapper : IMapper<FileUploadCacheRequest, FileUploadCacheViewModel>
+    public class FileUploadReviewRequestToReviewViewModelMapper : IMapper<FileUploadReviewRequest, FileUploadReviewViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
 
-        public FileUploadCacheRequestToCacheViewModelMapper(ICommitmentsApiClient commitmentApiClient,  ICacheService cacheService, IEncodingService encodingService)
+        public FileUploadReviewRequestToReviewViewModelMapper(ICommitmentsApiClient commitmentApiClient,  ICacheService cacheService, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentApiClient;
             _cacheService = cacheService;
             _encodingService = encodingService;
         }
 
-        public async Task<FileUploadCacheViewModel> Map(FileUploadCacheRequest source)
+        public async Task<FileUploadReviewViewModel> Map(FileUploadReviewRequest source)
         {
-            var result = new FileUploadCacheViewModel();
+            var result = new FileUploadReviewViewModel();
             result.ProviderId = source.ProviderId;
             result.CacheRequestId = source.CacheRequestId;
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
@@ -33,16 +33,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             foreach (var employer in groupedByEmployers)
             {
-                var employerDetail = new FileUploadCacheEmployerDetails();
+                var employerDetail = new FileUploadReviewEmployerDetails();
                 employerDetail.EmployerName =  (await _commitmentsApiClient.GetAccountLegalEntity(_encodingService.Decode(employer.Key, EncodingType.PublicAccountLegalEntityId))).AccountName;
                 employerDetail.AgreementId = employer.Key;
 
-                employerDetail.CohortDetails = new List<FileUploadCacheCohortDetail>();
+                employerDetail.CohortDetails = new List<FileUploadReviewCohortDetail>();
 
                 var cohortGroups = employer.GroupBy(x => x.CohortRef);
                 foreach (var cohortGroup in cohortGroups)
                 {
-                    var cohortDetail = new FileUploadCacheCohortDetail();
+                    var cohortDetail = new FileUploadReviewCohortDetail();
                     cohortDetail.CohortRef = cohortGroup.Key;
                     cohortDetail.NumberOfApprentices = cohortGroup.Count();
                     cohortDetail.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));

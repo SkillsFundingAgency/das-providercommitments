@@ -17,11 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     [TestFixture]
     public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
     {
-        private FileUploadCacheViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper _mapper;
+        private FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper _mapper;
         private Mock<ICacheService> _cacheService;
         private Mock<IEncodingService> _encodingService;
         private BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
-        private FileUploadCacheViewModel _viewModel;
+        private FileUploadReviewViewModel _viewModel;
         private List<CsvRecord> _csvRecords;
 
 
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.EndDate, "2022-04")
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
-            _viewModel = fixture.Build<FileUploadCacheViewModel>().Create();
+            _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
                
             _cacheService = new Mock<ICacheService>();
             _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _csvRecords);
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
-            _mapper = new FileUploadCacheViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(  _cacheService.Object, _encodingService.Object);
+            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(  _cacheService.Object, _encodingService.Object);
 
             _apiRequest = await _mapper.Map(_viewModel);
         }

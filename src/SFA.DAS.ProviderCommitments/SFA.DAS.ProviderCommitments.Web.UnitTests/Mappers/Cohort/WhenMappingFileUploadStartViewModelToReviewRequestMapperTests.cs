@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
-    public class WhenMappingFileUploadStartViewModelToCacheRequestMapperTests
+    public class WhenMappingFileUploadStartViewModelToReviewRequestMapperTests
     {
-        private FileUploadStartViewModelToCacheRequestMapper _mapper;
+        private FileUploadStartViewModelToReviewRequestMapper _mapper;
         private Mock<IBulkUploadFileParser> _fileParser;
         private List<CsvRecord> _csvRecords;
         private FileUploadStartViewModel _viewModel;
@@ -34,9 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _cacheService = new Mock<ICacheService>();
             _cacheService.Setup(x => x.SetCache(_csvRecords)).ReturnsAsync(_cacheRequestId);
 
-            _mapper = new FileUploadStartViewModelToCacheRequestMapper(_fileParser.Object, _cacheService.Object);
+            _mapper = new FileUploadStartViewModelToReviewRequestMapper(_fileParser.Object, _cacheService.Object);
         }
-
 
         [Test]
         public async Task FileParserIsCalledOnce()

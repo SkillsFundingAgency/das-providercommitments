@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadCacheViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : IMapper<FileUploadCacheViewModel, BulkUploadAddDraftApprenticeshipsRequest>
+    public class FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddDraftApprenticeshipsRequest>
     {
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
-        public FileUploadCacheViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
+        public FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
         {
             _cacheService = cacheService;
             _encodingService = encodingService;
         }
 
-        public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadCacheViewModel source)
+        public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
             var csVRecrods = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString());

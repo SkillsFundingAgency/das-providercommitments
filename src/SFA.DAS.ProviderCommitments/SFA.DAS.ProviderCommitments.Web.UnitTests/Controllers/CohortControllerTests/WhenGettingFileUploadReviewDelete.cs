@@ -17,13 +17,13 @@ using System;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingFileUploadCacheDelete
+    public class WhenGettingFileUploadReviewDelete
     {
         [TestCase(null)]
-        [TestCase(FileUploadCacheDeleteRedirect.UploadAgain)]
-        public void Then_Redirects_To_FileUploadStart(FileUploadCacheDeleteRedirect? redirectTo)
+        [TestCase(FileUploadReviewDeleteRedirect.UploadAgain)]
+        public void Then_Redirects_To_FileUploadStart(FileUploadReviewDeleteRedirect? redirectTo)
         {
-            var fixture = new WhenGettingFileUploadCacheDeleteFixture();
+            var fixture = new WhenGettingFileUploadReviewDeleteFixture();
 
             var result =  fixture.WithRedirectTo(redirectTo).Act();
 
@@ -31,10 +31,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
 
-        [TestCase(FileUploadCacheDeleteRedirect.Home)]
-        public void Then_Redirects_To_Home(FileUploadCacheDeleteRedirect? redirectTo)
+        [TestCase(FileUploadReviewDeleteRedirect.Home)]
+        public void Then_Redirects_To_Home(FileUploadReviewDeleteRedirect? redirectTo)
         {
-            var fixture = new WhenGettingFileUploadCacheDeleteFixture();
+            var fixture = new WhenGettingFileUploadReviewDeleteFixture();
 
             var result = fixture.WithRedirectTo(redirectTo).Act();
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public void Then_Cache_Is_Cleared()
         {
-            var fixture = new WhenGettingFileUploadCacheDeleteFixture();
+            var fixture = new WhenGettingFileUploadReviewDeleteFixture();
 
             fixture.Act();
 
@@ -52,27 +52,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
     }
 
-    public class WhenGettingFileUploadCacheDeleteFixture
+    public class WhenGettingFileUploadReviewDeleteFixture
     {
         private CohortController _sut { get; set; }
 
-        private readonly FileUploadCacheDeleteRequest _request;
+        private readonly FileUploadReviewDeleteRequest _request;
         private readonly long _providerId = 123;
         private readonly Guid _cacheRequestId = Guid.NewGuid();
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly FileUploadCacheViewModel _viewModel;
+        private readonly FileUploadReviewViewModel _viewModel;
         private readonly Mock<ICacheService> _cacheService;
         private readonly Mock<ILinkGenerator> _linkGenerator;
 
-        public WhenGettingFileUploadCacheDeleteFixture()
+        public WhenGettingFileUploadReviewDeleteFixture()
         {
             var fixture = new Fixture();
 
-            _viewModel = fixture.Create<FileUploadCacheViewModel>();
-            _request = new FileUploadCacheDeleteRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
+            _viewModel = fixture.Create<FileUploadReviewViewModel>();
+            _request = new FileUploadReviewDeleteRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
 
             _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<FileUploadCacheViewModel>(_request)).ReturnsAsync(_viewModel);
+            _modelMapper.Setup(x => x.Map<FileUploadReviewViewModel>(_request)).ReturnsAsync(_viewModel);
             _cacheService = new Mock<ICacheService>();
 
             _linkGenerator = new Mock<ILinkGenerator>();
@@ -81,9 +81,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => _sut.FileUploadCacheDelete(_cacheService.Object, _request);
+        public IActionResult Act() => _sut.FileUploadReviewDelete(_cacheService.Object, _request);
 
-        internal WhenGettingFileUploadCacheDeleteFixture WithRedirectTo(FileUploadCacheDeleteRedirect? redirectTo)
+        internal WhenGettingFileUploadReviewDeleteFixture WithRedirectTo(FileUploadReviewDeleteRedirect? redirectTo)
         {
             _request.RedirectTo = redirectTo;
             return this;

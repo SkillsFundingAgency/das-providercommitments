@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
-    public class WhenMappingFileUploadCacheRequestToCacheViewModel
+    public class WhenMappingFileUploadReviewRequestToReviewViewModel
     {
         [TestCase("Employer1", "Employer1Name")]
         [TestCase("Employer2", "Employer2Name")]
         public async Task EmployerNameIsMappedCorrectly(string agreementId, string employerName)
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyEmployerNameIsMappedCorrectly(agreementId, employerName);
@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2")]
         public async Task AgrrementIdIsMappedCorrectly(string agreementId)
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyAgreementIdIsMappedCorrectly(agreementId);
@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task CorrectNumberOfEmployersAreMapped()
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyCorrectNumberOfEmployersAreMapped();
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4")]
         public async Task CohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyCohortReferenceIsMappedCorrectly(agreementId, cohortRef);
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4", 2)]
         public async Task NumberOfApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
@@ -75,29 +75,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4", 1000)]
         public async Task TotalCostIsMappedCorrectly(string agreementId, string cohortRef, int totalCost)
         {
-            var fixture = new WhenMappingFileUploadCacheRequestToCacheViewModelFixture();
+            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
             await fixture.WithDefaultData().Action();
 
             fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
-        public class WhenMappingFileUploadCacheRequestToCacheViewModelFixture
+        public class WhenMappingFileUploadReviewRequestToReviewViewModelFixture
         {
             private Fixture fixture;
-            private FileUploadCacheRequestToCacheViewModelMapper _sut;
-            private FileUploadCacheRequest _request;
+            private FileUploadReviewRequestToReviewViewModelMapper _sut;
+            private FileUploadReviewRequest _request;
             private Mock<IEncodingService> _encodingService;
             private Mock<ICommitmentsApiClient> _commitmentApiClient;
             private Mock<ICacheService> _cacheService;
             private List<CsvRecord> _csvRecords;
-            private FileUploadCacheViewModel _result;
+            private FileUploadReviewViewModel _result;
 
-            public WhenMappingFileUploadCacheRequestToCacheViewModelFixture()
+            public WhenMappingFileUploadReviewRequestToReviewViewModelFixture()
             {
                 fixture = new Fixture();
                 _csvRecords = new List<CsvRecord>();
 
-                _request = fixture.Create<FileUploadCacheRequest>();
+                _request = fixture.Create<FileUploadReviewRequest>();
                 var accountLegalEntityEmployer1 = fixture.Build<AccountLegalEntityResponse>()
                                                             .With(x => x.AccountName, "Employer1Name").Create();
 
@@ -115,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 _cacheService = new Mock<ICacheService>();
                 _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
 
-                _sut = new FileUploadCacheRequestToCacheViewModelMapper(_commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
+                _sut = new FileUploadReviewRequestToReviewViewModelMapper(_commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
             }
 
             public async Task Action() =>  _result = await _sut.Map(_request);
@@ -140,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 return list;
             }
 
-            internal WhenMappingFileUploadCacheRequestToCacheViewModelFixture WithDefaultData()
+            internal WhenMappingFileUploadReviewRequestToReviewViewModelFixture WithDefaultData()
             {
                 // This will create three csv records, with total cost of 3000 (3*1000)
                 _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer1", "Cohort1", 1000));

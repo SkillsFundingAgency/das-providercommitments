@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class FileUploadCacheCohortDetail
+    public class FileUploadReviewCohortDetail
     {
         public const string EmptyCohortRefText = "This will be created when you save or send to employers";
         public string CohortRef { get; set; }

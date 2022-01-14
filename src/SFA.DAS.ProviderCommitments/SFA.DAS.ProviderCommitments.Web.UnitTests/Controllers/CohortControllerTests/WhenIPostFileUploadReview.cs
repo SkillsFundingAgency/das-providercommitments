@@ -20,23 +20,23 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenIPostFileUploadCache
+    public class WhenIPostFileUploadReview
     {
         [Test]
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_RedirectToReview()
         {
-            var fixture = new WhenIPostFileUploadCacheFixture();
+            var fixture = new WhenIPostFileUploadReviewFixture();
 
-            var result = await fixture.WithSelectedOption(FileUploadCacheOption.SaveButDontSend).Act();
+            var result = await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("Review"); ;
         }
 
         [Test]
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_CohortsAreCreated()
         {
-            var fixture = new WhenIPostFileUploadCacheFixture();
+            var fixture = new WhenIPostFileUploadReviewFixture();
 
-            await fixture.WithSelectedOption(FileUploadCacheOption.SaveButDontSend).Act();
+            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             fixture.VerifyCohortsAreCreated();
         }
 
@@ -44,37 +44,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
         {
-            var fixture = new WhenIPostFileUploadCacheFixture();
+            var fixture = new WhenIPostFileUploadReviewFixture();
 
-            await fixture.WithSelectedOption(FileUploadCacheOption.SaveButDontSend).Act();
+            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             fixture.VerifyMapperIsCalled();
         }
 
         [Test]
         public async Task When_SelectedOption_Is_UploadAnAmendedFile_RedirectTo_FileUploadStart()
         {
-            var fixture = new WhenIPostFileUploadCacheFixture();
+            var fixture = new WhenIPostFileUploadReviewFixture();
 
-            var result = await fixture.WithSelectedOption(FileUploadCacheOption.UploadAmendedFile).Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadCacheDelete");
+            var result = await fixture.WithSelectedOption(FileUploadReviewOption.UploadAmendedFile).Act();
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReviewDelete");
         }
     }
 
-    public class WhenIPostFileUploadCacheFixture
+    public class WhenIPostFileUploadReviewFixture
     {
         public CohortController Sut { get; set; }
 
         public string RedirectUrl;
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
-        private readonly FileUploadCacheViewModel _viewModel;
+        private readonly FileUploadReviewViewModel _viewModel;
         private readonly BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
 
-        public WhenIPostFileUploadCacheFixture()
+        public WhenIPostFileUploadReviewFixture()
         {
             var fixture = new Fixture();
 
-            _viewModel = fixture.Create<FileUploadCacheViewModel>();
+            _viewModel = fixture.Create<FileUploadReviewViewModel>();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
             _mockModelMapper = new Mock<IModelMapper>();
@@ -85,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut.TempData = tempData;
         }
 
-        public WhenIPostFileUploadCacheFixture WithSelectedOption(FileUploadCacheOption selectedOption)
+        public WhenIPostFileUploadReviewFixture WithSelectedOption(FileUploadReviewOption selectedOption)
         {
             _viewModel.SelectedOption = selectedOption;
             return this;
@@ -101,6 +101,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mockModelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel), Times.Once);
         }
 
-        public async Task<IActionResult> Act() => await Sut.FileUploadCache(_viewModel);
+        public async Task<IActionResult> Act() => await Sut.FileUploadReview(_viewModel);
     }
 }

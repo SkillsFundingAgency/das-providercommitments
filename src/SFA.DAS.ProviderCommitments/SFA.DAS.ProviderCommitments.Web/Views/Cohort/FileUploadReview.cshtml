@@ -2,7 +2,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @inject ILinkGenerator LinkGenerator;
-@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadCacheViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadReviewViewModel
 
 @{
     ViewData["Title"] = "Add Apprentice";
@@ -21,7 +21,7 @@
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
                         <span class="govuk-warning-text__assistive">Warning</span>
-                        If you need to correct any records, you need to amend the data in your LMS, then <a href="@Url.Action("FileUploadCacheDelete", new { @Model.ProviderId, @Model.CacheRequestId})" class="govuk-link--no-visited-state">upload your CSV file again</a>. This will avoid data locks.
+                        If you need to correct any records, you need to amend the data in your LMS, then <a href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId})" class="govuk-link--no-visited-state">upload your CSV file again</a>. This will avoid data locks.
                     </strong>
                 </div>
 
@@ -45,7 +45,7 @@
                     {
                         <p class="govuk-body-m">Cohort: @cohortDetail.CohortRefText</p>
                         <p class="govuk-paragraph-body">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="review-cohort" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
+                        <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
                         <p></p>
                     }
                 }
@@ -59,19 +59,19 @@
                             </h2>
                             <div class="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadCacheOption.ApproveAndSend">
+                                    <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
                                     <label class="govuk-label govuk-radios__label" for="details-approve">
                                         Approve all and send to employer(s)
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadCacheOption.SaveButDontSend">
+                                    <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
                                     <label class="govuk-label govuk-radios__label" for="details-save">
                                         Save all but don't send to employer(s)
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="details-new-file" name="SelectedOption" type="radio" value="@FileUploadCacheOption.UploadAmendedFile">
+                                    <input class="govuk-radios__input" id="details-new-file" name="SelectedOption" type="radio" value="@FileUploadReviewOption.UploadAmendedFile">
                                     <label class="govuk-label govuk-radios__label" for="details-new-file">
                                         Upload an amended file
                                     </label>
@@ -83,7 +83,7 @@
                         Continue
                     </button>
                 </form>
-                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadCacheDelete", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadCacheDeleteRedirect.Home })">Cancel and discard the upload</a></p>
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
             </div>
 
         </div>
@@ -92,5 +92,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadCacheDelete", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
 }

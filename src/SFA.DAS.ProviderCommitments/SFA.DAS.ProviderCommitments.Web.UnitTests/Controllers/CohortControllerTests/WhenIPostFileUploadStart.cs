@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new PostFileUploadStartFixture();
 
             var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadCache"); ;
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReview"); ;
          
         }
 
@@ -47,25 +47,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
         private readonly FileUploadStartViewModel _viewModel;
-        private readonly FileUploadCacheRequest _request;
+        private readonly FileUploadReviewRequest _request;
 
         public PostFileUploadStartFixture()
         {
             var fixture = new Fixture();
             _viewModel = fixture.Build<FileUploadStartViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
-            _request = fixture.Create<FileUploadCacheRequest>();
+            _request = fixture.Create<FileUploadReviewRequest>();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
             _mockModelMapper = new Mock<IModelMapper>();
-            _mockModelMapper.Setup(x => x.Map<FileUploadCacheRequest>(_viewModel)).ReturnsAsync(() => _request);
+            _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
 
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
         public PostFileUploadStartFixture VerifyCsvRecordCached()
         {
-            _mockModelMapper.Verify(x => x.Map<FileUploadCacheRequest>(_viewModel), Times.Once);
+            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(_viewModel), Times.Once);
             return this;
         }
 

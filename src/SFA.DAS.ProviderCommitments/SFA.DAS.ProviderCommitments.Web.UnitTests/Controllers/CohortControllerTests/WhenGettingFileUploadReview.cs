@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingFileUploadCache
+    public class WhenGettingFileUploadReview
     {
         [Test]
         public async Task ThenReturnsView()
         {
-            var fixture = new WhenGettingFileUploadCacheFixture();
+            var fixture = new WhenGettingFileUploadReviewFixture();
 
             var result = await fixture.Act();
 
@@ -30,42 +30,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task ThenReturnsView_With_FileUploadCacheViewModel()
+        public async Task ThenReturnsView_With_FileUploadReviewViewModel()
         {
-            var fixture = new WhenGettingFileUploadCacheFixture();
+            var fixture = new WhenGettingFileUploadReviewFixture();
 
             var viewResult = await fixture.Act();
 
-            var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadCacheViewModel>();
+            var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadReviewViewModel>();
 
             Assert.IsNotNull(model);
         }
     }
 
-    public class WhenGettingFileUploadCacheFixture
+    public class WhenGettingFileUploadReviewFixture
     {
         private CohortController _sut { get; set; }
 
-        private readonly FileUploadCacheRequest _request;
+        private readonly FileUploadReviewRequest _request;
         private readonly long _providerId = 123;
         private readonly Guid _cacheRequestId = Guid.NewGuid();
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly FileUploadCacheViewModel _viewModel;
+        private readonly FileUploadReviewViewModel _viewModel;
 
-        public WhenGettingFileUploadCacheFixture()
+        public WhenGettingFileUploadReviewFixture()
         {
             var fixture = new AutoFixture.Fixture();
             
 
-            _viewModel = fixture.Create<FileUploadCacheViewModel>();
-            _request = new FileUploadCacheRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
+            _viewModel = fixture.Create<FileUploadReviewViewModel>();
+            _request = new FileUploadReviewRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
 
             _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<FileUploadCacheViewModel>(_request)).ReturnsAsync(_viewModel);
+            _modelMapper.Setup(x => x.Map<FileUploadReviewViewModel>(_request)).ReturnsAsync(_viewModel);
         
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public Task<IActionResult> Act() => _sut.FileUploadCache(_request);
+        public Task<IActionResult> Act() => _sut.FileUploadReview(_request);
     }
 }

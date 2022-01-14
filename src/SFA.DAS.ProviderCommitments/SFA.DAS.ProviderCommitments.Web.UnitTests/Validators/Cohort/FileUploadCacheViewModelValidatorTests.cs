@@ -8,21 +8,21 @@ using System.Linq.Expressions;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {
     [TestFixture]
-    public class FileUploadCacheViewModelValidatorTests
+    public class FileUploadReviewViewModelValidatorTests
     {
         [TestCase(null, false)]
-        [TestCase(FileUploadCacheOption.ApproveAndSend, true)]
-        [TestCase(FileUploadCacheOption.SaveButDontSend, true)]
-        [TestCase(FileUploadCacheOption.UploadAmendedFile, true)]
-        public void Validate_Selection_ShouldBeValidated(FileUploadCacheOption? selection, bool expectedValid)
+        [TestCase(FileUploadReviewOption.ApproveAndSend, true)]
+        [TestCase(FileUploadReviewOption.SaveButDontSend, true)]
+        [TestCase(FileUploadReviewOption.UploadAmendedFile, true)]
+        public void Validate_Selection_ShouldBeValidated(FileUploadReviewOption? selection, bool expectedValid)
         {
-            var model = new FileUploadCacheViewModel { SelectedOption = selection };
+            var model = new FileUploadReviewViewModel { SelectedOption = selection };
             AssertValidationResult(request => request.SelectedOption, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<FileUploadCacheViewModel, T>> property, FileUploadCacheViewModel instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<FileUploadReviewViewModel, T>> property, FileUploadReviewViewModel instance, bool expectedValid)
         {
-            var validator = new FileUploadCacheViewModelValidator();
+            var validator = new FileUploadReviewViewModelValidator();
 
             if (expectedValid)
             {
