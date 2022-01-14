@@ -17,7 +17,7 @@
         {
             @if (!string.IsNullOrWhiteSpace(Model.EncodedNewApprenticeshipId))
             {
-                <p><span id="new-employer">@Model.EmployerName</span> approved the <a id="continuation-link" class="govuk-link" href="@Url.Action("Details", new {Model.ProviderId, ApprenticeshipHashedId = Model.EncodedNewApprenticeshipId})">new details</a>.</p>
+                <p><span id="new-employer">@Model.EmployerName</span> approved the <a id="continuation-link" class="govuk-link" href="@Url.Action("Details", new { Model.ProviderId, ApprenticeshipHashedId = Model.EncodedNewApprenticeshipId })">new details</a>.</p>
             }
             else
             {
@@ -30,7 +30,7 @@
         }
         else
         {
-            var url = Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/Details");
+            var url = Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference });
 
             if (Model.WithParty == Party.Employer)
             {
