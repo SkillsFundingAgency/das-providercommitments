@@ -87,11 +87,9 @@ namespace SFA.DAS.ProviderCommitments.Web
             {
                 var redisConfig =
                     Configuration.GetSection(ProviderCommitmentsConfigurationKeys.RedisCache).Get<RedisConnectionSettings>();
-                var bulkUploadconfig = 
-                    Configuration.GetSection(ProviderCommitmentsConfigurationKeys.BulkuploadCache).Get<BulkuploadCacheSettings>();
                 services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = $"{redisConfig.RedisConnectionString}, {bulkUploadconfig.BulkUploadCacheDatabase}";
+                    options.Configuration = $"{redisConfig.RedisConnectionString}, {redisConfig.BulkUploadCacheDatabase}";
                 });
             }
 

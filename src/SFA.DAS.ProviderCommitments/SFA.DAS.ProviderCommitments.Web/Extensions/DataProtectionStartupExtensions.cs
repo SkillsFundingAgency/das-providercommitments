@@ -14,13 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         {
             if (!environment.IsDevelopment())
             {
-                var dataProtectionConfig = configuration.GetSection(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings).Get<DataProtectionConnectionStrings>();
                 var redisConfig = configuration.GetSection(ProviderCommitmentsConfigurationKeys.RedisCache).Get<RedisConnectionSettings>();
 
-                if (dataProtectionConfig != null && redisConfig != null)
+                if (redisConfig != null)
                 {
                     var redisConnectionString = redisConfig.RedisConnectionString;
-                    var dataProtectionKeysDatabase = dataProtectionConfig.DataProtectionKeysDatabase;
+                    var dataProtectionKeysDatabase = redisConfig.DataProtectionKeysDatabase;
 
                     var redis = ConnectionMultiplexer
                         .Connect($"{redisConnectionString},{dataProtectionKeysDatabase}");
