@@ -19,8 +19,9 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<EncodingConfig>(ProviderCommitmentsConfigurationKeys.Encoding);
             AddConfiguration<ProviderFeaturesConfiguration>(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
             AddConfiguration<ZenDeskConfiguration>(ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
+            AddConfiguration<DataProtectionConnectionStrings>(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
             AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
-            AddConfiguration<RedisConnectionSettings>(ProviderCommitmentsConfigurationKeys.RedisCache);
+            AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
         }
 
         private void AddConfiguration<T>(string key) where T : class

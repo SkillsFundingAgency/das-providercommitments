@@ -79,20 +79,6 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddUrlHelper()
                 .AddHealthChecks();
 
-            if (Environment.IsDevelopment())
-            {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                var redisConfig =
-                    Configuration.GetSection(ProviderCommitmentsConfigurationKeys.RedisCache).Get<RedisConnectionSettings>();
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = $"{redisConfig.RedisConnectionString}, {redisConfig.BulkUploadCacheDatabase}";
-                });
-            }
-
             services.Configure<CookieTempDataProviderOptions>(options =>
             {
                 options.Cookie.HttpOnly = true;
@@ -101,6 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             });
 
             services.AddProviderUiServiceRegistration(Configuration);
+            services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();
         }
 
