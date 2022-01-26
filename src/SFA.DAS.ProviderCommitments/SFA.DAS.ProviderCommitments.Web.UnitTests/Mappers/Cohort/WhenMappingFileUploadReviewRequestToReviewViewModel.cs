@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -115,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 _cacheService = new Mock<ICacheService>();
                 _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
 
-                _sut = new FileUploadReviewRequestToReviewViewModelMapper(_commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
+                _sut = new FileUploadReviewRequestToReviewViewModelMapper(Mock.Of<ILogger<FileUploadReviewRequestToReviewViewModelMapper>>(), _commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
             }
 
             public async Task Action() =>  _result = await _sut.Map(_request);
