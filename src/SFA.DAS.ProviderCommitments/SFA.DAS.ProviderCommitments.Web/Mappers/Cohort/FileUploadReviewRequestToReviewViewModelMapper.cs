@@ -31,16 +31,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             result.ProviderId = source.ProviderId;
             result.CacheRequestId = source.CacheRequestId;
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
-            _logger.LogInformation("Total number of record" + csvRecords.Count);
+            _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
 
            var groupedByEmployers = csvRecords.GroupBy(x => x.AgreementId);
 
             foreach (var employer in groupedByEmployers)
             {
                 var employerDetail = new FileUploadReviewEmployerDetails();
-                _logger.LogInformation("Employer Key: " + employer.Key);
                 var publicAccountLegalEntityId =  _encodingService.Decode(employer.Key, EncodingType.PublicAccountLegalEntityId);
-                _logger.LogInformation("publicAccountLegalEntityId: " + publicAccountLegalEntityId);
                 employerDetail.EmployerName =  (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
                 employerDetail.AgreementId = employer.Key;
 
