@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.ProviderCommitments.Configuration
+﻿namespace SFA.DAS.ProviderCommitments.Configuration
 {
     public class BlobStorageSettings
     {
