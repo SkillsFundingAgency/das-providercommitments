@@ -600,5 +600,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
+
+        [Route("{apprenticeshipHashedId}/details/resend-email-invitation")]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [HttpGet]
+        public async Task<IActionResult> ResendEmailInvitation([FromServices] IAuthenticationService authenticationService, ResendEmailInvitationRequest request)
+        {
+            await _commitmentsApiClient.ResendApprenticeshipInvitation(request.ApprenticeshipId, new SaveDataRequest { UserInfo = authenticationService.UserInfo });
+
+            TempData.AddFlashMessage("The invitation email has been resent.", null, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+
+            return RedirectToAction("Details", new
+            {
+                ProviderId = request.ProviderId,
+                ApprenticeshipHashedId = request.ApprenticeshipHashedId
+            });
+        }
     }
 }

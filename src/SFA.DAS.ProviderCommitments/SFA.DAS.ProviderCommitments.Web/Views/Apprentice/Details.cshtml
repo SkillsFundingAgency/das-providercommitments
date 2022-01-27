@@ -228,7 +228,22 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Email address</th>
-                        <td id="apprentice-email" class="govuk-table__cell das-table-cell-width-55">@Model.Email</td>
+                        <td class="govuk-table__cell">
+                            <table>
+                                <tr>
+                                    <td id="apprentice-email" class="govuk-table__cell das-table-cell-width-55">@Model.Email</td>
+                                </tr>
+                                @if (!string.IsNullOrEmpty(Model.Email))
+                                {
+                                    <tr>
+                                        <td>
+                                            <a id="resend-email-invitation-link" href="@Url.Action("ResendEmailInvitation", new ResendEmailInvitationRequest { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link">Resend invitation email</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
