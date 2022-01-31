@@ -1,0 +1,58 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadAmendedFileViewModel
+
+@{
+    ViewData["Title"] = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/file-upload/amended-file";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.ProviderId)
+                @Html.HiddenFor(x => x.CacheRequestId)
+
+
+                <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
+                            <h1 class="govuk-fieldset__heading">
+                                Are you sure you want to upload an amended file?
+                            </h1>
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.Confirm, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Confirm) })
+                        <div class="govuk-radios govuk-radios--inline">
+                            <div class="govuk-radios__item">
+                                <input asp-for="Confirm" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                    Yes
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="Confirm" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="continueBtn" class="govuk-button" type="submit" data-module="govuk-button">
+                   Continue
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReview", new { Model.ProviderId, Model.CacheRequestId })">Back</a>
+}
