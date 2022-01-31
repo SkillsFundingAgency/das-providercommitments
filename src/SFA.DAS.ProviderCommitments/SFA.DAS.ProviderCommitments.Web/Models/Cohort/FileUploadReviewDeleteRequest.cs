@@ -12,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     public enum FileUploadReviewDeleteRedirect
     {
         UploadAgain,
-        Home
+        Home,
+        SuccessDiscardFile
     }
 }
