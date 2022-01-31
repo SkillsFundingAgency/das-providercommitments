@@ -380,7 +380,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
             }
 
-            return RedirectToAction(nameof(FileUploadStart), new { ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(FileUploadReview), new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
         }
 
 
@@ -400,7 +400,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.SuccessDiscardFile)
                 {
-                    return View("FileDiscardSuccess");
+                    var viewModel = new FileDiscardSuccessViewModel { ProviderId = deleteRequest.ProviderId };
+                    return View("FileDiscardSuccess", viewModel);
                 }
             }
 
