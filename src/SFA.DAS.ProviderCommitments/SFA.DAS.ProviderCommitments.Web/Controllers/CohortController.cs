@@ -12,6 +12,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -312,6 +313,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileRequest request)
+        {
+            var viewModel = await _modelMapper.Map<FileUploadAmendedFileViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileViewModel viewModel)
+        {
+            if (viewModel.Confirm.Value)
+            {
+                await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = viewModel.CacheRequestId });
+                return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
+            }
+
+            return RedirectToAction(nameof(FileUploadReview), new FileUploadReviewRequest { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
+        }
+
         [HttpPost]
         [Route("add/file-upload/review")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
@@ -329,7 +355,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     return RedirectToAction(nameof(Review), new { ProviderId = viewModel.ProviderId });
                     
                 default:
-                    return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+                    return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
         }
 
@@ -362,14 +388,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review-delete")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult FileUploadReviewDelete([FromServices] ICacheService cacheService, FileUploadReviewDeleteRequest deleteRequest)
+        public async Task<IActionResult> FileUploadReviewDelete(FileUploadReviewDeleteRequest deleteRequest)
         {
-            cacheService.ClearCache(deleteRequest.CacheRequestId.ToString());
+            await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = deleteRequest.CacheRequestId });
             if (deleteRequest.RedirectTo.HasValue)
             {
                 if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.Home)
                 {
-                   return Redirect( _urlHelper.ProviderApprenticeshipServiceLink("/account"));
+                    return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
                 }
 
                 if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.SuccessDiscardFile)
