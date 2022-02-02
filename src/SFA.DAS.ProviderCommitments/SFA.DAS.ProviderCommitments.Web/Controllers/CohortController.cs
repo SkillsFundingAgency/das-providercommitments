@@ -313,31 +313,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        [Route("add/file-upload/amended-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileRequest request)
-        {
-            var viewModel = await _modelMapper.Map<FileUploadAmendedFileViewModel>(request);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("add/file-upload/amended-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileViewModel viewModel)
-        {
-            if (viewModel.Confirm.Value)
-            {
-                await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = viewModel.CacheRequestId });
-                return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
-            }
-
-            return RedirectToAction(nameof(FileUploadReview), new FileUploadReviewRequest { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
-        }
-
         [HttpPost]
         [Route("add/file-upload/review")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
@@ -375,6 +350,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction(nameof(FileUploadStart), new { ProviderId = deleteRequest.ProviderId });
+        }
+
+        [HttpGet]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileRequest request)
+        {
+            var viewModel = await _modelMapper.Map<FileUploadAmendedFileViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileViewModel viewModel)
+        {
+            if (viewModel.Confirm.Value)
+            {
+                await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = viewModel.CacheRequestId });
+                return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
+            }
+
+            return RedirectToAction(nameof(FileUploadReview), new FileUploadReviewRequest { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
         }
 
         [HttpGet]
