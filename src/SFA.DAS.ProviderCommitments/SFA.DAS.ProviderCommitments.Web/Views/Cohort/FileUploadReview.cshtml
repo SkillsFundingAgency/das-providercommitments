@@ -33,21 +33,23 @@
 
                 @foreach (var cachedRecord in Model.EmployerDetails)
                 {
-                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
-                    <div class="group-header">
-                        <h2 class="govuk-heading-l group-title bu-employer-details">
-                            @cachedRecord.EmployerName
-                            <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
-                        </h2>
-                    </div>
+                    <div class="bu-employer-details">
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
+                        <div class="group-header">
+                            <h2 class="govuk-heading-l group-title bu-employer-name">
+                                @cachedRecord.EmployerName
+                                <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
+                            </h2>
+                        </div>
 
-                    foreach (var cohortDetail in cachedRecord.CohortDetails)
-                    {
-                        <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
-                        <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19 bu-review-apprentice-link">Review apprentices</a><br><br><br>
-                        <p></p>
-                    }
+                        @foreach (var cohortDetail in cachedRecord.CohortDetails)
+                        {
+                            <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
+                            <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
+                            <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19 bu-review-apprentice-link">Review apprentices</a><br><br><br>
+                            <p></p>
+                        }
+                    </div>
                 }
 
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
