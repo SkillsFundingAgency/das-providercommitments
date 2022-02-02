@@ -82,9 +82,8 @@
                     <button class="govuk-button" data-module="govuk-button" type="submit">
                         Continue
                     </button>
-                </form>
-                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
-                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileDiscard", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">File Discard</a></p>
+                </form>                
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileDiscard", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
             </div>
 
         </div>
