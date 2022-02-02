@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public void ThenReturnsView_With_FileUploadReviewViewModel()
+        public void ThenReturnsView_With_FileDiscardViewModel()
         {
             //Arrange
             var fixture = new WhenGettingFileToDiscardFixture();
