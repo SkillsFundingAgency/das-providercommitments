@@ -21,7 +21,7 @@
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
                         <span class="govuk-warning-text__assistive">Warning</span>
-                        If you need to correct any records, you need to amend the data in your LMS, then <a href="@Url.Action("FileUploadAmendedFile", new { @Model.ProviderId, @Model.CacheRequestId})" class="govuk-link--no-visited-state">upload your CSV file again</a>. This will avoid data locks.
+                        If you need to correct any records, you need to amend the data in your LMS, then <a href="@Url.Action("FileUploadAmendedFile", new { @Model.ProviderId, @Model.CacheRequestId})" class="govuk-link--no-visited-state" id="upload-amended-file-link">upload your CSV file again</a>. This will avoid data locks.
                     </strong>
                 </div>
 
@@ -33,21 +33,23 @@
 
                 @foreach (var cachedRecord in Model.EmployerDetails)
                 {
-                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
-                    <div class="group-header">
-                        <h2 class="govuk-heading-l group-title ">
-                            @cachedRecord.EmployerName
-                            <span class="govuk-caption-l">Agreement ID: @cachedRecord.AgreementId</span>
-                        </h2>
-                    </div>
+                    <div class="bu-employer-details">
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
+                        <div class="group-header">
+                            <h2 class="govuk-heading-l group-title bu-employer-name">
+                                @cachedRecord.EmployerName
+                                <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
+                            </h2>
+                        </div>
 
-                    foreach (var cohortDetail in cachedRecord.CohortDetails)
-                    {
-                        <p class="govuk-body-m">Cohort: @cohortDetail.CohortRefText</p>
-                        <p class="govuk-paragraph-body">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
-                        <p></p>
-                    }
+                        @foreach (var cohortDetail in cachedRecord.CohortDetails)
+                        {
+                            <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
+                            <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
+                            <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19 bu-review-apprentice-link">Review apprentices</a><br><br><br>
+                            <p></p>
+                        }
+                    </div>
                 }
 
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
@@ -79,7 +81,7 @@
                             </div>
                         </fieldset>
                     </div>
-                    <button class="govuk-button" data-module="govuk-button" type="submit">
+                    <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                         Continue
                     </button>
                 </form>                
