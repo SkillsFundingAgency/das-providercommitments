@@ -609,10 +609,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             try
             {
                 await _commitmentsApiClient.ResendApprenticeshipInvitation(request.ApprenticeshipId, new SaveDataRequest { UserInfo = authenticationService.UserInfo });
-            }
-            catch { }
 
-            TempData.AddFlashMessage("The invitation email has been resent.", null, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                TempData.AddFlashMessage("The invitation email has been resent.", null, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+            }
+            catch { }            
 
             return RedirectToAction("Details", new
             {
