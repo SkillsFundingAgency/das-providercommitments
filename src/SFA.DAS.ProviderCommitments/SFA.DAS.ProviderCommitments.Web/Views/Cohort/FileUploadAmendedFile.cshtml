@@ -9,7 +9,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+        <partial name="_ValidationSummary" />
         <form method="post">
             <fieldset class="govuk-fieldset">
                 @Html.AntiForgeryToken()
@@ -45,7 +45,7 @@
                 </div>
 
                 <button id="continueBtn" class="govuk-button" type="submit" data-module="govuk-button">
-                   Continue
+                    Continue
                 </button>
             </fieldset>
         </form>
