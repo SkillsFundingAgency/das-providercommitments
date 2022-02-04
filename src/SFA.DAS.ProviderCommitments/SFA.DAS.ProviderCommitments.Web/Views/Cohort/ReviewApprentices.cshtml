@@ -1,0 +1,167 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ReviewApprenticeViewModel
+
+@{
+    ViewData["Title"] = "Review Apprentices";
+    ViewBag.GaData.Vpv = "/bulk-upload/review-cohort";
+}
+
+<div class="govuk-width-container">   
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <h1 class="govuk-heading-xl  govuk-!-margin-top-4">Review apprentices</h1>
+
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <dl class="govuk-summary-list govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    SAINSBURY'S
+                </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Cohort
+            </dt>
+            <dd class="govuk-summary-list__value">
+                VRY89L
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Message from employer
+            </dt>
+            <dd class="govuk-summary-list__value">
+                No message added.
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Total apprentices
+            </dt>
+            <dd class="govuk-summary-list__value">
+                1 apprentice to be added from CSV file<br>
+                1 apprentice previously added to this cohort
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Total cost
+            </dt>
+            <dd class="govuk-summary-list__value">
+                £4,500
+            </dd>
+        </div>
+        </dl>
+
+    </div>
+</div>
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <!-- NEW APPRENTICES -->
+        <div class="group-header">
+            <h2 class="govuk-heading-m group-title">New apprentices to be added from CSV file</h2>
+        </div>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                If you need to correct any records, you need to amend the data in your LMS, then upload your CSV file again.
+            </strong>
+        </div>
+
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Apprenticeship <br>training course</th>
+                    <th scope="col" class="govuk-table__header">ULN</th>
+                    <th scope="col" class="govuk-table__header">Date of birth</th>
+                    <th scope="col" class="govuk-table__header">Email</th>
+                    <th scope="col" class="govuk-table__header">Training dates</th>
+                    <th scope="col" class="govuk-table__header">Price</th>
+                </tr>
+            </thead>
+
+            <tbody class="govuk-table__body govuk-!-font-size-16">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">David Clarke</td>
+                    <td class="govuk-table__cell">Food and Drink: Meat and Poultry Industry Skills, Level: 5</td>
+                    <td class="govuk-table__cell">6493849228</td>
+                    <td class="govuk-table__cell">7 Apr <br>1999</td>
+                    <td class="govuk-table__cell">david.clarke@exampleemail.com</td>
+                    <td class="govuk-table__cell">Jan 2021 to <br>Jul 2022</td>
+                    <td class="govuk-table__cell">£1,250</td>
+                </tr>
+
+                </tr>
+            </tbody>
+        </table>
+        <!-- END NEW APPRENTICES -->
+        <!-- EXISTING APPRENTICES -->
+        <div class="group-header">
+            <h2 class="govuk-heading-m group-title govuk-!-margin-top-8">Apprentices previously added to this cohort </h2>
+        </div>
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header ">Name</th>
+                    <th scope="col" class="govuk-table__header">Apprenticeship<br>training course</th>
+                    <th scope="col" class="govuk-table__header">ULN</th>
+                    <th scope="col" class="govuk-table__header">Date of birth</th>
+                    <th scope="col" class="govuk-table__header">Email</th>
+                    <th scope="col" class="govuk-table__header">Training dates</th>
+                    <th scope="col" class="govuk-table__header">Price</th>
+                </tr>
+            </thead>
+
+            <tbody class="govuk-table__body govuk-!-font-size-16">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Louise James</td>
+                    <td class="govuk-table__cell">Food and Drink: Meat and Poultry Industry Skills, Level: 4</td>
+                    <td class="govuk-table__cell">9384922898</td>
+                    <td class="govuk-table__cell">13 Jan 2000</td>
+                    <td class="govuk-table__cell">louisejames@emailaddress.co.uk</td>
+                    <td class="govuk-table__cell">Jan 2021 to Jul 2022</td>
+                    <td class="govuk-table__cell">£3,250</td>
+                </tr>
+                </tr>
+            </tbody>
+        </table>
+        <!-- END EXISTING APPRENTICES -->
+
+    </div>
+</div>
+
+
+
+
+<a href="file-upload-check" class="govuk-back-link govuk-!-margin-bottom-6">Back</a>
+
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
+}
