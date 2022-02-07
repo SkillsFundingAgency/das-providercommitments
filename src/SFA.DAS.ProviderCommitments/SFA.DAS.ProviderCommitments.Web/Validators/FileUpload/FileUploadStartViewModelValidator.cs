@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
@@ -13,15 +14,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 {
     public class FileUploadStartViewModelValidator : AbstractValidator<FileUploadStartViewModel>
     {
-        private const int MaxBulkUploadFileSize = 50000;
-        private const int FileColumnCount = 13;
-        private const int MaxAllowedFileRowCount = 100;
-
         private readonly ILogger<FileUploadStartViewModelValidator> _logger;
+        private readonly CsvConfiguration _csvConfiguration;
 
-        public FileUploadStartViewModelValidator(ILogger<FileUploadStartViewModelValidator> logger)
+        public FileUploadStartViewModelValidator(ILogger<FileUploadStartViewModelValidator> logger, CsvConfiguration csvConfiguration)
         {
             _logger = logger;
+            _csvConfiguration = csvConfiguration;
+
             CascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Attachment)
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 
         private bool CheckFileSize(IFormFile file)
         {
-            var maxFileSize = MaxBulkUploadFileSize * 1024; // Bytes
+            var maxFileSize = _csvConfiguration.MaxBulkUploadFileSize * 1024; // Bytes
             return (file.Length <= maxFileSize);
         }
 
@@ -53,13 +53,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         private async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
         {
             var fileData = await ReadFileAsync(file);
-            return fileData.firstlineData.Length == FileColumnCount;
+            return fileData.firstlineData.Length == _csvConfiguration.AllowedFileColumnCount;
         }
 
         private async Task<bool> CheckFileRowCount(IFormFile file, CancellationToken cancellation)
         {
             var fileData = await ReadFileAsync(file);
-            return fileData.rowCount <= MaxAllowedFileRowCount;
+            return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
         }
 
         private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
