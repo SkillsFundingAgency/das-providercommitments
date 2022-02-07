@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenIPostFileUploadReviewFixture();
 
             var result = await fixture.WithSelectedOption(FileUploadReviewOption.UploadAmendedFile).Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReviewDelete");
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadAmendedFile");
         }
     }
 
