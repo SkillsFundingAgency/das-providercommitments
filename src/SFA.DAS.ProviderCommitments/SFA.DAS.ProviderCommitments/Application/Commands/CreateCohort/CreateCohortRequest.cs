@@ -1,5 +1,6 @@
 ﻿using System;
 using MediatR;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
 {
@@ -19,5 +20,6 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string OriginatorReference { get; set; }
+        public DeliveryModel? DeliveryModel { get; set; }
     }
 }
