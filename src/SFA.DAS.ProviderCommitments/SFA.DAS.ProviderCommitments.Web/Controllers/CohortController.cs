@@ -13,6 +13,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -297,11 +298,57 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
-            var request = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-            await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
+            var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
+            return RedirectToAction(nameof(FileUploadReview), request);
+        }
 
-            TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
-            return RedirectToAction(nameof(Review));
+        [HttpGet]
+        [Route("add/file-upload/review")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadReview(FileUploadReviewRequest request)
+        {
+            var viewModel = await _modelMapper.Map<FileUploadReviewViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/review")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
+        {
+            switch(viewModel.SelectedOption)
+            {
+                case FileUploadReviewOption.ApproveAndSend:
+                    throw new NotImplementedException();
+                case FileUploadReviewOption.SaveButDontSend:
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                    TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                    return RedirectToAction(nameof(Review), new { ProviderId = viewModel.ProviderId });
+                    
+                default:
+                    return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+            }
+        }
+
+        [HttpGet]
+        [Route("add/file-upload/review-delete")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileUploadReviewDelete([FromServices] ICacheService cacheService, FileUploadReviewDeleteRequest deleteRequest)
+        {
+            cacheService.ClearCache(deleteRequest.CacheRequestId.ToString());
+            if (deleteRequest.RedirectTo.HasValue)
+            {
+                if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.Home)
+                {
+                   return Redirect( _urlHelper.ProviderApprenticeshipServiceLink("/account"));
+                }
+            }
+
+            return RedirectToAction(nameof(FileUploadStart), new { ProviderId = deleteRequest.ProviderId });
         }
 
         [HttpGet]

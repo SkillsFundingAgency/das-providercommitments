@@ -1,0 +1,96 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.ProviderCommitments.Web.Extensions
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadReviewViewModel
+
+@{
+    ViewData["Title"] = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/file-upload/cache";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-width-container">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+
+                <h1 class="govuk-heading-xl  govuk-!-margin-top-4">Check new apprentice records</h1>
+
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        If you need to correct any records, you need to amend the data in your LMS, then <a href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId})" class="govuk-link--no-visited-state">upload your CSV file again</a>. This will avoid data locks.
+                    </strong>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+
+                @foreach (var cachedRecord in Model.EmployerDetails)
+                {
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
+                    <div class="group-header">
+                        <h2 class="govuk-heading-l group-title ">
+                            @cachedRecord.EmployerName
+                            <span class="govuk-caption-l">Agreement ID: @cachedRecord.AgreementId</span>
+                        </h2>
+                    </div>
+
+                    foreach (var cohortDetail in cachedRecord.CohortDetails)
+                    {
+                        <p class="govuk-body-m">Cohort: @cohortDetail.CohortRefText</p>
+                        <p class="govuk-paragraph-body">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
+                        <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
+                        <p></p>
+                    }
+                }
+
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
+                <form method="post">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <h2 class="govuk-heading-l govuk-!-margin-top-4">
+                                Choose an option
+                            </h2>
+                            <div class="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
+                                    <label class="govuk-label govuk-radios__label" for="details-approve">
+                                        Approve all and send to employer(s)
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
+                                    <label class="govuk-label govuk-radios__label" for="details-save">
+                                        Save all but don't send to employer(s)
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="details-new-file" name="SelectedOption" type="radio" value="@FileUploadReviewOption.UploadAmendedFile">
+                                    <label class="govuk-label govuk-radios__label" for="details-new-file">
+                                        Upload an amended file
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+                        Continue
+                    </button>
+                </form>
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
+}
