@@ -335,6 +335,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("discard-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileDiscard(FileDiscardRequest fileDiscardRequest)
+        {
+            var viewModel = new FileDiscardViewModel { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("discard-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileDiscard(FileDiscardViewModel viewModel)
+        {         
+            if (viewModel.FileDiscardConfirmed != null &&  (bool)viewModel.FileDiscardConfirmed)
+            {
+                return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
+            }
+
+            return RedirectToAction(nameof(FileUploadReview), new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+        }
+
+
+        [HttpGet]
         [Route("add/file-upload/review-delete")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -346,6 +371,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.Home)
                 {
                     return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
+                }
+
+                if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.SuccessDiscardFile)
+                {
+                    var viewModel = new FileDiscardSuccessViewModel { ProviderId = deleteRequest.ProviderId };
+                    return View("FileDiscardSuccess", viewModel);
                 }
             }
 

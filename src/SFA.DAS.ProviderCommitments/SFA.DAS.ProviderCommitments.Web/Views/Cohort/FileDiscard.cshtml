@@ -1,0 +1,54 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileDiscardViewModel
+@{  
+    ViewBag.Title = "File Discard";
+    ViewBag.GaData.Vpv = "/bulk-upload/discard-file";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Are you sure you want to discard this file?</h1>       
+
+        <form method="post">
+            <fieldset class="govuk-fieldset">
+                @Html.AntiForgeryToken()
+                
+                <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.FileDiscardConfirmed, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <p class="govuk-body">
+                            If you discard this file, no new apprentices will be saved or uploaded into the service.
+                        </p>
+                        @Html.ValidationMessageFor(m => m.FileDiscardConfirmed, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FileDiscardConfirmed) })
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="FileDiscardConfirmed" value="true" type="radio" class="govuk-radios__input" id="confirm-true" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-true">
+                                    Yes
+                                </label>
+
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="FileDiscardConfirmed" value="false" type="radio" class="govuk-radios__input" id="confirm-false" />
+                                <label class="govuk-label govuk-radios__label" for="confirm-false">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button id="saveBtn" class="govuk-button" type="submit" data-module="govuk-button">
+                    continue
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReview", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>    
+}
