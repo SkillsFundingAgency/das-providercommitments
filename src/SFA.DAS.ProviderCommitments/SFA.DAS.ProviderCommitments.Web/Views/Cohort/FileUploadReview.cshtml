@@ -54,11 +54,12 @@
 
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
                 <form method="post">
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                         <fieldset class="govuk-fieldset">
                             <h2 class="govuk-heading-l govuk-!-margin-top-4">
                                 Choose an option
                             </h2>
+                            @Html.ValidationMessageFor(m => m.SelectedOption, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption) })
                             <div class="govuk-radios">
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
