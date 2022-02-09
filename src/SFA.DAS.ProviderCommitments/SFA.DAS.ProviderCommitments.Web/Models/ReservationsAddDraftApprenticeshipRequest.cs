@@ -11,7 +11,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long? CohortId { get; set; }
         public string StartMonthYear { get; set; }
         public string CourseCode { get; set; }
-
-        // CHAS! Does DeliveryModel need adding here too?
     }
 }
