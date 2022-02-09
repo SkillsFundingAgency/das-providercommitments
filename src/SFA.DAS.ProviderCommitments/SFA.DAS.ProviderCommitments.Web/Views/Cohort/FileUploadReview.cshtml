@@ -33,22 +33,23 @@
 
                 @foreach (var cachedRecord in Model.EmployerDetails)
                 {
-                    <div class="bu-employer-details">
-                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
-                        <div class="group-header">
-                            <h2 class="govuk-heading-l group-title bu-employer-name">
-                                @cachedRecord.EmployerName
-                                <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
-                            </h2>
-                        </div>
+                <div class="bu-employer-details">
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
+                    <div class="group-header">
+                        <h2 class="govuk-heading-l group-title bu-employer-name">
+                            @cachedRecord.EmployerName
+                            <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
+                        </h2>
+                    </div>
 
-                    foreach (var cohortDetail in cachedRecord.CohortDetails)
+                    @foreach (var cohortDetail in cachedRecord.CohortDetails)
                     {
-                        <p class="govuk-body-m">Cohort: @cohortDetail.CohortRefText</p>
-                        <p class="govuk-paragraph-body">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
+                        <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
+                        <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
                         <a href="@Url.Action("ReviewApprentices", new ReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
                         <p></p>
                     }
+                </div>
                 }
 
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
@@ -84,7 +85,7 @@
                     <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                         Continue
                     </button>
-                </form>                
+                </form>
                 <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" id="cancel-upload-link" href="@Url.Action("FileDiscard", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
             </div>
 
