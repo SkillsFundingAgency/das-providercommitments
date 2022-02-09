@@ -1,6 +1,4 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
-@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
-@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ReviewApprenticeViewModel
@@ -23,19 +21,19 @@
             <dl class="govuk-summary-list govuk-summary-list">
                 <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Employer</dt>
-                <dd class="govuk-summary-list__value">@Model.EmployerName</dd>
+                <dd id="employer-name" class="govuk-summary-list__value">@Model.EmployerName</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Cohort</dt>
-            <dd class="govuk-summary-list__value">@Model.CohortRef</dd>
+            <dd id="cohort-ref" class="govuk-summary-list__value">@Model.CohortRef</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Total apprentices</dt>
-            <dd class="govuk-summary-list__value">@Model.TotalApprentices apprentice to be added from CSV file</dd>
+            <dd id="total-apprentices" class="govuk-summary-list__value">@Model.TotalApprentices apprentice to be added from CSV file</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Total cost</dt>
-            <dd class="govuk-summary-list__value">@Model.TotalCost.FormatCost()</dd>
+            <dd id="total-cost" class="govuk-summary-list__value">@Model.TotalCost.FormatCost()</dd>
         </div>
         </dl>
     </div>
@@ -63,7 +61,7 @@
         @if (String.IsNullOrEmpty(@Model.FundingBandText))
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">@Model.FundingBandText</h3>
+                <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandText</h3>
                 <p>
                     The price for these apprenticeships is above the <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>.
                     You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
@@ -84,18 +82,17 @@
                 </tr>
             </thead>
 
-
             <tbody class="govuk-table__body govuk-!-font-size-16">
                 @foreach (var apprentice in Model.CohortDetails)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@apprentice.Name</td>
-                        <td class="govuk-table__cell">@apprentice.TrainingCourse</td>
-                        <td class="govuk-table__cell">@apprentice.ULN</td>
-                        <td class="govuk-table__cell">@apprentice.DateOfBirth</td>
-                        <td class="govuk-table__cell">@apprentice.Email</td>
-                        <td class="govuk-table__cell">@apprentice.TrainingDates</td>
-                        <td class="govuk-table__cell">@apprentice.Price.FormatCost()</td>
+                        <td id="apprentice-name" class="govuk-table__cell">@apprentice.Name</td>
+                        <td id="training-course" class="govuk-table__cell">@apprentice.TrainingCourse</td>
+                        <td id="apprentice-uln" class="govuk-table__cell">@apprentice.ULN</td>
+                        <td id="apprentice-dob" class="govuk-table__cell">@apprentice.DateOfBirth</td>
+                        <td id="apprentice-email" class="govuk-table__cell">@apprentice.Email</td>
+                        <td id="apprentice-training-dates"class="govuk-table__cell">@apprentice.TrainingDates</td>
+                        <td id="apprentice-cost" class="govuk-table__cell">@apprentice.Price.FormatCost()</td>
                     </tr>
                 }
             </tbody>
@@ -105,8 +102,7 @@
     </div>
 </div>
 
-
-<a id="back-link-top" href="@Url.Action("FileUploadReview", new { @Model.ProviderId, @Model.CacheRequestId })" class="govuk-back-link govuk-!-margin-bottom-6">Back123</a>
+<a id="back-link-top" href="@Url.Action("FileUploadReview", new { @Model.ProviderId, @Model.CacheRequestId })" class="govuk-back-link govuk-!-margin-bottom-6">Back</a>
 
 @section breadcrumb
 {

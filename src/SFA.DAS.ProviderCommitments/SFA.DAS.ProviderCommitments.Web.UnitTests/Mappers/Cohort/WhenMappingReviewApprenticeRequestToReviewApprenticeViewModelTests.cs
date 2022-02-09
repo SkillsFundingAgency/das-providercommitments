@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task FundingText()
+        public async Task FundingTextMappedCorrectly()
         {
             //Arrange
             var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
