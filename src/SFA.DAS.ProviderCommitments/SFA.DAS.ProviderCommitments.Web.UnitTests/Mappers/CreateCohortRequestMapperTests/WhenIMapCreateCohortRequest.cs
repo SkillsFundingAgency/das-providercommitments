@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -38,6 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
+            var deliveryModel = fixture.Create<DeliveryModel?>();
             var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
             _mapper = new CreateCohortRequestMapper(_mockCommitmentsApiClient.Object);
@@ -52,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
+                .With(x => x.DeliveryModel, deliveryModel)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();
@@ -157,6 +160,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .ReturnsAsync((AccountLegalEntityResponse) null);
 
             Assert.ThrowsAsync<Exception>(() => _act());
+        }
+
+        [Test]
+        public async Task ThenDeliveryModelIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
         }
     }
 }
