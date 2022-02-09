@@ -98,8 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 CourseCode = "123",
                 ProviderId = _providerId,
                 CohortId = _cohortId,
-                CohortReference = _cohortReference,
-                DeliveryModel = DeliveryModel.Normal,
+                CohortReference = _cohortReference
             };
 
             _editModel = new EditDraftApprenticeshipViewModel

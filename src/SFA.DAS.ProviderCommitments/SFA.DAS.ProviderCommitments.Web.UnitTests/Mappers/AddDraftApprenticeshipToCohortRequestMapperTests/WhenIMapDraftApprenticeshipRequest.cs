@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -25,7 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
-            var deliveryModel = fixture.Create<DeliveryModel?>();
             _cohortId = fixture.Create<long>();
 
             _mapper = new AddDraftApprenticeshipRequestMapper();
@@ -39,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
-                .With(x => x.DeliveryModel, deliveryModel)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();
@@ -122,13 +119,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         {
             var result = await _act();
             Assert.AreEqual(_source.ProviderId, result.ProviderId);
-        }
-
-        [Test]
-        public async Task ThenDeliveryModelIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
         }
     }
 }

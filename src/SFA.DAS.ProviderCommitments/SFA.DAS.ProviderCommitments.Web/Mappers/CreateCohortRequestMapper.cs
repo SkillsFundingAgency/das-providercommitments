@@ -41,8 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
-                OriginatorReference = source.Reference,
-                DeliveryModel = source.DeliveryModel,
+                OriginatorReference = source.Reference
             };
         }
     }
