@@ -24,8 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CohortId = source.CohortId,
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId,
-                CourseCode = source.CourseCode,
-                //DeliveryModel = source.de
+                CourseCode = source.CourseCode
             });
         }
     }
