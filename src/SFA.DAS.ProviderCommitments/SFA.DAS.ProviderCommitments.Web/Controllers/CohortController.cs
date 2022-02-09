@@ -446,8 +446,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ReviewApprentices(ReviewApprenticeRequest reviewApprenticeRequest)
-        {
-            //var viewModel = new ReviewApprenticeViewModel { CacheRequestId = reviewApprenticeRequest.CacheRequestId, ProviderId = reviewApprenticeRequest.ProviderId };
+        {   
             var viewModel = await _modelMapper.Map<ReviewApprenticeViewModel>(reviewApprenticeRequest);
             return View(viewModel);
         }

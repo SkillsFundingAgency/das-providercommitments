@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class ReviewApprenticeDetails
     {
@@ -13,6 +8,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string DateOfBirth { get; set; }
         public string Email { get; set; }
         public string TrainingDates { get; set; }
-        public string Price { get; set; }
+        public int Price { get; set; }
+        public int? FundingBandCap { get; set; }
+
+        public bool ExceedsFundingBandCap
+        {
+            get
+            {
+                if (FundingBandCap.HasValue)
+                {
+                    return Price > FundingBandCap.Value;
+                }
+
+                return false;
+            }
+        }     
     }
 }

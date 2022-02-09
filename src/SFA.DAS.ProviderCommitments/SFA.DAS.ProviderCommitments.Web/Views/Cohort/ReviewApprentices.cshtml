@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ReviewApprenticeViewModel
@@ -9,67 +10,36 @@
     ViewBag.GaData.Vpv = "/bulk-upload/review-cohort";
 }
 
-<div class="govuk-width-container">   
-
+<div class="govuk-width-container">
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-
             <h1 class="govuk-heading-xl  govuk-!-margin-top-4">Review apprentices</h1>
-
         </div>
     </div>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-
             <dl class="govuk-summary-list govuk-summary-list">
                 <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Employer
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    SAINSBURY'S
-                </dd>
+                <dt class="govuk-summary-list__key">Employer</dt>
+                <dd class="govuk-summary-list__value">@Model.EmployerName</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Cohort
-            </dt>
-            <dd class="govuk-summary-list__value">
-                VRY89L
-            </dd>
+            <dt class="govuk-summary-list__key">Cohort</dt>
+            <dd class="govuk-summary-list__value">@Model.CohortRef</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Message from employer
-            </dt>
-            <dd class="govuk-summary-list__value">
-                No message added.
-            </dd>
+            <dt class="govuk-summary-list__key">Total apprentices</dt>
+            <dd class="govuk-summary-list__value">@Model.TotalApprentices apprentice to be added from CSV file</dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Total apprentices
-            </dt>
-            <dd class="govuk-summary-list__value">
-                1 apprentice to be added from CSV file<br>
-                1 apprentice previously added to this cohort
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Total cost
-            </dt>
-            <dd class="govuk-summary-list__value">
-                £4,500
-            </dd>
+            <dt class="govuk-summary-list__key">Total cost</dt>
+            <dd class="govuk-summary-list__value">@Model.TotalCost.FormatCost()</dd>
         </div>
         </dl>
-
     </div>
 </div>
-
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -89,6 +59,17 @@
             </strong>
         </div>
 
+       
+        @if (String.IsNullOrEmpty(@Model.FundingBandText))
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">@Model.FundingBandText</h3>
+                <p>
+                    The price for these apprenticeships is above the <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>.
+                    You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
+                </p>
+            </div>
+        }
 
         <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -103,65 +84,31 @@
                 </tr>
             </thead>
 
-            <tbody class="govuk-table__body govuk-!-font-size-16">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">David Clarke</td>
-                    <td class="govuk-table__cell">Food and Drink: Meat and Poultry Industry Skills, Level: 5</td>
-                    <td class="govuk-table__cell">6493849228</td>
-                    <td class="govuk-table__cell">7 Apr <br>1999</td>
-                    <td class="govuk-table__cell">david.clarke@exampleemail.com</td>
-                    <td class="govuk-table__cell">Jan 2021 to <br>Jul 2022</td>
-                    <td class="govuk-table__cell">£1,250</td>
-                </tr>
 
-                </tr>
+            <tbody class="govuk-table__body govuk-!-font-size-16">
+                @foreach (var apprentice in Model.CohortDetails)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@apprentice.Name</td>
+                        <td class="govuk-table__cell">@apprentice.TrainingCourse</td>
+                        <td class="govuk-table__cell">@apprentice.ULN</td>
+                        <td class="govuk-table__cell">@apprentice.DateOfBirth</td>
+                        <td class="govuk-table__cell">@apprentice.Email</td>
+                        <td class="govuk-table__cell">@apprentice.TrainingDates</td>
+                        <td class="govuk-table__cell">@apprentice.Price.FormatCost()</td>
+                    </tr>
+                }
             </tbody>
+
         </table>
         <!-- END NEW APPRENTICES -->
-        <!-- EXISTING APPRENTICES -->
-        <div class="group-header">
-            <h2 class="govuk-heading-m group-title govuk-!-margin-top-8">Apprentices previously added to this cohort </h2>
-        </div>
-
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header ">Name</th>
-                    <th scope="col" class="govuk-table__header">Apprenticeship<br>training course</th>
-                    <th scope="col" class="govuk-table__header">ULN</th>
-                    <th scope="col" class="govuk-table__header">Date of birth</th>
-                    <th scope="col" class="govuk-table__header">Email</th>
-                    <th scope="col" class="govuk-table__header">Training dates</th>
-                    <th scope="col" class="govuk-table__header">Price</th>
-                </tr>
-            </thead>
-
-            <tbody class="govuk-table__body govuk-!-font-size-16">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">Louise James</td>
-                    <td class="govuk-table__cell">Food and Drink: Meat and Poultry Industry Skills, Level: 4</td>
-                    <td class="govuk-table__cell">9384922898</td>
-                    <td class="govuk-table__cell">13 Jan 2000</td>
-                    <td class="govuk-table__cell">louisejames@emailaddress.co.uk</td>
-                    <td class="govuk-table__cell">Jan 2021 to Jul 2022</td>
-                    <td class="govuk-table__cell">£3,250</td>
-                </tr>
-                </tr>
-            </tbody>
-        </table>
-        <!-- END EXISTING APPRENTICES -->
-
     </div>
 </div>
 
 
-
-
-<a href="file-upload-check" class="govuk-back-link govuk-!-margin-bottom-6">Back</a>
-
-</div>
+<a id="back-link-top" href="@Url.Action("FileUploadReview", new { @Model.ProviderId, @Model.CacheRequestId })" class="govuk-back-link govuk-!-margin-bottom-6">Back123</a>
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadReviewDelete", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
+    <a id="back-link-bottom" class="govuk-back-link" href="@Url.Action("FileUploadReview", new { @Model.ProviderId, @Model.CacheRequestId })">Back</a>
 }
