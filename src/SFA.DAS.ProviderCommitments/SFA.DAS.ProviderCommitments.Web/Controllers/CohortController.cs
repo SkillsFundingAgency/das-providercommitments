@@ -12,7 +12,9 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -297,11 +299,113 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
-            var request = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-            await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, request);
+            var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
+            return RedirectToAction(nameof(FileUploadReview), request);
+        }
 
-            TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
-            return RedirectToAction(nameof(Review));
+        [HttpGet]
+        [Route("add/file-upload/review")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadReview(FileUploadReviewRequest request)
+        {
+            var viewModel = await _modelMapper.Map<FileUploadReviewViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/review")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
+        {
+            switch(viewModel.SelectedOption)
+            {
+                case FileUploadReviewOption.ApproveAndSend:
+                    throw new NotImplementedException();
+                case FileUploadReviewOption.SaveButDontSend:
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                    TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                    return RedirectToAction(nameof(Review), new { ProviderId = viewModel.ProviderId });
+                    
+                default:
+                    return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+            }
+        }
+
+        [HttpGet]
+        [Route("discard-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileDiscard(FileDiscardRequest fileDiscardRequest)
+        {
+            var viewModel = new FileDiscardViewModel { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("discard-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult FileDiscard(FileDiscardViewModel viewModel)
+        {         
+            if (viewModel.FileDiscardConfirmed != null &&  (bool)viewModel.FileDiscardConfirmed)
+            {
+                return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
+            }
+
+            return RedirectToAction(nameof(FileUploadReview), new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+        }
+
+
+        [HttpGet]
+        [Route("add/file-upload/review-delete")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadReviewDelete(FileUploadReviewDeleteRequest deleteRequest)
+        {
+            await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = deleteRequest.CacheRequestId });
+            if (deleteRequest.RedirectTo.HasValue)
+            {
+                if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.Home)
+                {
+                    return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
+                }
+
+                if (deleteRequest.RedirectTo.Value == FileUploadReviewDeleteRedirect.SuccessDiscardFile)
+                {
+                    var viewModel = new FileDiscardSuccessViewModel { ProviderId = deleteRequest.ProviderId };
+                    return View("FileDiscardSuccess", viewModel);
+                }
+            }
+
+            return RedirectToAction(nameof(FileUploadStart), new { ProviderId = deleteRequest.ProviderId });
+        }
+
+        [HttpGet]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileRequest request)
+        {
+            var viewModel = await _modelMapper.Map<FileUploadAmendedFileViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("add/file-upload/amended-file")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileViewModel viewModel)
+        {
+            if (viewModel.Confirm.Value)
+            {
+                await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = viewModel.CacheRequestId });
+                return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
+            }
+
+            return RedirectToAction(nameof(FileUploadReview), new FileUploadReviewRequest { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
         }
 
         [HttpGet]

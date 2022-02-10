@@ -6,6 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
     public static class ITempDataDictionaryExtensions
     {
         public static readonly string FlashMessageTempDataKey = "FlashMessage";
+        public static readonly string FlashMessageTitleTempDataKey = "FlashMessageTitle";        
         public static readonly string FlashMessageLevelTempDataKey = "FlashMessageLevel";
 
         public enum FlashMessageLevel
@@ -18,6 +19,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         public static void AddFlashMessage(this ITempDataDictionary tempData, string message, FlashMessageLevel level)
         {
             tempData[FlashMessageTempDataKey] = message;
+            tempData[FlashMessageLevelTempDataKey] = level;
+        }
+
+        public static void AddFlashMessage(this ITempDataDictionary tempData, string title, string message, FlashMessageLevel level)
+        {
+            tempData[FlashMessageTitleTempDataKey] = title;
+            tempData[FlashMessageTempDataKey] = message;            
             tempData[FlashMessageLevelTempDataKey] = level;
         }
 
