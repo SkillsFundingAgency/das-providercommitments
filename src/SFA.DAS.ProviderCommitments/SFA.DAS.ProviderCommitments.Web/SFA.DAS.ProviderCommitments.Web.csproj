@@ -23,8 +23,8 @@
     <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.58" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.58" />
     <PackageReference Include="SFA.DAS.Authorization.CommitmentPermissions" Version="6.0.95" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.6.2" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.6.2" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.7.0" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.7.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.77" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.1.5" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
