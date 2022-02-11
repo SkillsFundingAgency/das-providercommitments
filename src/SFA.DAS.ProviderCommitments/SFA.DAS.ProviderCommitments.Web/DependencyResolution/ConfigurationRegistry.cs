@@ -21,6 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ZenDeskConfiguration>(ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
             AddConfiguration<DataProtectionConnectionStrings>(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
             AddConfiguration<CsvConfiguration>(ProviderCommitmentsConfigurationKeys.CsvConfiguration);
+            AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
+            AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
         }
 
         private void AddConfiguration<T>(string key) where T : class
