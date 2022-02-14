@@ -6,6 +6,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -89,6 +92,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var result = await _act();
             Assert.AreEqual(_apiResponse.DateOfBirth, result.DateOfBirth);
+        }
+
+        [TestCase(DeliveryModel.Normal)]
+        [TestCase(DeliveryModel.Flexible)]
+        public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
+        {
+            _apiResponse.DeliveryModel = new DeliveryModelDto(dm);
+            var result = await _act();
+            Assert.AreEqual(dm.ToDisplayString(), result.DeliveryModel);
         }
 
         [Test]
