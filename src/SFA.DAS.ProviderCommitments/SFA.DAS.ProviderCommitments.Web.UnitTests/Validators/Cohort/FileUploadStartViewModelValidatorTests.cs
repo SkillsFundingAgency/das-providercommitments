@@ -79,6 +79,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         }
 
         [Test]
+        public void ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
+        {
+            const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
+
+            const string fileContents = HeaderLine;
+            var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
+            _file.Setup(m => m.OpenReadStream()).Returns(textStream);
+
+            var model = new FileUploadStartViewModel { Attachment = _file.Object };
+            AssertValidationResult(vm => vm.Attachment, model, false);
+        }
+
+        [Test]
         public void ShouldReturnInvalidMessageWhenFileRowCountIsInvalid()
         {
             const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef";
