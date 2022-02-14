@@ -186,5 +186,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual("-1", result.TrainingCourseOption);
         }
+
+        [Test]
+        public async Task ThenDeliveryModelIsMappedCorrectly()
+        {
+            var result = await _act();
+            // CHAS!!
+            //Assert.AreEqual(_source.DeliveryModel., result.DeliveryModel);
+        }
     }
 }

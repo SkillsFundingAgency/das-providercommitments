@@ -40,7 +40,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     Cost = apiResponse.Cost,
                     Reference = apiResponse.Reference,
                     IsContinuation = apiResponse.IsContinuation,
-                    TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption
+                    TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
+                    DeliveryModel = apiResponse.DeliveryModel.Code,
                 };
             }
             catch (RestHttpClientException restEx)

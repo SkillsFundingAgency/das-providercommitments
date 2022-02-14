@@ -108,7 +108,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 CohortId = _cohortId,
                 CohortReference = _cohortReference,
                 DraftApprenticeshipId = _draftApprenticeshipId,
-                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId
+                DraftApprenticeshipHashedId = _draftApprenticeshipHashedId,
+                DeliveryModel = DeliveryModel.Normal,
             };
 
             _viewModel = new ViewDraftApprenticeshipViewModel
