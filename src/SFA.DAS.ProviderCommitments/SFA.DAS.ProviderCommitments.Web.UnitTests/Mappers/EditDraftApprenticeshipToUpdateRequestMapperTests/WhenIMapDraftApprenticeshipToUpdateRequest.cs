@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -124,6 +125,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             _source.TrainingCourseOption = "-1";
             var result = await _act();
             Assert.AreEqual(string.Empty, result.CourseOption);
+        }
+
+        [TestCase(DeliveryModel.Normal)]
+        [TestCase(DeliveryModel.Flexible)]
+        public async Task ThenTheDeliveryModelIsMapped(DeliveryModel dm)
+        {
+            _source.DeliveryModel = dm;
+            var result = await _act();
+            Assert.AreEqual(dm, result.DeliveryModel);
         }
     }
 }
