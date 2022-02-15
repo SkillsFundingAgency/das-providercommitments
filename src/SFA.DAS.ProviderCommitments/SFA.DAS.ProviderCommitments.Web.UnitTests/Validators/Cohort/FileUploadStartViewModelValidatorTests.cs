@@ -21,14 +21,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
     public class FileUploadStartViewModelValidatorTests
     {
         private Mock<IFormFile> _file;
-        private CsvConfiguration _csvConfiguration;
+        private BulkUploadFileValidationConfiguration _csvConfiguration;
 
         [SetUp]
         public void SetUp()
         {
             _file = new Mock<IFormFile>();
             _file.Setup(m => m.FileName).Returns("APPDATA-20051030-213855.csv");
-            _csvConfiguration = new CsvConfiguration
+            _csvConfiguration = new BulkUploadFileValidationConfiguration
             {
                 MaxBulkUploadFileSize = 50,
                 AllowedFileColumnCount = 13,
@@ -139,13 +139,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
 
+            var validationResult = validator.TestValidate(instance);
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                validationResult.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                validationResult.ShouldHaveValidationErrorFor(property);
             }
         }
 

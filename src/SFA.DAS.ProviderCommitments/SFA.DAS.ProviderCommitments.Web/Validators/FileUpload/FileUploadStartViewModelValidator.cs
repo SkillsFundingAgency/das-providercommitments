@@ -15,9 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
     public class FileUploadStartViewModelValidator : AbstractValidator<FileUploadStartViewModel>
     {
         private readonly ILogger<FileUploadStartViewModelValidator> _logger;
-        private readonly CsvConfiguration _csvConfiguration;
+        private readonly BulkUploadFileValidationConfiguration _csvConfiguration;
 
-        public FileUploadStartViewModelValidator(ILogger<FileUploadStartViewModelValidator> logger, CsvConfiguration csvConfiguration)
+        public FileUploadStartViewModelValidator(ILogger<FileUploadStartViewModelValidator> logger, BulkUploadFileValidationConfiguration csvConfiguration)
         {
             _logger = logger;
             _csvConfiguration = csvConfiguration;
@@ -26,11 +26,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 
             RuleFor(x => x.Attachment)
                 .NotNull()
-                .Must(CheckFileSize).WithMessage("The selected file must be smaller than 50KB")
+                .Must(CheckFileSize).WithMessage($"The selected file must be smaller than {_csvConfiguration.MaxBulkUploadFileSize}KB")
                 .Must(CheckFileType).WithMessage("The selected file must be a CSV")
                 .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
                 .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
-                .MustAsync(CheckFileRowCount).WithMessage("The selected file must be less than 100 lines");
+                .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
         }
 
         private bool CheckFileSize(IFormFile file)

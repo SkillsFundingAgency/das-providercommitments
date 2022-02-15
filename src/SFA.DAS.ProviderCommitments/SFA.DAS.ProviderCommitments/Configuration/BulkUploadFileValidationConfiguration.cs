@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Configuration
 {
-    public class CsvConfiguration
+    public class BulkUploadFileValidationConfiguration
     {
         public int MaxBulkUploadFileSize { get; set; }
         public int AllowedFileColumnCount { get; set; }
