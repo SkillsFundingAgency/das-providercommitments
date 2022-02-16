@@ -58,7 +58,7 @@
         </div>
 
        
-        @if (String.IsNullOrEmpty(@Model.FundingBandText))
+        @if (!String.IsNullOrEmpty(@Model.FundingBandText))
         {
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandText</h3>

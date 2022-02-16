@@ -46,7 +46,7 @@
                     {
                         <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
                         <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="@Url.Action("ReviewApprentices", new ReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Review apprentices</a><br><br><br>
+                        <a href="@Url.Action("ReviewApprentices", new ReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">@cohortDetail.ReviewApprenticeshipsText</a><br><br><br>
                         <p></p>
                     }
                 </div>
