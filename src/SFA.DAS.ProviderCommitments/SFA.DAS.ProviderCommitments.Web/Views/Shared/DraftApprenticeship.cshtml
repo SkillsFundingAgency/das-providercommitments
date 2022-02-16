@@ -127,12 +127,18 @@ else
                         <label for="DeliveryModelNormal" class="govuk-label govuk-radios__label">
                             Normal
                         </label>
+                        <div id="DeliveryModelNormal-hint" class="govuk-hint govuk-radios__hint">
+                            The apprentice will have a single employer
+                        </div>
                     </div>
                     <div class="govuk-radios__item">
                         <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Flexible" id="DeliveryModelFlexible">
                         <label for="DeliveryModelNormal" class="govuk-label govuk-radios__label">
-                            Flexible
+                            Flexi-job
                         </label>
+                        <div id="DeliveryModelFlexible-hint" class="govuk-hint govuk-radios__hint">
+                            The apprentice will move between multiple employers
+                        </div>
                     </div>
                 </div>
             </fieldset>
