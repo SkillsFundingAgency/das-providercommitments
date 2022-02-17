@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
             CascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Attachment)
-                .NotNull()
+                .NotNull().WithMessage("Select a file to upload")
                 .Must(CheckFileSize).WithMessage($"The selected file must be smaller than {_csvConfiguration.MaxBulkUploadFileSize}KB")
                 .Must(CheckFileType).WithMessage("The selected file must be a CSV")
                 .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
