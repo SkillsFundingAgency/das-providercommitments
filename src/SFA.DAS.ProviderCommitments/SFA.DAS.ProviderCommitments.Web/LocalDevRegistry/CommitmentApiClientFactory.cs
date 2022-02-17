@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
 using SFA.DAS.Http;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+//using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.ToRemove;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -35,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
                 var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
+                //  return new CommitmentApiClient2(restHttpClient);
                 return new CommitmentsApiClient(restHttpClient);
             }
             else

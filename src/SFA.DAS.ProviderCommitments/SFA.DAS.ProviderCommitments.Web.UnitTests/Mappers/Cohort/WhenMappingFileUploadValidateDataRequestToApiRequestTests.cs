@@ -1,0 +1,160 @@
+﻿using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
+{
+    [TestFixture]
+    public class WhenMappingFileUploadValidateDataRequestToApiRequestTests
+    {
+        private FileUploadValidateDataRequestToApiRequest _mapper;
+        private CommitmentsV2.Api.Types.Requests.BulkUploadValidateApiRequest _result;
+        private List<CsvRecord> _csvRecords;
+        private FileUploadValidateDataRequest _request;
+
+        [SetUp]
+        public async Task Setup()
+        {
+             _csvRecords = new List<CsvRecord>
+            {
+                new CsvRecord
+                 {
+                    AgreementId = "XEGE5X",
+                    CohortRef = "P97BKL",
+                    ULN = "6591690157",
+                    FamilyName = "Smith",
+                    GivenNames = "Mark",
+                    DateOfBirth = "2000-01-02",
+                    StdCode = "59",
+                    StartDate = "2019-05-01",
+                    EndDate = "2020-05",
+                    TotalPrice = "2000",
+                    EPAOrgID = "EPA0001",
+                    ProviderRef = "ZB88",
+                    EmailAddress = "abc34628125987@abc.com"
+                },
+                new CsvRecord
+                 {
+                    AgreementId = "XEGE5X2",
+                    CohortRef = "P97BKL2",
+                    ULN = "65916901572",
+                    FamilyName = "Smith2",
+                    GivenNames = "Mark2",
+                    DateOfBirth = "2000-01-22",
+                    StdCode = "592",
+                    StartDate = "2019-05-02",
+                    EndDate = "2020-02",
+                    TotalPrice = "2002",
+                    EPAOrgID = "EPA0002",
+                    ProviderRef = "ZB82",
+                    EmailAddress = "abc34628125987@abc.com2"
+                }
+            };
+            _request = new FileUploadValidateDataRequest { CsvRecords = _csvRecords, ProviderId = 1 };
+
+            _mapper = new FileUploadValidateDataRequestToApiRequest();
+            _result = await _mapper.Map(_request);
+        }
+
+        [Test]
+        public async Task ProviderIdIsMapped()
+        {
+            Assert.AreEqual(1, _result.ProviderId);
+        }
+
+        [Test]
+        public async Task RowNumber_Is_Mapped()
+        {
+            Assert.AreEqual(1, _result.CsvRecords.First().RowNumber);
+            Assert.AreEqual(2, _result.CsvRecords.Last().RowNumber);
+        }
+
+        [Test]
+        public async Task ProviderRef_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().ProviderRef, _result.CsvRecords.First().ProviderRef);
+            Assert.AreEqual(_csvRecords.Last().ProviderRef, _result.CsvRecords.Last().ProviderRef);
+        }
+
+        [Test]
+        public async Task EmailAddress_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().EmailAddress, _result.CsvRecords.First().EmailAddress);
+            Assert.AreEqual(_csvRecords.Last().EmailAddress, _result.CsvRecords.Last().EmailAddress);
+        }
+
+        [Test]
+        public async Task AgreementId_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().AgreementId, _result.CsvRecords.First().AgreementId);
+            Assert.AreEqual(_csvRecords.Last().AgreementId, _result.CsvRecords.Last().AgreementId);
+        }
+
+        [Test]
+        public async Task CohortRef_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().CohortRef, _result.CsvRecords.First().CohortRef);
+            Assert.AreEqual(_csvRecords.Last().CohortRef, _result.CsvRecords.Last().CohortRef);
+        }
+
+        [Test]
+        public async Task ULN_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().ULN, _result.CsvRecords.First().ULN);
+            Assert.AreEqual(_csvRecords.Last().ULN, _result.CsvRecords.Last().ULN);
+        }
+
+        [Test]
+        public async Task FamilyName_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().FamilyName, _result.CsvRecords.First().FamilyName);
+            Assert.AreEqual(_csvRecords.Last().FamilyName, _result.CsvRecords.Last().FamilyName);
+        }
+
+        [Test]
+        public async Task GivenNames_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().GivenNames, _result.CsvRecords.First().GivenNames);
+            Assert.AreEqual(_csvRecords.Last().GivenNames, _result.CsvRecords.Last().GivenNames);
+        }
+
+        [Test]
+        public async Task DateOfBirth_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().DateOfBirth, _result.CsvRecords.First().DateOfBirth);
+            Assert.AreEqual(_csvRecords.Last().DateOfBirth, _result.CsvRecords.Last().DateOfBirth);
+        }
+
+        [Test]
+        public async Task StdCode_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().StdCode, _result.CsvRecords.First().StdCode);
+            Assert.AreEqual(_csvRecords.Last().StdCode, _result.CsvRecords.Last().StdCode);
+        }
+
+        [Test]
+        public async Task StartDate_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().StartDate, _result.CsvRecords.First().StartDate);
+            Assert.AreEqual(_csvRecords.Last().StartDate, _result.CsvRecords.Last().StartDate);
+        }
+
+        [Test]
+        public async Task EndDate_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().EndDate, _result.CsvRecords.First().EndDate);
+            Assert.AreEqual(_csvRecords.Last().EndDate, _result.CsvRecords.Last().EndDate);
+        }
+
+        [Test]
+        public async Task TotalPrice_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().TotalPrice, _result.CsvRecords.First().TotalPrice);
+            Assert.AreEqual(_csvRecords.Last().TotalPrice, _result.CsvRecords.Last().TotalPrice);
+        }
+    }
+}
