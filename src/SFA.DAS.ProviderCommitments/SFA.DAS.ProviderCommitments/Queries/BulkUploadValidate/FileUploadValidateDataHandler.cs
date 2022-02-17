@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-//using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.ToRemove;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,10 +24,8 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 
         public async Task<BulkUploadValidateApiResponse> Handle(FileUploadValidateDataRequest request, CancellationToken cancellationToken)
         {
-            //var client2 = _client as CommitmentApiClient2;
             request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachement);
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApiRequest>(request);
-            //  return await client2.ValidateBulkUploadRequest(request.ProviderId, apiRequest);
             return await _client.ValidateBulkUploadRequest(request.ProviderId, apiRequest);
         }
     }
