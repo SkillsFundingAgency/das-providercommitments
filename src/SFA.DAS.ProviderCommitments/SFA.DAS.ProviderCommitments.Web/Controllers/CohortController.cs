@@ -334,7 +334,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
-            var errors = TempData.GetButDontRemove<BulkUploadValidateApiResponse>("bulk-upload-errors");
+            var errors = TempData.Get<BulkUploadValidateApiResponse>("bulk-upload-errors");
             if (errors == null)
             {
                 return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = request.ProviderId });

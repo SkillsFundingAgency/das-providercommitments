@@ -12,6 +12,13 @@
         <h2 class="govuk-error-summary__title" id="error-summary-title">
             There is a problem
         </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li>
+                    <a href="#file-error-error" data-focuses="#file-error-error">You need to correct the errors and upload the file again</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="govuk-grid-row">
@@ -68,7 +75,7 @@
             <!-- END ERROR TABLE 1 -->
 
             <p>
-                <a href="/public/downloads/upload-error-report.csv" class="govuk-link" download="">Download the CSV file showing errors</a>
+                <a href="/public/downloads/upload-error-report.csv" class="govuk-link" download="">Download the CSV file showing errors 1</a>
             </p>
 
 
@@ -90,7 +97,7 @@
                 <!--<div class="govuk-button-group govuk-!-margin-top-6">
                     <a class="govuk-button" data-module="govuk-button" href="file-upload-check">Continue</a>
                 </div>-->
-                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="file-upload-before">Cancel</a></p>
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadInform", new {Model.ProviderId})">Cancel</a></p>
             </form>
         </div>
     </div>
@@ -98,5 +105,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action(" SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadStart", new { @Model.ProviderId })">Back</a>
 }
