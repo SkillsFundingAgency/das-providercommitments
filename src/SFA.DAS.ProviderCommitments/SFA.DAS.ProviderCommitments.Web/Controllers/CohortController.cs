@@ -315,9 +315,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private async Task<bool> ValidateBulkUploadData(long providerId, IFormFile attachement)
+        private async Task<bool> ValidateBulkUploadData(long providerId, IFormFile attachment)
         {
-            var bulkValidate = new FileUploadValidateDataRequest { Attachement = attachement, ProviderId = providerId };
+            var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
             var response = await _mediator.Send(bulkValidate);
             if (response.BulkUploadValidationErrors != null && response.BulkUploadValidationErrors.Count > 0)
             {

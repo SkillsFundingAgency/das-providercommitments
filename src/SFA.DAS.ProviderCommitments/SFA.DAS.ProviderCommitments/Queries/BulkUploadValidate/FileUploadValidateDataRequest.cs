@@ -10,6 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
     {
         public long ProviderId { get; set; }
         public List<CsvRecord> CsvRecords { get; set; }
-        public IFormFile Attachement { get; set; }
+        public IFormFile Attachment { get; set; }
     }
 }
