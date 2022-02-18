@@ -321,7 +321,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var response = await _mediator.Send(bulkValidate);
             if (response.BulkUploadValidationErrors != null && response.BulkUploadValidationErrors.Count > 0)
             {
-                TempData.Put("bulk-upload-errors", response);
+                TempData.Put(Constants.BulkUpload.BulkUploadErrors, response);
                 return true;
             }
 
@@ -334,7 +334,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
-            var errors = TempData.Get<BulkUploadValidateApiResponse>("bulk-upload-errors");
+            var errors = TempData.Get<BulkUploadValidateApiResponse>(Constants.BulkUpload.BulkUploadErrors);
             if (errors == null)
             {
                 return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = request.ProviderId });
