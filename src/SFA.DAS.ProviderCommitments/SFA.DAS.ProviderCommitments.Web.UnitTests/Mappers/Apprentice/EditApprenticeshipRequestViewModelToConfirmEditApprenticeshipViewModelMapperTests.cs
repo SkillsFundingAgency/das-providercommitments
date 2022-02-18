@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
@@ -138,6 +139,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreNotEqual(fixture.source.CourseCode, fixture._apprenticeshipResponse.CourseCode);
             Assert.AreEqual(fixture.source.CourseCode, result.CourseCode);
             Assert.AreEqual(fixture._apprenticeshipResponse.CourseCode, result.OriginalApprenticeship.CourseCode);
+        }
+
+        [TestCase(DeliveryModel.Normal, DeliveryModel.Flexible)]
+        [TestCase(DeliveryModel.Flexible, DeliveryModel.Normal)]
+        public async Task WhenDeliveryModelIsChanged(DeliveryModel original, DeliveryModel changedTo)
+        {
+            fixture._apprenticeshipResponse.DeliveryModel = new DeliveryModelDto(original);
+            fixture.source.DeliveryModel = changedTo;
+
+            var result = await fixture.Map();
+
+            Assert.AreNotEqual(fixture.source.DeliveryModel, fixture._apprenticeshipResponse.DeliveryModel);
+            Assert.AreEqual(fixture.source.DeliveryModel, result.DeliveryModel);
+            Assert.AreEqual(fixture._apprenticeshipResponse.DeliveryModel.Code, result.OriginalApprenticeship.DeliveryModel);
         }
 
         [Test]

@@ -69,7 +69,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmployerName = apprenticeship.EmployerName,
                 ProviderId = apprenticeship.ProviderId,
                 EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
-                EmailShouldBePresent = apprenticeship.EmailShouldBePresent
+                EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
+                DeliveryModel = apprenticeship.DeliveryModel.Code,
             };
 
             return result;
