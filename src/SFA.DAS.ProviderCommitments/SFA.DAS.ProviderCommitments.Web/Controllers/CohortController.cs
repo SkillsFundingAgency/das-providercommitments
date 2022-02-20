@@ -441,6 +441,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("review-cohort")]
+        [DasAuthorize(ProviderFeature.BulkUploadV2)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ReviewApprentices(ReviewApprenticeRequest reviewApprenticeRequest)
+        {   
+            var viewModel = await _modelMapper.Map<ReviewApprenticeViewModel>(reviewApprenticeRequest);
+            return View(viewModel);
+        }
+
         private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
         {
             var result = await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
