@@ -17,7 +17,8 @@
     @Html.HiddenFor(x => x.BirthYear)
     @Html.HiddenFor(x => x.Uln)
     @Html.HiddenFor(x => x.CourseCode)
-    
+    @Html.HiddenFor(x => x.DeliveryModel ?? DeliveryModel.Normal)
+
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
         <dd class="das-definition-list__definition">@Model.FirstName @Model.LastName</dd>
@@ -120,7 +121,7 @@ else
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     Delivery model
                 </legend>
-                @Html.ValidationMessageFor(m => m.DeliveryModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DeliveryModel) })
+                @Html.ValidationMessageFor(m => m.DeliveryModel, null, new { @class = "govuk-error-message", id = "error-messasge-" + Html.IdFor(m => m.DeliveryModel) })
                 <div class="govuk-radios">
                     <div class="govuk-radios__item">
                         <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Normal" id="DeliveryModelNormal">
