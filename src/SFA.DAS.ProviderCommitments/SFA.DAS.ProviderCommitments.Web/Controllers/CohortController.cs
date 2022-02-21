@@ -23,6 +23,8 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -324,14 +326,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 case FileUploadReviewOption.ApproveAndSend:
                     throw new NotImplementedException();
                 case FileUploadReviewOption.SaveButDontSend:
-                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-                    await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
-                    TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
-                    return RedirectToAction(nameof(Review), new { ProviderId = viewModel.ProviderId });
-                    
+                    return RedirectToAction("SuccessSaveDraft", viewModel);                    
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
+        }
+
+        [HttpGet]
+        [Route("success-save-draft", Name = RouteNames.SuccessSaveDraft)]
+        public async Task<IActionResult> SuccessSaveDraft(FileUploadReviewViewModel viewModel)
+        {
+            var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+            var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+            var vm = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
+            vm.ProviderId = viewModel.ProviderId;
+            return View(vm);
         }
 
         [HttpGet]
