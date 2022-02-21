@@ -1,6 +1,8 @@
 ﻿using AutoFixture;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Features.Services;
@@ -10,11 +12,10 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -49,20 +50,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Assert.IsNotNull(model);
         }
 
-
-        [Test]
-        public async Task Then_BulkUploadDraftApprenticeships_IsCalled()
-        {
-            //Arrange
-            var fixture = new WhenGettingBulkUploadAddDraftApprenticeshipsFixture();
-
-            //Act
-            await fixture.Act();
-
-            //Assert
-            fixture.VerifyCohortsAreCreated();
-        }
-
         [Test]
         public async Task Then_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
         {
@@ -74,54 +61,43 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             //Assert            
             fixture.VerifyMapperIsCalled();
-        }       
-
+        }
     }    
 
     public class WhenGettingBulkUploadAddDraftApprenticeshipsFixture
     {
         private CohortController _sut { get; set; }
 
-        private readonly FileUploadReviewViewModel fileUploadViewModel;
-        private readonly BulkUploadAddDraftApprenticeshipsRequest draftApprenticeshipsRequest;
         private readonly BulkUploadAddDraftApprenticeshipsViewModel draftApprenticeshipViewModel;
         private readonly long providerId = 123;
         private Mock<IModelMapper> _modelMapper;
-        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private readonly TempDataDictionary _tempData;
 
         public WhenGettingBulkUploadAddDraftApprenticeshipsFixture()
         {
             var fixture = new Fixture();
-            fileUploadViewModel = fixture.Create<FileUploadReviewViewModel>();
-            fileUploadViewModel.ProviderId = providerId;
-            draftApprenticeshipsRequest = fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
-            draftApprenticeshipViewModel = fixture.Create<BulkUploadAddDraftApprenticeshipsViewModel>();
+            draftApprenticeshipViewModel = fixture.Create<BulkUploadAddDraftApprenticeshipsViewModel>();            
+            draftApprenticeshipViewModel.ProviderId = 123;
 
             _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(fileUploadViewModel)).ReturnsAsync(draftApprenticeshipsRequest);
             GetBulkUploadAddDraftApprenticeshipsResponse response = DraftApprenticeshipsResponse();
 
-            _modelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response)).ReturnsAsync(draftApprenticeshipViewModel);
+            _tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            _tempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
+            
+            _modelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsViewModel>(It.IsAny<GetBulkUploadAddDraftApprenticeshipsResponse>()))
+                .ReturnsAsync(draftApprenticeshipViewModel);
 
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.BulkUploadDraftApprenticeships(providerId, draftApprenticeshipsRequest, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentsApiClient.Object,
+            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+            _sut.TempData = _tempData;
         }
         
-        public Task<IActionResult> Act() => _sut.SuccessSaveDraft(fileUploadViewModel);
-
-        public void VerifyCohortsAreCreated()
-        {
-            _commitmentsApiClient.Verify(m => m.BulkUploadDraftApprenticeships(It.IsAny<long>(), It.IsAny<BulkUploadAddDraftApprenticeshipsRequest>(),  
-                    It.IsAny<CancellationToken>()), Times.Once());
-        }
+        public Task<IActionResult> Act() => _sut.SuccessSaveDraft(providerId);
 
         public void VerifyMapperIsCalled()
         {
-            _modelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(fileUploadViewModel), Times.Once);
+            _modelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsViewModel>(It.IsAny<GetBulkUploadAddDraftApprenticeshipsResponse>()), Times.Once);
         }
 
         private static GetBulkUploadAddDraftApprenticeshipsResponse DraftApprenticeshipsResponse()

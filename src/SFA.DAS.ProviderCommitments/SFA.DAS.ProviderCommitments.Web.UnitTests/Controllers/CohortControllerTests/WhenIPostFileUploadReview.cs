@@ -14,6 +14,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -28,7 +29,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("SuccessSaveDraft"); ;
-        }       
+        }
+
+        [Test]
+        public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_CohortsAreCreated()
+        {
+            var fixture = new WhenIPostFileUploadReviewFixture();
+
+            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
+            fixture.VerifyCohortsAreCreated();
+        }
+
+
+        [Test]
+        public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
+        {
+            var fixture = new WhenIPostFileUploadReviewFixture();
+
+            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
+            fixture.VerifyMapperIsCalled();
+        }
 
         [Test]
         public async Task When_SelectedOption_Is_UploadAnAmendedFile_RedirectTo_FileUploadStart()
@@ -70,6 +90,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel.SelectedOption = selectedOption;
             return this;
         }
+
+        public void VerifyCohortsAreCreated()
+        {
+            _commitmentApiClient.Verify(x => x.BulkUploadDraftApprenticeships(_viewModel.ProviderId, _apiRequest, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        public void VerifyMapperIsCalled()
+        {
+            _mockModelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel), Times.Once);
+        }
+
 
         public async Task<IActionResult> Act() => await Sut.FileUploadReview(_viewModel);
     }

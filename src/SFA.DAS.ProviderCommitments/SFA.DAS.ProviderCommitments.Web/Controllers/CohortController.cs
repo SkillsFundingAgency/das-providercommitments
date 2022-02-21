@@ -326,7 +326,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 case FileUploadReviewOption.ApproveAndSend:
                     throw new NotImplementedException();
                 case FileUploadReviewOption.SaveButDontSend:
-                    return RedirectToAction("SuccessSaveDraft", viewModel);                    
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                    TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
+                    return RedirectToAction("SuccessSaveDraft", viewModel.ProviderId);                    
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
@@ -334,13 +337,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("success-save-draft", Name = RouteNames.SuccessSaveDraft)]
-        public async Task<IActionResult> SuccessSaveDraft(FileUploadReviewViewModel viewModel)
+        public async Task<IActionResult> SuccessSaveDraft(long providerId)
         {
-            var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-            var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
-            var vm = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
-            vm.ProviderId = viewModel.ProviderId;
-            return View(vm);
+            var response = TempData.Get<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload.DraftApprenticeshipResponse);
+            TempData.Keep(Constants.BulkUpload.DraftApprenticeshipResponse);
+            var viewModel = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
+            viewModel.ProviderId = providerId;
+            return View(viewModel);
         }
 
         [HttpGet]
