@@ -22,6 +22,14 @@
                 return text;
             }
         }
+
+        public string ReviewApprenticeshipsText
+        {
+            get
+            {
+                return (NumberOfApprentices > 1) ? "Review apprentices" : "Review apprentice";
+            }          
+        }
     }
 }
 
