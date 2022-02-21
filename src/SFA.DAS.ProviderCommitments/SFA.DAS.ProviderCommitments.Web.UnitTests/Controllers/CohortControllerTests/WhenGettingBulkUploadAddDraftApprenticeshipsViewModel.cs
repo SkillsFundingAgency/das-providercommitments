@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingBulkUploadAddDraftApprenticeshipsViewModelTests
+    public class WhenGettingBulkUploadAddDraftApprenticeshipsViewModel
     {
         [Test]
         public async Task ThenReturnsView()
@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
+        public async Task Then_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
         {
             //Arrange
             var fixture = new WhenGettingBulkUploadAddDraftApprenticeshipsFixture();
