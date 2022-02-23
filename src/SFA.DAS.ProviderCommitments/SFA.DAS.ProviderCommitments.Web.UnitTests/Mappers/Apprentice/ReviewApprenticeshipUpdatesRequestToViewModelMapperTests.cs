@@ -95,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel.Code, viewModel.ApprenticeshipUpdates.DeliveryModel);
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel, viewModel.ApprenticeshipUpdates.DeliveryModel);
         }
 
         [Test]
