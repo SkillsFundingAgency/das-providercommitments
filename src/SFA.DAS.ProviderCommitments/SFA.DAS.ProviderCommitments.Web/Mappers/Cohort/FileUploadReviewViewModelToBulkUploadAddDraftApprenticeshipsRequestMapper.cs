@@ -32,10 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private BulkUploadAddDraftApprenticeshipRequest MapTo(Models.Cohort.CsvRecord record)
         {
-            //var dateOfBirth = GetValidDate(record.DateOfBirth, "yyyy-MM-dd");
-            //var learnerStartDate = GetValidDate(record.StartDate, "yyyy-MM-dd");
-            //var learnerEndDate = GetValidDate(record.EndDate, "yyyy-MM");
-
             return new BulkUploadAddDraftApprenticeshipRequest
             {
                 Uln = record.ULN,
