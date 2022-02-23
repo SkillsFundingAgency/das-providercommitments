@@ -1,0 +1,109 @@
+﻿@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadValidateViewModel
+
+@{
+    ViewData["Title"] = "Add Apprentice";
+    ViewBag.GaData.Vpv = "/unapproved/add/file-upload/validate";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li>
+                    <a href="#file-error-error" data-focuses="#file-error-error">You need to correct the errors and upload the file again</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <h1 class="govuk-heading-l  govuk-!-margin-top-4">There is a problem with your CSV file </h1>
+
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    You will need to correct the errors in your LMS or remove the rows containing errors and upload your CSV again. No records have been uploaded.
+                </strong>
+            </div>
+            <div class="govuk-form-group govuk-form-group--error">
+                <h2 class="govuk-heading-m  govuk-!-margin-top-4">Your CSV file has the following errors </h2>
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--s govuk-!-margin-bottom-4 govuk-error-message">
+                        <span id="file-error-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>You need to correct the errors and upload the file again
+                        </span>
+                    </caption>
+
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Row</th>
+                            <th scope="col" class="govuk-table__header">Employer</th>
+                            <th scope="col" class="govuk-table__header">ULN</th>
+                            <th scope="col" class="govuk-table__header">Name</th>
+                            <th scope="col" class="govuk-table__header">Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var error in Model.BulkUploadValidationErrors)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">@error.RowNumber</th>
+                                <td class="govuk-table__cell">@error.EmployerName</td>
+                                <td class="govuk-table__cell">@error.Uln</td>
+                                <td class="govuk-table__cell">@error.ApprenticeName</td>
+                                <td class="govuk-table__cell">
+                                    @foreach (var pError in error.PropertyErrors)
+                                    {
+                                        <li>@Html.Raw(System.Net.WebUtility.HtmlDecode(pError.ErrorText))</li>
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- END ERROR TABLE 1 -->
+
+            <p>
+                <a href="/public/downloads/upload-error-report.csv" class="govuk-link" download="">Download the CSV file showing errors 1</a>
+            </p>
+
+
+            <!-- REUPLOAD CSV FILE -->
+            <form action="file-upload-check" method="post" class="govuk-!-margin-top-8" novalidate="">
+
+                <!--<div class="govuk-form-group govuk-!-margin-top-6">
+                    <h2 class="govuk-heading-m ">
+                        Upload your amended file
+                    </h2>
+
+                    <label class="govuk-label" for="file-upload-1">
+                        Your CSV file should not have more than 100 rows
+                    </label>
+                    <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file">
+                </div>-->
+                <!-- END REUPLOAD CSV FILE -->
+                <!-- CTA -->
+                <!--<div class="govuk-button-group govuk-!-margin-top-6">
+                    <a class="govuk-button" data-module="govuk-button" href="file-upload-check">Continue</a>
+                </div>-->
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" href="@Url.Action("FileUploadInform", new {Model.ProviderId})">Cancel</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("FileUploadStart", new { @Model.ProviderId })">Back</a>
+}
