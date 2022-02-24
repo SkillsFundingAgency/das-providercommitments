@@ -1,4 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
