@@ -135,12 +135,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var responsenumberOfApprenticeships = DraftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().NumberOfApprenticeships;
             var viewModelnumberOfApprenticeships = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().NumberOfApprenticeships;
 
-            Assert.AreNotEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
+            Assert.AreEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
         }
 
         internal void VerifyCorrectNumberOfEmployersAreMapped()
         {
-            Assert.AreEqual(2, _result.BulkUploadDraftApprenticeshipsViewModel.Count());
+            Assert.AreEqual(3, _result.BulkUploadDraftApprenticeshipsViewModel.Count());
         }
     }
 }
