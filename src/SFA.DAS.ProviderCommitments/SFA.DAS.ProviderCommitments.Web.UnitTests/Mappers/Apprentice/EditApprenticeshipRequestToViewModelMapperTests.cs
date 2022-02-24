@@ -205,7 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(DeliveryModel.Normal)]
         public async Task DeliveryModel_IsMapped(DeliveryModel dm)
         {
-            _fixture.ApprenticeshipResponse.DeliveryModel = new DeliveryModelDto(dm);
+            _fixture.ApprenticeshipResponse.DeliveryModel = dm;
 
             //Act
             await _fixture.Map();
@@ -482,7 +482,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         internal void VerifyDeliveryModelIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.DeliveryModel.Code, _viewModel.DeliveryModel);
+            Assert.AreEqual(ApprenticeshipResponse.DeliveryModel, _viewModel.DeliveryModel);
         }
 
         internal void VerifyIsLockedForUpdateIsMapped()

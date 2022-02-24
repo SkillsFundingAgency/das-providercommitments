@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         }).ToList(),
                     EmailShouldBePresent = data.Apprenticeship.EmailShouldBePresent,
                     EmailAddressConfirmedByApprentice = data.Apprenticeship.EmailAddressConfirmedByApprentice,
-                    DeliveryModel = data.Apprenticeship.DeliveryModel.ToDisplayString(),
+                    DeliveryModel = data.Apprenticeship.DeliveryModel.ToAbnormalDescription(),
                 };
             }
             catch (Exception e)

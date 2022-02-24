@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = apprenticeship.ProviderId,
                 EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
                 EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
-                DeliveryModel = apprenticeship.DeliveryModel.Code,
+                DeliveryModel = apprenticeship.DeliveryModel,
             };
 
             return result;

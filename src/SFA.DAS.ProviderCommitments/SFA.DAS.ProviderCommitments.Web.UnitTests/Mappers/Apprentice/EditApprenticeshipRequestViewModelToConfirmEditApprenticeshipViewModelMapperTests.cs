@@ -145,14 +145,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(DeliveryModel.Flexible, DeliveryModel.Normal)]
         public async Task WhenDeliveryModelIsChanged(DeliveryModel original, DeliveryModel changedTo)
         {
-            fixture._apprenticeshipResponse.DeliveryModel = new DeliveryModelDto(original);
+            fixture._apprenticeshipResponse.DeliveryModel = original;
             fixture.source.DeliveryModel = changedTo;
 
             var result = await fixture.Map();
 
             Assert.AreNotEqual(fixture.source.DeliveryModel, fixture._apprenticeshipResponse.DeliveryModel);
             Assert.AreEqual(fixture.source.DeliveryModel, result.DeliveryModel);
-            Assert.AreEqual(fixture._apprenticeshipResponse.DeliveryModel.Code, result.OriginalApprenticeship.DeliveryModel);
+            Assert.AreEqual(fixture._apprenticeshipResponse.DeliveryModel, result.OriginalApprenticeship.DeliveryModel);
         }
 
         [Test]

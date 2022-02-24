@@ -143,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var course in result.Courses)
             {
                 var expectedCount = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
-                    .Count(a => a.CourseCode == course.CourseCode && a.CourseName == course.CourseName && a.DeliveryModel.Code == course.DeliveryModel);
+                    .Count(a => a.CourseCode == course.CourseCode && a.CourseName == course.CourseName && a.DeliveryModel == course.DeliveryModel);
 
                 Assert.AreEqual(expectedCount, course.Count);
             }
@@ -156,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
 
             var expectedSequence = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
-                .Select(c => new { c.CourseName, c.CourseCode, DeliveryModel = c.DeliveryModel.Code })
+                .Select(c => new { c.CourseName, c.CourseCode, DeliveryModel = c.DeliveryModel })
                 .Distinct()
                 .OrderBy(c => c.CourseName).ThenBy(c => c.CourseCode).ThenBy(c=>c.DeliveryModel)
                 .ToList();
@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var course in result.Courses)
             {
                 var expectedSequence = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
-                    .Where(a => a.CourseName == course.CourseName && a.CourseCode == course.CourseCode && a.DeliveryModel.Code == course.DeliveryModel)
+                    .Where(a => a.CourseName == course.CourseName && a.CourseCode == course.CourseCode && a.DeliveryModel == course.DeliveryModel)
                     .Select(a => $"{a.FirstName} {a.LastName}")
                     .OrderBy(a => a)
                     .ToList();
@@ -892,7 +892,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             draftApprenticeship.Cost = cost;
             draftApprenticeship.StartDate = startDate;
             draftApprenticeship.OriginalStartDate = originalStartDate;
-            draftApprenticeship.DeliveryModel = new DeliveryModelDto(dm);
+            draftApprenticeship.DeliveryModel = dm;
         }
 
         public DetailsViewModelMapperTestsFixture SetProviderComplete(bool providerComplete)

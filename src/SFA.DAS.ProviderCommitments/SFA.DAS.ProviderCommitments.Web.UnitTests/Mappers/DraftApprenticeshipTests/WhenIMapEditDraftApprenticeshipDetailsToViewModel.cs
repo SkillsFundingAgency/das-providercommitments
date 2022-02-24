@@ -193,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         [TestCase(DeliveryModel.Flexible)]
         public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
         {
-            _apiResponse.DeliveryModel = new DeliveryModelDto(dm);
+            _apiResponse.DeliveryModel = dm;
             var result = await _act();
             Assert.AreEqual(dm, result.DeliveryModel);
         }

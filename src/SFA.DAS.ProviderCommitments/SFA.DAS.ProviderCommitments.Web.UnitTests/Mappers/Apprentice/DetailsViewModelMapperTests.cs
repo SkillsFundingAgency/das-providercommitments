@@ -160,7 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.DeliveryModel.Code.ToDisplayString(), _fixture.Result.DeliveryModel);
+            Assert.AreEqual(_fixture.ApiResponse.DeliveryModel.ToAbnormalDescription(), _fixture.Result.DeliveryModel);
         }
 
         [TestCase(ApprenticeshipStatus.Live, true)]

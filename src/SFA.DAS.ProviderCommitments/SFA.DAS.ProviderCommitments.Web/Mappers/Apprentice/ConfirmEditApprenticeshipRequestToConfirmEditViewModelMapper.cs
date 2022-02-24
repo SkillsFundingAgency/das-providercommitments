@@ -91,11 +91,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             vm.OriginalApprenticeship.EndMonth = apprenticeship.EndDate.Month;
             vm.OriginalApprenticeship.EndYear = apprenticeship.EndDate.Year;
 
-            if (source.DeliveryModel != apprenticeship.DeliveryModel.Code)
+            if (source.DeliveryModel != apprenticeship.DeliveryModel)
             {
                 vm.DeliveryModel = source.DeliveryModel;
             }
-            vm.OriginalApprenticeship.DeliveryModel = apprenticeship.DeliveryModel.Code;
+            vm.OriginalApprenticeship.DeliveryModel = apprenticeship.DeliveryModel;
 
             if (source.CourseCode != apprenticeship.CourseCode)
             {

@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     LastName = apprenticeship.LastName,
                     Email = apprenticeship.Email,
                     Cost = currentPrice,
-                    DeliveryModel = apprenticeship.DeliveryModel.Code,
+                    DeliveryModel = apprenticeship.DeliveryModel,
                     CourseCode = apprenticeship.CourseCode,
                     Version = apprenticeship.Version,
                     TrainingName = apprenticeship.CourseName,

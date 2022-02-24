@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     Reference = apiResponse.Reference,
                     IsContinuation = apiResponse.IsContinuation,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
-                    DeliveryModel = apiResponse.DeliveryModel.Code,
+                    DeliveryModel = apiResponse.DeliveryModel,
                 };
             }
             catch (RestHttpClientException restEx)
