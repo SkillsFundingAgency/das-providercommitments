@@ -322,15 +322,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
-            var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-
             switch (viewModel.SelectedOption)
             {
-                case FileUploadReviewOption.ApproveAndSend:                   
-                    var approvedResponse = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                case FileUploadReviewOption.ApproveAndSend:
+                    var approvedApiRequest = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                    var approvedResponse = await _commitmentApiClient.BulkUploadAddAndApproveDraftApprenticeships(viewModel.ProviderId, approvedApiRequest);
                     TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
                     return RedirectToAction("Success", viewModel.ProviderId);
-                case FileUploadReviewOption.SaveButDontSend:                    
+                case FileUploadReviewOption.SaveButDontSend:
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
                     return RedirectToAction("SuccessSaveDraft", viewModel.ProviderId);                    
@@ -354,9 +354,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("success", Name = RouteNames.SuccessSendToEmployer)]
         public async Task<IActionResult> Success(long providerId)
         {
-            var response = TempData.Get<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload.DraftApprenticeshipResponse);
+            var response = TempData.Get<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(Constants.BulkUpload.ApprovedApprenticeshipResponse);
             TempData.Keep(Constants.BulkUpload.ApprovedApprenticeshipResponse);
-            var viewModel = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
+            var viewModel = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(response);
             viewModel.ProviderId = providerId;
             return View(viewModel);
         }

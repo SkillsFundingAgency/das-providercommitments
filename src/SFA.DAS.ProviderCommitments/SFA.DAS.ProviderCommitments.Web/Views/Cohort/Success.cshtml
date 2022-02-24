@@ -1,6 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@model SFA.DAS.ProviderCommitments.Web.Models.BulkUploadAddDraftApprenticeshipsViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.BulkUploadAddAndApproveDraftApprenticeshipsViewModel
 
 @{
     ViewData["Title"] = "Apprentice details saved and send to employer successfully";
@@ -48,7 +48,7 @@
 
         <ul class="govuk-list">
             <li><a href="@Url.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a></li>
-            <li><a href="apprentices-with-employers" class="govuk-link">View apprentice details with employers</a></li>
+            <li><a href="@Url.Action("WithEmployer", new { @Model.ProviderId })" class="govuk-link">View apprentice details with employers</a></li>
             <li><a href="@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })" class="govuk-link">Add more apprentices</a></li>
         </ul>
     </div>

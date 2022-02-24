@@ -5,14 +5,14 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
-{
-    public class BulkUploadAddDraftApprenticeshipsViewModelMapper : IMapper<GetBulkUploadAddDraftApprenticeshipsResponse, BulkUploadAddDraftApprenticeshipsViewModel>
+{  
+    public class BulkUploadAddAndApproveDraftApprenticeshipsViewModelMapper : IMapper<BulkUploadAddAndApproveDraftApprenticeshipsResponse, BulkUploadAddAndApproveDraftApprenticeshipsViewModel>
     {
-        public Task<BulkUploadAddDraftApprenticeshipsViewModel> Map(GetBulkUploadAddDraftApprenticeshipsResponse source)
-        {   
-            var viewModel = new BulkUploadAddDraftApprenticeshipsViewModel
-            {                
-                BulkUploadDraftApprenticeshipsViewModel = (from result in source.BulkUploadAddDraftApprenticeshipsResponse
+        public Task<BulkUploadAddAndApproveDraftApprenticeshipsViewModel> Map(BulkUploadAddAndApproveDraftApprenticeshipsResponse source)
+        {          
+            var viewModel = new BulkUploadAddAndApproveDraftApprenticeshipsViewModel
+            {
+                BulkUploadDraftApprenticeshipsViewModel = (from result in source.BulkUploadAddAndApproveDraftApprenticeshipResponse
                                                            let bulkUploadDraftApprenticeshipsViewModel = new BulkUploadDraftApprenticeshipViewModel
                                                            {
                                                                CohortReference = result.CohortReference,
@@ -21,9 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                                                            }
                                                            select bulkUploadDraftApprenticeshipsViewModel).ToList()
             };
-            
+
             return Task.FromResult(viewModel);
         }
     }
 }
-

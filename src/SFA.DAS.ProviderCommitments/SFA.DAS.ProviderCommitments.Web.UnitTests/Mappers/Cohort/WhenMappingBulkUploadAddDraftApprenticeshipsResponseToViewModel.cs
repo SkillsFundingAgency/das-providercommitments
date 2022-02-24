@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public string cohortReference = "MKRK7V";
         public string EmployerName = "Tesco";
-        public int NumberOfApprenticeships = 2;        
+        public int NumberOfApprenticeships = 2;
 
         public WhenMappingBulkUploadAddDraftApprenticeshipsResponseToViewModelFixture()
         {
@@ -135,12 +135,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var responsenumberOfApprenticeships = DraftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().NumberOfApprenticeships;
             var viewModelnumberOfApprenticeships = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().NumberOfApprenticeships;
 
-            Assert.AreNotEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
+            Assert.AreEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
         }
 
         internal void VerifyCorrectNumberOfEmployersAreMapped()
         {
-            Assert.AreEqual(2, _result.BulkUploadDraftApprenticeshipsViewModel.Count());
+            Assert.AreEqual(3, _result.BulkUploadDraftApprenticeshipsViewModel.Count());
         }
     }
 }
