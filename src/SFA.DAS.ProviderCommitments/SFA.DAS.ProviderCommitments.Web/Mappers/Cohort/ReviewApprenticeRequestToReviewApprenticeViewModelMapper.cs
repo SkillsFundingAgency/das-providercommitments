@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var apprenticeEndDate = GetValidDate(record.EndDate, "yyyy-MM");
                 
                 result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
-                result.CohortRef = record.CohortRef;
+                result.CohortRef = !string.IsNullOrWhiteSpace(record.CohortRef) ? record.CohortRef : "This will be created when you save or send to employers";
                 result.TotalApprentices = groupedByCohort.Count();
                 result.TotalCost = groupedByCohort.Sum(x => int.Parse(x.TotalPrice));                
 

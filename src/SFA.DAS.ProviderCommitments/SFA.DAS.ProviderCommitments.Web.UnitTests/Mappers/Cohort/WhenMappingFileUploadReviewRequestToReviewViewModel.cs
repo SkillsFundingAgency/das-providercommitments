@@ -46,16 +46,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyCorrectNumberOfEmployersAreMapped();
         }
 
-        [TestCase("Employer1", "Cohort1")]
-        [TestCase("Employer1", "Cohort2")]
-        [TestCase("Employer2", "Cohort3")]
-        [TestCase("Employer2", "Cohort4")]
-        public async Task CohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
+        [Test]
+        public async Task CohortReferenceIsMappedCorrectly()
         {
             var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
-            await fixture.WithDefaultData().Action();
+            await fixture.WithEmptyCohortRef().Action();
 
-            fixture.VerifyCohortReferenceIsMappedCorrectly(agreementId, cohortRef);
+            fixture.VerifyEmptyCohortReferenceIsMappedCorrectly();
         }
 
         [TestCase("Employer1", "Cohort1", 3)]
@@ -155,6 +152,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 return this;
             }
 
+            internal WhenMappingFileUploadReviewRequestToReviewViewModelFixture WithEmptyCohortRef()
+            {
+                _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer1", "", 1000));
+                return this;
+            }
+
             internal void VerifyCorrectNumberOfEmployersAreMapped()
             {
                 Assert.AreEqual(2, _result.EmployerDetails.Count());
@@ -193,6 +196,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
                 var cohort = employer.CohortDetails.First(x => x.CohortRef == cohortRef);
                 Assert.AreEqual(totalCost, cohort.TotalCost);
+            }
+
+            internal void VerifyEmptyCohortReferenceIsMappedCorrectly()
+            {
+                var employer = _result.EmployerDetails.First();
+                Assert.AreEqual(FileUploadReviewCohortDetail.EmptyCohortRefText,  employer.CohortDetails.First().CohortRefText);
             }
         }
     }
