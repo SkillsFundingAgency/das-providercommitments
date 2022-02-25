@@ -14,6 +14,7 @@
         {
             public const string DraftApprenticeshipResponse = "DraftApprenticeshipResponse";
             public const string ApprovedApprenticeshipResponse = "ApprovedApprenticeshipResponse";
+            public const string BulkUploadErrors = "bulk-upload-errors";
         }
     }
 }

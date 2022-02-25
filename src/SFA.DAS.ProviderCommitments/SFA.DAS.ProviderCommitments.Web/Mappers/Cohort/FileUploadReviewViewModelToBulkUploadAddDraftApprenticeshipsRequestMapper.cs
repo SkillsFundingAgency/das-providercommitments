@@ -3,9 +3,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
-            var csVRecrods = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
+            var csVRecrods = await _cacheService.GetFromCache<List<Models.Cohort.CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString());
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
@@ -32,8 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record)
-        {  
+        private BulkUploadAddDraftApprenticeshipRequest MapTo(Models.Cohort.CsvRecord record)
+        {
             return new BulkUploadAddDraftApprenticeshipRequest
             {
                 Uln = record.ULN,
@@ -42,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 DateOfBirthAsString = record.DateOfBirth,
                 CostAsString = record.TotalPrice,
                 ProviderRef = record.ProviderRef,
-                StartDateAsString = record.StartDate,
+                StartDateAsString =record.StartDate,
                 EndDateAsString = record.EndDate,
                 CourseCode = record.StdCode,
                 LegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId),
