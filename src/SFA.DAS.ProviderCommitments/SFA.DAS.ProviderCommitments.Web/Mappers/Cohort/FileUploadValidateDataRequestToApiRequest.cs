@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,22 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             apiRequest.ProviderId = source.ProviderId;
 
             apiRequest.CsvRecords = source.CsvRecords.Select((csvRecord, index) =>
-                  new BulkUploadAddDraftApprenticeshipRequest()
-                  {
-                      AgreementId = csvRecord.AgreementId,
-                      CohortRef = csvRecord.CohortRef,
-                      DateOfBirthAsString = csvRecord.DateOfBirth,
-                      Email = csvRecord.EmailAddress,
-                      EndDateAsString = csvRecord.EndDate,
-                      LastName = csvRecord.FamilyName,
-                      FirstName = csvRecord.GivenNames,
-                      StartDateAsString = csvRecord.StartDate,
-                      CourseCode = csvRecord.StdCode,
-                      CostAsString = csvRecord.TotalPrice,
-                      Uln = csvRecord.ULN,
-                      ProviderRef = csvRecord.ProviderRef,
-                      RowNumber = index + 1
-                  }).ToList();
+                  csvRecord.MapToBulkUploadAddDraftApprenticeshipRequest(index +1, source.ProviderId)).ToList();
 
             return Task.FromResult(apiRequest);
         }
