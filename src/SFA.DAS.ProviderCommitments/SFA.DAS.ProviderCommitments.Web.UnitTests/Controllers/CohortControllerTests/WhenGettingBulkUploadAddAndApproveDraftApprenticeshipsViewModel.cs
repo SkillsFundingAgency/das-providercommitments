@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task ThenReturnsView_With_BulkUploadAddDraftApprenticeshipsViewModel()
+        public async Task ThenReturnsView_With_BulkUploadAddAndApproveDraftApprenticeshipsViewModel()
         {
             //Arrange
             var fixture = new WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture();
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task Then_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
+        public async Task Then_SelectedOption_Is_SaveAndSendToEmployer_MapperIsCalled()
         {
             //Arrange
             var fixture = new WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture();
