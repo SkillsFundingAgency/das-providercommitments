@@ -14,12 +14,12 @@ using SFA.DAS.ProviderUrlHelper;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingFileUploadStart
+    public class WhenGettingFileUploadValidationError
     {
         [Test]
         public void ThenReturnsView()
         {
-            var fixture = new WhenGettingFileUploadStartFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture();
 
             var result = fixture.Act();
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public void ThenProviderIdIsMapped()
         {
-            var fixture = new WhenGettingFileUploadStartFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture();
 
             var viewResult = fixture.Act();
 
@@ -39,14 +39,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
     }
 
-    public class WhenGettingFileUploadStartFixture
+    public class WhenGettingFileUploadValidationErrorFixture
     {
         public CohortController Sut { get; set; }
 
         private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
         public readonly long ProviderId = 123;
 
-        public WhenGettingFileUploadStartFixture()
+        public WhenGettingFileUploadValidationErrorFixture()
         {
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());

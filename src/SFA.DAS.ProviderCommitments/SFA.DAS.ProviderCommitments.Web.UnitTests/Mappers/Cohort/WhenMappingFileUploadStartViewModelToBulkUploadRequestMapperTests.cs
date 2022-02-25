@@ -22,15 +22,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<IEncodingService> _encodingService;
         private BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private FileUploadReviewViewModel _viewModel;
-        private List<CsvRecord> _csvRecords;
-
+        private List<Web.Models.Cohort.CsvRecord> _csvRecords;
 
         [SetUp]
         public async Task Setup()
         {
             var fixture = new Fixture();
             _apiRequest = fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
-            _csvRecords = fixture.Build<CsvRecord>()
+            _csvRecords = fixture.Build<Web.Models.Cohort.CsvRecord>()
                 .With(x => x.DateOfBirth, "2000-02-02")
                 .With(x => x.StartDate, "2021-03-04")
                 .With(x => x.EndDate, "2022-04")
@@ -39,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
                
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _csvRecords);
+            _cacheService.Setup(x => x.GetFromCache<List<Web.Models.Cohort.CsvRecord>>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _csvRecords);
 
             _encodingService = new Mock<IEncodingService>();
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
