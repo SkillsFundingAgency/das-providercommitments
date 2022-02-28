@@ -22,7 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 Uln = csvRecord.ULN,
                 ProviderRef = csvRecord.ProviderRef,
                 RowNumber = rowNumber,
-                ProviderId = providerId
+                ProviderId = providerId,
+                EPAOrgId = csvRecord.EPAOrgID
             };
         }
     }
