@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     TotalPrice = "2000",
                     EPAOrgID = "EPA0001",
                     ProviderRef = "ZB88",
-                    EmailAddress = "abc34628125987@abc.com"
+                    EmailAddress = "abc34628125987@abc.com",
                 },
                 new CsvRecord
                  {
@@ -155,6 +155,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.AreEqual(_csvRecords.First().TotalPrice, _result.CsvRecords.First().CostAsString);
             Assert.AreEqual(_csvRecords.Last().TotalPrice, _result.CsvRecords.Last().CostAsString);
+        }
+
+        [Test]
+        public async Task EPAOrgId_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().EPAOrgID, _result.CsvRecords.First().EPAOrgId);
+            Assert.AreEqual(_csvRecords.Last().EPAOrgID, _result.CsvRecords.Last().EPAOrgId);
         }
     }
 }
