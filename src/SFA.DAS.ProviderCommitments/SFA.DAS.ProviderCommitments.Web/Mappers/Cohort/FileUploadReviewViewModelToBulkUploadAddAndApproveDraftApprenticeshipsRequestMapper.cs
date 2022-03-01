@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadAddAndApproveDraftApprenticeships = csVRecrods.Select(x => MapTo(x))
+                BulkUploadAddAndApproveDraftApprenticeships = csVRecrods.Select(MapTo)
             };
         }
 

@@ -12,14 +12,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {          
             var viewModel = new BulkUploadAddAndApproveDraftApprenticeshipsViewModel
             {
-                BulkUploadDraftApprenticeshipsViewModel = (from result in source.BulkUploadAddAndApproveDraftApprenticeshipResponse
-                                                           let bulkUploadDraftApprenticeshipsViewModel = new BulkUploadDraftApprenticeshipViewModel
-                                                           {
-                                                               CohortReference = result.CohortReference,
-                                                               NumberOfApprenticeships = result.NumberOfApprenticeships,
-                                                               EmployerName = result.EmployerName
-                                                           }
-                                                           select bulkUploadDraftApprenticeshipsViewModel).ToList()
+               
+                BulkUploadDraftApprenticeshipsViewModel = source.BulkUploadAddAndApproveDraftApprenticeshipResponse
+                                                        .Select(r => new BulkUploadDraftApprenticeshipViewModel
+                                                        {                                                                        
+                                                            CohortReference = r.CohortReference,
+                                                            NumberOfApprenticeships = r.NumberOfApprenticeships,
+                                                            EmployerName = r.EmployerName
+                                                        }).ToList()
+
             };
 
             return Task.FromResult(viewModel);
