@@ -27,6 +27,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using System.Linq;
+using System.Collections.Generic;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -361,19 +364,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
-            switch(viewModel.SelectedOption)
+            switch (viewModel.SelectedOption)
             {
                 case FileUploadReviewOption.ApproveAndSend:
-                    throw new NotImplementedException();
+                    var approvedApiRequest = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                    var approvedResponse = await _commitmentApiClient.BulkUploadAddAndApproveDraftApprenticeships(viewModel.ProviderId, approvedApiRequest);
+                    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
+                    return RedirectToAction("Success", viewModel.ProviderId);
                 case FileUploadReviewOption.SaveButDontSend:
                     var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-                    await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
-                    TempData.AddFlashMessage("File uploaded", ITempDataDictionaryExtensions.FlashMessageLevel.Success);
-                    return RedirectToAction(nameof(Review), new { ProviderId = viewModel.ProviderId });
-                    
+                    var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                    TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
+                    return RedirectToAction("SuccessSaveDraft", viewModel.ProviderId);                    
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
+        }
+
+        [HttpGet]
+        [Route("success-save-draft", Name = RouteNames.SuccessSaveDraft)]
+        public async Task<IActionResult> SuccessSaveDraft(long providerId)
+        {
+            var response = TempData.Get<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload.DraftApprenticeshipResponse);
+            TempData.Keep(Constants.BulkUpload.DraftApprenticeshipResponse);
+            var viewModel = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
+            viewModel.ProviderId = providerId;
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route("success", Name = RouteNames.SuccessSendToEmployer)]
+        public async Task<IActionResult> Success(long providerId)
+        {
+            var response = TempData.Get<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(Constants.BulkUpload.ApprovedApprenticeshipResponse);
+            TempData.Keep(Constants.BulkUpload.ApprovedApprenticeshipResponse);
+            var viewModel = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(response);
+            viewModel.ProviderId = providerId;
+            return View(viewModel);
         }
 
         [HttpGet]

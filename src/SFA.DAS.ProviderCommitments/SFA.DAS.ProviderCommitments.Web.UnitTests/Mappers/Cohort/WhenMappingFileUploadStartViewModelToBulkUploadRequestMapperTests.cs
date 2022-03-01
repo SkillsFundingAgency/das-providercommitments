@@ -94,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             foreach (var record in _csvRecords)
             {
-                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);                
                 Assert.AreEqual(record.StartDate, result.StartDateAsString);
             }
         }

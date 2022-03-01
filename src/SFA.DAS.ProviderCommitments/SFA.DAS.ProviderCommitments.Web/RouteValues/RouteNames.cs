@@ -34,6 +34,8 @@
         public const string CohortDraft = "cohort-draft";
         public const string CohortWithEmployer = "cohort-with-employer";
         public const string Cohort = "cohort";
+        public const string SuccessSaveDraft = "success-save-draft";
+        public const string SuccessSendToEmployer = "success-sendto-employer";
     }
 }
 
