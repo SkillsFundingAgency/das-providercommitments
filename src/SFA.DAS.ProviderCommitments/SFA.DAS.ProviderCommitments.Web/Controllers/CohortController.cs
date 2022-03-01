@@ -453,7 +453,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectAddDraftApprenticeshipJourneyAsync(SelectAddDraftApprenticeshipJourneyRequest request)
+        public async Task<IActionResult> SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
         {
             var model = await _modelMapper.Map<SelectAddDraftApprenticeshipJourneyViewModel>(request);
 

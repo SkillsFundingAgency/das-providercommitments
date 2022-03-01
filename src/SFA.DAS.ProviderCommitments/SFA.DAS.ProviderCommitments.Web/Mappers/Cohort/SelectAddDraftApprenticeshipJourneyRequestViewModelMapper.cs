@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.Features.Services;
@@ -27,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
 
         public SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(
-            ICommitmentsApiClient commitmentApiClient, 
+            ICommitmentsApiClient commitmentApiClient,
             IProviderRelationshipsApiClient providerRelationshipsApiClient,
               IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
@@ -39,12 +40,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<SelectAddDraftApprenticeshipJourneyViewModel> Map(SelectAddDraftApprenticeshipJourneyRequest source)
         {
             var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
-            var hasRelationshipTask = _providerRelationshipsApiClient.HasRelationshipWithPermission(new HasRelationshipWithPermissionRequest { Ukprn = source.ProviderId, Operation = Operation.CreateCohort });
+            var hasRelationshipTask = _providerRelationshipsApiClient.HasRelationshipWithPermission(
+                new HasRelationshipWithPermissionRequest
+                {
+                    Ukprn = source.ProviderId,
+                    Operation = Operation.CreateCohort
+                }, CancellationToken.None);
             await Task.WhenAll(getCohortsTask, hasRelationshipTask);
 
             var hasExistingCohort = false;
 
-            if(getCohortsTask.Result.Cohorts is not null)
+            if (getCohortsTask.Result.Cohorts is not null)
                 hasExistingCohort = getCohortsTask.Result.Cohorts.Any();
 
             var result = new SelectAddDraftApprenticeshipJourneyViewModel

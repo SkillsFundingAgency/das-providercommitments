@@ -10,6 +10,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -27,11 +28,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public void ThenProviderIdIsMapped()
+        public async Task ThenProviderIdIsMapped()
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
 
-            var viewResult = fixture.Act();
+            var viewResult = await fixture.ActAsync();
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
 
@@ -52,6 +53,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => Sut.SelectDraftApprenticeshipsEntryMethodAsync(_request);
+        public IActionResult Act() => Sut.SelectDraftApprenticeshipsEntryMethod(_request);
     }
 }

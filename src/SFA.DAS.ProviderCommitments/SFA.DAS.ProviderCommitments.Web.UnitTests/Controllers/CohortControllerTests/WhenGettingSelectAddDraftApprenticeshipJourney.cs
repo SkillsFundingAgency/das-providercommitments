@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -18,23 +19,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenGettingSelectAddDraftApprenticeshipJourney
     {
         [Test]
-        public void ThenReturnsView()
+        public async Task ThenReturnsView()
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
 
-            var result = fixture.Act();
+            var result = await fixture.ActAsync();
 
             result.VerifyReturnsViewModel();
         }
 
         [Test]
-        public void ThenProviderIdIsMapped()
+        public async Task ThenProviderIdIsMapped()
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
 
-            var viewResult = fixture.Act();
+            var viewResult = await fixture.ActAsync();
 
-            var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
+            var model =  viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
 
             Assert.AreEqual(fixture.ProviderId, model.ProviderId);
         }
@@ -42,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         [TestCase(true, true, Description = "Toggle is enabled")]
         [TestCase(false, false, Description = "Toggle is disabled")]
-        public void ThenFeatureToggleIsMapped(bool toggleValue, bool expectedValue)
+        public async Task ThenFeatureToggleIsMappedAsync(bool toggleValue, bool expectedValue)
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
 
@@ -51,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 fixture.WithBulkUploadV2FeatureEnabled();
             }
 
-            var viewResult = fixture.Act();
+            var viewResult = await fixture.ActAsync();
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
 
@@ -75,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _featureToggleServiceMock.Object, Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => Sut.SelectAddDraftApprenticeshipJourneyAsync(_request);
+        public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);
 
         internal WhenGettingSelectAddDraftApprenticeshipJourneyFixture WithBulkUploadV2FeatureEnabled()
         {
