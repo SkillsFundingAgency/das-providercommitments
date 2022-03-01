@@ -453,13 +453,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
+        public async Task<IActionResult> SelectAddDraftApprenticeshipJourneyAsync(SelectAddDraftApprenticeshipJourneyRequest request)
         {
-            var model = new SelectAddDraftApprenticeshipJourneyViewModel
-            {
-                ProviderId = request.ProviderId,
-                IsBulkUploadV2Enabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix).IsEnabled
-            };
+            var model = await _modelMapper.Map<SelectAddDraftApprenticeshipJourneyViewModel>(request);
+
+            if (!model.HasExistingCohort && !model.HasCreateCohortPermission)
+                return RedirectToAction("Error", "Error", new { statusCode = 405 });
 
             return View(model);
         }

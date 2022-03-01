@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _featureToggleServiceMock.Object, Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => Sut.SelectAddDraftApprenticeshipJourney(_request);
+        public IActionResult Act() => Sut.SelectAddDraftApprenticeshipJourneyAsync(_request);
 
         internal WhenGettingSelectAddDraftApprenticeshipJourneyFixture WithBulkUploadV2FeatureEnabled()
         {

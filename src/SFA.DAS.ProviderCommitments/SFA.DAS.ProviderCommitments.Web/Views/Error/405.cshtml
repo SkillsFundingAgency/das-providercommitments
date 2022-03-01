@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "You cannot add apprentices";
+    ViewBag.GaData.Vpv = "/error/403";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+        <h1 class="govuk-heading-xl">You cannot add apprentices</h1>
+
+        <p class="govuk-body">
+            You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
+        </p>
+
+        <p class="gov-body govuk-!-margin-bottom-8">
+            <a href="@Url.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a>
+        </p>
+
+    </div>
+</div>
+
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
+}
