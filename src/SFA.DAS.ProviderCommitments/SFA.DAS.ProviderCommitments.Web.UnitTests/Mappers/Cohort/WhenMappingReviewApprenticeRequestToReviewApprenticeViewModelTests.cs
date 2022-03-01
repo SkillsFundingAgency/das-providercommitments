@@ -46,6 +46,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task EmptyCohortRefMappedCorrectly()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+
+            //Act
+            await fixture.WithDefaultData().WithCohortRef("").Action();
+
+            //Assert
+            fixture.VerifyWhenCohortReferenceIsEmptyIsMappedCorrectly();
+        }
+
+        [Test]
         public async Task NumberOfApprenticesAreMappedCorrectly()
         {
             //Arrange
@@ -173,7 +186,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.AreEqual(cohortRef, _result.CohortRef);
         }
-        
+
+        internal void VerifyWhenCohortReferenceIsEmptyIsMappedCorrectly()
+        {
+            Assert.AreEqual("This will be created when you save or send to employers", _result.CohortRef);
+        }
+
         internal void VerifyNumberOfApprenticesAreMappedCorrectly()
         {
             var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
@@ -217,6 +235,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             // This will create three csv records, with total cost of 1000 (2 * 500)
             _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
 
+            return this;
+        }
+
+        internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithCohortRef(string cohortRef)
+        {
+            _request.CohortRef = cohortRef;
+            _csvRecords.ForEach(x => x.CohortRef = cohortRef);
             return this;
         }
 

@@ -120,6 +120,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public void VerifyEPAOrgIdIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.EPAOrgID, result.EPAOrgId);
+            }
+        }
+
+        [Test]
         public void VerifyProviderRefIsMapped()
         {
             foreach (var record in _csvRecords)

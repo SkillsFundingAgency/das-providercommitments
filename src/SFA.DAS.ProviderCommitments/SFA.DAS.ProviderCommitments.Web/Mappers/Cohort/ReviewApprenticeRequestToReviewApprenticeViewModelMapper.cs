@@ -41,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);        
 
-            var groupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef );
+            var groupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef || 
+            (string.IsNullOrWhiteSpace(source.CohortRef) && string.IsNullOrWhiteSpace(x.CohortRef)));
 
             foreach (var record in groupedByCohort)
             {   
@@ -53,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var apprenticeEndDate = GetValidDate(record.EndDate, "yyyy-MM");
                 
                 result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
-                result.CohortRef = record.CohortRef;
+                result.CohortRef = !string.IsNullOrWhiteSpace(record.CohortRef) ? record.CohortRef : "This will be created when you save or send to employers";
                 result.TotalApprentices = groupedByCohort.Count();
                 result.TotalCost = groupedByCohort.Sum(x => int.Parse(x.TotalPrice));                
 
