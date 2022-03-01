@@ -21,12 +21,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
-            var csVRecrods = await _cacheService.GetFromCache<List<Models.Cohort.CsvRecord>>(source.CacheRequestId.ToString());
+            var csVRecords = await _cacheService.GetFromCache<List<Models.Cohort.CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString());
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadDraftApprenticeships = csVRecrods.Select(x => MapTo(x))
+                BulkUploadDraftApprenticeships = csVRecords.Select(x => MapTo(x))
             };
         }
 
