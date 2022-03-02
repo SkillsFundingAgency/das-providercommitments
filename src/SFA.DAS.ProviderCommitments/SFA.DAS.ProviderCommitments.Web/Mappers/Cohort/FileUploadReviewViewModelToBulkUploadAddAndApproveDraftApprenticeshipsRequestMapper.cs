@@ -27,11 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-<<<<<<< HEAD
-                BulkUploadAddAndApproveDraftApprenticeships = csVRecrods.Select((csv, i) => MapTo(i, csv, source.ProviderId))
-=======
-                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select(MapTo)
->>>>>>> CON-4187-save-cohort-send-to-employer
+                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select((csv, i) => MapTo(i, csv, source.ProviderId))
             };
         }
 
