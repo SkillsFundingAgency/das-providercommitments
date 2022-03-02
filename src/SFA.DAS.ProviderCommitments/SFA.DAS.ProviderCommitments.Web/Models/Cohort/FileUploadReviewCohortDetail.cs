@@ -7,7 +7,7 @@
         public int NumberOfApprentices { get; set; }
         public int TotalCost { get; set; }
 
-        public string CohortRefText => CohortRef ?? EmptyCohortRefText;
+        public string CohortRefText => string.IsNullOrEmpty(CohortRef) ? EmptyCohortRefText : CohortRef;
 
         public string NumberOfApprenticeshipsText
         {
