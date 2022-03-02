@@ -168,7 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             object viewModel = JsonConvert.SerializeObject(_editViewModel);
 
-            _mockTempDataDictionary.Setup(d => d.TryGetValue("EditApprenticeshipRequestViewModel", out viewModel)).Returns(true);
+            _mockTempDataDictionary.Setup(d => d.Peek("EditApprenticeshipRequestViewModel")).Returns(viewModel);
         }
     }
 }

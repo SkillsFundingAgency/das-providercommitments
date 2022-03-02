@@ -93,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _sut.TempData = _tempData;
         }
         
-        public Task<IActionResult> Act() => _sut.SuccessSaveDraft(providerId);
+        public Task<IActionResult> Act() => _sut.FileUploadSuccessSaveDraft(providerId);
 
         public void VerifyMapperIsCalled()
         {

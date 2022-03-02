@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var result = await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             
             //Assert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("SuccessSaveDraft"); ;
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadSuccessSaveDraft"); ;
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var result = await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
             
             //Aseert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Success"); ;
+            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadSuccess"); ;
         }
 
         [Test]

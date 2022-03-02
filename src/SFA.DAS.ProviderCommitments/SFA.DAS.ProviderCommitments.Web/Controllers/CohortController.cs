@@ -386,7 +386,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadSuccessSaveDraft(long providerId)
         {
             var response = TempData.GetButDontRemove<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload.DraftApprenticeshipResponse);
-            TempData.Keep(Constants.BulkUpload.DraftApprenticeshipResponse);
             var viewModel = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
             viewModel.ProviderId = providerId;
             return View(viewModel);
@@ -397,7 +396,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadSuccess(long providerId)
         {
             var response = TempData.GetButDontRemove<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(Constants.BulkUpload.ApprovedApprenticeshipResponse);
-            TempData.Keep(Constants.BulkUpload.ApprovedApprenticeshipResponse);
             var viewModel = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(response);
             viewModel.ProviderId = providerId;
             return View(viewModel);
