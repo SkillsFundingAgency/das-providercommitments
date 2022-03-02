@@ -41,10 +41,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);        
 
-            var groupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef || 
+            var filterByCohorts = csvRecords.Where(x => x.CohortRef == source.CohortRef || 
             (string.IsNullOrWhiteSpace(source.CohortRef) && string.IsNullOrWhiteSpace(x.CohortRef)));
 
-            foreach (var record in groupedByCohort)
+            foreach (var record in filterByCohorts)
             {   
                 var publicAccountLegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId);
                 var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(record.StdCode);
@@ -55,8 +55,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 
                 result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
                 result.CohortRef = !string.IsNullOrWhiteSpace(record.CohortRef) ? record.CohortRef : "This will be created when you save or send to employers";
-                result.TotalApprentices = groupedByCohort.Count();
-                result.TotalCost = groupedByCohort.Sum(x => int.Parse(x.TotalPrice));                
+                result.TotalApprentices = filterByCohorts.Count();
+                result.TotalCost = filterByCohorts.Sum(x => int.Parse(x.TotalPrice));                
 
                 var apprenticeDetail = new ReviewApprenticeDetails
                 {                  
