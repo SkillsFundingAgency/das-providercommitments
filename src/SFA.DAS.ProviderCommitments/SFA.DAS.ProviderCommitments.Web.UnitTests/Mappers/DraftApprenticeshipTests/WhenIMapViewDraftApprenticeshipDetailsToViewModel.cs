@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             _apiResponse.DeliveryModel = dm;
             var result = await _act();
-            Assert.AreEqual(dm.ToAbnormalDescription(), result.DeliveryModel);
+            Assert.AreEqual(dm.ToIrregularDescription(), result.DeliveryModel);
         }
 
         [Test]
