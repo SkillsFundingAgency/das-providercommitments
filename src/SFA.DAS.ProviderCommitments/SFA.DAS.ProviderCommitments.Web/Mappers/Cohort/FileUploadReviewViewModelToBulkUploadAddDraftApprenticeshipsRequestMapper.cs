@@ -2,7 +2,6 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 ProviderId = source.ProviderId,
                 BulkUploadDraftApprenticeships = csVRecords.Select((x, index) => MapTo(x, source.ProviderId, index))
+
             };
         }
 
