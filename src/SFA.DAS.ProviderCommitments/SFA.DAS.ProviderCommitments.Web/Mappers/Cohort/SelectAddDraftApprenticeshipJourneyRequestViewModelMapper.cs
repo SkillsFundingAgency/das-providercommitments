@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             var hasExistingCohort = false;
 
-            if (getCohortsTask.Result.Cohorts is not null)
+            if (getCohortsTask.Result.Cohorts != null)
                 hasExistingCohort = getCohortsTask.Result.Cohorts.Any();
 
             var result = new SelectAddDraftApprenticeshipJourneyViewModel
