@@ -83,5 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public bool EmailAddressConfirmedByApprentice { get; set; }
         public bool EmailShouldBePresent { get; set; }
         public bool HasOptions { get; set; }
+        public DeliveryModel DeliveryModel { get; set; }
     }
 }

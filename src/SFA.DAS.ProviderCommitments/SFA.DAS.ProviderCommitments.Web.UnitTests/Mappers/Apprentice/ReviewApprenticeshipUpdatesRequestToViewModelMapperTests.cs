@@ -91,6 +91,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task DeliveryModel_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel, viewModel.ApprenticeshipUpdates.DeliveryModel);
+        }
+
+        [Test]
         public async Task CourseCode_IsMapped()
         {
             var viewModel = await fixture.Map();

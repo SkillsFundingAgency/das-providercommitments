@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
@@ -198,6 +199,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             //Assert
             _fixture.VerifyCourseCodeIsMapped();
+        }
+
+        [TestCase(DeliveryModel.Flexible)]
+        [TestCase(DeliveryModel.Normal)]
+        public async Task DeliveryModel_IsMapped(DeliveryModel dm)
+        {
+            _fixture.ApprenticeshipResponse.DeliveryModel = dm;
+
+            //Act
+            await _fixture.Map();
+
+            _fixture.VerifyDeliveryModelIsMapped();
         }
 
         [Test]
@@ -465,6 +478,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         internal void VerifyCoursesAreMapped()
         {
             Assert.AreEqual(_courses, _viewModel.Courses);
+        }
+
+        internal void VerifyDeliveryModelIsMapped()
+        {
+            Assert.AreEqual(ApprenticeshipResponse.DeliveryModel, _viewModel.DeliveryModel);
         }
 
         internal void VerifyIsLockedForUpdateIsMapped()

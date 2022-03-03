@@ -87,6 +87,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(viewModel.EndDate, result.EndDate);
         }
 
+        [Test, MoqAutoData]
+        public async Task DeliveryModel_IsMapped()
+        {
+            var result = await mapper.Map(viewModel);
+
+            Assert.AreEqual(viewModel.DeliveryModel, result.DeliveryModel);
+        }
+
         [Test]
         public async Task Course_IsMapped()
         {
