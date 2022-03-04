@@ -2,16 +2,11 @@ trigger:
   batch: true
   branches:
     include:
-      - "*"
-
-pr: none
-
-workspace:
-    clean: all
+      - "master"
 
 variables:
-  buildConfiguration: 'release'
-  buildPlatform: 'anycpu'
+  - name: buildConfiguration
+    value: 'release'
 
 resources:
   repositories:
@@ -19,34 +14,5 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.10
+    ref: refs/tags/0.4.37
     endpoint: SkillsFundingAgency
-
-pool:
-  name: DAS - Continuous Integration Agents
-  demands: LATEST_DOTNET_VERSION -equals 3.1
-
-steps:
-- template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
-
-- template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
-
-- task: DotNetCoreCLI@2
-  displayName: 'Publish Website'
-  inputs:
-    command: publish
-    publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/publish --no-restore --no-build'
-
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    Contents: |
-     azure/**
-    TargetFolder: '$(build.artifactstagingdirectory)/publish'
-    OverWrite: true
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/publish'
