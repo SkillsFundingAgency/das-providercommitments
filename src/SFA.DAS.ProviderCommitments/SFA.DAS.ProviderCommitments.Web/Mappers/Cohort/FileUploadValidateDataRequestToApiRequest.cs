@@ -14,21 +14,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             apiRequest.ProviderId = source.ProviderId;
 
             apiRequest.CsvRecords = source.CsvRecords.Select((csvRecord, index) =>
-                  new CsvRecord()
+                  new BulkUploadAddDraftApprenticeshipRequest()
                   {
                       AgreementId = csvRecord.AgreementId,
                       CohortRef = csvRecord.CohortRef,
-                      DateOfBirth = csvRecord.DateOfBirth,
-                      EmailAddress = csvRecord.EmailAddress,
-                      EndDate = csvRecord.EndDate,
-                      FamilyName = csvRecord.FamilyName,
-                      GivenNames = csvRecord.GivenNames,
-                      StartDate = csvRecord.StartDate,
-                      StdCode = csvRecord.StdCode,
-                      TotalPrice = csvRecord.TotalPrice,
-                      ULN = csvRecord.ULN,
+                      DateOfBirthAsString = csvRecord.DateOfBirth,
+                      Email = csvRecord.EmailAddress,
+                      EndDateAsString = csvRecord.EndDate,
+                      LastName = csvRecord.FamilyName,
+                      FirstName = csvRecord.GivenNames,
+                      StartDateAsString = csvRecord.StartDate,
+                      CourseCode = csvRecord.StdCode,
+                      CostAsString = csvRecord.TotalPrice,
+                      Uln = csvRecord.ULN,
                       ProviderRef = csvRecord.ProviderRef,
-                      RowNumber = index +1
+                      RowNumber = index + 1
                   }).ToList();
 
             return Task.FromResult(apiRequest);

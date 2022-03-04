@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenIPostFileUploadReviewFixture();
 
             var result = await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Review"); ;
+            result.VerifyReturnsRedirectToActionResult().WithActionName("SuccessSaveDraft"); ;
         }
 
         [Test]
@@ -100,6 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _mockModelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel), Times.Once);
         }
+
 
         public async Task<IActionResult> Act() => await Sut.FileUploadReview(_viewModel);
     }
