@@ -6,52 +6,66 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="_ValidationSummary" />
-        <form method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.ProviderId)
-            <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                        <h1 class="govuk-fieldset__heading">
-                            Add apprentice details
-                        </h1>
-                    </legend>
-                    @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
+        @if (!Model.HasExistingCohort && !Model.HasCreateCohortPermission)
+        {
+            <h1 class="govuk-heading-xl">You cannot add apprentices</h1>
+            <p class="govuk-body">
+                You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
+            </p>
+            <p class="gov-body govuk-!-margin-bottom-8">
+                <a href="@Url.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a>
+            </p>
+        }
+        else
+        {
+            <partial name="_ValidationSummary" />
+            <form method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.ProviderId)
+                <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Add apprentice details
+                            </h1>
+                        </legend>
+                        @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
 
-            
-                <div class="govuk-radios">
 
-                    @if (Model.HasExistingCohort)
-                    {
-                        <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
-                            <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
-                                Add to an existing cohort
-                            </label>
+                        <div class="govuk-radios">
+
+                            @if (Model.HasExistingCohort)
+                            {
+                                <div class="govuk-radios__item">
+                                    <input asp-for="Selection" value="ExistingCohort" type="radio" class="govuk-radios__input" id="confirm-ExistingCohort" />
+                                    <label class="govuk-label govuk-radios__label" for="confirm-ExistingCohort">
+                                        Add to an existing cohort
+                                    </label>
+                                </div>
+                            }
+
+
+                            @if (Model.HasCreateCohortPermission)
+                            {
+                                <div class="govuk-radios__item">
+                                    <input asp-for="Selection" value="NewCohort" type="radio" class="govuk-radios__input" id="confirm-NewCohort" />
+                                    <label class="govuk-label govuk-radios__label" for="confirm-NewCohort">
+                                        Create a new cohort
+                                    </label>
+                                </div>
+                            }
+
+
                         </div>
-                    }
-
-
-                    @if (Model.HasCreateCohortPermission)
-                    {
-                        <div class="govuk-radios__item">
-                            <input asp-for="Selection" value="NewCohort" type="radio" class="govuk-radios__input" id="confirm-NewCohort" />
-                            <label class="govuk-label govuk-radios__label" for="confirm-NewCohort">
-                                Create a new cohort
-                            </label>
-                        </div>
-                    }
-
-
-                    </div>
                     </fieldset>
                 </div>
                 <button class="govuk-button" type="submit" data-module="govuk-button">
                     Continue
                 </button>
             </form>
-        </div>
+        }
+
+    </div>
     </div>
 
     @section breadcrumb

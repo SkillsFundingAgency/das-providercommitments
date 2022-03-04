@@ -456,10 +456,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
         {
             var model = await _modelMapper.Map<SelectAddDraftApprenticeshipJourneyViewModel>(request);
-
-            if (!model.HasExistingCohort && !model.HasCreateCohortPermission)
-                return RedirectToAction("Error", "Error", new { statusCode = 405 });
-
             return View(model);
         }
 

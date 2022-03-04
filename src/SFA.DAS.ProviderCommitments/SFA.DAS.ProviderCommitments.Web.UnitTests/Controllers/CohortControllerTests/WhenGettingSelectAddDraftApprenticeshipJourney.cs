@@ -26,19 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var result = await fixture.ActAsync();
             result.VerifyReturnsViewModel();
         }
-
-        [Test]
-        public async Task Then_RedirectTo_ErrorPage_When_ProviderHasNoExistingCohort_And_HasNoCreateCohortPermissionAsync()
-        {
-            var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
-            fixture. ViewModel.HasExistingCohort = false;
-            fixture.ViewModel.HasCreateCohortPermission = false;
-
-            var result = await fixture.ActAsync();
-
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Error");
-        }
-
     }
 
     public class WhenGettingSelectAddDraftApprenticeshipJourneyFixture
@@ -50,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
         public  SelectAddDraftApprenticeshipJourneyViewModel ViewModel { get; set; }
-
 
         public WhenGettingSelectAddDraftApprenticeshipJourneyFixture()
         {
