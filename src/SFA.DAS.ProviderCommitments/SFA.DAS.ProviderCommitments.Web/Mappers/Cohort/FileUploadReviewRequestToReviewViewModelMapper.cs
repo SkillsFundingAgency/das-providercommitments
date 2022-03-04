@@ -45,6 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             var groupedByEmployers = csvRecords.GroupBy(x => x.AgreementId);
 
+            
             foreach (var employer in groupedByEmployers)
             {
                 var employerDetail = new FileUploadReviewEmployerDetails();
@@ -55,19 +56,105 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 employerDetail.CohortDetails = new List<FileUploadReviewCohortDetail>();
 
                 var cohortGroups = employer.GroupBy(x => x.CohortRef);
+
+                var cohortDetailfromCsvList =  new List<FileUploadReviewCohortDetail>();
+                var cohortDetailfromCsv = new FileUploadReviewCohortDetail();
+                //get the records from CSV file
                 foreach (var cohortGroup in cohortGroups)
                 {
-                    var cohortDetail = new FileUploadReviewCohortDetail();
-                    cohortDetail.CohortRef = cohortGroup.Key;
-                    cohortDetail.NumberOfApprentices = cohortGroup.Count();
-                    cohortDetail.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));
-                    employerDetail.CohortDetails.Add(cohortDetail);
+                    cohortDetailfromCsv.CohortRef = cohortGroup.Key;
+                    cohortDetailfromCsv.NumberOfApprentices = cohortGroup.Count();
+                    cohortDetailfromCsv.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));
+                    cohortDetailfromCsvList.Add(cohortDetailfromCsv);
                 }
+
+                var cohortDetailfromDbList = new List<FileUploadReviewCohortDetail>();
+                var cohortDetailfromDb = new FileUploadReviewCohortDetail();
+                //get the records from database
+                foreach (var cohortGroup in cohortGroups)
+                {
+                    //Get CohortId by CohortReference
+                    var cohortId = _encodingService.Decode(cohortGroup.Key, EncodingType.CohortReference);
+                    var response =await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+
+                    cohortDetailfromDb.CohortRef = cohortGroup.Key;
+                    cohortDetailfromDb.NumberOfApprentices = response.DraftApprenticeships.Count();
+                    cohortDetailfromDb.TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0);
+                    cohortDetailfromDbList.Add(cohortDetailfromDb);
+                }
+
+                var newList = cohortDetailfromCsvList.Concat(cohortDetailfromDbList).ToList();
+
+                
+
+                /*cohortDetailfromCsvList.AddRange(
+                        cohortDetailfromDbList.Select(
+                        m =>
+                           new FileUploadReviewCohortDetail
+                           {
+                               CohortRef = m.CohortRef,
+                               NumberOfApprentices = m.NumberOfApprentices,
+                               TotalCost = m.TotalCost
+                           })
+                        .OrderBy(x => x.CohortRef)
+                        .ToArray());
+
+                var result456 = cohortDetailfromCsvList;
+
+
+                var newPriceHistory =
+                    cohortDetailfromCsvList.Concat(cohortDetailfromDbList)
+                   .Select(
+                       m =>
+                       new FileUploadReviewCohortDetail
+                       {
+                           CohortRef = m.CohortRef,
+                           NumberOfApprentices = m.NumberOfApprentices,
+                           TotalCost = m.TotalCost                           
+                       })                   
+                   .GroupBy(x => x.CohortRef)
+                   .ToArray();
+
+                var test = newPriceHistory;*/
+
+
+                var cohortGroupsafterconcat = newList.GroupBy(x => x.CohortRef).Select(
+                       m =>
+                       new FileUploadReviewCohortDetail
+                       {
+                           CohortRef = m.Key,
+                           NumberOfApprentices = m.Sum(x => x.NumberOfApprentices),
+                           TotalCost = m.Sum(x => x.TotalCost)
+                    }).ToList();
+
+
+                foreach (var item in cohortGroupsafterconcat)
+                {                   
+                    employerDetail.CohortDetails.Add(item);
+                }                
 
                 result.EmployerDetails.Add(employerDetail);
             }
+
+
+
+            //employerDetail.CohortDetails = new List<FileUploadReviewCohortDetail>();
+
+            //var cohortGroups = employer.GroupBy(x => x.CohortRef);
+            //foreach (var cohortGroup in cohortGroups)
+            //{
+            //    var cohortDetail = new FileUploadReviewCohortDetail();
+            //    cohortDetail.CohortRef = cohortGroup.Key;
+            //    cohortDetail.NumberOfApprentices = cohortGroup.Count();
+            //    cohortDetail.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));
+            //    employerDetail.CohortDetails.Add(cohortDetail);
+            //}
+
+            //result.EmployerDetails.Add(employerDetail);
+
 
             return result;
         }
     }
 }
+
