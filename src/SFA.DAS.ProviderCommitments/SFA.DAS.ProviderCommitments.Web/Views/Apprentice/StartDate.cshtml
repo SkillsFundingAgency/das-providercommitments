@@ -1,21 +1,25 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types;
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
 @{
     ViewData["Title"] = "New training start date";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
-    ViewBag.GaData.Org = Model.LegalEntityName;
+    ViewBag.GaData.Org = Model.LegalEntityName;    
+    var isNormal = @Model.DeliveryModel == DeliveryModel.Normal;
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <partial name="_ValidationSummary" />
+        <partial name="_ValidationSummary" />        
 
-        <h1 class="govuk-heading-xl">New training start date</h1>
+        <h1 asp-show="@isNormal" class="govuk-heading-xl">New training start date</h1>
 
-        <p class="govuk-body">The restart date must be on or after the stop date.</p>
+        <h2 asp-show="!@isNormal" class="govuk-heading-xl">Start date for this employment contract</h2>
+        
+        <p asp-show="@isNormal" class="govuk-body">The restart date must be on or after the stop date.</p>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -26,7 +30,8 @@
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-50">Stop date</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header das-table-cell-width-50">Stop date</th>
+                    <th asp-show="!@isNormal" scope="row" class="govuk-table__cell das-table-cell-width-50">Previous employment end date</th>
                     <td id="stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                 </tr>
 
@@ -37,10 +42,14 @@
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StopDate)
+                @Html.HiddenFor(x => x.EmploymentEndDate)
                 @Html.HiddenFor(x => x.EndDate)
+                @Html.HiddenFor(x => x.EmploymentPrice)
                 @Html.HiddenFor(x => x.Price)
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
+
+                    <h3 asp-show="!@isNormal" class="govuk-heading-s">Enter the start date for this employment contract</h3>
 
                     <span id="start-date-hint" class="govuk-hint">
                         For example, 11 2019

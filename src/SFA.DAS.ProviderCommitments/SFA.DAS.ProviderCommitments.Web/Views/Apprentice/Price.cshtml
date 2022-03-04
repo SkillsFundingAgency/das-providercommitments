@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types;
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
@@ -6,23 +7,39 @@
     ViewBag.Title = "What's the new agreed apprenticeship price?";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/price";
     ViewBag.GaData.Org = Model.LegalEntityName;
+    var isNormal = @Model.DeliveryModel == DeliveryModel.Normal;
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+
+        <h1 asp-show="@isNormal" class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h2 asp-show="!@isNormal" class="govuk-heading-l">Agreed prices</h2>
+
         <form novalidate method="post">
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.StartDate)
+            @Html.HiddenFor(x => x.EmploymentEndDate)
             @Html.HiddenFor(x => x.EndDate)
+
+            <div asp-show="!@isNormal" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error ")">
+                <p>Agreed price for this employment contract (excluding VAT).</p>
+                <span class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,000 enter 1000.</span>
+                @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
+                <input asp-for="EmploymentPrice" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.EmploymentPrice, "govuk-input--error input-validation-error")" />
+            </div>
+
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
-                <p>This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment.</p>
-                <label class="govuk-label" for="price">Enter the price in whole pounds.</label>
-                <span class="govuk-hint">For example, for &pound;1,500 enter 1500.</span>
+                <p asp-show="@isNormal">This is the price agreed between you and the new employer to complete the remainder of the apprenticeship training and assessment.</p>
+                <p asp-show="!@isNormal">Total agreed apprenticeship price (excluding VAT).</p>
+                <label asp-show="@isNormal" class="govuk-label" for="price">Enter the price in whole pounds.</label>
+                <span asp-show="@isNormal" class="govuk-hint">For example, for &pound;1,500 enter 1500.</span>
+                <span asp-show="!@isNormal" class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,000 enter 1000.</span>
                 @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
                 <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
             </div>
+
             <button id="save-and-continue-button" class="govuk-button" type="submit" data-module="govuk-button">
                 Save and continue
             </button>

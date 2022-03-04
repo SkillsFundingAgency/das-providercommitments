@@ -13,7 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                StartDate = source.StartDate.MonthYear
+                StartDate = source.StartDate.MonthYear,
+                DeliveryModel = source.DeliveryModel,
             });
         }
     }

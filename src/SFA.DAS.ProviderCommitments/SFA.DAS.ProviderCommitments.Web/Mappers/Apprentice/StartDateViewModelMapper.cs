@@ -28,7 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EndDate = source.EndDate,
                 StartDate = new MonthYearModel(source.StartDate),
                 Price = source.Price,
-                LegalEntityName = apprenticeship.EmployerName
+                LegalEntityName = apprenticeship.EmployerName,
+                DeliveryModel = apprenticeship.DeliveryModel,
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -11,9 +12,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long ApprenticeshipId { get; set; }
         public string LegalEntityName { get; set; }
         public string StartDate { get; set; }
-        public string EndDate { get; set; }
-        [SuppressArgumentException(nameof(Price), "Total agreed apprenticeship price must be 7 numbers or fewer")]
+        public string EmploymentEndDate { get; set; }
+        public string EndDate { get; set; }        
+        public int? EmploymentPrice { get; set; }
+        [SuppressArgumentException(nameof(EmploymentPrice), "Employment price must be 7 numbers or fewer")]
         public int? Price { get; set; }
+        [SuppressArgumentException(nameof(Price), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public bool InEditMode { get; set; }
+        public DeliveryModel? DeliveryModel { get; set; }
     }
 }
