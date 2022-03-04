@@ -12,3 +12,8 @@ resources:
     name: SkillsFundingAgency/das-platform-building-blocks
     ref: refs/tags/0.4.37
     endpoint: SkillsFundingAgency
+
+stages:
+- stage: Build
+  jobs:
+  - template: pipeline-templates/job/code-build.yml
