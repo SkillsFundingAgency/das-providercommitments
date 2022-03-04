@@ -58,7 +58,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         CourseCode = update.TrainingCode,
                         CourseName = update.TrainingName,
                         Version = update.Version,
-                        Option = update.Option
+                        Option = update.Option,
+                        DeliveryModel = update.DeliveryModel,
                     },
                     OriginalApprenticeship = new BaseEdit
                     {
@@ -72,7 +73,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         CourseCode = apprenticeship.CourseCode,
                         CourseName = apprenticeship.CourseName,
                         Version = apprenticeship.Version,
-                        Option = apprenticeship.Option
+                        Option = apprenticeship.Option,
+                        DeliveryModel = apprenticeship.DeliveryModel,
                     }
                 };
 

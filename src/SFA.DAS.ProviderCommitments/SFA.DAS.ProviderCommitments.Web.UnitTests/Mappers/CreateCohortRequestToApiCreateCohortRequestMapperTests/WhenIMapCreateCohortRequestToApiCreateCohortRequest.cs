@@ -120,5 +120,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestT
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.ReservationId, result.ReservationId);
         }
+
+        [Test]
+        public async Task ThenDeliveryModelIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
+        }
     }
 }

@@ -21,7 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference,
-                CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption
+                CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
+                DeliveryModel = source.DeliveryModel.Value,
             });
     }
 }
