@@ -4,10 +4,6 @@ trigger:
     include:
       - "master"
 
-variables:
-  - name: buildConfiguration
-    value: 'release'
-
 resources:
   repositories:
   - repository: self
