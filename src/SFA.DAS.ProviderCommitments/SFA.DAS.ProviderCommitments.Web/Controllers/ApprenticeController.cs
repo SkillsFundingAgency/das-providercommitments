@@ -304,7 +304,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
             var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirm, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.EndDate, request.Price });
+            return RedirectToRoute(RouteNames.ApprenticeConfirm, new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.StartDate, request.EmploymentEndDate, request.EndDate, request.EmploymentPrice, request.Price });
         }
 
         [HttpGet]

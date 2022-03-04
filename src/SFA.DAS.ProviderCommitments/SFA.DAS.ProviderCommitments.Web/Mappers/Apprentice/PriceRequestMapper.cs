@@ -14,7 +14,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StartDate = source.StartDate,
-                EndDate = source.EndDate.MonthYear
+                EmploymentEndDate = source.EmploymentEndDate.MonthYear,
+                EndDate = source.EndDate.MonthYear,
+                DeliveryModel = source.DeliveryModel,
             });
         }
     }
