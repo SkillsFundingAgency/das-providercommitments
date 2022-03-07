@@ -61,12 +61,15 @@
                             </h2>
                             @Html.ValidationMessageFor(m => m.SelectedOption, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption) })
                             <div class="govuk-radios">
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
-                                    <label class="govuk-label govuk-radios__label" for="details-approve">
-                                        Approve all and send to employer(s)
-                                    </label>
-                                </div>
+                                @if (Model.CanApprove)
+                                {
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
+                                        <label class="govuk-label govuk-radios__label" for="details-approve">
+                                            Approve all and send to employer(s)
+                                        </label>
+                                    </div>
+                                }
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
                                     <label class="govuk-label govuk-radios__label" for="details-save">

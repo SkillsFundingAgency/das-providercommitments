@@ -1,11 +1,16 @@
 ﻿using AutoFixture;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
@@ -92,6 +97,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private Mock<ICacheService> _cacheService;
             private List<CsvRecord> _csvRecords;
             private FileUploadReviewViewModel _result;
+            private readonly Mock<IPolicyAuthorizationWrapper> _policyAuthorizationWrapper;
+            private Mock<IHttpContextAccessor> _httpContextAccessor;
+            private RouteData _routeData;
+            private Mock<IRoutingFeature> _routingFeature;
 
             public WhenMappingFileUploadReviewRequestToReviewViewModelFixture()
             {
@@ -115,8 +124,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 _cacheService = new Mock<ICacheService>();
                 _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
+                
+                _routeData = new RouteData();
+                _routingFeature = new Mock<IRoutingFeature>();
+                _httpContextAccessor = new Mock<IHttpContextAccessor>();
+                _routingFeature.Setup(f => f.RouteData).Returns(_routeData);
+                var featureCollection = new Mock<IFeatureCollection>();
+                featureCollection.Setup(f => f.Get<IRoutingFeature>()).Returns(_routingFeature.Object);
 
-                _sut = new FileUploadReviewRequestToReviewViewModelMapper(Mock.Of<ILogger<FileUploadReviewRequestToReviewViewModelMapper>>(), _commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
+                var context = new Mock<HttpContext>();
+                context.Setup(c => c.Features).Returns(featureCollection.Object);
+                context.Setup(c => c.Request.Query).Returns(new QueryCollection());
+                context.Setup(c => c.Request.Form).Returns(new FormCollection(new Dictionary<string, StringValues>()));
+                _httpContextAccessor.Setup(c => c.HttpContext).Returns(context.Object);
+
+                _policyAuthorizationWrapper = new Mock<IPolicyAuthorizationWrapper>();
+                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<System.Security.Claims.ClaimsPrincipal>(), It.IsAny<string>())).ReturnsAsync(true);
+
+                _sut = new FileUploadReviewRequestToReviewViewModelMapper(Mock.Of<ILogger<FileUploadReviewRequestToReviewViewModelMapper>>(), _commitmentApiClient.Object, 
+                    _cacheService.Object, _encodingService.Object, _policyAuthorizationWrapper.Object, _httpContextAccessor.Object);
             }
 
             public async Task Action() =>  _result = await _sut.Map(_request);

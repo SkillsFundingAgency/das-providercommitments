@@ -31,9 +31,9 @@
                 @foreach (var cohort in Model.BulkUploadDraftApprenticeshipsViewModel)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@cohort.EmployerName</td>
-                        <td class="govuk-table__cell">@cohort.CohortReference</td>
-                        <td class="govuk-table__cell">@cohort.NumberOfApprenticeships</td>
+                        <td class="govuk-table__cell" data-label="EmployerName">@cohort.EmployerName</td>
+                        <td class="govuk-table__cell" data-label="CohortReference">@cohort.CohortReference</td>
+                        <td class="govuk-table__cell" data-label="NumberOfApprenticeships">@cohort.NumberOfApprenticeships</td>
                     </tr>                  
                 }
             </tbody>

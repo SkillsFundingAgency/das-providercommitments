@@ -11,6 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         }
         public Guid CacheRequestId { get; set; }
         public long ProviderId { get; set; }
+        public bool CanApprove { get; set; }
         public FileUploadReviewOption? SelectedOption { get; set; }
         public List<FileUploadReviewEmployerDetails> EmployerDetails { get; set; }
     }
