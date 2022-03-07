@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Authorization.Context;
-using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
