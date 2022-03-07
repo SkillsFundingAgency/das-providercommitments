@@ -18,15 +18,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheService _cacheService;
-        private readonly IEncodingService _encodingService;
+        private readonly IEncodingService _encodingService;        
         private readonly ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> _logger;
 
-        public ReviewApprenticeRequestToReviewApprenticeViewModelMapper(ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> logger, ICommitmentsApiClient commitmentApiClient, ICacheService cacheService, IEncodingService encodingService)
+        public ReviewApprenticeRequestToReviewApprenticeViewModelMapper(ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> logger, 
+            ICommitmentsApiClient commitmentApiClient, ICacheService cacheService, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentApiClient;
             _cacheService = cacheService;
             _encodingService = encodingService;
-            _logger = logger;
+            _logger = logger;            
         }
 
         public async Task<ReviewApprenticeViewModel> Map(ReviewApprenticeRequest source)
@@ -35,43 +36,73 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 ProviderId = source.ProviderId,
                 CacheRequestId = source.CacheRequestId,
-                CohortDetails = new List<ReviewApprenticeDetails>()
+                ExistingCohortDetails = new List<ReviewApprenticeDetails>(),
+                FileUploadCohortDetails = new List<FileUploadReviewApprenticeDetails>(),
             };
-            
+
+            //Get CsvRecord details
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
-            _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);        
+            var csvRecordsGroupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef);
+            _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
+            var fileUploadRecords = new List<FileUploadReviewApprenticeDetails>();           
 
-            var groupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef );
+            foreach (var csvRecord in csvRecordsGroupedByCohort)
+            {
+                var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(csvRecord.StdCode);
+                var dateOfBirth = GetValidDate(csvRecord.DateOfBirth, "yyyy-MM-dd");
+                var apprenticeStartDate = GetValidDate(csvRecord.StartDate, "yyyy-MM-dd");
+                var apprenticeEndDate = GetValidDate(csvRecord.EndDate, "yyyy-MM");
 
-            foreach (var record in groupedByCohort)
-            {   
-                var publicAccountLegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId);
-                var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(record.StdCode);
-
-                var dateOfBirth = GetValidDate(record.DateOfBirth, "yyyy-MM-dd");
-                var apprenticeStartDate = GetValidDate(record.StartDate, "yyyy-MM-dd");
-                var apprenticeEndDate = GetValidDate(record.EndDate, "yyyy-MM");
-                
-                result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
-                result.CohortRef = record.CohortRef;
-                result.TotalApprentices = groupedByCohort.Count();
-                result.TotalCost = groupedByCohort.Sum(x => int.Parse(x.TotalPrice));                
-
-                var apprenticeDetail = new ReviewApprenticeDetails
-                {                  
-                    Name = $"{record.GivenNames} {record.FamilyName}",
-                    TrainingCourse = courseDetails.TrainingProgramme.Name, 
-                    ULN = record.ULN,
-                    DateOfBirth =  dateOfBirth.Value.ToString("d MMM yyyy"),
-                    Email = record.EmailAddress,
-                    TrainingDates =  $"{apprenticeStartDate.Value:MMM yyyy} to {apprenticeEndDate.Value:MMM yyyy} ",
-                    Price = int.Parse(record.TotalPrice),
-                    FundingBandCap = GetFundingBandCap(courseDetails.TrainingProgramme, apprenticeStartDate.Value.Date)                    
+                var fileUploadApprenticeDetail = new FileUploadReviewApprenticeDetails
+                {
+                    Name = $"{csvRecord.GivenNames} {csvRecord.FamilyName}",
+                    TrainingCourse = courseDetails.TrainingProgramme.Name,
+                    ULN = csvRecord.ULN,
+                    DateOfBirth = dateOfBirth.Value.ToString("d MMM yyyy"),
+                    Email = csvRecord.EmailAddress,
+                    TrainingDates = $"{apprenticeStartDate.Value:MMM yyyy} to {apprenticeEndDate.Value:MMM yyyy} ",
+                    Price = int.Parse(csvRecord.TotalPrice),
+                    FundingBandCap = GetFundingBandCap(courseDetails.TrainingProgramme, apprenticeStartDate.Value.Date)
                 };
 
-                result.CohortDetails.Add(apprenticeDetail);
+                result.FileUploadCohortDetails.Add(fileUploadApprenticeDetail);
+                fileUploadRecords.Add(fileUploadApprenticeDetail);                
             }
 
+            //Get CohortId by CohortReference -- commitments from DB
+            var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
+            var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+            var existingRecords = new List<ReviewApprenticeDetails>();
+            _logger.LogInformation("Total number of records from db: " + response.DraftApprenticeships.Count);           
+
+            foreach (var item in response.DraftApprenticeships)
+            {
+                //var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(csvRecord.StdCode);
+                var course = await _commitmentsApiClient.GetTrainingProgramme(item.CourseCode);
+
+                var apprenticeDetail = new ReviewApprenticeDetails
+                {
+                    Name = $"{item.FirstName} {item.LastName}",
+                    TrainingCourse = item.CourseName,
+                    ULN = item.Uln,
+                    DateOfBirth = item.DateOfBirth.ToString(),
+                    Email = item.Email,
+                    TrainingDates = $"{item.StartDate.Value:MMM yyyy} to {item.EndDate.Value:MMM yyyy} ",
+                    Price = item.Cost ?? 0,
+                    FundingBandCap = GetFundingBandCap(course.TrainingProgramme, item.StartDate.Value.Date)
+                };
+                result.ExistingCohortDetails.Add(apprenticeDetail);
+                existingRecords.Add(apprenticeDetail);
+            }
+
+            var publicAccountLegalEntityIdNew = _encodingService.Decode(csvRecordsGroupedByCohort.FirstOrDefault().AgreementId, EncodingType.PublicAccountLegalEntityId);
+            result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName;
+            result.CohortRef = source.CohortRef;
+            result.TotalApprentices = fileUploadRecords.Count() + existingRecords.Count(); //newList.Count();
+            result.TotalCost = fileUploadRecords.Sum(x => x.Price) + existingRecords.Sum(x => x.Price);   //newList.Sum(x => x.Price);
+            result.CsvTotalApprenticesText = $"{fileUploadRecords.Count()} apprentice(s) to be added from CSV file";
+            result.DbTotalApprenticesText = $"{existingRecords.Count()} apprentice(s) previously added to this cohort";
+          
             return result;
         }
 

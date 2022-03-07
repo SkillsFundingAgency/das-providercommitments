@@ -190,13 +190,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyCohortDetailsCountMappedCorrectly()
         { 
-            Assert.AreEqual(2, _result.CohortDetails.Count());
+            Assert.AreEqual(2, _result.ExistingCohortDetails.Count());
         }
 
         internal void VerifyCohortDetailsMappedCorrectly()
         {
             var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
-            var cohortDetails = _result.CohortDetails[0];
+            var cohortDetails = _result.ExistingCohortDetails[0];
 
             Assert.AreEqual(cohortDetails.Name, $"{csvRecord.GivenNames} {csvRecord.FamilyName}");
             Assert.AreEqual(cohortDetails.Email, csvRecord.EmailAddress);
@@ -209,7 +209,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
         internal void VerifyFundingText()
         {
-            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandText);
+            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FileUploadFundingBandText);
         }        
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
