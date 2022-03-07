@@ -2,6 +2,7 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,27 +27,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select(MapTo)
+                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select((csv, i) => MapTo(i, csv, source.ProviderId))
             };
         }
 
-        private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record)
+        private BulkUploadAddDraftApprenticeshipRequest MapTo(int index, CsvRecord record, long providerId)
         {
-            return new BulkUploadAddDraftApprenticeshipRequest
-            {
-                Uln = record.ULN,
-                FirstName = record.GivenNames,
-                LastName = record.FamilyName,
-                DateOfBirthAsString = record.DateOfBirth,
-                CostAsString = record.TotalPrice,
-                ProviderRef = record.ProviderRef,
-                StartDateAsString = record.StartDate,
-                EndDateAsString = record.EndDate,
-                CourseCode = record.StdCode,
-                LegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId),
-                CohortId = _encodingService.Decode(record.CohortRef, EncodingType.CohortReference),
-                Email = record.EmailAddress
-            };
+            var legalEntityId = !string.IsNullOrWhiteSpace(record.AgreementId)
+               ? _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId) : (long?)null;
+
+            var cohortId = !string.IsNullOrWhiteSpace(record.CohortRef)
+                ? _encodingService.Decode(record.CohortRef, EncodingType.CohortReference) : (long?)null;
+
+            var bulkUploadApiRequest = record.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, providerId);
+            bulkUploadApiRequest.CohortId = cohortId;
+            bulkUploadApiRequest.LegalEntityId = legalEntityId;
+
+            return bulkUploadApiRequest;
         }
     }
 }
