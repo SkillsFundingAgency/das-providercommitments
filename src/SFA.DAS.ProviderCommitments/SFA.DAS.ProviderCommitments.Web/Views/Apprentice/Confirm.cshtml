@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmViewModel
 
@@ -7,10 +7,7 @@
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
     ViewBag.GaData.Org = Model.NewEmployerName;
 
-    string DeliveryTitle(string regularTitle, string portableTitle)
-        => Model.DeliveryModel == SFA.DAS.CommitmentsV2.Types.DeliveryModel.Regular
-            ? regularTitle 
-            : portableTitle;
+    var isNormal = Model.DeliveryModel == SFA.DAS.CommitmentsV2.Types.DeliveryModel.Regular;
 
     var changeData = new
     {
@@ -56,12 +53,14 @@
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">@DeliveryTitle("Training start date", "Current employment start date")</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header">Training start date</th>
+                    <th asp-hide="@isNormal" scope="row" class="govuk-table__header">Current employment start date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.OldStartDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">@DeliveryTitle("Training end date", "Current employment end date")</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header">Training end date</th>
+                    <th asp-hide="@isNormal" scope="row" class="govuk-table__header">Current employment end date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.OldEndDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
@@ -86,41 +85,38 @@
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">@DeliveryTitle("New training start date", "New employment start date")</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header">New training start date</th>
+                    <th asp-hide="@isNormal" scope="row" class="govuk-table__header">New employment start date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.NewStartDateTime)</td>
                     <td class="govuk-table__cell">
                         <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeStartDate, changeData)">Change</a>
                     </td>
                 </tr>
-                @if (Model.DeliveryModel == SFA.DAS.CommitmentsV2.Types.DeliveryModel.PortableFlexiJob)
-                {
-                <tr class="govuk-table__row">
+                <tr asp-hide="@isNormal" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New employment end date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDate.Date.Value)</td>
                     <td class="govuk-table__cell">
                         <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, changeData)">Change</a>
                     </td>
                 </tr>
-                }
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">@DeliveryTitle("New training end date", "Projected apprenticeship training end date")</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header">New training end date</th>
+                    <th asp-hide="@isNormal" scope="row" class="govuk-table__header">Projected apprenticeship training end date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
                     <td class="govuk-table__cell">
                         <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, changeData)">Change</a>
                     </td>
                 </tr>
-                @if (Model.DeliveryModel == SFA.DAS.CommitmentsV2.Types.DeliveryModel.PortableFlexiJob)
-                {
-                <tr class="govuk-table__row">
+                <tr asp-hide="@isNormal" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Agreed price for this employment</th>
                     <td class="govuk-table__cell">@Model.NewEmploymentPrice.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell">
                         <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
                     </td>
                 </tr>
-                }
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">@DeliveryTitle("New agreed apprenticeship price", "Total agreed apprenticeship price")</th>
+                    <th asp-show="@isNormal" scope="row" class="govuk-table__header">New agreed apprenticeship price</th>
+                    <th asp-hide="@isNormal" scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
                     <td class="govuk-table__cell">@Model.NewPrice.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell">
                         <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
