@@ -72,6 +72,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 result.CohortDetails.Add(apprenticeDetail);
             }
 
+            if (!string.IsNullOrWhiteSpace(result.CohortRef))
+            {
+                var commitmentId = _encodingService.Decode(result.CohortRef, EncodingType.CohortReference);
+                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(commitmentId)).LatestMessageCreatedByEmployer;
+            }
+
             return result;
         }
 
