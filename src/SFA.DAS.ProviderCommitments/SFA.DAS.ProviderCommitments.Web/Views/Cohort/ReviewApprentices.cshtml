@@ -39,6 +39,18 @@
     </div>
 </div>
 
+@if (!string.IsNullOrWhiteSpace(Model.CohortRef))
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-s">Message from employer:</h3>
+            <div class="govuk-inset-text">
+                @Model.MessageFromEmployerText
+            </div>
+        </div>
+    </div>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 

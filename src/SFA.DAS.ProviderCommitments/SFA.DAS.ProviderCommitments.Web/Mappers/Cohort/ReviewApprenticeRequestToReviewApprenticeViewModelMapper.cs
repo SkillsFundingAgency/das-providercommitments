@@ -103,6 +103,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             result.CsvTotalApprenticesText = $"{fileUploadRecords.Count()} apprentice(s) to be added from CSV file";
             result.DbTotalApprenticesText = $"{existingRecords.Count()} apprentice(s) previously added to this cohort";
           
+            if (!string.IsNullOrWhiteSpace(result.CohortRef))
+            {
+                var commitmentId = _encodingService.Decode(result.CohortRef, EncodingType.CohortReference);
+                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(commitmentId)).LatestMessageCreatedByEmployer;
+            }
+
             return result;
         }
 
