@@ -95,5 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool IsContinuation { get; set; }
         public bool HasStandardOptions { get; set; }
         public string TrainingCourseOption { get ; set ; }
+
+        public DeliveryModel? DeliveryModel { get; set; }
     }
 }
