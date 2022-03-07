@@ -1,4 +1,4 @@
-@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmViewModel
 
@@ -15,8 +15,9 @@
         StartDate = Model.NewStartDate,
         EndDate = Model.NewEndDate,
         Price = Model.NewPrice,
-        EmploymentEndDate = Model.NewEmploymentEndDate,
+        EmploymentEndDate = Model.NewEmploymentEndDate?.MonthYear,
         EmploymentPrice = Model.NewEmploymentPrice,
+        DeliveryModel = Model.DeliveryModel,
     };
 }
 
@@ -109,7 +110,7 @@
                 </tr>
                 <tr asp-hide="@isNormal" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Agreed price for this employment</th>
-                    <td class="govuk-table__cell">@Model.NewEmploymentPrice.ToGdsCostFormat()</td>
+                    <td class="govuk-table__cell">@Model.NewEmploymentPrice.Value.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell">
                         <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
                     </td>

@@ -25,10 +25,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     StartDate = source.StartDate,
-                    EmploymentEndDate = source.EmploymentEndDate,
                     EndDate = source.EndDate,
-                    EmploymentPrice = decimal.ToInt32(source.EmploymentPrice.Value),
-                    Price = decimal.ToInt32(source.Price.Value),
+                    Price = source.Price.Value,
+                    EmploymentEndDate = source.EmploymentEndDate,
+                    EmploymentPrice = source.EmploymentPrice,
                 });
             }
             catch (Exception e)

@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
 
         public int NewPrice { get; set; }
-        public int NewEmploymentPrice { get; set; }
+        public int? NewEmploymentPrice { get; set; }
         public int? FundingBandCap { get; set; }
         public bool ExceedsFundingBandCap
         {

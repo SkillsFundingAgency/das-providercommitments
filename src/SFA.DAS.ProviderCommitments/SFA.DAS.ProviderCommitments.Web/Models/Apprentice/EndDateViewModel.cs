@@ -11,7 +11,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public EndDateViewModel()
         {
             EndDate = new MonthYearModel("");
+            EmploymentEndDate = new MonthYearModel("");
         }
+
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string ApprenticeshipHashedId { get; set; }

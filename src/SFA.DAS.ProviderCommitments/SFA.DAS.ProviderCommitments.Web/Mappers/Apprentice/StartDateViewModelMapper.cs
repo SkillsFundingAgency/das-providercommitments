@@ -30,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Price = source.Price,
                 LegalEntityName = apprenticeship.EmployerName,
                 DeliveryModel = apprenticeship.DeliveryModel,
+                EmploymentEndDate = source.EmploymentEndDate,
+                EmploymentPrice = source.EmploymentPrice,
             };
         }
     }
