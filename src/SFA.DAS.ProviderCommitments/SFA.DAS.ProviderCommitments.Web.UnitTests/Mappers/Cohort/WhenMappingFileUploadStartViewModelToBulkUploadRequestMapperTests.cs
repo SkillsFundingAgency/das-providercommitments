@@ -95,10 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                var date = GetValidDate(record.StartDate, "yyyy-MM-dd").Value.Date;
-                Assert.AreEqual(1, result.StartDate.Value.Day);
-                Assert.AreEqual(date.Month, result.StartDate.Value.Month);
-                Assert.AreEqual(date.Year, result.StartDate.Value.Year);
+                Assert.AreEqual(record.StartDate, result.StartDateAsString);
             }
         }
 
@@ -108,10 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                var date = GetValidDate(record.EndDate, "yyyy-MM").Value.Date;
-                Assert.AreEqual(1, result.StartDate.Value.Day);
-                Assert.AreEqual(date.Month, result.EndDate.Value.Month);
-                Assert.AreEqual(date.Year, result.EndDate.Value.Year);
+                Assert.AreEqual(record.EndDate, result.EndDateAsString);
             }
         }
 
@@ -121,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(int.Parse(record.TotalPrice), result.Cost);
+                Assert.AreEqual(record.TotalPrice, result.CostAsString);
             }
         }
 

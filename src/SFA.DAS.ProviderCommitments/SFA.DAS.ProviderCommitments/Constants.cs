@@ -12,6 +12,7 @@
 
         public static class BulkUpload
         {
+            public const string DraftApprenticeshipResponse = "DraftApprenticeshipResponse";
             public const string BulkUploadErrors = "bulk-upload-errors";
         }
     }
