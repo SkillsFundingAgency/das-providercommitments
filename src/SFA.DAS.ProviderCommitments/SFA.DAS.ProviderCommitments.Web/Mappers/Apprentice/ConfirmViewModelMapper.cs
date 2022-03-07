@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewStartDate = newStartDate.MonthYear,
                     NewEndDate = newEndDate.MonthYear,
                     NewPrice = source.Price,
-                    NewEmploymentEndDate = newEmploymentEndDate,
+                    NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = source.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };

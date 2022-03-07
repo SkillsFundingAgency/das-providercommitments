@@ -26,7 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime NewStartDateTime => new MonthYearModel(NewStartDate).Date.Value;
         public string NewEndDate { get; set; }
         public DateTime NewEndDateTime => new MonthYearModel(NewEndDate).Date.Value;
-        public MonthYearModel NewEmploymentEndDate { get; set; }
+        public string NewEmploymentEndDate { get; set; }
+        public DateTime? NewEmploymentEndDateTime
+            => NewEmploymentEndDate == null ? null : new MonthYearModel(NewEmploymentEndDate).Date.Value;
 
 
         public int NewPrice { get; set; }

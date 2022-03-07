@@ -126,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
             
             var expectedEndDate = new MonthYearModel(_fixture.request.EmploymentEndDate);
-            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate.MonthYear);
+            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate);
         }
 
         [Test]

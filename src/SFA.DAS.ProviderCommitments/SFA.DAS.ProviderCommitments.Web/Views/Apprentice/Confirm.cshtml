@@ -15,7 +15,7 @@
         StartDate = Model.NewStartDate,
         EndDate = Model.NewEndDate,
         Price = Model.NewPrice,
-        EmploymentEndDate = Model.NewEmploymentEndDate?.MonthYear,
+        EmploymentEndDate = Model.NewEmploymentEndDate,
         EmploymentPrice = Model.NewEmploymentPrice,
         DeliveryModel = Model.DeliveryModel,
     };
@@ -95,7 +95,7 @@
                 </tr>
                 <tr asp-hide="@isRegular" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">New employment end date</th>
-                    <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDate.Date.Value)</td>
+                    <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDateTime.Value)</td>
                     <td class="govuk-table__cell">
                         <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, changeData)">Change</a>
                     </td>
@@ -135,6 +135,8 @@
     @Html.HiddenFor(x => x.NewPrice)
     @Html.HiddenFor(x => x.NewStartDate)
     @Html.HiddenFor(x => x.NewEndDate)
+    @Html.HiddenFor(x => x.NewEmploymentEndDate)
+    @Html.HiddenFor(x => x.NewEmploymentPrice)
     @Html.HiddenFor(x => x.ApprenticeshipHashedId)
 
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>

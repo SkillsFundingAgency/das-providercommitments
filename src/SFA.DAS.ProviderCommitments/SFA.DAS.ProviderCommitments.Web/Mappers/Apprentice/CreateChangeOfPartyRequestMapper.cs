@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 NewPrice = source.NewPrice,
                 NewStartDate = source.NewStartDateTime,
                 NewEndDate = source.NewEndDateTime,
-                NewEmploymentEndDate = source.NewEmploymentEndDate?.Date,
+                NewEmploymentEndDate = source.NewEmploymentEndDateTime,
                 NewEmploymentPrice = source.NewEmploymentPrice,
             });
         }
