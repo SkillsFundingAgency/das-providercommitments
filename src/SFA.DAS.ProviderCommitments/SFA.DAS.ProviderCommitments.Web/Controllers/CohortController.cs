@@ -30,6 +30,7 @@ using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.Cre
 using System.Linq;
 using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -304,18 +305,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/start")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [BulkUploadDomainExceptionRedirectGetFilter]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
-            var hasErrors = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
-            if (hasErrors)
-            {
-               return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
-            }
-            else
-            {
-                var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
-                return RedirectToAction(nameof(FileUploadReview), request);
-            }
+            await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
+            return RedirectToAction(nameof(FileUploadReview), request);
+
+            //var hasErrors = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            //if (hasErrors)
+            //{
+            //   return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
+            //}
+            //else
+            //{
+            //var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
+            //return RedirectToAction(nameof(FileUploadReview), request);
+            //}
         }
 
         private async Task<bool> ValidateBulkUploadData(long providerId, IFormFile attachment)
@@ -362,6 +368,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [BulkUploadDomainExceptionRedirectGetFilter]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
             switch (viewModel.SelectedOption)
