@@ -53,6 +53,14 @@
 
                     </tr>
                 }
+                @if (Model.ApprenticeshipUpdates.DeliveryModel.HasValue)
+                {
+                    <tr>
+                        <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
+                        <td class="govuk-table__cell">@Model.OriginalApprenticeship.DeliveryModel </td>
+                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.DeliveryModel</td>
+                    </tr>
+                }
                 @if (!string.IsNullOrWhiteSpace(Model.ApprenticeshipUpdates.CourseName))
                 {
                     <tr>

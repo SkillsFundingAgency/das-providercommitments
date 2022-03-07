@@ -48,6 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
                     .Excluding(c=>c.EndDate)
                     .Excluding(c=>c.DateOfBirth)
                     .Excluding(c=>c.StandardUId)
+                    .Excluding(c=>c.DeliveryModel)
             );
             result.CourseOption.Should().Be(_source.SelectedOption);
         }
