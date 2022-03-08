@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class ReviewApprenticeDetails
+    public class FileUploadReviewApprenticeDetails
     {
         public string Name { get; set; }
         public string TrainingCourse { get; set; }

@@ -3,7 +3,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
 {
-    public class ReviewApprenticeViewModelValidator : AbstractValidator<ReviewApprenticeViewModel>
+    public class ReviewApprenticeViewModelValidator : AbstractValidator<FileUploadReviewApprenticeViewModel>
     {
         public ReviewApprenticeViewModelValidator()
         {
