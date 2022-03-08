@@ -26,7 +26,8 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
         {
             request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachment);
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApiRequest>(request);
-            return await _client.ValidateBulkUploadRequest(request.ProviderId, apiRequest);
+            var response = await _client.ValidateBulkUploadRequest(request.ProviderId, apiRequest);
+            return response;
         }
     }
 }

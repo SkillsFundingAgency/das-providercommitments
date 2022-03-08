@@ -115,12 +115,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private Fixture fixture;
         private ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
-        private ReviewApprenticeRequest _request;
+        private FileUploadReviewApprenticeRequest _request;
         private Mock<IEncodingService> _encodingService;
         private Mock<ICommitmentsApiClient> _commitmentApiClient;
         private Mock<ICacheService> _cacheService;
         private List<CsvRecord> _csvRecords;
-        private ReviewApprenticeViewModel _result;
+        private FileUploadReviewApprenticeViewModel _result;
         private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
         private TrainingProgramme _trainingProgramme;
         private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
@@ -134,7 +134,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture = new Fixture();
             _csvRecords = new List<CsvRecord>();
 
-            _request = fixture.Create<ReviewApprenticeRequest>();
+            _request = fixture.Create<FileUploadReviewApprenticeRequest>();
             _request.CohortRef = cohortRef;
             var accountLegalEntityEmployer = fixture.Build<AccountLegalEntityResponse>()
                 .With(x => x.AccountName, "EmployerName").Create();
