@@ -21,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderReference = source.ProviderReference,
                 StartDate = source.StartDate.Date,
                 EndDate = source.EndDate.Date,
+                DeliveryModel = source.DeliveryModel,
                 TrainingCode = source.CourseCode,
                 ProviderId = source.ProviderId,
                 Version = source.Version,

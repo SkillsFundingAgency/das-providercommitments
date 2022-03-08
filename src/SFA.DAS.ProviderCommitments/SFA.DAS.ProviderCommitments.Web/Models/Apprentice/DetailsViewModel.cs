@@ -56,6 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool SingleOption { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
         public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice;
+        public string DeliveryModel { get; set; }
 
         public enum DataLockSummaryStatus
         {

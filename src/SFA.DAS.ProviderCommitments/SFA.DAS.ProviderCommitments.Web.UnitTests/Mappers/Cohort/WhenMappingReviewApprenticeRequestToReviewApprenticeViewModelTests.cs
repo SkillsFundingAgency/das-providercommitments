@@ -137,13 +137,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _request = fixture.Create<ReviewApprenticeRequest>();
             _request.CohortRef = cohortRef;
             var accountLegalEntityEmployer = fixture.Build<AccountLegalEntityResponse>()
-                                                        .With(x => x.AccountName, "EmployerName").Create();
+                .With(x => x.AccountName, "EmployerName").Create();
+
+            var cohort = fixture.Build<GetCohortResponse>()
+                .With(x => x.LatestMessageCreatedByEmployer, "A message").Create();
 
             _encodingService = new Mock<IEncodingService>();
             _encodingService.Setup(x => x.Decode("Employer", EncodingType.PublicAccountLegalEntityId)).Returns(1);
-
+            
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(1, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer);
+            _commitmentApiClient.Setup(x => x.GetCohort(0, It.IsAny<CancellationToken>())).ReturnsAsync(cohort);
 
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
