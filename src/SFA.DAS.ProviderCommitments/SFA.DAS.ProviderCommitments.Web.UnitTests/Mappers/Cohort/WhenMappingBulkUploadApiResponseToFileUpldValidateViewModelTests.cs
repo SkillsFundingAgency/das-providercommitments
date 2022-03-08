@@ -14,12 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private BulkUploadValidateApiResponseToFileUpldValidateViewModel _mapper;
         private FileUploadValidateViewModel _result;
-        private BulkUploadValidateApiResponse _source;
+        private List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> _source;
 
         [SetUp]
         public async Task Setup()
         {
-           var errorsFirstRow =   new List<Error>();
+            var errorsFirstRow = new List<Error>();
             errorsFirstRow.Add(new Error("Property1", "First Error Text"));
             errorsFirstRow.Add(new Error("Property2", "Second Error Text"));
 
@@ -27,14 +27,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             errorsSecondRow.Add(new Error("Property12", "First Error Text2"));
             errorsSecondRow.Add(new Error("Property22", "Second Error Text2"));
 
-            _source = new BulkUploadValidateApiResponse
-            {
-                BulkUploadValidationErrors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>
+            _source = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>
                  {
                       new CommitmentsV2.Api.Types.Responses.BulkUploadValidationError(1, "EmployerName","ULN", "apprentice name", errorsFirstRow),
                       new CommitmentsV2.Api.Types.Responses.BulkUploadValidationError(2, "EmployerName2","ULN2", "apprentice name2", errorsSecondRow),
-                }
-            };
+                };
 
             _mapper = new BulkUploadValidateApiResponseToFileUpldValidateViewModel();
             _result = await _mapper.Map(_source);

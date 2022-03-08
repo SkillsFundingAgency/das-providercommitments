@@ -1,18 +1,18 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class BulkUploadValidateApiResponseToFileUpldValidateViewModel : IMapper<BulkUploadValidateApiResponse, FileUploadValidateViewModel>
+    public class BulkUploadValidateApiResponseToFileUpldValidateViewModel : IMapper<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>, FileUploadValidateViewModel>
     {
-        public Task<FileUploadValidateViewModel> Map(BulkUploadValidateApiResponse source)
+        public Task<FileUploadValidateViewModel> Map(List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> sourceErrors)
         {
             var viewModel = new FileUploadValidateViewModel();
-            foreach (var sourceError in source.BulkUploadValidationErrors)
+            foreach (var sourceError in sourceErrors)
             {
-                var validationError = new Models.Cohort.BulkUploadValidationError();
+                var validationError = new BulkUploadValidationError();
                 validationError.EmployerName = sourceError.EmployerName;
                 validationError.ApprenticeName = sourceError.ApprenticeName;
                 validationError.RowNumber = sourceError.RowNumber;
