@@ -156,5 +156,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(_csvRecords.First().TotalPrice, _result.CsvRecords.First().CostAsString);
             Assert.AreEqual(_csvRecords.Last().TotalPrice, _result.CsvRecords.Last().CostAsString);
         }
+
+        [Test]
+        public async Task EpaOrgId_Is_Mapped()
+        {
+            Assert.AreEqual(_csvRecords.First().EPAOrgID, _result.CsvRecords.First().EPAOrgId);
+            Assert.AreEqual(_csvRecords.Last().EPAOrgID, _result.CsvRecords.Last().EPAOrgId);
+        }
+
+
+        [Test]
+        public async Task ProviderId_Is_Mapped()
+        {
+            Assert.AreEqual(1, _result.CsvRecords.First().ProviderId);
+            Assert.AreEqual(1, _result.CsvRecords.Last().ProviderId);
+        }
     }
 }
