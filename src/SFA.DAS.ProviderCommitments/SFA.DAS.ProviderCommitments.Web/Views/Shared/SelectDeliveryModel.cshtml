@@ -1,0 +1,14 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.AddDraftApprenticeshipViewModel
+
+@{
+    ViewData["Title"] = "Apprenticeships";
+    ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
+    ViewBag.GaData.Org = Model.Employer;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Select delivery model</h1>
+    </div>
+</div>

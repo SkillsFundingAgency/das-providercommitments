@@ -70,6 +70,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
+        [Route("add2")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        {
+            var canSelectDeliveryModel = true;
+
+            if (canSelectDeliveryModel)
+            {
+                return RedirectToAction("SelectDeliveryModel", model);
+            }
+            else
+            {
+                return RedirectToAction("AddDraftApprenticeship", model);
+            }
+        }
+
+        [HttpGet]
+        [Route("select-delivery-model")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectDeliveryModel(AddDraftApprenticeshipViewModel request)
+        {
+            return View("SelectDeliveryModel", request);
+        }
+
+        [HttpPost]
         [Route("add")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
