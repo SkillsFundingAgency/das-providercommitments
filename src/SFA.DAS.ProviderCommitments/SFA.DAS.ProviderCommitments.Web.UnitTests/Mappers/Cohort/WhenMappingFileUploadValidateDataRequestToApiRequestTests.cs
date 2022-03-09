@@ -83,8 +83,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task EmailAddress_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().EmailAddress, _result.CsvRecords.First().EmailAddress);
-            Assert.AreEqual(_csvRecords.Last().EmailAddress, _result.CsvRecords.Last().EmailAddress);
+            Assert.AreEqual(_csvRecords.First().EmailAddress, _result.CsvRecords.First().Email);
+            Assert.AreEqual(_csvRecords.Last().EmailAddress, _result.CsvRecords.Last().Email);
         }
 
         [Test]
@@ -104,57 +104,57 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task ULN_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().ULN, _result.CsvRecords.First().ULN);
-            Assert.AreEqual(_csvRecords.Last().ULN, _result.CsvRecords.Last().ULN);
+            Assert.AreEqual(_csvRecords.First().ULN, _result.CsvRecords.First().Uln);
+            Assert.AreEqual(_csvRecords.Last().ULN, _result.CsvRecords.Last().Uln);
         }
 
         [Test]
         public async Task FamilyName_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().FamilyName, _result.CsvRecords.First().FamilyName);
-            Assert.AreEqual(_csvRecords.Last().FamilyName, _result.CsvRecords.Last().FamilyName);
+            Assert.AreEqual(_csvRecords.First().FamilyName, _result.CsvRecords.First().LastName);
+            Assert.AreEqual(_csvRecords.Last().FamilyName, _result.CsvRecords.Last().LastName);
         }
 
         [Test]
         public async Task GivenNames_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().GivenNames, _result.CsvRecords.First().GivenNames);
-            Assert.AreEqual(_csvRecords.Last().GivenNames, _result.CsvRecords.Last().GivenNames);
+            Assert.AreEqual(_csvRecords.First().GivenNames, _result.CsvRecords.First().FirstName);
+            Assert.AreEqual(_csvRecords.Last().GivenNames, _result.CsvRecords.Last().FirstName);
         }
 
         [Test]
         public async Task DateOfBirth_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().DateOfBirth, _result.CsvRecords.First().DateOfBirth);
-            Assert.AreEqual(_csvRecords.Last().DateOfBirth, _result.CsvRecords.Last().DateOfBirth);
+            Assert.AreEqual(_csvRecords.First().DateOfBirth, _result.CsvRecords.First().DateOfBirthAsString);
+            Assert.AreEqual(_csvRecords.Last().DateOfBirth, _result.CsvRecords.Last().DateOfBirthAsString);
         }
 
         [Test]
         public async Task StdCode_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().StdCode, _result.CsvRecords.First().StdCode);
-            Assert.AreEqual(_csvRecords.Last().StdCode, _result.CsvRecords.Last().StdCode);
+            Assert.AreEqual(_csvRecords.First().StdCode, _result.CsvRecords.First().CourseCode);
+            Assert.AreEqual(_csvRecords.Last().StdCode, _result.CsvRecords.Last().CourseCode);
         }
 
         [Test]
         public async Task StartDate_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().StartDate, _result.CsvRecords.First().StartDate);
-            Assert.AreEqual(_csvRecords.Last().StartDate, _result.CsvRecords.Last().StartDate);
+            Assert.AreEqual(_csvRecords.First().StartDate, _result.CsvRecords.First().StartDateAsString);
+            Assert.AreEqual(_csvRecords.Last().StartDate, _result.CsvRecords.Last().StartDateAsString);
         }
 
         [Test]
         public async Task EndDate_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().EndDate, _result.CsvRecords.First().EndDate);
-            Assert.AreEqual(_csvRecords.Last().EndDate, _result.CsvRecords.Last().EndDate);
+            Assert.AreEqual(_csvRecords.First().EndDate, _result.CsvRecords.First().EndDateAsString);
+            Assert.AreEqual(_csvRecords.Last().EndDate, _result.CsvRecords.Last().EndDateAsString);
         }
 
         [Test]
         public async Task TotalPrice_Is_Mapped()
         {
-            Assert.AreEqual(_csvRecords.First().TotalPrice, _result.CsvRecords.First().TotalPrice);
-            Assert.AreEqual(_csvRecords.Last().TotalPrice, _result.CsvRecords.Last().TotalPrice);
+            Assert.AreEqual(_csvRecords.First().TotalPrice, _result.CsvRecords.First().CostAsString);
+            Assert.AreEqual(_csvRecords.Last().TotalPrice, _result.CsvRecords.Last().CostAsString);
         }
     }
 }

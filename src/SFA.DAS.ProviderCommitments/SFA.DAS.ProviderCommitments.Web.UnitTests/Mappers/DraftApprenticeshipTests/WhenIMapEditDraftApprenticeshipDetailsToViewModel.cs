@@ -7,6 +7,8 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -185,6 +187,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.TrainingCourseOption = string.Empty;
             var result = await _act();
             Assert.AreEqual("-1", result.TrainingCourseOption);
+        }
+
+        [TestCase(DeliveryModel.Normal)]
+        [TestCase(DeliveryModel.Flexible)]
+        public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
+        {
+            _apiResponse.DeliveryModel = dm;
+            var result = await _act();
+            Assert.AreEqual(dm, result.DeliveryModel);
         }
     }
 }

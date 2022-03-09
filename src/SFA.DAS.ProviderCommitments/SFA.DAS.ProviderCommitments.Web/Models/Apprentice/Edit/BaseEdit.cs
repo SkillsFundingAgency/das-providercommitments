@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.CommitmentsV2.Types;
 using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
@@ -57,6 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public int? BirthMonth { get; set; }
         public int? BirthYear { get; set; }
         public string CourseCode { get; set; }
+        public DeliveryModel? DeliveryModel { get; set; }
 
         [JsonIgnore]
         public DateTime? StartDate

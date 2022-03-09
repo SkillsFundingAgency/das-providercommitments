@@ -11,7 +11,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string EmployerName { get; set; }
         public string CohortRef { get; set; }        
         public int TotalApprentices { get; set; }        
-        public decimal TotalCost { get; set; }       
+        public decimal TotalCost { get; set; }
+        public string CohortRefText => CohortRef ?? "This will be created when you save or send to employers";
+        public string MessageFromEmployer { get; set; }
+        public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
 
         public List<ReviewApprenticeDetails> CohortDetails { get; set; }
 
