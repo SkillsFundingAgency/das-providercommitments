@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class BulkUploadValidateApiResponseToFileUpldValidateViewModel : IMapper<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>, FileUploadValidateViewModel>
+    public class BulkUploadValidateApiResponseToFileUpldValidateViewModel : IMapper<FileUploadValidateErrorRequest, FileUploadValidateViewModel>
     {
-        public Task<FileUploadValidateViewModel> Map(List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> sourceErrors)
+        public Task<FileUploadValidateViewModel> Map(FileUploadValidateErrorRequest source)
         {
             var viewModel = new FileUploadValidateViewModel();
-            foreach (var sourceError in sourceErrors)
+            viewModel.ProviderId = source.ProviderId;
+
+            foreach (var sourceError in source.Errors)
             {
                 var validationError = new BulkUploadValidationError();
                 validationError.EmployerName = sourceError.EmployerName;
@@ -30,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
                 viewModel.BulkUploadValidationErrors.Add(validationError);
             }
+
 
             return Task.FromResult(viewModel);
         }
