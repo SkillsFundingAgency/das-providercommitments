@@ -56,6 +56,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("add2")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeship2(ReservationsAddDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
+
+            await AddLegalEntityAndCoursesToModel(model);
+
+            return View("AddDraftApprenticeship2", model);
+        }
+
         [HttpPost]
         [Route("add")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
