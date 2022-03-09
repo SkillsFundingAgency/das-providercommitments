@@ -5,7 +5,6 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
 using SFA.DAS.Http;
-using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -34,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 var byteArray = System.Text.Encoding.ASCII.GetBytes($"provider:password1234");
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-                var restHttpClient = new CommitmentsRestHttpClient2(httpClient, _loggerFactory);
+                var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
                 return new CommitmentsApiClient(restHttpClient);
             }
             else
