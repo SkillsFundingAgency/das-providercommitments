@@ -323,7 +323,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             request.Errors = TempData.Get<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>(Constants.BulkUpload.BulkUploadErrors);
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
-            viewModel.ProviderId = request.ProviderId;
             return View(viewModel);
         }
 
