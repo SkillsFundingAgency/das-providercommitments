@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetCourseDeliveryModels
         {
             Mock.Get(client).Setup(x => x
                 .Get<CourseDeliveryModels>(
-                    $"providers/{provider}/courses/{course}", null, It.IsAny<CancellationToken>()))
+                    $"/providers/{provider}/courses/{course}", null, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(models);
 
             var result = await handler.Handle(new GetCourseDeliveryModelsQueryRequest

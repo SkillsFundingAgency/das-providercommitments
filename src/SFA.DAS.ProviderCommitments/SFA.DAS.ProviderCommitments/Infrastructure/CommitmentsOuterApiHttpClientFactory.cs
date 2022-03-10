@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {
@@ -27,9 +28,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 .WithDefaultHeaders()
                 .WithLogging(_loggerFactory)
                 .Build();
-            var restHttpClient = new CommitmentsOuterApiHttpClient(httpClient, _loggerFactory);
+            httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
+            var restHttpClient = new CommitmentsOuterApiHttpClient(httpClient);
             var apiClient = new CommitmentsOuterApiClient(restHttpClient);
-
             return apiClient;
         }
     }
