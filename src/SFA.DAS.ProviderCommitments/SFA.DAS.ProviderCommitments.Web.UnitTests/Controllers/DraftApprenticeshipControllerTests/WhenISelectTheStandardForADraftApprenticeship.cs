@@ -28,13 +28,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             await _fixture.PostToSelectStandard();
 
-            _fixture.VerifyRedirectedToSelectDeliveryModelPage(); ;
+            _fixture.VerifyRedirectedToAddDraftApprenticeshipDetails(); ;
         }
 
         [Test]
         public async Task Then_if_the_standard_can_be_delivered_flexibly_then_select_delivery_model()
         {
-            _fixture.SetUpNoStandardSelected();
+            _fixture.SetUpFlexibleStandardSelected();
 
             await _fixture.PostToSelectStandard();
 

@@ -1,26 +1,28 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Queries.GetCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Exceptions;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -79,9 +81,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("AddDraftApprenticeship2", model);
             }
 
-            var canSelectDeliveryModel = true;
+            var models = await GetCourseDeliveryModels(model);
 
-            if (canSelectDeliveryModel)
+            if (models.Count() > 1)
             {
                 return RedirectToAction("SelectDeliveryModel", model);
             }
@@ -259,6 +261,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
 
             return result.TrainingCourses;
+        }
+
+        private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(AddDraftApprenticeshipViewModel model)
+        {
+            var result = await _mediator.Send(new GetCourseDeliveryModelsQueryRequest
+            {
+                ProviderId = model.ProviderId,
+                CourseId = model.CourseCode,
+            });
+            return result.Models.DeliveryModels;
         }
     }
 }
