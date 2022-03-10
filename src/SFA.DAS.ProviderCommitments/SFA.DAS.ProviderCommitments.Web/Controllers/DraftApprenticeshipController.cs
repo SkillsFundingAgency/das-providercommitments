@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("AddDraftApprenticeship2", model);
             }
 
-            var models = await GetCourseDeliveryModels(model);
+            var models = await GetCourseDeliveryModels(model.ProviderId, model.CourseCode);
 
             if (models.Count() > 1)
             {
@@ -263,14 +263,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return result.TrainingCourses;
         }
 
-        private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(AddDraftApprenticeshipViewModel model)
+        private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(long providerId, string courseCode)
         {
             var result = await _mediator.Send(new GetCourseDeliveryModelsQueryRequest
             {
-                ProviderId = model.ProviderId,
-                CourseId = model.CourseCode,
+                ProviderId = providerId,
+                CourseId = courseCode,
             });
-            return result.Models.DeliveryModels;
+            return result.DeliveryModels;
         }
     }
 }

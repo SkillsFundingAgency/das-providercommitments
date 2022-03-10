@@ -1,9 +1,10 @@
-﻿using SFA.DAS.ProviderCommitments.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Types;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetCourseDeliveryModels
 {
     public class GetCourseDeliveryModelsQueryResponse
     {
-        public CourseDeliveryModels Models { get; set; }
+        public IEnumerable<DeliveryModel> DeliveryModels { get; set; }
     }
 }

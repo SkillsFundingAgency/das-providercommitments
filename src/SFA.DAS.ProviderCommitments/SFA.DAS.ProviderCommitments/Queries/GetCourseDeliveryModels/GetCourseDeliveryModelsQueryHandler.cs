@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetCourseDeliveryModels
             
             return new GetCourseDeliveryModelsQueryResponse
             {
-                Models = models,
+                DeliveryModels = models.DeliveryModels,
             };
         }
     }

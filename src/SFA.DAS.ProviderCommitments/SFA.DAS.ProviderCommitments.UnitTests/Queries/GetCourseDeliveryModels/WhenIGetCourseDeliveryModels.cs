@@ -31,7 +31,10 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetCourseDeliveryModels
                 CourseId = course,
             }, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(new GetCourseDeliveryModelsQueryResponse { Models = models });
+            result.Should().BeEquivalentTo(new GetCourseDeliveryModelsQueryResponse
+            {
+                DeliveryModels = models.DeliveryModels
+            });
         }
     }
 }

@@ -158,8 +158,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     DraftApprenticeshipId = _draftApprenticeshipId
                 });
 
-            _mediator.Setup(x => x.Send(It.IsAny<GetCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetCourseDeliveryModelsQueryResponse { Models = new CourseDeliveryModels { DeliveryModels = new[] { DeliveryModel.Normal } } });
+            _mediator
+                .Setup(x => x.Send(It.IsAny<GetCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
@@ -217,13 +218,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _mediator.Setup(x => x.Send(It.IsAny<GetCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetCourseDeliveryModelsQueryResponse
                 {
-                    Models = new CourseDeliveryModels
+                    DeliveryModels = new[]
                     {
-                        DeliveryModels = new[]
-                        {
-                            DeliveryModel.Normal,
-                            DeliveryModel.Flexible,
-                        }
+                        DeliveryModel.Normal,
+                        DeliveryModel.Flexible,
                     }
                 });
             return this;
