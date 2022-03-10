@@ -1,25 +1,22 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.Dsl;
+﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderUrlHelper;
-using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -206,6 +203,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetUpNoStandardSelected()
         {
             _addModel.CourseCode = "";
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
+        {
+            _addModel.CourseCode = "456FlexiJob";
             return this;
         }
 
@@ -458,7 +461,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             return this;
         }
- 
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
+
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToAddDraftApprenticeshipDetails()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship");
+
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
         {
             var result = _actionResult
