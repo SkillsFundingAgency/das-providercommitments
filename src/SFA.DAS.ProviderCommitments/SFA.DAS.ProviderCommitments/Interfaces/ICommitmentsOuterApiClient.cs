@@ -1,6 +1,7 @@
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Http;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
@@ -18,9 +19,14 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
             _client = client;
         }
 
-        public async Task<CourseDeliveryModels> GetCourseDeliveryModels(long providerId, string courseCode)
+        public async Task<CourseDeliveryModels> GetCourseDeliveryModels(
+            long providerId,
+            string courseCode,
+            CancellationToken cancellationToken = default)
         {
-            return await _client.Get<CourseDeliveryModels>($"providers/{providerId}/courses/{courseCode}");
+            return await _client.Get<CourseDeliveryModels>
+                ($"providers/{providerId}/courses/{courseCode}",
+                cancellationToken: cancellationToken);
         }
     }
 
