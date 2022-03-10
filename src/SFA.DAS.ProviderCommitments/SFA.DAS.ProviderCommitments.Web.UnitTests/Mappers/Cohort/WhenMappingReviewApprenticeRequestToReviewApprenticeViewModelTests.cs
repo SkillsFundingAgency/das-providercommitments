@@ -284,7 +284,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyFundingText()
         {
-            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FileUploadFundingBandText);
+            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandTextForFileUploadCohorts);
         }        
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()

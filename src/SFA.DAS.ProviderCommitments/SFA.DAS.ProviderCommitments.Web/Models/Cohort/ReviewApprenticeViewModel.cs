@@ -19,35 +19,34 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string FileUploadTotalApprenticesText { get; set; }
         public string ExistingCohortTotalApprenticesText { get; set; }
 
-        //cohortDetailfromCsv.NumberOfApprentices = cohortGroup.Count();
-        //       cohortDetailfromCsv.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));
+        public List<ReviewApprenticeDetails> ExistingCohortDetails { get; set; }
 
-        public List<ReviewApprenticeDetails> ExistingCohortDetails { get; set; } //ExistingCohortDetails
+        public List<FileUploadReviewApprenticeDetails> FileUploadCohortDetails { get; set; }
 
-        public List<FileUploadReviewApprenticeDetails> FileUploadCohortDetails { get; set; } //FileUploadCohortDetails
-
-        public string FileUploadFundingBandText
+        public string FundingBandTextForFileUploadCohorts
         {
             get
             {
                 int count = (FileUploadCohortDetails.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
-                if (count == 0) return string.Empty;
-
-                var text = count > 1 ? $"{count} apprenticeships above funding band maximum" : "1 apprenticeship above funding band maximum";
-                return text;
+                return FundingBandText(count);
             }
-        }
+        }       
 
-        public string ExistingFundingBandText
+        public string FundingBandTextForExistingCohorts
         {
             get
             {
                 int count = (ExistingCohortDetails.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
-                if (count == 0) return string.Empty;
-
-                var text = count > 1 ? $"{count} apprenticeships above funding band maximum" : "1 apprenticeship above funding band maximum";
-                return text;
+                return FundingBandText(count);
             }
+        }
+
+        private static string FundingBandText(int count)
+        {
+            if (count == 0) return string.Empty;
+
+            var text = count > 1 ? $"{count} apprenticeships above funding band maximum" : "1 apprenticeship above funding band maximum";
+            return text;
         }
     }
 }
