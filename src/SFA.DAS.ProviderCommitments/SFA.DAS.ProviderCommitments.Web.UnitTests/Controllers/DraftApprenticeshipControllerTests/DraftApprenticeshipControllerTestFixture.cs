@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -19,6 +19,7 @@ using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -207,7 +208,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _addModel.CourseCode = "";
             return this;
         }
-        
+
+        internal async Task<DraftApprenticeshipControllerTestFixture> PostToSelectStandard()
+        {
+            _actionResult = await _controller.AddDraftApprenticeship2(_addModel);
+            return this;
+        }
+
         public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship()
         {
             _actionResult = await _controller.AddDraftApprenticeship(_addModel);
@@ -445,6 +452,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToSelectStandardPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship2");
+
+            return this;
+        }
+ 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
         {
             var result = _actionResult

@@ -74,6 +74,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
         {
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                return RedirectToAction("AddDraftApprenticeship2", model);
+            }
+
             var canSelectDeliveryModel = true;
 
             if (canSelectDeliveryModel)
