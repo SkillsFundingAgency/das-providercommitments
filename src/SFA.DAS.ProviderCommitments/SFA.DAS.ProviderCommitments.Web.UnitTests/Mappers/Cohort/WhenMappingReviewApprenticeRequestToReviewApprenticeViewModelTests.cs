@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -71,6 +72,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyTotalCostIsMappedCorrectly();
         }
 
+
+        [Test]
+        public async Task TotalCostIsMappedCorrectlyWithCohort()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+
+            //Act            
+            await fixture.WithDefaultData().SetupDraftApprenticeships().Action();
+
+            //Assert
+            fixture.VerifyTotalCostIsMappedCorrectlyForCohort();
+        }
+
         [Test]
         public async Task CohortDetailsCountMappedCorrectly()
         {
@@ -85,6 +100,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task CohortDetailsCountMappedCorrectlyWithDB()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+
+            //Act            
+            await fixture.WithDefaultData().SetupDraftApprenticeships().Action();
+
+            //Assert
+            fixture.VerifyCohortDetailsCountMappedCorrectlyWithDB();
+        }
+
+
+        [Test]
         public async Task CohortDetailsMappedCorrectly()
         {
             //Arrange
@@ -95,6 +124,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             //Assert
             fixture.VerifyCohortDetailsMappedCorrectly();
+        }
+
+        [Test]
+        public async Task CohortExistingDetailsMappedCorrectly()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+
+            //Act            
+            await fixture.WithDefaultData().SetupDraftApprenticeships().Action();
+
+            //Assert
+            fixture.VerifyExistingCohortDetailsMappedCorrectly();
         }
 
         [Test]
@@ -128,6 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DateTime DefaultStartDate = new DateTime(2020, 10, 1);
         private const string cohortRef = "Cohort4";
         private const string dateOfBirth = "2001-09-05";
+        private GetDraftApprenticeshipsResponse _draftApprenticeshipsResponse;
 
         public WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture()
         {
@@ -192,15 +235,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(1000, groupedByCohort.Sum(x => int.Parse(x.TotalPrice)));
         }
 
+        internal void VerifyTotalCostIsMappedCorrectlyForCohort()
+        {
+            var costfromfile = _csvRecords.Where(x => x.CohortRef == cohortRef).Sum(x => int.Parse(x.TotalPrice));
+            var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);            
+
+            Assert.AreEqual(1300, (costfromfile + costfromExistingCohort));
+        }
+
         internal void VerifyCohortDetailsCountMappedCorrectly()
         { 
-            Assert.AreEqual(2, _result.ExistingCohortDetails.Count());
+            Assert.AreEqual(2, _result.FileUploadCohortDetails.Count());
+        }
+
+        internal void VerifyCohortDetailsCountMappedCorrectlyWithDB()
+        {
+            Assert.AreEqual(3, _result.ExistingCohortDetails.Count());
         }
 
         internal void VerifyCohortDetailsMappedCorrectly()
         {
             var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
-            var cohortDetails = _result.ExistingCohortDetails[0];
+            var cohortDetails = _result.FileUploadCohortDetails[0];
 
             Assert.AreEqual(cohortDetails.Name, $"{csvRecord.GivenNames} {csvRecord.FamilyName}");
             Assert.AreEqual(cohortDetails.Email, csvRecord.EmailAddress);
@@ -211,6 +267,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.FundingPeriods.FirstOrDefault().FundingCap);
 
         }
+
+        internal void VerifyExistingCohortDetailsMappedCorrectly()
+        {
+            var existingRecord = _draftApprenticeshipsResponse.DraftApprenticeships.FirstOrDefault();
+            var cohortDetails = _result.ExistingCohortDetails[0];
+
+            Assert.AreEqual(cohortDetails.Name, $"{existingRecord.FirstName} {existingRecord.LastName}");
+            Assert.AreEqual(cohortDetails.Email, existingRecord.Email);
+            Assert.AreEqual(cohortDetails.ULN, existingRecord.Uln);
+            Assert.AreEqual(cohortDetails.Price, existingRecord.Cost);
+            Assert.AreEqual(cohortDetails.TrainingCourse, existingRecord.CourseName);
+            Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.FundingPeriods.FirstOrDefault().FundingCap);
+
+        }
+
         internal void VerifyFundingText()
         {
             Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FileUploadFundingBandText);
@@ -245,6 +316,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                  .CreateMany(numberOfApprentices)
                  .ToList();
             return list;
+        }
+
+        internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture SetupDraftApprenticeships()
+        {
+            _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResponse
+            {
+                DraftApprenticeships = fixture.Build<DraftApprenticeshipDto>()
+                .With(x => x.Cost, 100)
+                .With(x => x.CourseName, "CourseName")
+                .With(x => x.StartDate, DefaultStartDate)
+                .CreateMany(3)
+                .ToList()
+            };
+            _commitmentApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+             .ReturnsAsync(_draftApprenticeshipsResponse);
+
+            return this;
         }
     }
 }

@@ -74,13 +74,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     //Get the response from DB
                     var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
 
-                    var existingCohortDetails = new FileUploadReviewCohortDetail
+                    if (response != null)
                     {
-                        CohortRef = cohortGroup.Key,
-                        NumberOfApprentices = response.DraftApprenticeships.Count(),
-                        TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
-                    };
-                    cohortDetails.Add(existingCohortDetails);
+                        var existingCohortDetails = new FileUploadReviewCohortDetail
+                        {
+                            CohortRef = cohortGroup.Key,
+                            NumberOfApprentices = response.DraftApprenticeships.Count(),
+                            TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
+                        };
+                        cohortDetails.Add(existingCohortDetails);
+                    }
                 }
 
                 employerDetail.CohortDetails.AddRange(cohortDetails.GroupBy(x => x.CohortRef).Select(

@@ -44,8 +44,36 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             var csvRecordsGroupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef);
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
-            var fileUploadRecords = new List<FileUploadReviewApprenticeDetails>();           
 
+            await FileUploadCohortDetails(result, csvRecordsGroupedByCohort);
+
+            //Get commitments from DB
+            var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
+            var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+            if (response != null)
+            {
+                _logger.LogInformation("Total number of records from db: " + response.DraftApprenticeships.Count);
+                await ExistingCohortDetails(result, response);
+            }
+
+            var publicAccountLegalEntityIdNew = _encodingService.Decode(csvRecordsGroupedByCohort.FirstOrDefault().AgreementId, EncodingType.PublicAccountLegalEntityId);
+            result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName;
+            result.CohortRef = source.CohortRef;
+            result.TotalApprentices = result.FileUploadCohortDetails.Count() + result.ExistingCohortDetails.Count(); 
+            result.TotalCost = result.FileUploadCohortDetails.Sum(x => x.Price) + result.ExistingCohortDetails.Sum(x => x.Price);
+            result.FileUploadTotalApprenticesText = result.FileUploadCohortDetails.Count() > 1 ? $"{result.FileUploadCohortDetails.Count()} apprentices to be added from CSV file" : "1 apprentice to be added from CSV file";
+            result.ExistingCohortTotalApprenticesText = result.ExistingCohortDetails.Count() > 1 ? $"{result.ExistingCohortDetails.Count()} apprentices previously added to this cohort" : "1 apprentice previously added to this cohort";
+
+            if (!string.IsNullOrWhiteSpace(result.CohortRef))
+            {                
+                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(cohortId)).LatestMessageCreatedByEmployer;
+            }
+
+            return result;
+        }        
+
+        private async Task FileUploadCohortDetails(ReviewApprenticeViewModel result, IEnumerable<CsvRecord> csvRecordsGroupedByCohort)
+        {
             foreach (var csvRecord in csvRecordsGroupedByCohort)
             {
                 var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(csvRecord.StdCode);
@@ -66,18 +94,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 };
 
                 result.FileUploadCohortDetails.Add(fileUploadApprenticeDetail);
-                fileUploadRecords.Add(fileUploadApprenticeDetail);                
             }
+        }
 
-            //Get CohortId by CohortReference -- commitments from DB
-            var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
-            var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
-            var existingRecords = new List<ReviewApprenticeDetails>();
-            _logger.LogInformation("Total number of records from db: " + response.DraftApprenticeships.Count);           
-
+        private async Task ExistingCohortDetails(ReviewApprenticeViewModel result, CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipsResponse response)
+        {   
             foreach (var item in response.DraftApprenticeships)
             {
-                //var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(csvRecord.StdCode);
                 var course = await _commitmentsApiClient.GetTrainingProgramme(item.CourseCode);
 
                 var apprenticeDetail = new ReviewApprenticeDetails
@@ -85,31 +108,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     Name = $"{item.FirstName} {item.LastName}",
                     TrainingCourse = item.CourseName,
                     ULN = item.Uln,
-                    DateOfBirth = item.DateOfBirth.ToString(),
+                    DateOfBirth = item.DateOfBirth.Value.ToString("d MMM yyyy"),
                     Email = item.Email,
                     TrainingDates = $"{item.StartDate.Value:MMM yyyy} to {item.EndDate.Value:MMM yyyy} ",
                     Price = item.Cost ?? 0,
                     FundingBandCap = GetFundingBandCap(course.TrainingProgramme, item.StartDate.Value.Date)
                 };
+
                 result.ExistingCohortDetails.Add(apprenticeDetail);
-                existingRecords.Add(apprenticeDetail);
             }
-
-            var publicAccountLegalEntityIdNew = _encodingService.Decode(csvRecordsGroupedByCohort.FirstOrDefault().AgreementId, EncodingType.PublicAccountLegalEntityId);
-            result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName;
-            result.CohortRef = source.CohortRef;
-            result.TotalApprentices = fileUploadRecords.Count() + existingRecords.Count(); //newList.Count();
-            result.TotalCost = fileUploadRecords.Sum(x => x.Price) + existingRecords.Sum(x => x.Price);   //newList.Sum(x => x.Price);
-            result.CsvTotalApprenticesText = $"{fileUploadRecords.Count()} apprentice(s) to be added from CSV file";
-            result.DbTotalApprenticesText = $"{existingRecords.Count()} apprentice(s) previously added to this cohort";
-          
-            if (!string.IsNullOrWhiteSpace(result.CohortRef))
-            {
-                var commitmentId = _encodingService.Decode(result.CohortRef, EncodingType.CohortReference);
-                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(commitmentId)).LatestMessageCreatedByEmployer;
-            }
-
-            return result;
         }
 
         private DateTime? GetValidDate(string date, string format)

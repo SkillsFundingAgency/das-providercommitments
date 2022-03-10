@@ -16,8 +16,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string MessageFromEmployer { get; set; }
         public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
 
-        public string CsvTotalApprenticesText { get; set; }
-        public string DbTotalApprenticesText { get; set; }
+        public string FileUploadTotalApprenticesText { get; set; }
+        public string ExistingCohortTotalApprenticesText { get; set; }
 
         //cohortDetailfromCsv.NumberOfApprentices = cohortGroup.Count();
         //       cohortDetailfromCsv.TotalCost = cohortGroup.Sum(x => int.Parse(x.TotalPrice));

@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
@@ -22,13 +23,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     public class WhenMappingFileUploadReviewRequestToReviewViewModel
     {
+        private WhenMappingFileUploadReviewRequestToReviewViewModelFixture fixture;
+
+        [SetUp]
+        public void Arrange()
+        {
+            fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+        }
+
+
         [TestCase("Employer1", "Employer1Name")]
         [TestCase("Employer2", "Employer2Name")]
         public async Task EmployerNameIsMappedCorrectly(string agreementId, string employerName)
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
             fixture.VerifyEmployerNameIsMappedCorrectly(agreementId, employerName);
         }
 
@@ -36,18 +47,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2")]
         public async Task AgrrementIdIsMappedCorrectly(string agreementId)
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
             fixture.VerifyAgreementIdIsMappedCorrectly(agreementId);
         }
 
         [Test]
         public async Task CorrectNumberOfEmployersAreMapped()
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
             fixture.VerifyCorrectNumberOfEmployersAreMapped();
         }
 
@@ -57,9 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4")]
         public async Task CohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
             fixture.VerifyCohortReferenceIsMappedCorrectly(agreementId, cohortRef);
         }
 
@@ -69,9 +83,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4", 2)]
         public async Task NumberOfApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
             fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
         }
 
@@ -81,9 +96,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("Employer2", "Cohort4", 1000)]
         public async Task TotalCostIsMappedCorrectly(string agreementId, string cohortRef, int totalCost)
         {
-            var fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            //Act
             await fixture.WithDefaultData().Action();
 
+            //Assert
+            fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
+        }
+
+        [TestCase("Employer1", "Cohort1", 6)]
+        [TestCase("Employer1", "Cohort2", 6)]
+        [TestCase("Employer2", "Cohort3", 4)]
+        [TestCase("Employer2", "Cohort4", 5)]
+        public async Task NumberOfApprenticesWithDraftApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
+        {
+            //Arrange
+            fixture.SetupDraftApprenticeships();
+
+            //Act            
+            await fixture.WithDefaultData().Action();
+            
+            //Assert
+            fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
+        }
+
+        [TestCase("Employer1", "Cohort1", 3300)]
+        [TestCase("Employer1", "Cohort2", 900)]
+        [TestCase("Employer2", "Cohort3", 700)]
+        [TestCase("Employer2", "Cohort4", 1300)]
+        public async Task TotalCostWithDraftApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int totalCost)
+        {   
+            //Arrange
+            fixture.SetupDraftApprenticeships();
+            
+            //Act
+            await fixture.WithDefaultData().Action();
+
+            //Assert
             fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
@@ -101,6 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private Mock<IHttpContextAccessor> _httpContextAccessor;
             private RouteData _routeData;
             private Mock<IRoutingFeature> _routingFeature;
+            public GetDraftApprenticeshipsResponse _draftApprenticeshipsResponse;
 
             public WhenMappingFileUploadReviewRequestToReviewViewModelFixture()
             {
@@ -120,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 _commitmentApiClient = new Mock<ICommitmentsApiClient>();
                 _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(1, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer1);
-                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(2, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer2);
+                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(2, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer2);               
 
                 _cacheService = new Mock<ICacheService>();
                 _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
@@ -179,6 +228,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer2", "Cohort4", 500, 2));
 
                 return this;
+            }
+
+            internal void SetupDraftApprenticeships()
+            {
+                _draftApprenticeshipsResponse = fixture.Create<GetDraftApprenticeshipsResponse>();
+                foreach (var item in _draftApprenticeshipsResponse.DraftApprenticeships)
+                {
+                    item.Cost = 100;
+                }
+                _commitmentApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(_draftApprenticeshipsResponse);
             }
 
             internal void VerifyCorrectNumberOfEmployersAreMapped()
