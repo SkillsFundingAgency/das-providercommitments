@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
