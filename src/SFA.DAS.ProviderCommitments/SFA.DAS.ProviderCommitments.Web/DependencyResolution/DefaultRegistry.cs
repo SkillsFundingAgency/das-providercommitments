@@ -7,6 +7,7 @@ using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Services.Shared;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -40,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAcademicYearDateProvider>().Use<AcademicYearDateProvider>().Singleton();
             For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
+            For<CommitmentsOuterApiClient>().Use(c => c.GetInstance<CommitmentsOuterApiHttpClientFactory>().CreateClient()).Singleton();
 
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
