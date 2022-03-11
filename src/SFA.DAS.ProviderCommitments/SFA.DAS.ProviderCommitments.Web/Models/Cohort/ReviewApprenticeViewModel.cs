@@ -16,7 +16,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
         public List<ReviewApprenticeDetailsForExistingCohort> ExistingCohortDetails { get; set; }
         public int? TotalApprentices => FileUploadCohortDetails?.Count() + ExistingCohortDetails?.Count();        
-        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);    
+        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);
+        public string FundingBandLink = "https://www.gov.uk/government/publications/apprenticeship-funding-bands";
 
         public string FileUploadTotalApprenticesText
         {
