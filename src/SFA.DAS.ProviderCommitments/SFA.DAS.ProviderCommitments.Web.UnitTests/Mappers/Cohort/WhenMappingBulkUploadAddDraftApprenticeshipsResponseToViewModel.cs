@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public string cohortReference = "MKRK7V";
         public string EmployerName = "Tesco";
-        public int NumberOfApprenticeships = 2;        
+        public int NumberOfApprenticeships = 2;
 
         public WhenMappingBulkUploadAddDraftApprenticeshipsResponseToViewModelFixture()
         {

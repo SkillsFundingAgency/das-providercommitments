@@ -21,13 +21,13 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingBulkUploadAddDraftApprenticeshipsViewModel
+    public class WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsViewModel
     {
         [Test]
         public async Task ThenReturnsView()
         {
             //Arrange
-            var fixture = new WhenGettingBulkUploadAddDraftApprenticeshipsFixture();
+            var fixture = new WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture();
 
             //Act
             var result = await fixture.Act();
@@ -37,24 +37,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task ThenReturnsView_With_BulkUploadAddDraftApprenticeshipsViewModel()
+        public async Task ThenReturnsView_With_BulkUploadAddAndApproveDraftApprenticeshipsViewModel()
         {
             //Arrange
-            var fixture = new WhenGettingBulkUploadAddDraftApprenticeshipsFixture();
+            var fixture = new WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture();
 
             //Act
             var viewResult = await fixture.Act();
-            var model = viewResult.VerifyReturnsViewModel().WithModel<BulkUploadAddDraftApprenticeshipsViewModel>();
+            var model = viewResult.VerifyReturnsViewModel().WithModel<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>();
 
             //Assert
             Assert.IsNotNull(model);
         }
 
         [Test]
-        public async Task Then_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
+        public async Task Then_SelectedOption_Is_SaveAndSendToEmployer_MapperIsCalled()
         {
             //Arrange
-            var fixture = new WhenGettingBulkUploadAddDraftApprenticeshipsFixture();
+            var fixture = new WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture();
 
             //Act
             await fixture.Act();
@@ -62,49 +62,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             //Assert            
             fixture.VerifyMapperIsCalled();
         }
-    }    
+    }
 
-    public class WhenGettingBulkUploadAddDraftApprenticeshipsFixture
+    public class WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture
     {
         private CohortController _sut { get; set; }
 
-        private readonly BulkUploadAddDraftApprenticeshipsViewModel draftApprenticeshipViewModel;
+        private readonly BulkUploadAddAndApproveDraftApprenticeshipsViewModel draftApprenticeshipViewModel;
         private readonly long providerId = 123;
         private Mock<IModelMapper> _modelMapper;
         private readonly TempDataDictionary _tempData;
 
-        public WhenGettingBulkUploadAddDraftApprenticeshipsFixture()
+        public WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture()
         {
             var fixture = new Fixture();
-            draftApprenticeshipViewModel = fixture.Create<BulkUploadAddDraftApprenticeshipsViewModel>();            
+            draftApprenticeshipViewModel = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>();
             draftApprenticeshipViewModel.ProviderId = 123;
 
             _modelMapper = new Mock<IModelMapper>();
-            GetBulkUploadAddDraftApprenticeshipsResponse response = DraftApprenticeshipsResponse();
+            BulkUploadAddAndApproveDraftApprenticeshipsResponse response = DraftApprenticeshipsResponse();
 
             _tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _tempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-            
-            _modelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsViewModel>(It.IsAny<GetBulkUploadAddDraftApprenticeshipsResponse>()))
+            _tempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, response);
+
+            _modelMapper.Setup(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(It.IsAny<BulkUploadAddAndApproveDraftApprenticeshipsResponse>()))
                 .ReturnsAsync(draftApprenticeshipViewModel);
 
-            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(),
+            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
             _sut.TempData = _tempData;
         }
-        
-        public Task<IActionResult> Act() => _sut.FileUploadSuccessSaveDraft(providerId);
+
+        public Task<IActionResult> Act() => _sut.FileUploadSuccess(providerId);
 
         public void VerifyMapperIsCalled()
         {
-            _modelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsViewModel>(It.IsAny<GetBulkUploadAddDraftApprenticeshipsResponse>()), Times.Once);
+            _modelMapper.Verify(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(It.IsAny<BulkUploadAddAndApproveDraftApprenticeshipsResponse>()), Times.Once);
         }
 
-        private static GetBulkUploadAddDraftApprenticeshipsResponse DraftApprenticeshipsResponse()
+        private static BulkUploadAddAndApproveDraftApprenticeshipsResponse DraftApprenticeshipsResponse()
         {
-            return new GetBulkUploadAddDraftApprenticeshipsResponse()
+            return new BulkUploadAddAndApproveDraftApprenticeshipsResponse()
             {
-                BulkUploadAddDraftApprenticeshipsResponse = new List<BulkUploadAddDraftApprenticeshipsResponse>()
+                BulkUploadAddAndApproveDraftApprenticeshipResponse = new List<BulkUploadAddDraftApprenticeshipsResponse>()
                    {
                        new BulkUploadAddDraftApprenticeshipsResponse()
                        {
