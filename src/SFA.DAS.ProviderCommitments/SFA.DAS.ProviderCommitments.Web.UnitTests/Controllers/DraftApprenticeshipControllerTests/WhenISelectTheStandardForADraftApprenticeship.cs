@@ -14,21 +14,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task Then_If_The_Standard_Has_Not_Selected_Then_The_DraftApprentices_Is_Not_Called()
+        public void Then_If_The_Standard_Has_Not_Selected_Then_The_DraftApprentices_Is_Not_Called()
         {
             _fixture.SetUpNoStandardSelected();
 
-            await _fixture.PostToSelectStandard();
+            _fixture.PostToSelectStandard();
 
             _fixture.VerifyRedirectedBackToSelectStandardPage(); ;
         }
 
         [Test]
-        public async Task Then_if_the_standard_can_be_delivered_flexibly_then_select_delivery_model()
+        public void Then_if_the_standard_can_be_delivered_flexibly_then_select_delivery_model()
         {
             _fixture.SetUpFlexibleStandardSelected();
 
-            await _fixture.PostToSelectStandard();
+            _fixture.PostToSelectStandard();
 
             _fixture.VerifyRedirectedToSelectDeliveryModelPage(); ;
         }

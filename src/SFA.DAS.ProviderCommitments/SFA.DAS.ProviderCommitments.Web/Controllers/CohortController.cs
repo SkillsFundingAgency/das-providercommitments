@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -17,7 +14,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
@@ -26,10 +22,9 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using System;
+using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
-using System.Linq;
-using System.Collections.Generic;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -137,6 +132,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
+        }
+
+        [HttpGet]
+        [Route("add-apprentice2")]
+        [Route("add/apprentice2")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeship2(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            return View("AddDraftApprenticeship2", model);
+        }
+
+        [HttpPost]
+        [Route("add-apprentice2")]
+        [Route("add/apprentice2")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                return RedirectToAction(nameof(AddDraftApprenticeship2), model);
+            }
+            else
+            {
+                return RedirectToAction(nameof(SelectDeliveryModel), model);
+            }
+        }
+
+        [HttpGet]
+        [Route("select-delivery-model")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectDeliveryModel(AddDraftApprenticeshipViewModel request)
+        {
+            return View("SelectDeliveryModel", request);
         }
 
         [HttpGet]
