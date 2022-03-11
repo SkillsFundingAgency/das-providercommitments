@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             get
             {
-                int count = (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
+                int count = (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCapForExistingCohort)).Count();
                 return FundingBandText(count);
             }
         }

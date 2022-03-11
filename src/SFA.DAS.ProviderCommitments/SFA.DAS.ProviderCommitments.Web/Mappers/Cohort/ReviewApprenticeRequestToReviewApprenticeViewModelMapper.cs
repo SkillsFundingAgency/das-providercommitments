@@ -108,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     Email = item.Email,
                     TrainingDates = $"{item.StartDate.Value:MMM yyyy} to {item.EndDate.Value:MMM yyyy} ",
                     Price = item.Cost ?? 0,
-                    FundingBandCap = GetFundingBandCap(course.TrainingProgramme, item.StartDate.Value.Date)
+                    FundingBandCapForExistingCohort = GetFundingBandCap(course.TrainingProgramme, item.StartDate.Value.Date)
                 };
 
                 result.ExistingCohortDetails.Add(apprenticeDetail);

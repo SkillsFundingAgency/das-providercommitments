@@ -9,15 +9,15 @@
         public string Email { get; set; }
         public string TrainingDates { get; set; }
         public decimal? Price { get; set; }
-        public int? FundingBandCap { get; set; }
+        public int? FundingBandCapForExistingCohort { get; set; }
 
-        public bool ExceedsFundingBandCap
+        public bool ExceedsFundingBandCapForExistingCohort
         {
             get
             {
-                if (FundingBandCap.HasValue)
+                if (FundingBandCapForExistingCohort.HasValue)
                 {
-                    return Price > FundingBandCap.Value;
+                    return Price > FundingBandCapForExistingCohort.Value;
                 }
 
                 return false;

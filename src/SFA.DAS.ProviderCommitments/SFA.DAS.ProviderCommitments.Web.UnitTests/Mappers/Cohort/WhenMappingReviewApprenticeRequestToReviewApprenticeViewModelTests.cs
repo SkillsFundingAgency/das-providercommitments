@@ -309,7 +309,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(cohortDetails.ULN, existingRecord.Uln);
             Assert.AreEqual(cohortDetails.Price, existingRecord.Cost);
             Assert.AreEqual(cohortDetails.TrainingCourse, existingRecord.CourseName);
-            Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.FundingPeriods.FirstOrDefault().FundingCap);
+            Assert.AreEqual(cohortDetails.FundingBandCapForExistingCohort, _trainingProgramme.FundingPeriods.FirstOrDefault().FundingCap);
 
         }
 
