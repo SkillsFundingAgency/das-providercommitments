@@ -1,26 +1,28 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Exceptions;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -54,6 +56,43 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             await AddLegalEntityAndCoursesToModel(model);
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Route("add2")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeship2(ReservationsAddDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
+
+            await AddLegalEntityAndCoursesToModel(model);
+
+            return View(nameof(AddDraftApprenticeship2), model);
+        }
+
+        [HttpPost]
+        [Route("add2")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public ActionResult AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                return RedirectToAction(nameof(AddDraftApprenticeship2), model);
+            }
+            else
+            {
+                return RedirectToAction(nameof(SelectDeliveryModel), model);
+            }
+        }
+
+        [HttpGet]
+        [Route("select-delivery-model")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectDeliveryModel(AddDraftApprenticeshipViewModel request)
+        {
+            return View("SelectDeliveryModel", request);
         }
 
         [HttpPost]
@@ -215,6 +254,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
 
             return result.TrainingCourses;
+        }
+
+        private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(long providerId, string courseCode)
+        {
+            var result = await _mediator.Send(new GetProviderCourseDeliveryModelsQueryRequest
+            {
+                ProviderId = providerId,
+                CourseId = courseCode,
+            });
+            return result.DeliveryModels;
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿using System;
 using WireMock.Server;
 
-namespace SFA.DAS.ProviderCommitments.PAS.Accounts.Api.FakeServer
+namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 {
-    public class PasAccountsApi : IDisposable
+    public class MockApi : IDisposable
     {
         private readonly WireMockServer _server;
 
         private bool _isDisposed;
 
-        public PasAccountsApi(WireMockServer server)
+        public MockApi(WireMockServer server)
         {
             _server = server;
         }
@@ -27,9 +27,7 @@ namespace SFA.DAS.ProviderCommitments.PAS.Accounts.Api.FakeServer
             if (disposing)
             {
                 if (_server != null && _server.IsStarted)
-                {
                     _server.Stop();
-                }
 
                 _server?.Dispose();
             }

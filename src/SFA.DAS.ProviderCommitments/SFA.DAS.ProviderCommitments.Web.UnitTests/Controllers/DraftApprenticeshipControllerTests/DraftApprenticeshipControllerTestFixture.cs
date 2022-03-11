@@ -1,24 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.Dsl;
+﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderUrlHelper;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -158,6 +158,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     DraftApprenticeshipId = _draftApprenticeshipId
                 });
 
+            _mediator
+                .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
+
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
@@ -207,7 +211,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _addModel.CourseCode = "";
             return this;
         }
-        
+
+        public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
+        {
+            _addModel.CourseCode = "456FlexiJob";
+            _mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
+                {
+                    DeliveryModels = new[]
+                    {
+                        DeliveryModel.Normal,
+                        DeliveryModel.Flexible,
+                    }
+                });
+            return this;
+        }
+
+        internal DraftApprenticeshipControllerTestFixture PostToSelectStandard()
+        {
+            _actionResult = _controller.AddDraftApprenticeship2(_addModel);
+            return this;
+        }
+
         public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship()
         {
             _actionResult = await _controller.AddDraftApprenticeship(_addModel);
@@ -441,6 +466,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToCohortDetailsPage()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToSelectStandardPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship2");
+
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
+
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToAddDraftApprenticeshipDetails()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship");
 
             return this;
         }
