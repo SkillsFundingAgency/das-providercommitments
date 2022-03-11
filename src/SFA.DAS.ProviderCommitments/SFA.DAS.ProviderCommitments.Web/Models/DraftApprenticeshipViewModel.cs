@@ -61,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Uln { get; set; }
 
         public string CourseCode { get; set; }
+        public string CourseName { get; set; }
 
         [Display(Name = "Planned training start date")]
         public MonthYearModel StartDate { get; set; }

@@ -36,6 +36,7 @@
         public const string Cohort = "cohort";
         public const string SuccessSaveDraft = "success-save-draft";
         public const string SuccessSendToEmployer = "success-sendto-employer";
+        public const string SelectCourse = "add2";
     }
 }
 
