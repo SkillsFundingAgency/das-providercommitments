@@ -35,10 +35,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var result = new ReviewApprenticeViewModel
             {
                 ProviderId = source.ProviderId,
+                CohortRef = (!string.IsNullOrWhiteSpace(source.CohortRef)) ? source.CohortRef : string.Empty,
                 CacheRequestId = source.CacheRequestId,
-                ExistingCohortDetails = new List<ReviewApprenticeDetails>(),
-                FileUploadCohortDetails = new List<FileUploadReviewApprenticeDetails>(),
+                ExistingCohortDetails = new List<ReviewApprenticeDetailsForExistingCohort>(),
+                FileUploadCohortDetails = new List<ReviewApprenticeDetailsForFileUploadCohort>(),
             };
+            //result.CohortRef = source.CohortRef; 
 
             //Get CsvRecord details
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
@@ -48,27 +50,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             await FileUploadCohortDetails(result, csvRecordsGroupedByCohort);
 
             //Get commitments from DB
-            var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
-            var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
-            if (response != null)
+            if (!string.IsNullOrWhiteSpace(result.CohortRef))
             {
-                _logger.LogInformation("Total number of records from db: " + response.DraftApprenticeships.Count);
-                await ExistingCohortDetails(result, response);
+                var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
+                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(cohortId)).LatestMessageCreatedByEmployer;
+                var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+                if (response != null)
+                {
+                    _logger.LogInformation("Total number of records from db: " + response.DraftApprenticeships.Count);
+                    await ExistingCohortDetails(result, response);
+                }
             }
 
             var publicAccountLegalEntityIdNew = _encodingService.Decode(csvRecordsGroupedByCohort.FirstOrDefault().AgreementId, EncodingType.PublicAccountLegalEntityId);
             result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName;
-            result.CohortRef = source.CohortRef;
-            result.TotalApprentices = result.FileUploadCohortDetails.Count() + result.ExistingCohortDetails.Count(); 
-            result.TotalCost = result.FileUploadCohortDetails.Sum(x => x.Price) + result.ExistingCohortDetails.Sum(x => x.Price);
-            result.FileUploadTotalApprenticesText = result.FileUploadCohortDetails.Count() > 1 ? $"{result.FileUploadCohortDetails.Count()} apprentices to be added from CSV file" : "1 apprentice to be added from CSV file";
-            result.ExistingCohortTotalApprenticesText = result.ExistingCohortDetails.Count() > 1 ? $"{result.ExistingCohortDetails.Count()} apprentices previously added to this cohort" : "1 apprentice previously added to this cohort";
-
-            if (!string.IsNullOrWhiteSpace(result.CohortRef))
-            {                
-                result.MessageFromEmployer = (await _commitmentsApiClient.GetCohort(cohortId)).LatestMessageCreatedByEmployer;
-            }
-
+            
             return result;
         }        
 
@@ -81,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var apprenticeStartDate = GetValidDate(csvRecord.StartDate, "yyyy-MM-dd");
                 var apprenticeEndDate = GetValidDate(csvRecord.EndDate, "yyyy-MM");
 
-                var fileUploadApprenticeDetail = new FileUploadReviewApprenticeDetails
+                var fileUploadApprenticeDetail = new ReviewApprenticeDetailsForFileUploadCohort
                 {
                     Name = $"{csvRecord.GivenNames} {csvRecord.FamilyName}",
                     TrainingCourse = courseDetails.TrainingProgramme.Name,
@@ -103,7 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 var course = await _commitmentsApiClient.GetTrainingProgramme(item.CourseCode);
 
-                var apprenticeDetail = new ReviewApprenticeDetails
+                var apprenticeDetail = new ReviewApprenticeDetailsForExistingCohort
                 {
                     Name = $"{item.FirstName} {item.LastName}",
                     TrainingCourse = item.CourseName,
