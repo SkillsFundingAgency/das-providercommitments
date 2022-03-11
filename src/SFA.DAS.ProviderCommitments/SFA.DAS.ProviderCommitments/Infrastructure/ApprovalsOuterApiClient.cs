@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {
-    public class ApprovalsOuterApiClient
+    public class ApprovalsOuterApiClient : IApprovalsOuterApiClient
     {
         private readonly IApprovalsOuterApiHttpClient _client;
 

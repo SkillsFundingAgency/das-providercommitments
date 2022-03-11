@@ -23,8 +23,13 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using System.Linq;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -168,8 +173,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(AddDraftApprenticeshipViewModel request)
         {
-            return View("SelectDeliveryModel", request);
+            var models = (await GetProviderCourseDeliveryModels(request.ProviderId, request.CourseCode)).ToArray();
+
+            if (models.Count() > 1)
+            {
+                return RedirectToAction("SelectDeliveryModel", request);
+            }
+
+            request.DeliveryModel = models.FirstOrDefault();
+            return RedirectToAction("AddDraftApprenticeship", request);
         }
+
+        [HttpPost]
+        [Route("select-delivery-model")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel request)
+        {
+            if (request.DeliveryModel == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
+            }
+
+            return View("AddDraftApprenticeship", request);
+        }
+
 
         [HttpGet]
         [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
@@ -559,5 +587,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 throw new UnauthorizedAccessException("User not allowed");
             }
         }
+
+        private async Task<IEnumerable<DeliveryModel>> GetProviderCourseDeliveryModels(long providerId, string courseCode)
+        {
+            var result = await _mediator.Send(new GetProviderCourseDeliveryModelsQueryRequest
+            {
+                ProviderId = providerId,
+                CourseId = courseCode,
+            });
+            return result.DeliveryModels;
+        }
+
     }
 }

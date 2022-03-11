@@ -23,6 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
 
         public ApprovalsOuterApiClient CreateClient()
         {
+            
             var httpClient = new HttpClientBuilder()
                 .WithApimAuthorisationHeader(_configuration)
                 .WithDefaultHeaders()
