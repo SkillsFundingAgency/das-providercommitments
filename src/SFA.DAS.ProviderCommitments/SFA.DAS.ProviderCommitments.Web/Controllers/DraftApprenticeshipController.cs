@@ -1,14 +1,17 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
+using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
@@ -34,15 +37,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
+        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
-        public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService)
+        public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService, IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;
+            _featureTogglesService = featureTogglesService;
         }
 
         [HttpGet]
@@ -51,6 +56,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
+            if (_featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel).IsEnabled)
+            {
+                return RedirectToAction(nameof(AddDraftApprenticeship2), request);
+            }
+
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
 
             await AddLegalEntityAndCoursesToModel(model);

@@ -101,6 +101,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
+            if (_featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel).IsEnabled)
+            {
+                return RedirectToAction(nameof(AddDraftApprenticeship2), request);
+            }
+
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             return View(model);
         }
