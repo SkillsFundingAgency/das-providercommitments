@@ -41,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IAcademicYearDateProvider>().Use<AcademicYearDateProvider>().Singleton();
             For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
-            For<CommitmentsOuterApiClient>().Use(c => c.GetInstance<CommitmentsOuterApiHttpClientFactory>().CreateClient()).Singleton();
+            For<ICommitmentsOuterApiHttpClientFactory>().Use<CommitmentsOuterApiHttpClientFactory>();
+            For<CommitmentsOuterApiClient>().Use(c => c.GetInstance<ICommitmentsOuterApiHttpClientFactory>().CreateClient()).Singleton();
 
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }

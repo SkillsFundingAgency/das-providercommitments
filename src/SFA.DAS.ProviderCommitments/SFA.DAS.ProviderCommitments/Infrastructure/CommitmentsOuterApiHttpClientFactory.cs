@@ -4,7 +4,12 @@ using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {
-    public class CommitmentsOuterApiHttpClientFactory
+    public interface ICommitmentsOuterApiHttpClientFactory
+    {
+        CommitmentsOuterApiClient CreateClient();
+    }
+
+    public class CommitmentsOuterApiHttpClientFactory : ICommitmentsOuterApiHttpClientFactory
     {
         private readonly CommitmentsOuterApiConfiguration _configuration;
         private readonly ILoggerFactory _loggerFactory;
