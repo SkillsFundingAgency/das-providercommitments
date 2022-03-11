@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -147,7 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            return View("AddDraftApprenticeship2", model);
+            return View("SelectCourse", model);
         }
 
         [HttpPost]

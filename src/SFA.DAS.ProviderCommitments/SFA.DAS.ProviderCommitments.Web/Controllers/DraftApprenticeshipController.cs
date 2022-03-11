@@ -78,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             await AddLegalEntityAndCoursesToModel(model);
 
-            return View("DraftApprenticeship2", model);
+            return View("SelectCourse", model);
         }
 
         [HttpPost]
