@@ -177,18 +177,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             //Assert
             fixture.FundingTextMappedCorrectlyForExistingApprentices();
         }
+
+
+        [Test]
+        public async Task CohortRefTextMappedCorrectly()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+            
+
+            //Act
+            await fixture.WithOutCohortRefData().Action();
+            
+
+            //Assert
+            fixture.VerifyCohortRefText();
+        }
+
     }
 
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture
     {
         private Fixture fixture;
         private ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
-        private ReviewApprenticeRequest _request;
+        private FileUploadReviewApprenticeRequest _request;
         private Mock<IEncodingService> _encodingService;
         private Mock<ICommitmentsApiClient> _commitmentApiClient;
         private Mock<ICacheService> _cacheService;
         private List<CsvRecord> _csvRecords;
-        private ReviewApprenticeViewModel _result;
+        private FileUploadReviewApprenticeViewModel _result;
         private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
         private TrainingProgramme _trainingProgramme;
         private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
@@ -203,7 +220,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture = new Fixture();
             _csvRecords = new List<CsvRecord>();
 
-            _request = fixture.Create<ReviewApprenticeRequest>();
+            _request = fixture.Create<FileUploadReviewApprenticeRequest>();
             _request.CohortRef = cohortRef;
             var accountLegalEntityEmployer = fixture.Build<AccountLegalEntityResponse>()
                 .With(x => x.AccountName, "EmployerName").Create();
@@ -314,8 +331,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         internal void VerifyFundingTextMappedCorrectlyForFileUploadedApprentices()
-        {
-            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandTextForFileUploadCohorts);
+        {            
+            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandText);
+            Assert.AreEqual(true, _result.CohortDetails.FirstOrDefault().ExceedsFundingBandCap);
+            Assert.AreEqual(true, _result.CohortDetails.FirstOrDefault().FundingBandCap.HasValue);
+            Assert.IsTrue(_result.CohortDetails.FirstOrDefault().Price > _result.CohortDetails.FirstOrDefault().FundingBandCap);
         }        
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
@@ -333,7 +353,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             return this;
         }
-     
+
+        internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithOutCohortRefData()
+        {            
+            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", string.Empty, dateOfBirth, "2020-10-01", "2022-11", 500, 1));
+
+            return this;
+        }
+
+        internal void VerifyCohortRefText()
+        {
+            Assert.AreEqual("This will be created when you save or send to employers", _result.CohortRefText);          
+        }
+
         private static List<CsvRecord> CreateCsvRecords(Fixture fixture, string employerAgreementId, string cohortRef, string dateOfBirth, 
             string apprenticeStartDate, string apprenticeEndDate, int price,  int numberOfApprentices)
         {

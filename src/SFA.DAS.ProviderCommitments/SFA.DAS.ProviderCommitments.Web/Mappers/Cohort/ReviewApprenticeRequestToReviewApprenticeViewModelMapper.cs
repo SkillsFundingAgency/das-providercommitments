@@ -14,7 +14,7 @@ using SFA.DAS.ProviderCommitments.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class ReviewApprenticeRequestToReviewApprenticeViewModelMapper : IMapper<ReviewApprenticeRequest, ReviewApprenticeViewModel>
+    public class ReviewApprenticeRequestToReviewApprenticeViewModelMapper : IMapper<FileUploadReviewApprenticeRequest, FileUploadReviewApprenticeViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheService _cacheService;
@@ -30,9 +30,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _logger = logger;            
         }
 
-        public async Task<ReviewApprenticeViewModel> Map(ReviewApprenticeRequest source)
+        public async Task<FileUploadReviewApprenticeViewModel> Map(FileUploadReviewApprenticeRequest source)
         {
-            var result = new ReviewApprenticeViewModel
+            var result = new FileUploadReviewApprenticeViewModel
             {
                 ProviderId = source.ProviderId,
                 CohortRef = (!string.IsNullOrWhiteSpace(source.CohortRef)) ? source.CohortRef : string.Empty,

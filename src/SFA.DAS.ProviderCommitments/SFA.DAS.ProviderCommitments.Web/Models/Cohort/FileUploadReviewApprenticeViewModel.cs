@@ -4,13 +4,17 @@ using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class ReviewApprenticeViewModel
+    public class FileUploadReviewApprenticeViewModel
     {
         public long ProviderId { get; set; }
         public Guid CacheRequestId { get; set; }
         public string EmployerName { get; set; }
         public string CohortRef { get; set; }
         public string CohortRefText => CohortRef ?? "This will be created when you save or send to employers";
+        public string CohortRef { get; set; }        
+        public int TotalApprentices { get; set; }        
+        public decimal TotalCost { get; set; }
+        public string CohortRefText => string.IsNullOrWhiteSpace(CohortRef) ? "This will be created when you save or send to employers" : CohortRef;
         public string MessageFromEmployer { get; set; }
         public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
@@ -25,6 +29,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         }
 
         public string FileUploadTotalApprenticesText
+        public List<FileUploadReviewApprenticeDetails> CohortDetails { get; set; }
+
+        public string FundingBandText
         {
             get
             {
