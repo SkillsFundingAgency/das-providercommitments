@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var viewResult = await fixture.Act();
 
             //Assert
-            var model = viewResult.VerifyReturnsViewModel().WithModel<ReviewApprenticeViewModel>();
+            var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadReviewApprenticeViewModel>();
             Assert.IsNotNull(model);
         }
     }
@@ -50,26 +50,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     {
         private CohortController _sut { get; set; }        
 
-        private readonly ReviewApprenticeRequest _request;
+        private readonly FileUploadReviewApprenticeRequest _request;
         private readonly long _providerId = 123;
         private readonly string _cohortRef = "VLB8N4";
         private readonly Guid _cacheRequestId = Guid.NewGuid();
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly ReviewApprenticeViewModel _viewModel;
+        private readonly FileUploadReviewApprenticeViewModel _viewModel;
 
         public WhenGettingToReviewApprenticesFixture()
         {
             var fixture = new AutoFixture.Fixture();
 
-            _viewModel = fixture.Create<ReviewApprenticeViewModel>();
-            _request = new ReviewApprenticeRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId, CohortRef = _cohortRef };
+            _viewModel = fixture.Create<FileUploadReviewApprenticeViewModel>();
+            _request = new FileUploadReviewApprenticeRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId, CohortRef = _cohortRef };
 
             _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<ReviewApprenticeViewModel>(_request)).ReturnsAsync(_viewModel);
+            _modelMapper.Setup(x => x.Map<FileUploadReviewApprenticeViewModel>(_request)).ReturnsAsync(_viewModel);
 
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public Task<IActionResult> Act() => _sut.ReviewApprentices(_request);
+        public Task<IActionResult> Act() => _sut.FileUploadReviewApprentices(_request);
     }
 }
