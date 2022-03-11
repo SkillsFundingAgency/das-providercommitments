@@ -43,13 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
         public static T GetButDontRemove<T>(this ITempDataDictionary tempData, string key) where T : class
         {
-            var result = Get<T>(tempData, key);
-            if (result != null)
-            {
-                Put(tempData, key, result);
-            }
-
-            return result;
+            var result = tempData.Peek(key);
+            return result == null ? null : JsonConvert.DeserializeObject<T>((string)result);
         }
     }
 }
