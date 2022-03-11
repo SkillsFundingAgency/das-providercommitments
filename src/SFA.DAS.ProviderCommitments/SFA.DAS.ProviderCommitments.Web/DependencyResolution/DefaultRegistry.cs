@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For(typeof(ICookieStorageService<>)).Use(typeof(CookieStorageService<>)).Singleton();
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
             For<IApprovalsOuterApiHttpClientFactory>().Use<ApprovalsOuterApiHttpClientFactory>();
-            For<IApprovalsOuterApiClient>().Use(c => c.GetInstance<IApprovalsOuterApiHttpClientFactory>().CreateClient()).Singleton();
+            For<ApprovalsOuterApiClient>().Use(c => c.GetInstance<IApprovalsOuterApiHttpClientFactory>().CreateClient()).Singleton();
 
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }

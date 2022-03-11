@@ -2,6 +2,7 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels
 {
@@ -10,9 +11,9 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels
             GetProviderCourseDeliveryModelsQueryRequest,
             GetProviderCourseDeliveryModelsQueryResponse>
     {
-        private readonly IApprovalsOuterApiClient _client;
+        private readonly ApprovalsOuterApiClient _client;
 
-        public GetProviderCourseDeliveryModelsQueryHandler(IApprovalsOuterApiClient client)
+        public GetProviderCourseDeliveryModelsQueryHandler(ApprovalsOuterApiClient client)
         {
             _client = client;
         }
