@@ -39,8 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CacheRequestId = source.CacheRequestId,
                 ExistingCohortDetails = new List<ReviewApprenticeDetailsForExistingCohort>(),
                 FileUploadCohortDetails = new List<ReviewApprenticeDetailsForFileUploadCohort>(),
-            };
-            //result.CohortRef = source.CohortRef; 
+            };            
 
             //Get CsvRecord details
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());

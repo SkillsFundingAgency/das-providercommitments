@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         var existingCohortDetails = new FileUploadReviewCohortDetail
                         {
                             CohortRef = cohortGroup.Key,
-                            NumberOfApprentices = response.DraftApprenticeships.Count(),
+                            NumberOfApprentices = response.DraftApprenticeships.Count,
                             TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
                         };
                         cohortDetails.Add(existingCohortDetails);
