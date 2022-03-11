@@ -65,6 +65,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => _sut.FileDiscard(_viewModel);
+        public IActionResult Act() => _sut.FileUploadDiscard(_viewModel);
     }
 }

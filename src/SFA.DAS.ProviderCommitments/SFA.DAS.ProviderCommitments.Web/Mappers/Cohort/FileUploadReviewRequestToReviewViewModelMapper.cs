@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +19,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
         private readonly ILogger<FileUploadReviewRequestToReviewViewModelMapper> _logger;
+        private readonly IPolicyAuthorizationWrapper _policyAuthorizationWrapper;        
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FileUploadReviewRequestToReviewViewModelMapper(ILogger<FileUploadReviewRequestToReviewViewModelMapper> logger, ICommitmentsApiClient commitmentApiClient,  ICacheService cacheService, IEncodingService encodingService)
+        public FileUploadReviewRequestToReviewViewModelMapper(ILogger<FileUploadReviewRequestToReviewViewModelMapper> logger, ICommitmentsApiClient commitmentApiClient, 
+            ICacheService cacheService, IEncodingService encodingService, IPolicyAuthorizationWrapper policyAuthorizationWrapper, IHttpContextAccessor httpContextAccessor)
         {
             _commitmentsApiClient = commitmentApiClient;
             _cacheService = cacheService;
             _encodingService = encodingService;
             _logger = logger;
+            _policyAuthorizationWrapper = policyAuthorizationWrapper;            
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<FileUploadReviewViewModel> Map(FileUploadReviewRequest source)
@@ -33,7 +41,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
 
-           var groupedByEmployers = csvRecords.GroupBy(x => x.AgreementId);
+            result.CanApprove = await _policyAuthorizationWrapper.IsAuthorized(_httpContextAccessor.HttpContext.User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+
+            var groupedByEmployers = csvRecords.GroupBy(x => x.AgreementId);
 
             foreach (var employer in groupedByEmployers)
             {

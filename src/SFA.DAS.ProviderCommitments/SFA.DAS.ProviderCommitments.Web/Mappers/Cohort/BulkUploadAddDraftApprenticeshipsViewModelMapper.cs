@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     public class BulkUploadAddDraftApprenticeshipsViewModelMapper : IMapper<GetBulkUploadAddDraftApprenticeshipsResponse, BulkUploadAddDraftApprenticeshipsViewModel>
     {
         public Task<BulkUploadAddDraftApprenticeshipsViewModel> Map(GetBulkUploadAddDraftApprenticeshipsResponse source)
-        {
+        {   
             var viewModel = new BulkUploadAddDraftApprenticeshipsViewModel
             {                
                 BulkUploadDraftApprenticeshipsViewModel = (from result in source.BulkUploadAddDraftApprenticeshipsResponse

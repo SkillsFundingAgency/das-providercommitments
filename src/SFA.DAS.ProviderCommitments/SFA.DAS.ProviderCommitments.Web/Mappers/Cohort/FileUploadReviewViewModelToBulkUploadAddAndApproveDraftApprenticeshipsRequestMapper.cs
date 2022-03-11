@@ -9,28 +9,28 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddDraftApprenticeshipsRequest>
+    public class FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddAndApproveDraftApprenticeshipsRequest>
     {
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
-        public FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
+        public FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
         {
             _cacheService = cacheService;
             _encodingService = encodingService;
         }
 
-        public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
+        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
-            var csVRecords = await _cacheService.GetFromCache<List<Models.Cohort.CsvRecord>>(source.CacheRequestId.ToString());
+            var csVRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString());
-            return new BulkUploadAddDraftApprenticeshipsRequest
+            return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadDraftApprenticeships = csVRecords.Select(x => MapTo(x))
+                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select(MapTo)
             };
         }
 
-        private BulkUploadAddDraftApprenticeshipRequest MapTo(Models.Cohort.CsvRecord record)
+        private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record)
         {
             return new BulkUploadAddDraftApprenticeshipRequest
             {
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 DateOfBirthAsString = record.DateOfBirth,
                 CostAsString = record.TotalPrice,
                 ProviderRef = record.ProviderRef,
-                StartDateAsString =record.StartDate,
+                StartDateAsString = record.StartDate,
                 EndDateAsString = record.EndDate,
                 CourseCode = record.StdCode,
                 LegalEntityId = _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId),
