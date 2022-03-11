@@ -10,28 +10,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public Guid CacheRequestId { get; set; }
         public string EmployerName { get; set; }
         public string CohortRef { get; set; }
-        public string CohortRefText => CohortRef ?? "This will be created when you save or send to employers";
-        public string CohortRef { get; set; }        
-        public int TotalApprentices { get; set; }        
-        public decimal TotalCost { get; set; }
-        public string CohortRefText => string.IsNullOrWhiteSpace(CohortRef) ? "This will be created when you save or send to employers" : CohortRef;
+        public string CohortRefText => CohortRef ?? "This will be created when you save or send to employers";       
         public string MessageFromEmployer { get; set; }
         public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
         public List<ReviewApprenticeDetailsForExistingCohort> ExistingCohortDetails { get; set; }
         public int? TotalApprentices => FileUploadCohortDetails?.Count() + ExistingCohortDetails?.Count();        
-        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);
-        public string FundingBandLink {
-            get 
-            {
-                return "https://www.gov.uk/government/publications/apprenticeship-funding-bands";
-            }
-        }
+        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);       
 
         public string FileUploadTotalApprenticesText
-        public List<FileUploadReviewApprenticeDetails> CohortDetails { get; set; }
-
-        public string FundingBandText
         {
             get
             {

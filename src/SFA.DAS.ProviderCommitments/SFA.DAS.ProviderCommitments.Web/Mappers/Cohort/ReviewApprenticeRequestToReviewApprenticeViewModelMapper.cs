@@ -42,9 +42,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };            
 
             //Get CsvRecord details
-            var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
-            var csvRecordsGroupedByCohort = csvRecords.Where(x => x.CohortRef == source.CohortRef);
-            _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
+            var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());            
+            var csvRecordsGroupedByCohort = csvRecords.Where(x => (!string.IsNullOrWhiteSpace(x.CohortRef) && x.CohortRef == source.CohortRef) ||
+                                   (string.IsNullOrWhiteSpace(source.CohortRef) && string.IsNullOrWhiteSpace(x.CohortRef) && source.AgreementId == x.AgreementId));
+            _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);            
 
             await FileUploadCohortDetails(result, csvRecordsGroupedByCohort);
 
@@ -65,9 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             result.EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName;
             
             return result;
-        }        
+        }       
 
-        private async Task FileUploadCohortDetails(ReviewApprenticeViewModel result, IEnumerable<CsvRecord> csvRecordsGroupedByCohort)
+        private async Task FileUploadCohortDetails(FileUploadReviewApprenticeViewModel result, IEnumerable<CsvRecord> csvRecordsGroupedByCohort)
         {
             foreach (var csvRecord in csvRecordsGroupedByCohort)
             {
@@ -92,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task ExistingCohortDetails(ReviewApprenticeViewModel result, CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipsResponse response)
+        private async Task ExistingCohortDetails(FileUploadReviewApprenticeViewModel result, CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipsResponse response)
         {   
             foreach (var item in response.DraftApprenticeships)
             {
