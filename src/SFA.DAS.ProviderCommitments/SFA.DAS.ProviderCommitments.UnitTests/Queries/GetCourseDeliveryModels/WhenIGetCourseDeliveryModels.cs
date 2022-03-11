@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetCourseDeliveryModels
     {
         [Test, MoqAutoData]
         public async Task Then_delivery_models_are_returned(
-            [Frozen] ICommitmentsOuterApiHttpClient client,
+            [Frozen] IApprovalsOuterApiHttpClient client,
             GetCourseDeliveryModelsQueryHandler handler,
             CourseDeliveryModels models,
             long provider,

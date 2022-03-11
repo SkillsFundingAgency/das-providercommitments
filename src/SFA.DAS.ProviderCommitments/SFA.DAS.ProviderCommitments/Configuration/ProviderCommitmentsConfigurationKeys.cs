@@ -6,7 +6,7 @@
         public const string ProviderCommitments = "SFA.DAS.ProviderCommitments";
         public static string AuthenticationSettings = "AuthenticationSettings";
         public static string CommitmentsClientApiConfiguration = "CommitmentsClientApi";
-        public static string CommitmentsOuterApiConfiguration = "CommitmentsOuterApi";
+        public static string ApprovalsOuterApiConfiguration = "ApprovalsOuterApi";
         public static string FeaturesConfiguration = "Features";
         public static string ZenDeskConfiguration = "ZenDesk";
         public static string DataProtectionConnectionStrings = "DataProtection";

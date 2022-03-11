@@ -5,23 +5,23 @@ using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {
-    public interface ICommitmentsOuterApiHttpClientFactory
+    public interface IApprovalsOuterApiHttpClientFactory
     {
-        CommitmentsOuterApiClient CreateClient();
+        ApprovalsOuterApiClient CreateClient();
     }
 
-    public class CommitmentsOuterApiHttpClientFactory : ICommitmentsOuterApiHttpClientFactory
+    public class ApprovalsOuterApiHttpClientFactory : IApprovalsOuterApiHttpClientFactory
     {
-        private readonly CommitmentsOuterApiConfiguration _configuration;
+        private readonly ApprovalsOuterApiConfiguration _configuration;
         private readonly ILoggerFactory _loggerFactory;
 
-        public CommitmentsOuterApiHttpClientFactory(CommitmentsOuterApiConfiguration configuration, ILoggerFactory loggerFactory)
+        public ApprovalsOuterApiHttpClientFactory(ApprovalsOuterApiConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _loggerFactory = loggerFactory;
         }
 
-        public CommitmentsOuterApiClient CreateClient()
+        public ApprovalsOuterApiClient CreateClient()
         {
             var httpClient = new HttpClientBuilder()
                 .WithApimAuthorisationHeader(_configuration)
@@ -29,8 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 .WithLogging(_loggerFactory)
                 .Build();
             httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
-            var restHttpClient = new CommitmentsOuterApiHttpClient(httpClient);
-            var apiClient = new CommitmentsOuterApiClient(restHttpClient);
+            var restHttpClient = new ApprovalsOuterApiHttpClient(httpClient);
+            var apiClient = new ApprovalsOuterApiClient(restHttpClient);
             return apiClient;
         }
     }

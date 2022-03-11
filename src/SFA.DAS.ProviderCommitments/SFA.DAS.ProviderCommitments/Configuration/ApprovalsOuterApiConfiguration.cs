@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Configuration
 {
-    public class CommitmentsOuterApiConfiguration : IApimClientConfiguration
+    public class ApprovalsOuterApiConfiguration : IApimClientConfiguration
     {
         public string ApiBaseUrl { get; set; } = null!;
         public string SubscriptionKey { get; set; } = null!;

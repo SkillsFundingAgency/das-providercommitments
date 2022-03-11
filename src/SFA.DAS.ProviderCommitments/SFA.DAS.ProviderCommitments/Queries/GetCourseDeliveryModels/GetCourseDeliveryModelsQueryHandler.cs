@@ -8,9 +8,9 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetCourseDeliveryModels
     public class GetCourseDeliveryModelsQueryHandler 
         : IRequestHandler<GetCourseDeliveryModelsQueryRequest, GetCourseDeliveryModelsQueryResponse>
     {
-        private readonly CommitmentsOuterApiClient _client;
+        private readonly ApprovalsOuterApiClient _client;
 
-        public GetCourseDeliveryModelsQueryHandler(CommitmentsOuterApiClient client)
+        public GetCourseDeliveryModelsQueryHandler(ApprovalsOuterApiClient client)
         {
             _client = client;
         }

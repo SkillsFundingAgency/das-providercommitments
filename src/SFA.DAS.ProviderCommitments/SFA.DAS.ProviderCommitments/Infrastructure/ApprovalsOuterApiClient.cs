@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {
-    public class CommitmentsOuterApiClient
+    public class ApprovalsOuterApiClient
     {
-        private readonly ICommitmentsOuterApiHttpClient _client;
+        private readonly IApprovalsOuterApiHttpClient _client;
 
-        public CommitmentsOuterApiClient(ICommitmentsOuterApiHttpClient client)
+        public ApprovalsOuterApiClient(IApprovalsOuterApiHttpClient client)
         {
             _client = client;
         }

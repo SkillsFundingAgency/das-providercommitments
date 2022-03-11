@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {

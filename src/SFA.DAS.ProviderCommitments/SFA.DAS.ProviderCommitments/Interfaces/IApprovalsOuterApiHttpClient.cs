@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
 {
-    public interface ICommitmentsOuterApiHttpClient : IRestHttpClient
+    public interface IApprovalsOuterApiHttpClient : IRestHttpClient
     {
     }
 }
