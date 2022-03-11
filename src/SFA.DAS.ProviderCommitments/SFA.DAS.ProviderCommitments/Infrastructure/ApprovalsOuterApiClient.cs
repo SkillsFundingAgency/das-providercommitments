@@ -13,12 +13,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             _client = client;
         }
 
-        public async Task<CourseDeliveryModels> GetCourseDeliveryModels(
+        public async Task<ProviderCourseDeliveryModels> GetProviderCourseDeliveryModels(
             long providerId,
             string courseCode,
             CancellationToken cancellationToken = default)
         {
-            return await _client.Get<CourseDeliveryModels>
+            return await _client.Get<ProviderCourseDeliveryModels>
                 ($"/providers/{providerId}/courses/{courseCode}",
                 cancellationToken: cancellationToken);
         }

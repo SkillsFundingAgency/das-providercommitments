@@ -9,7 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Queries.GetCourseDeliveryModels;
+using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -258,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(long providerId, string courseCode)
         {
-            var result = await _mediator.Send(new GetCourseDeliveryModelsQueryRequest
+            var result = await _mediator.Send(new GetProviderCourseDeliveryModelsQueryRequest
             {
                 ProviderId = providerId,
                 CourseId = courseCode,

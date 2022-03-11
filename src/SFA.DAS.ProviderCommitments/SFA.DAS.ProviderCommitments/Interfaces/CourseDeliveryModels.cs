@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
 {
-    public class CourseDeliveryModels
+    public class ProviderCourseDeliveryModels
     {
         public IEnumerable<DeliveryModel> DeliveryModels { get; set; }
     }
