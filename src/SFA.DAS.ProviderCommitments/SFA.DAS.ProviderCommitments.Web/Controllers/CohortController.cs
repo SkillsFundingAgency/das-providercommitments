@@ -187,7 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel request)
+        public IActionResult SetDeliveryModel(AddDraftApprenticeshipViewModel request)
         {
             if (request.DeliveryModel == null)
             {
