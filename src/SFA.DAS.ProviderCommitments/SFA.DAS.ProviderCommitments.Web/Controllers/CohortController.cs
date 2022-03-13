@@ -195,7 +195,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
             }
 
-            return View("AddDraftApprenticeship", request);
+            return RedirectToAction("AddDraftApprenticeship", request);
         }
 
 
