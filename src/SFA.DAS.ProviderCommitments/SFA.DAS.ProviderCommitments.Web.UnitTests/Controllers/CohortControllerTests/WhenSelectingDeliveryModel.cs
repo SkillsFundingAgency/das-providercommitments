@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             try
             {
-                var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel);
+                var result = fixture.Sut.SetDeliveryModel(fixture.ViewModel);
                 Assert.Fail("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             fixture.ViewModel.DeliveryModel = DeliveryModel.Flexible;
 
-            var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
+            var result = fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
     }
