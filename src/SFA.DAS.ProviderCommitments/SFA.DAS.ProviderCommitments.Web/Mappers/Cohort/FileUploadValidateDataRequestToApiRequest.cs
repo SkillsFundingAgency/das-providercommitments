@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             apiRequest.ProviderId = source.ProviderId;
 
             apiRequest.CsvRecords = source.CsvRecords.Select((csvRecord, index) =>
-                csvRecord.MapToBulkUploadAddDraftApprenticeshipRequest(index+ 1, source.ProviderId)).ToList();
+                csvRecord.MapToBulkUploadAddDraftApprenticeshipRequest(index+ 1, source.ProviderId, null)).ToList();
 
             return Task.FromResult(apiRequest);
         }

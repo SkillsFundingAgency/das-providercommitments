@@ -27,24 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadDraftApprenticeships = csVRecords.Select((x, index) => MapTo(x, source.ProviderId, index))
-
+                BulkUploadDraftApprenticeships = csVRecords.Select((x, index) => x.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, source.ProviderId, _encodingService))
             };
-        }
-
-        private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record, long providerId, int index)
-        {
-            var legalEntityId = !string.IsNullOrWhiteSpace(record.AgreementId)
-                ? _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId) : (long?) null;
-
-            var cohortId = !string.IsNullOrWhiteSpace(record.CohortRef)
-                ? _encodingService.Decode(record.CohortRef, EncodingType.CohortReference) : (long?) null;
-
-            var bulkUploadApiRequest = record.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, providerId);
-            bulkUploadApiRequest.CohortId = cohortId;
-            bulkUploadApiRequest.LegalEntityId = legalEntityId;
-
-            return bulkUploadApiRequest;
         }
     }
 }
