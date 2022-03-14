@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             try
             {
                 return (encodingService != null && !string.IsNullOrWhiteSpace(toDecode))
-                    ? encodingService.Decode(toDecode, encodingType) : null;
+                    ? encodingService.Decode(toDecode, encodingType) : (long?) null;
             }catch
             {
                 return null;
