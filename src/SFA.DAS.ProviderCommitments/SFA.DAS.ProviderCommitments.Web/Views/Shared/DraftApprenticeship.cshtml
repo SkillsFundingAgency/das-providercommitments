@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
@@ -152,20 +153,25 @@ else
                 </div>
             </fieldset>
         </div>
+
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
+            <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
+            <p id="course-name" class="govuk-body">@Model.CourseName <a class="govuk-link" href="@Url.RouteUrl(RouteNames.SelectCourse, new { ProviderId = Model.ProviderId, ReservationId = Model.ReservationId, CohortReference = Model.CohortReference, CohortId = Model.CohortId, StartMonthYear = Model.StartDate.MonthYear, CourseCode = Model.CourseCode })">edit</a></p>
+        </div>
     }
     else
     {
         <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Normal)">
-    }
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
-        <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
-        <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
-        @Html.ValidationMessageFor(m => m.CourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.CourseCode) })
-        <select class="govuk-select govuk-!-width-three-quarters" asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "CourseCode", "Name"))" aria-describedby="course-name-hint">
-            <option value="">Please select an option</option>
-        </select>
-    </div>
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
+            <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
+            <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>
+            @Html.ValidationMessageFor(m => m.CourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.CourseCode) })
+            <select class="govuk-select govuk-!-width-three-quarters" asp-for="CourseCode" asp-items="@(new SelectList(Model.Courses, "CourseCode", "Name"))" aria-describedby="course-name-hint">
+                <option value="">Please select an option</option>
+            </select>
+        </div>
+    }
 
 }
 
