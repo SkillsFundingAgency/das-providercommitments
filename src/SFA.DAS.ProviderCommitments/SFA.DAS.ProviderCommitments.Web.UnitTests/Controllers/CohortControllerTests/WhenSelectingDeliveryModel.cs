@@ -30,8 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Normal});
 
-            var result = await fixture.Sut.SelectDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
-            result.ActionName.Should().Be("AddDraftApprenticeship");
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
+            result.ActionName.Should().Be("AddApprenticeship");
         }
 
         [Test]
@@ -40,21 +40,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
 
-            var result = await fixture.Sut.SelectDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
-            result.ActionName.Should().Be("SelectDeliveryModel");
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
+            result.ViewName.Should().Be("SelectDeliveryModel");
         }
 
         [Test]
         public async Task WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
-
+            var fixture = new WhenSelectingDeliveryModelFixture();
             fixture.ViewModel.DeliveryModel = null;
 
             try
             {
-                var result = fixture.Sut.SetDeliveryModel(fixture.ViewModel);
+                var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel);
                 Assert.Fail("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
@@ -67,13 +65,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
+            var fixture = new WhenSelectingDeliveryModelFixture();
 
             fixture.ViewModel.DeliveryModel = DeliveryModel.Flexible;
 
-            var result = fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
-            result.ActionName.Should().Be("AddDraftApprenticeship");
+            var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
+            result.ActionName.Should().Be("AddApprenticeship");
         }
     }
 
@@ -83,16 +80,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public string RedirectUrl;
         public Mock<IMediator> MediatorMock;
+        public CreateCohortWithDraftApprenticeshipRequest Request;
         public AddDraftApprenticeshipViewModel ViewModel;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x=>x.BirthDay).Without(x=>x.BirthMonth).Without(x=>x.BirthYear)
-                .Without(x=>x.EndMonth).Without(x=>x.EndYear)
-                .Without(x=>x.StartDate)
-                .Without(x=>x.StartMonth).Without(x=>x.StartYear)
+            Request = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().Create();
+            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+                .Without(x => x.EndMonth).Without(x => x.EndYear)
+                .Without(x => x.StartDate)
+                .Without(x => x.StartMonth).Without(x => x.StartYear)
                 .Create();
+
             MediatorMock = new Mock<IMediator>();
 
             Sut = new CohortController(MediatorMock.Object, Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
             MediatorMock
-                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p=>p.ProviderId == ViewModel.ProviderId && p.CourseId == ViewModel.CourseCode), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p=>p.ProviderId == Request.ProviderId && p.CourseId == Request.CourseCode), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse {DeliveryModels = list});
             return this;
         }
