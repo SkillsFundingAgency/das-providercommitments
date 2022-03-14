@@ -10,35 +10,34 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddDraftApprenticeshipsRequest>
+    public class FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddAndApproveDraftApprenticeshipsRequest>
     {
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
-        public FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
+        public FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
         {
             _cacheService = cacheService;
             _encodingService = encodingService;
         }
 
-        public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
+        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
             var csVRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString());
-            return new BulkUploadAddDraftApprenticeshipsRequest
+            return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadDraftApprenticeships = csVRecords.Select((x, index) => MapTo(x, source.ProviderId, index))
-
+                BulkUploadAddAndApproveDraftApprenticeships = csVRecords.Select((csv, i) => MapTo(i, csv, source.ProviderId))
             };
         }
 
-        private BulkUploadAddDraftApprenticeshipRequest MapTo(CsvRecord record, long providerId, int index)
+        private BulkUploadAddDraftApprenticeshipRequest MapTo(int index, CsvRecord record, long providerId)
         {
             var legalEntityId = !string.IsNullOrWhiteSpace(record.AgreementId)
-                ? _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId) : (long?) null;
+               ? _encodingService.Decode(record.AgreementId, EncodingType.PublicAccountLegalEntityId) : (long?)null;
 
             var cohortId = !string.IsNullOrWhiteSpace(record.CohortRef)
-                ? _encodingService.Decode(record.CohortRef, EncodingType.CohortReference) : (long?) null;
+                ? _encodingService.Decode(record.CohortRef, EncodingType.CohortReference) : (long?)null;
 
             var bulkUploadApiRequest = record.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, providerId);
             bulkUploadApiRequest.CohortId = cohortId;
