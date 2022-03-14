@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 
@@ -22,7 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var ale = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
+            var aleTask = _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
+            var courseTask = GetCourse(source.CourseCode);
+
+            await Task.WhenAll(aleTask, courseTask);
 
             return new AddDraftApprenticeshipViewModel
             {
@@ -31,8 +35,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
-                Courses = await GetCourses(ale.LevyStatus),
-                Employer = ale.LegalEntityName
+                CourseName = courseTask.Result.CourseName,
+                Courses = await GetCourses(aleTask.Result.LevyStatus),
+                Employer = aleTask.Result.LegalEntityName
             };
         }
 
@@ -41,5 +46,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = levyStatus != ApprenticeshipEmployerType.NonLevy });
             return result.TrainingCourses;
         }
+
+        private async Task<GetTrainingCourseResponse> GetCourse(string courseCode)
+            => await _mediator.Send(new GetTrainingCourseRequest { CourseCode = courseCode });            
     }
 }
