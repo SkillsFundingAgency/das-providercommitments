@@ -8,6 +8,7 @@ using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -26,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -102,7 +104,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(AddDraftApprenticeshipViewModel request)
         {
-            return View("SelectDeliveryModel", request);
+            var models = (await GetProviderCourseDeliveryModels(request.ProviderId, request.CourseCode)).ToArray();
+
+            if (models.Count() > 1)
+            {
+                return RedirectToAction("SelectDeliveryModel", request);
+            }
+
+            request.DeliveryModel = models.FirstOrDefault();
+            return RedirectToAction("AddDraftApprenticeship", request);
+        }
+
+        [HttpPost]
+        [Route("select-delivery-model")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult SetDeliveryModel(AddDraftApprenticeshipViewModel request)
+        {
+            if (request.DeliveryModel == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
+            }
+
+            return RedirectToAction("AddDraftApprenticeship", request);
         }
 
         [HttpPost]
@@ -266,7 +291,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return result.TrainingCourses;
         }
 
-        private async Task<IEnumerable<DeliveryModel>> GetCourseDeliveryModels(long providerId, string courseCode)
+        private async Task<IEnumerable<DeliveryModel>> GetProviderCourseDeliveryModels(long providerId, string courseCode)
         {
             var result = await _mediator.Send(new GetProviderCourseDeliveryModelsQueryRequest
             {

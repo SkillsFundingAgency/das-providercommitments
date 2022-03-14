@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels
 {
@@ -21,8 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels
             GetProviderCourseDeliveryModelsQueryRequest request,
             CancellationToken cancellationToken)
         {
-            var models = await _client
-                .GetProviderCourseDeliveryModels(request.ProviderId, request.CourseId);
+            var models = await _client.GetProviderCourseDeliveryModels(request.ProviderId, request.CourseId);
 
             return new GetProviderCourseDeliveryModelsQueryResponse
             {
