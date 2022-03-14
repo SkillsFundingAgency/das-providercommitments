@@ -35,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
                 CourseName = courseTask.Result.TrainingProgramme.Name,
+                DeliveryModel = source.DeliveryModel,
                 Courses = await GetCourses(aleTask.Result.LevyStatus),
                 Employer = aleTask.Result.LegalEntityName
             };
