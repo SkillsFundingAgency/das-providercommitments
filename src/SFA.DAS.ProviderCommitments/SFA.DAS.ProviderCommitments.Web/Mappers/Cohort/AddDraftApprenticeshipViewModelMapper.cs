@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.CommitmentsV2.Shared.Models;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
             var aleTask = _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
-            var courseTask = GetCourse(source.CourseCode);
+            var courseTask = _commitmentsApiClient.GetTrainingProgramme(source.CourseCode);
 
             await Task.WhenAll(aleTask, courseTask);
 
@@ -35,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
-                CourseName = courseTask.Result.CourseName,
+                CourseName = courseTask.Result.TrainingProgramme.Name,
                 Courses = await GetCourses(aleTask.Result.LevyStatus),
                 Employer = aleTask.Result.LegalEntityName
             };
@@ -46,8 +45,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = levyStatus != ApprenticeshipEmployerType.NonLevy });
             return result.TrainingCourses;
         }
-
-        private async Task<GetTrainingCourseResponse> GetCourse(string courseCode)
-            => await _mediator.Send(new GetTrainingCourseRequest { CourseCode = courseCode });            
     }
 }
