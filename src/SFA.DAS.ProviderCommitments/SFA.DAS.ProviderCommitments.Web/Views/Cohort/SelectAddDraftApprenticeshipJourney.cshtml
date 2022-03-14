@@ -44,7 +44,6 @@
                                 </div>
                             }
 
-
                             @if (Model.HasCreateCohortPermission)
                             {
                                 <div class="govuk-radios__item">
@@ -54,9 +53,22 @@
                                     </label>
                                 </div>
                             }
-
-
                         </div>
+
+
+                        @if (!Model.HasCreateCohortPermission)
+                        {
+                            <div class="govuk-inset-text">
+                                You do not have permission to create cohorts. You will need to ask the employer to give you permission to do this on their behalf.
+                            </div>
+                        }
+                        else if (!Model.HasExistingCohort)
+                        {
+                            <div class="govuk-inset-text">
+                                You do not have any cohorts to be able to add apprentices. You will need to create a cohort or ask the employer to create one, if you do not have permission, to do this on their behalf.
+                            </div>
+                        }
+
                     </fieldset>
                 </div>
                 <button class="govuk-button" type="submit" data-module="govuk-button">
@@ -66,16 +78,16 @@
         }
 
     </div>
-    </div>
+</div>
 
-    @section breadcrumb
+@section breadcrumb
 {
-        @if (Model.IsBulkUploadV2Enabled)
-        {
-            <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })>Back</a>
-        }
-        else
-        {
-            <a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
-        }
+    @if (Model.IsBulkUploadV2Enabled)
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectDraftApprenticeshipsEntryMethod", new { @Model.ProviderId })>Back</a>
     }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.ProviderApprenticeshipServiceLink("account")>Back</a>
+    }
+}

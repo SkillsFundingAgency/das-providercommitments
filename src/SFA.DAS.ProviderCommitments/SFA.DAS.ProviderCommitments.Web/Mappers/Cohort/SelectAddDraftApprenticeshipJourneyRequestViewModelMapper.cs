@@ -51,8 +51,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var hasExistingCohort = false;
 
             if (getCohortsTask.Result.Cohorts != null)
-                hasExistingCohort = getCohortsTask.Result.Cohorts.Any();
+            {
+                var cohorts = getCohortsTask.Result.Cohorts;
+                var cohortsInDraftCount = cohorts.Count(x => x.GetStatus() == CohortStatus.Draft || x.GetStatus() == CohortStatus.Review);
 
+                hasExistingCohort = cohortsInDraftCount > 0;
+            }
+             
             var result = new SelectAddDraftApprenticeshipJourneyViewModel
             {
                 ProviderId = source.ProviderId,

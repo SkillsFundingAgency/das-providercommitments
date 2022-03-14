@@ -65,6 +65,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Verify_WhenNoCohortExist_HasExistingCohort_IsMapped();
         }
 
+        [Test]
+        public async Task Then_WhenNoCohortExistInReviewOrDraftStatus_HasExistingCohort_IsMapped_Correctly_()
+        {
+            var fixture = new WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture();
+            await fixture.WithNoDraftOrReviewCohort().SetUp().Map();
+
+            fixture.Verify_WhenNoCohortExist_HasExistingCohort_IsMapped();
+        }
     }
 
     public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture
@@ -128,6 +136,39 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
+        public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture WithNoDraftOrReviewCohort()
+        {
+            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            CommitmentsApiClient
+                .Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None))
+                .ReturnsAsync(new GetCohortsResponse(new List<CohortSummary>
+            {
+                new CohortSummary
+                {
+                    CohortId = 1,
+                    AccountId = 1,
+                    ProviderId = 1,
+                    LegalEntityName = "Employer1",
+                    NumberOfDraftApprentices = 100,
+                    IsDraft = false,
+                    WithParty = Party.TransferSender,
+                    CreatedOn = Now.AddMinutes(-10)
+                },
+                new CohortSummary
+                {
+                    CohortId = 1,
+                    AccountId = 1,
+                    ProviderId = 1,
+                    LegalEntityName = "Employer1",
+                    NumberOfDraftApprentices = 100,
+                    IsDraft = false,
+                    WithParty = Party.Employer,
+                    CreatedOn = Now.AddMinutes(-10)
+                }
+            }));
+            return this;
+        }
+
         public async Task<WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture> Map()
         {
             ViewModel = await Mapper.Map(Request);
@@ -145,8 +186,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderId = 1,
                     LegalEntityName = "Employer1",
                     NumberOfDraftApprentices = 100,
+                    IsDraft = true,
+                    WithParty = Party.Provider,
+                    CreatedOn = Now.AddMinutes(-10)
+                },
+                new CohortSummary
+                {
+                    CohortId = 2,
+                    AccountId = 1,
+                    ProviderId = 1,
+                    LegalEntityName = "Employer1",
+                    NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
+                    CreatedOn = Now.AddMinutes(-10)
+                },
+                 new CohortSummary
+                {
+                    CohortId = 3,
+                    AccountId = 1,
+                    ProviderId = 1,
+                    LegalEntityName = "Employer1",
+                    NumberOfDraftApprentices = 100,
+                    IsDraft = false,
+                    WithParty = Party.Employer,
                     CreatedOn = Now.AddMinutes(-10)
                 }
             };
