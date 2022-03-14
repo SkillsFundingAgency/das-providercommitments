@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -65,13 +66,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
         public readonly long ProviderId = 123;
-        private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleServiceMock;
+        private readonly Mock<IAuthorizationService> _featureToggleServiceMock;
 
         public WhenGettingSelectAddDraftApprenticeshipJourneyFixture()
         {
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
-            _featureToggleServiceMock = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-            _featureToggleServiceMock.Setup(x => x.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix)).Returns(new ProviderFeatureToggle { IsEnabled = false });
+            _featureToggleServiceMock = new Mock<IAuthorizationService>();
+            _featureToggleServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.BulkUploadV2)).Returns(false);
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _featureToggleServiceMock.Object, Mock.Of<IEncodingService>());
         }
 
@@ -79,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         internal WhenGettingSelectAddDraftApprenticeshipJourneyFixture WithBulkUploadV2FeatureEnabled()
         {
-            _featureToggleServiceMock.Setup(x => x.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix)).Returns(new ProviderFeatureToggle { IsEnabled = true });
+            _featureToggleServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.BulkUploadV2)).Returns(true);
             return this;
         }
     }

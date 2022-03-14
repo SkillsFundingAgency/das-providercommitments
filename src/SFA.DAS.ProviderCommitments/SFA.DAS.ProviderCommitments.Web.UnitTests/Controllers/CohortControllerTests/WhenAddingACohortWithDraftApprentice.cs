@@ -12,6 +12,8 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -63,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     {
         public CohortController Sut { get; set; }
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _providerFeatureToggle;
+        private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _viewModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
 
@@ -73,8 +75,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = new AddDraftApprenticeshipViewModel();
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
-            _providerFeatureToggle = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-            _providerFeatureToggle.Setup(x => x.GetFeatureToggle(It.IsAny<string>())).Returns(new ProviderFeatureToggle());
+            _providerFeatureToggle = new Mock<IAuthorizationService>();
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
             Sut = new CohortController(
                 Mock.Of<IMediator>(),
@@ -87,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public WhenAddingACohortWithDraftApprenticeFixture SetDeliveryModelToggleOn()
         {
-            _providerFeatureToggle.Setup(x => x.GetFeatureToggle(It.Is<string>(p=>p == "DeliveryModel"))).Returns(new ProviderFeatureToggle { IsEnabled = true });
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.Is<string>(p=>p == ProviderFeature.DeliveryModel))).Returns(true);
             return this;
         }
 

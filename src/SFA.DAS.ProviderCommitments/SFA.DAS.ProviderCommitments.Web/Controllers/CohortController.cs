@@ -40,21 +40,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
-        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
+        private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
-            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService,
+            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
-            _featureTogglesService = featureTogglesService;
+            _authorizationService = authorizationService;
             _encodingService = encodingService;
         }
 
@@ -107,8 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var providerFeatureToggle = _featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModelWithoutPrefix);
-            if (providerFeatureToggle.IsEnabled)
+            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {
                 return RedirectToAction(nameof(SelectCourse), request);
             }
@@ -560,7 +559,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = new SelectAddDraftApprenticeshipJourneyViewModel
             {
                 ProviderId = request.ProviderId,
-                IsBulkUploadV2Enabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix).IsEnabled
+                IsBulkUploadV2Enabled = _authorizationService.IsAuthorized(ProviderFeature.BulkUploadV2)
             };
 
             return View(model);
