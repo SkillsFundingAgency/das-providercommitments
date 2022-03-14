@@ -196,8 +196,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add-apprentice")]
-        [Route("add/apprentice")]
         [Route("add/apprenticeship")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]

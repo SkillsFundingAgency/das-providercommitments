@@ -22,10 +22,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var aleTask = _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
-            var courseTask = _commitmentsApiClient.GetTrainingProgramme(source.CourseCode);
+            var ale = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
 
-            await Task.WhenAll(aleTask, courseTask);
+            var courseName = source.CourseCode == null ? null : (await _commitmentsApiClient.GetTrainingProgramme(source.CourseCode)).TrainingProgramme.Name;
 
             return new AddDraftApprenticeshipViewModel
             {
@@ -34,10 +33,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
-                CourseName = courseTask.Result.TrainingProgramme.Name,
+                CourseName = courseName,
                 DeliveryModel = source.DeliveryModel,
-                Courses = await GetCourses(aleTask.Result.LevyStatus),
-                Employer = aleTask.Result.LegalEntityName
+                Courses = await GetCourses(ale.LevyStatus),
+                Employer = ale.LegalEntityName
             };
         }
 

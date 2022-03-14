@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
                     .WithHeader("Content-Type", "application/json")
                     .WithBodyAsJson(new
                     {
-                        DeliveryModels = new[] { "Normal" },
+                        DeliveryModels = new[] { "Normal", "Flexible" },
                     }));
 
             _server
