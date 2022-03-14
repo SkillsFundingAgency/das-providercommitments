@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private AccountLegalEntityResponse _accountLegalEntityResponse;
         private GetTrainingCoursesQueryResponse _trainingCoursesQueryResponse;
         private GetTrainingCourseResponse _trainingCourseResponse;
+        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
 
         [SetUp]
         public void Arrange()
@@ -35,10 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _trainingCoursesQueryResponse = fixture.Create<GetTrainingCoursesQueryResponse>();
             _trainingCourseResponse = fixture.Create<GetTrainingCourseResponse>();
+            _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClient.Setup(x => x.GetAccountLegalEntity(_source.AccountLegalEntityId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_accountLegalEntityResponse);
+
+            _commitmentsApiClient.Setup(x => x.GetTrainingProgramme(_source.CourseCode, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_trainingProgrammeResponse);
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
@@ -89,8 +94,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenCourseNameIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_trainingCourseResponse.CourseName, result.CourseName);
+            Assert.AreEqual(_trainingProgrammeResponse.TrainingProgramme.Name, result.CourseName);
         }
+
+        [Test]
+        public async Task ThenCourseNameIsNullWhenNoCourseCode()
+        {
+            _source.CourseCode = null;
+            var result = await _mapper.Map(_source);
+            Assert.IsNull(result.CourseName);
+            Assert.IsNull(result.CourseCode);
+        }
+
 
         [TestCase(ApprenticeshipEmployerType.Levy, true)]
         [TestCase(ApprenticeshipEmployerType.NonLevy, false)]
