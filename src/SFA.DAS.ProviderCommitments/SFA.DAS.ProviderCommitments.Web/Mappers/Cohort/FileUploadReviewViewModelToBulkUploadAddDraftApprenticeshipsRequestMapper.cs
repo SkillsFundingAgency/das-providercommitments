@@ -2,22 +2,20 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : IMapper<FileUploadReviewViewModel, BulkUploadAddDraftApprenticeshipsRequest>
+    public class FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper : FileUploadMapperBase, IMapper<FileUploadReviewViewModel, BulkUploadAddDraftApprenticeshipsRequest>
     {
         private readonly ICacheService _cacheService;
-        private readonly IEncodingService _encodingService;
+
         public FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(ICacheService cacheService, IEncodingService encodingService)
+            :base(encodingService)
         {
             _cacheService = cacheService;
-            _encodingService = encodingService;
         }
 
         public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
@@ -27,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadDraftApprenticeships = csVRecords.Select((x, index) => x.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, source.ProviderId, _encodingService))
+                BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId)
             };
         }
     }
