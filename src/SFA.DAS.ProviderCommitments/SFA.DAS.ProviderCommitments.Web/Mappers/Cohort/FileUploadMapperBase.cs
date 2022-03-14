@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             _encodingService = encodingService;
         }
+
         public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
         {
             return csvRecords.Select((csvRecord, index) =>
