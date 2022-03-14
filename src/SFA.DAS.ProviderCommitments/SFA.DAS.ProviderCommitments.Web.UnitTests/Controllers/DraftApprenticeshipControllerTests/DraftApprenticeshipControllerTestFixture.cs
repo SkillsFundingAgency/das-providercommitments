@@ -1,9 +1,11 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Features.Services;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -32,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _modelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
         private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
@@ -158,6 +161,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     DraftApprenticeshipId = _draftApprenticeshipId
                 });
 
+            _providerFeatureToggle = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
+            _providerFeatureToggle.Setup(x => x.GetFeatureToggle(It.IsAny<string>())).Returns(new ProviderFeatureToggle());
+
             _mediator
                 .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
@@ -166,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
-            _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object);
+            _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
