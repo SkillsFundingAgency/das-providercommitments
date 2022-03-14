@@ -1,7 +1,7 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @inject ILinkGenerator LinkGenerator;
-@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ReviewApprenticeViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadReviewApprenticeViewModel
 
 @{
     ViewData["Title"] = "Review Apprentices";
@@ -75,13 +75,13 @@
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandText</h3>
                 <p>
-                    The price for these apprenticeships is above the <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>.
+                    The price for these apprenticeships is above the <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands" rel="noopener">funding band maximum</a>.
                     You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
                 </p>
             </div>
         }
 
-        <table class="govuk-table">
+        <table class="govuk-table" aria-label="Apprentice details">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Name</th>
