@@ -101,6 +101,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
+            var providerFeatureToggle = _featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel);
+            if (providerFeatureToggle.IsEnabled)
+            {
+                return RedirectToAction(nameof(SelectCourse), request);
+            }
+
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             return View(model);
         }
@@ -139,10 +145,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprentice2")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship2(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            return View("AddDraftApprenticeship2", model);
+            return View("SelectCourse", model);
         }
 
         [HttpPost]
@@ -150,11 +156,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprentice2")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        public IActionResult SelectCourse(AddDraftApprenticeshipViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship2), model);
+                return RedirectToAction(nameof(SelectCourse), model);
             }
             else
             {

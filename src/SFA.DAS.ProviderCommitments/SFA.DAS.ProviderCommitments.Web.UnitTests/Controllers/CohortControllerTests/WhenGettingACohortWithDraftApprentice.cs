@@ -42,6 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     {
         public CohortController Sut { get; set; }
         private readonly Mock<IModelMapper> _modelMapper;
+        private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _viewModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
 
@@ -51,13 +52,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = new AddDraftApprenticeshipViewModel();
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
-            
+            _providerFeatureToggle = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
+            _providerFeatureToggle.Setup(x => x.GetFeatureToggle(It.IsAny<string>())).Returns(new ProviderFeatureToggle());
+
             Sut = new CohortController(
                 Mock.Of<IMediator>(),
                 _modelMapper.Object, 
                 Mock.Of<ILinkGenerator>(), 
-                Mock.Of<ICommitmentsApiClient>(), 
-                Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(),
+                Mock.Of<ICommitmentsApiClient>(),
+                _providerFeatureToggle.Object,
                 Mock.Of<IEncodingService>());
         }
 
