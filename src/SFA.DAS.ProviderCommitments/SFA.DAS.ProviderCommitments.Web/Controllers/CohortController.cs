@@ -102,11 +102,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
+        [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var providerFeatureToggle = _featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel);
+            var providerFeatureToggle = _featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModelWithoutPrefix);
             if (providerFeatureToggle.IsEnabled)
             {
                 return RedirectToAction(nameof(SelectCourse), request);
@@ -172,7 +173,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async IActionResult SetDeliveryModel(AddDraftApprenticeshipViewModel request)
+        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel request)
         {
             if (request.DeliveryModel == null)
             {
