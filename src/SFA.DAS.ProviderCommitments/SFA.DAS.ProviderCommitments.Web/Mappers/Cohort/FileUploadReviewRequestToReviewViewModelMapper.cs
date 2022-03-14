@@ -102,5 +102,3 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         }
     }
 }
-
-
