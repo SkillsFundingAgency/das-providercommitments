@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (_featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel).IsEnabled)
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship2), request);
+                return RedirectToAction(nameof(SelectCourse), request);
             }
 
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
@@ -72,23 +72,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add2")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship2(ReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request) ;
 
             await AddLegalEntityAndCoursesToModel(model);
 
-            return View(nameof(AddDraftApprenticeship2), model);
+            return View("DraftApprenticeship2", model);
         }
 
         [HttpPost]
         [Route("add2")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public ActionResult AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        public ActionResult SelectCourse(AddDraftApprenticeshipViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship2), model);
+                return RedirectToAction(nameof(SelectCourse), model);
             }
             else
             {

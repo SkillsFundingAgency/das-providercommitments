@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (_featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModel).IsEnabled)
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship2), request);
+                return RedirectToAction(nameof(SelectCourse), request);
             }
 
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
@@ -144,7 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprentice2")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship2(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             return View("AddDraftApprenticeship2", model);
@@ -155,11 +155,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprentice2")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddDraftApprenticeship2(AddDraftApprenticeshipViewModel model)
+        public IActionResult SelectCourse(AddDraftApprenticeshipViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship2), model);
+                return RedirectToAction(nameof(SelectCourse), model);
             }
             else
             {

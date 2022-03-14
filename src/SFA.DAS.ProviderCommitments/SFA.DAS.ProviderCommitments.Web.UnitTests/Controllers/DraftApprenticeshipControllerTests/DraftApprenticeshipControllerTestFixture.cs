@@ -229,7 +229,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal DraftApprenticeshipControllerTestFixture PostToSelectStandard()
         {
-            _actionResult = _controller.AddDraftApprenticeship2(_addModel);
+            _actionResult = _controller.SelectCourse(_addModel);
             return this;
         }
 
@@ -472,7 +472,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedBackToSelectStandardPage()
         {
-            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship2");
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourse");
 
             return this;
         }
