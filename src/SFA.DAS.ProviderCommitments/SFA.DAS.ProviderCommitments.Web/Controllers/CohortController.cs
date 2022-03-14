@@ -105,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var providerFeatureToggle = _featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModelWithoutPrefix);
             if (providerFeatureToggle.IsEnabled)
@@ -114,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(AddApprenticeship), request);
+                return RedirectToAction(nameof(AddDraftApprenticeship), request);
             }
         }
 
@@ -167,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             request.DeliveryModel = models.FirstOrDefault();
-            return RedirectToAction(nameof(AddApprenticeship), request);
+            return RedirectToAction(nameof(AddDraftApprenticeship), request);
         }
 
         [HttpPost]
@@ -182,14 +182,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
-            return RedirectToAction(nameof(AddApprenticeship), request);
+            return RedirectToAction(nameof(AddDraftApprenticeship), request);
         }
 
         [HttpGet]
         [Route("add/apprenticeship")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             return View("AddDraftApprenticeship", model);
@@ -199,7 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprenticeship")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> SaveDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 

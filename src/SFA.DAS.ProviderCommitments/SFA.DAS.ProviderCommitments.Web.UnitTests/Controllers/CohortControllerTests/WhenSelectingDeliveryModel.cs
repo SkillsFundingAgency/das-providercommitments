@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Normal});
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
-            result.ActionName.Should().Be("AddApprenticeship");
+            result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             fixture.ViewModel.DeliveryModel = DeliveryModel.Flexible;
 
             var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
-            result.ActionName.Should().Be("AddApprenticeship");
+            result.ActionName.Should().Be("AddDraftApprenticeship");
         }
     }
 

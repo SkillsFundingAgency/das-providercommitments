@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.Act() as RedirectToActionResult;
 
-            result.ActionName.Should().Be("AddApprenticeship");
+            result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.AddDraftApprenticeship(_request);
-        public async Task<IActionResult> ActOnAddApprenticeship() => await Sut.AddApprenticeship(_request);
+        public async Task<IActionResult> Act() => await Sut.AddNewDraftApprenticeship(_request);
+        public async Task<IActionResult> ActOnAddApprenticeship() => await Sut.AddDraftApprenticeship(_request);
     }
 }

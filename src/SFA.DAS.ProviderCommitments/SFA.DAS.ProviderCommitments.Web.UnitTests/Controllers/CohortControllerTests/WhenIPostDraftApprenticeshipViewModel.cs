@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()
             {
-                _actionResult = await _controller.AddDraftApprenticeship(_model);
+                _actionResult = await _controller.SaveDraftApprenticeship(_model);
                 return this;
             }
 
