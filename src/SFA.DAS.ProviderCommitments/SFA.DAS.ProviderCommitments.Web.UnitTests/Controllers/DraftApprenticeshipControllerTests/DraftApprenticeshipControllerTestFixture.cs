@@ -21,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -34,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _modelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _providerFeatureToggle;
+        private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _addModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
         private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
@@ -161,8 +162,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     DraftApprenticeshipId = _draftApprenticeshipId
                 });
 
-            _providerFeatureToggle = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-            _providerFeatureToggle.Setup(x => x.GetFeatureToggle(It.IsAny<string>())).Returns(new ProviderFeatureToggle());
+            _providerFeatureToggle = new Mock<IAuthorizationService>();
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
             _mediator
                 .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))

@@ -15,6 +15,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -25,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private string RedirectUrl;
         private Mock<ICommitmentsApiClient> _apiClient;
         private Mock<IModelMapper> _modelMapperMock;
-        private Mock<IFeatureTogglesService<ProviderFeatureToggle>> _providerFeatureToggle;
+        private Mock<IAuthorizationService> _providerFeatureToggle;
         private DeleteConfirmationViewModel _viewModel;
         private DeleteDraftApprenticeshipRequest _mapperResult;
 
@@ -44,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .Setup(x => x.Map<DeleteDraftApprenticeshipRequest>(_viewModel))
               .ReturnsAsync(_mapperResult);
 
-            _providerFeatureToggle = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
+            _providerFeatureToggle = new Mock<IAuthorizationService>();
 
             RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
          

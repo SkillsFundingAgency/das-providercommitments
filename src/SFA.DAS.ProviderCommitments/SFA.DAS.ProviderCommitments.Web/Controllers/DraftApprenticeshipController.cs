@@ -28,6 +28,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -39,17 +40,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
-        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
+        private readonly IAuthorizationService _authorizationService;
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
-        public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient, IModelMapper modelMapper, IEncodingService encodingService, IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
+        public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
+            IModelMapper modelMapper, IEncodingService encodingService,
+            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;
-            _featureTogglesService = featureTogglesService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -58,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddNewDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
-            if (_featureTogglesService.GetFeatureToggle(ProviderFeature.DeliveryModelWithoutPrefix).IsEnabled)
+            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {
                 return RedirectToAction(nameof(SelectCourse), request);
             }
