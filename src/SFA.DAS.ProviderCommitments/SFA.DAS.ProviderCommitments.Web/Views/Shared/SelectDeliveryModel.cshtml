@@ -14,15 +14,16 @@
         <h1 class="govuk-heading-xl">Select the apprenticeship delivery model</h1>
 
         <form id="selectDeliveryModel" novalidate method="post">
-            @Html.HiddenFor(x => x.StartMonth);
-            @Html.HiddenFor(x => x.StartYear);
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.StartMonth)
+            @Html.HiddenFor(x => x.StartYear)
 
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DeliveryModel, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         Select delivery model
                     </legend>
-                    @Html.ValidationMessageFor(m => m.DeliveryModel, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DeliveryModel) })
+                    @Html.ValidationMessageFor(m => m.DeliveryModel, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DeliveryModel)})
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Normal" id="DeliveryModelRegular">

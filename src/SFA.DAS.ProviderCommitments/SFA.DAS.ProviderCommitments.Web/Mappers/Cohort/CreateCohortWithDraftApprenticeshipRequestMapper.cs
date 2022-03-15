@@ -6,9 +6,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class CreateCohortWithDraftApprenticeshipRequestMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortWithDraftApprenticeshipRequest>
     {
-        public async Task<CreateCohortWithDraftApprenticeshipRequest> Map(AddDraftApprenticeshipViewModel source)
+        public Task<CreateCohortWithDraftApprenticeshipRequest> Map(AddDraftApprenticeshipViewModel source)
         {
-            return new CreateCohortWithDraftApprenticeshipRequest
+            return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
             {
                 CourseCode = source.CourseCode,
                 AccountLegalEntityId = source.AccountLegalEntityId,
@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StartMonthYear = source.StartDate.MonthYear
-            };
+            });
         }
     }
 }
