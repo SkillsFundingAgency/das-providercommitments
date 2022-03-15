@@ -7,7 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class CreateCohortWithDraftApprenticeshipRequest : IAuthorizationContextModel
     {
         public Guid? ReservationId { get; set; }
-        public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string StartMonthYear { get; set; }

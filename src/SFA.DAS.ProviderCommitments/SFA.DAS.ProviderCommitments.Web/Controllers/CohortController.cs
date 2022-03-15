@@ -148,16 +148,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(SelectDeliveryModel), model);
+            return RedirectToAction(nameof(SelectDeliveryModel), request);
         }
 
         [HttpGet]
-        [Route("select-delivery-model")]
+        [Route("add/select-delivery-model")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectDeliveryModel(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectDeliveryModel(long providerId, CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var models = (await GetProviderCourseDeliveryModels(request.ProviderId, request.CourseCode)).ToArray();
+            var models = (await GetProviderCourseDeliveryModels(providerId, request.CourseCode)).ToArray();
 
             if (models.Count() > 1)
             {
@@ -170,17 +170,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("select-delivery-model")]
+        [Route("add/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel request)
+        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel model)
         {
-            if (request.DeliveryModel == null)
+            if (model.DeliveryModel == null)
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
                     {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
             }
 
-            var model = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(request);
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(AddDraftApprenticeship), request);
         }
 
