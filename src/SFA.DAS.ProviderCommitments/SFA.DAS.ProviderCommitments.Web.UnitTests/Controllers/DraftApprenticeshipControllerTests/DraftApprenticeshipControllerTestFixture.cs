@@ -233,9 +233,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        internal DraftApprenticeshipControllerTestFixture PostToSelectStandard()
+        internal async Task<DraftApprenticeshipControllerTestFixture> PostToSelectStandard()
         {
-            _actionResult = _controller.SelectCourse(_addModel);
+            _actionResult = await _controller.SetCourse(_addModel);
             return this;
         }
 
