@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
@@ -31,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Normal});
 
-            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
+            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
@@ -41,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
 
-            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
+            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as ViewResult;
             result.ViewName.Should().Be("SelectDeliveryModel");
         }
 
@@ -102,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
             MediatorMock
-                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p=>p.ProviderId == Request.ProviderId && p.CourseId == Request.CourseCode), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p=>p.ProviderId == 10005077 && p.CourseId == Request.CourseCode), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse {DeliveryModels = list});
             return this;
         }
