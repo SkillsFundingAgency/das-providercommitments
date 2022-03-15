@@ -15,8 +15,8 @@
 
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.StartMonth);
-            @Html.HiddenFor(x => x.StartYear);
+            @Html.HiddenFor(x => x.StartMonth)
+            @Html.HiddenFor(x => x.StartYear)
             
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
                 <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
