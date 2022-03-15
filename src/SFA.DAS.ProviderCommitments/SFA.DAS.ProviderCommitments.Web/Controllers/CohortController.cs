@@ -585,12 +585,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("review-cohort")]
+        [Route("add/file-upload/review-cohort")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ReviewApprentices(ReviewApprenticeRequest reviewApprenticeRequest)
+        public async Task<IActionResult> FileUploadReviewApprentices(FileUploadReviewApprenticeRequest reviewApprenticeRequest)
         {   
-            var viewModel = await _modelMapper.Map<ReviewApprenticeViewModel>(reviewApprenticeRequest);
+            var viewModel = await _modelMapper.Map<FileUploadReviewApprenticeViewModel>(reviewApprenticeRequest);
             return View(viewModel);
         }
 

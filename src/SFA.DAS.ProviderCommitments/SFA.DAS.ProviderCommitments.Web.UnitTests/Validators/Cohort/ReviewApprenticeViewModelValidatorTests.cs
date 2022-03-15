@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase(1, true)]
         public void Validate_ProviderId_ShouldBeValidated(int providerId, bool expectedValid)
         {
-            var model = new ReviewApprenticeViewModel { ProviderId = providerId };
+            var model = new FileUploadReviewApprenticeViewModel { ProviderId = providerId };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
 
@@ -22,11 +22,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase("XYZ", true)]
         public void Validate_CohortReference_ShouldBeValidated(string cohortReference, bool expectedValid)
         {
-            var model = new ReviewApprenticeViewModel { CohortRef = cohortReference };
+            var model = new FileUploadReviewApprenticeViewModel { CohortRef = cohortReference };
             AssertValidationResult(request => request.CohortRef, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ReviewApprenticeViewModel, T>> property, ReviewApprenticeViewModel instance, bool expectedValid)
+        private void AssertValidationResult<T>(Expression<Func<FileUploadReviewApprenticeViewModel, T>> property, FileUploadReviewApprenticeViewModel instance, bool expectedValid)
         {
             var validator = new ReviewApprenticeViewModelValidator();
 

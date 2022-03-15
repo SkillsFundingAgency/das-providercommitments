@@ -46,7 +46,7 @@
                     {
                         <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
                         <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="@Url.Action("ReviewApprentices", new ReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">@cohortDetail.ReviewApprenticeshipsText</a><br><br><br>
+                        <a href="@Url.Action("FileUploadReviewApprentices", new FileUploadReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef, AgreementId = cachedRecord.AgreementId })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">@cohortDetail.ReviewApprenticeshipsText</a><br><br><br>
                         <p></p>
                     }
                 </div>
@@ -89,7 +89,7 @@
                         Continue
                     </button>
                 </form>
-                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" id="cancel-upload-link" href="@Url.Action("FileDiscard", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
+                <p class="gov-body govuk-!-margin-bottom-8"><a class="govuk-link" id="cancel-upload-link" href="@Url.Action("FileUploadDiscard", new { @Model.ProviderId, @Model.CacheRequestId, RedirectTo=@FileUploadReviewDeleteRedirect.Home })">Cancel and discard the upload</a></p>
             </div>
 
         </div>
