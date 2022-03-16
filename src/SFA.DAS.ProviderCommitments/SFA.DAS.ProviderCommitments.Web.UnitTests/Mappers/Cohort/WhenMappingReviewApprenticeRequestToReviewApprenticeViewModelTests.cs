@@ -109,6 +109,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             //Assert
             fixture.VerifyFundingText();
         }
+
+
+        [Test]
+        public async Task CohortRefTextMappedCorrectly()
+        {
+            //Arrange
+            var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
+            
+
+            //Act
+            await fixture.WithOutCohortRefData().Action();
+            
+
+            //Assert
+            fixture.VerifyCohortRefText();
+        }
+
     }
 
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture
@@ -214,6 +231,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         internal void VerifyFundingText()
         {
             Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandText);
+            Assert.AreEqual(true, _result.CohortDetails.FirstOrDefault().ExceedsFundingBandCap);
+            Assert.AreEqual(true, _result.CohortDetails.FirstOrDefault().FundingBandCap.HasValue);
+            Assert.IsTrue(_result.CohortDetails.FirstOrDefault().Price > _result.CohortDetails.FirstOrDefault().FundingBandCap);
         }        
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
@@ -231,7 +251,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             return this;
         }
-     
+
+        internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithOutCohortRefData()
+        {            
+            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", string.Empty, dateOfBirth, "2020-10-01", "2022-11", 500, 1));
+
+            return this;
+        }
+
+        internal void VerifyCohortRefText()
+        {
+            Assert.AreEqual("This will be created when you save or send to employers", _result.CohortRefText);          
+        }
+
         private static List<CsvRecord> CreateCsvRecords(Fixture fixture, string employerAgreementId, string cohortRef, string dateOfBirth, 
             string apprenticeStartDate, string apprenticeEndDate, int price,  int numberOfApprentices)
         {
