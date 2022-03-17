@@ -201,8 +201,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.VerifyCourseCodeIsMapped();
         }
 
-        [TestCase(DeliveryModel.Flexible)]
-        [TestCase(DeliveryModel.Normal)]
+        [TestCase(DeliveryModel.PortableFlexiJob)]
+        [TestCase(DeliveryModel.Regular)]
         public async Task DeliveryModel_IsMapped(DeliveryModel dm)
         {
             _fixture.ApprenticeshipResponse.DeliveryModel = dm;
