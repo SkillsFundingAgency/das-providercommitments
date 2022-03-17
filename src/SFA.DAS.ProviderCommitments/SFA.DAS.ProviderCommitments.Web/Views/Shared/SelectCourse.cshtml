@@ -1,10 +1,10 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel
 
 @{
     ViewData["Title"] = "Apprenticeships";
-    ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
-    ViewBag.GaData.Org = Model.Employer;
+    //ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
+    //ViewBag.GaData.Org = Model.Employer;
 }
 
 <div class="govuk-grid-row">
@@ -13,10 +13,6 @@
         <h1 class="govuk-heading-xl">Select standard</h1>
 
         <form id="addApprenticeship" novalidate method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.StartMonth)
-            @Html.HiddenFor(x => x.StartYear)
-            
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CourseCode, "govuk-form-group--error")">
                 <label asp-for="CourseCode" class="govuk-label govuk-!-font-weight-bold">Apprenticeship training course</label>
                 <span id="course-name-hint" class="govuk-hint">Start typing the name of the course or choose an option from the list </span>

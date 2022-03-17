@@ -4,6 +4,7 @@ using AutoFixture;
 using MediatR;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -52,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCourseRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_trainingCourseResponse);
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object);
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object, Mock.Of<IAuthorizationService>());
         }
 
         [Test]

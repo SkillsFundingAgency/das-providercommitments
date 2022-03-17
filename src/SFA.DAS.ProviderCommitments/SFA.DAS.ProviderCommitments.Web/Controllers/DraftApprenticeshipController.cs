@@ -75,9 +75,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            var model = await _modelMapper.Map<SelectCourseViewModel>(request);
 
-            await AddLegalEntityAndCoursesToModel(model);
+            //await AddLegalEntityAndCoursesToModel(model);
 
             return View("SelectCourse", model);
         }

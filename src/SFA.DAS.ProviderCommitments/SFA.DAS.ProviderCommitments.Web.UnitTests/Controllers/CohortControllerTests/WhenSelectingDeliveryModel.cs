@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Normal});
 
-            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as RedirectToActionResult;
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
 
-            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as ViewResult;
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
             result.ViewName.Should().Be("SelectDeliveryModel");
         }
 
@@ -80,17 +80,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public string RedirectUrl;
         public Mock<IMediator> MediatorMock;
         public CreateCohortWithDraftApprenticeshipRequest Request;
-        public AddDraftApprenticeshipViewModel ViewModel;
+        public SelectDeliveryModelViewModel ViewModel;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().Create();
-            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.EndMonth).Without(x => x.EndYear)
-                .Without(x => x.StartDate)
-                .Without(x => x.StartMonth).Without(x => x.StartYear)
-                .Create();
+            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
 
             MediatorMock = new Mock<IMediator>();
 

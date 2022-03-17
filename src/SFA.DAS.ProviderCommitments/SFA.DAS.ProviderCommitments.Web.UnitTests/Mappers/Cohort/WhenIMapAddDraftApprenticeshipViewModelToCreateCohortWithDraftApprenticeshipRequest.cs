@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     [TestFixture]
     public class WhenIMapAddDraftApprenticeshipViewModelToCreateCohortWithDraftApprenticeshipRequest
     {
-        private CreateCohortWithDraftApprenticeshipRequestMapper _mapper;
+        private CreateCohortWithDraftApprenticeshipRequestFromAddDraftApprenticeshipViewModel _mapper;
         private AddDraftApprenticeshipViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .Create();
             _source.StartDate = new MonthYearModel("092022");
 
-            _mapper = new CreateCohortWithDraftApprenticeshipRequestMapper();
+            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromAddDraftApprenticeshipViewModel();
 
             _act = async () => await _mapper.Map(_source);
         }

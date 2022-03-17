@@ -4,18 +4,19 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class CreateCohortWithDraftApprenticeshipRequestMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortWithDraftApprenticeshipRequest>
+    public class CreateCohortWithDraftApprenticeshipRequestFromAddDraftApprenticeshipViewModel : IMapper<AddDraftApprenticeshipViewModel, CreateCohortWithDraftApprenticeshipRequest>
     {
         public Task<CreateCohortWithDraftApprenticeshipRequest> Map(AddDraftApprenticeshipViewModel source)
         {
             return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
             {
+                ProviderId = source.ProviderId,
                 CourseCode = source.CourseCode,
-                AccountLegalEntityId = source.AccountLegalEntityId,
-                DeliveryModel = source.DeliveryModel,
-                ReservationId = source.ReservationId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                StartMonthYear = source.StartDate.MonthYear
+                AccountLegalEntityId = source.AccountLegalEntityId,
+                ReservationId = source.ReservationId,
+                StartMonthYear = source.StartDate.MonthYear,
+                DeliveryModel = source.DeliveryModel,
             });
         }
     }
