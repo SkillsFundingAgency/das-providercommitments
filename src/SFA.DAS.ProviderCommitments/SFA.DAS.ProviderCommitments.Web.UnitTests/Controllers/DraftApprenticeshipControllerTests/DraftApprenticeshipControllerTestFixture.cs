@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ProviderId = _providerId,
                 CohortId = _cohortId,
                 CohortReference = _cohortReference,
-                DeliveryModel = DeliveryModel.Normal,
+                DeliveryModel = DeliveryModel.Regular,
             };
 
             _editModel = new EditDraftApprenticeshipViewModel
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 CohortReference = _cohortReference,
                 DraftApprenticeshipId = _draftApprenticeshipId,
                 DraftApprenticeshipHashedId = _draftApprenticeshipHashedId,
-                DeliveryModel = DeliveryModel.Normal,
+                DeliveryModel = DeliveryModel.Regular,
             };
 
             _viewModel = new ViewDraftApprenticeshipViewModel
@@ -167,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _mediator
                 .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
+                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Regular } });
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
@@ -227,8 +227,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 {
                     DeliveryModels = new[]
                     {
-                        DeliveryModel.Normal,
-                        DeliveryModel.Flexible,
+                        DeliveryModel.Regular,
+                        DeliveryModel.PortableFlexiJob,
                     }
                 });
             return this;

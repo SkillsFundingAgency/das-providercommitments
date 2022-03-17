@@ -26,7 +26,7 @@
                     @Html.ValidationMessageFor(m => m.DeliveryModel, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DeliveryModel)})
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Normal" id="DeliveryModelRegular">
+                            <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Regular" id="DeliveryModelRegular">
                             <label for="DeliveryModelRegular" class="govuk-label govuk-radios__label">
                                 Regular
                             </label>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.Flexible" id="DeliveryModelFlexible">
+                            <input type="radio" asp-for="DeliveryModel" class="govuk-radios__input" value="@DeliveryModel.PortableFlexiJob" id="DeliveryModelFlexible">
                             <label for="DeliveryModelFlexible" class="govuk-label govuk-radios__label">
                                 Portal flexi-job
                             </label>

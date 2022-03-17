@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal });
+                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectToSelectDeliveryModel()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
+                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
             result.ViewName.Should().Be("SelectDeliveryModel");
@@ -66,9 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Normal, DeliveryModel.Flexible });
+                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob});
 
-            fixture.ViewModel.DeliveryModel = DeliveryModel.Flexible;
+            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
 
             var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
