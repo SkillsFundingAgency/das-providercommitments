@@ -21,10 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             return new SelectDeliveryModelViewModel
             {
-                //ReservationId = source.ReservationId,
-                //EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 CourseCode = source.CourseCode,
-                //StartMonthYear = source.StartMonthYear,
                 DeliveryModel = source.DeliveryModel,
                 DeliveryModels = response.DeliveryModels.ToArray()
             };

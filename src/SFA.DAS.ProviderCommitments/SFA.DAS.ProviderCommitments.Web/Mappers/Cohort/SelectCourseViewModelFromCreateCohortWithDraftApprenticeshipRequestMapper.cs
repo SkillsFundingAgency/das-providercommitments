@@ -25,10 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             return new SelectCourseViewModel
             {
-                //ReservationId = source.ReservationId,
-                //EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 CourseCode = source.CourseCode,
-                //StartMonthYear = source.StartMonthYear,
                 Courses = await GetCourses(ale.LevyStatus),
             };
         }

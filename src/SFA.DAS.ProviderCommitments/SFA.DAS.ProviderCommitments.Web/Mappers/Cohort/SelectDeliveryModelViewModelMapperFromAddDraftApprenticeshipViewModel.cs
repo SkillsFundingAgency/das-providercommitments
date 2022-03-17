@@ -16,16 +16,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<SelectDeliveryModelViewModel> Map(AddDraftApprenticeshipViewModel source)
         {
-
             var response = await _client.GetProviderCourseDeliveryModels(source.ProviderId, source.CourseCode);
 
             return new SelectDeliveryModelViewModel
             {
-                //ReservationId = source.ReservationId,
-                //EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                //AccountLegalEntityId = source.AccountLegalEntityId,
                 CourseCode = source.CourseCode,
-                //StartMonthYear = source.StartDate.MonthYear,
                 DeliveryModel = source.DeliveryModel,
                 DeliveryModels = response.DeliveryModels.ToArray()
             };
