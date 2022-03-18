@@ -252,7 +252,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship()
         {
-            _actionResult = await _controller.AddDraftApprenticeship(_addModel);
+            _actionResult = await _controller.AddDraftApprenticeship(null, null,_addModel);
             return this;
         }
 
