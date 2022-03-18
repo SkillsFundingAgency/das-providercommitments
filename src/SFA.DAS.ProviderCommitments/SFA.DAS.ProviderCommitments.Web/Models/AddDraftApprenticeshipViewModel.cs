@@ -14,6 +14,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class SelectCourseViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
+        public string CohortReference { get; set; }
+        public long CohortId { get; set; }
         public Guid? ReservationId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
@@ -26,6 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     public class SelectDeliveryModelViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
+        public string CohortReference { get; set; }
+        public long CohortId { get; set; }
         public Guid? ReservationId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }

@@ -75,9 +75,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<SelectCourseViewModel>(request);
-
-            //await AddLegalEntityAndCoursesToModel(model);
+            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            await AddLegalEntityAndCoursesToModel(draft);
+            var model = new SelectCourseViewModel
+            {
+                CourseCode = draft.CourseCode,
+                Courses = draft.Courses
+            };
 
             return View("SelectCourse", model);
         }
@@ -85,14 +89,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourse(AddDraftApprenticeshipViewModel model)
+        public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
-                return RedirectToAction(nameof(SelectCourse), model);
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.CourseCode), "Please select a course")});
             }
 
-            var request = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModel), request);
         }
 
@@ -102,15 +107,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var models = (await GetProviderCourseDeliveryModels(request.ProviderId, request.CourseCode)).ToArray();
+            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
-            if (models.Count() > 1)
+            if (model.DeliveryModels.Length > 1)
             {
-                var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
                 return View("SelectDeliveryModel", model);
             }
 
-            request.DeliveryModel = models.FirstOrDefault();
+            request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
             return RedirectToAction("AddDraftApprenticeship", request);
         }
 
@@ -118,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/select-delivery-model")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModel(AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {
@@ -126,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
             }
 
-            var request = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
             return RedirectToAction("AddDraftApprenticeship", request);
         }
 
@@ -136,7 +140,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            var model = GetStoredDraftApprenticeshipState();
+            if (model == null)
+            {
+                model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            }
+            else
+            {
+                model.CourseCode = request.CourseCode;
+                model.DeliveryModel = request.DeliveryModel;
+            }
+
             await AddLegalEntityAndCoursesToModel(model);
             return View(model);
         }
@@ -144,8 +158,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add-another")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
         {
+            if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
+            {
+                StoreDraftApprenticeshipState(model);
+                var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+                return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), req);
+            }
+
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
             request.UserId = User.Upn();
 
@@ -302,14 +323,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return result.TrainingCourses;
         }
 
-        private async Task<IEnumerable<DeliveryModel>> GetProviderCourseDeliveryModels(long providerId, string courseCode)
+        private void StoreDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
-            var result = await _mediator.Send(new GetProviderCourseDeliveryModelsQueryRequest
-            {
-                ProviderId = providerId,
-                CourseId = courseCode,
-            });
-            return result.DeliveryModels;
+            TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
         }
+
+        private AddDraftApprenticeshipViewModel PeekStoredDraftApprenticeshipState()
+        {
+            return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
+        private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
+        {
+            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
     }
 }

@@ -82,17 +82,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public string RedirectUrl;
         public Mock<IMediator> MediatorMock;
         public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public AddDraftApprenticeshipViewModel ViewModel;
+        public SelectDeliveryModelViewModel ViewModel;
         public ReservationsAddDraftApprenticeshipRequest Request;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.EndMonth).Without(x => x.EndYear)
-                .Without(x => x.StartDate)
-                .Without(x => x.StartMonth).Without(x => x.StartYear)
-                .Create();
+            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
             Request = fixture.Create<ReservationsAddDraftApprenticeshipRequest>();
 
             MediatorMock = new Mock<IMediator>();

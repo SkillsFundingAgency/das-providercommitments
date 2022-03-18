@@ -37,6 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _addModel;
+        private readonly SelectCourseViewModel _selectCourseViewModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
         private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
         private readonly UpdateDraftApprenticeshipRequest _updateDraftApprenticeshipRequest;
@@ -95,6 +96,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _courseResponse = new GetTrainingCoursesQueryResponse
             {
                 TrainingCourses = new TrainingProgramme[0]
+            };
+
+            _selectCourseViewModel = new SelectCourseViewModel()
+            {
+                CourseCode = "123",
+                ProviderId = _providerId,
+                CohortId = _cohortId,
+                CohortReference = _cohortReference,
+                DeliveryModel = DeliveryModel.Normal,
             };
 
             _addModel = new AddDraftApprenticeshipViewModel
@@ -236,7 +246,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal async Task<DraftApprenticeshipControllerTestFixture> PostToSelectStandard()
         {
-            _actionResult = await _controller.SetCourse(_addModel);
+            _actionResult = await _controller.SetCourse(_selectCourseViewModel);
             return this;
         }
 

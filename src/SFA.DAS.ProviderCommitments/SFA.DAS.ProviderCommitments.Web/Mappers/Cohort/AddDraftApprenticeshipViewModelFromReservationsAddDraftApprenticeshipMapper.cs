@@ -6,11 +6,11 @@
 
 //namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 //{
-//    public class AddDraftApprenticeshipViewModelFromSelectedReservationMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, AddDraftApprenticeshipViewModel>
+//    public class AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, AddDraftApprenticeshipViewModel>
 //    {
 //        private readonly IAuthorizationService _authorizationService;
 
-//        public AddDraftApprenticeshipViewModelFromSelectedReservationMapper(IAuthorizationService authorizationService)
+//        public AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(IAuthorizationService authorizationService)
 //        {
 //            _authorizationService = authorizationService;
 //        }
