@@ -13,8 +13,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -175,9 +173,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            _mediator
-                .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
+            //_mediator
+            //    .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
@@ -232,15 +230,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
         {
             _addModel.CourseCode = "456FlexiJob";
-            _mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
-                {
-                    DeliveryModels = new[]
-                    {
-                        DeliveryModel.Normal,
-                        DeliveryModel.Flexible,
-                    }
-                });
+            //_mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
+            //    {
+            //        DeliveryModels = new[]
+            //        {
+            //            DeliveryModel.Normal,
+            //            DeliveryModel.Flexible,
+            //        }
+            //    });
             return this;
         }
 
