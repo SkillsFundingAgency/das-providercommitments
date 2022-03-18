@@ -1,8 +1,4 @@
-﻿using MediatR;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 
@@ -10,30 +6,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class SelectCourseViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper : IMapper<CreateCohortWithDraftApprenticeshipRequest, SelectCourseViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IMediator _mediator;
+        private readonly ISelectCourseViewModelMapperHelper _selectCourseViewModelHelper;
 
-        public SelectCourseViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper(ICommitmentsApiClient commitmentsApiClient, IMediator mediator)
+        public SelectCourseViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper(ISelectCourseViewModelMapperHelper selectCourseViewModelHelper)
         {
-            _commitmentsApiClient = commitmentsApiClient;
-            _mediator = mediator;
+            _selectCourseViewModelHelper = selectCourseViewModelHelper;
         }
 
-        public async Task<SelectCourseViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
+        public Task<SelectCourseViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var ale = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
-
-            return new SelectCourseViewModel
-            {
-                CourseCode = source.CourseCode,
-                Courses = await GetCourses(ale.LevyStatus),
-            };
-        }
-
-        private async Task<TrainingProgramme[]> GetCourses(ApprenticeshipEmployerType levyStatus)
-        {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = levyStatus != ApprenticeshipEmployerType.NonLevy });
-            return result.TrainingCourses;
+            return _selectCourseViewModelHelper.Map(source.CourseCode, source.AccountLegalEntityId) ;
         }
     }
 }
