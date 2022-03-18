@@ -9,7 +9,6 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourse;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -24,7 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<IMediator> _mediator;
         private AccountLegalEntityResponse _accountLegalEntityResponse;
         private GetTrainingCoursesQueryResponse _trainingCoursesQueryResponse;
-        private GetTrainingCourseResponse _trainingCourseResponse;
         private GetTrainingProgrammeResponse _trainingProgrammeResponse;
 
         [SetUp]
@@ -36,7 +34,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
             _trainingCoursesQueryResponse = fixture.Create<GetTrainingCoursesQueryResponse>();
-            _trainingCourseResponse = fixture.Create<GetTrainingCourseResponse>();
             _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -49,9 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_trainingCoursesQueryResponse);
-
-            _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCourseRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_trainingCourseResponse);
 
             _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object, Mock.Of<IAuthorizationService>());
         }
