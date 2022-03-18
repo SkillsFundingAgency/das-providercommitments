@@ -19,6 +19,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -182,6 +183,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .Returns(_draftApprenticeshipHashedId);
             
             _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
+            _controller.TempData = new Mock<ITempDataDictionary>().Object;
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
@@ -223,22 +225,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetUpNoStandardSelected()
         {
-            _addModel.CourseCode = "";
+            _selectCourseViewModel.CourseCode = "";
             return this;
         }
 
         public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
         {
-            _addModel.CourseCode = "456FlexiJob";
-            //_mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
-            //    {
-            //        DeliveryModels = new[]
-            //        {
-            //            DeliveryModel.Normal,
-            //            DeliveryModel.Flexible,
-            //        }
-            //    });
+            _selectCourseViewModel.CourseCode = "456FlexiJob";
             return this;
         }
 

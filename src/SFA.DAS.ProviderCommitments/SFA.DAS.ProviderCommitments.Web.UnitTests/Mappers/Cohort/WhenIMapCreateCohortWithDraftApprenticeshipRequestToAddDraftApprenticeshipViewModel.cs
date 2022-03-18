@@ -92,13 +92,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task ThenCourseNameIsMappedCorrectly()
-        {
-            var result = await _mapper.Map(_source);
-            Assert.AreEqual(_trainingProgrammeResponse.TrainingProgramme.Name, result.CourseName);
-        }
-
-        [Test]
         public async Task ThenCourseNameIsNullWhenNoCourseCode()
         {
             _source.CourseCode = null;
