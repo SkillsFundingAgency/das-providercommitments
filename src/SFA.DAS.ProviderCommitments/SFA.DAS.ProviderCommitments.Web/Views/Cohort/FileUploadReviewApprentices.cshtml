@@ -96,16 +96,27 @@
 
             <tbody class="govuk-table__body govuk-!-font-size-16">
 
-                @foreach (var apprentice in Model.FileUploadCohortDetails)
+                @foreach (var fileUploadApprentice in Model.FileUploadCohortDetails)
                 {
                     <tr class="govuk-table__row">
-                        <td id="fileupload-apprentice-name" class="govuk-table__cell">@apprentice.Name</td>
-                        <td id="fileupload-training-course" class="govuk-table__cell">@apprentice.TrainingCourse</td>
-                        <td id="fileupload-apprentice-uln" class="govuk-table__cell">@apprentice.ULN</td>
-                        <td id="fileupload-apprentice-dob" class="govuk-table__cell">@apprentice.DateOfBirth</td>
-                        <td id="fileupload-apprentice-email" class="govuk-table__cell">@apprentice.Email</td>
-                        <td id="fileupload-apprentice-training-dates" class="govuk-table__cell">@apprentice.TrainingDates</td>
-                        <td id="fileupload-apprentice-cost" class="govuk-table__cell">@apprentice.Price.FormatCost()</td>
+                        <td id="fileupload-apprentice-name" class="govuk-table__cell">@fileUploadApprentice.Name</td>
+                        <td id="fileupload-training-course" class="govuk-table__cell">@fileUploadApprentice.TrainingCourse</td>
+                        <td id="fileupload-apprentice-uln" class="govuk-table__cell">@fileUploadApprentice.ULN</td>
+                        <td id="fileupload-apprentice-dob" class="govuk-table__cell">@fileUploadApprentice.DateOfBirth</td>
+                        <td id="fileupload-apprentice-email" class="govuk-table__cell">@fileUploadApprentice.Email</td>
+                        <td id="fileupload-apprentice-training-dates" class="govuk-table__cell">@fileUploadApprentice.TrainingDates</td>
+                        <td id="fileupload-apprentice-cost" class="govuk-table__cell">                            
+                            @if (fileUploadApprentice.ExceedsFundingBandCap)
+                            {
+                                <span class="das-table-cell--highlight">
+                                    @fileUploadApprentice.Price.FormatCost()
+                                </span>
+                            }
+                            else
+                            {
+                                @fileUploadApprentice.Price.FormatCost()
+                            }
+                        </td>
                     </tr>
                 }
 
@@ -144,16 +155,27 @@
 
             <tbody class="govuk-table__body govuk-!-font-size-16">
 
-                @foreach (var apprentice in Model.ExistingCohortDetails)
+                @foreach (var existingApprentice in Model.ExistingCohortDetails)
                 {
                     <tr class="govuk-table__row">
-                        <td id="existing-apprentice-name" class="govuk-table__cell">@apprentice.Name</td>
-                        <td id="existing-training-course" class="govuk-table__cell">@apprentice.TrainingCourse</td>
-                        <td id="existing-apprentice-uln" class="govuk-table__cell">@apprentice.ULN</td>
-                        <td id="existing-apprentice-dob" class="govuk-table__cell">@apprentice.DateOfBirth</td>
-                        <td id="existing-apprentice-email" class="govuk-table__cell">@apprentice.Email</td>
-                        <td id="existing-apprentice-training-dates" class="govuk-table__cell">@apprentice.TrainingDates</td>
-                        <td id="existing-apprentice-cost" class="govuk-table__cell">@apprentice.Price.FormatCost()</td>
+                        <td id="existing-apprentice-name" class="govuk-table__cell">@existingApprentice.Name</td>
+                        <td id="existing-training-course" class="govuk-table__cell">@existingApprentice.TrainingCourse</td>
+                        <td id="existing-apprentice-uln" class="govuk-table__cell">@existingApprentice.ULN</td>
+                        <td id="existing-apprentice-dob" class="govuk-table__cell">@existingApprentice.DateOfBirth</td>
+                        <td id="existing-apprentice-email" class="govuk-table__cell">@existingApprentice.Email</td>
+                        <td id="existing-apprentice-training-dates" class="govuk-table__cell">@existingApprentice.TrainingDates</td>
+                        <td id="existing-apprentice-cost" class="govuk-table__cell">
+                            @if (existingApprentice.ExceedsFundingBandCapForExistingCohort)
+                            {
+                                <span class="das-table-cell--highlight">
+                                    @existingApprentice.Price.FormatCost()
+                                </span>
+                            }
+                            else
+                            {
+                                @existingApprentice.Price.FormatCost()
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
