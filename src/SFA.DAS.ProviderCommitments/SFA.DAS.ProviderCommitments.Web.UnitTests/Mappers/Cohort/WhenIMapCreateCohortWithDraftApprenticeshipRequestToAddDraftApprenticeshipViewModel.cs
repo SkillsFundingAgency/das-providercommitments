@@ -94,7 +94,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsNull(result.CourseCode);
         }
 
-
         [TestCase(ApprenticeshipEmployerType.Levy, true)]
         [TestCase(ApprenticeshipEmployerType.NonLevy, false)]
         public async Task ThenFrameworkCoursesAreIncludeOrNotInMediatorRequest(ApprenticeshipEmployerType levyStatus, bool frameworksAreIncluded)

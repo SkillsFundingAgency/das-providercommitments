@@ -131,7 +131,7 @@ else
             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>
             <p class="govuk-body">
                 @Model.DeliveryModel.ToDescription()
-                <button type="submit" name="ChangeDeliveryModel" class="das-button--inline-link">
+                <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
                     Edit<span class="govuk-visually-hidden"> delivery model</span>
                 </button>
             </p>
@@ -142,7 +142,7 @@ else
             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
             <p class="govuk-body">
                 @Model.CourseName
-                <button type="submit" name="ChangeCourse" class="das-button--inline-link">
+                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
                     Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
                 </button>
             </p>

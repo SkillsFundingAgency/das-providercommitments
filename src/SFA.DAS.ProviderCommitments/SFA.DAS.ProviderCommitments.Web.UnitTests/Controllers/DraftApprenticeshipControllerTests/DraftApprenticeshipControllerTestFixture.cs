@@ -240,15 +240,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
         {
             _addModel.CourseCode = "456FlexiJob";
-            //_mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
-            //    {
-            //        DeliveryModels = new[]
-            //        {
-            //            DeliveryModel.Regular,
-            //            DeliveryModel.PortableFlexiJob,
-            //        }
-            //    });
             return this;
         }
 

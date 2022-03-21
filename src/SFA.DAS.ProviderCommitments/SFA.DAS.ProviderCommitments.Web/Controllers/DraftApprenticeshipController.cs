@@ -336,6 +336,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
-
     }
 }
