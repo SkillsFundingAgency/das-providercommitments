@@ -5,10 +5,9 @@ using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -17,7 +16,6 @@ using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
-using RedirectResult = Microsoft.AspNetCore.Mvc.RedirectResult;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -43,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task ThenTheUserIsRedirectedToTheViewCohortPage()
         {
             await _fixture.PostDraftApprenticeshipViewModel();
-            _fixture.VerifyUserRedirection();
+            _fixture.VerifyUserRedirectedTo("Details");
         }
 
         [Test]
@@ -52,6 +50,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.SetupHasOptions();
             await _fixture.PostDraftApprenticeshipViewModel();
             _fixture.VerifyUserRedirectSelectOption();
+        }
+
+        [Test]
+        public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
+        {
+            await _fixture.PostDraftApprenticeshipViewModel(changeCourse:"Edit");
+            _fixture.VerifyUserRedirectedTo("SelectCourse");
+        }
+
+        [Test]
+        public async Task AndSelectDeliveryModelIsToBeChangedThenTheUserIsRedirectedToSelectDeliveryModelPage()
+        {
+            await _fixture.PostDraftApprenticeshipViewModel(changeDeliveryModel: "Edit");
+            _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
         }
 
         private class UnapprovedControllerTestFixture
@@ -68,6 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private string _linkGeneratorParameter;
             private Fixture _autoFixture;
             private readonly Mock<IEncodingService> _encodingService;
+            private readonly Mock<ITempDataDictionary> _tempData;
             private readonly string _draftApprenticeshipHashedId;
 
             public UnapprovedControllerTestFixture()
@@ -87,6 +100,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     AccountLegalEntityId = _autoFixture.Create<long>(),
                     ReservationId = _autoFixture.Create<Guid>()
                 };
+
+                _tempData = new Mock<ITempDataDictionary>();
 
                 _createCohortRequest = new CreateCohortRequest();
                 _mockModelMapper
@@ -110,11 +125,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     
                 
                 _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), _encodingService.Object);
+                _controller.TempData = _tempData.Object;
             }
 
-            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel()
+            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel(string changeCourse = null, string changeDeliveryModel = null)
             {
-                _actionResult = await _controller.SaveDraftApprenticeship(_model);
+                _actionResult = await _controller.AddDraftApprenticeshipOrRoute(changeCourse, changeDeliveryModel, _model);
                 return this;
             }
 
@@ -144,9 +160,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 return this;
             }
 
-            public UnapprovedControllerTestFixture VerifyUserRedirection()
+            public UnapprovedControllerTestFixture VerifyUserRedirectedTo(string page)
             {
-                _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+                _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
                 return this;
             }
 
