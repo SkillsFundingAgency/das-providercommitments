@@ -9,36 +9,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 
 {
     [TestFixture]
-    public class WhenIMapSelectCourseViewModelToReservationsAddDraftApprenticeshipRequest
+    public class WhenIMapAddDraftApprenticeshipViewModelToBaseReservationsAddDraftApprenticeshipRequest
     {
-        private ReservationsAddDraftApprenticeshipRequestFromSelectCourseViewModelMapper _mapper;
-        private SelectCourseViewModel _source;
-        private Func<Task<ReservationsAddDraftApprenticeshipRequest>> _act;
+        private ReservationsAddDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper _mapper;
+        private SelectDeliveryModelViewModel _source;
+        private Func<Task<BaseReservationsAddDraftApprenticeshipRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<SelectCourseViewModel>();
+            _source = fixture.Create<SelectDeliveryModelViewModel>();
             _source.StartMonthYear = "092022";
 
-            _mapper = new ReservationsAddDraftApprenticeshipRequestFromSelectCourseViewModelMapper();
+            _mapper = new ReservationsAddDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper();
 
             _act = async () => await _mapper.Map(_source);
-        }
-
-        [Test]
-        public async Task ThenProviderIdIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
-        }
-
-        [Test]
-        public async Task ThenCohortReferenceIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.CohortReference, result.CohortReference);
         }
 
         [Test]
