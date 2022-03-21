@@ -20,7 +20,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -52,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly SelectOptionsRequest _selectOptionsRequest;
         private readonly ViewSelectOptionsViewModel _viewSelectOptionsViewModel;
         private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
+        private readonly Mock<ITempDataDictionary> _tempData;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -174,16 +177,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            //_mediator
-            //    .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Normal } });
+            _tempData = new Mock<ITempDataDictionary>();
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
             _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
-            _controller.TempData = new Mock<ITempDataDictionary>().Object;
+            _controller.TempData = _tempData.Object;
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
@@ -191,6 +192,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _actionResult = await _controller.AddDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
             return this;
         }
+
+        public async Task<DraftApprenticeshipControllerTestFixture> AddNewDraftApprenticeshipWithReservation()
+        {
+            _actionResult = await _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
+            return this;
+        }
+
 
         public async Task<DraftApprenticeshipControllerTestFixture> EditDraftApprenticeship()
         {
@@ -241,9 +249,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship()
+        public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
         {
-            _actionResult = await _controller.AddDraftApprenticeship(null, null,_addModel);
+            _actionResult = await _controller.AddDraftApprenticeship(changeCourse, changeDeliveryModel,_addModel);
             return this;
         }
 
@@ -296,6 +304,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture SetupDeliveryModelFeatureToggle()
+        {
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
+            return this;
+        }
+
+
         public DraftApprenticeshipControllerTestFixture SetCohortWithChangeOfParty(bool isChangeOfParty)
         {
             if (isChangeOfParty)
@@ -314,6 +329,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _cohortResponse.LevyStatus = status;
             return this;
         }
+
+
+        public DraftApprenticeshipControllerTestFixture SetupTempDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_addModel);
+            _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString));
+            return this;
+        }
+
+        public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
+        {
+            var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
+            ViewModelHasRequestDeliveryModelAndCourseCode(model);
+        }
+
 
         public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
@@ -485,6 +515,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectCoursePage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourse");
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
@@ -533,6 +569,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     It.Is<GetTrainingCoursesQueryRequest>(request => request.IncludeFrameworks == expectFrameworkCoursesToBeRequested),
                     It.IsAny<CancellationToken>()),
                  Times.Once);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture ViewModelHasRequestDeliveryModelAndCourseCode(AddDraftApprenticeshipViewModel model)
+        {
+            if (model.DeliveryModel != _reservationsAddDraftApprenticeshipRequest.DeliveryModel || model.CourseCode != _reservationsAddDraftApprenticeshipRequest.CourseCode)
+            {
+                Assert.Fail("DeliveryModel and CourseCode must match Request Value");
+            }
+
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyUserRedirectedTo(string page)
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
             return this;
         }
     }
