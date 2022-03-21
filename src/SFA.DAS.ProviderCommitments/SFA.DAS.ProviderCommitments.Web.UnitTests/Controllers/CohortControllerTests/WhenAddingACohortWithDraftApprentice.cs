@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -58,6 +60,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             fixture.VerifyMapperWasCalled();
         }
+
+        [Test]
+        public async Task AndOnAddApprenticeshipPage_ThenTempDataIsRestoredAndNewValuesSet()
+        {
+            var fixture = new WhenAddingACohortWithDraftApprenticeFixture().WithTempDataSet();
+
+            var result = await fixture.ActOnAddApprenticeship();
+
+            var model = result.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
+
+            fixture.VerifyDraftApprenticeshipWasRestoredAndValuesSet(model);
+        }
     }
 
     public class WhenAddingACohortWithDraftApprenticeFixture
@@ -67,11 +81,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _viewModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
+        private readonly Mock<ITempDataDictionary> _tempData;
+        private object _viewModelAsString;
 
         public WhenAddingACohortWithDraftApprenticeFixture()
         {
             _request = new CreateCohortWithDraftApprenticeshipRequest();
+            _request.DeliveryModel = DeliveryModel.Flexible;
+            _request.CourseCode = "ABC123";
+
             _viewModel = new AddDraftApprenticeshipViewModel();
+            _viewModel.DeliveryModel = DeliveryModel.Normal;
+            _viewModel.CourseCode = "DIFF123";
+            _viewModelAsString = JsonConvert.SerializeObject(_viewModel);
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
             _providerFeatureToggle = new Mock<IAuthorizationService>();
@@ -85,14 +107,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _providerFeatureToggle.Object,
                 Mock.Of<IEncodingService>());
 
-            Sut.TempData = new Mock<ITempDataDictionary>().Object;
+            _tempData = new Mock<ITempDataDictionary>();
+            Sut.TempData = _tempData.Object;
 
+        }
+
+        public WhenAddingACohortWithDraftApprenticeFixture WithTempDataSet()
+        {
+            _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out _viewModelAsString));
+            return this;
         }
 
         public WhenAddingACohortWithDraftApprenticeFixture SetDeliveryModelToggleOn()
         {
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.Is<string>(p=>p == ProviderFeature.DeliveryModel))).Returns(true);
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.Is<string>(p => p == ProviderFeature.DeliveryModel))).Returns(true);
             return this;
+        }
+
+        public void VerifyDraftApprenticeshipWasRestoredAndValuesSet(AddDraftApprenticeshipViewModel viewModel)
+        {
+            if (viewModel == null)
+            {
+                Assert.Fail("View model has not been restored");
+            }
+
+            if (viewModel.DeliveryModel != _request.DeliveryModel || viewModel.CourseCode != _request.CourseCode)
+            {
+                Assert.Fail("View model does not have CourseCode and DeliveryModel set correctly");
+            }
         }
 
         public void VerifyMapperWasCalled()

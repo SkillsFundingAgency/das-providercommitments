@@ -166,6 +166,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/select-delivery-model")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
@@ -214,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return await SaveDraftApprenticeship(model);
         }
 
-        public async Task<IActionResult> SaveDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        private async Task<IActionResult> SaveDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
