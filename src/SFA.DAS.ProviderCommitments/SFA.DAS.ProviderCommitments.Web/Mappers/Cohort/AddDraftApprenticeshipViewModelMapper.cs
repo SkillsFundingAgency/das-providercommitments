@@ -6,6 +6,8 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -13,18 +15,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IMediator _mediator;
+        private readonly IAuthorizationService _authorizationService;
 
-        public AddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IMediator mediator)
+        public AddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IMediator mediator, IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _mediator = mediator;
+            _authorizationService = authorizationService;
         }
 
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
             var ale = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
-
-            var courseName = source.CourseCode == null ? null : (await _commitmentsApiClient.GetTrainingProgramme(source.CourseCode)).TrainingProgramme.Name;
 
             return new AddDraftApprenticeshipViewModel
             {
@@ -33,9 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
-                CourseName = courseName,
                 DeliveryModel = source.DeliveryModel,
-                Courses = await GetCourses(ale.LevyStatus),
+                Courses = _authorizationService.IsAuthorized(ProviderFeature.DeliveryModel) == false ? await GetCourses(ale.LevyStatus) : null,
                 Employer = ale.LegalEntityName
             };
         }

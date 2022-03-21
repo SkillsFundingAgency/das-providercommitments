@@ -4,13 +4,13 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class AddDraftApprenticeshipViewModelFromSelectedReservationMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, AddDraftApprenticeshipViewModel>
+    public class AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, AddDraftApprenticeshipViewModel>
     {
         private readonly IAuthorizationService _authorizationService;
 
-        public AddDraftApprenticeshipViewModelFromSelectedReservationMapper(IAuthorizationService authorizationService)
+        public AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(IAuthorizationService authorizationService)
         {
             _authorizationService = authorizationService;
         }
@@ -24,7 +24,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CohortId = source.CohortId,
                 StartDate = new MonthYearModel(source.StartMonthYear),
                 ReservationId = source.ReservationId,
-                CourseCode = source.CourseCode
+                CourseCode = source.CourseCode,
+                DeliveryModel = source.DeliveryModel
             });
         }
     }

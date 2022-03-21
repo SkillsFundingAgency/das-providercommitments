@@ -7,11 +7,10 @@ using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
 
@@ -85,6 +84,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ICommitmentsApiClient>(),
                 _providerFeatureToggle.Object,
                 Mock.Of<IEncodingService>());
+
+            Sut.TempData = new Mock<ITempDataDictionary>().Object;
+
         }
 
         public WhenAddingACohortWithDraftApprenticeFixture SetDeliveryModelToggleOn()

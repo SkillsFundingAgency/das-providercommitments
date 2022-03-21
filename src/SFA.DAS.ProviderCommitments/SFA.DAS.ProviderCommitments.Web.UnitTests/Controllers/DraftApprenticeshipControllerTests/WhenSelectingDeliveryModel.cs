@@ -14,7 +14,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -80,33 +79,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipController Sut { get; set; }
 
         public string RedirectUrl;
-        public Mock<IMediator> MediatorMock;
+        public Mock<IModelMapper> ModelMapperMock;
         public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public AddDraftApprenticeshipViewModel ViewModel;
+        public SelectDeliveryModelViewModel ViewModel;
         public ReservationsAddDraftApprenticeshipRequest Request;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.EndMonth).Without(x => x.EndYear)
-                .Without(x => x.StartDate)
-                .Without(x => x.StartMonth).Without(x => x.StartYear)
-                .Create();
+            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
             Request = fixture.Create<ReservationsAddDraftApprenticeshipRequest>();
 
-            MediatorMock = new Mock<IMediator>();
+            ModelMapperMock = new Mock<IModelMapper>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
             AuthorizationServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
 
-            Sut = new DraftApprenticeshipController(MediatorMock.Object, Mock.Of<ICommitmentsApiClient>(), Mock.Of<IModelMapper>(), Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            MediatorMock
-                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p => p.ProviderId == Request.ProviderId && p.CourseId == Request.CourseCode), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = list });
+            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(Request))
+                .ReturnsAsync(new SelectDeliveryModelViewModel {DeliveryModels = list.ToArray()});
             return this;
         }
 

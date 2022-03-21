@@ -13,14 +13,13 @@ using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -37,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _addModel;
+        private readonly SelectCourseViewModel _selectCourseViewModel;
         private readonly EditDraftApprenticeshipViewModel _editModel;
         private readonly AddDraftApprenticeshipRequest _createAddDraftApprenticeshipRequest;
         private readonly UpdateDraftApprenticeshipRequest _updateDraftApprenticeshipRequest;
@@ -95,6 +95,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _courseResponse = new GetTrainingCoursesQueryResponse
             {
                 TrainingCourses = new TrainingProgramme[0]
+            };
+
+            _selectCourseViewModel = new SelectCourseViewModel()
+            {
+                CourseCode = "123",
+                ProviderId = _providerId,
+                CohortId = _cohortId,
+                CohortReference = _cohortReference,
+                DeliveryModel = DeliveryModel.Regular,
             };
 
             _addModel = new AddDraftApprenticeshipViewModel
@@ -165,15 +174,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            _mediator
-                .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Regular } });
+            //_mediator
+            //    .Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse { DeliveryModels = new[] { DeliveryModel.Regular } });
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
             _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
+            _controller.TempData = new Mock<ITempDataDictionary>().Object;
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> AddDraftApprenticeshipWithReservation()
@@ -215,34 +225,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetUpNoStandardSelected()
         {
-            _addModel.CourseCode = "";
+            _selectCourseViewModel.CourseCode = "";
             return this;
         }
 
         public DraftApprenticeshipControllerTestFixture SetUpFlexibleStandardSelected()
         {
             _addModel.CourseCode = "456FlexiJob";
-            _mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
-                {
-                    DeliveryModels = new[]
-                    {
-                        DeliveryModel.Regular,
-                        DeliveryModel.PortableFlexiJob,
-                    }
-                });
+            //_mediator.Setup(x => x.Send(It.IsAny<GetProviderCourseDeliveryModelsQueryRequest>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse
+            //    {
+            //        DeliveryModels = new[]
+            //        {
+            //            DeliveryModel.Regular,
+            //            DeliveryModel.PortableFlexiJob,
+            //        }
+            //    });
             return this;
         }
 
         internal async Task<DraftApprenticeshipControllerTestFixture> PostToSelectStandard()
         {
-            _actionResult = await _controller.SetCourse(_addModel);
+            _actionResult = await _controller.SetCourse(_selectCourseViewModel);
             return this;
         }
 
         public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship()
         {
-            _actionResult = await _controller.AddDraftApprenticeship(_addModel);
+            _actionResult = await _controller.AddDraftApprenticeship(null, null,_addModel);
             return this;
         }
 

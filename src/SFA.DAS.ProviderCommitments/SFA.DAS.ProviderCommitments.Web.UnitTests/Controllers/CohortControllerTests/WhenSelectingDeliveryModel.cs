@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -15,7 +14,6 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Queries.GetProviderCourseDeliveryModels;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -29,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Regular});
 
-            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as RedirectToActionResult;
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
@@ -39,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            var result = await fixture.Sut.SelectDeliveryModel(10005077, fixture.Request) as ViewResult;
+            var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
             result.ViewName.Should().Be("SelectDeliveryModel");
         }
 
@@ -78,30 +76,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public CohortController Sut { get; set; }
 
         public string RedirectUrl;
-        public Mock<IMediator> MediatorMock;
+        public Mock<IModelMapper> ModelMapperMock;
         public CreateCohortWithDraftApprenticeshipRequest Request;
-        public AddDraftApprenticeshipViewModel ViewModel;
+        public SelectDeliveryModelViewModel ViewModel;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().Create();
-            ViewModel = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.EndMonth).Without(x => x.EndYear)
-                .Without(x => x.StartDate)
-                .Without(x => x.StartMonth).Without(x => x.StartYear)
-                .Create();
+            ModelMapperMock = new Mock<IModelMapper>();
+            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
 
-            MediatorMock = new Mock<IMediator>();
 
-            Sut = new CohortController(MediatorMock.Object, Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
+            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            MediatorMock
-                .Setup(x => x.Send(It.Is<GetProviderCourseDeliveryModelsQueryRequest>(p=>p.ProviderId == 10005077 && p.CourseId == Request.CourseCode), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetProviderCourseDeliveryModelsQueryResponse {DeliveryModels = list});
+            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(Request))
+                .ReturnsAsync(new SelectDeliveryModelViewModel { DeliveryModels = list.ToArray() });
             return this;
         }
 

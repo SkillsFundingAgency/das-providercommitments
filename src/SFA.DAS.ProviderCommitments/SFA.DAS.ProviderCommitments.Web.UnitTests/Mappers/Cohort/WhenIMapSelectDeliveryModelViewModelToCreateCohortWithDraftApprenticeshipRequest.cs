@@ -10,25 +10,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
 {
     [TestFixture]
-    public class WhenIMapAddDraftApprenticeshipViewModelToCreateCohortWithDraftApprenticeshipRequest
+    public class WhenIMapSelectDeliveryModelViewModelToCreateCohortWithDraftApprenticeshipRequest
     {
-        private CreateCohortWithDraftApprenticeshipRequestFromAddDraftApprenticeshipViewModel _mapper;
-        private AddDraftApprenticeshipViewModel _source;
+        private CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper _mapper;
+        private SelectDeliveryModelViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Build<AddDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x=>x.StartDate)
-                .Without(x => x.EndMonth).Without(x => x.EndYear)
-                .Create();
-            _source.StartDate = new MonthYearModel("092022");
+            _source = fixture.Create<SelectDeliveryModelViewModel>();
 
-            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromAddDraftApprenticeshipViewModel();
+            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper();
 
             _act = async () => await _mapper.Map(_source);
+        }
+
+        [Test]
+        public async Task ThenProviderIdIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.ProviderId, result.ProviderId);
         }
 
         [Test]
@@ -70,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartDate.MonthYear, result.StartMonthYear);
+            Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
         }
     }
 }

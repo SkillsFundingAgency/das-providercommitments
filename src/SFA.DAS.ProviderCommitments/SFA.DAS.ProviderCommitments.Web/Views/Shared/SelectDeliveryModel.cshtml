@@ -1,11 +1,11 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
-@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel
 
 @{
     ViewData["Title"] = "Apprenticeships";
-    ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
-    ViewBag.GaData.Org = Model.Employer;
+    //ViewBag.GaData.Vpv = "/unapproved/add/apprentice";
+    //ViewBag.GaData.Org = Model.Employer;
 }
 
 <div class="govuk-grid-row">
@@ -14,10 +14,6 @@
         <h1 class="govuk-heading-xl">Select the apprenticeship delivery model</h1>
 
         <form id="selectDeliveryModel" novalidate method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.StartMonth)
-            @Html.HiddenFor(x => x.StartYear)
-
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DeliveryModel, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
