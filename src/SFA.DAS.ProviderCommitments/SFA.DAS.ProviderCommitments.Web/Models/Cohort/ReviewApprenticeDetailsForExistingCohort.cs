@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class FileUploadReviewApprenticeDetails
+    public class ReviewApprenticeDetailsForExistingCohort
     {
         public string Name { get; set; }
         public string TrainingCourse { get; set; }
@@ -8,16 +8,16 @@
         public string DateOfBirth { get; set; }
         public string Email { get; set; }
         public string TrainingDates { get; set; }
-        public int Price { get; set; }
-        public int? FundingBandCap { get; set; }
+        public decimal? Price { get; set; }
+        public int? FundingBandCapForExistingCohort { get; set; }
 
-        public bool ExceedsFundingBandCap
+        public bool ExceedsFundingBandCapForExistingCohort
         {
             get
             {
-                if (FundingBandCap.HasValue)
+                if (FundingBandCapForExistingCohort.HasValue)
                 {
-                    return Price > FundingBandCap.Value;
+                    return Price > FundingBandCapForExistingCohort.Value;
                 }
 
                 return false;
