@@ -87,11 +87,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenAddingACohortWithDraftApprenticeFixture()
         {
             _request = new CreateCohortWithDraftApprenticeshipRequest();
-            _request.DeliveryModel = DeliveryModel.Flexible;
+            _request.DeliveryModel = DeliveryModel.PortableFlexiJob;
             _request.CourseCode = "ABC123";
 
             _viewModel = new AddDraftApprenticeshipViewModel();
-            _viewModel.DeliveryModel = DeliveryModel.Normal;
+            _viewModel.DeliveryModel = DeliveryModel.Regular;
             _viewModel.CourseCode = "DIFF123";
             _viewModelAsString = JsonConvert.SerializeObject(_viewModel);
             _modelMapper = new Mock<IModelMapper>();
