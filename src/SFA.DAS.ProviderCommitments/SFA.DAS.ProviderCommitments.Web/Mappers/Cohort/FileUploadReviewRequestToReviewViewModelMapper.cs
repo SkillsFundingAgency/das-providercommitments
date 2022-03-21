@@ -69,20 +69,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     };
                     cohortDetails.Add(fileUploadCohortDetails);
 
-                    //Get CohortId by CohortReference
-                    var cohortId = _encodingService.Decode(cohortGroup.Key, EncodingType.CohortReference);
-                    //Get the response from DB
-                    var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
-
-                    if (response != null)
+                    if (!string.IsNullOrWhiteSpace(cohortGroup.Key))
                     {
-                        var existingCohortDetails = new FileUploadReviewCohortDetail
+                        //Get CohortId by CohortReference
+                        var cohortId = _encodingService.Decode(cohortGroup.Key, EncodingType.CohortReference);
+                        //Get the response from DB
+                        var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+
+                        if (response != null)
                         {
-                            CohortRef = cohortGroup.Key,
-                            NumberOfApprentices = response.DraftApprenticeships.Count,
-                            TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
-                        };
-                        cohortDetails.Add(existingCohortDetails);
+                            var existingCohortDetails = new FileUploadReviewCohortDetail
+                            {
+                                CohortRef = cohortGroup.Key,
+                                NumberOfApprentices = response.DraftApprenticeships.Count,
+                                TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
+                            };
+                            cohortDetails.Add(existingCohortDetails);
+                        }
                     }
                 }
 
