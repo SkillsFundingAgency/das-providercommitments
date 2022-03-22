@@ -66,23 +66,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         private async Task<bool> CheckColumnHeader(IFormFile file, CancellationToken cancellation)
         {
             var fileData = await ReadFileAsync(file);
-            if (fileData.firstlineData[0] == "CohortRef" &&
-                fileData.firstlineData[1] == "AgreementID" &&
-                fileData.firstlineData[2] == "ULN" &&
-                fileData.firstlineData[3] == "FamilyName" &&
-                fileData.firstlineData[4] == "GivenNames" &&
-                fileData.firstlineData[5] == "DateOfBirth" &&
-                fileData.firstlineData[6] == "EmailAddress" &&
-                fileData.firstlineData[7] == "StdCode" &&
-                fileData.firstlineData[8] == "StartDate" &&
-                fileData.firstlineData[9] == "EndDate" &&
-                fileData.firstlineData[10] == "TotalPrice" &&
-                fileData.firstlineData[11] == "EPAOrgID" &&
-                fileData.firstlineData[12] == "ProviderRef")
-            {
-                return true;
-            }
-            return false;
+            return (fileData.firstlineData[0] == "CohortRef" &&
+                    fileData.firstlineData[1] == "AgreementID" &&
+                    fileData.firstlineData[2] == "ULN" &&
+                    fileData.firstlineData[3] == "FamilyName" &&
+                    fileData.firstlineData[4] == "GivenNames" &&
+                    fileData.firstlineData[5] == "DateOfBirth" &&
+                    fileData.firstlineData[6] == "EmailAddress" &&
+                    fileData.firstlineData[7] == "StdCode" &&
+                    fileData.firstlineData[8] == "StartDate" &&
+                    fileData.firstlineData[9] == "EndDate" &&
+                    fileData.firstlineData[10] == "TotalPrice" &&
+                    fileData.firstlineData[11] == "EPAOrgID" &&
+                    fileData.firstlineData[12] == "ProviderRef");            
         }
 
         private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
