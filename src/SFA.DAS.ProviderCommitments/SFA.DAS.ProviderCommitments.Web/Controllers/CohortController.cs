@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {

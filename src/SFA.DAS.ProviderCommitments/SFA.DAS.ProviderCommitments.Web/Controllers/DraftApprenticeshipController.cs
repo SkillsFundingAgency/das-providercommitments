@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddNewDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
+        public IActionResult AddNewDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {

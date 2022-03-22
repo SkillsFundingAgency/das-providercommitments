@@ -22,21 +22,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenAddingACohortWithDraftApprentice
     {
         [Test]
-        public async Task ThenRedirectedToAddApprenticeship()
+        public void ThenRedirectedToAddApprenticeship()
         {
             var fixture = new WhenAddingACohortWithDraftApprenticeFixture();
 
-            var result = await fixture.Act() as RedirectToActionResult;
+            var result = fixture.Act() as RedirectToActionResult;
 
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
         [Test]
-        public async Task AndDeliveryModelToggleIsOn_ThenRedirectedToSelectCourse()
+        public void AndDeliveryModelToggleIsOn_ThenRedirectedToSelectCourse()
         {
             var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetDeliveryModelToggleOn();
 
-            var result = await fixture.Act() as RedirectToActionResult;
+            var result = fixture.Act() as RedirectToActionResult;
 
             result.ActionName.Should().Be("SelectCourse");
         }
@@ -142,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.AddNewDraftApprenticeship(_request);
+        public IActionResult Act() => Sut.AddNewDraftApprenticeship(_request);
         public async Task<IActionResult> ActOnAddApprenticeship() => await Sut.AddDraftApprenticeship(_request);
     }
 }

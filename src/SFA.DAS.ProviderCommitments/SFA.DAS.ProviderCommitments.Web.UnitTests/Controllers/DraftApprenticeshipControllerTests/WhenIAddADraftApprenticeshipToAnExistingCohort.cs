@@ -77,18 +77,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithDeliveryModelToggleWeRedirectToSelectCourse()
+        public void AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithDeliveryModelToggleWeRedirectToSelectCourse()
         {
             _fixture.SetupDeliveryModelFeatureToggle();
 
-            await _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.AddNewDraftApprenticeshipWithReservation();
             _fixture.VerifyRedirectedToSelectCoursePage();
         }
 
         [Test]
-        public async Task AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithoutDeliveryModelToggleWeRedirectToAddDraftApprenticeshipPage()
+        public void AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithoutDeliveryModelToggleWeRedirectToAddDraftApprenticeshipPage()
         {
-            await _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.AddNewDraftApprenticeshipWithReservation();
             _fixture.VerifyRedirectedToAddDraftApprenticeshipDetails();
         }
 
