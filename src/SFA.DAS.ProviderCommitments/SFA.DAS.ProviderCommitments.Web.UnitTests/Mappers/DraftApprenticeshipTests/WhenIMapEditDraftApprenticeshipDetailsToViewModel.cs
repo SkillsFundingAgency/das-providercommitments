@@ -189,8 +189,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual("-1", result.TrainingCourseOption);
         }
 
-        [TestCase(DeliveryModel.Normal)]
-        [TestCase(DeliveryModel.Flexible)]
+        [TestCase(DeliveryModel.Regular)]
+        [TestCase(DeliveryModel.PortableFlexiJob)]
         public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
         {
             _apiResponse.DeliveryModel = dm;
