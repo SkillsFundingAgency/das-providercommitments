@@ -625,11 +625,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
         }
 
-        private AddDraftApprenticeshipViewModel PeekStoredDraftApprenticeshipState()
-        {
-           return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
-        }
-
         private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));

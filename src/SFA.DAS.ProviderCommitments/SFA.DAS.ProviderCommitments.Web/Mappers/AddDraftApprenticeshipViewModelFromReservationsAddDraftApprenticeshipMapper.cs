@@ -1,20 +1,12 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, AddDraftApprenticeshipViewModel>
     {
-        private readonly IAuthorizationService _authorizationService;
-
-        public AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(IAuthorizationService authorizationService)
-        {
-            _authorizationService = authorizationService;
-        }
-
         public Task<AddDraftApprenticeshipViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
         {
             return Task.FromResult(new AddDraftApprenticeshipViewModel

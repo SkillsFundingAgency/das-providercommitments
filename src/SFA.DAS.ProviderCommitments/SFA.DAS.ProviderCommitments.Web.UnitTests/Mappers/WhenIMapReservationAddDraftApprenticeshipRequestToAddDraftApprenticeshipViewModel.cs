@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
+﻿using AutoFixture;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
@@ -13,7 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
     {
         private AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper _mapper;
         private ReservationsAddDraftApprenticeshipRequest _source;
-        private Mock<IAuthorizationService> _authorizationService;
 
         [SetUp]
         public void Arrange()
@@ -22,9 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 
             _source = fixture.Build<ReservationsAddDraftApprenticeshipRequest>().With(x => x.StartMonthYear, "042020").Create();
 
-            _authorizationService = new Mock<IAuthorizationService>();
-
-            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_authorizationService.Object);
+            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper();
         }
 
         [Test]
