@@ -5,12 +5,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
 {
     public class FileUploadReviewApprenticeDetailsTests
     {
-        public FileUploadReviewApprenticeDetails FileUploadReviewApprenticeDetails;
+        public ReviewApprenticeDetailsForFileUploadCohort FileUploadReviewApprenticeDetails;
 
         [SetUp]
         public void Arrange()
         {
-            FileUploadReviewApprenticeDetails  = new FileUploadReviewApprenticeDetails();
+            FileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
         }
 
         [TestCase(1000, 900, true)]
