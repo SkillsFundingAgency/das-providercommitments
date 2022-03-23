@@ -197,13 +197,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return groupedByCourse;
         }
 
-        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse) =>
-               !(
-                 string.IsNullOrWhiteSpace(draftApprenticeship.FirstName) || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
-                 || draftApprenticeship.DateOfBirth == null || string.IsNullOrWhiteSpace(draftApprenticeship.CourseName) || string.IsNullOrWhiteSpace(draftApprenticeship.Uln)
-                 || draftApprenticeship.StartDate == null || draftApprenticeship.EndDate == null || draftApprenticeship.Cost == null
-                 || (cohortResponse.ApprenticeEmailIsRequired && string.IsNullOrWhiteSpace(draftApprenticeship.Email) && !cohortResponse.IsLinkedToChangeOfPartyRequest)
-                );
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse)
+        {
+            if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)) return false;
+            if(string.IsNullOrWhiteSpace(draftApprenticeship.LastName)) return false;
+            if(string.IsNullOrWhiteSpace(draftApprenticeship.CourseName)) return false;
+            if(string.IsNullOrWhiteSpace(draftApprenticeship.Uln)) return false;
+            if(draftApprenticeship.DateOfBirth == null) return false;
+            if(draftApprenticeship.Uln == null) return false;
+            if(draftApprenticeship.StartDate == null) return false;
+            if(draftApprenticeship.EndDate == null) return false;
+            if(draftApprenticeship.Cost == null) return false;
+
+            if(cohortResponse.ApprenticeEmailIsRequired)
+            {
+                if (string.IsNullOrWhiteSpace(draftApprenticeship.Email)
+                    && !cohortResponse.IsLinkedToChangeOfPartyRequest)
+                {
+                    return false;
+                }
+            }
+
+            if (draftApprenticeship.DeliveryModel == DeliveryModel.PortableFlexiJob)
+            {
+                if (draftApprenticeship.EmploymentPrice == null) return false;
+                if (draftApprenticeship.EmploymentEndDate == null) return false;
+            }
+
+            return true;
+        }
 
         private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups)
         {

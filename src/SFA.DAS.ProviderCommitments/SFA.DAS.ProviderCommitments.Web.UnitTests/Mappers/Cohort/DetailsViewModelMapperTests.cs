@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.Dsl;
 using FluentAssertions;
 using Moq;
@@ -679,6 +679,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
             result
                 .Courses.First().DraftApprenticeships.Single().DisplayEmploymentDates.Should().Be("Nov 2019 to Dec 2019");
+        }
+
+        [TestCase(DeliveryModel.Regular, nameof(DraftApprenticeshipDto.EmploymentEndDate), true)]
+        [TestCase(DeliveryModel.PortableFlexiJob, nameof(DraftApprenticeshipDto.EmploymentEndDate), false)]
+        [TestCase(DeliveryModel.Regular, nameof(DraftApprenticeshipDto.EmploymentPrice), true)]
+        [TestCase(DeliveryModel.PortableFlexiJob, nameof(DraftApprenticeshipDto.EmploymentPrice), false)]
+        public async Task IsCompleteMappedCorrectlyWhenMandatoryFlexibleFieldIsNull(DeliveryModel deliveryModel, string propertyName, bool isComplete)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship(build => build.With(x => x.DeliveryModel, deliveryModel))
+                .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+
+            var result = await fixture.Map();
+
+            result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
     }
 
