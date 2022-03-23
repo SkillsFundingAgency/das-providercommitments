@@ -1,29 +1,21 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class SelectDeliveryModelViewModelMapperFromReservationsAddDraftApprenticeshipRequestMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectDeliveryModelViewModel>    {
-        private readonly IApprovalsOuterApiClient _client;
+    public class SelectDeliveryModelViewModelMapperFromReservationsAddDraftApprenticeshipRequestMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectDeliveryModelViewModel>
+    {
+        private readonly ISelectDeliveryModelMapperHelper _helper;
 
-        public SelectDeliveryModelViewModelMapperFromReservationsAddDraftApprenticeshipRequestMapper(IApprovalsOuterApiClient client)
+        public SelectDeliveryModelViewModelMapperFromReservationsAddDraftApprenticeshipRequestMapper(ISelectDeliveryModelMapperHelper helper)
         {
-            _client = client;
+            _helper = helper;
         }
 
-        public async Task<SelectDeliveryModelViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
+        public Task<SelectDeliveryModelViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
         {
-            var response = await _client.GetProviderCourseDeliveryModels(source.ProviderId, source.CourseCode);
-
-            return new SelectDeliveryModelViewModel
-            {
-                CourseCode = source.CourseCode,
-                DeliveryModel = source.DeliveryModel,
-                DeliveryModels = response.DeliveryModels.ToArray()
-            };
+            return _helper.Map(source.ProviderId, source.CourseCode, source.DeliveryModel);
         }
     }
 }
