@@ -8,6 +8,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -36,9 +37,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
-                Courses = _authorizationService.IsAuthorized(ProviderFeature.DeliveryModel) == false ? await GetCourses(ale.LevyStatus) : null,
+                Courses = await GetCoursesIfPreDeliveryModel(ale),
                 Employer = ale.LegalEntityName
             };
+        }
+
+        private async Task<TrainingProgramme[]> GetCoursesIfPreDeliveryModel(AccountLegalEntityResponse accountLegalEntity)
+        {
+            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
+            {
+                return null;
+            }
+            else
+            {
+                return await GetCourses(accountLegalEntity.LevyStatus);
+            }
         }
 
         private async Task<TrainingProgramme[]> GetCourses(ApprenticeshipEmployerType levyStatus)

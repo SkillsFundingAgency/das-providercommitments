@@ -13,6 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
             StartDate = startDate == null ? new MonthYearModel("") : new MonthYearModel($"{startDate.Value.Month}{startDate.Value.Year}");
             EndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
+            EmploymentEndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
         }
 
         public DraftApprenticeshipViewModel()
@@ -20,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
             EndDate = new MonthYearModel("");
+            EmploymentEndDate = new MonthYearModel("");
         }
 
         public long ProviderId { get; set; }
@@ -63,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
 
-        [Display(Name = "Planned training start date")]
+        [Display(Name = "Planned apprenticeship training start date")]
         public MonthYearModel StartDate { get; set; }
 
         [Display(Name = "Month")]
@@ -74,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
-        [Display(Name = "Projected finish date")]
+        [Display(Name = "Projected apprenticeship training finish date")]
         public MonthYearModel EndDate { get; }
 
         [Display(Name = "Month")]
@@ -85,9 +87,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
         public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
 
+        [Display(Name = "Planned end date for this employment")]
+        public MonthYearModel EmploymentEndDate { get; }
+
+        [Display(Name = "Month")]
+        [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
+        public int? EmploymentEndMonth { get => EmploymentEndDate.Month; set => EmploymentEndDate.Month = value; }
+
+        [Display(Name = "Year")]
+        [SuppressArgumentException(nameof(EndDate), "The employment end date is not valid")]
+        public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
+
         [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
         [SuppressArgumentException(nameof(Cost), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public int? Cost { get; set; }
+
+        [Display(Name = "Agreed price for this employment (excluding VAT)")]
+        [SuppressArgumentException(nameof(EmploymentPrice), "Agreed employment price must be 7 numbers or fewer")]
+        public int? EmploymentPrice { get; set; }
 
         [Display(Name = "Reference (optional)")]
         public string Reference { get; set; }

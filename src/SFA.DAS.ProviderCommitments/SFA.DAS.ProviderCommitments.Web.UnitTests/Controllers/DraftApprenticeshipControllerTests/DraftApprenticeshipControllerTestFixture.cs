@@ -193,9 +193,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public async Task<DraftApprenticeshipControllerTestFixture> AddNewDraftApprenticeshipWithReservation()
+        public DraftApprenticeshipControllerTestFixture AddNewDraftApprenticeshipWithReservation()
         {
-            _actionResult = await _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
+            _actionResult = _controller.AddNewDraftApprenticeship(_reservationsAddDraftApprenticeshipRequest);
             return this;
         }
 

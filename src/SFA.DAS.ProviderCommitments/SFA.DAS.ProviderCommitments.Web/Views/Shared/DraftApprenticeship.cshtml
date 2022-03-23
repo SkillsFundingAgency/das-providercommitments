@@ -11,6 +11,11 @@
 <input type="hidden" asp-for="HasStandardOptions" />
 <input type="hidden" asp-for="TrainingCourseOption" />
 
+@{
+    var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
+    var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected finish date" : "Projected apprenticeship training start date";
+}
+
 @if (Model.IsContinuation)
 {
     @Html.HiddenFor(x => x.FirstName)
@@ -168,7 +173,7 @@ else
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
     <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            Planned training start date
+            @startDateLabel
         </legend>
         <span id="start-date-hint" class="govuk-hint">
             For example, 09 2017
@@ -196,7 +201,7 @@ else
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
     <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            Projected finish date
+            @endDateLabel
         </legend>
         <span id="finish-date-hint" class="govuk-hint">
             For example, 09 2019
@@ -218,6 +223,36 @@ else
         </div>
     </fieldset>
 </div>
+
+@if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+{
+    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Planned end date for this employment
+            </legend>
+            <span id="employment-finish-date-hint" class="govuk-hint">
+                For example, 09 2019
+            </span>
+            @Html.ValidationMessageFor(m => m.EmploymentEndDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentEndDate) })
+            <div class="govuk-date-input">
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EmploymentEndMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="EmploymentEndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EmploymentEndYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="EmploymentEndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+}
+
 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
     <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
     <span id="price-hint" class="govuk-hint">
@@ -226,6 +261,18 @@ else
     @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
     <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5" />
 </div>
+
+@if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+{
+    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
+        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Agreed price for this employment (excluding VAT)</label>
+        <span id="employment-price-hint" class="govuk-hint">
+            Enter the price in whole pounds. For example, for £1,500 enter 1500
+        </span>
+        @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
+    </div>
+}
 
 <div class="govuk-character-count" data-module="character-count" data-maxlength="20">
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">

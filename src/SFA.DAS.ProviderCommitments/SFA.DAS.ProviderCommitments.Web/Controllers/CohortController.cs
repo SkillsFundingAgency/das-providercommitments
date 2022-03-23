@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {
@@ -401,7 +401,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var hasErrors = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
             if (hasErrors)
             {
-               return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
             }
             else
             {
@@ -623,11 +623,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private void StoreDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
-        }
-
-        private AddDraftApprenticeshipViewModel PeekStoredDraftApprenticeshipState()
-        {
-           return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
 
         private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()

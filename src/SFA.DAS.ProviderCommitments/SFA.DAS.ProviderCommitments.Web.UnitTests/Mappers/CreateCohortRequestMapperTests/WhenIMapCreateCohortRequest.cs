@@ -38,8 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
 
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
+            var employmentEndDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
             var deliveryModel = fixture.Create<DeliveryModel?>();
+            var employmentPrice = fixture.Create<int?>();
             var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
             _mapper = new CreateCohortRequestMapper(_mockCommitmentsApiClient.Object);
@@ -50,11 +52,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .With(x => x.BirthDay, birthDate?.Day)
                 .With(x => x.BirthMonth, birthDate?.Month)
                 .With(x => x.BirthYear, birthDate?.Year)
+                .With(x => x.EmploymentEndMonth, employmentEndDate?.Month)
+                .With(x => x.EmploymentEndYear, employmentEndDate?.Year)
                 .With(x => x.EndMonth, endDate?.Month)
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
                 .With(x => x.DeliveryModel, deliveryModel)
+                .With(x => x.EmploymentPrice, employmentPrice)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();
@@ -119,6 +124,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         }
 
         [Test]
+        public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EmploymentEndDate.Date, result.EmploymentEndDate);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();
@@ -167,6 +179,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         {
             var result = await _act();
             Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
+        }
+
+        [Test]
+        public async Task ThenEmploymentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EmploymentPrice, result.EmploymentPrice);
         }
     }
 }
