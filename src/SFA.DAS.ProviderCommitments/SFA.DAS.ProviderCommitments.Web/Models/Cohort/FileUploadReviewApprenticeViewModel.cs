@@ -16,9 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
         public List<ReviewApprenticeDetailsForExistingCohort> ExistingCohortDetails { get; set; }
         public int? TotalApprentices => FileUploadCohortDetails?.Count() + ExistingCohortDetails?.Count();        
-        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);
-        private int UploadedCohortsCount => (FileUploadCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
-        private int ExistingCohortsCount => (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCapForExistingCohort)).Count();
+        public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);       
 
         public string FileUploadTotalApprenticesText
         {
@@ -47,34 +45,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public string FundingBandTextForFileUploadCohorts
         {
-            get
-            {
-                return FundingBandText(UploadedCohortsCount);
-            }
+            get  {  return FundingBandText(UploadedCohortsCount); }
         }       
 
         public string FundingBandTextForExistingCohorts
         {
-            get
-            {
-                return FundingBandText(ExistingCohortsCount);
-            }
+            get { return FundingBandText(ExistingCohortsCount); }
         }
 
         public string FundingBandInsetTextForFileUploadCohorts
         {
-            get
-            {
-                return FundingBandInsetText(UploadedCohortsCount);
-            }
+            get { return FundingBandInsetText(UploadedCohortsCount); }
         }
 
         public string FundingBandInsetTextForExistingCohorts
         {
-            get
-            {
-                return FundingBandInsetText(ExistingCohortsCount);
-            }
+            get  { return FundingBandInsetText(ExistingCohortsCount); }
         }
 
         private static string FundingBandText(int count)
@@ -92,5 +78,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             var text = count > 1 ? $"The price for these apprenticeships is above the" : "The price for this apprenticeship is above its";
             return text;
         }
+
+        private int UploadedCohortsCount => (FileUploadCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
+        private int ExistingCohortsCount => (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCapForExistingCohort)).Count();
     }
 }
