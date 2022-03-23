@@ -181,7 +181,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             OriginalStartDate = a.OriginalStartDate,
                             ULN = a.Uln,
                             HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
-                            IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse)
+                            IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
+                            EmploymentPrice = a.EmploymentPrice,
+                            EmploymentEndDate = a.EmploymentEndDate,
                         })
                 .ToList()
                 })
