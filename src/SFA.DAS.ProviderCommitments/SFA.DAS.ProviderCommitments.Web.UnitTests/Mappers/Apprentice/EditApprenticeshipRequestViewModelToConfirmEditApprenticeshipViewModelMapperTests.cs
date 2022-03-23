@@ -141,8 +141,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(fixture._apprenticeshipResponse.CourseCode, result.OriginalApprenticeship.CourseCode);
         }
 
-        [TestCase(DeliveryModel.Normal, DeliveryModel.Flexible)]
-        [TestCase(DeliveryModel.Flexible, DeliveryModel.Normal)]
+        [TestCase(DeliveryModel.Regular, DeliveryModel.PortableFlexiJob)]
+        [TestCase(DeliveryModel.PortableFlexiJob, DeliveryModel.Regular)]
         public async Task WhenDeliveryModelIsChanged(DeliveryModel original, DeliveryModel changedTo)
         {
             fixture._apprenticeshipResponse.DeliveryModel = original;

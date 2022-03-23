@@ -92,7 +92,7 @@ Model.HasEmailOverlaps)
 @foreach (var course in Model.Courses)
 {
     <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName
-        @if (@course.DeliveryModel == DeliveryModel.Flexible)
+        @if (@course.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
             <span class="govuk-tag">Flexi job</span>
         }

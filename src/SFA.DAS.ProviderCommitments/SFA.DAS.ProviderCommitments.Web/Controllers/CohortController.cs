@@ -309,7 +309,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var hasErrors = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
             if (hasErrors)
             {
-               return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(FileUploadValidationErrors), new FileUploadValidateErrorRequest { ProviderId = viewModel.ProviderId });
             }
             else
             {
