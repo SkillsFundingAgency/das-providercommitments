@@ -16,8 +16,10 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public DateTime? DateOfBirth { get; set; }
         public string UniqueLearnerNumber { get; set; }
         public string CourseCode { get; set; }
+        public int? EmploymentPrice { get; set; }
         public int? Cost { get; set; }
         public DateTime? StartDate { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string OriginatorReference { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
