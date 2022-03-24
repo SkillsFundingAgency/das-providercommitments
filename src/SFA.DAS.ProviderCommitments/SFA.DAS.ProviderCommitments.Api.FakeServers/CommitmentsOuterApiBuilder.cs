@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
         {
             _server
                 .Given(Request.Create()
-                    .WithPath("/providers/*/courses/*")
+                    .WithPath("/approvals/providers/*/courses/*")
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/providers/*/courses/650")
+                    .WithPath("/approvals/providers/*/courses/650")
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
