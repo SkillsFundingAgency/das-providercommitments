@@ -529,22 +529,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
-
             return this;
         }
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryForEditModelPage()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModelForEdit");
-
             return this;
         }
-
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToAddDraftApprenticeshipDetails()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeship");
-
             return this;
         }
 

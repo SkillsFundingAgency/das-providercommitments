@@ -45,8 +45,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenEditingCourse()
         {
-            //_fixture.;
-
             await _fixture.PostToEditDraftApprenticeship("Edit");
             _fixture.VerifyRedirectedToSelectForEditCoursePage();
         }
@@ -54,8 +52,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenEditingDeliveryModel()
         {
-            //_fixture.;
-
             await _fixture.PostToEditDraftApprenticeship(changeDeliveryModel:"Edit");
             _fixture.VerifyRedirectedToSelectDeliveryForEditModelPage();
         }
