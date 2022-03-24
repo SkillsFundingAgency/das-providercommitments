@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         {
             Mock.Get(htpClient).Setup(x => x
                 .Get<ProviderCourseDeliveryModels>(
-                    $"/providers/{provider}/courses/{course}", null, It.IsAny<CancellationToken>()))
+                    $"/approvals/providers/{provider}/courses/{course}", null, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(models);
 
             var result = await sut.GetProviderCourseDeliveryModels(provider, course);
