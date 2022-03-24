@@ -20,12 +20,12 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
     [TestFixture]
-    public class WhenSelectingDeliveryModel
+    public class WhenSelectingDeliveryModelOnAddAnotherApprenticeship
     {
         [Test]
         public async Task GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture()
+            var fixture = new WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectToSelectDeliveryModel()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture()
+            var fixture = new WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture();
+            var fixture = new WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture();
 
             fixture.ViewModel.DeliveryModel = null;
 
@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
-            var fixture = new WhenSelectingDeliveryModelFixture()
+            var fixture = new WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob});
 
             fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
     }
 
-    public class WhenSelectingDeliveryModelFixture
+    public class WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture
     {
         public DraftApprenticeshipController Sut { get; set; }
 
@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public SelectDeliveryModelViewModel ViewModel;
         public ReservationsAddDraftApprenticeshipRequest Request;
 
-        public WhenSelectingDeliveryModelFixture()
+        public WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture()
         {
             var fixture = new Fixture();
             ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
         }
 
-        public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
+        public WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
             ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(Request))
                 .ReturnsAsync(new SelectDeliveryModelViewModel {DeliveryModels = list.ToArray()});

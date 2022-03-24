@@ -255,9 +255,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship()
+        public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
         {
-            _actionResult = await _controller.EditDraftApprenticeship(null, null, _editModel);
+            _actionResult = await _controller.EditDraftApprenticeship(changeCourse, changeDeliveryModel, _editModel);
             return this;
         }
 
@@ -343,7 +343,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
             ViewModelHasRequestDeliveryModelAndCourseCode(model);
         }
-
 
         public DraftApprenticeshipControllerTestFixture SetupCommitmentsApiToReturnADraftApprentice()
         {
@@ -521,12 +520,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectForEditCoursePage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourseForEdit");
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryModelPage()
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModel");
 
             return this;
         }
+
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectDeliveryForEditModelPage()
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectDeliveryModelForEdit");
+
+            return this;
+        }
+
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToAddDraftApprenticeshipDetails()
         {
