@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoFixture;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -11,6 +12,7 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -18,44 +20,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenGettingSelectAddDraftApprenticeshipJourney
     {
         [Test]
-        public void ThenReturnsView()
+        public async Task ThenReturnsView()
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
-
-            var result = fixture.Act();
-
+            var result = await fixture.ActAsync();
             result.VerifyReturnsViewModel();
-        }
-
-        [Test]
-        public void ThenProviderIdIsMapped()
-        {
-            var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
-
-            var viewResult = fixture.Act();
-
-            var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
-
-            Assert.AreEqual(fixture.ProviderId, model.ProviderId);
-        }
-
-        [Test]
-        [TestCase(true, true, Description = "Toggle is enabled")]
-        [TestCase(false, false, Description = "Toggle is disabled")]
-        public void ThenFeatureToggleIsMapped(bool toggleValue, bool expectedValue)
-        {
-            var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
-
-            if (toggleValue)
-            {
-                fixture.WithBulkUploadV2FeatureEnabled();
-            }
-
-            var viewResult = fixture.Act();
-
-            var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
-
-            Assert.AreEqual(expectedValue, model.IsBulkUploadV2Enabled);
         }
     }
 
@@ -66,16 +35,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
         public readonly long ProviderId = 123;
         private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleServiceMock;
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        public  SelectAddDraftApprenticeshipJourneyViewModel ViewModel { get; set; }
 
         public WhenGettingSelectAddDraftApprenticeshipJourneyFixture()
         {
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
             _featureToggleServiceMock = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
             _featureToggleServiceMock.Setup(x => x.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix)).Returns(new ProviderFeatureToggle { IsEnabled = false });
-            Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), _featureToggleServiceMock.Object, Mock.Of<IEncodingService>());
+
+            var fixture = new Fixture();
+            ViewModel = fixture.Create<SelectAddDraftApprenticeshipJourneyViewModel>();
+            ViewModel.ProviderId = ProviderId;
+            ViewModel.HasExistingCohort = true;
+            ViewModel.HasCreateCohortPermission = true;
+
+            _modelMapperMock = new Mock<IModelMapper>();
+            _modelMapperMock
+                .Setup(x => x.Map<SelectAddDraftApprenticeshipJourneyViewModel>(_request))
+                .ReturnsAsync(ViewModel);
+
+            Sut = new CohortController(Mock.Of<IMediator>(),
+                _modelMapperMock.Object, 
+                Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
+                _featureToggleServiceMock.Object,
+                Mock.Of<IEncodingService>());
         }
 
-        public IActionResult Act() => Sut.SelectAddDraftApprenticeshipJourney(_request);
+        public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);
 
         internal WhenGettingSelectAddDraftApprenticeshipJourneyFixture WithBulkUploadV2FeatureEnabled()
         {
