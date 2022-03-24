@@ -23,6 +23,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Reference = source.Reference,
                 CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
                 DeliveryModel = source.DeliveryModel.Value,
+                // TODO Add when chas finishes API
+                //DateOfBirth = source.EmploymentEndDate.Date,
+                //Cost = source.EmploymentPrice
             });
     }
 }

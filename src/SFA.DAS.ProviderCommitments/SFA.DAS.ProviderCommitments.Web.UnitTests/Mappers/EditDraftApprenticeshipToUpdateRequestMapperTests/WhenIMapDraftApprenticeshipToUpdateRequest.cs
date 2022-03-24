@@ -135,5 +135,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             var result = await _act();
             Assert.AreEqual(dm, result.DeliveryModel);
         }
+
+        // TODO Add when API is updated
+        //[Test]
+        //public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        //{
+        //    var result = await _act();
+        //    Assert.AreEqual(_source.EmploymentEndDate.Date, result.EmploymentEndDate);
+        //}
+
+        //[Test]
+        //public async Task ThenEmploymentPriceIsMappedCorrectly()
+        //{
+        //    var result = await _act();
+        //    Assert.AreEqual(_source.EmploymentPrice, result.EmploymentPrice);
+        //}
     }
 }
