@@ -13,5 +13,6 @@
         public static string ProviderSharedUIConfiguration = "ProviderSharedUIConfiguration";
         public static string BulkUploadFileValidationConfiguration = "BulkUploadFileValidationConfiguration";
         public static string PasAccountApiClient => PAS.Account.Api.ClientV2.Configuration.ConfigurationKeys.PasAccountApiClient;
+        public static string OuterApiConfiguration = "OuterApi";
     }
 }
