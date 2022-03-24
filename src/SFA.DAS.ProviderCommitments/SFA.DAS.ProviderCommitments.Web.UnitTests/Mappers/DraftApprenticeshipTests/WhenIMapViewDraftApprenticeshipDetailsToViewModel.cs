@@ -103,6 +103,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(dm.ToIrregularDescription(), result.DeliveryModel);
         }
 
+        [TestCase(DeliveryModel.Regular, false)]
+        [TestCase(DeliveryModel.PortableFlexiJob, true)]
+        public async Task ThenIsPortableFlexJobIsMappedCorrectly(DeliveryModel dm, bool isPortableFlexiJob)
+        {
+            _apiResponse.DeliveryModel = dm;
+            var result = await _act();
+            Assert.AreEqual(isPortableFlexiJob, result.IsPortableFlexiJob);
+        }
+
         [Test]
         public async Task ThenCourseNameIsMappedCorrectly()
         {
@@ -175,6 +184,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.HasStandardOptions = hasOptions;
             var result = await _act();
             Assert.AreEqual(hasOptions, result.HasTrainingCourseOption);
+        }
+
+        [Test]
+        public async Task ThenEmploymentPriceMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmploymentPrice, result.EmploymentPrice);
+        }
+
+        [Test]
+        public async Task ThenEmploymentDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmploymentEndDate, result.EmploymentEndDate);
         }
     }
 }

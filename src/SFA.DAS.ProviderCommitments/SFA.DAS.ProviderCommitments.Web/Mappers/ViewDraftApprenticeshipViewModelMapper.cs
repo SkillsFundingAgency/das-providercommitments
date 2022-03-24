@@ -2,6 +2,7 @@
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -35,12 +36,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DateOfBirth = draftApprenticeship.DateOfBirth,
                 TrainingCourse = trainingCourse?.TrainingProgramme.Name,
                 DeliveryModel = draftApprenticeship.DeliveryModel.ToIrregularDescription(),
+                IsPortableFlexiJob = draftApprenticeship.DeliveryModel == DeliveryModel.PortableFlexiJob,
                 Cost = draftApprenticeship.Cost,
                 StartDate = draftApprenticeship.StartDate,
                 EndDate = draftApprenticeship.EndDate,
                 Reference = draftApprenticeship.Reference,
                 TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
+                EmploymentPrice = draftApprenticeship.EmploymentPrice,
+                EmploymentEndDate = draftApprenticeship.EmploymentEndDate,
 
                 HasTrainingCourseOption = draftApprenticeship.HasStandardOptions
             };

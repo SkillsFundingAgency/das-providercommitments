@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public DateTime? DateOfBirth { get; set; }
         public string TrainingCourse { get; set; }
         public string DeliveryModel { get; set; }
+        public bool IsPortableFlexiJob { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? Cost { get; set; }
@@ -21,5 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourseVersion { get ; set ; }
         public string TrainingCourseOption { get ; set ; }
         public bool HasTrainingCourseOption { get ; set ; }
+        public int? EmploymentPrice { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
     }
 }
