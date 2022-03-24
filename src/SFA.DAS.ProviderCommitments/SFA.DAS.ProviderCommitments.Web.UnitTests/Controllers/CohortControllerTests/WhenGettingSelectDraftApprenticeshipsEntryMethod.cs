@@ -11,6 +11,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -28,11 +29,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public void ThenProviderIdIsMapped()
+        public async Task ThenProviderIdIsMapped()
         {
             var fixture = new WhenGettingSelectAddDraftApprenticeshipJourneyFixture();
 
-            var viewResult = fixture.Act();
+            var viewResult = await fixture.ActAsync();
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
 
