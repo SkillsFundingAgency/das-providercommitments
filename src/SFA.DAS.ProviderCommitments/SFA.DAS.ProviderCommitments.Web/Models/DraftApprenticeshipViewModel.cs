@@ -8,12 +8,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class DraftApprenticeshipViewModel
     {
-        public DraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate) : base()
+        public DraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate, DateTime? employmentEndDate = null) : base()
         {
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
             StartDate = startDate == null ? new MonthYearModel("") : new MonthYearModel($"{startDate.Value.Month}{startDate.Value.Year}");
             EndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
-            EmploymentEndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
+            EmploymentEndDate = employmentEndDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
         }
 
         public DraftApprenticeshipViewModel()
