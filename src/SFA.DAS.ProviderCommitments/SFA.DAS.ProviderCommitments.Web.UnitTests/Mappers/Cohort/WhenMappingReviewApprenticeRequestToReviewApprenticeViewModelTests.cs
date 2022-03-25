@@ -288,7 +288,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task Action() => _result = await _sut.Map(_request);
 
-
         internal void VerifyEmployerNameIsMappedCorrectly()
         {            
             Assert.AreEqual("EmployerName", _result.EmployerName);
@@ -362,7 +361,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(cohortDetails.Price, existingRecord.Cost);
             Assert.AreEqual(cohortDetails.TrainingCourse, existingRecord.CourseName);
             Assert.AreEqual(cohortDetails.FundingBandCapForExistingCohort, _trainingProgramme.FundingPeriods.FirstOrDefault().FundingCap);
-
         }
 
         internal void VerifyFundingTextMappedCorrectlyForFileUploadedApprentices()
@@ -393,7 +391,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
 
             return this;
-        }       
+        }   
 
         private static List<CsvRecord> CreateCsvRecords(Fixture fixture, string employerAgreementId, string cohortRef, string dateOfBirth, 
             string apprenticeStartDate, string apprenticeEndDate, int price,  int numberOfApprentices)
