@@ -31,7 +31,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 StartDate = apiResponse.StartDate?.Date,
                 EndDate = apiResponse.EndDate?.Date,
                 Reference = apiResponse.Reference,
-                CourseOption = source.SelectedOption == "-1" ? string.Empty : source.SelectedOption
+                CourseOption = source.SelectedOption == "-1" ? string.Empty : source.SelectedOption,
+                DeliveryModel = apiResponse.DeliveryModel,
+                EmploymentEndDate = apiResponse.EmploymentEndDate,
+                EmploymentPrice = apiResponse.EmploymentPrice
             };
         }
     }

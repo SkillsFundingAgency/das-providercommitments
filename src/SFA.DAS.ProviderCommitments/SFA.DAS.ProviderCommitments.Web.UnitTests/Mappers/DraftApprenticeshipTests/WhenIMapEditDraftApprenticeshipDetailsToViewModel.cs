@@ -198,20 +198,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(dm, result.DeliveryModel);
         }
 
-        //[Test]
-        //public async Task ThenEmploymentPriceIsMappedCorrectly()
-        //{
-        //    _apiResponse.EmploymentPrice = 1234;
-        //    var result = await _act();
-        //    Assert.AreEqual(1234, result.EmploymentPrice);
-        //}
+        [Test]
+        public async Task ThenEmploymentPriceIsMappedCorrectly()
+        {
+            _apiResponse.EmploymentPrice = 1234;
+            var result = await _act();
+            Assert.AreEqual(1234, result.EmploymentPrice);
+        }
 
-        //[Test]
-        //public async Task ThenEmploymentEndDateIsMappedCorrectly()
-        //{
-        //    var result = await _act();
-        //    Assert.AreEqual(_apiResponse.EmploymentEndDate?.Month, result.EmploymentEndDate.Month);
-        //    Assert.AreEqual(_apiResponse.EmploymentEndDate?.Year, result.EmploymentEndDate.Year);
-        //}
+        [Test]
+        public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmploymentEndDate?.Month, result.EmploymentEndDate.Month);
+            Assert.AreEqual(_apiResponse.EmploymentEndDate?.Year, result.EmploymentEndDate.Year);
+        }
     }
 }

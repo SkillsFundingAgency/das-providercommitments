@@ -23,8 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
 
-                //TODO Add Flexible Employment fields 
-                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate/*, apiResponse.EmploymentEndDate*/)
+                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
                 {
                     DraftApprenticeshipId = source.Request.DraftApprenticeshipId,
                     DraftApprenticeshipHashedId = source.Request.DraftApprenticeshipHashedId,
@@ -43,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     IsContinuation = apiResponse.IsContinuation,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
                     DeliveryModel = apiResponse.DeliveryModel,
-                    EmploymentPrice = null // apiResponse.EmploymentPrice,
+                    EmploymentPrice = apiResponse.EmploymentPrice,
                 };
             }
             catch (RestHttpClientException restEx)
