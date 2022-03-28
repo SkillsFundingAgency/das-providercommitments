@@ -2,9 +2,8 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class FileUploadValidateViewModel
+    public class FileUploadValidateViewModel : FileUploadStartViewModel
     {
-        public long ProviderId { get; set; }
         public FileUploadValidateViewModel()
         {
             BulkUploadValidationErrors = new List<BulkUploadValidationError>();

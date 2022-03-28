@@ -44,16 +44,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             Assert.AreEqual(fixture.ProviderId, model.ProviderId);
         }
-
-        [Test]
-        public async Task When_NorErrors_RedirectTo_FileUploadStart()
-        {
-            var fixture = new WhenGettingFileUploadValidationErrorFixture();
-
-           var result = await fixture.SetUpNoErrors().Act();
-
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadStart");
-        }
     }
 
     public class WhenGettingFileUploadValidationErrorFixture
@@ -71,12 +61,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             var fixture = new Fixture();
             _errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
-            _viewModel = fixture.Create<FileUploadValidateViewModel>();
-            
-            _mapper = new Mock<IModelMapper>();
-            _mapper.Setup(x => x.Map<FileUploadValidateViewModel>(It.IsAny<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>())).ReturnsAsync(() => _viewModel);
-            
+            _viewModel = fixture.Build<FileUploadValidateViewModel>()
+                .With(x => x.Attachment, Mock.Of<IFormFile>())
+                .With(x => x.ProviderId, ProviderId)
+                .Create();
+
             _request = new FileUploadValidateErrorRequest { ProviderId = ProviderId };
+
+            _mapper = new Mock<IModelMapper>();
+            _mapper.Setup(x => x.Map<FileUploadValidateViewModel>(_request)).ReturnsAsync(() => _viewModel);
             
             Sut = new CohortController(Mock.Of<IMediator>(), _mapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
 
