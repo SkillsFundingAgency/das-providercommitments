@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Cohort
     {
         public SelectAddDraftApprenticeshipJourneyViewModelValidator()
         {
-            RuleFor(x => x.Selection).NotNull().WithMessage("You need to select whether you want add to an existing cohort or create a new one");
+            RuleFor(x => x.Selection).NotNull().WithMessage("You need to select how you want to add apprentice details");
         }
     }
 }
