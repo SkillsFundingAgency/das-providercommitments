@@ -35,15 +35,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task PostFileUploadStartViewModel_ShouldRedirectTo_FileUploadValidationErrors()
-        {
-            var fixture = new PostFileUploadStartFixture();
-            fixture.SetUpValidationError();
-            var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadValidationErrors"); ;
-        }
-
-        [Test]
         public async Task PostFileUploadStartViewModel_CreateCsvRecordsInCache()
         {
             var fixture = new PostFileUploadStartFixture();
@@ -91,16 +82,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         public async Task<IActionResult> Act() => await Sut.FileUploadStart(_viewModel);
-
-        internal void SetUpValidationError()
-        {
-            var response = new BulkUploadValidateApiResponse
-            {
-                BulkUploadValidationErrors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>()
-            };
-
-            response.BulkUploadValidationErrors.Add(new CommitmentsV2.Api.Types.Responses.BulkUploadValidationError(1,"EmployerName", "ULN","apprenticeName", new List<Error>()));
-            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(() => response);
-        }
     }
 }

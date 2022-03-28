@@ -15,17 +15,18 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenGettingFileUploadStart
+    public class WhenGettingFileUploadValidationError
     {
         [Test]
         public async Task Then_Returns_View()
         {
-            var fixture = new WhenGettingFileUploadStartFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture();
 
             var result = await fixture.Act();
 
@@ -35,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task Then_ProviderId_Is_Mapped()
         {
-            var fixture = new WhenGettingFileUploadStartFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture();
 
             var viewResult = await fixture.Act();
 
@@ -45,19 +46,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task The_Errors_Are_Mapped()
-        {
-            var fixture = new WhenGettingFileUploadStartFixture();
-
-            await fixture.Act();
-
-            fixture.VerifyErrorsAreMapped();
-        }
-
-        [Test]
         public async Task When_NorErrors_RedirectTo_FileUploadStart()
         {
-            var fixture = new WhenGettingFileUploadStartFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture();
 
            var result = await fixture.SetUpNoErrors().Act();
 
@@ -65,25 +56,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
     }
 
-    public class WhenGettingFileUploadStartFixture
+    public class WhenGettingFileUploadValidationErrorFixture
     {
         public CohortController Sut { get; set; }
 
         private readonly FileUploadValidateErrorRequest _request;
-        public readonly BulkUploadValidateApiResponse _errors;
+        public readonly List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> _errors;
         private readonly FileUploadValidateViewModel _viewModel;
         public readonly long ProviderId = 123;
         private readonly Mock<IModelMapper> _mapper;
         private readonly TempDataDictionary _tempData;
 
-        public WhenGettingFileUploadStartFixture()
+        public WhenGettingFileUploadValidationErrorFixture()
         {
             var fixture = new Fixture();
-            _errors = fixture.Create<BulkUploadValidateApiResponse>();
+            _errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
             _viewModel = fixture.Create<FileUploadValidateViewModel>();
             
             _mapper = new Mock<IModelMapper>();
-            _mapper.Setup(x => x.Map<FileUploadValidateViewModel>(It.IsAny<BulkUploadValidateApiResponse>())).ReturnsAsync(() => _viewModel);
+            _mapper.Setup(x => x.Map<FileUploadValidateViewModel>(It.IsAny<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>())).ReturnsAsync(() => _viewModel);
             
             _request = new FileUploadValidateErrorRequest { ProviderId = ProviderId };
             
@@ -101,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mapper.Verify(x => x.Map<FileUploadValidateViewModel>(It.IsAny<BulkUploadValidateApiResponse>()), Times.Once);
         }
 
-        internal WhenGettingFileUploadStartFixture SetUpNoErrors()
+        internal WhenGettingFileUploadValidationErrorFixture SetUpNoErrors()
         {
             _tempData.Remove(Constants.BulkUpload.BulkUploadErrors);
             return this;
