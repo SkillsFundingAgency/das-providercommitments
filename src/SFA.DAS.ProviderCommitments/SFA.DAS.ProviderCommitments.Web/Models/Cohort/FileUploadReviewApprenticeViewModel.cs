@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public Guid CacheRequestId { get; set; }
         public string EmployerName { get; set; }
         public string CohortRef { get; set; }
-        public string CohortRefText => CohortRef ?? "This will be created when you save or send to employers";       
+        public string CohortRefText => string.IsNullOrWhiteSpace(CohortRef) ? "This will be created when you save or send to employers" : CohortRef;
         public string MessageFromEmployer { get; set; }
         public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
@@ -45,20 +45,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public string FundingBandTextForFileUploadCohorts
         {
-            get
-            {
-                int count = (FileUploadCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
-                return FundingBandText(count);
-            }
+            get  {  return FundingBandText(UploadedCohortsCount); }
         }       
 
         public string FundingBandTextForExistingCohorts
         {
-            get
-            {
-                int count = (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCapForExistingCohort)).Count();
-                return FundingBandText(count);
-            }
+            get { return FundingBandText(ExistingCohortsCount); }
+        }
+
+        public string FundingBandInsetTextForFileUploadCohorts
+        {
+            get { return FundingBandInsetText(UploadedCohortsCount); }
+        }
+
+        public string FundingBandInsetTextForExistingCohorts
+        {
+            get  { return FundingBandInsetText(ExistingCohortsCount); }
         }
 
         private static string FundingBandText(int count)
@@ -67,6 +69,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
             var text = count > 1 ? $"{count} apprenticeships above funding band maximum" : "1 apprenticeship above funding band maximum";
             return text;
-        }        
+        }
+
+        private static string FundingBandInsetText(int count)
+        {
+            if (count == 0) return string.Empty;
+
+            var text = count > 1 ? $"The price for these apprenticeships is above the" : "The price for this apprenticeship is above its";
+            return text;
+        }
+
+        private int UploadedCohortsCount => (FileUploadCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCap)).Count();
+        private int ExistingCohortsCount => (ExistingCohortDetails?.Where(apprentice => apprentice.ExceedsFundingBandCapForExistingCohort)).Count();
     }
 }
