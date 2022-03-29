@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             switch (statusCode)
             {
                 case 403:
-                case 404:                
+                case 404:
                     return View(statusCode.ToString());
                 default:
                     return View();
