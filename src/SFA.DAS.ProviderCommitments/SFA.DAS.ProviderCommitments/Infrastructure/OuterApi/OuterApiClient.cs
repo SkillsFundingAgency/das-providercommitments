@@ -1,6 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SFA.DAS.CommitmentsV2.Api.Types.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,14 +16,16 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
     {
         private readonly HttpClient _httpClient;
         private readonly OuterApiConfiguration _config;
+        private ILogger<OuterApiClient> _logger;
         const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
         const string VersionRequestHeaderKey = "X-Version";
 
-        public OuterApiClient(HttpClient httpClient, OuterApiConfiguration config)
+        public OuterApiClient(HttpClient httpClient, OuterApiConfiguration config, ILogger<OuterApiClient> logger)
         {
             _httpClient = httpClient;
             _config = config;
             _httpClient.BaseAddress = new Uri(_config.BaseUrl);
+            _logger = logger;
         }
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
@@ -51,10 +58,70 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyRequestHeaderKey, _config.Key);
             _httpClient.DefaultRequestHeaders.Add(VersionRequestHeaderKey, "1");
         }
+
+        public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
+        {
+            AddHeaders();
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), System.Text.Encoding.UTF8, "application/json") : null;
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
+            requestMessage.Content = stringContent;
+
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+           // var errorContent = "";
+            var responseBody = (TResponse)default;
+
+
+            if (IsNot200RangeResponseCode(response.StatusCode))
+            {
+                 //Plug this in when moving another Post endpoint which throws domain errors
+                //if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
+                //{
+                //    throw CreateApiModelException(response, json);
+                //}
+                if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.BulkUploadDomainException)
+                {
+                    throw CreateBulkUploadApiModelException(response, json);
+                }
+                else
+                {
+                    throw new RestHttpClientException(response, json);
+                }
+            }
+            else
+            {
+                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
+            }
+
+            return responseBody;
+        }
+
+        private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
+        {
+            return !((int)statusCode >= 200 && (int)statusCode <= 299);
+        }
+
+        private Exception CreateBulkUploadApiModelException(HttpResponseMessage httpResponseMessage, string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
+                return new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>());
+            }
+
+            var errors = new CommitmentsApiBulkUploadModelException(JsonConvert.DeserializeObject<BulkUploadErrorResponse>(content).DomainErrors?.ToList());
+            return errors;
+        }
     }
+
+
 
     public interface IOuterApiClient
     {
         Task<TResponse> Get<TResponse>(IGetApiRequest request);
+        Task<TResponse> Post<TResponse>(IPostApiRequest request);
     }
 }

@@ -1,8 +1,8 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {

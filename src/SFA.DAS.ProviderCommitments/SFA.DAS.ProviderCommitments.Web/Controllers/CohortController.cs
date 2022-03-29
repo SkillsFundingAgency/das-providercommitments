@@ -27,6 +27,7 @@ using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {

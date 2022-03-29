@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters
 {

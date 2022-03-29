@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Extensions
 {
@@ -16,7 +17,17 @@ namespace SFA.DAS.ProviderCommitments.Extensions
 
             return applicableFundingPeriod?.FundingCap ?? 0;
         }
-    
+
+        public static int FundingCapOn(this GetStandardResponse course, DateTime date)
+        {
+            if (!IsActive(course.EffectiveTo, course.EffectiveFrom, date))
+                return 0;
+
+            var applicableFundingPeriod = course.ApprenticeshipFunding.FirstOrDefault(x => IsActive(x.EffectiveTo, x.EffectiveFrom, date));
+
+            return applicableFundingPeriod?.MaxEmployerLevyCap ?? 0;
+        }
+
         private static bool IsActive(DateTime? effectiveTo,DateTime? effectiveFrom, DateTime date)
         {
             var dateOnly = date.Date;
