@@ -181,7 +181,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             OriginalStartDate = a.OriginalStartDate,
                             ULN = a.Uln,
                             HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
-                            IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse)
+                            IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
+                            EmploymentPrice = a.EmploymentPrice,
+                            EmploymentEndDate = a.EmploymentEndDate,
                         })
                 .ToList()
                 })
@@ -195,13 +197,41 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return groupedByCourse;
         }
 
-        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse) =>
-               !(
-                 string.IsNullOrWhiteSpace(draftApprenticeship.FirstName) || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
-                 || draftApprenticeship.DateOfBirth == null || string.IsNullOrWhiteSpace(draftApprenticeship.CourseName) || string.IsNullOrWhiteSpace(draftApprenticeship.Uln)
-                 || draftApprenticeship.StartDate == null || draftApprenticeship.EndDate == null || draftApprenticeship.Cost == null
-                 || (cohortResponse.ApprenticeEmailIsRequired && string.IsNullOrWhiteSpace(draftApprenticeship.Email) && !cohortResponse.IsLinkedToChangeOfPartyRequest)
-                );
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse)
+        {
+            if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
+                || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
+                || string.IsNullOrWhiteSpace(draftApprenticeship.CourseName)
+                || string.IsNullOrWhiteSpace(draftApprenticeship.Uln))
+            {
+                return false;
+            }
+
+            if (draftApprenticeship.DateOfBirth == null
+                || draftApprenticeship.Uln == null
+                || draftApprenticeship.StartDate == null
+                || draftApprenticeship.EndDate == null
+                || draftApprenticeship.Cost == null)
+            {
+                return false;
+            }
+
+            if (cohortResponse.ApprenticeEmailIsRequired
+                && string.IsNullOrWhiteSpace(draftApprenticeship.Email)
+                && !cohortResponse.IsLinkedToChangeOfPartyRequest)
+            {
+                return false;
+            }
+
+            if (draftApprenticeship.DeliveryModel == DeliveryModel.PortableFlexiJob
+                && (draftApprenticeship.EmploymentPrice == null
+                || draftApprenticeship.EmploymentEndDate == null))
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups)
         {
