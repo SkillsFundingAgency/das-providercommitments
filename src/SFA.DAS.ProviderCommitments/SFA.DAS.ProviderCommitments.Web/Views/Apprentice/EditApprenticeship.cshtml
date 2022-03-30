@@ -168,7 +168,7 @@
             }
             else
             {
-                @if (AuthorizationService.IsAuthorized(SFA.DAS.ProviderCommitments.Features.ProviderFeature.DeliveryModel))
+                @if (false) //TODO re-add this post MVS AuthorizationService.IsAuthorized(SFA.DAS.ProviderCommitments.Features.ProviderFeature.DeliveryModel))
                 {
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DeliveryModel, "govuk-form-group--error")">
                         <fieldset class="govuk-fieldset">
