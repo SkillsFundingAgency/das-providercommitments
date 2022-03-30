@@ -123,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (model.DeliveryModel == null)
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
+                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
             }
 
             var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);

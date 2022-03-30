@@ -23,12 +23,12 @@ using SFA.DAS.Authorization.Services;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
     [TestFixture]
-    public class WhenIPostFileUploadStart
+    public class WhenIPostFileUploadValidationErrors
     {
         [Test]
         public async Task PostFileUploadStartViewModel_ShouldRedirectToCohorts()
         {
-            var fixture = new PostFileUploadStartFixture();
+            var fixture = new PostFileUploadValidationErrorsixture();
 
             var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReview"); ;
@@ -38,28 +38,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task PostFileUploadStartViewModel_CreateCsvRecordsInCache()
         {
-            var fixture = new PostFileUploadStartFixture();
+            var fixture = new PostFileUploadValidationErrorsixture();
 
             await fixture.Act();
             fixture.VerifyCsvRecordCached();
         }
     }
 
-    public class PostFileUploadStartFixture
+    public class PostFileUploadValidationErrorsixture
     {
         public CohortController Sut { get; set; }
 
         public string RedirectUrl;
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
-        private readonly FileUploadStartViewModel _viewModel;
+        private readonly FileUploadValidateViewModel _viewModel;
         private readonly FileUploadReviewRequest _request;
         private readonly Mock<IMediator> _mediator;
 
-        public PostFileUploadStartFixture()
+        public PostFileUploadValidationErrorsixture()
         {
             var fixture = new Fixture();
-            _viewModel = fixture.Build<FileUploadStartViewModel>()
+            _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
             _request = fixture.Create<FileUploadReviewRequest>();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
@@ -76,12 +76,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut.TempData = tempData;
         }
 
-        public PostFileUploadStartFixture VerifyCsvRecordCached()
+        public PostFileUploadValidationErrorsixture VerifyCsvRecordCached()
         {
             _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(_viewModel), Times.Once);
             return this;
         }
 
-        public async Task<IActionResult> Act() => await Sut.FileUploadStart(_viewModel);
+        public async Task<IActionResult> Act() => await Sut.FileUploadValidationErrors(_viewModel);
     }
 }

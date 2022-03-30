@@ -2,21 +2,27 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using Moq;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
-    public class BulkUploadExtensionTests
+    public class FileUploadMapperBaseTests
     {
         public List<Web.Models.Cohort.CsvRecord> _csvRecords { get; set; }
         public List<BulkUploadAddDraftApprenticeshipRequest> _result { get; set; }
+        public FileUploadMapperBase Sut { get; set; }
 
         [SetUp]
         public void Setup()
         {
             var fixture = new Fixture();
+            var encodingService = new Mock<IEncodingService>();
+            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
+            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
 
             _csvRecords = fixture.Build<Web.Models.Cohort.CsvRecord>()
                 .With(x => x.DateOfBirth, "2000-02-02")
@@ -25,7 +31,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
 
-            _result = _csvRecords.Select((x, index) => x.MapToBulkUploadAddDraftApprenticeshipRequest(index + 1, 1)).ToList();
+            Sut = new FileUploadMapperBase(encodingService.Object);
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
         }
 
         [Test]
@@ -115,6 +122,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             {
                 var result = _result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.StdCode, result.CourseCode);
+            }
+        }
+
+        [Test]
+        public void VerifyLegalEntityIdIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(2, result.LegalEntityId);
+            }
+        }
+
+        [Test]
+        public void VerifyCohortIdIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(1, result.CohortId);
             }
         }
     }

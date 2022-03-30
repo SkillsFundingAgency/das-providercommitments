@@ -95,7 +95,7 @@ Model.HasEmailOverlaps)
     <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName
         @if (@course.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
-            <span class="govuk-tag">Flexi job</span>
+            <span class="govuk-tag">Portable flexi job</span>
         }
     </h3>
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
@@ -150,7 +150,10 @@ Model.HasEmailOverlaps)
             <th scope="col" class="govuk-table__header das-table-cell-width-25">Unique learner number</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-25">Date of birth</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-30">Training dates</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-30">Employment dates</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment Price</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total apprenticeship price</th>
+            <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-10"><span class="govuk-visually-hidden">Action</span></th>
         </tr>
     </thead>
@@ -180,6 +183,30 @@ Model.HasEmailOverlaps)
                     else
                     {
                         @draftApprenticeship.DisplayTrainingDates
+                    }
+                </td>
+                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Emploment dates">
+                    @if (draftApprenticeship.HasOverlappingUln)
+                    {
+                        <span class="das-table-cell--highlight">
+                            @draftApprenticeship.DisplayEmploymentDates
+                        </span>
+                    }
+                    else
+                    {
+                        @draftApprenticeship.DisplayEmploymentDates
+                    }
+                </td>
+                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell govuk-table__cell--numeric" data-label="Employment Price">
+                    @if (@draftApprenticeship.ExceedsFundingBandCap)
+                    {
+                        <span class="das-table-cell--highlight">
+                            @draftApprenticeship.DisplayCost
+                        </span>
+                    }
+                    else
+                    {
+                        @draftApprenticeship.DisplayCost
                     }
                 </td>
                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Price">

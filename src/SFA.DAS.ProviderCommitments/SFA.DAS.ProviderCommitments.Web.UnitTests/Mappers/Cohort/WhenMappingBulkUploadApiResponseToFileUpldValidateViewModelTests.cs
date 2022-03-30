@@ -14,12 +14,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private BulkUploadValidateApiResponseToFileUpldValidateViewModel _mapper;
         private FileUploadValidateViewModel _result;
-        private BulkUploadValidateApiResponse _source;
+        private FileUploadValidateErrorRequest _source;
 
         [SetUp]
         public async Task Setup()
         {
-           var errorsFirstRow =   new List<Error>();
+            _source = new FileUploadValidateErrorRequest();
+            var errorsFirstRow = new List<Error>();
             errorsFirstRow.Add(new Error("Property1", "First Error Text"));
             errorsFirstRow.Add(new Error("Property2", "Second Error Text"));
 
@@ -27,14 +28,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             errorsSecondRow.Add(new Error("Property12", "First Error Text2"));
             errorsSecondRow.Add(new Error("Property22", "Second Error Text2"));
 
-            _source = new BulkUploadValidateApiResponse
-            {
-                BulkUploadValidationErrors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>
+            _source.Errors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>
                  {
                       new CommitmentsV2.Api.Types.Responses.BulkUploadValidationError(1, "EmployerName","ULN", "apprentice name", errorsFirstRow),
                       new CommitmentsV2.Api.Types.Responses.BulkUploadValidationError(2, "EmployerName2","ULN2", "apprentice name2", errorsSecondRow),
-                }
-            };
+                };
 
             _mapper = new BulkUploadValidateApiResponseToFileUpldValidateViewModel();
             _result = await _mapper.Map(_source);
@@ -48,37 +46,43 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task ProviderId_Is_Mapped()
+        {
+            Assert.AreEqual(_source.ProviderId, _result.ProviderId);
+        }
+
+        [Test]
         public async Task ApprenticeName_Is_Mapped()
         {
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().ApprenticeName, _result.BulkUploadValidationErrors.First().ApprenticeName);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().ApprenticeName, _result.BulkUploadValidationErrors.Last().ApprenticeName);
+            Assert.AreEqual(_source.Errors.First().ApprenticeName, _result.BulkUploadValidationErrors.First().ApprenticeName);
+            Assert.AreEqual(_source.Errors.Last().ApprenticeName, _result.BulkUploadValidationErrors.Last().ApprenticeName);
         }
 
         [Test]
         public async Task Uln_Is_Mapped()
         {
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().Uln, _result.BulkUploadValidationErrors.First().Uln);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().Uln, _result.BulkUploadValidationErrors.Last().Uln);
+            Assert.AreEqual(_source.Errors.First().Uln, _result.BulkUploadValidationErrors.First().Uln);
+            Assert.AreEqual(_source.Errors.Last().Uln, _result.BulkUploadValidationErrors.Last().Uln);
         }
 
         [Test]
         public async Task Error_Text_Are_Mapped()
         {
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().Errors.First().ErrorText, _result.BulkUploadValidationErrors.First().PropertyErrors.First().ErrorText);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().Errors.Last().ErrorText, _result.BulkUploadValidationErrors.First().PropertyErrors.Last().ErrorText);
-
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().Errors.First().ErrorText, _result.BulkUploadValidationErrors.Last().PropertyErrors.First().ErrorText);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().Errors.Last().ErrorText, _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().ErrorText);
+            Assert.AreEqual(_source.Errors.First().Errors.First().ErrorText, _result.BulkUploadValidationErrors.First().PropertyErrors.First().ErrorText);
+            Assert.AreEqual(_source.Errors.First().Errors.Last().ErrorText, _result.BulkUploadValidationErrors.First().PropertyErrors.Last().ErrorText);
+                                    
+            Assert.AreEqual(_source.Errors.Last().Errors.First().ErrorText, _result.BulkUploadValidationErrors.Last().PropertyErrors.First().ErrorText);
+            Assert.AreEqual(_source.Errors.Last().Errors.Last().ErrorText, _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().ErrorText);
         }
 
         [Test]
         public async Task Error_Proeprty_Are_Mapped()
         {
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().Errors.First().Property, _result.BulkUploadValidationErrors.First().PropertyErrors.First().Property);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.First().Errors.Last().Property, _result.BulkUploadValidationErrors.First().PropertyErrors.Last().Property);
-
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().Errors.First().Property, _result.BulkUploadValidationErrors.Last().PropertyErrors.First().Property);
-            Assert.AreEqual(_source.BulkUploadValidationErrors.Last().Errors.Last().Property, _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().Property);
+            Assert.AreEqual(_source.Errors.First().Errors.First().Property, _result.BulkUploadValidationErrors.First().PropertyErrors.First().Property);
+            Assert.AreEqual(_source.Errors.First().Errors.Last().Property, _result.BulkUploadValidationErrors.First().PropertyErrors.Last().Property);
+                                    
+            Assert.AreEqual(_source.Errors.Last().Errors.First().Property, _result.BulkUploadValidationErrors.Last().PropertyErrors.First().Property);
+            Assert.AreEqual(_source.Errors.Last().Errors.Last().Property, _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().Property);
         }
     }
 }
