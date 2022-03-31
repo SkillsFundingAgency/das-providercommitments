@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             catch (CommitmentsApiModelException e)
             {
                 e.Errors[0].Field.Should().Be("DeliveryModel");
-                e.Errors[0].Message.Should().Be("Please select a delivery model option");
+                e.Errors[0].Message.Should().Be("You must select the apprenticeship delivery model");
             }
         }
 

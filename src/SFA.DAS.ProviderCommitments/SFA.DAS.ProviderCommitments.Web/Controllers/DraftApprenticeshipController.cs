@@ -155,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (string.IsNullOrEmpty(model.CourseCode))
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "Please select a course")});
+                    {new ErrorDetail(nameof(model.CourseCode), "You must select the course")});
             }
 
             var draft = PeekStoredEditDraftApprenticeshipState();
@@ -192,7 +192,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (model.DeliveryModel == null)
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail("DeliveryModel", "Please select a delivery model option")});
+                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
             }
 
             var draft = PeekStoredEditDraftApprenticeshipState();
