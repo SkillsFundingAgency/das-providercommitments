@@ -141,7 +141,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (string.IsNullOrEmpty(model.CourseCode))
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "You must select the course")});
+                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
             }
 
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model); //?
