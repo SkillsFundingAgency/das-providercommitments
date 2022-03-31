@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             catch (CommitmentsApiModelException e)
             {
                 e.Errors[0].Field.Should().Be("CourseCode");
-                e.Errors[0].Message.Should().Be("Please select a course");
+                e.Errors[0].Message.Should().Be("You must select the course");
             }
         }
 
