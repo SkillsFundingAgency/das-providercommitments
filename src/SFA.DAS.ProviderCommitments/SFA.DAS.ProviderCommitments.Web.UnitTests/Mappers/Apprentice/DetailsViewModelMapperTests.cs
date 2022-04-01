@@ -177,7 +177,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
         }
 
-        [TestCase(DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(DeliveryModel.PortableFlexiJob, true)]
         [TestCase(DeliveryModel.Regular, true)]
         public async Task ThenAllowEditApprenticeIsMappedCorrectly(DeliveryModel dm, bool expectedAllowEditApprentice)
         {

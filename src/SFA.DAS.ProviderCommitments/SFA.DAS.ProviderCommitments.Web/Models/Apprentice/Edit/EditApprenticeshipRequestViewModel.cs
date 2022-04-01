@@ -29,7 +29,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public string LastName { get; set; }
         public string Email { get; set; }
         public string ApprenticeshipHashedId { get; set; }
-        [JsonIgnore]
         public long ApprenticeshipId { get; set; }
         public string ULN { get; set; }
         public string TrainingName { get; set; }
@@ -84,5 +83,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public bool EmailShouldBePresent { get; set; }
         public bool HasOptions { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
+        public string CourseName { get; set; }
     }
 }

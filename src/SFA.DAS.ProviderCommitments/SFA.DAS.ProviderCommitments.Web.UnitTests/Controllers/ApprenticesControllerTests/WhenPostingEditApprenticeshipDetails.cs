@@ -171,7 +171,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequestViewModel viewModel)
         {
-            return await _controller.EditApprenticeship(viewModel);
+            return await _controller.EditApprenticeship(null, null, viewModel);
         }
 
         public void SetUpGetApprenticeship(GetApprenticeshipResponse response)
