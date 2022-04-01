@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                 .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
                 .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
                 .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
+                .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
                 .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
         }
 
@@ -49,6 +48,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
         {
             var fileData = await ReadFileAsync(file);
             return fileData.rowCount > 0;
+        }
+
+        private async Task<bool> CheckApprenticeContent(IFormFile file, CancellationToken cancellation)
+        {
+            var fileData = await ReadFileAsync(file);
+            return fileData.rowCount > 1;
         }
 
         private async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
