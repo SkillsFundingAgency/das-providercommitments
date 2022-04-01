@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.ViewDraftApprenticeshipViewModel
 
 @{
@@ -121,7 +120,7 @@
                 Planned end date for this employment
             </dt>
             <dd class="govuk-summary-list__value">
-                @DisplayOptionalEstimatedDate(Model.Email)
+                @DisplayOptionalEstimatedDate(Model.EmploymentEndDate)
             </dd>
         </div>
     }
