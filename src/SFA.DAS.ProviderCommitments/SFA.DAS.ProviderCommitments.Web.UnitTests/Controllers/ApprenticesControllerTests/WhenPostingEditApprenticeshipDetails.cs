@@ -160,6 +160,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             _fixture.VerifyRedirectedToChangeOption(result);
         }
+
+        [Test]
+        public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
+        {
+            var result = await _fixture.EditChangingCourse(_viewModel);
+            _fixture.VerifyRedirectedTo(result,"SelectCourseForEdit");
+        }
+
+        [Test]
+        public async Task AndSelectDeliveryModelIsToBeChangedThenTheUserIsRedirectedToSelectDeliveryModelPage()
+        {
+            var result = await _fixture.EditChangingDeliveryModel(_viewModel);
+            _fixture.VerifyRedirectedTo(result, "SelectDeliveryModelForEdit");
+        }
     }
 
     public class WhenPostingEditApprenticeshipDetailsFixture : ApprenticeControllerTestFixtureBase
@@ -172,6 +186,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequestViewModel viewModel)
         {
             return await _controller.EditApprenticeship(null, null, viewModel);
+        }
+
+        public async Task<IActionResult> EditChangingCourse(EditApprenticeshipRequestViewModel viewModel)
+        {
+            return await _controller.EditApprenticeship("Edit", null, viewModel);
+        }
+
+        public async Task<IActionResult> EditChangingDeliveryModel(EditApprenticeshipRequestViewModel viewModel)
+        {
+            return await _controller.EditApprenticeship(null, "Edit", viewModel);
         }
 
         public void SetUpGetApprenticeship(GetApprenticeshipResponse response)
@@ -232,5 +256,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             actionResult.VerifyReturnsRedirectToActionResult().WithActionName("ChangeOption");
         }
+
+        public void VerifyRedirectedTo(IActionResult actionResult, string actionName)
+        {
+            actionResult.VerifyReturnsRedirectToActionResult().WithActionName(actionName);
+        }
+
     }
 }
