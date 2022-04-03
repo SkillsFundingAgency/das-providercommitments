@@ -14,6 +14,16 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             _outerApiClient = outerApiClient;
         }
 
+        public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
+        {
+           return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+        }
+
+        public async Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest data)
+        {
+            return await _outerApiClient.Post<GetBulkUploadAddDraftApprenticeshipsResult>(new PostBulkUploadAddDraftApprenticeshipsRequest(data));
+        }
+
         public async Task<GetAccountLegalEntityQueryResult> GetAccountLegalEntity(long publicAccountLegalEntityId)
         {
             return await _outerApiClient.Get<GetAccountLegalEntityQueryResult>(new GetAccountLegalEntityRequest(publicAccountLegalEntityId));

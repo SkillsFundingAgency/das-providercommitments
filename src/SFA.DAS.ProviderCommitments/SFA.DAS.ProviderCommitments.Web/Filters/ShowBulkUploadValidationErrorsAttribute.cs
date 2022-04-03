@@ -8,9 +8,9 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters
 {
-    public class ShowBulkUploadValidationErrorsAttribute : ExceptionFilterAttribute
+    public class HandleBulkUploadValidationErrorsAttribute : ExceptionFilterAttribute
     {
-        public ShowBulkUploadValidationErrorsAttribute() 
+        public HandleBulkUploadValidationErrorsAttribute() 
         {
             Order = int.MaxValue;
         }

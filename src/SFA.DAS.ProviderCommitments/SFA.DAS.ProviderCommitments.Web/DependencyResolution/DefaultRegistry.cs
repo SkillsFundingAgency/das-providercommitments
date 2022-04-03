@@ -31,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
                 });
 
             For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachUserInfoToSaveRequests<,>));
+            For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachApimUserInfoToSaveRequests<,>));
             For<IModelMapper>().Use<ModelMapper>();
             For<IFeatureTogglesService<ProviderFeatureToggle>>().Use<FeatureTogglesService<ProviderFeaturesConfiguration, ProviderFeatureToggle>>();
             For<IAuthenticationService>().Use<AuthenticationService>().Singleton();

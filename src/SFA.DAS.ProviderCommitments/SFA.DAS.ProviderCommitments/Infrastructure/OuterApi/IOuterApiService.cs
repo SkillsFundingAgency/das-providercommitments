@@ -11,5 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<GetCohortResult> GetCohort(long cohortId);
         Task<GetStandardResponse> GetStandardDetails(string courseCode);
         Task ValidateBulkUploadRequest(BulkUploadValidateApiRequest data);
+        Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest request);
+        Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest request);
     }
 }

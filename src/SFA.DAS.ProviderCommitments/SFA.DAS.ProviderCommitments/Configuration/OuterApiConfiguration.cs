@@ -1,8 +1,8 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Configuration
 {
-    public class OuterApiConfiguration
+    public class ApprovalsOuterApiConfiguration
     {
-        public string BaseUrl { get; set; }
-        public string Key { get; set; }
+        public string ApiBaseUrl { get; set; }
+        public string SubscriptionKey { get; set; }
     }
 }

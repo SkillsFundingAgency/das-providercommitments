@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
 {
     public class PostValidateBulkUploadDataRequest : IPostApiRequest
     {

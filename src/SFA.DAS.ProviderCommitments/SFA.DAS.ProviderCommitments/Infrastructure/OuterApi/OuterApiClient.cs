@@ -15,16 +15,16 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
     public class OuterApiClient : IOuterApiClient
     {
         private readonly HttpClient _httpClient;
-        private readonly OuterApiConfiguration _config;
+        private readonly ApprovalsOuterApiConfiguration _config;
         private ILogger<OuterApiClient> _logger;
         const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
         const string VersionRequestHeaderKey = "X-Version";
 
-        public OuterApiClient(HttpClient httpClient, OuterApiConfiguration config, ILogger<OuterApiClient> logger)
+        public OuterApiClient(HttpClient httpClient, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
         {
             _httpClient = httpClient;
             _config = config;
-            _httpClient.BaseAddress = new Uri(_config.BaseUrl);
+            _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
             _logger = logger;
         }
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             //hence once the headers are added they don't need added again
             if (_httpClient.DefaultRequestHeaders.Contains(SubscriptionKeyRequestHeaderKey)) return;
 
-            _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyRequestHeaderKey, _config.Key);
+            _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
             _httpClient.DefaultRequestHeaders.Add(VersionRequestHeaderKey, "1");
         }
 
