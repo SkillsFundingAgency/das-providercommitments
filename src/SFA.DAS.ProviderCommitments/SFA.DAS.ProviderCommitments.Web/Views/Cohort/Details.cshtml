@@ -151,8 +151,8 @@ Model.HasEmailOverlaps)
             <th scope="col" class="govuk-table__header das-table-cell-width-25">Date of birth</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-30">Training dates</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-30">Employment end date</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment Price</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Training price for this employment</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
             <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-10"><span class="govuk-visually-hidden">Action</span></th>
         </tr>
