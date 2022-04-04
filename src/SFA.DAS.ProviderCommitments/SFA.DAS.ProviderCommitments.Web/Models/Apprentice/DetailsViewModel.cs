@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -57,6 +58,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool EmailAddressConfirmedByApprentice { get; set; }
         public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice;
         public string DeliveryModel { get; set; }
+        public int? EmploymentPrice { get; set; }
+        public string EmploymentPriceDisplay => EmploymentPrice.HasValue ? EmploymentPrice.Value.ToGdsCostFormat() : string.Empty;
+        public DateTime? EmploymentEndDate { get; set; }
+        public string EmploymentEndDateDisplay => EmploymentEndDate.HasValue ? EmploymentEndDate.Value.ToGdsFormatWithoutDay() : string.Empty;
 
         public enum DataLockSummaryStatus
         {
