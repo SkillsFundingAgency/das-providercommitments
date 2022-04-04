@@ -132,6 +132,16 @@ else
             Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
         }
 
+        <div class="govuk-form-group">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
+            <p class="govuk-body">
+                @Model.CourseName
+                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                    Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
+                </button>
+            </p>
+        </div>
+    
         if (@Model.DeliveryModel != DeliveryModel.Regular)
         {
         <div class="govuk-form-group">
@@ -145,16 +155,6 @@ else
         </div>
         }
 
-        <div class="govuk-form-group">
-            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
-            <p class="govuk-body">
-                @Model.CourseName
-                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                    Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
-                </button>
-            </p>
-        </div>
-    
         <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
     }
     else
