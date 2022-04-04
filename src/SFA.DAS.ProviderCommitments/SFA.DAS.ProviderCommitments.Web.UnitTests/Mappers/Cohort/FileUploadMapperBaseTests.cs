@@ -2,10 +2,10 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using Moq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {

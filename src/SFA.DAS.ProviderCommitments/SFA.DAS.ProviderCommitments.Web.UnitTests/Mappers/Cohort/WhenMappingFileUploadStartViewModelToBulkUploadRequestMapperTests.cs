@@ -1,14 +1,12 @@
 ﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -85,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(GetValidDate(record.DateOfBirth, "yyyy-MM-dd").Value.Date, result.DateOfBirth);
+                Assert.AreEqual(record.DateOfBirth, result.DateOfBirthAsString);
             }
         }
 
@@ -157,14 +155,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(2, result.CohortId);
             }
-        }
-
-        private DateTime? GetValidDate(string date, string format)
-        {
-            DateTime outDateTime;
-            if (DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out outDateTime))
-                return outDateTime;
-            return null;
         }
     }
 }

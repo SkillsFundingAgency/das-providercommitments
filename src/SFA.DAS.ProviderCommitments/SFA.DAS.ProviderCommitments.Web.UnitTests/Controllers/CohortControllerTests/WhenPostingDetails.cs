@@ -17,6 +17,7 @@ using System;
 using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -155,7 +156,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 _controller = new CohortController(Mock.Of<IMediator>(),
                      modelMapper.Object,
                      linkGenerator.Object,
-                    _commitmentsApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+                    _commitmentsApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>(),
+                     Mock.Of<IOuterApiService>());
             }
 
             public async Task Post(CohortDetailsOptions option)

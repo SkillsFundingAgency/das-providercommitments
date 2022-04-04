@@ -15,9 +15,8 @@ using SFA.DAS.Authorization.ProviderFeatures.Models;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using System.Threading;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -31,7 +30,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReview"); ;
-         
         }
 
         [Test]
@@ -50,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public string RedirectUrl;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
+        private readonly Mock<IOuterApiService> _outerApiService;
         private readonly FileUploadStartViewModel _viewModel;
         private readonly FileUploadReviewRequest _request;
         private readonly Mock<IMediator> _mediator;
@@ -61,15 +59,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = fixture.Build<FileUploadStartViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
             _request = fixture.Create<FileUploadReviewRequest>();
-            _commitmentApiClient = new Mock<ICommitmentsApiClient>();
+            _outerApiService = new Mock<IOuterApiService>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(() => new BulkUploadValidateApiResponse { BulkUploadValidationErrors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>() });
+            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
-            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut.TempData = tempData;

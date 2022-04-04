@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -12,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingFileUploadValidateDataRequestToApiRequestTests
     {
         private FileUploadValidateDataRequestToApiRequest _mapper;
-        private CommitmentsV2.Api.Types.Requests.BulkUploadValidateApiRequest _result;
+        private BulkUploadValidateApiRequest _result;
         private List<CsvRecord> _csvRecords;
         private FileUploadValidateDataRequest _request;
 

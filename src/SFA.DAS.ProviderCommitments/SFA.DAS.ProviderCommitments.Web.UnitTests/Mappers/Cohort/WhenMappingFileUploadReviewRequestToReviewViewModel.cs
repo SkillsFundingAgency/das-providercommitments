@@ -6,17 +6,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
@@ -141,7 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private FileUploadReviewRequestToReviewViewModelMapper _sut;
             private FileUploadReviewRequest _request;
             private Mock<IEncodingService> _encodingService;
-            private Mock<ICommitmentsApiClient> _commitmentApiClient;
+            private Mock<IOuterApiService> _commitmentApiClient;
             private Mock<ICacheService> _cacheService;
             private List<CsvRecord> _csvRecords;
             private FileUploadReviewViewModel _result;
@@ -149,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private Mock<IHttpContextAccessor> _httpContextAccessor;
             private RouteData _routeData;
             private Mock<IRoutingFeature> _routingFeature;
-            public GetDraftApprenticeshipsResponse _draftApprenticeshipsResponse;
+            public GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
 
             public WhenMappingFileUploadReviewRequestToReviewViewModelFixture()
             {
@@ -157,19 +154,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 _csvRecords = new List<CsvRecord>();
 
                 _request = fixture.Create<FileUploadReviewRequest>();
-                var accountLegalEntityEmployer1 = fixture.Build<AccountLegalEntityResponse>()
+                var accountLegalEntityEmployer1 = fixture.Build<GetAccountLegalEntityQueryResult>()
                                                             .With(x => x.AccountName, "Employer1Name").Create();
 
-                var accountLegalEntityEmployer2 = fixture.Build<AccountLegalEntityResponse>()
+                var accountLegalEntityEmployer2 = fixture.Build<GetAccountLegalEntityQueryResult>()
                                                             .With(x => x.AccountName, "Employer2Name").Create();
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Decode("Employer1", EncodingType.PublicAccountLegalEntityId)).Returns(1);
                 _encodingService.Setup(x => x.Decode("Employer2", EncodingType.PublicAccountLegalEntityId)).Returns(2);
 
-                _commitmentApiClient = new Mock<ICommitmentsApiClient>();
-                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(1, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer1);
-                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(2, It.IsAny<CancellationToken>())).ReturnsAsync(accountLegalEntityEmployer2);               
+                _commitmentApiClient = new Mock<IOuterApiService>();
+                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(1)).ReturnsAsync(accountLegalEntityEmployer1);
+                _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(2)).ReturnsAsync(accountLegalEntityEmployer2);               
 
                 _cacheService = new Mock<ICacheService>();
                 _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
@@ -232,12 +229,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             internal void SetupDraftApprenticeships()
             {
-                _draftApprenticeshipsResponse = fixture.Create<GetDraftApprenticeshipsResponse>();
+                _draftApprenticeshipsResponse = fixture.Create<GetDraftApprenticeshipsResult>();
                 foreach (var item in _draftApprenticeshipsResponse.DraftApprenticeships)
                 {
                     item.Cost = 100;
                 }
-                _commitmentApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                _commitmentApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>()))
                  .ReturnsAsync(_draftApprenticeshipsResponse);
             }
 
