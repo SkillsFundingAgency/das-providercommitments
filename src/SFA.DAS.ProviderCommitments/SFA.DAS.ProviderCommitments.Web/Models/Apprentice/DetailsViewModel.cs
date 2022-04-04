@@ -59,9 +59,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice;
         public string DeliveryModel { get; set; }
         public int? EmploymentPrice { get; set; }
-        public string EmploymentPriceDisplay => EmploymentPrice.HasValue ? EmploymentPrice.Value.ToGdsCostFormat() : string.Empty;
+        public string EmploymentPriceDisplay => EmploymentPrice?.ToGdsCostFormat() ?? string.Empty;
         public DateTime? EmploymentEndDate { get; set; }
-        public string EmploymentEndDateDisplay => EmploymentEndDate.HasValue ? EmploymentEndDate.Value.ToGdsFormatWithoutDay() : string.Empty;
+        public string EmploymentEndDateDisplay => EmploymentEndDate?.ToGdsFormatWithoutDay() ?? string.Empty;
 
         public enum DataLockSummaryStatus
         {
