@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
+        public void WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
         {
             var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture();
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             try
             {
-                var result = await fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel);
+                fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel);
                 Assert.Fail("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
+        public void WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
                 .WithTempViewModel()
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
 
-            var result = await fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
+            var result = fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditApprenticeship");
         }
     }

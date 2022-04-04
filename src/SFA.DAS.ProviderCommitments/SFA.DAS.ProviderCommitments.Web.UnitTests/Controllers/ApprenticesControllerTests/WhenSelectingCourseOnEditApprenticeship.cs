@@ -38,14 +38,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WhenSettingCourse_AndNoCourseSelected_ShouldThrowException()
+        public void WhenSettingCourse_AndNoCourseSelected_ShouldThrowException()
         {
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture();
             fixture.ViewModel.CourseCode = null;
 
             try
             {
-                var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
+                var result = fixture.Sut.SetCourseForEdit(fixture.ViewModel);
                 Assert.Fail("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
@@ -56,13 +56,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WhenSettingCourse_AndCourseSelected_ShouldRedirectToEditApprenticeship()
+        public void WhenSettingCourse_AndCourseSelected_ShouldRedirectToEditApprenticeship()
         {
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture().WithTempViewModel();
 
             fixture.ViewModel.CourseCode = "123";
 
-            var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
+            var result = fixture.Sut.SetCourseForEdit(fixture.ViewModel);
             result.VerifyReturnsRedirectToActionResult().ActionName.Should().Be("SelectDeliveryModelForEdit");
         }
     }
