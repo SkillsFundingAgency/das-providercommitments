@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
     public  class CsvRecordExtensionTests
     {
         [Test]
-        public void VerifyUlnIsMappedTest()
+        public void VerifyEmptyRecordsRemovedFromCsvFile()
         {
             //Arrange
             var fixture = new Fixture();
