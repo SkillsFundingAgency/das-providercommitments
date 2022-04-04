@@ -90,7 +90,8 @@ Model.HasEmailOverlaps)
 
 @foreach (var course in Model.Courses)
 {
-    <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName
+    <h3 class="govuk-heading-m">
+        <span class="govuk-!-margin-right-2">@course.Count x @course.DisplayCourseName</span>
         @if (@course.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
             <span class="govuk-tag">Portable flexi job</span>
@@ -141,20 +142,20 @@ Model.HasEmailOverlaps)
             course.ErrorFundingBandExcessDisplayed = true;
         }
     }
-    <table class="govuk-table das-table--responsive">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Unique learner number</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Date of birth</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-30">Training dates</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-30">Employment end date</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Training price for this employment</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
-            <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-10"><span class="govuk-visually-hidden">Action</span></th>
-        </tr>
-    </thead>
+    <table class="govuk-table das-table--responsive  das-table--condensed">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-15">Training price for this employment</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-10">Total training price</th>
+                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-20">Price</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
+            </tr>
+        </thead>
     <tbody class="govuk-table__body">
         @foreach (var draftApprenticeship in course.DraftApprenticeships)
         {
@@ -206,9 +207,9 @@ Model.HasEmailOverlaps)
                         @(Model.IsReadOnly ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
-                    <br /><br />
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
                     {
+                        <br /><br />
                         <a class="govuk-link delete-apprentice"
                            href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
                             Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
