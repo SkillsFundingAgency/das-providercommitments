@@ -150,9 +150,9 @@ Model.HasEmailOverlaps)
                 <th scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
                 <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
-                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-15">Training price for this employment</th>
-                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-10">Total training price</th>
-                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header govuk-table__header--numeric das-table-cell-width-20">Price</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
+                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
                 <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
         </thead>
@@ -202,7 +202,7 @@ Model.HasEmailOverlaps)
                         @draftApprenticeship.DisplayCost
                     }
                 </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
+                <td class="govuk-table__cell">
                     <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
                         @(Model.IsReadOnly ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
