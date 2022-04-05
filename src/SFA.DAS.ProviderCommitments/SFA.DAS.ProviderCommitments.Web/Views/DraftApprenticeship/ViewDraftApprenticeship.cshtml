@@ -55,6 +55,14 @@
             @DisplayOptionalField(Model.DateOfBirth)
         </dd>
     </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Apprenticeship training course
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @DisplayOptionalField(Model.TrainingCourse)
+        </dd>
+    </div>
     @if (Model.DeliveryModel != null)
     {
         <div class="govuk-summary-list__row">
@@ -66,14 +74,6 @@
             </dd>
         </div>
     }
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Apprenticeship training course
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @DisplayOptionalField(Model.TrainingCourse)
-        </dd>
-    </div>
     @if (!string.IsNullOrEmpty(Model.TrainingCourseVersion))
     {
         <div class="govuk-summary-list__row">
