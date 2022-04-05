@@ -150,6 +150,12 @@
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
             @if (Model.IsLockedForUpdate || Model.IsUpdateLockedForStartDateAndCourse || Model.IsContinuation)
             {
+                <dl class="das-definition-list">
+                    <dt class="das-definition-list__title">Apprenticeship training course</dt>
+                    <dd class="das-definition-list__definition" id="trainingName">@Model.TrainingName </dd>
+                    @Html.HiddenFor(x => x.CourseCode)
+                    @Html.HiddenFor(x => x.TrainingName)
+                </dl>
                 @if (Model.DeliveryModel != DeliveryModel.Regular)
                 {
                     <dl class="das-definition-list">
@@ -159,13 +165,6 @@
                     <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
                 }
                 @Html.HiddenFor(x => x.DeliveryModel)
-
-                <dl class="das-definition-list">
-                    <dt class="das-definition-list__title">Apprenticeship training course</dt>
-                    <dd class="das-definition-list__definition" id="trainingName">@Model.TrainingName </dd>
-                    @Html.HiddenFor(x => x.CourseCode)
-                    @Html.HiddenFor(x => x.TrainingName)
-                </dl>
             }
             else
             {
@@ -175,6 +174,17 @@
                     {
                         Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
                     }
+
+                    <div class="govuk-form-group">
+                        <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
+                        <p class="govuk-body">
+                            @Model.CourseName
+                            <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                                Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
+                            </button>
+                        </p>
+                    </div>
+                    <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
 
                     if (@Model.DeliveryModel != DeliveryModel.Regular)
                     {
@@ -188,18 +198,6 @@
                             </p>
                         </div>
                     }
-
-                    <div class="govuk-form-group">
-                        <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
-                        <p class="govuk-body">
-                            @Model.CourseName
-                            <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                                Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
-                            </button>
-                        </p>
-                    </div>
-
-                    <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
                 }
                 else
                 {
