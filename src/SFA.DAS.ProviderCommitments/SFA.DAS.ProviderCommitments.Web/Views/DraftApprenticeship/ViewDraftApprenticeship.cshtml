@@ -4,6 +4,9 @@
 @{
     ViewData["Title"] = "Apprenticeships";
     ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/view";
+
+    var startDateLabel = Model.DeliveryModel == null ? "Planned training start date" : "Planned apprenticeship training start date";
+    var endDateLabel = Model.DeliveryModel == null ? "Projected training finish date" : "Projected apprenticeship training finish date";
 }
 
 <div class="govuk-grid-row">
@@ -52,6 +55,14 @@
             @DisplayOptionalField(Model.DateOfBirth)
         </dd>
     </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Apprenticeship training course
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @DisplayOptionalField(Model.TrainingCourse)
+        </dd>
+    </div>
     @if (Model.DeliveryModel != null)
     {
         <div class="govuk-summary-list__row">
@@ -63,14 +74,6 @@
             </dd>
         </div>
     }
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Apprenticeship training course
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @DisplayOptionalField(Model.TrainingCourse)
-        </dd>
-    </div>
     @if (!string.IsNullOrEmpty(Model.TrainingCourseVersion))
     {
         <div class="govuk-summary-list__row">
@@ -95,7 +98,7 @@
     }
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-            Planned training start date
+            @startDateLabel
         </dt>
         <dd class="govuk-summary-list__value">
             @DisplayOptionalEstimatedDate(Model.StartDate)
@@ -103,12 +106,33 @@
     </div>
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
-            Planned training end date
+            @endDateLabel
         </dt>
         <dd class="govuk-summary-list__value">
             @DisplayOptionalEstimatedDate(Model.EndDate)
         </dd>
     </div>
+
+    @if (Model.DeliveryModel != null)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Planned end date for this employment
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @DisplayOptionalEstimatedDate(Model.EmploymentEndDate)
+            </dd>
+        </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Training price for this employment
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @DisplayCost(Model.EmploymentPrice)
+        </dd>
+    </div>
+    }
+
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             Total agreed apprenticeship price

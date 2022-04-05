@@ -257,6 +257,11 @@
                     <td id="apprentice-uln" class="govuk-table__cell">@Model.Uln</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                    <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
                 @if(Model.DeliveryModel != null)
                 {
                     <tr class="govuk-table__row">
@@ -265,11 +270,6 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-                    <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
-                    <td class="govuk-table__cell"></td>
-                </tr>
                 @if (!string.IsNullOrEmpty(Model.Version))
                 {
                     <tr class="govuk-table__row">

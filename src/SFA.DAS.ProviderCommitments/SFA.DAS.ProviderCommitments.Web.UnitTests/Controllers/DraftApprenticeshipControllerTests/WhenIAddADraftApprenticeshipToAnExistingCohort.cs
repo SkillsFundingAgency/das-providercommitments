@@ -67,17 +67,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task Then_If_The_Standard_Has_Not_Selected_Then_The_DraftApprentices_Is_Not_Called()
+        public async Task AndWhenReturningToPageAfterChnagingTheCourseOrDeliveryModel()
         {
-            _fixture.SetUpNoStandardSelected();
+            _fixture.SetupTempDraftApprenticeship();
             
-            await _fixture.PostToAddDraftApprenticeship();
-            
-            _fixture
-                .VerifyCommitmentsApiGetDraftApprenticeshipNotCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();;
+            await _fixture.AddDraftApprenticeshipWithReservation();
+
+            _fixture.VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet();
         }
-        
+
+        [Test]
+        public void AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithDeliveryModelToggleWeRedirectToSelectCourse()
+        {
+            _fixture.SetupDeliveryModelFeatureToggle();
+
+            _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.VerifyRedirectedToSelectCoursePage();
+        }
+
+        [Test]
+        public void AndWhenCallingTheAddNewDraftApprenticeshipEndpointWithoutDeliveryModelToggleWeRedirectToAddDraftApprenticeshipPage()
+        {
+            _fixture.AddNewDraftApprenticeshipWithReservation();
+            _fixture.VerifyRedirectedToAddDraftApprenticeshipDetails();
+        }
+
         [Test]
         public async Task ThenIfThereAreOptionsThenRedirectToSelectOptions()
         {
@@ -90,6 +104,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectToSelectOptionsPage();
+        }
+
+        [Test]
+        public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
+        {
+            await _fixture.PostToAddDraftApprenticeship(changeCourse: "Edit");
+            _fixture.VerifyUserRedirectedTo("SelectCourse");
+        }
+
+        [Test]
+        public async Task AndSelectDeliveryModelIsToBeChangedThenTheUserIsRedirectedToSelectDeliveryModelPage()
+        {
+            await _fixture.PostToAddDraftApprenticeship(changeDeliveryModel: "Edit");
+            _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
         }
     }
 }

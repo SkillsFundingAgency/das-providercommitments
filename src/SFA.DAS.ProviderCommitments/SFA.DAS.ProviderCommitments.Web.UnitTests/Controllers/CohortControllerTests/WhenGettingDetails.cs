@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -71,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 CohortController = new CohortController(Mock.Of<IMediator>(),
                      modelMapper.Object,
                      linkGenerator.Object,
-                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
             }
 
             public CohortController CohortController { get; set; }

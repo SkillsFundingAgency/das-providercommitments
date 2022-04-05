@@ -18,6 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool HasOverlappingUln { get; set; }
         public bool HasOverlappingEmail { get; set; }
         public bool IsComplete { get; set; }
+        public int? EmploymentPrice { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
 
         public bool ExceedsFundingBandCap
         {
@@ -49,7 +51,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
-        public string DisplayCost => Cost.HasValue ? $"{Cost.Value.ToGdsCostFormat()}" : "-";
+        public string DisplayEmploymentDates
+        {
+            get
+            {
+                return (StartDate.HasValue && EmploymentEndDate.HasValue)
+                    ? $"{StartDate.Value.ToGdsFormatWithoutDay()} to {EmploymentEndDate.Value.ToGdsFormatWithoutDay()}"
+                    : "-";
+            }
+        }
+
+        public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
+            
+        public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
+
 
         public DateTime? OriginalStartDate { get; set; }
     }

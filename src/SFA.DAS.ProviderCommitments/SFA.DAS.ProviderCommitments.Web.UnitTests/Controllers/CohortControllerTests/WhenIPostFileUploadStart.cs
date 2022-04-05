@@ -18,6 +18,7 @@ using System.Threading;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -69,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(() => new BulkUploadValidateApiResponse { BulkUploadValidationErrors = new List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>() });
 
-            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>());
+            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut.TempData = tempData;
