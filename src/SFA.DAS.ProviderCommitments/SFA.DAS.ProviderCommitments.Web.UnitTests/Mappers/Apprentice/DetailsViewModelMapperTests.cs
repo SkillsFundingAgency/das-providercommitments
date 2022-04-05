@@ -177,18 +177,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
         }
 
-        [TestCase(DeliveryModel.PortableFlexiJob, true)]
-        [TestCase(DeliveryModel.Regular, true)]
-        public async Task ThenAllowEditApprenticeIsMappedCorrectly(DeliveryModel dm, bool expectedAllowEditApprentice)
-        {
-            _fixture.WithApprenticeshipDeliveryModel(dm);
-
-            await _fixture.Map();
-
-            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
-        }
-
-
         [TestCase(null)]
         [TestCase(ConfirmationStatus.Unconfirmed)]
         [TestCase(ConfirmationStatus.Confirmed)]
