@@ -61,7 +61,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
-        public string DisplayCost => Cost.HasValue ? $"{Cost.Value.ToGdsCostFormat()}" : "-";
+        public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
+            
+        public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
+
 
         public DateTime? OriginalStartDate { get; set; }
     }

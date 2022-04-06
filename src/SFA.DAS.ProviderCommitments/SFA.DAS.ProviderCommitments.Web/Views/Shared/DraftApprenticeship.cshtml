@@ -14,6 +14,8 @@
 @{
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
+
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 }
 
 @if (Model.IsContinuation)
@@ -130,6 +132,16 @@ else
             Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
         }
 
+        <div class="govuk-form-group">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
+            <p class="govuk-body">
+                @Model.CourseName
+                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                    Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
+                </button>
+            </p>
+        </div>
+    
         if (@Model.DeliveryModel != DeliveryModel.Regular)
         {
         <div class="govuk-form-group">
@@ -143,16 +155,6 @@ else
         </div>
         }
 
-        <div class="govuk-form-group">
-            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
-            <p class="govuk-body">
-                @Model.CourseName
-                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                    Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
-                </button>
-            </p>
-        </div>
-    
         <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
     }
     else
@@ -265,7 +267,7 @@ else
 @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
 {
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
-        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Agreed price for this employment (excluding VAT)</label>
+        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Agreed training price for this period of employment (excluding VAT)</label>
         <span id="employment-price-hint" class="govuk-hint">
             Enter the price in whole pounds. For example, for £1,500 enter 1500
         </span>
