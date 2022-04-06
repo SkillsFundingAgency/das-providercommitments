@@ -39,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                      data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
                     !data.HasProviderUpdates && 
                     !data.HasEmployerUpdates &&
-                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
+                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None &&
+                    data.Apprenticeship.DeliveryModel == DeliveryModel.Regular;
 
                 // If It's completed or stopped and option is null, dont show options as it could predate standard versioning
                 // even if the version has options

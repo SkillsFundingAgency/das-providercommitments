@@ -24,6 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public async Task AndThereIsTempDataStored_ShouldReturnTempDataEditDraftApprenticeshipView()
+        {
+            _fixture.SetupTempDraftApprenticeship();
+            await _fixture.EditDraftApprenticeship();
+            _fixture.VerifyEditDraftApprenticeshipViewModelIsSentToViewResult();
+        }
+
+        [Test]
         public async Task AndWhenSavingAndNoStandardOptionsTheDraftApprenticeIsSuccessful()
         {
             _fixture.SetUpStandardToReturnNoOptions().SetupCommitmentsApiToReturnADraftApprentice();
@@ -32,6 +40,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
                 .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenEditingCourse()
+        {
+            await _fixture.PostToEditDraftApprenticeship("Edit");
+            _fixture.VerifyRedirectedToSelectForEditCoursePage();
+        }
+
+        [Test]
+        public async Task AndWhenEditingDeliveryModel()
+        {
+            await _fixture.PostToEditDraftApprenticeship(changeDeliveryModel:"Edit");
+            _fixture.VerifyRedirectedToSelectDeliveryForEditModelPage();
         }
 
         [Test]

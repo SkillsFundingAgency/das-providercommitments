@@ -23,6 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Reference = source.Reference,
                 CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
                 DeliveryModel = source.DeliveryModel.Value,
+                EmploymentEndDate = source.EmploymentEndDate.Date,
+                EmploymentPrice = source.EmploymentPrice
             });
     }
 }
