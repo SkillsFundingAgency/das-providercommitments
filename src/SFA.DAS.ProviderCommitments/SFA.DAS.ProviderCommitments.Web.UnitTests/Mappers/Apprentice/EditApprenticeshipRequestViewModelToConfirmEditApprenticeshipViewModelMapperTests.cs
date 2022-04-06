@@ -156,6 +156,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task WhenEmploymentEndDateIsChanged()
+        {
+            fixture.WithPortableFlexiJob();
+
+            var result = await fixture.Map();
+
+            Assert.AreNotEqual(fixture.source.EmploymentEndDate.Date, fixture._apprenticeshipResponse.EmploymentEndDate);
+            Assert.AreEqual(fixture.source.EmploymentEndDate.Date, result.EmploymentEndDate);
+            Assert.AreEqual(fixture._apprenticeshipResponse.EmploymentEndDate, result.OriginalApprenticeship.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task WhenEmploymentPriceIsChanged()
+        {
+            fixture.WithPortableFlexiJob();
+
+            var result = await fixture.Map();
+
+            Assert.AreNotEqual(fixture.source.EmploymentPrice, fixture._apprenticeshipResponse.EmploymentPrice);
+            Assert.AreEqual(fixture.source.EmploymentPrice, result.EmploymentPrice);
+            Assert.AreEqual(fixture._apprenticeshipResponse.EmploymentPrice, result.OriginalApprenticeship.EmploymentPrice);
+        }
+
+        [Test]
         public async Task WhenVersionIsChanged()
         {
             fixture.source.Version = "1.1";
@@ -281,6 +305,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .With(x => x.StartDate, new DateTime(2020, 1, 1))
                 .With(x => x.EndDate, new DateTime(2021, 1, 1))
                 .With(x => x.DateOfBirth, new DateTime(1990, 1, 1))
+                .Without(x=>x.EmploymentEndDate)
+                .Without(x=>x.EmploymentPrice)
                 .Create();
 
             source = new EditApprenticeshipRequestViewModel();
@@ -323,6 +349,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             _mapper = new ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapper(_mockCommitmentsApiClient.Object, _encodingService.Object);
         }
+
+        public ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapperTestsFixture WithPortableFlexiJob()
+        {
+            _apprenticeshipResponse.DeliveryModel = DeliveryModel.PortableFlexiJob;
+            _apprenticeshipResponse.EmploymentPrice = 500;
+            _apprenticeshipResponse.EmploymentEndDate = new DateTime(2020,09,01);
+            return this;
+        } 
 
         public List<TrainingProgrammeFundingPeriod> SetPriceBand(int fundingCap)
         {

@@ -372,7 +372,6 @@
                     @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
                     <span class="govuk-body govuk-!-font-weight-bold">£ </span>
                     <input asp-for="Cost" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
-
                 </div>
 
                 @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
@@ -383,7 +382,8 @@
                             Enter the price in whole pounds. For example, for £1,500 enter 1500
                         </span>
                         @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
-                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
+                        <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                        <input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
                     </div>
                 }
             }
