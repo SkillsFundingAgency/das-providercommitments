@@ -111,6 +111,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         }
 
         [Test]
+        public async Task ThenEmploymentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmploymentPrice, result.EmploymentPrice);
+        }
+
+        [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
             var result = await _act();
@@ -129,6 +136,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var result = await _act();
             Assert.AreEqual(_apiResponse.EndDate, result.EndDate);
+        }
+
+        [Test]
+        public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmploymentEndDate, result.EmploymentEndDate);
         }
 
         [Test]
