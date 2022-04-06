@@ -61,38 +61,37 @@ Model.HasEmailOverlaps)
         </div>
     </div>
 }
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="_ValidationSummary" />
-        <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
-        <dl class="das-definition-list das-definition-list--inline">
-            <dt class="das-definition-list__title govuk-!-margin-bottom-4">Employer</dt>
-            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.LegalEntityName</dd>
-            <dt class="das-definition-list__title govuk-!-margin-bottom-4">Cohort reference</dt>
-            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.CohortReference</dd>
-            <dt class="das-definition-list__title govuk-!-margin-bottom-4">Status</dt>
-            <dd class="das-definition-list__definition">@Model.Status</dd>
-        </dl>
 
-        <h2 class="govuk-heading-s">Message:</h2>
-        <div class="govuk-inset-text">
-            @if (string.IsNullOrWhiteSpace(@Model.Message))
-            {
-                <span>No message added.</span>
-            }
-            else
-            {
-                @Model.Message
-            }
-        </div>
-    </div>
+<partial name="_ValidationSummary" />
+<h1 class="govuk-heading-xl">@Model.PageTitle</h1>
+<dl class="das-definition-list das-definition-list--inline">
+    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Employer</dt>
+    <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.LegalEntityName</dd>
+    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Cohort reference</dt>
+    <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.CohortReference</dd>
+    <dt class="das-definition-list__title govuk-!-margin-bottom-4">Status</dt>
+    <dd class="das-definition-list__definition">@Model.Status</dd>
+</dl>
+
+<h2 class="govuk-heading-s">Message:</h2>
+<div class="govuk-inset-text">
+    @if (string.IsNullOrWhiteSpace(@Model.Message))
+    {
+        <span>No message added.</span>
+    }
+    else
+    {
+        @Model.Message
+    }
 </div>
+
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
 @foreach (var course in Model.Courses)
 {
-    <h3 class="govuk-heading-m">@course.Count x @course.DisplayCourseName
+    <h3 class="govuk-heading-m">
+        <span class="govuk-!-margin-right-2">@course.Count x @course.DisplayCourseName</span>
         @if (@course.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
             <span class="govuk-tag">Portable flexi job</span>
@@ -143,20 +142,20 @@ Model.HasEmailOverlaps)
             course.ErrorFundingBandExcessDisplayed = true;
         }
     }
-    <table class="govuk-table das-table--responsive">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Unique learner number</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">Date of birth</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-30">Training dates</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-30">Employment dates</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment Price</th>
-            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total apprenticeship price</th>
-            <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Price</th>
-            <th scope="col" class="govuk-table__header das-table-cell-width-10"><span class="govuk-visually-hidden">Action</span></th>
-        </tr>
-    </thead>
+    <table class="govuk-table das-table--responsive  das-table--condensed">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
+                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
+                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
+            </tr>
+        </thead>
     <tbody class="govuk-table__body">
         @foreach (var draftApprenticeship in course.DraftApprenticeships)
         {
@@ -185,31 +184,13 @@ Model.HasEmailOverlaps)
                         @draftApprenticeship.DisplayTrainingDates
                     }
                 </td>
-                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Emploment dates">
-                    @if (draftApprenticeship.HasOverlappingUln)
-                    {
-                        <span class="das-table-cell--highlight">
-                            @draftApprenticeship.DisplayEmploymentDates
-                        </span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayEmploymentDates
-                    }
+                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Employment end date">
+                    @(draftApprenticeship.EmploymentEndDate?.ToGdsFormatWithoutDay() ?? "-")
                 </td>
-                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell govuk-table__cell--numeric" data-label="Employment Price">
-                    @if (@draftApprenticeship.ExceedsFundingBandCap)
-                    {
-                        <span class="das-table-cell--highlight">
-                            @draftApprenticeship.DisplayCost
-                        </span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayCost
-                    }
+                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
+                    @draftApprenticeship.DisplayEmploymentPrice
                 </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Price">
+                <td class="govuk-table__cell" data-label="Price">
                     @if (@draftApprenticeship.ExceedsFundingBandCap)
                     {
                         <span class="das-table-cell--highlight">
@@ -226,9 +207,9 @@ Model.HasEmailOverlaps)
                         @(Model.IsReadOnly ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
-                    <br /><br />
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
                     {
+                        <br /><br />
                         <a class="govuk-link delete-apprentice"
                            href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
                             Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>

@@ -135,6 +135,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             Assert.IsTrue(result.IsValid);
         }
 
+        [TestCase("CohortReff,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgrementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,VLN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyNam,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,BirthDate,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,Email,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,Std,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,TotalPrice,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,Price,EPAOrgID,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider")]
+        public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
+        {
+            //Arrange            
+            var fileContents = new StringBuilder().AppendLine(header).ToString();
+            var file = CreateFakeFormFile(fileContents);
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+
+            //Act
+            var result = validator.Validate(model);
+
+            //Assert
+            Assert.AreEqual(1,result.Errors.Count);
+            Assert.AreEqual("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this", result.ToString());
+        }
+
         private void AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)
         {
             var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
