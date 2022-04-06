@@ -17,7 +17,7 @@
 
         <h1 asp-show="@isRegular" class="govuk-heading-xl">New training start date</h1>
 
-        <h2 asp-show="!isRegular" class="govuk-heading-xl">Start date for this employment contract</h2>
+        <h2 asp-show="!isRegular" class="govuk-heading-xl">Start date for this employment</h2>
         
         <p asp-show="@isRegular" class="govuk-body">The restart date must be on or after the stop date.</p>
 
@@ -50,7 +50,7 @@
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
 
-                    <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the start date for this employment contract</h3>
+                    <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the start date for this employment</h3>
 
                     <span id="start-date-hint" class="govuk-hint">
                         For example, 11 2019
