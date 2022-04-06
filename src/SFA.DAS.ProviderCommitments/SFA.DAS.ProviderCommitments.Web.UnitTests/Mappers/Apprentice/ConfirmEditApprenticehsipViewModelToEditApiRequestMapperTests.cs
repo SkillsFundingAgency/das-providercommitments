@@ -23,6 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                  .With(x => x.StartYear, DateTime.Now.Year)
                  .With(x => x.EndMonth, DateTime.Now.Month)
                  .With(x => x.EndYear, DateTime.Now.Year)
+                 .With(x => x.EmploymentEndMonth, DateTime.Now.Month)
+                 .With(x => x.EmploymentEndYear, DateTime.Now.Year)
                  .With(x => x.BirthMonth, DateTime.Now.Month)
                  .With(x => x.BirthYear, DateTime.Now.Year)
                  .With(x => x.BirthDay, DateTime.Now.Day)
@@ -93,6 +95,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await mapper.Map(viewModel);
 
             Assert.AreEqual(viewModel.DeliveryModel, result.DeliveryModel);
+        }
+
+        [Test, MoqAutoData]
+        public async Task EmploymentEndDate_IsMapped()
+        {
+            var result = await mapper.Map(viewModel);
+
+            Assert.AreEqual(viewModel.EmploymentEndDate, result.EmploymentEndDate);
+        }
+
+        [Test, MoqAutoData]
+        public async Task EmploymentPrice_IsMapped()
+        {
+            var result = await mapper.Map(viewModel);
+
+            Assert.AreEqual(viewModel.EmploymentPrice, result.EmploymentPrice);
         }
 
         [Test]
