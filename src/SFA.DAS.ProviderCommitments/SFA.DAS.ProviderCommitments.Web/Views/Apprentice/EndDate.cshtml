@@ -4,10 +4,10 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.EndDateViewModel
 
 @{
-    ViewData["Title"] = "New training end date";
+    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    ViewData["Title"] = isRegular ? "New training end date" : "End dates for the employment and the apprenticeship";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
 }
 
 <div class="govuk-grid-row">
@@ -16,10 +16,10 @@
         <partial name="_ValidationSummary" />
 
         <h1 asp-show="@isRegular" class="govuk-heading-xl">New training end date</h1>
-        <h2 asp-show="!isRegular" class="govuk-heading-l">End date</h2>
+        <h2 asp-show="!isRegular" class="govuk-heading-l">End dates</h2>
 
         <p asp-show="@isRegular" class="govuk-body">The new training date must be after the new start date.</p>
-        <p asp-show="!isRegular" class="govuk-body">Enter the end dates for this employment contract and for the apprenticeship training.</p>
+        <p asp-show="!isRegular" class="govuk-body">Enter the end dates for this employment and for the apprenticeship training.</p>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -31,7 +31,7 @@
 
                 <tr class="govuk-table__row">
                     <th asp-show="@isRegular" scope="row" class="govuk-table__header das-table-cell-width-50">New training start date</th>
-                    <th asp-show="!isRegular" scope="row" class="govuk-table__cell das-table-cell-width-50">This employment contract start date</th>
+                    <th asp-show="!isRegular" scope="row" class="govuk-table__cell das-table-cell-width-50">This employment start date</th>
                     <td id="stop-date" class="govuk-table__cell">@Model.StartDateTime.ToGdsFormatWithoutDay()</td>
                 </tr>
 
@@ -47,7 +47,7 @@
 
                 <div asp-show="!isRegular" class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate,"govuk-form-group--error")">
 
-                    <h3 class="govuk-heading-s">Enter the end date for this employment contract</h3>
+                    <h3 class="govuk-heading-s">Enter the end date for this employment</h3>
 
                     <span id="end-date-hint" class="govuk-hint">
                         For example, 04 2020
@@ -84,7 +84,7 @@
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndDate,"govuk-form-group--error")">
 
-                    <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the training end date</h3>
+                    <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the projected apprenticeship training end date</h3>
 
                     <span id="end-date-hint" class="govuk-hint">
                         For example, 04 2020
