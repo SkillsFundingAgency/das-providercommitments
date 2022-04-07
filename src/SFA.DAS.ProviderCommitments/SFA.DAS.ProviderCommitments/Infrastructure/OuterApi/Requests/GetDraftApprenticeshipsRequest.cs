@@ -2,7 +2,7 @@
 {
     public class GetDraftApprenticeshipsRequest : IGetApiRequest
     {
-        private long _cohortId { get; }
+        private readonly long _cohortId;
         public string GetUrl => $"draftApprenticeship/{_cohortId}";
 
         public GetDraftApprenticeshipsRequest(long cohortId)

@@ -6,12 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 {
     public class GetDraftApprenticeshipsResult
     {
-        public List<DraftApprenticeship> DraftApprenticeships { get; set; }
-
-        public GetDraftApprenticeshipsResult()
-        {
-            DraftApprenticeships = new List<DraftApprenticeship>();
-        }
+        public List<DraftApprenticeship> DraftApprenticeships { get; set; } = new List<DraftApprenticeship>();
     }
 
     public class DraftApprenticeship

@@ -2,7 +2,7 @@
 {
     public class GetStandardDetailsRequest : IGetApiRequest
     {
-        private string _courseCode { get; }
+        private readonly string _courseCode;
         public string GetUrl => $"TrainingCourses/standards/{_courseCode}";
 
         public GetStandardDetailsRequest(string courseCode)

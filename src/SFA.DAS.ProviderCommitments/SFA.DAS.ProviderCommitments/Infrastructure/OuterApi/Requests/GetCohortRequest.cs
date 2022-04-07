@@ -2,7 +2,7 @@
 {
     public class GetCohortRequest : IGetApiRequest
     {
-        public long _cohortId { get; }
+        public readonly long _cohortId;
         public string GetUrl => $"Cohort/{_cohortId}";
 
         public GetCohortRequest(long cohortId)

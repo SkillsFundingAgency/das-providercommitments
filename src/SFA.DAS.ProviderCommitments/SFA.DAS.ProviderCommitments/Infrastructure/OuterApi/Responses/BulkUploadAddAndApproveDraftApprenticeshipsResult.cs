@@ -4,9 +4,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 {
     public class BulkUploadAddAndApproveDraftApprenticeshipsResult
     {
-        public BulkUploadAddAndApproveDraftApprenticeshipsResult() { BulkUploadAddAndApproveDraftApprenticeshipResponse = new List<BulkUploadAddDraftApprenticeshipsResult>(); }
-
-        public IEnumerable<BulkUploadAddDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeshipResponse { get; set; }
+        public IEnumerable<BulkUploadAddDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeshipResponse { get; set; } = new List<BulkUploadAddDraftApprenticeshipsResult>();
     }
 
     public class BulkUploadAddDraftApprenticeshipsResult
