@@ -2,7 +2,7 @@
 {
     public class GetAccountLegalEntityRequest : IGetApiRequest
     {
-        public long _accountLegalEntityId;
+        private long _accountLegalEntityId { get; }
         public string GetUrl => $"accountLegalEntity/{_accountLegalEntityId}";
 
         public GetAccountLegalEntityRequest(long accountLegalEntityId)
