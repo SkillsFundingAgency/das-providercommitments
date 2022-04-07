@@ -1,6 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;
@@ -87,6 +88,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             var model = new EndDateViewModel { StartDate = startDate, EndDate = new MonthYearModel(endDate) };
             AssertValidationResult(request => request.EndDate, model, expected);
+        }
+
+        [TestCase("012020", "042020", "052020", true)]
+        [TestCase("012020", "042020", "032020", false)]
+        [TestCase("012020", "032020", "122020", false)]
+        [TestCase("012020", "012019", "122020", false)]
+        public void AndWhenEmploymentEndDateIsCheckedAgainstStartDate_ThenShouldHaveExpectedResult(string startDate, string employmentEndDate, string trainingEndDate, bool expected)
+        {
+            var model = new EndDateViewModel
+            {
+                DeliveryModel = DeliveryModel.PortableFlexiJob,
+                StartDate = startDate,
+                EndDate = new MonthYearModel(trainingEndDate),
+                EmploymentEndDate = new MonthYearModel(employmentEndDate),
+            };
+            AssertValidationResult(request => request.EmploymentEndDate, model, expected);
         }
 
         private void AssertValidationResult<T>(Expression<Func<EndDateViewModel, T>> property, EndDateViewModel instance, bool expectedValid)
