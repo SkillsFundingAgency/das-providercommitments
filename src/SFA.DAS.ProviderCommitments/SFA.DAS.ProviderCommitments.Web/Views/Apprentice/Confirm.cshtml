@@ -59,10 +59,14 @@
                     <td class="govuk-table__cell">@DisplayDate(Model.OldStartDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
-                <tr class="govuk-table__row">
-                    <th asp-show="@isRegular" scope="row" class="govuk-table__header">Training end date</th>
-                    <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Current employment end date</th>
+                <tr asp-show="@isRegular" class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Training end date</th>
                     <td class="govuk-table__cell">@DisplayDate(Model.OldEndDate)</td>
+                    <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr asp-hide="@isRegular" class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Current employment end date</th>
+                    <td asp-show="@Model.OldEmploymentEndDate.HasValue" class="govuk-table__cell">@DisplayDate(Model.OldEmploymentEndDate.Value)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
                 <tr class="govuk-table__row">
