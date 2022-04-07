@@ -13,6 +13,9 @@
     ViewBag.PageId = "edit-apprentices-detail";
     ViewBag.GaData.Vpv = "provider/apprentices/apprentice/edit";
     ViewBag.GaData.Org = Model.EmployerName;
+
+    Model.EmploymentPrice = (long?)Model.EmploymentPrice;
+    Model.Cost = (long?)Model.Cost;
 }
 
 <div class="govuk-grid-row">
@@ -27,6 +30,7 @@
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
             @Html.HiddenFor(x => x.Version)
             @Html.HiddenFor(x => x.Option)
+            @Html.HiddenFor(x => x.EmailShouldBePresent)
 
             @if (Model.IsContinuation)
             {
@@ -357,7 +361,7 @@
                 {
                     <dl class="das-definition-list">
                         <dt asp-for="Cost" class="das-definition-list__title">Agreed price for this employment (excluding VAT)</dt>
-                        <dd class="das-definition-list__definition" id="cost">@Model.EmploymentPrice.FormatCost()</dd>
+                        <dd class="das-definition-list__definition" id="cost">@(Model.EmploymentPrice.FormatCost())</dd>
                         @Html.HiddenFor(x => x.EmploymentPrice)
                     </dl>
                 }
