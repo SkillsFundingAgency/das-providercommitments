@@ -11,13 +11,12 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using System;
 using SFA.DAS.Encoding;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
+
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -154,10 +153,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     .Returns(_linkGeneratorResult);
 
                 _controller = new CohortController(Mock.Of<IMediator>(),
-                     modelMapper.Object,
-                     linkGenerator.Object,
-                    _commitmentsApiClient.Object, Mock.Of<IFeatureTogglesService<ProviderFeatureToggle>>(), Mock.Of<IEncodingService>(),
-                     Mock.Of<IOuterApiService>());
+                    modelMapper.Object,
+                    linkGenerator.Object,
+                    _commitmentsApiClient.Object, 
+                    Mock.Of<IAuthorizationService>(), 
+                    Mock.Of<IEncodingService>()
+                    ,Mock.Of<IOuterApiService>());
             }
 
             public async Task Post(CohortDetailsOptions option)

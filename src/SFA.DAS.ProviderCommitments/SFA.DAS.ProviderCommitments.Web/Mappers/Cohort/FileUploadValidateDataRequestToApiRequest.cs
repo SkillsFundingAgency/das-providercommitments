@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class FileUploadValidateDataRequestToApiRequest : FileUploadMapperBase, IMapper<FileUploadValidateDataRequest, BulkUploadValidateApiRequest>
+    public class FileUploadValidateDataRequestToApiRequest : FileUploadMapperBase, IMapper<FileUploadValidateDataRequest, BulkUploadValidateApimRequest>
     {
-        public Task<BulkUploadValidateApiRequest> Map(FileUploadValidateDataRequest source)
+        public Task<BulkUploadValidateApimRequest> Map(FileUploadValidateDataRequest source)
         {
-            var apiRequest = new BulkUploadValidateApiRequest();
+            var apiRequest = new BulkUploadValidateApimRequest();
             apiRequest.ProviderId = source.ProviderId;
 
             apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId);

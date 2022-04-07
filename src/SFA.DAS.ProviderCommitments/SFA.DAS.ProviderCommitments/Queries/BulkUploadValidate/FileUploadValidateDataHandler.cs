@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
         public async Task<Unit> Handle(FileUploadValidateDataRequest request, CancellationToken cancellationToken)
         {
             request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachment);
-            var apiRequest = await _modelMapper.Map<BulkUploadValidateApiRequest>(request);
+            var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             await _client.ValidateBulkUploadRequest(apiRequest);
             return Unit.Value;
         }

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Encoding;
 using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
@@ -22,6 +23,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
         {
+            var emptyRecords = csvRecords.GetEmptyRecords();
+            emptyRecords.ForEach(item => csvRecords.Remove(item));
+
             return csvRecords.Select((csvRecord, index) =>
              new BulkUploadAddDraftApprenticeshipRequest()
              {

@@ -40,17 +40,17 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             private Mock<IModelMapper> _modelMapper { get; set; }
             private Mock<IBulkUploadFileParser> _bulkUploadParser { get; set; }
             private FileUploadValidateDataRequest _bulkUploadValidateDataRequest { get; set; }
-            private BulkUploadValidateApiRequest _bulkUploadValidateApiRequest { get; set; }
+            private BulkUploadValidateApimRequest _bulkUploadValidateApiRequest { get; set; }
             public BulkUploadValidateDataHandlerTestsFixture()
             {
                 var fixture = new Fixture();
                 _bulkUploadValidateDataRequest = new FileUploadValidateDataRequest() ;
-                _bulkUploadValidateApiRequest = fixture.Create<BulkUploadValidateApiRequest>();
+                _bulkUploadValidateApiRequest = fixture.Create<BulkUploadValidateApimRequest>();
 
                 _outerApiService = new Mock<IOuterApiService>();
 
                 _modelMapper = new Mock<IModelMapper>();
-                _modelMapper.Setup(x => x.Map<BulkUploadValidateApiRequest>(_bulkUploadValidateDataRequest)).ReturnsAsync(() => _bulkUploadValidateApiRequest);
+                _modelMapper.Setup(x => x.Map<BulkUploadValidateApimRequest>(_bulkUploadValidateDataRequest)).ReturnsAsync(() => _bulkUploadValidateApiRequest);
                 
                 _bulkUploadParser = new Mock<IBulkUploadFileParser>();
                 _bulkUploadParser.Setup(x => x.GetCsvRecords(It.IsAny<long>(), It.IsAny<IFormFile>()))
@@ -65,12 +65,12 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
 
             internal void VerifyApiMapperCalled()
             {
-                _modelMapper.Verify(x => x.Map<BulkUploadValidateApiRequest>(_bulkUploadValidateDataRequest), Times.Once);
+                _modelMapper.Verify(x => x.Map<BulkUploadValidateApimRequest>(_bulkUploadValidateDataRequest), Times.Once);
             }
 
             internal void VerifyBulkUploadDataValidated()
             {
-                _outerApiService.Verify(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApiRequest>()), Times.Once);
+                _outerApiService.Verify(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>()), Times.Once);
             }
         }
     }

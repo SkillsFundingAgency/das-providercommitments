@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return await _outerApiClient.Get<GetStandardResponse>(new GetStandardDetailsRequest(courseCode));
         }
 
-        public async Task ValidateBulkUploadRequest(BulkUploadValidateApiRequest data)
+        public async Task ValidateBulkUploadRequest(BulkUploadValidateApimRequest data)
         {
             await _outerApiClient.Post<object>(new PostValidateBulkUploadDataRequest(data));
         }

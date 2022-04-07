@@ -15,23 +15,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public List<Web.Models.Cohort.CsvRecord> _csvRecords { get; set; }
         public List<BulkUploadAddDraftApprenticeshipRequest> _result { get; set; }
         public FileUploadMapperBase Sut { get; set; }
+        public Fixture _fixture { get; set; }
+        public Mock<IEncodingService> _encodingService { get; set; }
 
         [SetUp]
         public void Setup()
         {
-            var fixture = new Fixture();
-            var encodingService = new Mock<IEncodingService>();
-            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
-            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
+            _fixture = new Fixture();
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
+            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
 
-            _csvRecords = fixture.Build<Web.Models.Cohort.CsvRecord>()
+            _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()
                 .With(x => x.DateOfBirth, "2000-02-02")
                 .With(x => x.StartDate, "2021-03-04")
                 .With(x => x.EndDate, "2022-04")
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
 
-            Sut = new FileUploadMapperBase(encodingService.Object);
+            Sut = new FileUploadMapperBase(_encodingService.Object);
             _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
         }
 
@@ -143,6 +145,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var result = _result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(1, result.CohortId);
             }
+        }
+
+
+        [Test]
+        public void VerifyEmptyRowsRemovedFromUploadedFile()
+        {
+            //Arrange          
+            var csvRecords2 = _fixture.Build<Web.Models.Cohort.CsvRecord>()
+               .With(x => x.CohortRef, "")
+               .With(x => x.AgreementId, "")
+               .With(x => x.ULN, "")
+               .With(x => x.FamilyName, "")
+               .With(x => x.GivenNames, "")
+               .With(x => x.DateOfBirth, "")
+               .With(x => x.EmailAddress, "")
+               .With(x => x.StdCode, "")
+               .With(x => x.StartDate, "")
+               .With(x => x.EndDate, "")
+               .With(x => x.TotalPrice, "")
+               .With(x => x.EPAOrgID, "")
+               .With(x => x.ProviderRef, "")
+               .CreateMany(2).ToList();
+            _csvRecords.AddRange(csvRecords2);
+
+            //Act
+            Sut = new FileUploadMapperBase(_encodingService.Object);
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+
+            //Assert    
+            Assert.AreEqual(2, _result.Count());    
         }
     }
 }

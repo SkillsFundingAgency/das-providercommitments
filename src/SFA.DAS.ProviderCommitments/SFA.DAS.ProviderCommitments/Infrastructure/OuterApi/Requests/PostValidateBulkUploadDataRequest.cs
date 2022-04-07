@@ -2,7 +2,7 @@
 {
     public class PostValidateBulkUploadDataRequest : IPostApiRequest
     {
-        public PostValidateBulkUploadDataRequest(BulkUploadValidateApiRequest request)
+        public PostValidateBulkUploadDataRequest(BulkUploadValidateApimRequest request)
         {
             Data = request;
         }

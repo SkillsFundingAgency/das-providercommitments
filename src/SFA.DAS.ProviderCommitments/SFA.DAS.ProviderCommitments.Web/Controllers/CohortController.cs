@@ -1,13 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -24,10 +20,14 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
-using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using System.Linq;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
-        private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
+        private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
-            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService,
+            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
             IOuterApiService outerApiService)
         {
@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
-            _featureTogglesService = featureTogglesService;
+            _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
         }
@@ -103,12 +103,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("add-apprentice")]
         [Route("add/apprentice")]
+        [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            return View(model);
+            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
+            {
+                return RedirectToAction(nameof(SelectCourse), request);
+            }
+            else
+            {
+                return RedirectToAction(nameof(AddDraftApprenticeship), request);
+            }
         }
 
         [HttpGet]
@@ -119,12 +126,101 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(chooseCohortViewModel);
         }
 
-        [HttpPost]
-        [Route("add-apprentice")]
-        [Route("add/apprentice")]
+        [HttpGet]
+        [Route("add/select-course")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> AddDraftApprenticeship(AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<SelectCourseViewModel>(request);
+            return View("SelectCourse", model);
+        }
+
+        [HttpPost]
+        [Route("add/select-course")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectCourse(SelectCourseViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
+            }
+
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model); //?
+            return RedirectToAction(nameof(SelectDeliveryModel), request);
+        }
+
+        [HttpGet]
+        [Route("add/select-delivery-model")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectDeliveryModel(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
+
+            if (model.DeliveryModels.Length > 1)
+            {
+                return View("SelectDeliveryModel", model);
+            }
+
+            request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
+            return RedirectToAction(nameof(AddDraftApprenticeship), request);
+        }
+
+        [HttpPost]
+        [Route("add/select-delivery-model")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
+        {
+            if (model.DeliveryModel == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
+            }
+
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
+            return RedirectToAction(nameof(AddDraftApprenticeship), request);
+        }
+
+        [HttpGet]
+        [Route("add/apprenticeship")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = GetStoredDraftApprenticeshipState();
+            if (model == null)
+            {
+                model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            }
+            else
+            {
+                model.CourseCode = request.CourseCode;
+                model.DeliveryModel = request.DeliveryModel;
+            }
+            return View("AddDraftApprenticeship", model);
+        }
+
+        [HttpPost]
+        [Route("add/apprenticeship")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
+        {
+            if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
+            {
+                StoreDraftApprenticeshipState(model);
+                var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
+                return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), request);
+            }
+
+            return await SaveDraftApprenticeship(model);
+        }
+
+        private async Task<IActionResult> SaveDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
 
@@ -516,6 +612,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 throw new UnauthorizedAccessException("User not allowed");
             }
+        }
+
+        private void StoreDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
+        {
+            TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
+        }
+
+        private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
+        {
+            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
     }
 }

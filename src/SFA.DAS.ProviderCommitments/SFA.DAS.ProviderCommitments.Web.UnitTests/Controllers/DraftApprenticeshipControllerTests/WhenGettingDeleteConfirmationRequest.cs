@@ -9,6 +9,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
 using MediatR;
 using SFA.DAS.Encoding;
+using SFA.DAS.Authorization.Features.Services;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -17,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     {
         public DraftApprenticeshipController Sut { get; set; }
         private Mock<IModelMapper> _modelMapperMock;
+        private Mock<IAuthorizationService> _providerFeatureToggle;
         private DeleteConfirmationViewModel _viewModel;
         private DeleteConfirmationRequest _request;
 
@@ -32,7 +36,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .Setup(x => x.Map<DeleteConfirmationViewModel>(_request))
               .ReturnsAsync(_viewModel);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>());
+            _providerFeatureToggle = new Mock<IAuthorizationService>();
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+
+            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>(), _providerFeatureToggle.Object);
         }
 
         [Test]

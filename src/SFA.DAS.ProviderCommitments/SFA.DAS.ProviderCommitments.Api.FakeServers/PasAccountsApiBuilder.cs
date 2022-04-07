@@ -1,13 +1,11 @@
-﻿using System;
-using System.Net;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using WireMock.Matchers;
+using System.Net;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace SFA.DAS.ProviderCommitments.PAS.Accounts.Api.FakeServer
+namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 {
     public class PasAccountsApiBuilder
     {
@@ -25,14 +23,14 @@ namespace SFA.DAS.ProviderCommitments.PAS.Accounts.Api.FakeServer
             return new PasAccountsApiBuilder(port);
         }
 
-        public PasAccountsApi Build()
+        public MockApi Build()
         {
-            return new PasAccountsApi(_server);
+            return new MockApi(_server);
         }
 
         public PasAccountsApiBuilder WithAgreementStatusSet()
         {
-            var data = new 
+            var data = new
             {
                 Status = "Agreed"
             };
@@ -52,6 +50,5 @@ namespace SFA.DAS.ProviderCommitments.PAS.Accounts.Api.FakeServer
 
             return this;
         }
-
     }
 }

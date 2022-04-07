@@ -177,6 +177,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
         }
 
+        [TestCase(DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(DeliveryModel.Regular, true)]
+        public async Task ThenAllowEditApprenticeIsMappedCorrectly(DeliveryModel dm, bool expectedAllowEditApprentice)
+        {
+            _fixture.WithApprenticeshipDeliveryModel(dm);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+        }
+
+
         [TestCase(null)]
         [TestCase(ConfirmationStatus.Unconfirmed)]
         [TestCase(ConfirmationStatus.Confirmed)]
@@ -723,6 +735,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApprenticeshipStatus status)
             {
                 ApiResponse.Status = status;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithApprenticeshipDeliveryModel(DeliveryModel dm)
+            {
+                ApiResponse.DeliveryModel = dm;
                 return this;
             }
 

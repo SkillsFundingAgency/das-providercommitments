@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingFileUploadValidateDataRequestToApiRequestTests
     {
         private FileUploadValidateDataRequestToApiRequest _mapper;
-        private BulkUploadValidateApiRequest _result;
+        private BulkUploadValidateApimRequest _result;
         private List<CsvRecord> _csvRecords;
         private FileUploadValidateDataRequest _request;
 

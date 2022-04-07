@@ -21,8 +21,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = source.UniqueLearnerNumber,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
+                EmploymentPrice = source.EmploymentPrice,
                 Cost = source.Cost,
                 StartDate = source.StartDate,
+                EmploymentEndDate = source.EmploymentEndDate,
                 EndDate = source.EndDate,
                 OriginatorReference = source.OriginatorReference,
                 ReservationId = source.ReservationId
