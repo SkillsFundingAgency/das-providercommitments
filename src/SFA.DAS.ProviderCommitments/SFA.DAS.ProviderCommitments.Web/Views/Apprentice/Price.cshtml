@@ -4,10 +4,10 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
 @{
-    ViewBag.Title = "What's the new agreed apprenticeship price?";
+    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    ViewBag.Title = isRegular ? "What's the new agreed apprenticeship price?" : "Agreed training prices for the employment and the apprenticeship";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/price";
     ViewBag.GaData.Org = Model.LegalEntityName;
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
 }
 
 <div class="govuk-grid-row">
@@ -24,7 +24,7 @@
             @Html.HiddenFor(x => x.EndDate)
 
             <div asp-show="!isRegular" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error ")">
-                <p>Agreed price for this employment contract (excluding VAT).</p>
+                <p>Agreed training price for this period of employment (excluding VAT).</p>
                 <span class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,000 enter 1000.</span>
                 @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
                 <input asp-for="EmploymentPrice" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.EmploymentPrice, "govuk-input--error input-validation-error")" />
@@ -35,7 +35,7 @@
                 <p asp-show="!isRegular">Total agreed apprenticeship price (excluding VAT).</p>
                 <label asp-show="@isRegular" class="govuk-label" for="price">Enter the price in whole pounds.</label>
                 <span asp-show="@isRegular" class="govuk-hint">For example, for &pound;1,500 enter 1500.</span>
-                <span asp-show="!isRegular" class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,000 enter 1000.</span>
+                <span asp-show="!isRegular" class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,500 enter 1500.</span>
                 @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
                 <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
             </div>
