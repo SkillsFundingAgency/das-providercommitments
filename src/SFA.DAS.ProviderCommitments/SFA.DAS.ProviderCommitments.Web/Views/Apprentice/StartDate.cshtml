@@ -4,10 +4,10 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
 @{
-    ViewData["Title"] = "New training start date";
+    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    ViewData["Title"] = isRegular ? "New training start date" : "Start date for this employment";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;    
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
 }
 
 <div class="govuk-grid-row">
@@ -15,9 +15,7 @@
 
         <partial name="_ValidationSummary" />        
 
-        <h1 asp-show="@isRegular" class="govuk-heading-xl">New training start date</h1>
-
-        <h2 asp-show="!isRegular" class="govuk-heading-xl">Start date for this employment</h2>
+        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
         
         <p asp-show="@isRegular" class="govuk-body">The restart date must be on or after the stop date.</p>
 
