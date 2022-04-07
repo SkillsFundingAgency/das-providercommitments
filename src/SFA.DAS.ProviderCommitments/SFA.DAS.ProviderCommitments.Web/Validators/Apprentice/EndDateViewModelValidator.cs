@@ -46,6 +46,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                     .WithMessage("You must enter the projected apprenticeship training end date");
 
                 RuleFor(x => x.EndDate)
+                    .Must(y => y.IsValid)
+                    .WithMessage("You must enter a valid date, for example 09 2022")
+                    .When(y => y.EndDate.HasValue);
+
+                RuleFor(x => x.EndDate)
                     .Must((y, _) => y.EndDate.Date > (new MonthYearModel(y.StartDate).Date))
                     .WithMessage("This date must be later than the employment start date")
                     .When(a => a.EndDate.IsValid);
@@ -53,6 +58,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 RuleFor(x => x.EmploymentEndDate)
                     .Must(x => x.HasValue)
                     .WithMessage("You must enter the end date for this employment");
+
+                RuleFor(x => x.EmploymentEndDate)
+                    .Must(x => x.IsValid)
+                    .WithMessage("You must enter a valid date, for example 09 2022")
+                    .When(y => y.EndDate.HasValue);
 
                 RuleFor(x => x.EmploymentEndDate)
                     .Must((model, date) => date.Date <= model.EndDate.Date)

@@ -58,6 +58,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                     .WithMessage("You must enter a start date for this employment");
 
                 RuleFor(x => x.StartDate)
+                    .Must(y => y.IsValid)
+                    .WithMessage("You must enter a valid date, for example 09 2022")
+                    .When(y => y.StartDate.HasValue);
+
+                RuleFor(x => x.StartDate)
                     .Must((y, _) => y.StartDate.Date >= y.StopDate)
                     .WithMessage("This date must not be before the previous employment end date")
                     .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
