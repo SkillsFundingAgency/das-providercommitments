@@ -74,8 +74,13 @@
                     <td class="govuk-table__cell">@DisplayDate(Model.StopDate)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
-                <tr class="govuk-table__row">
+                <tr asp-hide="@isRegular" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Training price for this employment</th>
+                    <td class="govuk-table__cell">@Model.OldEmploymentPrice?.ToGdsCostFormat()</td>
+                    <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Total agreen apprenticeship price</th>
                     <td class="govuk-table__cell">@Model.OldPrice.ToGdsCostFormat()</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
