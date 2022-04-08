@@ -3,6 +3,7 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
 @using SFA.DAS.CommitmentsV2.Api.Client
+@using SFA.DAS.ProviderCommitments.Extensions
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
@@ -14,10 +15,11 @@
     ViewBag.GaData.Vpv = "provider/apprentices/apprentice/edit";
     ViewBag.GaData.Org = Model.EmployerName;
 
-    Model.EmploymentPrice = (long?)Model.EmploymentPrice;
-    Model.Cost = (long?)Model.Cost;
+    Model.EmploymentPrice = (long?) Model.EmploymentPrice;
+    Model.Cost = (long?) Model.Cost;
+    Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
+    Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
 }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />

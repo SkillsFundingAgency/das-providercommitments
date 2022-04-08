@@ -60,6 +60,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         Version = update.Version,
                         Option = update.Option,
                         DeliveryModel = update.DeliveryModel,
+                        EmploymentEndDate = update.EmploymentEndDate,
+                        EmploymentPrice = update.EmploymentPrice
                     },
                     OriginalApprenticeship = new BaseEdit
                     {
@@ -75,6 +77,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         Version = apprenticeship.Version,
                         Option = apprenticeship.Option,
                         DeliveryModel = apprenticeship.DeliveryModel,
+                        EmploymentEndDate = apprenticeship.EmploymentEndDate,
+                        EmploymentPrice = apprenticeship.EmploymentPrice
                     }
                 };
 
