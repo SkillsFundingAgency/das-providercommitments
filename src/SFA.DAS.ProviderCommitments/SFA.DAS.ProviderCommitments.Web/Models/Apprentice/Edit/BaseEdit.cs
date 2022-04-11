@@ -128,6 +128,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         }
         public int? EmploymentEndMonth { get; set; }
         public int? EmploymentEndYear { get; set; }
-        public decimal? EmploymentPrice { get; set; }
+        public int? EmploymentPrice { get; set; }
     }
 }

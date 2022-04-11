@@ -87,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public DeliveryModel DeliveryModel { get; set; }
         public string CourseName { get; set; }
 
-        public decimal? EmploymentPrice { get; set; }
+        public int? EmploymentPrice { get; set; }
 
         [Display(Name = "Planned end date for this employment")]
         public MonthYearModel EmploymentEndDate { get; }
