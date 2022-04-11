@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using FluentValidation.TestHelper;
@@ -9,10 +8,7 @@ using NUnit.Framework;
 using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
@@ -161,6 +157,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             //Assert
             Assert.AreEqual(1,result.Errors.Count);
             Assert.AreEqual("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this", result.ToString());
+        }
+
+        [Test]
+        public void ShouldReturnInvalidMessageWhenFileContainsOnlyColumnHeader()
+        {
+            //Arrange
+            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef";
+            var fileContents = new StringBuilder().AppendLine(headerLine).ToString();
+            var file = CreateFakeFormFile(fileContents);
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            
+            //Act
+            var result = validator.Validate(model);
+
+            //Assert
+            Assert.AreEqual(1, result.Errors.Count);
+            Assert.AreEqual("The selected file does not contain apprentice details", result.ToString());
         }
 
         private void AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)
