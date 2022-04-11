@@ -136,6 +136,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EmploymentEndDate, _fixture.Result.EmploymentEndDate);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
@@ -147,6 +154,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _fixture.Map();
             Assert.AreEqual(_fixture.ApiResponse.ProviderReference, _fixture.Result.ProviderRef);
+        }
+
+        [Test]
+        public async Task ThenEmploymentPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EmploymentPrice, _fixture.Result.EmploymentPrice);
         }
 
         [Test]
