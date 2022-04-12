@@ -132,7 +132,7 @@
 {
     @if (Model.InEditMode)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price })">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price, Model.EmploymentPrice, EmploymentEndDate = Model.EmploymentEndDate?.MonthYear })">Back</a>
     }
     else
     {

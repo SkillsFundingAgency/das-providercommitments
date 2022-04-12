@@ -51,7 +51,7 @@
 {
     @if (Model.InEditMode)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new {Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, Model.EndDate, Model.Price})">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new {Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, Model.EndDate, Model.Price, Model.EmploymentPrice, Model.EmploymentEndDate })">Back</a>
     }
     else
     {
