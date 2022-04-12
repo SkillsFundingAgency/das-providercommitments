@@ -14,9 +14,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string StartDate { get; set; }
         public string EmploymentEndDate { get; set; }
         public string EndDate { get; set; }        
-        [SuppressArgumentException(nameof(EmploymentPrice), "Employment price must be 7 numbers or fewer")]
+        [SuppressArgumentException(nameof(EmploymentPrice), "You must enter a price, for example 1000")]
         public int? EmploymentPrice { get; set; }
-        [SuppressArgumentException(nameof(Price), "Total agreed apprenticeship price must be 7 numbers or fewer")]
+        [SuppressArgumentException(nameof(Price), "You must enter a price, for example 1000")]
         public int? Price { get; set; }
         public bool InEditMode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }

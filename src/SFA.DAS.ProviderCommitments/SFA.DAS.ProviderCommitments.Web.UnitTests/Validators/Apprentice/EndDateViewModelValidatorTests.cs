@@ -90,20 +90,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.EndDate, model, expected);
         }
 
-        [TestCase("012020", "042020", "052020", true)]
-        [TestCase("012020", "042020", "032020", false)]
-        [TestCase("012020", "032020", "122020", false)]
-        [TestCase("012020", "012019", "122020", false)]
-        public void AndWhenEmploymentEndDateIsCheckedAgainstStartDate_ThenShouldHaveExpectedResult(string startDate, string employmentEndDate, string trainingEndDate, bool expected)
+        [TestCase("042020", "052020", null)]
+        [TestCase("042020", "032020", "This date must not be later than the projected apprenticeship training end date")]
+        [TestCase("012019", "122020", "This date must be at least 3 months later than the employment start date")]
+        [TestCase("032020", "122020", "This date must be at least 3 months later than the employment start date")]
+        public void AndEmploymentEndDateIsNotLaterThanTrainingEndDate(string employmentEndDate, string trainingEndDate, string error)
         {
             var model = new EndDateViewModel
             {
                 DeliveryModel = DeliveryModel.PortableFlexiJob,
-                StartDate = startDate,
+                StartDate = "012020",
                 EndDate = new MonthYearModel(trainingEndDate),
                 EmploymentEndDate = new MonthYearModel(employmentEndDate),
             };
-            AssertValidationResult(request => request.EmploymentEndDate, model, expected);
+            
+            var result = new EndDateViewModelValidator().TestValidate(model);
+
+            if (error == null)
+            {
+                result.ShouldNotHaveValidationErrorFor(x => x.EmploymentEndDate);
+            }
+            else
+            {
+                result.ShouldHaveValidationErrorFor(x => x.EmploymentEndDate).WithErrorMessage(error);
+            }
         }
 
         private void AssertValidationResult<T>(Expression<Func<EndDateViewModel, T>> property, EndDateViewModel instance, bool expectedValid)

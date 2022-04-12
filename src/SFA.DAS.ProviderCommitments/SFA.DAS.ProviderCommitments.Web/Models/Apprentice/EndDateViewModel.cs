@@ -26,15 +26,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? Price { get; set; }
 
         public MonthYearModel EmploymentEndDate { get; set; }
-        [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
+        [SuppressArgumentException(nameof(EmploymentEndDate), "You must enter a valid date, for example 09 2022")]
         public int? EmploymentEndMonth { get => EmploymentEndDate.Month; set => EmploymentEndDate.Month = value; }
-        [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
+        [SuppressArgumentException(nameof(EmploymentEndDate), "You must enter a valid date, for example 09 2022")]
         public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
 
         public MonthYearModel EndDate { get; set; }
-        [SuppressArgumentException(nameof(EndDate),"The end date is not valid")]
+        [SuppressArgumentException(nameof(EndDate), "You must enter a valid date, for example 09 2022")]
         public int? EndMonth { get => EndDate.Month; set => EndDate.Month = value; }
-        [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
+        [SuppressArgumentException(nameof(EndDate), "You must enter a valid date, for example 09 2022")]
         public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public DeliveryModel? DeliveryModel { get; set; }

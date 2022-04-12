@@ -24,9 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public MonthYearModel StartDate { get; set; }
         public DateTime? StopDate { get; set; }
 
-        [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
+        [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
         public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
-        [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
+        [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public string LegalEntityName { get; set; }
