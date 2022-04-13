@@ -130,12 +130,19 @@
 
 @section breadcrumb
 {
-    @if (Model.InEditMode)
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeConfirm, new { Model.EmployerAccountLegalEntityPublicHashedId, Model.StartDate, EndDate = Model.EndDate.MonthYear, Model.Price, Model.EmploymentPrice, EmploymentEndDate = Model.EmploymentEndDate?.MonthYear })">Back</a>
+    @{
+        var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeStartDate;
+        var backModel = new 
+        {
+            Model.EmployerAccountLegalEntityPublicHashedId,
+            Model.StartDate,
+            EndDate = Model.EndDate.MonthYear,
+            Model.Price,
+            Model.DeliveryModel,
+            Model.EmploymentPrice,
+            EmploymentEndDate = Model.EmploymentEndDate?.MonthYear,
+        };
     }
-    else
-    {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeStartDate, new {Model.EmployerAccountLegalEntityPublicHashedId})">Back</a>
-    }
+
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(backRoute, backModel)">Back</a>
 }
