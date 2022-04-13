@@ -40,11 +40,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             When(x => x.DeliveryModel != DeliveryModel.PortableFlexiJob, () =>
             {
                 RuleFor(x => x.StartDate)
-                    .Must(y => y.HasValue)
-                    .WithMessage("Enter the new training start date for this apprenticeship")
-                    .When(z => !z.StartDate.HasValue);
-
-                RuleFor(x => x.StartDate)
                     .Must((y, _) => y.StartDate.Date >= y.StopDate)
                     .WithMessage("The new training start date cannot be before the stop date")
                     .When(a => a.StartDate.HasValue && a.StartDate.IsValid);

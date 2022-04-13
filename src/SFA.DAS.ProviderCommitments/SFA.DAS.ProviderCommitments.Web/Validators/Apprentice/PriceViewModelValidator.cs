@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
             RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId).NotEmpty();
             RuleFor(x => x.StartDate).Must(field => field.IsValidMonthYear());
-            RuleFor(x => x.Price).NotEmpty().WithMessage("You must enter a valid price, for example 1000");
+            RuleFor(x => x.Price).NotEmpty().WithMessage("You must enter a valid price. For example, for £1,000 enter 1000");
 
             When(x => x.DeliveryModel != DeliveryModel.PortableFlexiJob, () =>
             {
@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 RuleFor(x => x.Price).GreaterThanOrEqualTo(1).WithMessage("The price must be greater than zero");
                 RuleFor(x => x.Price).LessThanOrEqualTo(100000).WithMessage("The total agreed apprenticeship price must be £100,000 or less");
                 
-                RuleFor(x => x.EmploymentPrice).NotEmpty().WithMessage("You must enter a valid price, for example 1000");
+                RuleFor(x => x.EmploymentPrice).NotEmpty().WithMessage("You must enter a valid price. For example, for £1,000 enter 1000");
                 RuleFor(x => x.EmploymentPrice).GreaterThanOrEqualTo(1).WithMessage("The price must be greater than zero");
                 RuleFor(x => x.EmploymentPrice).LessThanOrEqualTo(x => x.Price)
                     .WithMessage("This price must not be more than than the total agreed apprenticeship price")
