@@ -70,6 +70,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenNewEmploymentEndDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EmploymentEndDate, result.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task ThenNewEnploymentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EmploymentPrice.Value, result.EmploymentPrice);
+        }
+
+        [Test]
+        public async Task ThenNullEmploymentEndDateIsMappedCorrectly()
+        {
+            _source.EmploymentEndDate = null;
+            var result = await _act();
+            Assert.IsNull(result.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task ThenNullEnploymentPriceIsMappedCorrectly()
+        {
+            _source.EmploymentPrice = null;
+            var result = await _act();
+            Assert.IsNull(result.EmploymentPrice);
+        }
+
+        [Test]
         public void ThenThrowsExceptionWhenNewPriceIsNull()
         {
             _source.Price = null;
