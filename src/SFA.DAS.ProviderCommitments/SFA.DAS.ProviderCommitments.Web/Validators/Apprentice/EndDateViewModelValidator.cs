@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 RuleFor(x => x.EndDate)
                     .Must((y, _) => y.EndDate.Date > (new MonthYearModel(y.StartDate).Date))
                     .WithMessage("This date must be later than the employment start date")
-                    .When(a => a.EndDate.IsValid);
+                    .When(a => a.EndDate.IsValid && a.EmploymentEndDate.IsValid && a.EmploymentEndDate.Date <= a.EndDate.Date);
 
                 RuleFor(x => x.EmploymentEndDate)
                     .Must(x => x.IsValid)

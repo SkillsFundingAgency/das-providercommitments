@@ -116,6 +116,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             }
         }
 
+        [Test]
+        public void AndEmploymentEndDateIsNotLaterThanTrainingEndDateWhenBeforeStartDate()
+        {
+            var model = new EndDateViewModel
+            {
+                DeliveryModel = DeliveryModel.PortableFlexiJob,
+                StartDate = "042022",
+                EmploymentEndDate = new MonthYearModel("022023"),
+                EndDate = new MonthYearModel("022022"),
+            };
+            
+            var result = new EndDateViewModelValidator().TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.EndDate)
+                .WithErrorMessage("This date must not be before the end date for this employment")
+                .WithoutErrorMessage("This date must be later than the employment start date");
+        }
+
         private void AssertValidationResult<T>(Expression<Func<EndDateViewModel, T>> property, EndDateViewModel instance, bool expectedValid)
         {
             var validator = new EndDateViewModelValidator();
