@@ -24,10 +24,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StartDate = source.StartDate,
+                EmploymentEndDate = source.EmploymentEndDate,
                 EndDate = source.EndDate,
+                EmploymentPrice = source.EmploymentPrice,
                 Price = source.Price,
                 InEditMode = source.Price.HasValue,
-                LegalEntityName = apprenticeship.EmployerName
+                LegalEntityName = apprenticeship.EmployerName,
+                DeliveryModel = source.DeliveryModel,
             };
         }
     }
