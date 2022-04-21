@@ -26,7 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     StartDate = source.StartDate,
                     EndDate = source.EndDate,
-                    Price = decimal.ToInt32(source.Price.Value)
+                    Price = source.Price.Value,
+                    EmploymentEndDate = source.EmploymentEndDate,
+                    EmploymentPrice = source.EmploymentPrice,
                 });
             }
             catch (Exception e)

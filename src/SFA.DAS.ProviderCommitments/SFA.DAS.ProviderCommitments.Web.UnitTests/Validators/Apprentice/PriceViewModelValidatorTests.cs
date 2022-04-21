@@ -1,5 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;
@@ -59,6 +60,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             var model = new PriceViewModel { Price = price };
             AssertValidationResult(request => request.Price, model, expectedValid);
+        }
+
+        [TestCase(1000, null, false)]
+        [TestCase(1000, 0, false)]
+        [TestCase(1000, 1, true)]
+        [TestCase(1000, 1000, true)]
+        [TestCase(1000, 1001, false)]
+        [TestCase(100000, 100000, true)]
+        [TestCase(100000, 100001, false)]
+        public void Validate_EmploymentPrice_ShouldBeValidated(int price, int? employmentPrice, bool expectedValid)
+        {
+            var model = new PriceViewModel { Price = price, EmploymentPrice = employmentPrice, DeliveryModel = DeliveryModel.PortableFlexiJob };
+            AssertValidationResult(request => request.EmploymentPrice, model, expectedValid);
         }
 
         private void AssertValidationResult<T>(Expression<Func<PriceViewModel, T>> property, PriceViewModel instance, bool expectedValid)

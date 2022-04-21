@@ -21,7 +21,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Build<EndDateViewModel>().With(x=>x.EndDate, new MonthYearModel("042020")).With(x=>x.StartDate, "012019").Create();
+            _source = fixture.Build<EndDateViewModel>()
+                .With(x => x.EndDate, new MonthYearModel("042020"))
+                .With(x => x.StartDate, "012019")
+                .Without(x => x.EmploymentEndDate)
+                .Create();
 
             _mapper = new EndDateViewModelToConfirmRequestMapper(Mock.Of<ILogger<EndDateViewModelToConfirmRequestMapper>>());
 

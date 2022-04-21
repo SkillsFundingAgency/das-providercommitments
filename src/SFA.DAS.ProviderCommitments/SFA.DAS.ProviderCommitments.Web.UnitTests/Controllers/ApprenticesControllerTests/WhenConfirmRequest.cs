@@ -50,7 +50,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             _fixture = new Fixture();
             ChangeOfEmployerRequest = _fixture.Build<ConfirmRequest>().With(x=>x.StartDate, "042020").Create();
-            ChangeOfEmployerViewModel = _fixture.Build<ConfirmViewModel>().With(x => x.NewStartDate, "042020").Create();
+            ChangeOfEmployerViewModel = _fixture.Build<ConfirmViewModel>()
+                .With(x => x.NewStartDate, "042020")
+                .Without(x => x.NewEmploymentEndDate)
+                .Create();
 
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<ConfirmViewModel>(It.IsAny<ConfirmRequest>()))

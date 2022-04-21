@@ -1,6 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;
@@ -87,6 +88,50 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             var model = new EndDateViewModel { StartDate = startDate, EndDate = new MonthYearModel(endDate) };
             AssertValidationResult(request => request.EndDate, model, expected);
+        }
+
+        [TestCase("042020", "052020", null)]
+        [TestCase("042020", "032020", "This date must not be later than the projected apprenticeship training end date")]
+        [TestCase("012019", "122020", "This date must be at least 3 months later than the employment start date")]
+        [TestCase("032020", "122020", "This date must be at least 3 months later than the employment start date")]
+        public void AndEmploymentEndDateIsNotLaterThanTrainingEndDate(string employmentEndDate, string trainingEndDate, string error)
+        {
+            var model = new EndDateViewModel
+            {
+                DeliveryModel = DeliveryModel.PortableFlexiJob,
+                StartDate = "012020",
+                EndDate = new MonthYearModel(trainingEndDate),
+                EmploymentEndDate = new MonthYearModel(employmentEndDate),
+            };
+            
+            var result = new EndDateViewModelValidator().TestValidate(model);
+
+            if (error == null)
+            {
+                result.ShouldNotHaveValidationErrorFor(x => x.EmploymentEndDate);
+            }
+            else
+            {
+                result.ShouldHaveValidationErrorFor(x => x.EmploymentEndDate).WithErrorMessage(error);
+            }
+        }
+
+        [Test]
+        public void AndEmploymentEndDateIsNotLaterThanTrainingEndDateWhenBeforeStartDate()
+        {
+            var model = new EndDateViewModel
+            {
+                DeliveryModel = DeliveryModel.PortableFlexiJob,
+                StartDate = "042022",
+                EmploymentEndDate = new MonthYearModel("022023"),
+                EndDate = new MonthYearModel("022022"),
+            };
+            
+            var result = new EndDateViewModelValidator().TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(x => x.EndDate)
+                .WithErrorMessage("This date must not be before the end date for this employment")
+                .WithoutErrorMessage("This date must be later than the employment start date");
         }
 
         private void AssertValidationResult<T>(Expression<Func<EndDateViewModel, T>> property, EndDateViewModel instance, bool expectedValid)
