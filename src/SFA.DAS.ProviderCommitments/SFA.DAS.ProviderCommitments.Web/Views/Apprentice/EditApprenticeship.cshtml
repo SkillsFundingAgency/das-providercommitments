@@ -167,7 +167,6 @@
                         <dt asp-for="DeliveryModel" class="das-definition-list__title">Apprenticeship delivery model</dt>
                         <dd class="das-definition-list__definition" id="trainingName">@Model.DeliveryModel.ToIrregularDescription()</dd>
                     </dl>
-                    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
                 }
                 @Html.HiddenFor(x => x.DeliveryModel)
             }
@@ -365,6 +364,15 @@
                         <dd class="das-definition-list__definition" id="cost">@(Model.EmploymentPrice.FormatCost())</dd>
                         @Html.HiddenFor(x => x.EmploymentPrice)
                     </dl>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
+                        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Training price for this employment</label>
+                        <span id="employment-price-hint" class="govuk-hint">
+                            Enter the price in whole pounds. For example, for £1,500 enter 1500
+                        </span>
+                        @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
+                        <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                        <input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
+                    </div>
                 }
             }
             else
@@ -378,19 +386,6 @@
                     <span class="govuk-body govuk-!-font-weight-bold">£ </span>
                     <input asp-for="Cost" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
                 </div>
-
-                @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
-                {
-                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
-                        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Training price for this employment</label>
-                        <span id="employment-price-hint" class="govuk-hint">
-                            Enter the price in whole pounds. For example, for £1,500 enter 1500
-                        </span>
-                        @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
-                        <span class="govuk-body govuk-!-font-weight-bold">£ </span>
-                        <input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="7" min="1" max="9999999" id="cost" type="number" />
-                    </div>
-                }
             }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
