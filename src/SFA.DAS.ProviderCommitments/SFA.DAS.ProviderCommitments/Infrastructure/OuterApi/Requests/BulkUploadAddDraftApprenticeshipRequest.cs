@@ -28,5 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
         public string AgreementId { get; set; }
         public long? LegalEntityId { get; set; }
         public int? Cost { get; }
+        public long? TransferSenderId { get; set; }
     }
 }
