@@ -57,8 +57,8 @@
                 {
                     <tr>
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
-                        <td class="govuk-table__cell">@Model.OriginalApprenticeship.DeliveryModel </td>
-                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.DeliveryModel</td>
+                        <td class="govuk-table__cell">@Model.OriginalApprenticeship.DeliveryModel.ToDescription() </td>
+                        <td class="govuk-table__cell">@Model.ApprenticeshipUpdates.DeliveryModel.ToDescription()</td>
                     </tr>
 
                     @if (Model.ApprenticeshipUpdates.DeliveryModel == DeliveryModel.Regular)
