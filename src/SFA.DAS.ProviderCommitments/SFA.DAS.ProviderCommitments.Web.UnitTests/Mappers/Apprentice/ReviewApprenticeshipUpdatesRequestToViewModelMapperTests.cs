@@ -99,6 +99,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task EmploymentEndDate_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentEndDate, viewModel.ApprenticeshipUpdates.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task EmploymentPrice_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentPrice, viewModel.ApprenticeshipUpdates.EmploymentPrice);
+        }
+
+        [Test]
         public async Task CourseCode_IsMapped()
         {
             var viewModel = await fixture.Map();
@@ -176,6 +192,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await fixture.Map();
 
             Assert.AreEqual(fixture.ApprenticeshipUpdate.Cost, viewModel.ApprenticeshipUpdates.Cost);
+        }
+
+        [Test] public async Task OriginalApprenticeship_DeliveryModel_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel, viewModel.ApprenticeshipUpdates.DeliveryModel);
+        }
+
+        [Test]
+        public async Task OriginalApprenticeship_EmploymentEndDate_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentEndDate, viewModel.ApprenticeshipUpdates.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task OriginalApprenticeship_EmploymentPrice_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentPrice, viewModel.ApprenticeshipUpdates.EmploymentPrice);
         }
 
         [Test]

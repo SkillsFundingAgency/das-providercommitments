@@ -130,7 +130,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("AddDraftApprenticeship", request);
         }
 
-
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]

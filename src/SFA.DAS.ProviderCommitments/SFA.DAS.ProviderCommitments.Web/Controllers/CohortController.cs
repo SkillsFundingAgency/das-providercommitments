@@ -238,7 +238,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
         {
@@ -248,7 +247,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/confirm-employer")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
@@ -259,7 +257,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/confirm-employer")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
@@ -273,7 +270,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{cohortReference}/details/delete")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Delete(DeleteCohortRequest request)
         {
@@ -284,7 +280,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{cohortReference}/details/delete")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Delete([FromServices] IAuthenticationService authenticationService, DeleteCohortViewModel viewModel)
         {

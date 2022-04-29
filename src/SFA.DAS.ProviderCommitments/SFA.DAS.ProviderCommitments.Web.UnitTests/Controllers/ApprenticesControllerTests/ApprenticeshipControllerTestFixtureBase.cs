@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         protected Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
         protected Mock<ILinkGenerator> _mockLinkGenerator;
         protected Mock<IUrlHelper> _mockUrlHelper;
+        protected Mock<ITempDataDictionary> _mockTempData;
 
         protected readonly ApprenticeController _controller;
 
@@ -30,12 +31,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockLinkGenerator = new Mock<ILinkGenerator>();
             _mockUrlHelper = new Mock<IUrlHelper>();
+            _mockTempData = new Mock<ITempDataDictionary>();
 
             _controller = new ApprenticeController(_mockMapper.Object,
                 Mock.Of<ICookieStorageService<IndexRequest>>(),
                 _mockCommitmentsApiClient.Object);
 
             _controller.Url = _mockUrlHelper.Object;
+            _controller.TempData = _mockTempData.Object;
         }
     }
 }
