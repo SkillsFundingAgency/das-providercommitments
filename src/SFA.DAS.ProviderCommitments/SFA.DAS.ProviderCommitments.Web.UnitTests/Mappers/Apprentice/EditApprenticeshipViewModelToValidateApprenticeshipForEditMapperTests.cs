@@ -165,6 +165,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(string.Empty, result.Option);
         }
 
+        [Test, MoqAutoData]
+        public async Task EmploymentEndDate_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.EmploymentEndDate.Date, result.EmploymentEndDate);
+        }
+
+        [Test, MoqAutoData]
+        public async Task EmploymentPrice_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        {
+            var result = await mapper.Map(request);
+
+            Assert.AreEqual(request.EmploymentPrice, result.EmploymentPrice);
+        }
+
         public class DateCustomisation : ICustomization
         {
             public void Customize(IFixture fixture)
