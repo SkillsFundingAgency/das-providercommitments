@@ -136,6 +136,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenEmploymentEndDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EmploymentEndDate, _fixture.Result.EmploymentEndDate);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
@@ -147,6 +154,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _fixture.Map();
             Assert.AreEqual(_fixture.ApiResponse.ProviderReference, _fixture.Result.ProviderRef);
+        }
+
+        [Test]
+        public async Task ThenEmploymentPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.EmploymentPrice, _fixture.Result.EmploymentPrice);
         }
 
         [Test]
@@ -176,18 +190,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
         }
-
-        [TestCase(DeliveryModel.PortableFlexiJob, false)]
-        [TestCase(DeliveryModel.Regular, true)]
-        public async Task ThenAllowEditApprenticeIsMappedCorrectly(DeliveryModel dm, bool expectedAllowEditApprentice)
-        {
-            _fixture.WithApprenticeshipDeliveryModel(dm);
-
-            await _fixture.Map();
-
-            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
-        }
-
 
         [TestCase(null)]
         [TestCase(ConfirmationStatus.Unconfirmed)]
