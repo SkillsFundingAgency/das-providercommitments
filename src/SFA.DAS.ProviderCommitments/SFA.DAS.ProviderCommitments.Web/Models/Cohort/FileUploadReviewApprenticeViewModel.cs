@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     {
         public long ProviderId { get; set; }
         public Guid CacheRequestId { get; set; }
-        public string EmployerName { get; set; }
+        public string LegalEntityName { get; set; }
         public string CohortRef { get; set; }
         public string CohortRefText => string.IsNullOrWhiteSpace(CohortRef) ? "This will be created when you save or send to employers" : CohortRef;
         public string MessageFromEmployer { get; set; }
