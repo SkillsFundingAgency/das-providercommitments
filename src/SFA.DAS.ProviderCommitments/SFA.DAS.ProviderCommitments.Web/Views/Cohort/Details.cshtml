@@ -7,8 +7,7 @@
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/unapproved/cohort";
-    ViewBag.GaData.Org = Model.LegalEntityName;
-    var bulkUploadUrl = Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{ Model.CohortReference}/UploadApprenticeships");
+    ViewBag.GaData.Org = Model.LegalEntityName;    
     var reservationUrl = $"{Model.ProviderId}/reservations/{ Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&encodedPledgeApplicationId={Model.EncodedPledgeApplicationId}";
 
     if (!string.IsNullOrWhiteSpace(Model.TransferSenderHashedId))
@@ -248,15 +247,6 @@ Model.HasEmailOverlaps)
         <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { @Model.CohortReference, @Model.ProviderId })">
             Delete this cohort
         </a>
-
-        @if (Model.AllowBulkUpload)
-        {
-            <br />
-            <br />
-            <a class="govuk-link delete-cohort" id="delete-cohort" href="@bulkUploadUrl">
-                Upload apprentice(s) using a CSV file
-            </a>
-        }
     </p>
 
     <hr class="govuk-section-break govuk-section-break--l">
