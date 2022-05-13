@@ -16,20 +16,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
             EndDate = new MonthYearModel("");
+            EmploymentEndDate = new MonthYearModel("");
         }
 
-        public EditApprenticeshipRequestViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate) : base()
+        public EditApprenticeshipRequestViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate, DateTime? employmentEndDate = null) : base()
         {
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
             StartDate = startDate == null ? new MonthYearModel("") : new MonthYearModel($"{startDate.Value.Month}{startDate.Value.Year}");
             EndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
+            EmploymentEndDate = employmentEndDate == null ? new MonthYearModel("") : new MonthYearModel($"{employmentEndDate.Value.Month}{employmentEndDate.Value.Year}");
         }
         public string EmployerName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public string ApprenticeshipHashedId { get; set; }
-        [JsonIgnore]
         public long ApprenticeshipId { get; set; }
         public string ULN { get; set; }
         public string TrainingName { get; set; }
@@ -84,5 +85,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public bool EmailShouldBePresent { get; set; }
         public bool HasOptions { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
+        public string CourseName { get; set; }
+
+        public int? EmploymentPrice { get; set; }
+
+        [Display(Name = "Planned end date for this employment")]
+        public MonthYearModel EmploymentEndDate { get; }
+
+        [Display(Name = "Month")]
+        [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
+        public int? EmploymentEndMonth { get => EmploymentEndDate.Month; set => EmploymentEndDate.Month = value; }
+
+        [Display(Name = "Year")]
+        [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
+        public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
     }
 }

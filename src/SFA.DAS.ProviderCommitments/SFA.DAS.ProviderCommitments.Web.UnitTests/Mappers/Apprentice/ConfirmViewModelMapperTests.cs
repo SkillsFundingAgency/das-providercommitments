@@ -119,11 +119,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenNewEmploymentEndDateIsMapped()
+        {
+            _fixture.SetEmploymentEndDateInRequest(DateTime.Now);
+            
+            var result = await _fixture.Map();
+            
+            var expectedEndDate = new MonthYearModel(_fixture.request.EmploymentEndDate);
+            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate);
+        }
+
+        [Test]
         public async Task ThenNewPriceIsMapped()
         {
             var result = await _fixture.Map();
 
             Assert.AreEqual(_fixture.request.Price, result.NewPrice);
+        }
+
+        [Test]
+        public async Task ThenNewEmploymentPriceIsMapped()
+        {
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(_fixture.request.EmploymentPrice, result.NewEmploymentPrice);
         }
 
         [Test]
@@ -165,6 +184,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             request = fixture.Create<ConfirmRequest>();
             request.StartDate = "012020";
             request.EndDate = "112020";
+            request.EmploymentEndDate = null;
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             trainingProgramme = fixture.Create<TrainingProgramme>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
@@ -220,6 +240,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public ConfirmViewModelMapperFixture SetPriceInRequest(int price)
         {
             request.Price = price;
+            return this;
+        }
+
+        public ConfirmViewModelMapperFixture SetEmploymentEndDateInRequest(DateTime startDate)
+        {
+            request.EmploymentEndDate = $"{startDate.Month}{startDate.Year}";
             return this;
         }
 

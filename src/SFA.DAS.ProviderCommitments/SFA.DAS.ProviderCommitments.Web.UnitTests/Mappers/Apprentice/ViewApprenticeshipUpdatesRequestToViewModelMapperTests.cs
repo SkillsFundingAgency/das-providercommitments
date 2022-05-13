@@ -107,6 +107,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task EmploymentEndDate_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentEndDate, viewModel.ApprenticeshipUpdates.EmploymentEndDate);
+        }
+
+        [Test]
+        public async Task EmploymentPrice_IsMapped()
+        {
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentPrice, viewModel.ApprenticeshipUpdates.EmploymentPrice);
+        }
+
+        [Test]
         public async Task CourseCode_IsMapped()
         {
             var viewModel = await fixture.Map();

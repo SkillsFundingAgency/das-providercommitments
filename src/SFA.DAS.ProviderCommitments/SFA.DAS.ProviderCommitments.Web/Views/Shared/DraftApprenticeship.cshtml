@@ -3,6 +3,8 @@
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using SFA.DAS.ProviderCommitments.Extensions
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -16,6 +18,14 @@
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
 
     ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+
+    Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
+    Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
+
+    if (!string.IsNullOrWhiteSpace(Model.CourseCode))
+    {
+        Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
+    }
 }
 
 @if (Model.IsContinuation)
@@ -41,13 +51,13 @@
         <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.Uln</dd>
 
 
-    @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
-    {
-        <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
-        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
-    }
+        @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+        {
+            <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
+            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
+        }
         <dt class="das-definition-list__title">Apprenticeship training course</dt>
-        <dd class="das-definition-list__definition">@Model.Courses.Single(x => x.CourseCode == Model.CourseCode).Name</dd>
+        <dd class="das-definition-list__definition">@Model.CourseName</dd>
     </dl>
 }
 else
@@ -127,11 +137,6 @@ else
 
     @if (AuthorizationService.IsAuthorized(SFA.DAS.ProviderCommitments.Features.ProviderFeature.DeliveryModel))
     {
-        if (!string.IsNullOrWhiteSpace(Model.CourseCode))
-        {
-            Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
-        }
-
         <div class="govuk-form-group">
             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
             <p class="govuk-body">
@@ -141,18 +146,18 @@ else
                 </button>
             </p>
         </div>
-    
+
         if (@Model.DeliveryModel != DeliveryModel.Regular)
         {
-        <div class="govuk-form-group">
-            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>
-            <p class="govuk-body">
-                @Model.DeliveryModel.ToDescription()
-                <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
-                    Edit<span class="govuk-visually-hidden"> delivery model</span>
-                </button>
-            </p>
-        </div>
+            <div class="govuk-form-group">
+                <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>
+                <p class="govuk-body">
+                    @Model.DeliveryModel.ToDescription()
+                    <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
+                        Edit<span class="govuk-visually-hidden"> delivery model</span>
+                    </button>
+                </p>
+            </div>
         }
 
         <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">

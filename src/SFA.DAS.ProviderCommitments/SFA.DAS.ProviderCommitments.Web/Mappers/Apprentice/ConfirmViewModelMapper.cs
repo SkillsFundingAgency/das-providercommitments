@@ -31,9 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
                 var newStartDate = new MonthYearModel(source.StartDate);
                 var newEndDate = new MonthYearModel(source.EndDate);
+                var newEmploymentEndDate = string.IsNullOrEmpty(source.EmploymentEndDate)
+                    ? null
+                    : new MonthYearModel(source.EmploymentEndDate);
 
                 return new ConfirmViewModel
                 {
+                    DeliveryModel = data.Apprenticeship.DeliveryModel,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     AccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                     OldEmployerName = data.Apprenticeship.EmployerName,
@@ -42,10 +46,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     OldStartDate = data.Apprenticeship.StartDate,
                     OldEndDate = data.Apprenticeship.EndDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
+                    OldEmploymentPrice = data.Apprenticeship.EmploymentPrice, 
+                    OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
                     NewStartDate = newStartDate.MonthYear,
                     NewEndDate = newEndDate.MonthYear,
                     NewPrice = source.Price,
+                    NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
+                    NewEmploymentPrice = source.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
                 };
             }

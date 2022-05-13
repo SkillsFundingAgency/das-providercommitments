@@ -1,14 +1,13 @@
 ﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,6 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private FileUploadReviewViewModel _viewModel;
         private List<Web.Models.Cohort.CsvRecord> _csvRecords;
+        private Mock<IOuterApiService> _outerApiService;
+        private GetCohortResult _cohortResult;
 
         [SetUp]
         public async Task Setup()
@@ -40,11 +41,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _cacheService = new Mock<ICacheService>();
             _cacheService.Setup(x => x.GetFromCache<List<Web.Models.Cohort.CsvRecord>>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _csvRecords);
 
+            _cohortResult = fixture.Create<GetCohortResult>();
+            _outerApiService = new Mock<IOuterApiService>();
+            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
+
             _encodingService = new Mock<IEncodingService>();
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
-            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(  _cacheService.Object, _encodingService.Object);
+            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object);
 
             _apiRequest = await _mapper.Map(_viewModel);
         }
@@ -85,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(GetValidDate(record.DateOfBirth, "yyyy-MM-dd").Value.Date, result.DateOfBirth);
+                Assert.AreEqual(record.DateOfBirth, result.DateOfBirthAsString);
             }
         }
 
@@ -159,12 +164,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
-        private DateTime? GetValidDate(string date, string format)
+        [Test]
+        public void VerifyTransferSenderIdISMapped()
         {
-            DateTime outDateTime;
-            if (DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out outDateTime))
-                return outDateTime;
-            return null;
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual((result.CohortId +1), result.TransferSenderId);
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
@@ -39,13 +40,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
+        private readonly IOuterApiService _outerApiService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
-            IEncodingService encodingService)
+            IEncodingService encodingService,
+            IOuterApiService outerApiService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -53,6 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _commitmentApiClient = commitmentsApiClient;
             _authorizationService = authorizationService;
             _encodingService = encodingService;
+            _outerApiService = outerApiService;
         }
 
         [HttpGet]
@@ -234,7 +238,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectEmployer(SelectEmployerRequest request)
         {
@@ -244,7 +247,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/confirm-employer")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
@@ -255,7 +257,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/confirm-employer")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
@@ -269,7 +270,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{cohortReference}/details/delete")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Delete(DeleteCohortRequest request)
         {
@@ -280,7 +280,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{cohortReference}/details/delete")]
-        [DasAuthorize(ProviderFeature.ProviderCreateCohortV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Delete([FromServices] IAuthenticationService authenticationService, DeleteCohortViewModel viewModel)
         {
@@ -397,7 +396,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/start")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ShowBulkUploadValidationErrors]
+        [HandleBulkUploadValidationErrors]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
             await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
@@ -426,7 +425,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/validate")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ShowBulkUploadValidationErrors]
+        [HandleBulkUploadValidationErrors]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateViewModel viewModel)
         {
             await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
@@ -448,19 +447,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ShowBulkUploadValidationErrors]
+        [HandleBulkUploadValidationErrors]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
             switch (viewModel.SelectedOption)
             {
                 case FileUploadReviewOption.ApproveAndSend:
-                    var approvedApiRequest = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-                    var approvedResponse = await _commitmentApiClient.BulkUploadAddAndApproveDraftApprenticeships(viewModel.ProviderId, approvedApiRequest);
+                    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
                     TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
                     return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
                 case FileUploadReviewOption.SaveButDontSend:
-                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
-                    var response = await _commitmentApiClient.BulkUploadDraftApprenticeships(viewModel.ProviderId, apiRequest);
+                    var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
                     return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);                    
                 default:

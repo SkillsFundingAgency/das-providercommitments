@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, commitment);
 
             
-            var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate)
+            var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
             {
                 FirstName = apprenticeship.FirstName,
                 LastName = apprenticeship.LastName,
@@ -71,6 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
                 EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
                 DeliveryModel = apprenticeship.DeliveryModel,
+                EmploymentPrice = apprenticeship.EmploymentPrice
             };
 
             return result;
