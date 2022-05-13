@@ -6,6 +6,8 @@ using Moq;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -17,6 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public FileUploadMapperBase Sut { get; set; }
         public Fixture _fixture { get; set; }
         public Mock<IEncodingService> _encodingService { get; set; }
+        private Mock<IOuterApiService> _outerApiService;
+        private GetCohortResult _cohortResult;
 
         [SetUp]
         public void Setup()
@@ -33,7 +37,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
 
-            Sut = new FileUploadMapperBase(_encodingService.Object);
+            _cohortResult = _fixture.Create<GetCohortResult>();
+            _outerApiService = new Mock<IOuterApiService>();
+            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
+
+            Sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
             _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
         }
 
@@ -147,6 +155,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        [Test]
+        public void VerifyTransferSenderIdISMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual((result.CohortId + 1), result.TransferSenderId);
+            }
+        }
 
         [Test]
         public void VerifyEmptyRowsRemovedFromUploadedFile()
@@ -170,7 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _csvRecords.AddRange(csvRecords2);
 
             //Act
-            Sut = new FileUploadMapperBase(_encodingService.Object);
+            Sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
             _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
 
             //Assert    
