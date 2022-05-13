@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -11,21 +9,21 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class ReviewApprenticeRequestToReviewApprenticeViewModelMapper : IMapper<FileUploadReviewApprenticeRequest, FileUploadReviewApprenticeViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiService _outerApiService;
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;        
         private readonly ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> _logger;
 
-        public ReviewApprenticeRequestToReviewApprenticeViewModelMapper(ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> logger, 
-            ICommitmentsApiClient commitmentApiClient, ICacheService cacheService, IEncodingService encodingService)
+        public ReviewApprenticeRequestToReviewApprenticeViewModelMapper(ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper> logger,
+            IOuterApiService commitmentApiClient, ICacheService cacheService, IEncodingService encodingService)
         {
-            _commitmentsApiClient = commitmentApiClient;
+            _outerApiService = commitmentApiClient;
             _cacheService = cacheService;
             _encodingService = encodingService;
             _logger = logger;            
@@ -45,8 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             if (!string.IsNullOrWhiteSpace(source.CohortRef))
             {
                 var cohortId = _encodingService.Decode(source.CohortRef, EncodingType.CohortReference);
-                messageFromEmployer = (await _commitmentsApiClient.GetCohort(cohortId)).LatestMessageCreatedByEmployer;
-                var existingDraftApprenticeshipsResponse = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+                messageFromEmployer = (await _outerApiService.GetCohort(cohortId)).LatestMessageCreatedByEmployer;
+                var existingDraftApprenticeshipsResponse = await _outerApiService.GetDraftApprenticeships(cohortId);
                 if (existingDraftApprenticeshipsResponse != null)
                 {
                     _logger.LogInformation("Total number of records from db: " + existingDraftApprenticeshipsResponse.DraftApprenticeships.Count);
@@ -62,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CacheRequestId = source.CacheRequestId,
                 ExistingCohortDetails = existingCohortDetails,
                 FileUploadCohortDetails = await MapFileUploadCohortDetails(csvRecordsGroupedByCohort),
-                EmployerName = (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName,
+                EmployerName = (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName,
                 MessageFromEmployer = messageFromEmployer
             };
 
@@ -75,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             foreach (var csvRecord in csvRecordsGroupedByCohort)
             {
-                var courseDetails = await _commitmentsApiClient.GetTrainingProgramme(csvRecord.StdCode);
+                var courseDetails = await _outerApiService.GetStandardDetails(csvRecord.StdCode);
                 var dateOfBirth = GetValidDate(csvRecord.DateOfBirth, "yyyy-MM-dd");
                 var apprenticeStartDate = GetValidDate(csvRecord.StartDate, "yyyy-MM-dd");
                 var apprenticeEndDate = GetValidDate(csvRecord.EndDate, "yyyy-MM");
@@ -83,13 +81,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var fileUploadApprenticeDetail = new ReviewApprenticeDetailsForFileUploadCohort
                 {
                     Name = $"{csvRecord.GivenNames} {csvRecord.FamilyName}",
-                    TrainingCourse = courseDetails.TrainingProgramme.Name,
+                    TrainingCourse = courseDetails.Title,
                     ULN = csvRecord.ULN,
                     DateOfBirth = dateOfBirth.Value.ToString("d MMM yyyy"),
                     Email = csvRecord.EmailAddress,
                     TrainingDates = $"{apprenticeStartDate.Value:MMM yyyy} to {apprenticeEndDate.Value:MMM yyyy} ",
                     Price = int.Parse(csvRecord.TotalPrice),
-                    FundingBandCap = GetFundingBandCap(courseDetails.TrainingProgramme, apprenticeStartDate.Value.Date)
+                    FundingBandCap = GetFundingBandCap(courseDetails, apprenticeStartDate.Value.Date)
                 };
 
                 reviewApprenticeDetailsForFileUploadCohort.Add(fileUploadApprenticeDetail);
@@ -98,13 +96,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return reviewApprenticeDetailsForFileUploadCohort;
         }
 
-        private async Task<List<ReviewApprenticeDetailsForExistingCohort>> MapExistingCohortDetails(GetDraftApprenticeshipsResponse response)
+        private async Task<List<ReviewApprenticeDetailsForExistingCohort>> MapExistingCohortDetails(GetDraftApprenticeshipsResult response)
         {
             var reviewApprenticeDetailsForExistingCohort = new List<ReviewApprenticeDetailsForExistingCohort>();
 
             foreach (var item in response.DraftApprenticeships)
             {   
-                var course = await _commitmentsApiClient.GetTrainingProgramme(item.CourseCode);
+                var course = await _outerApiService.GetStandardDetails(item.CourseCode);
 
                 var apprenticeDetail = new ReviewApprenticeDetailsForExistingCohort
                 {
@@ -115,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     Email = item.Email,
                     TrainingDates = $"{item.StartDate.Value:MMM yyyy} to {item.EndDate.Value:MMM yyyy} ",
                     Price = item.Cost ?? 0,
-                    FundingBandCapForExistingCohort = GetFundingBandCap(course.TrainingProgramme, item.StartDate.Value.Date)
+                    FundingBandCapForExistingCohort = GetFundingBandCap(course, item.StartDate.Value.Date)
                 };
 
                 reviewApprenticeDetailsForExistingCohort.Add(apprenticeDetail);
@@ -132,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
+        private int? GetFundingBandCap(GetStandardResponse course, DateTime? startDate)
         {
             if (startDate == null)
             {

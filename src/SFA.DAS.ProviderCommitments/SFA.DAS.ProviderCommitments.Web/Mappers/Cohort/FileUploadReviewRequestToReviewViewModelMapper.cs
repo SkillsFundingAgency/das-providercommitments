@@ -15,17 +15,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class FileUploadReviewRequestToReviewViewModelMapper : IMapper<FileUploadReviewRequest, FileUploadReviewViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiService _outerApiService;
         private readonly ICacheService _cacheService;
         private readonly IEncodingService _encodingService;
         private readonly ILogger<FileUploadReviewRequestToReviewViewModelMapper> _logger;
         private readonly IPolicyAuthorizationWrapper _policyAuthorizationWrapper;        
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FileUploadReviewRequestToReviewViewModelMapper(ILogger<FileUploadReviewRequestToReviewViewModelMapper> logger, ICommitmentsApiClient commitmentApiClient, 
+        public FileUploadReviewRequestToReviewViewModelMapper(ILogger<FileUploadReviewRequestToReviewViewModelMapper> logger, IOuterApiService outerApiService, 
             ICacheService cacheService, IEncodingService encodingService, IPolicyAuthorizationWrapper policyAuthorizationWrapper, IHttpContextAccessor httpContextAccessor)
         {
-            _commitmentsApiClient = commitmentApiClient;
+            _outerApiService = outerApiService;
             _cacheService = cacheService;
             _encodingService = encodingService;
             _logger = logger;
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 var employerDetail = new FileUploadReviewEmployerDetails();
                 var publicAccountLegalEntityId =  _encodingService.Decode(employer.Key, EncodingType.PublicAccountLegalEntityId);
-                employerDetail.EmployerName =  (await _commitmentsApiClient.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
+                employerDetail.EmployerName =  (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
                 employerDetail.AgreementId = employer.Key;
 
                 employerDetail.CohortDetails = new List<FileUploadReviewCohortDetail>();
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                         //Get CohortId by CohortReference
                         var cohortId = _encodingService.Decode(cohortGroup.Key, EncodingType.CohortReference);
                         //Get the response from DB
-                        var response = await _commitmentsApiClient.GetDraftApprenticeships(cohortId);
+                        var response = await _outerApiService.GetDraftApprenticeships(cohortId);
 
                         if (response != null)
                         {

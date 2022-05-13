@@ -5,16 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 
@@ -110,27 +109,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public string RedirectUrl;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
+        private readonly Mock<IOuterApiService> _outerApiService;
         private readonly FileUploadReviewViewModel _viewModel;        
         private readonly BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private readonly BulkUploadAddAndApproveDraftApprenticeshipsRequest _addAndApproveApiRequest;
+        private readonly BulkUploadAddAndApproveDraftApprenticeshipsResult _bulkUploadAddAndApproveDraftApprenticeshipsResult;
 
         public WhenIPostFileUploadReviewFixture()
         {
             var fixture = new Fixture();
 
             _viewModel = fixture.Create<FileUploadReviewViewModel>();
-            _commitmentApiClient = new Mock<ICommitmentsApiClient>();
+            _outerApiService = new Mock<IOuterApiService>();
+            
 
             _apiRequest = fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
             _addAndApproveApiRequest = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            _bulkUploadAddAndApproveDraftApprenticeshipsResult = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsResult>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel)).ReturnsAsync(() => _apiRequest);
             _mockModelMapper.Setup(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(_viewModel)).ReturnsAsync(() => _addAndApproveApiRequest);
 
+            _outerApiService.Setup(x => x.BulkUploadAddAndApproveDraftApprenticeships(_addAndApproveApiRequest)).ReturnsAsync(_bulkUploadAddAndApproveDraftApprenticeshipsResult);
+
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
+            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
             Sut.TempData = tempData;
         }
 
@@ -142,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public void VerifyCohortsAreCreated()
         {
-            _commitmentApiClient.Verify(x => x.BulkUploadDraftApprenticeships(_viewModel.ProviderId, _apiRequest, It.IsAny<CancellationToken>()), Times.Once);
+            _outerApiService.Verify(x => x.BulkUploadDraftApprenticeships(_apiRequest), Times.Once);
         }
 
         public void VerifyMapperIsCalled()
@@ -152,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public void VerifyCohortsAreCreatedAndSendToEmployer()
         {
-            _commitmentApiClient.Verify(x => x.BulkUploadAddAndApproveDraftApprenticeships(_viewModel.ProviderId, _addAndApproveApiRequest, It.IsAny<CancellationToken>()), Times.Once);
+            _outerApiService.Verify(x => x.BulkUploadAddAndApproveDraftApprenticeships(_addAndApproveApiRequest), Times.Once);
         }
 
         public void VerifyApproveAndSendToEmployerMapperIsCalled()

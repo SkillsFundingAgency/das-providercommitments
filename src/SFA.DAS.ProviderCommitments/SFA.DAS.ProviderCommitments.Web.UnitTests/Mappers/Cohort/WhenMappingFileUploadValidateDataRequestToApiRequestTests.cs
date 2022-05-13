@@ -1,4 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -12,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingFileUploadValidateDataRequestToApiRequestTests
     {
         private FileUploadValidateDataRequestToApiRequest _mapper;
-        private CommitmentsV2.Api.Types.Requests.BulkUploadValidateApiRequest _result;
+        private BulkUploadValidateApimRequest _result;
         private List<CsvRecord> _csvRecords;
         private FileUploadValidateDataRequest _request;
 
@@ -56,7 +61,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             };
             _request = new FileUploadValidateDataRequest { CsvRecords = _csvRecords, ProviderId = 1 };
 
-            _mapper = new FileUploadValidateDataRequestToApiRequest();
+            var encodingService = new Mock<IEncodingService>();
+            encodingService.Setup(x => x.Decode(It.IsAny<string>(), It.IsAny<EncodingType>())).Returns(2);
+            var outerApiService = new Mock<IOuterApiService>();
+            outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync(() => new GetCohortResult());
+
+            _mapper = new FileUploadValidateDataRequestToApiRequest(encodingService.Object, outerApiService.Object);
             _result = await _mapper.Map(_request);
         }
 

@@ -15,6 +15,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -88,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
 
 
-            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>());
+            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
