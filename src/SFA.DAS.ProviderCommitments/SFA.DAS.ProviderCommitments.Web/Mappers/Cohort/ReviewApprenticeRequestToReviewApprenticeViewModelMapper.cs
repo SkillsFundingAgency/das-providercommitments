@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CacheRequestId = source.CacheRequestId,
                 ExistingCohortDetails = existingCohortDetails,
                 FileUploadCohortDetails = await MapFileUploadCohortDetails(csvRecordsGroupedByCohort),
-                EmployerName = (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).AccountName,
+                LegalEntityName = (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityIdNew)).LegalEntityName,
                 MessageFromEmployer = messageFromEmployer
             };
 

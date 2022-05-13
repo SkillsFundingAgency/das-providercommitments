@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTests
     {
         [Test]
-        public async Task EmployerNameIsMappedCorrectly()
+        public async Task LegalEntityNameIsMappedCorrectly()
         {
             //Arrange
             var fixture = new WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture();
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             await fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyEmployerNameIsMappedCorrectly();
+            fixture.VerifyLegalEntityNameIsMappedCorrectly();
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _request = fixture.Create<FileUploadReviewApprenticeRequest>();
             _request.CohortRef = cohortRef;
             var accountLegalEntityEmployer = fixture.Build<GetAccountLegalEntityQueryResult>()
-                .With(x => x.AccountName, "EmployerName").Create();
+                .With(x => x.LegalEntityName, "EmployerName").Create();
 
             var cohort = fixture.Build<GetCohortResult>()
                 .With(x => x.LatestMessageCreatedByEmployer, "A message").Create();
@@ -284,9 +284,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task Action() => _result = await _sut.Map(_request);
 
-        internal void VerifyEmployerNameIsMappedCorrectly()
+        internal void VerifyLegalEntityNameIsMappedCorrectly()
         {            
-            Assert.AreEqual("EmployerName", _result.EmployerName);
+            Assert.AreEqual("EmployerName", _result.LegalEntityName);
         }
 
         internal void VerifyCohortReferenceIsMappedCorrectly()

@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 var employerDetail = new FileUploadReviewEmployerDetails();
                 var publicAccountLegalEntityId =  _encodingService.Decode(employer.Key, EncodingType.PublicAccountLegalEntityId);
-                employerDetail.EmployerName =  (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityId)).AccountName;
+                employerDetail.LegalEntityName =  (await _outerApiService.GetAccountLegalEntity(publicAccountLegalEntityId)).LegalEntityName;
                 employerDetail.AgreementId = employer.Key;
 
                 employerDetail.CohortDetails = new List<FileUploadReviewCohortDetail>();

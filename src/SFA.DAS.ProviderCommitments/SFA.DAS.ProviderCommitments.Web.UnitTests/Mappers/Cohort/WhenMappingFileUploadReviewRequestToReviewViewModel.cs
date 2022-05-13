@@ -31,13 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         [TestCase("Employer1", "Employer1Name")]
         [TestCase("Employer2", "Employer2Name")]
-        public async Task EmployerNameIsMappedCorrectly(string agreementId, string employerName)
+        public async Task LegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
         {
             //Act
             await fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyEmployerNameIsMappedCorrectly(agreementId, employerName);
+            fixture.VerifyLegalEntityNameIsMappedCorrectly(agreementId, legalEntityName);
         }
 
         [TestCase("Employer1")]
@@ -155,10 +155,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 _request = fixture.Create<FileUploadReviewRequest>();
                 var accountLegalEntityEmployer1 = fixture.Build<GetAccountLegalEntityQueryResult>()
-                                                            .With(x => x.AccountName, "Employer1Name").Create();
+                                                            .With(x => x.LegalEntityName, "Employer1Name").Create();
 
                 var accountLegalEntityEmployer2 = fixture.Build<GetAccountLegalEntityQueryResult>()
-                                                            .With(x => x.AccountName, "Employer2Name").Create();
+                                                            .With(x => x.LegalEntityName, "Employer2Name").Create();
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Decode("Employer1", EncodingType.PublicAccountLegalEntityId)).Returns(1);
@@ -250,12 +250,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual(1, employer.Count());
             }
 
-            public void VerifyEmployerNameIsMappedCorrectly(string agreementId, string employerName)
+            public void VerifyLegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
                 Assert.AreEqual(1, employer.Count());
-                Assert.AreEqual(employerName, employer.First().EmployerName);
+                Assert.AreEqual(legalEntityName, employer.First().LegalEntityName);
             }
 
             internal void VerifyCohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
