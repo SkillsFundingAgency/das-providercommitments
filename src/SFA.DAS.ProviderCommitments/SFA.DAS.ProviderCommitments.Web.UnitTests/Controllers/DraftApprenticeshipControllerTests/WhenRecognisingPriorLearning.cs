@@ -12,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -113,7 +114,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 ApiClient.Object,
-                new TestMapper(ApiClient.Object),
+                new SimpleModelMapper(
+                    new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
+                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IAuthorizationService>())
             {
@@ -149,28 +152,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             Apprenticeship.HasStandardOptions = true;
             return this;
-        }
-
-        private class TestMapper : IModelMapper
-        {
-            private readonly RecognisePriorLearningRequestToViewModelMapper Mapper;
-            private readonly RecognisePriorLearningViewModelToResultMapper Mapper2;
-
-            public TestMapper(ICommitmentsApiClient client)
-            {
-                Mapper = new RecognisePriorLearningRequestToViewModelMapper(client);
-                Mapper2 = new RecognisePriorLearningViewModelToResultMapper(client);
-            }
-
-            public async Task<T> Map<T>(object source) where T : class
-            {
-                return source switch
-                {
-                    RecognisePriorLearningRequest r => (T)(object)await Mapper.Map(r),
-                    RecognisePriorLearningViewModel r => (T)(object)await Mapper2.Map(r),
-                    _ => throw new System.NotImplementedException($"No mapper for object type `{source?.GetType()}`"),
-                };
-            }
         }
     }
 }
