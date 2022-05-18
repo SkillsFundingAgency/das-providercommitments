@@ -126,13 +126,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()
         {
-            Apprenticeship.Cost = null;
+            Apprenticeship.RecognisePriorLearning = null;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithPreviousSelection(bool previousSelection)
         {
-            Apprenticeship.Cost = previousSelection ? 1 : 0;
+            Apprenticeship.RecognisePriorLearning = previousSelection;
             return this;
         }
 

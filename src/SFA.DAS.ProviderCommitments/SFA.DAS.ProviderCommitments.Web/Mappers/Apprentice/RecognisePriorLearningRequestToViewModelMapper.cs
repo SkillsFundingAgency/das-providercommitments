@@ -17,21 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         public async Task<RecognisePriorLearningViewModel> Map(RecognisePriorLearningRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-            //var apprenticeship = new GetDraftApprenticeshipResponse
-            //{
-            //    Cost = 0,
-            //};
 
-            var RecognisePriorLearningViewModel = new RecognisePriorLearningViewModel
+            return new RecognisePriorLearningViewModel
             {
-                IsTherePriorLearning = apprenticeship.Cost switch
-                {
-                    null => null,
-                    0 => false,
-                    _ => true,
-                }
+                IsTherePriorLearning = apprenticeship.RecognisePriorLearning
             };
-            return RecognisePriorLearningViewModel;
         }
     }
 }
