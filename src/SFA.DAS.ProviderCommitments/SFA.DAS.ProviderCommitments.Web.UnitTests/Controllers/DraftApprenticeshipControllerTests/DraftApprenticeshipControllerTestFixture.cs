@@ -546,12 +546,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
         {
-            var result = _actionResult
-                .VerifyReturnsRedirectToActionResult()
-                .WithActionName("SelectOptions");
+            _actionResult.VerifyRedirectsToSelectOptionsPage(_draftApprenticeshipHashedId);
+            return this;
+        }
 
-            result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
-            
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectToRecognisePriorLearningPage()
+        {
+            _actionResult.VerifyRedirectsToRecognisePriorLearningPage(_draftApprenticeshipHashedId);
             return this;
         }
 

@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectToSelectOptionsPage();
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
     }

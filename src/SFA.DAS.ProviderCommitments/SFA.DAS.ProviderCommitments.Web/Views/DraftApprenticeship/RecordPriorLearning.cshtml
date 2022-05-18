@@ -1,0 +1,56 @@
+@model SFA.DAS.ProviderCommitments.Web.Models.RecognisePriorLearningViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+
+@{
+    ViewData["Title"] = "Record Prior Learning";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.CohortReference)
+            @Html.HiddenFor(x => x.DraftApprenticeshipId)
+
+            <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            Recognition of prior learning (RPL)
+                        </h1>
+                    </legend>
+                    <div id="changed-name-hint" class="govuk-hint">
+                        Is there any recognised prior learning for this apprenticeship?
+                    </div>
+                    @Html.ValidationMessageFor(m => m.IsTherePriorLearning, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsTherePriorLearning) })
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="IsTherePriorLearning-yes" asp-for="@Model.IsTherePriorLearning" type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="IsTherePriorLearning-yes">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="IsTherePriorLearning-no" asp-for="@Model.IsTherePriorLearning" type="radio" value="false">
+                            <label class="govuk-label govuk-radios__label" for="IsTherePriorLearning-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button class="govuk-button" type="submit">
+                Save and continue
+            </button>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+{
+<a id="back-link" class="govuk-back-link" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", @Model)">Back</a>
+}
