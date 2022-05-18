@@ -100,17 +100,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                     while (reader.Peek() >= 0)
                     {
                         string lineContent = await reader.ReadLineAsync();
-                        if (!string.IsNullOrWhiteSpace(lineContent) && firstLineData.Length == 0)
+                        if (!string.IsNullOrWhiteSpace(lineContent))
                         {
-                            firstLineData = lineContent.Split(',');
-                            lineCounter++;
-                        }
-                        else
-                        {
-                            var lineContents = lineContent.Split(',');
-                            if (!IsEmptyRow(lineContents))
+                            if (firstLineData.Length == 0)
                             {
+                                firstLineData = lineContent.Split(',');
                                 lineCounter++;
+
+                            }
+                            else 
+                            {
+                                var lineContents = lineContent.Split(',');
+                                if (!IsEmptyRow(lineContents))
+                                {
+                                    lineCounter++;
+                                }
                             }
                         }
                     }
