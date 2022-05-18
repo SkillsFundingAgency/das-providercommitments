@@ -165,33 +165,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
-        [Test]
-        public void VerifyEmptyRowsRemovedFromUploadedFile()
-        {
-            //Arrange          
-            var csvRecords2 = _fixture.Build<Web.Models.Cohort.CsvRecord>()
-               .With(x => x.CohortRef, "")
-               .With(x => x.AgreementId, "")
-               .With(x => x.ULN, "")
-               .With(x => x.FamilyName, "")
-               .With(x => x.GivenNames, "")
-               .With(x => x.DateOfBirth, "")
-               .With(x => x.EmailAddress, "")
-               .With(x => x.StdCode, "")
-               .With(x => x.StartDate, "")
-               .With(x => x.EndDate, "")
-               .With(x => x.TotalPrice, "")
-               .With(x => x.EPAOrgID, "")
-               .With(x => x.ProviderRef, "")
-               .CreateMany(2).ToList();
-            _csvRecords.AddRange(csvRecords2);
-
-            //Act
-            Sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
-
-            //Assert    
-            Assert.AreEqual(2, _result.Count());    
-        }
+       
     }
 }

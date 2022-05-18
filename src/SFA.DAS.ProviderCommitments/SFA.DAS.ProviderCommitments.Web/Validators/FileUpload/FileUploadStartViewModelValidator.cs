@@ -103,9 +103,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                         if (!string.IsNullOrWhiteSpace(lineContent) && firstLineData.Length == 0)
                         {
                             firstLineData = lineContent.Split(',');
+                            lineCounter++;
                         }
-
-                        lineCounter++;
+                        else
+                        {
+                            var lineContents = lineContent.Split(',');
+                            if (!IsEmptyRow(lineContents))
+                            {
+                                lineCounter++;
+                            }
+                        }
                     }
 
                     return (firstLineData, lineCounter);
@@ -116,6 +123,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                 _logger.LogError(exc, $"Failed to process bulk upload file");
                 throw exc;
             }
+        }
+
+        private static bool IsEmptyRow(string[] lineContents)
+        {
+            return lineContents.Length == 13 &&
+                                                 string.IsNullOrWhiteSpace(lineContents[0]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[1]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[2]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[3]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[4]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[5]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[6]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[7]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[8]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[9]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[10]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[11]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[12]);
         }
     }
 }

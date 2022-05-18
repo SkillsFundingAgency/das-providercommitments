@@ -139,5 +139,20 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
             Assert.AreEqual(2, result.Count());
         }
+
+        [Test]
+        public void VerifyEmptyRowsRemovedFromUploadedFile()
+        {
+            //Arrange          
+            _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
+                ",,,,,,,,,,,," + Environment.NewLine +
+                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768" + Environment.NewLine +
+                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657" + Environment.NewLine +
+                 ",,,,,,,,,,,,";
+
+
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual(2, result.Count());
+        }
     }
 }
