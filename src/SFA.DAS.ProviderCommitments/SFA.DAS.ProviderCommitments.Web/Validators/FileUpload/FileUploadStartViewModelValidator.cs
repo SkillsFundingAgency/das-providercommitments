@@ -127,7 +127,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 
         private static bool IsEmptyRow(string[] lineContents)
         {
-            return lineContents.Length == 13 &&
+            return 
+                (lineContents.Length == 1 && string.IsNullOrEmpty(lineContents[0]))
+                || 
+                (lineContents.Length == 13 &&
                                                  string.IsNullOrWhiteSpace(lineContents[0]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[1]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[2]) &&
@@ -140,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                                                  string.IsNullOrWhiteSpace(lineContents[9]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[10]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[11]) &&
-                                                 string.IsNullOrWhiteSpace(lineContents[12]);
+                                                 string.IsNullOrWhiteSpace(lineContents[12]));
         }
     }
 }
