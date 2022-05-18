@@ -15,13 +15,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<RecognisePriorLearningResult> Map(RecognisePriorLearningViewModel source)
         {
-            //var nextPage = await _commitmentsApiClient.RecognisePriorLearning(
-            //    request.CohortId,
-            //    request.DraftApprenticeshipId,
-            //    request.IsTherePriorLearning);
-            var update = _commitmentsApiClient.UpdateDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId, null, CancellationToken.None);
+            var update = _commitmentsApiClient.RecognisePriorLearning(
+                source.CohortId,
+                source.DraftApprenticeshipId,
+                new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
+                {
+                    RecognisePriorLearning = source.IsTherePriorLearning
+                });
 
-            var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId, CancellationToken.None);
+            var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
+                source.CohortId,
+                source.DraftApprenticeshipId,
+                CancellationToken.None);
 
             await Task.WhenAll(update, apprenticeship);
 

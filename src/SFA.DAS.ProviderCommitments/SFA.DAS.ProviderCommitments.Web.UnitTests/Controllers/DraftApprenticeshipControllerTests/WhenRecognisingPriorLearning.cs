@@ -63,7 +63,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var result = await fixture.Sut.RecognisePriorLearning(fixture.ViewModel);
 
             fixture.ApiClient.Verify(x =>
-                x.UpdateDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), null, It.IsAny<CancellationToken>()));
+                x.RecognisePriorLearning(
+                    fixture.ViewModel.CohortId,
+                    fixture.ViewModel.DraftApprenticeshipId,
+                    It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
+                        r.RecognisePriorLearning == priorLearning),
+                    It.IsAny<CancellationToken>()));
         }
 
         [Test]
