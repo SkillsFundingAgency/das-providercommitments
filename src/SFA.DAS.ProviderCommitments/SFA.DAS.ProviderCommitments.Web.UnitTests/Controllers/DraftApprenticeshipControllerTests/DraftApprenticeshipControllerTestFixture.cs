@@ -176,6 +176,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
 
             _tempData = new Mock<ITempDataDictionary>();
 

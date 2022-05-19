@@ -11,5 +11,6 @@
         public const string BulkUploadV2WithoutPrefix = "BulkUploadV2";
         public const string DeliveryModel = Prefix + "DeliveryModel";
         public const string DeliveryModelWithoutPrefix = "DeliveryModel";
+        public const string RecognitionOfPriorLearning = Prefix + "RecognitionOfPriorLearning";
     }
 }

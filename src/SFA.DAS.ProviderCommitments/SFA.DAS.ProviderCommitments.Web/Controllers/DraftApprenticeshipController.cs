@@ -11,6 +11,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -272,7 +273,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
-            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, model.DraftApprenticeshipHashedId });
+            if (_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+            {
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, model.DraftApprenticeshipHashedId });
+            }
+            else
+            {
+                var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+                if (draftApprenticeship.HasStandardOptions)
+                {
+                    return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
+                }
+                else
+                {
+                    return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+                }
+            }
         }
 
         [HttpGet]
@@ -412,7 +428,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
             {
                 IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
-                                     cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
+                                     cohortDetails.LevyStatus != CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy)
                                     || cohortDetails.IsLinkedToChangeOfPartyRequest
             });
 
