@@ -150,9 +150,36 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
                  "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657" + Environment.NewLine +
                  ",,,,,,,,,,,,";
 
+            CreateFile();
 
             var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
             Assert.AreEqual(2, result.Count());
+        }
+
+        [Test]
+        public void VerifyNoRowsReturnedFromEmptyFile()
+        {
+            //Arrange          
+            _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
+                ",,,,,,,,,,,," + Environment.NewLine +
+                 ",,,,,,,,,,,,";
+
+            CreateFile();
+
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual(0, result.Count());
+        }
+
+        private void CreateFile()
+        {
+            var fileName = "test.pdf";
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(_fileContent);
+            writer.Flush();
+            stream.Position = 0;
+
+            _file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
         }
     }
 }
