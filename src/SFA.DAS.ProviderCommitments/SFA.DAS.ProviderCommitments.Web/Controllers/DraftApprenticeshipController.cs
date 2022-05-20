@@ -242,20 +242,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            if (string.IsNullOrEmpty(model.CourseCode))
+            if (_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
             {
-                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });    
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
             }
-            
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
-            
-            if (draftApprenticeship.HasStandardOptions)
+            else
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", new {model.ProviderId, draftApprenticeshipHashedId , model.CohortReference});
+                if (string.IsNullOrEmpty(model.CourseCode))
+                {
+                    return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+                }
+
+                var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+
+                if (draftApprenticeship.HasStandardOptions)
+                {
+                    var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
+                    return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
+                }
+
+                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
             }
-            
-            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpPost]

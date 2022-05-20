@@ -26,18 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingTheApprenticeToCohortIsSuccessfulAndRedirectedToCohortIfNoStandardOptions()
-        {
-            _fixture.SetUpStandardToReturnNoOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
-            
-            await _fixture.PostToAddDraftApprenticeship();
-            _fixture.VerifyMappingToApiTypeIsCalled()
-                .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
-        }
-
-        [Test]
         public async Task AndWhenSavingFailsBecauseOfModelValidationItShouldThrowCommitmentApiModelException()
         {
             _fixture.SetupAddingToThrowCommitmentsApiException();
@@ -93,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task ThenIfThereAreOptionsThenRedirectToSelectOptions()
+        public async Task ThenRedirectToRecognitionOfPriorLearning()
         {
             _fixture
                 .SetUpStandardToReturnOptions()
@@ -103,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectToSelectOptionsPage();
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
         [Test]
