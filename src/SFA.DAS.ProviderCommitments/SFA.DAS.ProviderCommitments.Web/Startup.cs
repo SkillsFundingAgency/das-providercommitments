@@ -23,9 +23,9 @@ using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -89,6 +89,8 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddProviderUiServiceRegistration(Configuration);
             services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();
+            services.AddTransient<IOuterApiClient, OuterApiClient>();
+            services.AddTransient<IOuterApiService, OuterApiService>();
         }
 
         public void ConfigureContainer(Registry registry)

@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<BulkUploadFileValidationConfiguration>(ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
             AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
             AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
+            AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
         }
 
         private void AddConfiguration<T>(string key) where T : class
