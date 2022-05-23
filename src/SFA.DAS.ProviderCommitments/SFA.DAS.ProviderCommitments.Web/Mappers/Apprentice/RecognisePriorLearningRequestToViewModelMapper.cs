@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new RecognisePriorLearningViewModel
             {
-                IsTherePriorLearning = apprenticeship.RecognisePriorLearning
+                IsTherePriorLearning = apprenticeship.RecognisePriorLearning,
             };
         }
     }

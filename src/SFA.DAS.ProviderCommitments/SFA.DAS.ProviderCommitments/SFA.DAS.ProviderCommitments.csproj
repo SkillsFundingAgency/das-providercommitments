@@ -19,8 +19,8 @@
     <PackageReference Include="CsvHelper" Version="12.3.2" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.58" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.20.12" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.20.12" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.20.13" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.20.13" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="3.2.61" />

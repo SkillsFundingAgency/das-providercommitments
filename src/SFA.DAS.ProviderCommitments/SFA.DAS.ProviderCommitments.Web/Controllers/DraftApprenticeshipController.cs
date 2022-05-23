@@ -344,15 +344,59 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningViewModel request)
         {
             var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
-            
-            if (result.HasStandardOptions)
+
+            var routeValues = new 
             {
-                return RedirectToAction("SelectOptions", "DraftApprenticeship",
-                    new { request.ProviderId, request.DraftApprenticeshipHashedId, request.CohortReference });
+                request.ProviderId,
+                request.DraftApprenticeshipHashedId,
+                request.CohortReference,
+            };
+
+            if (request.IsTherePriorLearning == true)
+            {
+                return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship", routeValues);
+            }
+            else if (result.HasStandardOptions)
+            {
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues);
             }
             else
             {
-                return RedirectToAction("Details", "Cohort", new { request.ProviderId, request.CohortReference });
+                return RedirectToAction("Details", "Cohort", routeValues);
+            }
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
+        {
+            var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
+            return View("RecognisePriorLearningDetails", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningDetails(RecognisePriorLearningViewModel request)
+        {
+            request.IsTherePriorLearning = true;
+            var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
+
+            var routeValues = new
+            {
+                request.ProviderId,
+                request.DraftApprenticeshipHashedId,
+                request.CohortReference,
+            };
+
+            if (result.HasStandardOptions)
+            {
+                return RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues);
+            }
+            else
+            {
+                return RedirectToAction("Details", "Cohort", routeValues);
             }
         }
 

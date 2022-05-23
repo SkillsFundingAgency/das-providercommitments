@@ -15,6 +15,8 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
+using SFA.DAS.Testing.AutoFixture;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [TestCase(true)]
         [TestCase(false)]
         [TestCase(null)]
-        public async Task When_submitting_selection_then_it_is_saved(bool? priorLearning)
+        public async Task When_declaring_RPL_then_it_is_saved(bool? priorLearning)
         {
             var fixture = new WhenRecognisingPriorLearningFixture().ChoosePriorLearning(priorLearning);
 
@@ -74,11 +76,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task After_submitting_prior_learning_then_show_Cohort()
+        public async Task After_declaring_there_is_prior_learning_then_show_RPL_details()
         {
-            var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
+            var fixture = new WhenRecognisingPriorLearningFixture().ChoosePriorLearning(true);
 
             var result = await fixture.Sut.RecognisePriorLearning(fixture.ViewModel);
+
+            result.VerifyRedirectsToRecognisePriorLearningDetailsPage(
+                fixture.ViewModel.DraftApprenticeshipHashedId);
+        }
+
+        [Test]
+        public async Task After_declaring_there_is_no_prior_learning_then_show_Cohort()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithoutStandardOptions()
+                .ChoosePriorLearning(false);
+
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
 
             result.VerifyRedirectsToCohortDetailsPage(
                 fixture.ViewModel.ProviderId,
@@ -86,11 +101,54 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task After_submitting_prior_learning_then_show_Options_when_appropriate()
+        public async Task After_declaring_there_is_no_prior_learning_then_show_Options_when_appropriate()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithStandardOptions()
+                .ChoosePriorLearning(false);
+
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+
+            result.VerifyRedirectsToSelectOptionsPage(fixture.ViewModel.DraftApprenticeshipHashedId);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_submitting_RPL_details_then_it_is_saved(int reducedDuration, int reducedPrice)
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .EnterRplDetails(reducedDuration, reducedPrice);
+
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+
+            fixture.ApiClient.Verify(x =>
+                x.RecognisePriorLearning(
+                    fixture.ViewModel.CohortId,
+                    fixture.ViewModel.DraftApprenticeshipId,
+                    It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
+                        r.RecognisePriorLearning == true &&
+                        r.ReducedDuration == reducedDuration &&
+                        r.ReducedPrice == reducedPrice),
+                    It.IsAny<CancellationToken>()));
+        }
+
+        [Test]
+        public async Task After_submitting_prior_learning_details_then_show_Cohort()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
+
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+
+            result.VerifyRedirectsToCohortDetailsPage(
+                fixture.ViewModel.ProviderId,
+                fixture.ViewModel.CohortReference);
+        }
+
+        [Test]
+        public async Task After_submitting_prior_learning_details_then_show_Options_when_appropriate()
         {
             var fixture = new WhenRecognisingPriorLearningFixture().WithStandardOptions();
 
-            var result = await fixture.Sut.RecognisePriorLearning(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
 
             result.VerifyRedirectsToSelectOptionsPage(fixture.ViewModel.DraftApprenticeshipHashedId);
         }
@@ -159,6 +217,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         internal WhenRecognisingPriorLearningFixture WithStandardOptions()
         {
             Apprenticeship.HasStandardOptions = true;
+            return this;
+        }
+
+        internal WhenRecognisingPriorLearningFixture EnterRplDetails(int reducedDuration, int reducedPrice)
+        {
+            ViewModel.IsTherePriorLearning = null;
+            ViewModel.ReducedDuration = reducedDuration;
+            ViewModel.ReducedPrice = reducedPrice;
             return this;
         }
     }

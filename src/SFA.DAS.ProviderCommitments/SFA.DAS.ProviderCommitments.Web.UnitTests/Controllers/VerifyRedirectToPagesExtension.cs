@@ -29,6 +29,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
             return redirectAction;
         }
 
+        public static RedirectToActionResult VerifyRedirectsToRecognisePriorLearningDetailsPage(this IActionResult result, string draftApprenticeshipHashedId)
+        {
+            var redirectAction = result
+                .VerifyReturnsRedirectToActionResult()
+                .WithActionName("RecognisePriorLearningDetails");
+            
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
+            
+            return redirectAction;
+        }
+
         public static RedirectToActionResult VerifyRedirectsToSelectOptionsPage(this IActionResult result, string draftApprenticeshipHashedId)
         {
             var redirectAction = result
