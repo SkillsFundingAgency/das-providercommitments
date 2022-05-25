@@ -13,6 +13,7 @@
         public const string BlobStorageSetttings = "BlobStorage";
         public const string ProviderSharedUIConfiguration = "ProviderSharedUIConfiguration";
         public const string BulkUploadFileValidationConfiguration = "BulkUploadFileValidationConfiguration";
+        public const string RecognitionOfPriorLearningConfiguration = "RecognitionOfPriorLearningConfiguration";
         public static string PasAccountApiClient => PAS.Account.Api.ClientV2.Configuration.ConfigurationKeys.PasAccountApiClient;
     }
 }

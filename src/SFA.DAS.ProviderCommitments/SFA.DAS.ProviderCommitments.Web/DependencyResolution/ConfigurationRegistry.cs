@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ZenDeskConfiguration>(ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
             AddConfiguration<DataProtectionConnectionStrings>(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
             AddConfiguration<BulkUploadFileValidationConfiguration>(ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
+            AddConfiguration<RecognitionOfPriorLearningConfiguration>(ProviderCommitmentsConfigurationKeys.RecognitionOfPriorLearningConfiguration);
             AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
             AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
             AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);

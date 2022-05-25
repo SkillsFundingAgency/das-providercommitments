@@ -12,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -39,7 +40,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), _modelMapperMock.Object, Mock.Of<IEncodingService>(), _providerFeatureToggle.Object);
+            Sut = new DraftApprenticeshipController(
+                Mock.Of<IMediator>(),
+                Mock.Of<ICommitmentsApiClient>(),
+                _modelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                _providerFeatureToggle.Object,
+                new RecognitionOfPriorLearningConfiguration());
         }
 
         [Test]

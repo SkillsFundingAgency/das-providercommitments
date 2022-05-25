@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -105,7 +107,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClientMock.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(Cohort);
 
-            Sut = new DraftApprenticeshipController(MediatorMock.Object, CommitmentsApiClientMock.Object, ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
+            Sut = new DraftApprenticeshipController(
+                MediatorMock.Object,
+                CommitmentsApiClientMock.Object,
+                ModelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                AuthorizationServiceMock.Object,
+                new RecognitionOfPriorLearningConfiguration());
             Sut.TempData = TempDataMock.Object;
         }
 

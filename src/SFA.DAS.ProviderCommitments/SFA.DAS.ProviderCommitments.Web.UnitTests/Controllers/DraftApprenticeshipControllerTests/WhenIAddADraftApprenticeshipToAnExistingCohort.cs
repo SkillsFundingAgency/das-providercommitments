@@ -81,12 +81,66 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task ThenRedirectToRecognitionOfPriorLearning()
+        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
         {
             _fixture
-                .SetUpStandardToReturnOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
+                .SetUpApprenticeshipNotRequiringRpl()
+                .SetUpStandardToReturnNoOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
             
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartDateIsNotSetThenRedirectToCohort()
+        {
+            _fixture
+                .SetUpApprenticeshipRequiringRpl(startDate: null)
+                .SetUpStandardToReturnNoOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
+            
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenMandatoryRplIsNotConfiguredThenRedirectToCohort()
+        {
+            _fixture
+                .SetUpApprenticeshipRequiringRpl(rplAfter: null)
+                .SetUpStandardToReturnNoOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
+            
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreStandardOptionsThenRedirectToSelectOptions()
+        {
+            _fixture
+                .SetUpApprenticeshipNotRequiringRpl()
+                .SetUpStandardToReturnOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
+            
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectToSelectOptionsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning()
+        {
+            _fixture.SetUpApprenticeshipRequiringRpl();
+
             await _fixture.PostToAddDraftApprenticeship();
             
             _fixture.VerifyMappingToApiTypeIsCalled()

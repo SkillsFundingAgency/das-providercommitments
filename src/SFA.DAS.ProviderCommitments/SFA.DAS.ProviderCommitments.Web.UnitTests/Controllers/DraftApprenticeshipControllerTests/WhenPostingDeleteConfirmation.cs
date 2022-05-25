@@ -16,6 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -50,7 +51,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
          
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), _apiClient.Object, _modelMapperMock.Object, Mock.Of<IEncodingService>(), _providerFeatureToggle.Object);
+            Sut = new DraftApprenticeshipController(
+                Mock.Of<IMediator>(),
+                _apiClient.Object,
+                _modelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                _providerFeatureToggle.Object,
+                new RecognitionOfPriorLearningConfiguration());
             Sut.TempData = tempData;
         }
 

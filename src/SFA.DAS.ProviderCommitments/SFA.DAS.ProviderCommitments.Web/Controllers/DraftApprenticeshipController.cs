@@ -8,10 +8,11 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -38,18 +39,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
         private readonly IAuthorizationService _authorizationService;
-
+        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
-            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService, RecognitionOfPriorLearningConfiguration rplConfiguration)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;
             _authorizationService = authorizationService;
+            _rplConfiguration = rplConfiguration;
         }
 
         [HttpGet]
@@ -242,7 +244,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            if (_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+            if (RequireRpl(model.StartDate))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
@@ -266,6 +268,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
+        private bool RequireRpl(MonthYearModel startDate)
+        {
+            return startDate?.Date >= _rplConfiguration?.MandateRplAfter;
+        }
+
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -281,7 +288,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
-            if (_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+            if (RequireRpl(model.StartDate))
             {
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, model.DraftApprenticeshipHashedId });
             }

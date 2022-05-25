@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Configuration;
+using System;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -54,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly SelectOptionsRequest _selectOptionsRequest;
         private readonly ViewSelectOptionsViewModel _viewSelectOptionsViewModel;
         private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
+        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
         private readonly Mock<ITempDataDictionary> _tempData;
 
         public DraftApprenticeshipControllerTestFixture()
@@ -176,7 +180,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
+
+            _rplConfiguration = new RecognitionOfPriorLearningConfiguration
+            {
+                MandateRplAfter = new DateTime(2022, 08, 01)
+            };
 
             _tempData = new Mock<ITempDataDictionary>();
 
@@ -184,7 +192,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
-            _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
+            _controller = new DraftApprenticeshipController(
+                _mediator.Object,
+                _commitmentsApiClient.Object,
+                _modelMapper.Object,
+                encodingService.Object,
+                _providerFeatureToggle.Object,
+                _rplConfiguration);
             _controller.TempData = _tempData.Object;
         }
 
@@ -289,6 +303,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupProviderIdOnEditRequest(long providerId)
         {
             _draftApprenticeshipRequest.ProviderId = providerId;
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetUpApprenticeshipNotRequiringRpl()
+        {
+            SetUpApprenticeshipRequiringRpl(startDate: "2022-07-31", rplAfter: "2022-08-01");
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetUpApprenticeshipRequiringRpl(string? startDate = "2022-08-01", string? rplAfter = "2022-08-01")
+        {
+            if(startDate != null)
+            {
+                var startDate_ = DateTime.Parse(startDate);
+                _addModel.StartDate = new MonthYearModel($"{startDate_.Month}{startDate_.Year}");
+                _editModel.StartDate = _addModel.StartDate;
+                _viewModel.StartDate = startDate_;
+            }
+
+            var date = rplAfter != null ? DateTime.Parse(rplAfter) : (DateTime?)null;
+
+            _rplConfiguration.MandateRplAfter = date;
+
+            SetupCommitmentsApiToReturnADraftApprentice();
             return this;
         }
 

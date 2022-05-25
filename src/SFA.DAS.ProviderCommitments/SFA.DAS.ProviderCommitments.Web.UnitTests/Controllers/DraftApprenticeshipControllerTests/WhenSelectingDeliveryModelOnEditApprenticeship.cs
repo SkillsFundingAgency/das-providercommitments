@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -106,7 +108,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
             AuthorizationServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
+            Sut = new DraftApprenticeshipController(
+                Mock.Of<IMediator>(),
+                Mock.Of<ICommitmentsApiClient>(),
+                ModelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                AuthorizationServiceMock.Object,
+                new RecognitionOfPriorLearningConfiguration());
             Sut.TempData = TempDataMock.Object;
         }
 
