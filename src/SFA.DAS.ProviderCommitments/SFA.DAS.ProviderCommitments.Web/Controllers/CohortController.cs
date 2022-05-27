@@ -41,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        private readonly ICacheService _cacheService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
@@ -48,7 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService
+            )
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -57,6 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
+            //_cacheService = cacheService;
         }
 
         [HttpGet]
@@ -396,7 +399,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/start")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [HandleBulkUploadValidationErrors]
+        [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
             await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
@@ -416,7 +419,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
-            request.Errors = TempData.Get<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>(Constants.BulkUpload.BulkUploadErrors);
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
             return View(viewModel);
         }
@@ -425,7 +427,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/validate")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [HandleBulkUploadValidationErrors]
+        [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateViewModel viewModel)
         {
             await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
@@ -447,7 +449,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review")]
         [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [HandleBulkUploadValidationErrors]
+        [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
             switch (viewModel.SelectedOption)
