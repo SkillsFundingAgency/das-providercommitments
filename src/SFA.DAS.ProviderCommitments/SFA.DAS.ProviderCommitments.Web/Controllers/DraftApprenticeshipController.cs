@@ -377,10 +377,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearningDetails(RecognisePriorLearningViewModel request)
+        public async Task<IActionResult> RecognisePriorLearningDetails(PriorLearningDetailsViewModel request)
         {
-            request.IsTherePriorLearning = true;
-
             var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
 
             return RedirectToOptionalPages(

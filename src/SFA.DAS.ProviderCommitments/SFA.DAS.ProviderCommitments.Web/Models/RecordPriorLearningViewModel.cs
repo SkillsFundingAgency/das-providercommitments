@@ -7,6 +7,10 @@
     public class RecognisePriorLearningViewModel : DraftApprenticeshipRequest
     {
         public bool? IsTherePriorLearning { get; set; }
+    }
+
+    public class PriorLearningDetailsViewModel : DraftApprenticeshipRequest
+    {
         public int? ReducedPrice { get; set; }
         public int? ReducedDuration { get; set; }
     }

@@ -93,11 +93,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithoutStandardOptions()
                 .ChoosePriorLearning(false);
 
-            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
 
             result.VerifyRedirectsToCohortDetailsPage(
-                fixture.ViewModel.ProviderId,
-                fixture.ViewModel.CohortReference);
+                fixture.DetailsViewModel.ProviderId,
+                fixture.DetailsViewModel.CohortReference);
         }
 
         [Test]
@@ -107,9 +107,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithStandardOptions()
                 .ChoosePriorLearning(false);
 
-            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
 
-            result.VerifyRedirectsToSelectOptionsPage(fixture.ViewModel.DraftApprenticeshipHashedId);
+            result.VerifyRedirectsToSelectOptionsPage(fixture.DetailsViewModel.DraftApprenticeshipHashedId);
         }
 
         [Test, MoqAutoData]
@@ -118,16 +118,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .EnterRplDetails(reducedDuration, reducedPrice);
 
-            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
 
             fixture.ApiClient.Verify(x =>
-                x.RecognisePriorLearning(
-                    fixture.ViewModel.CohortId,
-                    fixture.ViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
-                        r.RecognisePriorLearning == true &&
-                        r.ReducedDuration == reducedDuration &&
-                        r.ReducedPrice == reducedPrice),
+                x.PriorLearningDetails(
+                    fixture.DetailsViewModel.CohortId,
+                    fixture.DetailsViewModel.DraftApprenticeshipId,
+                    It.Is<CommitmentsV2.Api.Types.Requests.PriorLearningDetailsRequest>(r =>
+                        r.DurationReducedBy == reducedDuration &&
+                        r.PriceReducedBy == reducedPrice),
                     It.IsAny<CancellationToken>()));
         }
 
@@ -136,11 +135,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
 
-            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
 
             result.VerifyRedirectsToCohortDetailsPage(
-                fixture.ViewModel.ProviderId,
-                fixture.ViewModel.CohortReference);
+                fixture.DetailsViewModel.ProviderId,
+                fixture.DetailsViewModel.CohortReference);
         }
 
         [Test]
@@ -148,9 +147,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var fixture = new WhenRecognisingPriorLearningFixture().WithStandardOptions();
 
-            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.ViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
 
-            result.VerifyRedirectsToSelectOptionsPage(fixture.ViewModel.DraftApprenticeshipHashedId);
+            result.VerifyRedirectsToSelectOptionsPage(fixture.DetailsViewModel.DraftApprenticeshipHashedId);
         }
     }
 
@@ -161,6 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly GetDraftApprenticeshipResponse Apprenticeship;
         public RecognisePriorLearningRequest Request;
         public RecognisePriorLearningViewModel ViewModel;
+        public PriorLearningDetailsViewModel DetailsViewModel;
         public Mock<ICommitmentsApiClient> ApiClient { get; }
 
         public WhenRecognisingPriorLearningFixture()
@@ -169,6 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             Request = fixture.Create<RecognisePriorLearningRequest>();
             ViewModel = fixture.Create<RecognisePriorLearningViewModel>();
             ViewModel.IsTherePriorLearning = true;
+            DetailsViewModel = fixture.Build<PriorLearningDetailsViewModel>().Create();
             Apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
 
             ApiClient = new Mock<ICommitmentsApiClient>();
@@ -181,7 +182,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ApiClient.Object,
                 new SimpleModelMapper(
                     new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
-                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object)),
+                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
+                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IAuthorizationService>(),
                 new RecognitionOfPriorLearningConfiguration())
@@ -222,9 +224,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal WhenRecognisingPriorLearningFixture EnterRplDetails(int reducedDuration, int reducedPrice)
         {
-            ViewModel.IsTherePriorLearning = null;
-            ViewModel.ReducedDuration = reducedDuration;
-            ViewModel.ReducedPrice = reducedPrice;
+            DetailsViewModel.ReducedDuration = reducedDuration;
+            DetailsViewModel.ReducedPrice = reducedPrice;
             return this;
         }
     }
