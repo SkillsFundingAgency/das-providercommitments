@@ -18,6 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
 
         public override void OnException(ExceptionContext context)
         {
+            // This was using TempData before. Reading from TempData failed as size of the response increased.
+            // Now instead of using TempData using BlobStorage.
             if (!(context.Exception is CommitmentsApiBulkUploadModelException exception)) return;
             var cachedData = _cacheService.SetCache(exception.Errors).Result;
             context.RouteData.Values["action"] = nameof(CohortController.FileUploadValidationErrors);
