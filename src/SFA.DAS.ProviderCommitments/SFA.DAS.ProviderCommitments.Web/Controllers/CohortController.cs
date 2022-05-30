@@ -41,7 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
-        private readonly ICacheService _cacheService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
