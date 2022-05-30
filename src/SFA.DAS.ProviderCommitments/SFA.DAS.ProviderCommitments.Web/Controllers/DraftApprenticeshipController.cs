@@ -370,7 +370,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
         {
-            var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
+            var model = await _modelMapper.Map<PriorLearningDetailsViewModel>(request);
             return View("RecognisePriorLearningDetails", model);
         }
 

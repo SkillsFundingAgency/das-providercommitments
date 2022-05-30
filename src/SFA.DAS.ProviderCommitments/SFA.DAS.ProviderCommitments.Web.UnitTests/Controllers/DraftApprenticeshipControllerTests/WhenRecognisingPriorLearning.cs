@@ -112,6 +112,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             result.VerifyRedirectsToSelectOptionsPage(fixture.DetailsViewModel.DraftApprenticeshipHashedId);
         }
 
+        [TestCase(1, 1)]
+        [TestCase(2, null)]
+        [TestCase(null, 3)]
+        [TestCase(null, null)]
+        public async Task When_previously_entered_details_then_show_them(int durationReducedBy, int priceReducedBy)
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithPreviousDetails(durationReducedBy, priceReducedBy);
+
+            var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.Request);
+
+            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDetailsViewModel>();
+            model.ReducedDuration.Should().Be(durationReducedBy);
+            model.ReducedPrice.Should().Be(priceReducedBy);
+        }
+
         [Test, MoqAutoData]
         public async Task When_submitting_RPL_details_then_it_is_saved(int reducedDuration, int reducedPrice)
         {
@@ -183,6 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 new SimpleModelMapper(
                     new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
+                    new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IAuthorizationService>(),
@@ -201,6 +218,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         internal WhenRecognisingPriorLearningFixture WithPreviousSelection(bool previousSelection)
         {
             Apprenticeship.RecognisePriorLearning = previousSelection;
+            return this;
+        }
+
+        internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int durationReducedBy, int priceReducedBy)
+        {
+            Apprenticeship.DurationReducedBy = durationReducedBy;
+            Apprenticeship.PriceReducedBy = priceReducedBy;
             return this;
         }
 
