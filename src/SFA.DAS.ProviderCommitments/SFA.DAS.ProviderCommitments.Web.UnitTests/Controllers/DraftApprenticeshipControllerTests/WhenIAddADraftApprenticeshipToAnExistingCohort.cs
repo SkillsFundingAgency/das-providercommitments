@@ -9,6 +9,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     public class WhenIAddADraftApprenticeshipToAnExistingCohort
     {
         private DraftApprenticeshipControllerTestFixture _fixture;
+        private const string DateBeforeRplRequired = "2022-07-31";
+        private const string DateAfterRplRequired = "2022-08-01";
 
         [SetUp]
         public void Arrange()
@@ -84,7 +86,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
         {
             _fixture
-                .SetUpApprenticeshipNotRequiringRpl()
+                .SetApprenticeshipStarting(DateBeforeRplRequired)
                 .SetUpStandardToReturnNoOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
@@ -98,21 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenApprenticeshipStartDateIsNotSetThenRedirectToCohort()
         {
             _fixture
-                .SetUpApprenticeshipRequiringRpl(startDate: null)
-                .SetUpStandardToReturnNoOptions();
-
-            await _fixture.PostToAddDraftApprenticeship();
-            
-            _fixture.VerifyMappingToApiTypeIsCalled()
-                .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
-        }
-
-        [Test]
-        public async Task AndWhenMandatoryRplIsNotConfiguredThenRedirectToCohort()
-        {
-            _fixture
-                .SetUpApprenticeshipRequiringRpl(rplAfter: null)
+                .SetApprenticeshipStarting(null)
                 .SetUpStandardToReturnNoOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
@@ -126,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreStandardOptionsThenRedirectToSelectOptions()
         {
             _fixture
-                .SetUpApprenticeshipNotRequiringRpl()
+                .SetApprenticeshipStarting(DateBeforeRplRequired)
                 .SetUpStandardToReturnOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
@@ -139,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning()
         {
-            _fixture.SetUpApprenticeshipRequiringRpl();
+            _fixture.SetApprenticeshipStarting(DateAfterRplRequired);
 
             await _fixture.PostToAddDraftApprenticeship();
             

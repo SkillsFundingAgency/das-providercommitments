@@ -39,19 +39,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
-            IAuthorizationService authorizationService, RecognitionOfPriorLearningConfiguration rplConfiguration)
+            IAuthorizationService authorizationService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;
             _authorizationService = authorizationService;
-            _rplConfiguration = rplConfiguration;
         }
 
         [HttpGet]
@@ -270,7 +268,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private bool RequireRpl(MonthYearModel startDate)
         {
-            return startDate?.Date >= _rplConfiguration?.MandateRplAfter;
+            return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
         [HttpPost]
