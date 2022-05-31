@@ -34,7 +34,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenSavingApprenticeshipStartedBeforeMandatoryRpl()
         {
-            _fixture.SetUpApprenticeshipRequiringRpl().SetupCommitmentsApiToReturnADraftApprentice();
+            _fixture
+                .SetApprenticeshipStarting("2022-08-01")
+                .SetupCommitmentsApiToReturnADraftApprentice();
             
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
@@ -67,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptions()
         {
             _fixture
-                .SetUpApprenticeshipRequiringRpl()
+                .SetApprenticeshipStarting("2022-08-01")
                 .SetupCommitmentsApiToReturnADraftApprentice();
 
             await _fixture.PostToEditDraftApprenticeship();

@@ -57,7 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly SelectOptionsRequest _selectOptionsRequest;
         private readonly ViewSelectOptionsViewModel _viewSelectOptionsViewModel;
         private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
-        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
         private readonly Mock<ITempDataDictionary> _tempData;
 
         public DraftApprenticeshipControllerTestFixture()
@@ -181,11 +180,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            _rplConfiguration = new RecognitionOfPriorLearningConfiguration
-            {
-                MandateRplAfter = new DateTime(2022, 08, 01)
-            };
-
             _tempData = new Mock<ITempDataDictionary>();
 
             var encodingService = new Mock<IEncodingService>();
@@ -197,8 +191,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _commitmentsApiClient.Object,
                 _modelMapper.Object,
                 encodingService.Object,
-                _providerFeatureToggle.Object,
-                _rplConfiguration);
+                _providerFeatureToggle.Object);
             _controller.TempData = _tempData.Object;
         }
 
@@ -306,25 +299,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture SetUpApprenticeshipNotRequiringRpl()
+        public DraftApprenticeshipControllerTestFixture SetApprenticeshipStarting(string startDate)
         {
-            SetUpApprenticeshipRequiringRpl(startDate: "2022-07-31", rplAfter: "2022-08-01");
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture SetUpApprenticeshipRequiringRpl(string? startDate = "2022-08-01", string? rplAfter = "2022-08-01")
-        {
-            if(startDate != null)
+            if (startDate != null)
             {
                 var startDate_ = DateTime.Parse(startDate);
                 _addModel.StartDate = new MonthYearModel($"{startDate_.Month}{startDate_.Year}");
                 _editModel.StartDate = _addModel.StartDate;
                 _viewModel.StartDate = startDate_;
             }
-
-            var date = rplAfter != null ? DateTime.Parse(rplAfter) : (DateTime?)null;
-
-            _rplConfiguration.MandateRplAfter = date;
 
             SetupCommitmentsApiToReturnADraftApprentice();
             return this;
