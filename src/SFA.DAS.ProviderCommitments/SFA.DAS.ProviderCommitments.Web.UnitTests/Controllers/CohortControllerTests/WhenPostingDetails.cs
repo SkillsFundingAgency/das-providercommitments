@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
@@ -16,7 +17,6 @@ using System;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
-
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -157,8 +157,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     linkGenerator.Object,
                     _commitmentsApiClient.Object, 
                     Mock.Of<IAuthorizationService>(), 
-                    Mock.Of<IEncodingService>()
-                    ,Mock.Of<IOuterApiService>());
+                    Mock.Of<IEncodingService>(),
+                    Mock.Of<IOuterApiService>(),
+                    Mock.Of<RecognitionOfPriorLearningConfiguration>());
             }
 
             public async Task Post(CohortDetailsOptions option)

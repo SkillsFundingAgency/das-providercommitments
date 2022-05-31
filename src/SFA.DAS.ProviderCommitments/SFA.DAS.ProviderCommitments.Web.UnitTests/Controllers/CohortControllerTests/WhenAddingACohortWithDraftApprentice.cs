@@ -16,6 +16,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -107,7 +108,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ICommitmentsApiClient>(),
                 _providerFeatureToggle.Object,
                 Mock.Of<IEncodingService>(),
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<RecognitionOfPriorLearningConfiguration>());
 
             _tempData = new Mock<ITempDataDictionary>();
             Sut.TempData = _tempData.Object;

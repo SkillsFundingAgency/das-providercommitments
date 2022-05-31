@@ -8,14 +8,19 @@ using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -24,10 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
-using SFA.DAS.ProviderCommitments.Web.Filters;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -41,6 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
@@ -48,7 +51,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService,
+            RecognitionOfPriorLearningConfiguration rplConfiguration)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -57,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
+            _rplConfiguration = rplConfiguration;
         }
 
         [HttpGet]
@@ -226,14 +231,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _mediator.Send(request);
 
-            if (response.DraftApprenticeshipId.HasValue)
+            if (RequireRpl(model.StartDate))
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
-                    EncodingType.ApprenticeshipId);
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { response.CohortReference, draftApprenticeshipHashedId });
+            }
+            else if (response.HasStandardOptions)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId, response.CohortReference });
             }
 
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
+        }
+
+        private bool RequireRpl(MonthYearModel startDate)
+        {
+            return startDate?.Date >= _rplConfiguration?.MandateRplAfter;
         }
 
         [HttpGet]

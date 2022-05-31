@@ -11,8 +11,10 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -67,6 +69,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
         }
 
+        [Test]
+        public async Task UserIsRedirectedToRecognisePriorLearningPageWhenStartDateIsAfterActivationDate()
+        {
+            _fixture.SetModelStartDate("012023");
+            await _fixture.PostDraftApprenticeshipViewModel();
+            _fixture.VerifyUserRedirectedTo("RecognisePriorLearning");
+        }
+
+        [Test]
+        public async Task UserIsNotRedirectedToRecognisePriorLearningPageWhenStartDateIsBeforeActivationDate()
+        {
+            _fixture.SetModelStartDate("012022");
+            await _fixture.PostDraftApprenticeshipViewModel();
+            _fixture.VerifyUserRedirectIsNotToRecognisePriorLearning();
+        }
+
         private class UnapprovedControllerTestFixture
         {
             private readonly CohortController _controller;
@@ -83,6 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly Mock<IEncodingService> _encodingService;
             private readonly Mock<ITempDataDictionary> _tempData;
             private readonly string _draftApprenticeshipHashedId;
+            private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
 
             public UnapprovedControllerTestFixture()
             {
@@ -113,7 +132,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 {
                     CohortId = _autoFixture.Create<long>(),
                     CohortReference = _autoFixture.Create<string>(),
-                    DraftApprenticeshipId = null
+                    HasStandardOptions = false,
+                    DraftApprenticeshipId = _autoFixture.Create<long>(),
                 };
 
                 _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
@@ -123,8 +143,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                     .Returns(_linkGeneratorRedirectUrl)
                     .Callback((string value) => _linkGeneratorParameter = value);
-                    
-                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), _encodingService.Object,  Mock.Of<IOuterApiService>());
+
+                _rplConfiguration = new RecognitionOfPriorLearningConfiguration
+                {
+                    MandateRplAfter = new DateTime(2022, 08, 01)
+                };
+
+                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), 
+                            Mock.Of<IAuthorizationService>(), _encodingService.Object,  Mock.Of<IOuterApiService>(), _rplConfiguration);
                 _controller.TempData = _tempData.Object;
             }
 
@@ -146,6 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     {
                         CohortId = _autoFixture.Create<long>(),
                         CohortReference = _autoFixture.Create<string>(),
+                        HasStandardOptions = true,
                         DraftApprenticeshipId = draftApprenticeshipId
                     });
                 return this;
@@ -173,6 +200,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Assert.IsNotNull(result);
                 result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
                 return this;
+            }
+
+            public void SetModelStartDate(string monthYear)
+            {
+                _model.StartDate = new MonthYearModel(monthYear);
+            }
+
+            public void VerifyUserRedirectIsNotToRecognisePriorLearning()
+            {
+                _actionResult.VerifyReturnsRedirectToActionResult();
+                var result = _actionResult as RedirectToActionResult;
+                Assert.IsNotNull(result);
+                Assert.AreNotSame(result.ActionName, "RecognisePriorLearning");
             }
         }
     }

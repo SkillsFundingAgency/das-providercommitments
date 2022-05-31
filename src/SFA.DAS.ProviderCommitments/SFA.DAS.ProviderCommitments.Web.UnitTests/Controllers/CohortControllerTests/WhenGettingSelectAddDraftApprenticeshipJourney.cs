@@ -7,6 +7,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -60,7 +61,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
                 _featureToggleServiceMock.Object,
                 Mock.Of<IEncodingService>(),
-                 Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<RecognitionOfPriorLearningConfiguration>());
         }
 
         public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);
