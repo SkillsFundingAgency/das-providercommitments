@@ -205,7 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _actionResult.VerifyReturnsRedirectToActionResult();
                 var result = _actionResult as RedirectToActionResult;
                 Assert.IsNotNull(result);
-                Assert.AreNotSame(result.ActionName, "RecognisePriorLearning");
+                Assert.AreNotSame("RecognisePriorLearning", result.ActionName);
             }
         }
     }
