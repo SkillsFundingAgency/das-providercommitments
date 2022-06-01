@@ -43,7 +43,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
-        private readonly RecognitionOfPriorLearningConfiguration _rplConfiguration;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
@@ -51,8 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
-            IOuterApiService outerApiService,
-            RecognitionOfPriorLearningConfiguration rplConfiguration)
+            IOuterApiService outerApiService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -61,7 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
-            _rplConfiguration = rplConfiguration;
         }
 
         [HttpGet]
@@ -247,7 +244,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private bool RequireRpl(MonthYearModel startDate)
         {
-            return startDate?.Date >= _rplConfiguration?.MandateRplAfter;
+            return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
         [HttpGet]

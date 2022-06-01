@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
@@ -69,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object, Mock.Of<RecognitionOfPriorLearningConfiguration>());
+                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut.TempData = tempData;
         }
