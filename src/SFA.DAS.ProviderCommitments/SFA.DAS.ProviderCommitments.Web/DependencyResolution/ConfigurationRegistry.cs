@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.Encoding;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
@@ -17,6 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<CommitmentsClientApiConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
             AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
             AddConfiguration<CommitmentPermissionsApiClientConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
+            AddConfiguration<ProviderRelationshipsApiConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderRelationshipsApiConfiguration);
             AddConfiguration<EncodingConfig>(ProviderCommitmentsConfigurationKeys.Encoding);
             AddConfiguration<ProviderFeaturesConfiguration>(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
             AddConfiguration<ZenDeskConfiguration>(ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);

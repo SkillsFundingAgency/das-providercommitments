@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
+using SFA.DAS.ProviderRelationships.Api.Client.DependencyResolution.StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -19,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<AuthorizationRegistry>();
             registry.IncludeRegistry<AutoConfigurationRegistry>();
             registry.IncludeRegistry<CommitmentsApiClientRegistry>();
+            registry.IncludeRegistry<ProviderRelationshipsApiClientRegistry>();
             registry.IncludeRegistry<CommitmentPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<ConfigurationRegistry>();
             registry.IncludeRegistry<CommitmentsSharedRegistry>();

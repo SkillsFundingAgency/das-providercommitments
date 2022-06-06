@@ -30,8 +30,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                     csvReader.Configuration.BadDataFound = cont => throw new Exception("Bad data found");
 
                     csvReader.Configuration.RegisterClassMap<CsvRecordMap>();
-                    return csvReader.GetRecords<CsvRecord>()
+                    var csvRecords = csvReader.GetRecords<CsvRecord>()
                              .ToList();
+
+                    var emptyRecords = GetEmptyRecords(csvRecords);
+                    if (emptyRecords.Count > 0)
+                    {
+                        emptyRecords.ForEach(item => csvRecords.Remove(item));
+                    }
+
+                    return csvRecords;
                 }
             }
             catch (Exception exc)
@@ -39,6 +47,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 _logger.LogError(exc, $"Failed to process bulk upload file - ProviderId {providerId}");
                 throw exc;
             }
+        }
+
+        public static List<CsvRecord> GetEmptyRecords(List<CsvRecord> csvRecords)
+        {
+            return (csvRecords.Where(csvRecord => string.IsNullOrEmpty(csvRecord.CohortRef) &&
+                    string.IsNullOrEmpty(csvRecord.AgreementId) &&
+                    string.IsNullOrEmpty(csvRecord.ULN) &&
+                    string.IsNullOrEmpty(csvRecord.FamilyName) &&
+                    string.IsNullOrEmpty(csvRecord.GivenNames) &&
+                    string.IsNullOrEmpty(csvRecord.DateOfBirth) &&
+                    string.IsNullOrEmpty(csvRecord.EmailAddress) &&
+                    string.IsNullOrEmpty(csvRecord.StdCode) &&
+                    string.IsNullOrEmpty(csvRecord.StartDate) &&
+                    string.IsNullOrEmpty(csvRecord.EndDate) &&
+                    string.IsNullOrEmpty(csvRecord.TotalPrice) &&
+                    string.IsNullOrEmpty(csvRecord.EPAOrgID) &&
+                    string.IsNullOrEmpty(csvRecord.ProviderRef))
+                    ).ToList();
         }
     }
 }
