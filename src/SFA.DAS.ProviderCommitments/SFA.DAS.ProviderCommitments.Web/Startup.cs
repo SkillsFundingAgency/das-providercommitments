@@ -72,6 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+            services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
 
             services
                 .AddAuthorizationService()

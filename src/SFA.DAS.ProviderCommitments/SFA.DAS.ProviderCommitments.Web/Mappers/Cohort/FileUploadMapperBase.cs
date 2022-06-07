@@ -61,7 +61,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var cohortInfo = await _outerApiService.GetCohort(cohortId.Value);
                 if (cohortInfo != null)
                 {
+<<<<<<< HEAD
+                    _transferSenderIds.Add(cohortId.Value, cohortInfo.TransferSenderId);
+
+=======
                     _transferSenderIds.Add(cohortId.Value, cohortInfo?.TransferSenderId);
+>>>>>>> master
                     return cohortInfo.TransferSenderId;
                 }
             }
