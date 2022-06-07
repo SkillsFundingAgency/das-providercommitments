@@ -23,9 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
         {
-            var emptyRecords = csvRecords.GetEmptyRecords();
-            emptyRecords.ForEach(item => csvRecords.Remove(item));
-
             return csvRecords.Select((csvRecord, index) => 
              new BulkUploadAddDraftApprenticeshipRequest()
              {
@@ -64,8 +61,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var cohortInfo = await _outerApiService.GetCohort(cohortId.Value);
                 if (cohortInfo != null)
                 {
+<<<<<<< HEAD
                     _transferSenderIds.Add(cohortId.Value, cohortInfo.TransferSenderId);
 
+=======
+                    _transferSenderIds.Add(cohortId.Value, cohortInfo?.TransferSenderId);
+>>>>>>> master
                     return cohortInfo.TransferSenderId;
                 }
             }
