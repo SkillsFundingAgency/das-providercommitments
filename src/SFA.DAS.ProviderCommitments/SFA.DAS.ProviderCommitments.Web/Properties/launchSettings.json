@@ -15,22 +15,13 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SFA.DAS.ProviderCommitments": {
+    "SFA.DAS.ProviderCommitments.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APPSETTING_EnvironmentName": "LOCAL"
-      },
-      "SFA.DAS.ProviderCommitments.Web": {
-        "commandName": "Project",
-        "launchBrowser": true,
-        "applicationUrl": "https://localhost:5001;http://localhost:5000",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development",
-          "APPSETTING_EnvironmentName": "LOCAL"
-        }
       }
     }
   }

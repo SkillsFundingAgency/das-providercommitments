@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -29,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                .WithDefaultHeaders()
                .Build();
 
+                AddDevelopmentRole(httpClient, "Provider");
+
                 httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
                 var byteArray = System.Text.Encoding.ASCII.GetBytes($"provider:password1234");
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
@@ -52,6 +55,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                .WithDefaultHeaders()
                .Build();
 
+                AddDevelopmentRole(httpClient, "Provider");
+                
                 httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
 
                 var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
@@ -61,6 +66,16 @@ namespace SFA.DAS.ProviderCommitments.Web
             {
                 throw new UnauthorizedAccessException("Not accessible");
             }
+        }
+
+        private void AddDevelopmentRole(HttpClient httpClient, string role)
+        {
+            // some operations on the Commitments API require the role to be specificed
+            // this would usually be done as part of the MI authorization, but when
+            // MI is disabled this must be done using a custom header which will be read
+            // by the Commitments API when running in Development mode and the role
+            // will transfered into a claim
+            httpClient.DefaultRequestHeaders.Add("Authorization",  role);
         }
     }
 }
