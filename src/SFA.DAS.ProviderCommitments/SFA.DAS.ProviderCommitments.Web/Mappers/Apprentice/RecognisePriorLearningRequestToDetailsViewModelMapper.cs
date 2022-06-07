@@ -5,22 +5,23 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class RecognisePriorLearningRequestToViewModelMapper : IMapper<RecognisePriorLearningRequest, RecognisePriorLearningViewModel>
+    public class RecognisePriorLearningRequestToDetailsViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDetailsViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public RecognisePriorLearningRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public RecognisePriorLearningRequestToDetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<RecognisePriorLearningViewModel> Map(RecognisePriorLearningRequest source)
+        public async Task<PriorLearningDetailsViewModel> Map(RecognisePriorLearningRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
 
-            return new RecognisePriorLearningViewModel
+            return new PriorLearningDetailsViewModel
             {
-                IsTherePriorLearning = apprenticeship.RecognisePriorLearning,
+                ReducedDuration = apprenticeship.DurationReducedBy,
+                ReducedPrice = apprenticeship.PriceReducedBy,
             };
         }
     }

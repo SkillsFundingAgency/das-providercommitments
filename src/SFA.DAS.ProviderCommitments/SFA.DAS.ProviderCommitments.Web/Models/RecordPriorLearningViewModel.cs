@@ -9,6 +9,12 @@
         public bool? IsTherePriorLearning { get; set; }
     }
 
+    public class PriorLearningDetailsViewModel : DraftApprenticeshipRequest
+    {
+        public int? ReducedPrice { get; set; }
+        public int? ReducedDuration { get; set; }
+    }
+
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest
     {
         public bool HasStandardOptions { get; set; }

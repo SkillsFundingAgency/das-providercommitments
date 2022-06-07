@@ -1,0 +1,55 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDetailsViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+
+@{
+    ViewData["Title"] = "Recognition of prior learning";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.CohortReference)
+            @Html.HiddenFor(x => x.DraftApprenticeshipId)
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Provide recognition of prior learning (RPL) details
+                    </h1>
+                </legend>
+                <div class="govuk-form-group">
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedDuration, "govuk-form-group--error")">
+                        <label asp-for="ReducedDuration" class="govuk-label govuk-!-font-weight-bold">
+                            What is the reduction in off-the-job-hours during the apprenticeship due to RPL?
+                        </label>
+                        @Html.ValidationMessageFor(m => m.ReducedDuration, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedDuration) })
+                        <input asp-for="ReducedDuration" class="govuk-input govuk-input--width-5" />
+                    </div>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedPrice, "govuk-form-group--error")">
+                        <label asp-for="ReducedPrice" class="govuk-label govuk-!-font-weight-bold">
+                            How much have you reduced the apprenticeship price by due to RPL?
+                        </label>
+                        <span id="price-hint" class="govuk-hint">
+                            Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
+                        </span>
+                        @Html.ValidationMessageFor(m => m.ReducedPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedPrice) })
+                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="ReducedPrice" class="govuk-input govuk-input--width-5" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <button class="govuk-button" type="submit">
+                Save and continue
+            </button>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+    {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", @Model)">Back</a>
+}

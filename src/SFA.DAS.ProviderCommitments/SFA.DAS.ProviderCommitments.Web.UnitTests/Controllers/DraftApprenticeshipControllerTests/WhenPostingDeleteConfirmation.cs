@@ -1,22 +1,19 @@
-﻿using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using AutoFixture;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using System.Threading;
+﻿using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -56,8 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _apiClient.Object,
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                _providerFeatureToggle.Object,
-                new RecognitionOfPriorLearningConfiguration());
+                _providerFeatureToggle.Object);
             Sut.TempData = tempData;
         }
 
