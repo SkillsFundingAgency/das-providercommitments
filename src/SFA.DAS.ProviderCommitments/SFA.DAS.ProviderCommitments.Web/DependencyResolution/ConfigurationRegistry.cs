@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
             AddConfiguration<CommitmentPermissionsApiClientConfiguration>(ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
             AddConfiguration<EncodingConfig>(ProviderCommitmentsConfigurationKeys.Encoding);
+            AddConfiguration<ProviderRelationshipsApiConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderRelationshipsApiConfiguration);
             AddConfiguration<ProviderFeaturesConfiguration>(ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
             AddConfiguration<ZenDeskConfiguration>(ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
             AddConfiguration<DataProtectionConnectionStrings>(ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
