@@ -1,4 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
+@using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
 
 @{
@@ -15,30 +17,72 @@
             The new employer must have <a href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider" target="_blank">set up permissions</a> for you in order to appear in this list.
         </div>
 
-        <table class="govuk-table das-table--responsive">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Employer</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Account name</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-25">Agreement ID</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"><span class="govuk-visually-hidden">Action</span></th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
+        <form method="get">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="searchTerm">Search employer name or account name</label>
+                <div class="das-search-form__group">
+                    <input class="govuk-input das-search-form__input app-input-autocomplete" id="searchTerm" name="searchTerm" type="text" value="@Model.SelectEmployerFilterModel.SearchTerm">
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
 
-                @foreach (var viewModel in Model.AccountProviderLegalEntities)
-                {
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
-                    <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
-                    <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
-                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                        <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer,  new {viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+            <input type="hidden" value="@Model.SelectEmployerFilterModel.CurrentlySortedByField" name="SortField" />
+            <input type="hidden" value="@Model.SelectEmployerFilterModel.ReverseSort.ToString()" name="ReverseSort" />
+
+            @if (!string.IsNullOrWhiteSpace(Model.SelectEmployerFilterModel.SearchTerm))
+            {
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApprenticeSelectEmployer">Clear search</a></p>
+            }
+
+            @if (Model.AccountProviderLegalEntities.Count > 0)
+            {
+                <table class="govuk-table das-table--responsive das-table--double-arrows">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
+                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)"
+                                   title="Sort by employer name"
+                                   asp-route="@RouteNames.ApprenticeSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst)">
+                                    Employer
+                                </a>
+
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-35">
+                                <a class="@Model.SelectEmployerFilterModel.CssClassForArrowDirection(SelectEmployerFilterModel.EmployerAccountNameConst)"
+                                   title="Sort by account name"
+                                   asp-route="@RouteNames.ApprenticeSelectEmployer"
+                                   asp-all-route-data="@Model.SelectEmployerFilterModel.BuildSortRouteData(SelectEmployerFilterModel.EmployerAccountNameConst)">
+                                    Account name
+                                </a>
+                            </th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-20">Agreement ID</th>
+                            <th scope="col" class="govuk-table__header das-table-cell-width-10  govuk-table__header--numeric"><span class="govuk-visually-hidden">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                        @foreach (var viewModel in Model.AccountProviderLegalEntities)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell" data-label="Employer">@viewModel.EmployerAccountLegalEntityName</td>
+                                <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
+                                <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
+                                    <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer, new { viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
+            }
+        </form>
     </div>
 </div>
 
@@ -46,3 +90,7 @@
 {
     <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeEmployer)">Back</a>
 }
+
+<script>
+    var autoCompleteSource = @Html.Raw(JsonConvert.SerializeObject(Model.SelectEmployerFilterModel.Employers));
+</script>

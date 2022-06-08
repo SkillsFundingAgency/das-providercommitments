@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling
 
     public class Error
     {
+        public Error() { }
         public Error(string property, string error)
         {
             Property = property;
