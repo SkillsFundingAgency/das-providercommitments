@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.BulkUpload
 
             internal void VerifyCachedFileIsDeleted()
             {
-                _cacheService.Verify(x => x.ClearCache(_command.CachedRequestId.ToString()), Times.Once);
+                _cacheService.Verify(x => x.ClearCache(_command.CachedRequestId.ToString(), It.IsAny<string>()), Times.Once);
             }
         }
     }
