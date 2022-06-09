@@ -24,7 +24,7 @@
                 <div class="govuk-form-group">
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedDuration, "govuk-form-group--error")">
                         <label asp-for="ReducedDuration" class="govuk-label govuk-!-font-weight-bold">
-                            What is the reduction in off-the-job-hours during the apprenticeship due to RPL?
+                            How many weeks have you reduced the apprenticeship duration by due to RPL?
                         </label>
                         @Html.ValidationMessageFor(m => m.ReducedDuration, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedDuration) })
                         <input asp-for="ReducedDuration" class="govuk-input govuk-input--width-5" />
@@ -34,7 +34,7 @@
                             How much have you reduced the apprenticeship price by due to RPL?
                         </label>
                         <span id="price-hint" class="govuk-hint">
-                            Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
+                            Enter the price in whole pounds.  For example, for £1,500 enter 1500
                         </span>
                         @Html.ValidationMessageFor(m => m.ReducedPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedPrice) })
                         <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="ReducedPrice" class="govuk-input govuk-input--width-5" />
