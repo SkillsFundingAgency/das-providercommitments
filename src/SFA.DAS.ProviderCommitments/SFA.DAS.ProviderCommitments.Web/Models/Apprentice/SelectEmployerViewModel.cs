@@ -7,5 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
     {
         public IList<AccountProviderLegalEntityViewModel> AccountProviderLegalEntities { get; set; }
         public string LegalEntityName { get; set; }
+        public SelectEmployerFilterModel SelectEmployerFilterModel { get; set; }
     }
 }

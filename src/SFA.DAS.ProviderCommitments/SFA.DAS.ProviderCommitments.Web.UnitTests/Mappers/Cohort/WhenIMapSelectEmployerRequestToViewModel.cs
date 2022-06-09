@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Moq;
+using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
+using SFA.DAS.ProviderRelationships.Api.Client;
+using SFA.DAS.ProviderRelationships.Types.Dtos;
+using SFA.DAS.ProviderRelationships.Types.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -42,11 +42,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new SelectEmployerViewModelMapperFixture();
             fixture.AddListOfAccountProviderLegalEntities()
-                .WithRequest(new SelectEmployerRequest 
+                .WithRequest(new SelectEmployerRequest
                 {
-                    ProviderId = 123, 
-                    SortField = SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst, 
-                    ReverseSort = reverseSort 
+                    ProviderId = 123,
+                    SortField = SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst,
+                    ReverseSort = reverseSort
                 });
 
             var result = await fixture.Act();
@@ -114,23 +114,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             fixture.Assert_ListOfEmployersIsEmpty(result);
         }
-    }
 
-    public class SelectEmployerViewModelMapperFixture
-    {
-        private readonly SelectEmployerViewModelMapper _sut;
-        private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
-        private SelectEmployerRequest _request;
-        private readonly long _providerId;
-        private GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
 
-        public SelectEmployerViewModelMapperFixture()
+        public class SelectEmployerViewModelMapperFixture
         {
-            _providerId = 123;
-            _request = new SelectEmployerRequest {ProviderId = _providerId};
-            _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+            private readonly SelectEmployerViewModelMapper _sut;
+            private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
+            private SelectEmployerRequest _request;
+            private readonly long _providerId;
+            private GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
+
+            public SelectEmployerViewModelMapperFixture()
             {
-                AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
+                _providerId = 123;
+                _request = new SelectEmployerRequest { ProviderId = _providerId };
+                _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+                {
+                    AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
                     new AccountProviderLegalEntityDto
                     {
@@ -143,23 +143,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountProviderId = 234
                     }
                 }
-            };
+                };
 
-            _providerRelationshipsApiClientMock = new Mock<IProviderRelationshipsApiClient>();
-            _providerRelationshipsApiClientMock
-                .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                    It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                    CancellationToken.None))
-                .ReturnsAsync(() => _apiResponse);
+                _providerRelationshipsApiClientMock = new Mock<IProviderRelationshipsApiClient>();
+                _providerRelationshipsApiClientMock
+                    .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
+                        It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
+                        CancellationToken.None))
+                    .ReturnsAsync(() => _apiResponse);
 
-            _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object);
-        }
+                _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object);
+            }
 
-        public SelectEmployerViewModelMapperFixture AddListOfAccountProviderLegalEntities()
-        {
-            _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+            public SelectEmployerViewModelMapperFixture AddListOfAccountProviderLegalEntities()
             {
-                AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
+                _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+                {
+                    AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
                     new AccountProviderLegalEntityDto
                     {
@@ -192,100 +192,101 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountProviderId = 234
                     }
                 }
-            };
+                };
 
-            return this;
-        }
-
-        internal SelectEmployerViewModelMapperFixture WithRequest(SelectEmployerRequest selectEmployerRequest)
-        {
-            _request = selectEmployerRequest;
-            return this;
-        }
-
-        public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
-
-
-        public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
-        {
-            _providerRelationshipsApiClientMock
-                .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                    It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                    CancellationToken.None))
-                .ReturnsAsync(new GetAccountProviderLegalEntitiesWithPermissionResponse());
-
-            return this;
-        }
-
-        public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
-        {
-            _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y => 
-                    y.Ukprn == _request.ProviderId &&
-                    y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
-        }
-
-        public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
-        {
-            Assert.AreEqual(_apiResponse.AccountProviderLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
-
-            foreach (var entity in _apiResponse.AccountProviderLegalEntities)
-            {
-                Assert.True(result.AccountProviderLegalEntities.Any(x => 
-                    x.EmployerAccountLegalEntityName == entity.AccountLegalEntityName &&
-                    x.EmployerAccountLegalEntityPublicHashedId == entity.AccountLegalEntityPublicHashedId &&
-                    x.EmployerAccountName == entity.AccountName &&
-                    x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId));
+                return this;
             }
-        }
 
-        public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
-        {
-            Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
-        }
+            internal SelectEmployerViewModelMapperFixture WithRequest(SelectEmployerRequest selectEmployerRequest)
+            {
+                _request = selectEmployerRequest;
+                return this;
+            }
 
-        internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
-        {
-            if (reverseSort)
-            {
-                Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
-                Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
-                Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
-            }
-            else
-            {
-                Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
-                Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
-                Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
-            }
-        }
+            public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
 
-        internal void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
-        {
-            if (reverseSort)
+
+            public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
-                Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
-                Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
-                Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
+                _providerRelationshipsApiClientMock
+                    .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
+                        It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
+                        CancellationToken.None))
+                    .ReturnsAsync(new GetAccountProviderLegalEntitiesWithPermissionResponse());
+
+                return this;
             }
-            else
+
+            public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
             {
+                _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
+                    It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y =>
+                        y.Ukprn == _request.ProviderId &&
+                        y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
+            }
+
+            public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
+            {
+                Assert.AreEqual(_apiResponse.AccountProviderLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
+
+                foreach (var entity in _apiResponse.AccountProviderLegalEntities)
+                {
+                    Assert.True(result.AccountProviderLegalEntities.Any(x =>
+                        x.EmployerAccountLegalEntityName == entity.AccountLegalEntityName &&
+                        x.EmployerAccountLegalEntityPublicHashedId == entity.AccountLegalEntityPublicHashedId &&
+                        x.EmployerAccountName == entity.AccountName &&
+                        x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId));
+                }
+            }
+
+            public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+            {
+                Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+            }
+
+            internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
+            {
+                if (reverseSort)
+                {
+                    Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+                    Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
+                    Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
+                }
+                else
+                {
+                    Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+                    Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
+                    Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
+                }
+            }
+
+            internal void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
+            {
+                if (reverseSort)
+                {
+                    Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
+                    Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
+                    Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
+                }
+                else
+                {
+                    Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
+                    Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
+                    Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
+                }
+            }
+
+            internal void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
+            {
+                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
                 Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
-                Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
-                Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
             }
-        }
 
-        internal void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
-        {
-            Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-            Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
-        }
-
-        internal void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
-        {
-            Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-            Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+            internal void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
+            {
+                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
+                Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+            }
         }
     }
 }

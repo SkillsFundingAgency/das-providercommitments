@@ -2,7 +2,7 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 
 @{
-    ViewData["Title"] = "Recognition of prior learning";
+    ViewData["Title"] = "Provide recognition of prior learning (RPL) details";
 }
 
 <div class="govuk-grid-row">
@@ -51,5 +51,5 @@
 
 @section breadcrumb
     {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", @Model)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship", @Model)">Back</a>
 }

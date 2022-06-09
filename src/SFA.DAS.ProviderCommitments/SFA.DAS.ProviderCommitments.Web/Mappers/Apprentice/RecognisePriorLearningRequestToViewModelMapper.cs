@@ -20,6 +20,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new RecognisePriorLearningViewModel
             {
+                CohortId = source.CohortId,
+                CohortReference = source.CohortReference,
+                DraftApprenticeshipId = source.DraftApprenticeshipId,
+                ProviderId = source.ProviderId,
+                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
                 IsTherePriorLearning = apprenticeship.RecognisePriorLearning,
             };
         }

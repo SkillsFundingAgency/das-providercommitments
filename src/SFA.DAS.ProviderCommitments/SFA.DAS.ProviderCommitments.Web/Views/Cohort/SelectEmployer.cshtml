@@ -1,7 +1,7 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared 
 @using Newtonsoft.Json;
-@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectEmployerViewModel
 @inject ILinkGenerator LinkGenerator
 
@@ -80,7 +80,6 @@
             }
             else
             {
-
                 <p class="govuk-body">0 employers match <b>'@Model.SelectEmployerFilterModel.SearchTerm'</b></p>
             }
         </form>
