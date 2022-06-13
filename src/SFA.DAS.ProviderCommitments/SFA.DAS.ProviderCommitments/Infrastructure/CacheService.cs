@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             }
         }
 
-        public async Task<Guid> SetCache<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "") where T : class
+        public async Task<Guid> SetCache<T>(T value, string memberName = "") where T : class
         {
             var newCacheRequestKey = Guid.NewGuid();
             var response = JsonSerializer.Serialize(value);
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             return newCacheRequestKey;
         }
 
-        public async Task ClearCache(string key, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
+        public async Task ClearCache(string key, string memberName = "")
         {
             try
             {

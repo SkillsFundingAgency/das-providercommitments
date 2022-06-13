@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
     public interface ICacheService
     {
         Task<T> GetFromCache<T>(string key) where T : class;
-        Task<Guid> SetCache<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "") where T : class;
-        Task ClearCache(string key, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "");
+        Task<Guid> SetCache<T>(T value, string memberName = "") where T : class;
+        Task ClearCache(string key, string memberName = "");
     }
 }

@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 errors = await _cacheService.GetFromCache<List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>>(source.CachedErrorGuid) ??
                     new List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>();
-                await _cacheService.ClearCache(source.CachedErrorGuid);
+                await _cacheService.ClearCache(source.CachedErrorGuid, nameof(BulkUploadValidateApiResponseToFileUpldValidateViewModel));
             }
 
             var viewModel = new FileUploadValidateViewModel();
