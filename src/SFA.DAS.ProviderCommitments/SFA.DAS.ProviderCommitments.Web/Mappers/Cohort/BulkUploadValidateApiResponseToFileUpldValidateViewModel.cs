@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 
@@ -53,7 +50,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
                 viewModel.BulkUploadValidationErrors.Add(validationError);
             }
-
 
             return viewModel;
         }

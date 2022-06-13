@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = validator.Validate(model);
 
             Assert.IsFalse(result.IsValid);
@@ -125,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var file = CreateFakeFormFile(fileContents);
 
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = validator.Validate(model);
 
             Assert.IsTrue(result.IsValid);
@@ -149,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var fileContents = new StringBuilder().AppendLine(header).ToString();
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
 
             //Act
             var result = validator.Validate(model);
@@ -167,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var fileContents = new StringBuilder().AppendLine(headerLine).ToString();
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             
             //Act
             var result = validator.Validate(model);
@@ -179,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 
         private void AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)
         {
-            var validator = new FileUploadStartViewModelValidator(Mock.Of<ILogger<FileUploadStartViewModelValidator>>(), _csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
 
             var validationResult = validator.TestValidate(instance);
             if (expectedValid)
