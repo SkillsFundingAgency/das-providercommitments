@@ -19,8 +19,16 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
 
         public async Task<T> GetFromCache<T>(string key) where T : class
         {
-            var cachedResponse =  await _blobFile.DownloadFile(key);
-            return cachedResponse == null ? null : JsonSerializer.Deserialize<T>(cachedResponse);
+            try
+            {
+                var cachedResponse = await _blobFile.DownloadFile(key);
+                return cachedResponse == null ? null : JsonSerializer.Deserialize<T>(cachedResponse);
+            }
+            catch
+            {
+                _logger.LogDebug($"No record found when getting record - key : {key}");
+                return null;
+            }
         }
 
         public async Task<Guid> SetCache<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "") where T : class
@@ -34,8 +42,15 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
 
         public async Task ClearCache(string key, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
-            await _blobFile.DeleteFile(key);
+            try
+            {
+                await _blobFile.DeleteFile(key);
             _logger.LogDebug($"Cahced record removed by {memberName} - key : {key}");
+            }
+            catch
+            {
+                _logger.LogDebug($"No record found when deleting record - key : {key}");
+            }
         }
     }
 }
