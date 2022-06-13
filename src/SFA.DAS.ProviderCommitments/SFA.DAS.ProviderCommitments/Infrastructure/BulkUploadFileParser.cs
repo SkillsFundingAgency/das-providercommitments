@@ -14,13 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     {
         private readonly ILogger<BulkUploadFileParser> _logger;
 
-        public static string[] OptionalHeaders = new[]
-        {
-            nameof(CsvRecord.RecognisePriorLearning),
-            nameof(CsvRecord.DurationReducedBy),
-            nameof(CsvRecord.PriceReducedBy),
-        };
-
         public BulkUploadFileParser(ILogger<BulkUploadFileParser> logger)
         {
             _logger = logger;
@@ -66,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             var missingHeaders = args.InvalidHeaders.SelectMany(h => h.Names);
 
-            var missingRequiredHeaders = missingHeaders.Except(OptionalHeaders);
+            var missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
 
             if (missingRequiredHeaders.Any())
             {
@@ -77,9 +70,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public static void MissingFieldFound(MissingFieldFoundArgs args)
         {
-            var missingRequiredFields = args.HeaderNames.Except(OptionalHeaders);
+            var missingRequiredFields = args.HeaderNames.Except(BulkUploadFileRequirements.OptionalHeaders);
 
-            if(missingRequiredFields.Any())
+            if (missingRequiredFields.Any())
             {
                 // Default validation
                 ConfigurationFunctions.MissingFieldFound(args);
