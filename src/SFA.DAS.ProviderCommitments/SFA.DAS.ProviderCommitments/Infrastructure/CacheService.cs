@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             }
             catch
             {
-                _logger.LogDebug($"No record found when getting record - key : {key}");
+                _logger.LogInformation($"No record found when getting record - key : {key}");
                 return null;
             }
         }
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             var newCacheRequestKey = Guid.NewGuid();
             var response = JsonSerializer.Serialize(value);
             await _blobFile.UploadFile(response, newCacheRequestKey.ToString());
-            _logger.LogDebug($"New cahce record created by {memberName} - key : {newCacheRequestKey}");
+            _logger.LogInformation($"New cache record created by {memberName} - key : {newCacheRequestKey}");
             return newCacheRequestKey;
         }
 
@@ -45,11 +45,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             try
             {
                 await _blobFile.DeleteFile(key);
-            _logger.LogDebug($"Cahced record removed by {memberName} - key : {key}");
+            _logger.LogInformation($"Cached record removed by {memberName} - key : {key}");
             }
             catch
             {
-                _logger.LogDebug($"No record found when deleting record - key : {key}");
+                _logger.LogInformation($"No record found when deleting record - key : {key}");
             }
         }
     }
