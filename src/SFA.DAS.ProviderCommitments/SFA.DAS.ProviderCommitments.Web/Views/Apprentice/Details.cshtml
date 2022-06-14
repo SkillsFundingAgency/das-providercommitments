@@ -270,6 +270,19 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
+                @if(Model.RecognisePriorLearning)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
+                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DurationReducedBy</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
+                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.PriceReducedBy</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                }
                 @if (!string.IsNullOrEmpty(Model.Version))
                 {
                     <tr class="govuk-table__row">
