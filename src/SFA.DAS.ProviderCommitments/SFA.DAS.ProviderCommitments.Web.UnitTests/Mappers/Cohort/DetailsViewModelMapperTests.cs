@@ -695,6 +695,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public async Task IsCompleteMappedCorrectlyWhenRecognisingPriorLearningStillNeedsToBeConsideredIsSet(bool recognisingPriorLearningStillNeedsConsideration, bool isComplete)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship(build => build.With(x => x.RecognisingPriorLearningStillNeedsToBeConsidered, recognisingPriorLearningStillNeedsConsideration));
+
+            var result = await fixture.Map();
+
+            result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
+        }
     }
 
     public class DetailsViewModelMapperTestsFixture

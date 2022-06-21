@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Encoding;
@@ -171,6 +172,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual((result.CohortId +1), result.TransferSenderId);
+            }
+        }
+
+        [Test]
+        public void VerifyRecognisePriorLearningIsMapped()
+        {
+            foreach (var record in _csvRecords)
+        {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearning);
+            }
+        }
+
+        [Test]
+        public void VerifyDurationReducedBy()
+        {
+            foreach (var record in _csvRecords)
+{
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedBy);
+            }
+        }
+
+        [Test]
+        public void VerifyPriceReducedBy()
+        {
+            foreach (var record in _csvRecords)
+{
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedBy);
             }
         }
     }

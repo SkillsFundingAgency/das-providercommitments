@@ -58,8 +58,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 
         private async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
         {
-            var fileData = await ReadFileAsync(file);
-            return fileData.firstlineData.Length == _csvConfiguration.AllowedFileColumnCount;
+            var (firstlineData, _) = await ReadFileAsync(file);
+            return BulkUploadFileRequirements.CheckHeaderCount(firstlineData);
         }
 
         private async Task<bool> CheckFileRowCount(IFormFile file, CancellationToken cancellation)

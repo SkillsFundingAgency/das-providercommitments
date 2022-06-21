@@ -34,22 +34,22 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
             var apprenticeships = await _apiClient.GetDraftApprenticeships(apiResult.CohortId, cancellationToken);
 
             long? draftApprenticeshipId = null;
+            bool hasStandardOptions = false;
             if (apprenticeships.DraftApprenticeships.Count == 1)
             {
                 var draftApprenticeship = await _apiClient.GetDraftApprenticeship(apiResult.CohortId,
                     apprenticeships.DraftApprenticeships.First().Id, cancellationToken);
                 
-                if (draftApprenticeship.HasStandardOptions)
-                {
-                    draftApprenticeshipId = draftApprenticeship.Id;
-                }
+                draftApprenticeshipId = draftApprenticeship.Id;
+                hasStandardOptions = draftApprenticeship.HasStandardOptions;
             }
             
             return new CreateCohortResponse
             {
                 CohortId = apiResult.CohortId,
                 CohortReference = apiResult.CohortReference,
-                DraftApprenticeshipId = draftApprenticeshipId
+                HasStandardOptions = hasStandardOptions,
+                DraftApprenticeshipId = draftApprenticeshipId,
             };
         }
 

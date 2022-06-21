@@ -12,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 
             CommitmentsOuterApiBuilder.Create(10234)
                 .WithCourseDeliveryModels()
+                .WithBulkUpload()
                 .Build();
 
             Console.WriteLine("PAS Accounts running on port 44378");

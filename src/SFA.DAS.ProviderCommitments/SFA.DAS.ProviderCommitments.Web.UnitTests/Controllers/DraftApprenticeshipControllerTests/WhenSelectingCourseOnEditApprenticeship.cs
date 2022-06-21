@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +15,8 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -105,7 +105,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClientMock.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(Cohort);
 
-            Sut = new DraftApprenticeshipController(MediatorMock.Object, CommitmentsApiClientMock.Object, ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
+            Sut = new DraftApprenticeshipController(
+                MediatorMock.Object,
+                CommitmentsApiClientMock.Object,
+                ModelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                AuthorizationServiceMock.Object);
             Sut.TempData = TempDataMock.Object;
         }
 
