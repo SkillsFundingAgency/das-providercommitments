@@ -10,6 +10,8 @@ using SFA.DAS.ProviderCommitments.DependencyResolution;
 using StructureMap;
 using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
 using SFA.DAS.ProviderRelationships.Api.Client.DependencyResolution.StructureMap;
+using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -28,16 +30,16 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderFeaturesAuthorizationRegistry>();
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
-            registry.IncludeRegistry<PasAccountApiClientRegistry>();
+
+            registry.IncludeRegistry(new PasAccountApiClientRegistry(context => context.GetInstance<PasAccountApiConfiguration>()));
 
             // Enable if you want to bypass MI locally - the 'Provider' role will
-            // be added into a custom Authorization header which will be intercepted 
+            // be added into a custom Authorization header which will be intercepted
             // by the Commitments API when running in Development and used to create a claim
             if (config["UseLocalRegistry"] != null && bool.Parse(config["UseLocalRegistry"]))
             {
-                registry.IncludeRegistry<LocalRegistry>();    
+                registry.IncludeRegistry<LocalRegistry>();
             }
-            
         }
     }
 }

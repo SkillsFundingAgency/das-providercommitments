@@ -7,6 +7,7 @@ using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 using StructureMap;
+using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -27,6 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
             AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
             AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
+            AddConfiguration<PasAccountApiConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration);
         }
 
         private void AddConfiguration<T>(string key) where T : class
