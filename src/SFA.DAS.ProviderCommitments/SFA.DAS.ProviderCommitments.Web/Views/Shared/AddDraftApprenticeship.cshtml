@@ -34,15 +34,17 @@
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
 
+            <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
+
             <partial name="DraftApprenticeship" for="@Model" />
 
             <button type="submit" class="govuk-button">Add</button>
 
             @if (Model.CohortReference != null)
             {
-        <p class="govuk-body govuk-!-margin-bottom-0">
-            <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
-        </p>
+                <p class="govuk-body govuk-!-margin-bottom-0">
+                    <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
+                </p>
             }
         </form>
 
