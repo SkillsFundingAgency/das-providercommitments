@@ -36,13 +36,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public readonly long ProviderId = 123;
         private readonly Mock<IModelMapper> _modelMapperMock;
         public  SelectAddDraftApprenticeshipJourneyViewModel ViewModel { get; set; }
-        private readonly Mock<IAuthorizationService> _featureToggleServiceMock;
 
         public WhenGettingSelectAddDraftApprenticeshipJourneyFixture()
         {
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
-            _featureToggleServiceMock = new Mock<IAuthorizationService>();
-            _featureToggleServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.BulkUploadV2)).Returns(false);
 
             var fixture = new Fixture();
             ViewModel = fixture.Create<SelectAddDraftApprenticeshipJourneyViewModel>();
@@ -58,17 +55,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             Sut = new CohortController(Mock.Of<IMediator>(),
                 _modelMapperMock.Object, 
                 Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                _featureToggleServiceMock.Object,
+                Mock.Of<IAuthorizationService>(),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>());
         }
 
         public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);
-
-        internal WhenGettingSelectAddDraftApprenticeshipJourneyFixture WithBulkUploadV2FeatureEnabled()
-        {
-            _featureToggleServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.BulkUploadV2)).Returns(true);
-            return this;
-        }
     }
 }
