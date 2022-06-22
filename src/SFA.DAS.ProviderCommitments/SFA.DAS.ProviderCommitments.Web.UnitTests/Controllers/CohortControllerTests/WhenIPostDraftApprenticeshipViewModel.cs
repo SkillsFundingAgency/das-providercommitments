@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -142,8 +144,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     .Returns(_linkGeneratorRedirectUrl)
                     .Callback((string value) => _linkGeneratorParameter = value);
 
-                _controller = new CohortController(_mediator.Object, _mockModelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), 
-                            Mock.Of<IAuthorizationService>(), _encodingService.Object,  Mock.Of<IOuterApiService>());
+                var authorizationService = Mock.Of<IAuthorizationService>();
+                Mock.Get(authorizationService).Setup(x =>
+                    x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
+
+                _controller = new CohortController(
+                    _mediator.Object,
+                    _mockModelMapper.Object,
+                    _linkGenerator.Object,
+                    Mock.Of<ICommitmentsApiClient>(),
+                    authorizationService,
+                    _encodingService.Object,
+                    Mock.Of<IOuterApiService>());
                 _controller.TempData = _tempData.Object;
             }
 

@@ -1,13 +1,13 @@
 ﻿using AutoFixture;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -165,6 +165,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
-       
+        [Test]
+        public void VerifyRecognisePriorLearningIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearning);
+            }
+        }
+
+        [Test]
+        public void VerifyDurationReducedBy()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedBy);
+            }
+        }
+
+        [Test]
+        public void VerifyPriceReducedBy()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedBy);
+            }
+        }
     }
 }
