@@ -4,8 +4,10 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Mappers
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
+@inject ISelectDeliveryModelMapperHelper SelectDeliveryModelMapperHelper;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
 @{
@@ -15,7 +17,8 @@
     ViewBag.GaData.Vpv = "provider/apprentices/apprentice/edit";
     ViewBag.GaData.Org = Model.EmployerName;
 
-    Model.Cost = (int?) Model.Cost;
+    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode);
+    Model.Cost = (int?)Model.Cost;
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
 }
@@ -190,7 +193,7 @@
                     </div>
                     <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
 
-                    if (@Model.DeliveryModel != DeliveryModel.Regular)
+                    if (multipleDeliveryModels)
                     {
                         <div class="govuk-form-group">
                             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>

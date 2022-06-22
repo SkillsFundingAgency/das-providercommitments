@@ -25,5 +25,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DeliveryModels = response.DeliveryModels.ToArray()
             };
         }
+
+        public async Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode)
+        {
+            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode);
+            return (response?.DeliveryModels.Count() > 1);
+        }
     }
 }

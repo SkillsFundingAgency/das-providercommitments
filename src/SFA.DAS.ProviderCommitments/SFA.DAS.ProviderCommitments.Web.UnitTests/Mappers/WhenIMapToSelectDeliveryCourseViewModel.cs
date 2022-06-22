@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -8,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
-
 {
     [TestFixture]
     public class WhenIMapToSelectDeliveryCourseViewModel
@@ -54,6 +54,45 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         {
             var result = await _mapper.Map(_providerId, _courseCode, dm);
             Assert.AreEqual(dm, result.DeliveryModel);
+        }
+    }
+
+    [TestFixture]
+    public class WhenICheckForMultipleDeliveryCourses
+    {
+        private SelectDeliveryModelMapperHelper _mapper;
+        private Mock<IApprovalsOuterApiClient> _outerApiClient;
+        private ProviderCourseDeliveryModels _response;
+        private long _providerId;
+        private string _courseCode;
+
+        [SetUp]
+        public void Arrange()
+        {
+            var fixture = new Fixture();
+            _providerId = fixture.Create<long>();
+            _courseCode = fixture.Create<string>();
+            _response = fixture.Create<ProviderCourseDeliveryModels>();
+
+            _outerApiClient = new Mock<IApprovalsOuterApiClient>();
+            _outerApiClient.Setup(x => x.GetProviderCourseDeliveryModels(_providerId, _courseCode, It.IsAny<CancellationToken>())).ReturnsAsync(_response);
+
+            _mapper = new SelectDeliveryModelMapperHelper(_outerApiClient.Object);
+        }
+
+        [Test]
+        public async Task ThenReturnsTrueWhenMultipleDeliveryModelsExist()
+        {
+            var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task ThenReturnsFalseWhenMultipleDeliveryModelsDoNotExist()
+        {
+            _response.DeliveryModels = new List<DeliveryModel> {DeliveryModel.Regular};
+            var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode);
+            Assert.IsFalse(result);
         }
     }
 }
