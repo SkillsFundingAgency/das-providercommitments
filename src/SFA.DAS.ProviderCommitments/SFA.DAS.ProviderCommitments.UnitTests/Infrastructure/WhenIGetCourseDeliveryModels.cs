@@ -18,14 +18,15 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             ApprovalsOuterApiClient sut,
             ProviderCourseDeliveryModels models,
             long provider,
-            string course)
+            string course,
+            long accountLegalEntityId)
         {
             Mock.Get(htpClient).Setup(x => x
                 .Get<ProviderCourseDeliveryModels>(
-                    $"/approvals/providers/{provider}/courses/{course}", null, It.IsAny<CancellationToken>()))
+                    $"/approvals/providers/{provider}/courses/{course}?accountLegalEntityId={accountLegalEntityId}", null, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(models);
 
-            var result = await sut.GetProviderCourseDeliveryModels(provider, course);
+            var result = await sut.GetProviderCourseDeliveryModels(provider, course, accountLegalEntityId);
 
             result.Should().BeEquivalentTo(new ProviderCourseDeliveryModels()
             {

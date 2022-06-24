@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public Task<SelectDeliveryModelViewModel> Map(EditApprenticeshipRequestViewModel source)
         {
-            return _helper.Map(source.ProviderId, source.CourseCode, source.DeliveryModel);
+            return _helper.Map(source.ProviderId, source.CourseCode, 0, source.DeliveryModel);
         }
     }
 }
