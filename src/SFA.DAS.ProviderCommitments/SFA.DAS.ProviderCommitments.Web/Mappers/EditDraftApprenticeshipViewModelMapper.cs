@@ -43,6 +43,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
                     DeliveryModel = apiResponse.DeliveryModel,
                     EmploymentPrice = apiResponse.EmploymentPrice,
+                    RecognisePriorLearning = apiResponse.RecognisePriorLearning,
+                    DurationReducedBy = apiResponse.DurationReducedBy,
+                    PriceReducedBy = apiResponse.PriceReducedBy,
+                    RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered
                 };
             }
             catch (RestHttpClientException restEx)

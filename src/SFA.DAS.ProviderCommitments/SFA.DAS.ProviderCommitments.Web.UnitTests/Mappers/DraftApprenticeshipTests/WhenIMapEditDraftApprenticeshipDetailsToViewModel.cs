@@ -213,5 +213,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_apiResponse.EmploymentEndDate?.Month, result.EmploymentEndDate.Month);
             Assert.AreEqual(_apiResponse.EmploymentEndDate?.Year, result.EmploymentEndDate.Year);
         }
+
+        [Test]
+        public async Task ThenRecognisePriorLearningIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.RecognisePriorLearning, result.RecognisePriorLearning);
+        }
+
+        [Test]
+        public async Task ThenDurationReducedByIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.DurationReducedBy, result.DurationReducedBy);
+        }
+
+        [Test]
+        public async Task ThenPriceReducedByIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.PriceReducedBy, result.PriceReducedBy);
+        }
+
+        [Test]
+        public async Task ThenRecognisingPriorLearningStillNeedsToBeConsideredIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+        }
     }
 }

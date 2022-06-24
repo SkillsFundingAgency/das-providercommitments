@@ -845,6 +845,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 draftApprenticeship.CourseCode = "ABC";
                 draftApprenticeship.CourseName = "ABC Name";
+                draftApprenticeship.DeliveryModel = DeliveryModel.Regular;
             }
             DraftApprenticeshipsResponse.DraftApprenticeships = draftApprenticeships;
             var first = DraftApprenticeshipsResponse.DraftApprenticeships.First();
