@@ -171,7 +171,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearning);
+                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearningAsString);
             }
         }
 
@@ -181,7 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedBy);
+                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedByAsString);
             }
         }
 
@@ -191,7 +191,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedBy);
+                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
         }
     }

@@ -28,7 +28,7 @@
         
         public string EmailAddress { get; set; }
 
-        public bool? RecognisePriorLearning { get; set; }
+        public string RecognisePriorLearning { get; set; }
         
         public string DurationReducedBy { get; set; }
         
