@@ -5,6 +5,7 @@ using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,8 +59,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 
         private async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
         {
-            var (firstlineData, _) = await ReadFileAsync(file);
-            return BulkUploadFileRequirements.CheckHeaderCount(firstlineData);
+            var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
+            using var reader = new StringReader(fileContent);
+
+            var firstLine = await reader.ReadLineAsync();
+            var firstlineData = (firstLine).Split(',');
+
+            return
+                BulkUploadFileRequirements.CheckHeaderCount(firstlineData)
+                && await AllLinesHaveSameColumnCount(reader, firstlineData.Count());
+
+            static async Task<bool> AllLinesHaveSameColumnCount(StringReader reader, int count)
+            {
+                string line;
+
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    if (line.Split(',').Count() != count)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
 
         private async Task<bool> CheckFileRowCount(IFormFile file, CancellationToken cancellation)
@@ -83,7 +106,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
                     fileData.firstlineData[9] == "EndDate" &&
                     fileData.firstlineData[10] == "TotalPrice" &&
                     fileData.firstlineData[11] == "EPAOrgID" &&
-                    fileData.firstlineData[12] == "ProviderRef");            
+                    fileData.firstlineData[12] == "ProviderRef" &&
+                    !fileData.firstlineData.Any(x => string.IsNullOrWhiteSpace(x)));
         }
 
         private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)

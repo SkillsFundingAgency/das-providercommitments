@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -202,6 +202,25 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         {
             //Arrange          
             _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", "") + Environment.NewLine +
+                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+
+            CreateFile();
+
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            result.Should().ContainEquivalentOf(new
+            {
+                CohortRef = "P9DD4P",
+                RecognisePriorLearning = (bool?)null,
+                DurationReducedBy = (string)null,
+                PriceReducedBy = (string)null,
+            });
+        }
+
+        [Test]
+        public void OptionalFieldsWithoutHeaderName()
+        {
+            //Arrange          
+            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", ",,,") + Environment.NewLine +
                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
 
             CreateFile();
