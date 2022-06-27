@@ -32,14 +32,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingAndNoStandardOptionsTheDraftApprenticeIsSuccessful()
+        public async Task AndWhenSavingApprenticeshipStartedBeforeMandatoryRpl()
         {
-            _fixture.SetUpStandardToReturnNoOptions().SetupCommitmentsApiToReturnADraftApprentice();
+            _fixture
+                .SetApprenticeshipStarting("2022-08-01")
+                .SetupCommitmentsApiToReturnADraftApprentice();
             
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
         [Test]
@@ -66,13 +68,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenSavesRedirectsToSelectOptionsViewIfHasOptions()
         {
-            _fixture.SetUpStandardToReturnOptions()
+            _fixture
+                .SetApprenticeshipStarting("2022-08-01")
                 .SetupCommitmentsApiToReturnADraftApprentice();
-            
+
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
-                .VerifyRedirectToSelectOptionsPage();
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
     }

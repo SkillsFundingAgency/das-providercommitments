@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +13,8 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -94,7 +93,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
             AuthorizationServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
 
-            Sut = new DraftApprenticeshipController(Mock.Of<IMediator>(), Mock.Of<ICommitmentsApiClient>(), ModelMapperMock.Object, Mock.Of<IEncodingService>(), AuthorizationServiceMock.Object);
+            Sut = new DraftApprenticeshipController(
+                Mock.Of<IMediator>(),
+                Mock.Of<ICommitmentsApiClient>(),
+                ModelMapperMock.Object,
+                Mock.Of<IEncodingService>(),
+                AuthorizationServiceMock.Object);
         }
 
         public WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)

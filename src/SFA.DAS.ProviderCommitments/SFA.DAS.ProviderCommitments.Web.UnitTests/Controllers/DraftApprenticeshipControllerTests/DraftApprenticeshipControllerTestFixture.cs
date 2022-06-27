@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Configuration;
+using System;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -176,6 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
 
             _tempData = new Mock<ITempDataDictionary>();
 
@@ -183,7 +187,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             encodingService.Setup(x => x.Encode(_draftApprenticeshipId, EncodingType.ApprenticeshipId))
                 .Returns(_draftApprenticeshipHashedId);
             
-            _controller = new DraftApprenticeshipController(_mediator.Object, _commitmentsApiClient.Object, _modelMapper.Object, encodingService.Object, _providerFeatureToggle.Object);
+            _controller = new DraftApprenticeshipController(
+                _mediator.Object,
+                _commitmentsApiClient.Object,
+                _modelMapper.Object,
+                encodingService.Object,
+                _providerFeatureToggle.Object);
             _controller.TempData = _tempData.Object;
         }
 
@@ -288,6 +297,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture SetupProviderIdOnEditRequest(long providerId)
         {
             _draftApprenticeshipRequest.ProviderId = providerId;
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetApprenticeshipStarting(string startDate)
+        {
+            if (startDate != null)
+            {
+                var startDate_ = DateTime.Parse(startDate);
+                _addModel.StartDate = new MonthYearModel($"{startDate_.Month}{startDate_.Year}");
+                _editModel.StartDate = _addModel.StartDate;
+                _viewModel.StartDate = startDate_;
+            }
+
+            SetupCommitmentsApiToReturnADraftApprentice();
             return this;
         }
 
@@ -546,12 +569,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectToSelectOptionsPage()
         {
-            var result = _actionResult
-                .VerifyReturnsRedirectToActionResult()
-                .WithActionName("SelectOptions");
+            _actionResult.VerifyRedirectsToSelectOptionsPage(_draftApprenticeshipHashedId);
+            return this;
+        }
 
-            result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
-            
+        public DraftApprenticeshipControllerTestFixture VerifyRedirectToRecognisePriorLearningPage()
+        {
+            _actionResult.VerifyRedirectsToRecognisePriorLearningPage(_draftApprenticeshipHashedId);
             return this;
         }
 

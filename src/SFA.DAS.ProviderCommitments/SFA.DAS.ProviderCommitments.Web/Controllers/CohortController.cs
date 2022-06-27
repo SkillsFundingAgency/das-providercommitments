@@ -8,14 +8,19 @@ using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -24,10 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
-using SFA.DAS.ProviderCommitments.Web.Filters;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -227,14 +229,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _mediator.Send(request);
 
-            if (response.DraftApprenticeshipId.HasValue)
+            if (RequireRpl(model.StartDate))
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
-                    EncodingType.ApprenticeshipId);
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { response.CohortReference, draftApprenticeshipHashedId });
+            }
+            else if (response.HasStandardOptions)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId, response.CohortReference });
             }
 
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
+        }
+
+        private bool RequireRpl(MonthYearModel startDate)
+        {
+            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+                return false;
+
+            return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
         [HttpGet]
@@ -346,7 +360,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/entry-method")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectAddDraftApprenticeshipJourneyRequest request)
         {
@@ -375,7 +388,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/inform")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadInform(SelectAddDraftApprenticeshipJourneyRequest request)
         {
@@ -385,7 +397,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/start")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadStart(SelectAddDraftApprenticeshipJourneyRequest request)
         {
@@ -395,7 +406,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/file-upload/start")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
@@ -405,15 +415,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(FileUploadReview), request);
         }
 
-        private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)
-        {
-            var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
-            await _mediator.Send(bulkValidate);
-        }
-
         [HttpGet]
         [Route("add/file-upload/validate")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
@@ -423,7 +426,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/file-upload/validate")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateViewModel viewModel)
@@ -435,7 +437,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/review")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewRequest request)
         {
@@ -445,7 +446,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/file-upload/review")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
@@ -489,7 +489,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/discard-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadDiscard(FileDiscardRequest fileDiscardRequest)
         {
@@ -499,7 +498,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/file-upload/discard-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadDiscard(FileDiscardViewModel viewModel)
         {         
@@ -514,7 +512,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/review-delete")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReviewDelete(FileUploadReviewDeleteRequest deleteRequest)
         {
@@ -538,7 +535,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/amended-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileRequest request)
         {
@@ -548,7 +544,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/file-upload/amended-file")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadAmendedFile(FileUploadAmendedFileViewModel viewModel)
         {
@@ -591,7 +586,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/file-upload/review-cohort")]
-        [DasAuthorize(ProviderFeature.BulkUploadV2)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReviewApprentices(FileUploadReviewApprenticeRequest reviewApprenticeRequest)
         {   
@@ -617,6 +611,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
+        private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)
+        {
+            var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
+            await _mediator.Send(bulkValidate);
         }
     }
 }

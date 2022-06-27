@@ -1,8 +1,10 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -21,31 +23,59 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             try
             {
-                var fileContent = new StreamReader(attachment.OpenReadStream()).ReadToEnd();
-                using (var tr = new StringReader(fileContent))
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    var csvReader = new CsvReader(tr);
-                    csvReader.Configuration.HasHeaderRecord = true;
-                    csvReader.Configuration.PrepareHeaderForMatch = (header, index) => header.ToLower();
-                    csvReader.Configuration.BadDataFound = cont => throw new Exception("Bad data found");
+                    HasHeaderRecord = true,
+                    PrepareHeaderForMatch = args => args.Header.ToLower(),
+                    BadDataFound = args => throw new Exception("Bad data found"),
+                    HeaderValidated = ValidateHeader,
+                    MissingFieldFound = MissingFieldFound,
+                };
 
-                    csvReader.Configuration.RegisterClassMap<CsvRecordMap>();
-                    var csvRecords = csvReader.GetRecords<CsvRecord>()
-                             .ToList();
+                var fileContent = new StreamReader(attachment.OpenReadStream()).ReadToEnd();
+                using var tr = new StringReader(fileContent);
+                var csvReader = new CsvReader(tr, config);
 
-                    var emptyRecords = GetEmptyRecords(csvRecords);
-                    if (emptyRecords.Count > 0)
-                    {
-                        emptyRecords.ForEach(item => csvRecords.Remove(item));
-                    }
+                csvReader.Context.RegisterClassMap<CsvRecordMap>();
+                var csvRecords = csvReader.GetRecords<CsvRecord>()
+                         .ToList();
 
-                    return csvRecords;
+                var emptyRecords = GetEmptyRecords(csvRecords);
+                if (emptyRecords.Count > 0)
+                {
+                    emptyRecords.ForEach(item => csvRecords.Remove(item));
                 }
+
+                return csvRecords;
             }
             catch (Exception exc)
             {
                 _logger.LogError(exc, $"Failed to process bulk upload file - ProviderId {providerId}");
                 throw exc;
+            }
+        }
+
+        private static void ValidateHeader(HeaderValidatedArgs args)
+        {
+            var missingHeaders = args.InvalidHeaders.SelectMany(h => h.Names);
+
+            var missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
+
+            if (missingRequiredHeaders.Any())
+            {
+                // Default validation
+                ConfigurationFunctions.HeaderValidated(args);
+            }
+        }
+
+        public static void MissingFieldFound(MissingFieldFoundArgs args)
+        {
+            var missingRequiredFields = args.HeaderNames.Except(BulkUploadFileRequirements.OptionalHeaders);
+
+            if (missingRequiredFields.Any())
+            {
+                // Default validation
+                ConfigurationFunctions.MissingFieldFound(args);
             }
         }
 

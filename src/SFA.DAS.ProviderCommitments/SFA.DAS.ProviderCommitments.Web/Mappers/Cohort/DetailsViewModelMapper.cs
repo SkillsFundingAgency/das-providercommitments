@@ -230,6 +230,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
+            if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
+            {
+                return false;
+            }
+
             return true;
         }
 
