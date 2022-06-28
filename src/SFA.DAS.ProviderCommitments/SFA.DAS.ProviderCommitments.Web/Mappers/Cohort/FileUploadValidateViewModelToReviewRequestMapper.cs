@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<FileUploadReviewRequest> Map(FileUploadValidateViewModel source)
         {
             var csvRecords = _fileParser.GetCsvRecords(source.ProviderId, source.Attachment);
-            var cacheRequestId = await _cache.SetCache(csvRecords);
+            var cacheRequestId = await _cache.SetCache(csvRecords, nameof(FileUploadValidateViewModelToReviewRequestMapper));
 
             return new FileUploadReviewRequest
             {
