@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -85,6 +85,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                                 TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
                             };
                             cohortDetails.Add(existingCohortDetails);
+
+                            result.CanApprove = result.CanApprove && 
+                                (await _outerApiService.GetCohort(cohortId)).IsCompleteForProvider;
                         }
                     }
                 }

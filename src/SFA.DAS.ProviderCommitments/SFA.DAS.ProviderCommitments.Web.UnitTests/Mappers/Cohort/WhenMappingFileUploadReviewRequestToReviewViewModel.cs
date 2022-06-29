@@ -132,6 +132,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
+        [Test]
+        public async Task IncompleteApprenticeshipCannotBeApproved()
+        {   
+            //Arrange
+            fixture.SetupDraftApprenticeships().WithIncompleteData();
+            
+            //Act
+            await fixture.WithDefaultData().Action();
+
+            //Assert
+            Assert.False(fixture.Result.CanApprove);
+        }
+
         public class WhenMappingFileUploadReviewRequestToReviewViewModelFixture
         {
             private Fixture fixture;
@@ -147,6 +160,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private RouteData _routeData;
             private Mock<IRoutingFeature> _routingFeature;
             public GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
+
+            public FileUploadReviewViewModel Result => _result;
 
             public WhenMappingFileUploadReviewRequestToReviewViewModelFixture()
             {
@@ -227,7 +242,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 return this;
             }
 
-            internal void SetupDraftApprenticeships()
+            internal WhenMappingFileUploadReviewRequestToReviewViewModelFixture WithIncompleteData()
+            {
+                _commitmentApiClient.Setup(x => x.GetCohort(It.IsAny<long>()))
+                    .ReturnsAsync(new GetCohortResult { IsCompleteForProvider = false });
+
+                return this;
+            }
+
+            internal WhenMappingFileUploadReviewRequestToReviewViewModelFixture SetupDraftApprenticeships()
             {
                 _draftApprenticeshipsResponse = fixture.Create<GetDraftApprenticeshipsResult>();
                 foreach (var item in _draftApprenticeshipsResponse.DraftApprenticeships)
@@ -236,6 +259,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 }
                 _commitmentApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>()))
                  .ReturnsAsync(_draftApprenticeshipsResponse);
+
+                _commitmentApiClient.Setup(x => x.GetCohort(It.IsAny<long>()))
+                    .ReturnsAsync(new GetCohortResult { IsCompleteForProvider = true });
+
+                return this;
             }
 
             internal void VerifyCorrectNumberOfEmployersAreMapped()
