@@ -51,9 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
 
             try
             {
-                var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
-                var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
-
                 _logger.LogDebug($"Downloading {path} from blob storage {_containerName}");
 
                 using (var stream = new MemoryStream())
