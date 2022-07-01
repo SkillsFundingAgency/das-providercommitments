@@ -17,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmploymentEndDate = source.EmploymentEndDate.MonthYear,
                 EndDate = source.EndDate.MonthYear,
                 DeliveryModel = source.DeliveryModel,
+                CacheKey = source.CacheKey
             });
         }
     }

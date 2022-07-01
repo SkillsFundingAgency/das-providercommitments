@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 
@@ -20,5 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? Price { get; set; }
         public bool InEditMode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+        public Guid CacheKey { get; set; }
     }
 }

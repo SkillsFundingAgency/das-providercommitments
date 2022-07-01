@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 StartDate = source.StartDate.MonthYear,
                 DeliveryModel = source.DeliveryModel,
+                CacheKey = source.CacheKey
             });
         }
     }

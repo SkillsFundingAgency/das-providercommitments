@@ -25,6 +25,7 @@ using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -90,6 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddProviderUiServiceRegistration(Configuration);
             services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();
+            services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiService, OuterApiService>();
         }

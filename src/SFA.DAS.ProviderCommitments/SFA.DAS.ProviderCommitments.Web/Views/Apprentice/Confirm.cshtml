@@ -18,6 +18,7 @@
         EmploymentEndDate = Model.NewEmploymentEndDate,
         EmploymentPrice = Model.NewEmploymentPrice,
         DeliveryModel = Model.DeliveryModel,
+        CacheKey = Model.CacheKey
     };
 }
 
@@ -147,6 +148,7 @@
     @Html.HiddenFor(x => x.NewEmploymentEndDate)
     @Html.HiddenFor(x => x.NewEmploymentPrice)
     @Html.HiddenFor(x => x.ApprenticeshipHashedId)
+    @Html.HiddenFor(x => x.CacheKey)
 
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 

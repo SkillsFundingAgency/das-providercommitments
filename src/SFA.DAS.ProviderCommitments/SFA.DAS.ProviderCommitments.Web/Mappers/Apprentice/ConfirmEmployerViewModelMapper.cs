@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmployerAccountName = accountLegalEntity.AccountName,
                 EmployerAccountLegalEntityName = accountLegalEntity.LegalEntityName,
                 ProviderId = source.ProviderId,
-                EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+                EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId
             };
         }
     }

@@ -48,5 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 return false;
             }
         }
+        public Guid CacheKey { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -14,5 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int Price { get; set; }
         public string EmploymentEndDate { get; set; }
         public int? EmploymentPrice { get; set; }
+        public Guid CacheKey { get; set; }
     }
 }

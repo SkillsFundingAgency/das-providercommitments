@@ -12,6 +12,8 @@
         <h1 class="govuk-heading-xl">Select the apprenticeship delivery model</h1>
 
         <form id="selectDeliveryModel" novalidate method="post">
+            @Html.HiddenFor(x => x.CacheKey)
+
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DeliveryModel, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">

@@ -29,6 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     Price = source.Price.Value,
                     EmploymentEndDate = source.EmploymentEndDate,
                     EmploymentPrice = source.EmploymentPrice,
+                    CacheKey = source.CacheKey
                 });
             }
             catch (Exception e)

@@ -38,5 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public DeliveryModel? DeliveryModel { get; set; }
+        public Guid CacheKey { get; set; }
     }
 }

@@ -22,6 +22,7 @@
             @Html.HiddenFor(x => x.StartDate)
             @Html.HiddenFor(x => x.EmploymentEndDate)
             @Html.HiddenFor(x => x.EndDate)
+            @Html.HiddenFor(x => x.CacheKey)
 
             <div asp-show="!isRegular" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error ")">
                 <p>Agreed training price for this period of employment (excluding VAT)</p>

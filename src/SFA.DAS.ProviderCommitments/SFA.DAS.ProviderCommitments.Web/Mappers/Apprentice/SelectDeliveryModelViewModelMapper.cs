@@ -24,9 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 LegalEntityName = apiResponse.LegalEntityName,
-                DeliveryModels = apiResponse.DeliveryModels
+                DeliveryModels = apiResponse.DeliveryModels,
+                CacheKey = source.CacheKey
             };
         }
     }

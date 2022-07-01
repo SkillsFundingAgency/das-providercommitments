@@ -31,5 +31,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool InEditMode => Price.HasValue;
         public string LegalEntityName { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+        public Guid CacheKey { get; set; }
     }
 }

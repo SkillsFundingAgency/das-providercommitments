@@ -46,14 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.Request.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
         public async Task ThenStopDateIsMapped()
         {
             var result = await _fixture.Act();
@@ -61,6 +53,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
         }
 
+        [Test]
+        public async Task ThenCacheKeyIsMapped()
+        {
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(_fixture.Request.CacheKey, result.CacheKey);
+        }
 
         [Test]
         public async Task ThenLegalEntityNameIsMapped()
@@ -68,46 +67,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Act();
 
             Assert.AreEqual(_fixture.Response.EmployerName, result.LegalEntityName);
-        }
-
-        [TestCase("")]
-        [TestCase("042019")]
-        public async Task ThenStartDateIsMapped(string startDate)
-        {
-            _fixture.Request.StartDate = startDate;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.Request.StartDate, result.StartDate.MonthYear);
-        }
-
-        [TestCase(null)]
-        [TestCase(234)]
-        public async Task ThenPriceIsMapped(int? price)
-        {
-            _fixture.Request.Price = price;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(price, result.Price);
-        }
-
-        [TestCase(null)]
-        [TestCase("022020")]
-        public async Task ThenEndDateIsMapped(string endDate)
-        {
-            _fixture.Request.EndDate = endDate;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(endDate, result.EndDate);
-        }
-
-        [TestCase(null)]
-        [TestCase(234)]
-        public async Task ThenEditModeIsOnWhenAPriceHasAValue(int? price)
-        {
-            _fixture.Request.Price = price;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(price.HasValue, result.InEditMode);
         }
     }
 
@@ -126,7 +85,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApprenticeshipHashedId = "SF45G54",
                 ApprenticeshipId = 234,
                 ProviderId = 645621,
-                EmployerAccountLegalEntityPublicHashedId = "GD35SD35"
             };
             Response = new GetApprenticeshipResponse
             {

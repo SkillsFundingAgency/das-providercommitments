@@ -54,7 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewPrice = source.Price,
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = source.EmploymentPrice,
-                    FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date)
+                    FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
+                    CacheKey = source.CacheKey
                 };
             }
             catch(Exception e)
