@@ -188,10 +188,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
+                return RedirectToAction("SelectDeliveryModel", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId });
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/select-delivery-model", Name = RouteNames.ApprenticeSelectDeliveryModel)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelRequest request)
+        {
+            var viewModel = await _modelMapper.Map<Models.Apprentice.SelectDeliveryModelViewModel>(request);
+
+            if (viewModel.DeliveryModels.Count > 1)
+            {
+                return View(viewModel);
+            }
+
+            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, DeliveryModel = viewModel.DeliveryModels.First()});
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/select-delivery-model", Name = RouteNames.ApprenticeSelectDeliveryModel)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> SelectDeliveryModel(Models.Apprentice.SelectDeliveryModelViewModel request)
+        {
+            return RedirectToAction("StartDate",new { request.ProviderId, request.ApprenticeshipHashedId, request.EmployerAccountLegalEntityPublicHashedId, request.DeliveryModel });
         }
 
         [HttpGet]
@@ -444,7 +469,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectDeliveryModelForEdit(EditApprenticeshipRequest request)
         {
             var draft = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
-            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(draft);
+            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(draft);
 
             if (model.DeliveryModels.Length > 1)
             {
@@ -459,7 +484,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SetDeliveryModelForEdit(SelectDeliveryModelViewModel model)
+        public IActionResult SetDeliveryModelForEdit(Models.SelectDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {
