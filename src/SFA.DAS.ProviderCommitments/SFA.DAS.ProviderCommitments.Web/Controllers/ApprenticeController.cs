@@ -6,13 +6,10 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -22,7 +19,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Linq;
 using System.Threading.Tasks;
-using MediatR;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -285,18 +281,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
             var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
-            TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
 
-            return RedirectToRoute(viewModel is InformViewModel ? 
-                RouteNames.ChangeEmployerInform :
-                RouteNames.ChangeEmployerDetails);
+            if (viewModel is InformViewModel)
+            {
+                return RedirectToRoute(RouteNames.ChangeEmployerInform, new { request.ProviderId, request.ApprenticeshipHashedId });
+            }
+            
+            TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
+            return RedirectToRoute(RouteNames.ChangeEmployerDetails);
         }
 
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        [Route("{apprenticeshipHashedId}/change-employer/change-employer-inform", Name = RouteNames.ChangeEmployerInform)]
-        public IActionResult ChangeEmployerInform()
+        [Route("{apprenticeshipHashedId}/change-employer/inform", Name = RouteNames.ChangeEmployerInform)]
+        public async Task<IActionResult> ChangeEmployerInform(ChangeEmployerInformRequest request)
         {
-            return View("Inform", JsonConvert.DeserializeObject<InformViewModel>(TempData["ChangeEmployerModel"].ToString()));
+            var viewModel = await _modelMapper.Map<InformViewModel>(request);
+            return View("Inform", viewModel);
         }
 
         [Route("{apprenticeshipHashedId}/change-employer/change-employer-details", Name = RouteNames.ChangeEmployerDetails)]

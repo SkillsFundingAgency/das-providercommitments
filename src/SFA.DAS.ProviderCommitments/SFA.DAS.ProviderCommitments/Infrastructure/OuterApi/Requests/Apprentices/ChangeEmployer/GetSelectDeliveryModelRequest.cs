@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer
