@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         {
             var result = await _mapper.Map(_request);
             _cacheStorage.Verify(x => x.SaveToCache(It.Is<string>(key => key == result.CacheKey.ToString()),
-                    It.Is<ChangeEmployerCacheItem>(c => c.Key == result.CacheKey && c.EmployerAccountLegalEntityPublicHashedId == _request.EmployerAccountLegalEntityPublicHashedId),
+                    It.Is<ChangeEmployerCacheItem>(c => c.Key == result.CacheKey && c.AccountLegalEntityId == _request.EmployerAccountLegalEntityId),
                     It.IsAny<int>()),
                 Times.Once);
         }

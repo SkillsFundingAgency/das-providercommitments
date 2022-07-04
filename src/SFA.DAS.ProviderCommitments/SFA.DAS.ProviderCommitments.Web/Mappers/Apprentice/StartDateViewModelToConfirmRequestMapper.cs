@@ -1,42 +1,35 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class StartDateViewModelToConfirmRequestMapper : IMapper<StartDateViewModel, ConfirmRequest>
     {
         private readonly ILogger<StartDateViewModelToConfirmRequestMapper> _logger;
+        private readonly ICacheStorageService _cacheStorage;
 
-        public StartDateViewModelToConfirmRequestMapper(ILogger<StartDateViewModelToConfirmRequestMapper> logger)
+        public StartDateViewModelToConfirmRequestMapper(ILogger<StartDateViewModelToConfirmRequestMapper> logger, ICacheStorageService cacheStorage)
         {
             _logger = logger;
+            _cacheStorage = cacheStorage;
         }
 
         public async Task<ConfirmRequest> Map(StartDateViewModel source)
         {
-            try
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+            cacheItem.StartDate = source.StartDate.Date.Value.ToString("MMyyyy");
+            await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
+
+            return new ConfirmRequest
             {
-                return await Task.FromResult(new ConfirmRequest
-                {
-                    ProviderId = source.ProviderId,
-                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    EndDate = source.EndDate,
-                    StartDate = source.StartDate.MonthYear,
-                    Price = source.Price.Value,
-                    EmploymentEndDate = source.EmploymentEndDate,
-                    EmploymentPrice = source.EmploymentPrice ?? 0,
-                    CacheKey = source.CacheKey
-                });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Error Mapping {nameof(StartDateViewModel)} to {nameof(ConfirmRequest)}", e);
-                throw;
-            }
+                ProviderId = source.ProviderId,
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                CacheKey = source.CacheKey
+            };
         }
     }
 }

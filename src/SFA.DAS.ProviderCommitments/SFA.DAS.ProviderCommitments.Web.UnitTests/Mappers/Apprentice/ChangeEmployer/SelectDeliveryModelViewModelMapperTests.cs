@@ -2,6 +2,7 @@
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -16,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
     {
         private SelectDeliveryModelViewModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
+        private Mock<ICacheStorageService> _cacheStorage;
         private SelectDeliveryModelRequest _request;
         private GetSelectDeliveryModelResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
@@ -32,7 +34,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
                     && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new SelectDeliveryModelViewModelMapper(_apiClient.Object);
+            _cacheStorage = new Mock<ICacheStorageService>();
+
+            _mapper = new SelectDeliveryModelViewModelMapper(_apiClient.Object, _cacheStorage.Object);
         }
 
         [Test]

@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types;
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.EndDateViewModel
 
@@ -42,8 +42,6 @@
             <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StartDate)
-                @Html.HiddenFor(x => x.EmploymentPrice)
-                @Html.HiddenFor(x => x.Price)
                 @Html.HiddenFor(x => x.CacheKey)
 
                 <div asp-show="!isRegular" class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate,"govuk-form-group--error")">
@@ -135,13 +133,8 @@
         var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeStartDate;
         var backModel = new 
         {
-            Model.EmployerAccountLegalEntityPublicHashedId,
-            Model.StartDate,
-            EndDate = Model.EndDate.MonthYear,
-            Model.Price,
-            Model.DeliveryModel,
-            Model.EmploymentPrice,
-            EmploymentEndDate = Model.EmploymentEndDate?.MonthYear,
+            Model.CacheKey,
+            IsEdit = Model.InEditMode
         };
     }
 

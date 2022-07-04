@@ -1,22 +1,32 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class EndDateRequestMapper : IMapper<StartDateViewModel, EndDateRequest>
     {
-        public Task<EndDateRequest> Map(StartDateViewModel source)
+        private readonly ICacheStorageService _cacheStorage;
+
+        public EndDateRequestMapper(ICacheStorageService cacheStorage)
         {
-            return Task.FromResult(new EndDateRequest
+            _cacheStorage = cacheStorage;
+        }
+
+        public async Task<EndDateRequest> Map(StartDateViewModel source)
+        {
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+            cacheItem.StartDate = source.StartDate.Date.Value.ToString("MMyyyy");
+            await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem,1);
+
+            return new EndDateRequest
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ProviderId = source.ProviderId,
-                EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                StartDate = source.StartDate.MonthYear,
-                DeliveryModel = source.DeliveryModel,
                 CacheKey = source.CacheKey
-            });
+            };
         }
     }
 }

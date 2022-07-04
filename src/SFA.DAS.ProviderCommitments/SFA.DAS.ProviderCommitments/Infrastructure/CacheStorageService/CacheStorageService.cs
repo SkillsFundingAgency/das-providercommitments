@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService
@@ -33,7 +34,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService
         public async Task<T> RetrieveFromCache<T>(string key)
         {
             var json = await _distributedCache.GetStringAsync(key);
-            return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+            
+            if (json == null)
+            {
+                throw new CacheItemNotFoundException($"Cache item {key} of type {typeof(T).Name} not found");
+            }
+            
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         public Task<T> RetrieveFromCache<T>(Guid key)

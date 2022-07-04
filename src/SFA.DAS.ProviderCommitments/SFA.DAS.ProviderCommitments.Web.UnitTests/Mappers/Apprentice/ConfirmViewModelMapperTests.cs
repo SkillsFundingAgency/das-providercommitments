@@ -13,6 +13,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -40,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.request.EmployerAccountLegalEntityPublicHashedId, result.AccountLegalEntityPublicHashedId);
+            Assert.AreEqual(_fixture.cacheItem.AccountLegalEntityId, result.AccountLegalEntityId);
         }
 
         [Test]
@@ -104,7 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewStartDateIsMapped()
         {
             var result = await _fixture.Map();
-            var expectedStartDate = new MonthYearModel(_fixture.request.StartDate);
+            var expectedStartDate = new MonthYearModel(_fixture.cacheItem.StartDate);
 
             Assert.AreEqual(expectedStartDate.MonthYear, result.NewStartDate);
         }
@@ -113,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewEndDateIsMapped()
         {
             var result = await _fixture.Map();
-            var expectedEndDate = new MonthYearModel(_fixture.request.EndDate);
+            var expectedEndDate = new MonthYearModel(_fixture.cacheItem.EndDate);
 
             Assert.AreEqual(expectedEndDate.MonthYear, result.NewEndDate);
         }
@@ -125,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             
             var result = await _fixture.Map();
             
-            var expectedEndDate = new MonthYearModel(_fixture.request.EmploymentEndDate);
+            var expectedEndDate = new MonthYearModel(_fixture.cacheItem.EmploymentEndDate);
             Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate);
         }
 
@@ -134,7 +137,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.request.Price, result.NewPrice);
+            Assert.AreEqual(_fixture.cacheItem.Price, result.NewPrice);
         }
 
         [Test]
@@ -142,7 +145,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.request.EmploymentPrice, result.NewEmploymentPrice);
+            Assert.AreEqual(_fixture.cacheItem.EmploymentPrice, result.NewEmploymentPrice);
         }
 
         [Test]
@@ -178,13 +181,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public AccountLegalEntityResponse accountLegalEntityResponse { get; set; }
         public GetPriceEpisodesResponse priceEpisodesResponse { get; set; }
 
+        public ChangeEmployerCacheItem cacheItem { get; set; }
+
         public ConfirmViewModelMapperFixture()
         {
-            Fixture fixture = new Fixture();
+            var fixture = new Fixture();
             request = fixture.Create<ConfirmRequest>();
-            request.StartDate = "012020";
-            request.EndDate = "112020";
-            request.EmploymentEndDate = null;
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             trainingProgramme = fixture.Create<TrainingProgramme>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
@@ -199,7 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var commitmentAiClient = new Mock<ICommitmentsApiClient>();
 
             commitmentAiClient.Setup(x => x.GetApprenticeship(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => getApprenticeshipResponse);
-            commitmentAiClient.Setup(x => x.GetAccountLegalEntity(request.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
+            commitmentAiClient.Setup(x => x.GetAccountLegalEntity(getApprenticeshipResponse.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => accountLegalEntityResponse);
             commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => priceEpisodesResponse);
             commitmentAiClient
                 .Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode, CancellationToken.None))
@@ -209,7 +211,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         TrainingProgramme  = trainingProgramme
                     } );
 
-            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>());
+            cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            var cacheService = new Mock<ICacheStorageService>();
+            cacheService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
+                .ReturnsAsync(cacheItem);
+
+            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>(), cacheService.Object, Mock.Of<IEncodingService>());
         }
 
         public ConfirmViewModelMapperFixture SetPriceBand(int fundingCap, DateTime startDate)
@@ -232,20 +239,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public ConfirmViewModelMapperFixture SetStartDateInRequest(DateTime startDate)
         {
-            request.StartDate = startDate.Month.ToString() + startDate.Year.ToString();
+            cacheItem.StartDate = startDate.Month.ToString() + startDate.Year.ToString();
 
             return this;
         }
 
         public ConfirmViewModelMapperFixture SetPriceInRequest(int price)
         {
-            request.Price = price;
+            cacheItem.Price = price;
             return this;
         }
 
         public ConfirmViewModelMapperFixture SetEmploymentEndDateInRequest(DateTime startDate)
         {
-            request.EmploymentEndDate = $"{startDate.Month}{startDate.Year}";
+            cacheItem.EmploymentEndDate = $"{startDate.Month}{startDate.Year}";
             return this;
         }
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -18,13 +19,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private PriceRequest _source;
         private Func<Task<PriceViewModel>> _act;
         private Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private Mock<ICacheStorageService> _cacheStorage;
         private GetApprenticeshipResponse _getApprenticeshipApiResponse;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Build<PriceRequest>().Without(x=>x.Price).Create();
+            _source = fixture.Build<PriceRequest>().Create();
 
             _getApprenticeshipApiResponse = new GetApprenticeshipResponse {EmployerName = "TestName"};
 
@@ -32,8 +34,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(_source.ApprenticeshipId, default(CancellationToken)))
                 .ReturnsAsync(_getApprenticeshipApiResponse);
-                
-            _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object);
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+
+            _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }

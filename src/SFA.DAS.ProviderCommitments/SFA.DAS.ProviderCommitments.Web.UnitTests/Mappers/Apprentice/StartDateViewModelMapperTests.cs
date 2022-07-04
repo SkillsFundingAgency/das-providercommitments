@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -73,6 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class StartDateViewModelMapperFixture
     {
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private readonly Mock<ICacheStorageService> _cacheStorage;
         private readonly StartDateViewModelMapper _sut;
 
         public StartDateRequest Request { get; }
@@ -95,7 +97,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(Response);
-            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object);
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+
+            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
         }
 
         public Task<StartDateViewModel> Act() => _sut.Map(Request);

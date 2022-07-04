@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types;
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
@@ -18,10 +18,6 @@
         <h2 asp-show="!isRegular" class="govuk-heading-l">Agreed prices</h2>
 
         <form novalidate method="post">
-            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-            @Html.HiddenFor(x => x.StartDate)
-            @Html.HiddenFor(x => x.EmploymentEndDate)
-            @Html.HiddenFor(x => x.EndDate)
             @Html.HiddenFor(x => x.CacheKey)
 
             <div asp-show="!isRegular" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error ")">
@@ -54,13 +50,8 @@
         var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeEndDate;
         var backModel = new 
         {
-            Model.EmployerAccountLegalEntityPublicHashedId,
-            Model.StartDate,
-            Model.EndDate,
-            Model.Price,
-            Model.DeliveryModel,
-            Model.EmploymentPrice,
-            Model.EmploymentEndDate,
+            Model.CacheKey,
+            IsEdit = Model.InEditMode
         };
     }
 

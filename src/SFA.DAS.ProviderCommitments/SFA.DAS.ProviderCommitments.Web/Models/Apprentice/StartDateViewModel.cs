@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using System;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long AccountLegalEntityId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
-        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+        //public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long ProviderId { get; set; }
         public string EmploymentEndDate { get; set; }
         public string EndDate { get; set; }
@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
         public bool InEditMode => Price.HasValue;
         public string LegalEntityName { get; set; }
-        public DeliveryModel? DeliveryModel { get; set; }
+        public DeliveryModel DeliveryModel { get; set; }
         public Guid CacheKey { get; set; }
     }
 }

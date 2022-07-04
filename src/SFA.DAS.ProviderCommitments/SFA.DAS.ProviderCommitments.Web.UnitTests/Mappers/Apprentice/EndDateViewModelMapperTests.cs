@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.AccountLegalEntityResponse.LegalEntityName, result.LegalEntityName);
+            Assert.AreEqual(_fixture.ApprenticeshipResponse.EmployerName, result.LegalEntityName);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public EndDateRequest Request { get; }
 
-        public AccountLegalEntityResponse AccountLegalEntityResponse { get; }
+        public GetApprenticeshipResponse ApprenticeshipResponse { get; }
 
         public EndDateViewModelMapperFixture()
         {
@@ -115,12 +115,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 StartDate = "122019"
             };
 
-            AccountLegalEntityResponse = new AccountLegalEntityResponse {LegalEntityName = "TestName"};
+            ApprenticeshipResponse = new GetApprenticeshipResponse { EmployerName = "TestName"};
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
 
             _commitmentsApiClientMock
-                .Setup(x => x.GetAccountLegalEntity(Request.AccountLegalEntityId, default(CancellationToken)))
-                .ReturnsAsync(AccountLegalEntityResponse);
+                .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, default(CancellationToken)))
+                .ReturnsAsync(ApprenticeshipResponse);
             
             _sut = new EndDateViewModelMapper(_commitmentsApiClientMock.Object);
         }

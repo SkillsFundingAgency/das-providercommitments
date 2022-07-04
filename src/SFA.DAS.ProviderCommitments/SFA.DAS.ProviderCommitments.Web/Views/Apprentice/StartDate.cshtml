@@ -1,5 +1,5 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types;
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
@@ -39,7 +39,6 @@
         <form novalidate method="post">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
                 @Html.HiddenFor(x => x.CacheKey)
-                @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StopDate)
                 @Html.HiddenFor(x => x.EmploymentEndDate)
                 @Html.HiddenFor(x => x.EndDate)
@@ -99,7 +98,6 @@
         var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeConfirmEmployer;
         var backModel = new 
         {
-            Model.EmployerAccountLegalEntityPublicHashedId,
             StartDate = Model.StartDate.MonthYear,
             Model.EndDate,
             Model.Price,

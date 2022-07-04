@@ -9,14 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
         public Guid CacheKey { get; set; }
-
-        //public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-        //public long AccountLegalEntityId { get; set; }
-        //public string StartDate { get; set; }
-        //public string EndDate { get; set; }
-        //public int? Price { get; set; }
-        //public string EmploymentEndDate { get; set; }
-        //public int? EmploymentPrice { get; set; }
-
+        public bool IsEdit { get; set; }
     }
 }

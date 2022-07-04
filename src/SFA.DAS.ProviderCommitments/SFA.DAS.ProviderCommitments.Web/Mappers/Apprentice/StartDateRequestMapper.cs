@@ -18,10 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         public async Task<StartDateRequest> Map(SelectDeliveryModelViewModel source)
         {
             var cacheItem = await _cacheStorageService.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-            if (cacheItem == null) throw new CacheItemNotFoundException();
-            
             cacheItem.DeliveryModel = source.DeliveryModel;
-            
             await _cacheStorageService.SaveToCache(source.CacheKey, cacheItem, 1);
 
             return new StartDateRequest

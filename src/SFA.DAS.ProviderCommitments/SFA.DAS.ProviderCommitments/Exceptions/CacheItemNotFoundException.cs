@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
+namespace SFA.DAS.ProviderCommitments.Exceptions
 {
     public class CacheItemNotFoundException : Exception
     {

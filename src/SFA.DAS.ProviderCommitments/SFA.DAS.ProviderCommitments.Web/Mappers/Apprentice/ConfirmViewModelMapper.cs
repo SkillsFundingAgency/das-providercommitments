@@ -8,38 +8,47 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class ConfirmViewModelMapper : IMapper<ConfirmRequest, ConfirmViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
+        private readonly ICacheStorageService _cacheStorage;
+        private readonly IEncodingService _encodingService;
         private readonly ILogger<ConfirmViewModelMapper> _logger;
 
-        public ConfirmViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ILogger<ConfirmViewModelMapper> logger)
+        public ConfirmViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ILogger<ConfirmViewModelMapper> logger, ICacheStorageService cacheStorage, IEncodingService encodingService)
         {
             _commitmentApiClient = commitmentsApiClient;
             _logger = logger;
+            _cacheStorage = cacheStorage;
+            _encodingService = encodingService;
         }
 
         public async Task<ConfirmViewModel> Map(ConfirmRequest source)
         {
             try
             {
-                var data = await  GetApprenticeshipData(source.ApprenticeshipId, source.AccountLegalEntityId);
+                var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
 
-                var newStartDate = new MonthYearModel(source.StartDate);
-                var newEndDate = new MonthYearModel(source.EndDate);
-                var newEmploymentEndDate = string.IsNullOrEmpty(source.EmploymentEndDate)
+                var data = await  GetApprenticeshipData(source.ApprenticeshipId, cacheItem);
+
+                var newStartDate = new MonthYearModel(cacheItem.StartDate);
+                var newEndDate = new MonthYearModel(cacheItem.EndDate);
+                var newEmploymentEndDate = string.IsNullOrEmpty(cacheItem.EmploymentEndDate)
                     ? null
-                    : new MonthYearModel(source.EmploymentEndDate);
+                    : new MonthYearModel(cacheItem.EmploymentEndDate);
 
                 return new ConfirmViewModel
                 {
-                    DeliveryModel = data.Apprenticeship.DeliveryModel,
+                    DeliveryModel = cacheItem.DeliveryModel.Value,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    AccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+                    AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
                     StopDate = data.Apprenticeship.StopDate.Value, 
@@ -51,9 +60,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
                     NewStartDate = newStartDate.MonthYear,
                     NewEndDate = newEndDate.MonthYear,
-                    NewPrice = source.Price,
+                    NewPrice = cacheItem.Price.Value,
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
-                    NewEmploymentPrice = source.EmploymentPrice,
+                    NewEmploymentPrice = cacheItem.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
                     CacheKey = source.CacheKey
                 };
@@ -69,11 +78,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
            GetPriceEpisodesResponse PriceEpisodes,
            AccountLegalEntityResponse AccountLegalEntity,
            TrainingProgramme TrainingProgramme)>
-           GetApprenticeshipData(long apprenticeshipId, long newEmployerLegalEntityId)
+           GetApprenticeshipData(long apprenticeshipId, ChangeEmployerCacheItem cacheItem)
         {
             var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var legalEntityTask =  _commitmentApiClient.GetAccountLegalEntity(newEmployerLegalEntityId);
+            var legalEntityTask =  _commitmentApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId);
             var trainingProgrammeTask = _commitmentApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
 
             await Task.WhenAll(priceEpisodesTask, legalEntityTask, trainingProgrammeTask);

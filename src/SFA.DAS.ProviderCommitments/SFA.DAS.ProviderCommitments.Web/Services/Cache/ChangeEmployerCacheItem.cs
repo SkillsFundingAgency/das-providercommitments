@@ -12,7 +12,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
             Key = key;
         }
 
-        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string EmploymentEndDate { get; set; }
+        public int? Price { get; set; }
+        public int? EmploymentPrice { get; set; }
     }
 }
