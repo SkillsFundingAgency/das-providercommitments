@@ -136,29 +136,29 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             Assert.AreEqual("ZB657", result.Last().ProviderRef);
         }
 
-        [Test]
-        public void RecognisePriorLearningIsParsedCorrectly()
-        {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual(true, result.First().RecognisePriorLearning);
-            Assert.AreEqual(false, result.Last().RecognisePriorLearning);
-        }
+        //[Test]
+        //public void RecognisePriorLearningIsParsedCorrectly()
+        //{
+        //    var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        //    Assert.AreEqual(true, result.First().RecognisePriorLearning);
+        //    Assert.AreEqual(false, result.Last().RecognisePriorLearning);
+        //}
 
-        [Test]
-        public void DurationReducedByLearningIsParsedCorrectly()
-        {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("12", result.First().DurationReducedBy);
-            Assert.AreEqual("", result.Last().DurationReducedBy);
-        }
+        //[Test]
+        //public void DurationReducedByLearningIsParsedCorrectly()
+        //{
+        //    var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        //    Assert.AreEqual("12", result.First().DurationReducedBy);
+        //    Assert.AreEqual("", result.Last().DurationReducedBy);
+        //}
 
-        [Test]
-        public void PriceReducedByLearningIsParsedCorrectly()
-        {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("99", result.First().PriceReducedBy);
-            Assert.AreEqual("", result.Last().PriceReducedBy);
-        }
+        //[Test]
+        //public void PriceReducedByLearningIsParsedCorrectly()
+        //{
+        //    var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        //    Assert.AreEqual("99", result.First().PriceReducedBy);
+        //    Assert.AreEqual("", result.Last().PriceReducedBy);
+        //}
 
         [Test]
         public void CorrectNumberOfApprenticeshipMapped()
@@ -197,24 +197,24 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             Assert.AreEqual(0, result.Count());
         }
 
-        [Test]
-        public void OptionalFieldsMayBeOmitted()
-        {
-            //Arrange          
-            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", "") + Environment.NewLine +
-                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+        //[Test]
+        //public void OptionalFieldsMayBeOmitted()
+        //{
+        //    //Arrange          
+        //    _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", "") + Environment.NewLine +
+        //        "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
 
-            CreateFile();
+        //    CreateFile();
 
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            result.Should().ContainEquivalentOf(new
-            {
-                CohortRef = "P9DD4P",
-                RecognisePriorLearning = (bool?)null,
-                DurationReducedBy = (string)null,
-                PriceReducedBy = (string)null,
-            });
-        }
+        //    var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        //    result.Should().ContainEquivalentOf(new
+        //    {
+        //        CohortRef = "P9DD4P",
+        //        RecognisePriorLearning = (bool?)null,
+        //        DurationReducedBy = (string)null,
+        //        PriceReducedBy = (string)null,
+        //    });
+        //}
 
         private void CreateFile()
         {

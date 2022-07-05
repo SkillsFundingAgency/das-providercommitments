@@ -19,16 +19,17 @@
             nameof(CsvRecord.EmailAddress),
         };
 
-        public static string[] OptionalHeaders = new[]
-        {
-            nameof(CsvRecord.RecognisePriorLearning),
-            nameof(CsvRecord.DurationReducedBy),
-            nameof(CsvRecord.PriceReducedBy),
-        };
+        //public static string[] OptionalHeaders = new[]
+        //{
+        //    nameof(CsvRecord.RecognisePriorLearning),
+        //    nameof(CsvRecord.DurationReducedBy),
+        //    nameof(CsvRecord.PriceReducedBy),
+        //};
 
         public static int MinimumColumnCount = RequiredHeaders.Length;
 
-        public static int MaximumColumnCount = RequiredHeaders.Length + OptionalHeaders.Length;
+        public static int MaximumColumnCount = RequiredHeaders.Length;
+        //public static int MaximumColumnCount = RequiredHeaders.Length + OptionalHeaders.Length;
 
         public static bool CheckHeaderCount(string[] headers)
         {

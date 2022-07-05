@@ -25,8 +25,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
         public string AgreementId { get; set; }
         public long? LegalEntityId { get; set; }
         public long? TransferSenderId { get; set; }
-        public bool? RecognisePriorLearning { get; set; }
-        public string DurationReducedBy { get; set; }
-        public string PriceReducedBy { get; set; }
+        //public bool? RecognisePriorLearning { get; set; }
+        //public string DurationReducedBy { get; set; }
+        //public string PriceReducedBy { get; set; }
     }
 }

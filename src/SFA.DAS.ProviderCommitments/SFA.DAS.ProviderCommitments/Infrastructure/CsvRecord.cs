@@ -28,10 +28,10 @@
         
         public string EmailAddress { get; set; }
 
-        public bool? RecognisePriorLearning { get; set; }
+        //public string RecognisePriorLearning { get; set; }
         
-        public string DurationReducedBy { get; set; }
+        //public string DurationReducedBy { get; set; }
         
-        public string PriceReducedBy { get; set; }
+        //public string PriceReducedBy { get; set; }
     }
 }
