@@ -2,6 +2,8 @@
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using Moq;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -31,27 +33,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(_fixture.ViewModel.ProviderId, result.ProviderId);
         }
-
-        [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
-        public async Task ThenStartDateIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.StartDate.MonthYear, result.StartDate);
-        }
     }
 
     public class EndDateRequestMapperFixture
     {
         private readonly EndDateRequestMapper _sut;
+        private readonly Mock<ICacheStorageService> _cacheStorage;
         
         public StartDateViewModel ViewModel { get; }
 
@@ -61,11 +48,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             {
                 ApprenticeshipHashedId = "DFE546SD",
                 ProviderId = 2350,
-                EmployerAccountLegalEntityPublicHashedId = "DFE348FD",
                 StartMonth = 6,
                 StartYear = 2020,
             };
-            _sut = new EndDateRequestMapper();
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+
+            _sut = new EndDateRequestMapper(_cacheStorage.Object);
         }
 
         public Task<EndDateRequest> Act() => _sut.Map(ViewModel);

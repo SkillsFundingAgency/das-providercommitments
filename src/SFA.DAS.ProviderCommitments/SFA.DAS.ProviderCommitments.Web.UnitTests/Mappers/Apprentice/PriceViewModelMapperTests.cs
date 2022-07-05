@@ -57,13 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
         public async Task ThenLegalEntityNameIsMappedCorrectly()
         {
             var result = await _act();
@@ -71,19 +64,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenStartDateIsMappedCorrectly()
+        public async Task ThenEditModeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartDate, result.StartDate);
-        }
-
-        [TestCase(null)]
-        [TestCase(345)]
-        public async Task ThenEditModeSetWhenPriceHasAValue(int? price)
-        {
-            _source.Price = price;
-            var result = await _act();
-            Assert.AreEqual(price.HasValue, result.InEditMode);
+            Assert.AreEqual(_source.IsEdit, result.InEditMode);
         }
     }
 }

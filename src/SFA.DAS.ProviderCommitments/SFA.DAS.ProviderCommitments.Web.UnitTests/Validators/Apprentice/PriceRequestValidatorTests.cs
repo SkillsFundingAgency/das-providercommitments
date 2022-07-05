@@ -27,30 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XXXXXXX", false)]
-        [TestCase("1220", false)]
-        [TestCase("12002", true)]
-        [TestCase("012002", true)]
-        public void Validate_StartDate_ShouldBeValidated(string startDate, bool expectedValid)
-        {
-            var model = new PriceRequest { StartDate = startDate };
-            AssertValidationResult(request => request.StartDate, model, expectedValid);
-        }
-
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XXXXXXX", false)]
-        [TestCase("1220", false)]
-        [TestCase("12002", true)]
-        [TestCase("012002", true)]
-        public void Validate_EndDate_ShouldBeValidated(string endDate, bool expectedValid)
-        {
-            var model = new PriceRequest { EndDate = endDate };
-            AssertValidationResult(request => request.EndDate, model, expectedValid);
-        }
-
         private void AssertValidationResult<T>(Expression<Func<PriceRequest, T>> property, PriceRequest instance, bool expectedValid)
         {
             var validator = new PriceRequestValidator();
