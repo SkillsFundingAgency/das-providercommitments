@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -58,7 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
             Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
         }
 
-
         [Test]
         public async Task DeliveryModel_Previously_Persisted_To_Cache_Is_Mapped_Correctly()
         {
@@ -66,6 +66,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
             Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModel);
         }
 
+        [Test]
+        public async Task When_Only_One_DeliveryModel_Option_Is_Available_It_Is_Automatically_Persisted_To_Cache()
+        {
+            const DeliveryModel deliveryModel = DeliveryModel.Regular;
+            _apiResponse.DeliveryModels.Clear();
+            _apiResponse.DeliveryModels.Add(deliveryModel);
 
+            await _mapper.Map(_request);
+
+            Assert.AreEqual(deliveryModel, _cacheItem.DeliveryModel);
+        }
     }
 }

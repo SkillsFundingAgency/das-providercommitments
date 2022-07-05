@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
@@ -26,6 +27,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var apiResponse = await _outerApiClient.Get<GetSelectDeliveryModelResponse>(apiRequest);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+
+            if (apiResponse.DeliveryModels.Count == 1)
+            {
+                cacheItem.DeliveryModel = apiResponse.DeliveryModels.Single();
+                await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
+            }
            
             return new SelectDeliveryModelViewModel
             {

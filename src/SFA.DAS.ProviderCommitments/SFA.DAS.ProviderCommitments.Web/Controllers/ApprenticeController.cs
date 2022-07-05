@@ -206,7 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(viewModel);
             }
 
-            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.EmployerAccountLegalEntityPublicHashedId, DeliveryModel = viewModel.DeliveryModels.First()});
+            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey});
         }
 
         [HttpPost]
@@ -484,7 +484,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (model.DeliveryModels.Length > 1)
             {
-                return View("SelectDeliveryModel", model);
+                return View("../Shared/SelectDeliveryModel", model);
             }
             draft.DeliveryModel = model.DeliveryModels.FirstOrDefault();
             TempData.Put(ViewModelForEdit, draft);
