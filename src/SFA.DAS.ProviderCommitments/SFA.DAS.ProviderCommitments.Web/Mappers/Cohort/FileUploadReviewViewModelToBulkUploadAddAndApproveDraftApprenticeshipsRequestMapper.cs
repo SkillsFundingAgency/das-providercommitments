@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
             var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
-            await _cacheService.ClearCache(source.CacheRequestId.ToString());
+            await _cacheService.ClearCache(source.CacheRequestId.ToString(), nameof(FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper));
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
