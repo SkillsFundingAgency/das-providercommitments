@@ -7,7 +7,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -76,12 +78,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
         private readonly Mock<ICacheStorageService> _cacheStorage;
         private readonly StartDateViewModelMapper _sut;
+        private readonly ChangeEmployerCacheItem _cacheItem;
 
         public StartDateRequest Request { get; }
         public GetApprenticeshipResponse Response { get; }
 
         public StartDateViewModelMapperFixture()
         {
+            var fixture = new Fixture();
+
             Request = new StartDateRequest
             {
                 ApprenticeshipHashedId = "SF45G54",
@@ -98,7 +103,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(Response);
 
+            _cacheItem = fixture.Build<ChangeEmployerCacheItem>()
+                .With(x => x.StartDate, "042022")
+                .Create();
             _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == Request.CacheKey)))
+                .ReturnsAsync(_cacheItem);
 
             _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
         }

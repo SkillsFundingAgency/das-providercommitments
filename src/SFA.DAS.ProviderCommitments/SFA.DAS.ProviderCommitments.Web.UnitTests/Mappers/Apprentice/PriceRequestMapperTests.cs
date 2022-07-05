@@ -1,9 +1,12 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using AutoFixture;
 using Moq;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -37,13 +40,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     public class PriceRequestMapperFixture
     {
+        private readonly Fixture _fixture;
         private readonly PriceRequestMapper _sut;
         private Mock<ICacheStorageService> _cacheStorage;
+        private ChangeEmployerCacheItem _cacheItem;
         
         public EndDateViewModel ViewModel { get; }
 
         public PriceRequestMapperFixture()
         {
+            _fixture = new Fixture();
+
             ViewModel = new EndDateViewModel
             {
                 ApprenticeshipHashedId = "DFE546SD",
@@ -54,7 +61,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 EndYear = 2020,
             };
 
+            _cacheItem = _fixture.Build<ChangeEmployerCacheItem>()
+                .Create();
+
             _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == ViewModel.CacheKey)))
+                .ReturnsAsync(_cacheItem);
 
             _sut = new PriceRequestMapper(_cacheStorage.Object);
         }

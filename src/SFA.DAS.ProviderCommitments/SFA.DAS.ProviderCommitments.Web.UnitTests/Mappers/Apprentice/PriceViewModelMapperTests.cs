@@ -9,6 +9,7 @@ using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -21,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
         private Mock<ICacheStorageService> _cacheStorage;
         private GetApprenticeshipResponse _getApprenticeshipApiResponse;
+        private ChangeEmployerCacheItem _cacheItem;
 
         [SetUp]
         public void Arrange()
@@ -36,6 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .ReturnsAsync(_getApprenticeshipApiResponse);
 
             _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == _source.CacheKey)))
+                .ReturnsAsync(_cacheItem);
 
             _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
 

@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -18,6 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         private SelectDeliveryModelViewModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
         private Mock<ICacheStorageService> _cacheStorage;
+        private ChangeEmployerCacheItem _cacheItem;
         private SelectDeliveryModelRequest _request;
         private GetSelectDeliveryModelResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
@@ -34,7 +35,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
                     && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
+            _cacheItem = _fixture.Create<ChangeEmployerCacheItem>();
             _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == _request.CacheKey)))
+                .ReturnsAsync(_cacheItem);
 
             _mapper = new SelectDeliveryModelViewModelMapper(_apiClient.Object, _cacheStorage.Object);
         }
@@ -52,5 +57,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
         }
+
+
+        [Test]
+        public async Task DeliveryModel_Previously_Persisted_To_Cache_Is_Mapped_Correctly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModel);
+        }
+
+
     }
 }

@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenEditModeIsOnWhenAPriceHasAValue(int? price)
+        public async Task ThenEditModeIsMapped()
         {
             _fixture.Request.IsEdit = true;
             var result = await _fixture.Act();
@@ -109,7 +109,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, default(CancellationToken)))
                 .ReturnsAsync(ApprenticeshipResponse);
 
-            CacheItem = _fixture.Create<ChangeEmployerCacheItem>();
+            CacheItem = _fixture.Build<ChangeEmployerCacheItem>()
+                .With(x => x.StartDate, "022022")
+                .With(x => x.EndDate, "022022")
+                .With(x => x.EmploymentEndDate, "022022")
+                .Create();
             _cacheStorageService = new Mock<ICacheStorageService>();
             _cacheStorageService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
                 .ReturnsAsync(CacheItem);
