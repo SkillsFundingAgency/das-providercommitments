@@ -1,12 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 {
-    public class FileUploadValidateViewModelValidator : FileUploadStartViewModelValidator
+    public class FileUploadValidateViewModelValidator : AbstractValidator<FileUploadValidateViewModel>
     {
-        public FileUploadValidateViewModelValidator(ILogger<FileUploadStartViewModelValidator> logger, BulkUploadFileValidationConfiguration csvConfiguration) : base(logger, csvConfiguration)
+        public FileUploadValidateViewModelValidator(BulkUploadFileValidationConfiguration csvConfiguration)
         {
+            CascadeMode = CascadeMode.Stop;
+            new FileUploadValidationHelper(csvConfiguration).AddFileValidationRules(RuleFor(x => x.Attachment));
         }
     }
 }
