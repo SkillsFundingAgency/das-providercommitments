@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     {
         public CsvRecordMap()
         {
-            AutoMap(CultureInfo.InvariantCulture);
+            AutoMap();
         }
     }
 }

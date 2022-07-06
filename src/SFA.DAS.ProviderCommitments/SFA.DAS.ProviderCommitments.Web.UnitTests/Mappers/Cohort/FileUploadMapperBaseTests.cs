@@ -164,35 +164,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual((result.CohortId + 1), result.TransferSenderId);
             }
         }
-
-        [Test]
-        public void VerifyRecognisePriorLearningIsMapped()
-        {
-            foreach (var record in _csvRecords)
-            {
-                var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearning);
-            }
-        }
-
-        [Test]
-        public void VerifyDurationReducedBy()
-        {
-            foreach (var record in _csvRecords)
-            {
-                var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedBy);
-            }
-        }
-
-        [Test]
-        public void VerifyPriceReducedBy()
-        {
-            foreach (var record in _csvRecords)
-            {
-                var result = _result.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedBy);
-            }
-        }
     }
 }
