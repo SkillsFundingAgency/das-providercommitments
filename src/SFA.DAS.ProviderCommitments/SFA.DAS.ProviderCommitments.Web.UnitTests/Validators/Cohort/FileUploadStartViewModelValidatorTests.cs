@@ -9,7 +9,9 @@ using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {
@@ -18,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
     {
         private Mock<IFormFile> _file;
         private BulkUploadFileValidationConfiguration _csvConfiguration;
+        private Mock<IAuthorizationService> _authorizationService;
 
         [SetUp]
         public void SetUp()
@@ -30,6 +33,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
                 AllowedFileColumnCount = 13,
                 MaxAllowedFileRowCount = 100
             };
+            _authorizationService = new Mock<IAuthorizationService>();
+            _authorizationService.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
         }
 
         [Test]
@@ -120,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, Mock.Of<IAuthorizationService>());
             var result = validator.Validate(model);
 
             Assert.IsFalse(result.IsValid);
@@ -142,7 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var file = CreateFakeFormFile(fileContents);
 
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, Mock.Of<IAuthorizationService>());
             var result = validator.Validate(model);
 
             Assert.IsTrue(result.IsValid);
@@ -160,14 +165,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,Price,EPAOrgID,ProviderRef")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,,,")]
         public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
         {
             //Arrange            
             var fileContents = new StringBuilder().AppendLine(header).ToString();
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, Mock.Of<IAuthorizationService>());
 
             //Act
             var result = validator.Validate(model);
@@ -177,6 +181,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             Assert.AreEqual("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this", result.ToString());
         }
 
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,RPL,DurationReduced,PriceReduced")]
+        [TestCase(",,,,,,,,,,,,,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplateWhenRplToggleIsOn(string header)
+        {
+            //Arrange            
+            var fileContents = new StringBuilder().AppendLine(header).ToString();
+            var file = CreateFakeFormFile(fileContents);
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var auth = new Mock<IAuthorizationService>();
+            auth.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, auth.Object);
+
+            //Act
+            var result = validator.Validate(model);
+
+            //Assert
+            Assert.AreEqual(1, result.Errors.Count);
+            Assert.AreEqual("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this", result.ToString());
+        }
+
+
         [Test]
         public void ShouldReturnInvalidMessageWhenFileContainsOnlyColumnHeader()
         {
@@ -185,7 +211,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var fileContents = new StringBuilder().AppendLine(headerLine).ToString();
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, Mock.Of<IAuthorizationService>());
             
             //Act
             var result = validator.Validate(model);
@@ -197,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 
         private void AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)
         {
-            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration, Mock.Of<IAuthorizationService>());
 
             var validationResult = validator.TestValidate(instance);
             if (expectedValid)

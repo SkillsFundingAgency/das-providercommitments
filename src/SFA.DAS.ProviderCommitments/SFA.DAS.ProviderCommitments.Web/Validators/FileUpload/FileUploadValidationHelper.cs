@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
@@ -7,16 +8,19 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 {
     public class FileUploadValidationHelper
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
+        private readonly IAuthorizationService _authorizationService;
 
-        public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
+        public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config, IAuthorizationService authorizationService)
         {
             _csvConfiguration = config;
+            _authorizationService = authorizationService;
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
@@ -75,9 +79,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 
             var firstLine = await reader.ReadLineAsync();
             var firstlineData = (firstLine).Split(',');
+            var hasRplData = _authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning);
 
             return
-                BulkUploadFileRequirements.CheckHeaderCount(firstlineData)
+                BulkUploadFileRequirements.CheckHeaderCount(firstlineData, hasRplData)
                 && await AllLinesHaveSameColumnCount(reader, firstlineData.Count());
 
             static async Task<bool> AllLinesHaveSameColumnCount(StringReader reader, int count)

@@ -30,9 +30,12 @@
 
         public static int MaximumColumnCount = RequiredHeaders.Length + OptionalHeaders.Length;
 
-        public static bool CheckHeaderCount(string[] headers)
+        public static bool CheckHeaderCount(string[] headers, bool hasRplData)
         {
-            return headers.Length >= MinimumColumnCount && headers.Length <= MaximumColumnCount;
+            if(hasRplData)
+                return headers.Length == MaximumColumnCount;
+
+            return headers.Length == MinimumColumnCount;
         }
     }
 }

@@ -15,12 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     public class BulkUploadFileParser : IBulkUploadFileParser
     {
         private readonly ILogger<BulkUploadFileParser> _logger;
-        private readonly IAuthorizationService _authorizationService;
 
-        public BulkUploadFileParser(ILogger<BulkUploadFileParser> logger, IAuthorizationService authorizationService)
+        public BulkUploadFileParser(ILogger<BulkUploadFileParser> logger)
         {
             _logger = logger;
-            _authorizationService = authorizationService;
         }
 
         public List<CsvRecord> GetCsvRecords(long providerId, IFormFile attachment)
@@ -62,11 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         private void ValidateHeader(HeaderValidatedArgs args)
         {
             var missingHeaders = args.InvalidHeaders.SelectMany(h => h.Names);
-            var missingRequiredHeaders = missingHeaders;
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
-            {
-                missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
-            }
+            var missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
 
             if (missingRequiredHeaders.Any())
             {
