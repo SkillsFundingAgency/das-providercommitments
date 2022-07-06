@@ -7,16 +7,20 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class BulkUploadFileParser : IBulkUploadFileParser
     {
         private readonly ILogger<BulkUploadFileParser> _logger;
+        private readonly IAuthorizationService _authorizationService;
 
-        public BulkUploadFileParser(ILogger<BulkUploadFileParser> logger)
+        public BulkUploadFileParser(ILogger<BulkUploadFileParser> logger, IAuthorizationService authorizationService)
         {
             _logger = logger;
+            _authorizationService = authorizationService;
         }
 
         public List<CsvRecord> GetCsvRecords(long providerId, IFormFile attachment)
@@ -55,11 +59,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
-        private static void ValidateHeader(HeaderValidatedArgs args)
+        private void ValidateHeader(HeaderValidatedArgs args)
         {
             var missingHeaders = args.InvalidHeaders.SelectMany(h => h.Names);
-
-            var missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
+            var missingRequiredHeaders = missingHeaders;
+            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+            {
+                missingRequiredHeaders = missingHeaders.Except(BulkUploadFileRequirements.OptionalHeaders);
+            }
 
             if (missingRequiredHeaders.Any())
             {
@@ -68,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
-        public static void MissingFieldFound(MissingFieldFoundArgs args)
+        public void MissingFieldFound(MissingFieldFoundArgs args)
         {
             var missingRequiredFields = args.HeaderNames.Except(BulkUploadFileRequirements.OptionalHeaders);
 
