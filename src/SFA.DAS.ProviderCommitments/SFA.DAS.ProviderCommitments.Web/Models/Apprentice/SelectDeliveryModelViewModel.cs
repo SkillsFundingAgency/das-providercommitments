@@ -13,5 +13,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string LegalEntityName { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public Guid CacheKey { get; set; }
+        public bool IsEdit { get; set; }
     }
 }

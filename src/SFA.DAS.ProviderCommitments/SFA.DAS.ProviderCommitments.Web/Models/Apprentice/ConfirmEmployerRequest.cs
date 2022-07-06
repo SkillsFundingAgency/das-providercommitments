@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -7,5 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long ProviderId { get; set; }
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long AccountLegalEntityId { get; set; }
+        public Guid? CacheKey { get; set; }
     }
 }

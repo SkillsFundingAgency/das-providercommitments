@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
 
         public long AccountLegalEntityId { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+        public bool SkippedDeliveryModelSelection { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string EmploymentEndDate { get; set; }

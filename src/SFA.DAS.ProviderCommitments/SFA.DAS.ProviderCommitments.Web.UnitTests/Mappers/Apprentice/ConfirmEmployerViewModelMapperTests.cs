@@ -7,6 +7,10 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -17,6 +21,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private ConfirmEmployerRequest _source;
         private Func<Task<ConfirmEmployerViewModel>> _act;
         private CommitmentsV2.Api.Types.Responses.AccountLegalEntityResponse _accountLegalEntityResponse;
+        private Mock<IEncodingService> _encodingService;
+        private Mock<ICacheStorageService> _cacheStorage;
+        private ChangeEmployerCacheItem _cacheItem;
+        private string _encodedAccountLegalEntityId;
 
         [SetUp]
         public void Arrange()
@@ -27,7 +35,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var icommitmentApiClient = new Mock<ICommitmentsApiClient>();
             icommitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
-            _mapper = new ConfirmEmployerViewModelMapper(icommitmentApiClient.Object);
+            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == _source.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _encodedAccountLegalEntityId = fixture.Create<string>();
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Encode(_cacheItem.AccountLegalEntityId,
+                    It.Is<EncodingType>(e => e == EncodingType.PublicAccountLegalEntityId)))
+                .Returns(_encodedAccountLegalEntityId);
+            
+            _mapper = new ConfirmEmployerViewModelMapper(icommitmentApiClient.Object, _cacheStorage.Object, _encodingService.Object);
 
             _act = async () => await _mapper.Map(_source);
         }
@@ -36,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.AreEqual(_encodedAccountLegalEntityId, result.EmployerAccountLegalEntityPublicHashedId);
         }
 
         [Test]

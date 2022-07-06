@@ -85,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         public PostStartDateFixture SetEditModeOn()
         {
-            _viewModel.Price = 1;
+            _viewModel.InEditMode = true;
             return this;
         }
 

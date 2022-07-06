@@ -15,7 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public long AccountLegalEntityId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
-        //public string EmployerAccountLegalEntityPublicHashedId { get; set; }
         public long ProviderId { get; set; }
         public string EmploymentEndDate { get; set; }
         public string EndDate { get; set; }
@@ -28,9 +27,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
         [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
-        public bool InEditMode => Price.HasValue;
+
+        public bool InEditMode { get; set; }
+    
         public string LegalEntityName { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public Guid CacheKey { get; set; }
+        public bool SkippedDeliveryModelSelection { get; set; }
     }
 }

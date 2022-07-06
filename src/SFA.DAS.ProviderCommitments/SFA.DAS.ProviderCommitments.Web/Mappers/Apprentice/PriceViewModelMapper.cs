@@ -32,6 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 InEditMode = source.IsEdit,
                 LegalEntityName = apprenticeship.EmployerName,
                 DeliveryModel = cacheItem.DeliveryModel.Value,
+                CacheKey = cacheItem.Key
             };
         }
     }

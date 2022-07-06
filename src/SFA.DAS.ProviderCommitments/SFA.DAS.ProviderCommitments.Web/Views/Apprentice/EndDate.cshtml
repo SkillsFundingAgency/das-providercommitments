@@ -42,6 +42,7 @@
             <fieldset class="govuk-fieldset" role="group" aria-describedby="end-date-hint">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
                 @Html.HiddenFor(x => x.StartDate)
+                @Html.HiddenFor(x => x.InEditMode)
                 @Html.HiddenFor(x => x.CacheKey)
 
                 <div asp-show="!isRegular" class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate,"govuk-form-group--error")">
@@ -133,8 +134,7 @@
         var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeStartDate;
         var backModel = new 
         {
-            Model.CacheKey,
-            IsEdit = Model.InEditMode
+            Model.CacheKey
         };
     }
 

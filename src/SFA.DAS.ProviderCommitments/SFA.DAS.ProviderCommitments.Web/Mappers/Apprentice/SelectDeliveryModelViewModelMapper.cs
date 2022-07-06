@@ -31,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             if (apiResponse.DeliveryModels.Count == 1)
             {
                 cacheItem.DeliveryModel = apiResponse.DeliveryModels.Single();
+                cacheItem.SkippedDeliveryModelSelection = true;
                 await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
             }
            

@@ -7,6 +7,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -16,6 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private EndDateViewModelToConfirmRequestMapper _mapper;
         private EndDateViewModel _source;
         private Func<Task<ConfirmRequest>> _act;
+        private Mock<ICacheStorageService> _cacheStorage;
+        private ChangeEmployerCacheItem _cacheItem;
 
         [SetUp]
         public void Arrange()
@@ -27,7 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Without(x => x.EmploymentEndDate)
                 .Create();
 
-            _mapper = new EndDateViewModelToConfirmRequestMapper(Mock.Of<ILogger<EndDateViewModelToConfirmRequestMapper>>());
+            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == _source.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _mapper = new EndDateViewModelToConfirmRequestMapper(Mock.Of<ILogger<EndDateViewModelToConfirmRequestMapper>>(), _cacheStorage.Object);
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }

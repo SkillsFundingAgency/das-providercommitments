@@ -30,9 +30,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 StopDate = apprenticeship.StopDate,
                 StartDate = new MonthYearModel(cacheItem.StartDate),
+                EndDate = cacheItem.EndDate,
                 LegalEntityName = apprenticeship.EmployerName,
                 DeliveryModel = cacheItem.DeliveryModel.Value,
-                CacheKey = source.CacheKey
+                CacheKey = source.CacheKey,
+                SkippedDeliveryModelSelection = cacheItem.SkippedDeliveryModelSelection,
+                InEditMode = source.IsEdit
             };
         }
     }

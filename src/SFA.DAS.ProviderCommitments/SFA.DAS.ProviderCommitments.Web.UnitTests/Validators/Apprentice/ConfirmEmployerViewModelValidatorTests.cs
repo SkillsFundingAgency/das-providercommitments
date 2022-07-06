@@ -27,16 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.Confirm, model, expectedValid);
         }
 
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XYZ", true)]
-        public void Validate_EmployerAccountLegalEntityPublicHashedId_ShouldBeValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
-        {
-            var model = new ConfirmEmployerViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
-            AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
-        }
-
         private void AssertValidationResult<T>(Expression<Func<ConfirmEmployerViewModel, T>> property, ConfirmEmployerViewModel instance, bool expectedValid)
         {
             var validator = new ConfirmEmployerViewModelValidator();
