@@ -363,10 +363,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
-            var apiRequest = await _modelMapper.Map<CreateChangeOfPartyRequestRequest>(viewModel);
-            await _commitmentsApiClient.CreateChangeOfPartyRequest(viewModel.ApprenticeshipId, apiRequest);
+            var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-            return RedirectToRoute(RouteNames.ApprenticeSent, new { viewModel.ApprenticeshipHashedId });
+            return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 
         [HttpGet]
