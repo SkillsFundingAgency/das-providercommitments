@@ -85,9 +85,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                                 TotalCost = response.DraftApprenticeships.Sum(x => x.Cost ?? 0)
                             };
                             cohortDetails.Add(existingCohortDetails);
-
-                            result.CanApprove = result.CanApprove && 
-                                (await _outerApiService.GetCohort(cohortId)).IsCompleteForProvider;
                         }
                     }
                 }

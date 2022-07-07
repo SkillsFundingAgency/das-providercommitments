@@ -132,19 +132,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
-        [Test]
-        public async Task IncompleteApprenticeshipCannotBeApproved()
-        {   
-            //Arrange
-            fixture.SetupDraftApprenticeships().WithIncompleteData();
-            
-            //Act
-            await fixture.WithDefaultData().Action();
-
-            //Assert
-            Assert.False(fixture.Result.CanApprove);
-        }
-
         public class WhenMappingFileUploadReviewRequestToReviewViewModelFixture
         {
             private Fixture fixture;
