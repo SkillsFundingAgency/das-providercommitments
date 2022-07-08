@@ -12,8 +12,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.Confirm).NotNull().WithMessage("Please select an option");
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
 
-            RuleFor(x => x.IsFlexiJobAgency).Must(x => !x)
+            RuleFor(x => x.Confirm)
+                .Must((x,y) => !x.IsFlexiJobAgency)
                 .When(x => x.DeliveryModel == DeliveryModel.PortableFlexiJob)
+                .When(x => x.Confirm == true)
                 .WithMessage("Apprentices on the Portable Flexi-Job apprenticeship delivery model cannot change to a Flexi-Job Apprenticeship Agency employer.");
         }
     }
