@@ -4,7 +4,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.PriceViewModel
 
 @{
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
     ViewBag.Title = isRegular ? "What's the new agreed apprenticeship price?" : "Agreed training prices for the employment and the apprenticeship";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/price";
     ViewBag.GaData.Org = Model.LegalEntityName;

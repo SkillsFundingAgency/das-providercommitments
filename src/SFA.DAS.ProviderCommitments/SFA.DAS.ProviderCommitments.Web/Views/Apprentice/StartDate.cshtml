@@ -5,7 +5,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
 @{
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
     ViewData["Title"] = isRegular ? "New training start date" : "Start date for this employment";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;    

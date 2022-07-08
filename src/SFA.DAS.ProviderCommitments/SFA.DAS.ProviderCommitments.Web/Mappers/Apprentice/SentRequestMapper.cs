@@ -49,6 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             await _outerApiClient.Post<PostConfirmResponse>(apiRequest);
 
+            await _cacheStorage.DeleteFromCache(source.CacheKey.ToString());
+
             return new SentRequest
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId
