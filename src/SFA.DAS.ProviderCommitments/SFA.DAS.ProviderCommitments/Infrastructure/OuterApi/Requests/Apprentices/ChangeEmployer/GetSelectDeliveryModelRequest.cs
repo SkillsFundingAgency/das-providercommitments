@@ -7,14 +7,16 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
     {
         public long ProviderId { get; }
         public long ApprenticeshipId { get; set; }
+        public long AccountLegalEntityId { get; set; }
 
-        public GetSelectDeliveryModelRequest(long providerId, long apprenticeshipId)
+        public GetSelectDeliveryModelRequest(long providerId, long apprenticeshipId, long accountLegalEntityId)
         {
             ProviderId = providerId;
             ApprenticeshipId = apprenticeshipId;
+            AccountLegalEntityId = accountLegalEntityId;
         }
 
-        public string GetUrl => $"provider/{ProviderId}/apprentices/{ApprenticeshipId}/change-employer/select-delivery-model";
+        public string GetUrl => $"provider/{ProviderId}/apprentices/{ApprenticeshipId}/change-employer/select-delivery-model?accountLegalEntityId={AccountLegalEntityId}";
     }
 
     public class GetSelectDeliveryModelResponse

@@ -23,10 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<SelectDeliveryModelViewModel> Map(SelectDeliveryModelRequest source)
         {
-            var apiRequest = new GetSelectDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId);
-
-            var apiResponse = await _outerApiClient.Get<GetSelectDeliveryModelResponse>(apiRequest);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+
+            var apiRequest = new GetSelectDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
+            var apiResponse = await _outerApiClient.Get<GetSelectDeliveryModelResponse>(apiRequest);
 
             if (apiResponse.DeliveryModels.Count == 1)
             {

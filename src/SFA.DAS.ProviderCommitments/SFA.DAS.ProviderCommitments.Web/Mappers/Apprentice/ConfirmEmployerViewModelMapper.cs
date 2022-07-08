@@ -3,6 +3,8 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
@@ -11,13 +13,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class ConfirmEmployerViewModelMapper : IMapper<ConfirmEmployerRequest, ConfirmEmployerViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _outerApiClient;
         private readonly ICacheStorageService _cacheStorage;
         private readonly IEncodingService _encodingService;
 
-        public ConfirmEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
+        public ConfirmEmployerViewModelMapper(IOuterApiClient outerApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
         {
-            _commitmentsApiClient = commitmentsApiClient;
+            _outerApiClient = outerApiClient;
             _cacheStorage = cacheStorage;
             _encodingService = encodingService;
         }
@@ -36,14 +38,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 accountLegalEntityId = source.AccountLegalEntityId;
             }
 
-            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(accountLegalEntityId);
+            var apiRequest = new GetConfirmEmployerRequest(source.ProviderId, source.ApprenticeshipId, accountLegalEntityId);
+            var apiResponse = await _outerApiClient.Get<GetConfirmEmployerResponse>(apiRequest);
 
             return new ConfirmEmployerViewModel
             {
-                EmployerAccountName = accountLegalEntity.AccountName,
-                EmployerAccountLegalEntityName = accountLegalEntity.LegalEntityName,
+                LegalEntityName = apiResponse.LegalEntityName,
+                EmployerAccountName = apiResponse.AccountName,
+                EmployerAccountLegalEntityName = apiResponse.AccountLegalEntityName,
                 ProviderId = source.ProviderId,
-                EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(accountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
+                EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(accountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                IsFlexiJobAgency = apiResponse.IsFlexiJobAgency,
+                DeliveryModel = apiResponse.DeliveryModel
             };
         }
     }
