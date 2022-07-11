@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             _response = fixture.Create<ProviderCourseDeliveryModels>();
 
             _outerApiClient = new Mock<IApprovalsOuterApiClient>();
-            _outerApiClient.Setup(x => x.GetProviderCourseDeliveryModels(_providerId, _courseCode, It.IsAny<CancellationToken>())).ReturnsAsync(_response);
+            _outerApiClient.Setup(x => x.GetProviderCourseDeliveryModels(_providerId, _courseCode, 0, It.IsAny<CancellationToken>())).ReturnsAsync(_response);
 
             _mapper = new SelectDeliveryModelMapperHelper(_outerApiClient.Object);
         }
@@ -36,14 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
-            var result = await _mapper.Map(_providerId, _courseCode, null);
+            var result = await _mapper.Map(_providerId, _courseCode, 0, null);
             Assert.AreEqual(_courseCode, result.CourseCode);
         }
 
         [Test]
         public async Task ThenDeliveryModelsAreReturnedCorrectly()
         {
-            var result = await _mapper.Map(_providerId, _courseCode, null);
+            var result = await _mapper.Map(_providerId, _courseCode, 0, null);
             Assert.AreEqual(_response.DeliveryModels, result.DeliveryModels);
         }
 
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [TestCase(null)]
         public async Task ThenDeliveryModelisMappedCorrectly(DeliveryModel? dm)
         {
-            var result = await _mapper.Map(_providerId, _courseCode, dm);
+            var result = await _mapper.Map(_providerId, _courseCode, 0, dm);
             Assert.AreEqual(dm, result.DeliveryModel);
         }
     }
