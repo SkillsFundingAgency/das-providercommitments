@@ -12,6 +12,8 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -38,17 +40,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly IEncodingService _encodingService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IOuterApiService _outerApiService;
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IOuterApiService outerApiService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
             _modelMapper = modelMapper;
             _encodingService = encodingService;
             _authorizationService = authorizationService;
+            _outerApiService = outerApiService;
         }
 
         [HttpGet]
@@ -218,6 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 model.CourseCode = request.CourseCode;
                 model.DeliveryModel = request.DeliveryModel;
+                model.CohortId = request.CohortId;
             }
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -234,6 +240,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), req);
+            }
+
+            if (await HasStartDateOverlap(model))
+            {
+                StoreAddDraftApprenticeshipState(model);
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions));
             }
 
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
@@ -265,6 +277,45 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("edit/overlap-options")]
+        public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
+        {
+            var vm = new DraftApprenticeshipOverlapOptionViewModel
+            {
+                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("edit/overlap-options")]
+        public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionViewModel viewModel)
+        {
+            var model = GetStoredAddDraftApprenticeshipState();
+
+            if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
+                return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+
+            if (string.IsNullOrWhiteSpace(viewModel.DraftApprenticeshipHashedId))
+            {
+                var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
+                request.IgnoreStartDateOverlap = true;
+                request.UserId = User.Upn();
+
+                var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+                viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;
+            }
+
+            if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
+            {
+                var createOverlappingTrainingDateApimRequest = await _modelMapper.Map<CreateOverlappingTrainingDateApimRequest>(viewModel);
+                await _outerApiService.CreateOverlappingTrainingDateRequest(createOverlappingTrainingDateApimRequest);
+            }
+
+            return RedirectToAction("Details","Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+        }
+
         private bool RequireRpl(MonthYearModel startDate)
         {
             if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
@@ -284,6 +335,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourseForEdit) : nameof(SelectDeliveryModelForEdit), req);
             }
+
+            if (await HasStartDateOverlap(model))
+            {
+                StoreEditDraftApprenticeshipState(model);
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions), new { DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId});
+            }
+
 
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
@@ -318,6 +376,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
+
                     await AddLegalEntityAndCoursesToModel(editModel);
                     return View("EditDraftApprenticeship", editModel);
                 }
@@ -529,6 +588,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction("Details", "Cohort", routeValues);
             }
+        }
+
+        private async Task<bool> HasStartDateOverlap(DraftApprenticeshipViewModel model)
+        {
+            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
+            {
+                var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
+
+                var result = await _commitmentsApiClient.ValidateUlnOverlap(new ValidateUlnOverlapRequest
+                {
+                    EndDate = model.EndDate.Date.Value,
+                    StartDate = model.StartDate.Date.Value,
+                    ULN = model.Uln,
+                });
+
+                return result.HasOverlappingStartDate && !result.HasOverlappingEndDate;
+            }
+
+            return false;
         }
     }
 }

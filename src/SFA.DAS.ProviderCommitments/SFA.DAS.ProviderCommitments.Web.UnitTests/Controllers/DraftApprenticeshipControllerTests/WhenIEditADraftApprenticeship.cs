@@ -78,5 +78,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .VerifyRedirectToRecognisePriorLearningPage();
         }
 
+        [Test]
+        public async Task AndWhenThereIsStartDateOverlap()
+        {
+            await _fixture.SetupStartDateOverlap(true, false).SetupEditDraftApprenticeshipViewModelForStartDateOverlap().PostToEditDraftApprenticeship();
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
+        }
+
+        [Test]
+        public async Task AndWhenWhenUserSelectsToSendOverlapEmailToEmployer()
+        {
+            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
+            _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
+            _fixture.VerifyUserRedirectedTo("Details");
+        }
+
+        [Test]
+        public async Task AndWhenWhenUserSelectsToContactTheEmployer()
+        {
+            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();
+            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
+            _fixture.VerifyUserRedirectedTo("Details");
+        }
     }
 }
