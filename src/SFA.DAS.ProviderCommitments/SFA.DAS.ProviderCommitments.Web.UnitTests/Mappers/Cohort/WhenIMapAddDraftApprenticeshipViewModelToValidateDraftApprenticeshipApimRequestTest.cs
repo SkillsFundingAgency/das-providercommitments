@@ -20,12 +20,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _mapper = new AddDraftApprenticeshipViewModelToValidateApimRequestMapper();
 
             _source = fixture.Build<AddDraftApprenticeshipViewModel>()
-                
                 .With(x => x.BirthDay, 1).With(x => x.BirthMonth, 1).With(x => x.BirthYear, 2000)
                 .Without(x => x.StartDate)
                 .With(x => x.StartMonth,2).With(x => x.StartYear, 2020)
-                .Without(x => x.EndDate)
-                .With(x => x.EndMonth, 1).With(x => x.EndYear,2022).Create();
+                .Create();
+
+            _source.EndMonth = 1;
+            _source.EndYear = 2022;
         }
 
         [Test]

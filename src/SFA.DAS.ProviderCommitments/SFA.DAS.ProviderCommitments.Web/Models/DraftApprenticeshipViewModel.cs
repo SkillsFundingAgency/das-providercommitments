@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
         [Display(Name = "Projected apprenticeship training finish date")]
-        public MonthYearModel EndDate { get; set; }
+        public MonthYearModel EndDate { get; }
 
         [Display(Name = "Month")]
         [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
