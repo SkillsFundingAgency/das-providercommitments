@@ -95,6 +95,10 @@ Model.HasEmailOverlaps)
         {
             <span class="govuk-tag">Portable flexi job</span>
         }
+        @if (@course.DeliveryModel == DeliveryModel.FlexiJobAgency)
+        {
+            <span class="govuk-tag">Flexi-Job Agency</span>
+        }
     </h3>
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
     {

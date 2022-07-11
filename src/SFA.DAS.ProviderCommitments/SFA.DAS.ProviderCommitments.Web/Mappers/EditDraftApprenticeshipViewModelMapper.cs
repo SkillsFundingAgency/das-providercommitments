@@ -2,6 +2,7 @@
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Models;
@@ -11,10 +12,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     public class EditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipRequest, IDraftApprenticeshipViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IEncodingService _encodingService;
 
-        public EditDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
+        public EditDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _encodingService = encodingService;
         }
 
         public async Task<IDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
@@ -25,6 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
                 return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
                 {
+                    AccountLegalEntityId = source.Cohort.AccountLegalEntityId,
+                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(source.Cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     DraftApprenticeshipId = source.Request.DraftApprenticeshipId,
                     DraftApprenticeshipHashedId = source.Request.DraftApprenticeshipHashedId,
                     CohortId = source.Request.CohortId,
