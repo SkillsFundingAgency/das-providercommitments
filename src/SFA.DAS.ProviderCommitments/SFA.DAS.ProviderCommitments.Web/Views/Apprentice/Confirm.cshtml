@@ -6,7 +6,7 @@
 @{
     ViewBag.Title = "Confirm the information before sending your request";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
-    ViewBag.GaData.Org = Model.NewEmployerName;
+    ViewBag.GaData.Org = Model.OldEmployerName;
 
     var isRegular = Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
 

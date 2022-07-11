@@ -1,10 +1,10 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
-@using SFA.DAS.ProviderCommitments.Web.RouteValues
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel
 
 @{
-    ViewData["Title"] = "Apprenticeships";
+    ViewBag.Title = "Select Delivery Model";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/select-delivery-model";
+    ViewBag.GaData.Org = Model.LegalEntityName;
 }
 
 <div class="govuk-grid-row">
@@ -14,9 +14,9 @@
 
         <form id="selectDeliveryModel" novalidate method="post">
             @Html.HiddenFor(x => x.CacheKey)
-            
+
             <partial name="_SelectDeliveryModelPartial" />
-            
+
             <button type="submit" class="govuk-button">Continue</button>
         </form>
     </div>
