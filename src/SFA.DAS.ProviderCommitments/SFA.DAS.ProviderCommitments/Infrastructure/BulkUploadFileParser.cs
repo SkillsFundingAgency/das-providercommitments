@@ -1,8 +1,10 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -31,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
                     csvReader.Configuration.RegisterClassMap<CsvRecordMap>();
                     var csvRecords = csvReader.GetRecords<CsvRecord>()
-                             .ToList();
+                        .ToList();
 
                     var emptyRecords = GetEmptyRecords(csvRecords);
                     if (emptyRecords.Count > 0)

@@ -25,6 +25,7 @@
         public string ProviderRef { get; set; }
 
         public string AgreementId { get; set; }
+        
         public string EmailAddress { get; set; }
     }
 }

@@ -9,6 +9,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     public class WhenIAddADraftApprenticeshipToAnExistingCohort
     {
         private DraftApprenticeshipControllerTestFixture _fixture;
+        private const string DateBeforeRplRequired = "2022-07-31";
+        private const string DateAfterRplRequired = "2022-08-01";
 
         [SetUp]
         public void Arrange()
@@ -23,18 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.VerifyMappingFromReservationAddRequestIsCalled()
                 .VerifyCohortDetailsWasCalledWithCorrectId()
                 .VerifyGetCoursesWasCalled();
-        }
-
-        [Test]
-        public async Task AndWhenSavingTheApprenticeToCohortIsSuccessfulAndRedirectedToCohortIfNoStandardOptions()
-        {
-            _fixture.SetUpStandardToReturnNoOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
-            
-            await _fixture.PostToAddDraftApprenticeship();
-            _fixture.VerifyMappingToApiTypeIsCalled()
-                .VerifyApiAddMethodIsCalled()
-                .VerifyRedirectedBackToCohortDetailsPage();
         }
 
         [Test]
@@ -93,17 +83,57 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task ThenIfThereAreOptionsThenRedirectToSelectOptions()
+        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
         {
             _fixture
-                .SetUpStandardToReturnOptions()
-                .SetupCommitmentsApiToReturnADraftApprentice();
+                .SetApprenticeshipStarting(DateBeforeRplRequired)
+                .SetUpStandardToReturnNoOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
             
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartDateIsNotSetThenRedirectToCohort()
+        {
+            _fixture
+                .SetApprenticeshipStarting(null)
+                .SetUpStandardToReturnNoOptions();
+
+            await _fixture.PostToAddDraftApprenticeship();
+            
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectedBackToCohortDetailsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreStandardOptionsThenRedirectToSelectOptions()
+        {
+            _fixture
+                .SetApprenticeshipStarting(DateBeforeRplRequired)
+                .SetUpStandardToReturnOptions();
+
             await _fixture.PostToAddDraftApprenticeship();
             
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectToSelectOptionsPage();
+        }
+
+        [Test]
+        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning()
+        {
+            _fixture.SetApprenticeshipStarting(DateAfterRplRequired);
+
+            await _fixture.PostToAddDraftApprenticeship();
+            
+            _fixture.VerifyMappingToApiTypeIsCalled()
+                .VerifyApiAddMethodIsCalled()
+                .VerifyRedirectToRecognisePriorLearningPage();
         }
 
         [Test]

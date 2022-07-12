@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -12,6 +13,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
     [TestFixture]
     public class BulkUploadFileParserTests
     {
+        const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
+
         BulkUploadFileParser _bulkUploadFileParser;
         string _fileContent;
         long _proivderId;
@@ -22,9 +25,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         {
             _proivderId = 1;
             _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
-            _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
-                            "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768" + Environment.NewLine +
-                            "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657";
+            _fileContent = Headers + Environment.NewLine +
+                           "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine +
+                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,0,,";
 
             var fileName = "test.pdf";
             var stream = new MemoryStream();
@@ -144,11 +147,11 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         public void VerifyEmptyRowsRemovedFromUploadedFile()
         {
             //Arrange          
-            _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
-                ",,,,,,,,,,,," + Environment.NewLine +
-                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768" + Environment.NewLine +
-                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657" + Environment.NewLine +
-                 ",,,,,,,,,,,,";
+            _fileContent = Headers + Environment.NewLine +
+                ",,,,,,,,,,,,,,," + Environment.NewLine +
+                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,,," + Environment.NewLine +
+                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,,," + Environment.NewLine +
+                 ",,,,,,,,,,,,,,,";
 
             CreateFile();
 
@@ -160,9 +163,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         public void VerifyNoRowsReturnedFromEmptyFile()
         {
             //Arrange          
-            _fileContent = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef" + Environment.NewLine +
-                ",,,,,,,,,,,," + Environment.NewLine +
-                 ",,,,,,,,,,,,";
+            _fileContent = Headers + Environment.NewLine +
+                ",,,,,,,,,,,,,,," + Environment.NewLine +
+                ",,,,,,,,,,,,,,,";
 
             CreateFile();
 

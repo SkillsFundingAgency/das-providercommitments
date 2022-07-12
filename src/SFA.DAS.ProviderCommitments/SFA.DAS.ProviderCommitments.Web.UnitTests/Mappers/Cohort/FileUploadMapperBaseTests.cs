@@ -1,13 +1,13 @@
 ﻿using AutoFixture;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -164,7 +164,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual((result.CohortId + 1), result.TransferSenderId);
             }
         }
-
-       
     }
 }

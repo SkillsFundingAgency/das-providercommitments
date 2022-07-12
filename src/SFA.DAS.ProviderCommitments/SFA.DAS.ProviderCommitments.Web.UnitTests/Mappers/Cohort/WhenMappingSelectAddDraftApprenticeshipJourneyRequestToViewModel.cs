@@ -77,7 +77,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture
     {
-        public Mock<IFeatureTogglesService<ProviderFeatureToggle>> FeatureTogglesService { get; set; }
         public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
         public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
 
@@ -102,19 +101,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             ProviderRelationshipsApiClient
                 .Setup(p => p.HasRelationshipWithPermission(It.IsAny<HasRelationshipWithPermissionRequest>(), CancellationToken.None))
                 .ReturnsAsync(HasCreateCohortPermission);
-
-            FeatureTogglesService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-            FeatureTogglesService.Setup(f => f.GetFeatureToggle(ProviderFeature.BulkUploadV2WithoutPrefix))
-                .Returns(new ProviderFeatureToggle
-                {
-                    IsEnabled = true
-                });
-
         }
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture SetUp()
         {
-            Mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, FeatureTogglesService.Object);
+            Mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object);
             return this;
         }
 

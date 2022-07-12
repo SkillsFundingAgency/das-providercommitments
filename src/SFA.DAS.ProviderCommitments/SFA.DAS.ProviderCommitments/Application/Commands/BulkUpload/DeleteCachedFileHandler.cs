@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload
 
         public async Task<Unit> Handle(DeleteCachedFileCommand request, CancellationToken cancellationToken)
         {
-            await _cacheService.ClearCache(request.CachedRequestId.ToString());
+            await _cacheService.ClearCache(request.CachedRequestId.ToString(), nameof(DeleteCachedFileHandler));
             return Unit.Value;
         }
     }

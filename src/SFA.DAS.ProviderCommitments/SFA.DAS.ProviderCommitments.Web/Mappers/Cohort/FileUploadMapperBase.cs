@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                  EPAOrgId = csvRecord.EPAOrgID,
                  CohortId = GetValueOrDefault(csvRecord.CohortRef, EncodingType.CohortReference),
                  LegalEntityId = GetValueOrDefault(csvRecord.AgreementId, EncodingType.PublicAccountLegalEntityId),
-                 TransferSenderId = GetTransferSenderId(csvRecord.CohortRef).Result
+                 TransferSenderId = GetTransferSenderId(csvRecord.CohortRef).Result,
              }).ToList();
         }
 

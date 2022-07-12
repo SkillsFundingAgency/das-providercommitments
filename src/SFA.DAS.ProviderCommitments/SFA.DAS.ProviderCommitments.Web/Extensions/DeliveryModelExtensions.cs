@@ -11,6 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             deliveryModel switch
             {
                 DeliveryModel.PortableFlexiJob => "Portable flexi-job",
+                DeliveryModel.FlexiJobAgency => "Flexi-job agency",
                 _ => "Regular"
             };
 
@@ -18,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             deliveryModel switch
             {
                 DeliveryModel.PortableFlexiJob => "Portable flexi-job",
+                DeliveryModel.FlexiJobAgency => "Flexi-job agency",
                 _ => null,
             };
     }
