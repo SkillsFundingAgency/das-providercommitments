@@ -55,6 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddDasHealthChecks()
                 .AddProviderAuthentication(Configuration)
                 .AddMemoryCache()
+                .AddCache(Environment, Configuration)
                 .AddMvc(options =>
                 {
                     options.EnableEndpointRouting = false;
