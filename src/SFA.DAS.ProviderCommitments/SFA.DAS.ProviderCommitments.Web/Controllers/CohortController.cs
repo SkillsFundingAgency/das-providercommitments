@@ -452,11 +452,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             switch (viewModel.SelectedOption)
             {
-                case FileUploadReviewOption.ApproveAndSend:
-                    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-                    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
-                    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
-                    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+                // TODO re-add this route when the Add/Approve feature is turned back on
+                //case FileUploadReviewOption.ApproveAndSend:
+                //    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                //    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
+                //    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
+                //    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
                 case FileUploadReviewOption.SaveButDontSend:
                     var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
