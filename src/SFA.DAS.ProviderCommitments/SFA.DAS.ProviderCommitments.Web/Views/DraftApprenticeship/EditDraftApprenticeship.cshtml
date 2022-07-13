@@ -42,6 +42,7 @@
         </dl>
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             <partial name="DraftApprenticeship" for="@Model" />
             <button type="submit" class="govuk-button">Save</button>
 
@@ -51,9 +52,9 @@
                 <a class="govuk-button govuk-button--warning das-float-right" href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId =  Model.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })"> Delete</a>
             }
 
-        <p class="govuk-body govuk-!-margin-bottom-0">
-            <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
-        </p>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Cancel</a>
+            </p>
         </form>
 
     </div>

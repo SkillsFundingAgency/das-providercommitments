@@ -16,10 +16,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         public async Task<ProviderCourseDeliveryModels> GetProviderCourseDeliveryModels(
             long providerId,
             string courseCode,
+            long accountLegalEntityId,
             CancellationToken cancellationToken = default)
         {
             return await _client.Get<ProviderCourseDeliveryModels>
-                ($"/approvals/providers/{providerId}/courses/{courseCode}",
+                ($"/approvals/providers/{providerId}/courses/{courseCode}?accountLegalEntityId={accountLegalEntityId}",
                 cancellationToken: cancellationToken);
         }
     }

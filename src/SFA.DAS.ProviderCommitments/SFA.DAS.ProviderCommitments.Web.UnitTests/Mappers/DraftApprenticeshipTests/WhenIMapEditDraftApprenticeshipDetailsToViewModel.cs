@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.CommitmentsV2.Types.Dtos;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -39,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
 
             _authorizationService = new Mock<IAuthorizationService>();
 
-            _mapper = new EditDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object);
+            _mapper = new EditDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object, Mock.Of<IEncodingService>());
             _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
