@@ -7,6 +7,7 @@
         public OverlapOptions? OverlapOptions { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public long? DraftApprenticeshipId { get; set; }
+        public bool OverlappingTrainingDateRequestToggleEnabled { get; set; }
     }
 
     public enum OverlapOptions

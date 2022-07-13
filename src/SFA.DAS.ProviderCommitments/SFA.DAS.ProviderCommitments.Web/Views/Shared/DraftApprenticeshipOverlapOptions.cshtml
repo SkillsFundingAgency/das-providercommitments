@@ -1,12 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapOptionViewModel
-@inject SFA.DAS.Authorization.Features.Services.IFeatureTogglesService<SFA.DAS.Authorization.ProviderFeatures.Models.ProviderFeatureToggle> featureToggleService
 
-@{
-    var overlappingToggleEmailRequest = featureToggleService.GetFeatureToggle(SFA.DAS.ProviderCommitments.Features.ProviderFeature.OverlappingTrainingDate).IsEnabled;
-}
-   
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
@@ -28,7 +23,7 @@
 
        <p>To request a stop date you can:</p>
        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
-         @if (overlappingToggleEmailRequest)
+         @if (Model.OverlappingTrainingDateRequestToggleEnabled)
          {
             <li>send an email from the service</li>
          }
@@ -50,7 +45,7 @@
 
                  @Html.ValidationMessageFor(m => m.OverlapOptions, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.OverlapOptions) })
                  <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-                    @if (overlappingToggleEmailRequest)
+                    @if (Model.OverlappingTrainingDateRequestToggleEnabled)
                     {
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-send-stop-request" name="OverlapOptions" type="radio" value="@OverlapOptions.SendStopRequest" data-aria-controls="conditional-approve">

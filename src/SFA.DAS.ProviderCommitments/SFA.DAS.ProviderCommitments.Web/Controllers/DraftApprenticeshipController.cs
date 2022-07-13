@@ -2,7 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
+using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -279,11 +281,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("edit/overlap-options")]
-        public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
+        public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request, [FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
+            var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
             var vm = new DraftApprenticeshipOverlapOptionViewModel
             {
-                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId
+                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
+                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled
             };
             return View(vm);
         }

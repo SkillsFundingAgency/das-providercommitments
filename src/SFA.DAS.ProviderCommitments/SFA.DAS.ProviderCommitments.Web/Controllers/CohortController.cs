@@ -31,6 +31,8 @@ using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.Authorization.Features.Services;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -233,9 +235,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
           
         [HttpGet]
         [Route("add/apprenticeship/overlap-options")]
-        public async Task<IActionResult> DraftApprenticeshipOverlapOptions()
+        public IActionResult DraftApprenticeshipOverlapOptions([FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
-            return await Task.FromResult(View(new DraftApprenticeshipOverlapOptionViewModel()));
+            var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
+            return View(new DraftApprenticeshipOverlapOptionViewModel() { 
+                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled
+            });
         }
 
         [HttpPost]
