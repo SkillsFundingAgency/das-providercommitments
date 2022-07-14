@@ -67,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
                     ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
-                                        (cacheItem.SkippedDeliveryModelSelection && cacheItem.DeliveryModel == DeliveryModel.Regular),
+                                        (cacheItem.SkippedDeliveryModelSelection && (int) cacheItem.DeliveryModel != (int) data.Apprenticeship.DeliveryModel),
                     ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
                     CacheKey = source.CacheKey
                 };
