@@ -101,7 +101,7 @@
                     <th scope="row" class="govuk-table__header">Delivery model</th>
                     <td class="govuk-table__cell">@Model.DeliveryModel.GetReferenceDataDescription()</td>
                     <td class="govuk-table__cell">
-                        <a id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, changeData)">Change</a>
+                        <a asp-hide="!@Model.ShowDeliveryModelChangeLink" id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, changeData)">Change</a>
                     </td>
                 </tr>
                 <tr class="govuk-table__row">

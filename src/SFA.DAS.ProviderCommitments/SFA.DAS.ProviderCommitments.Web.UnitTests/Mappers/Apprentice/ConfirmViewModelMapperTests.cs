@@ -169,13 +169,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(result.ExceedsFundingBandCap, fundingCapExceeded);
         }
 
+        [TestCase(true, DeliveryModel.Regular, true)]
+        [TestCase(true, DeliveryModel.FlexiJobAgency, false)]
+        [TestCase(true, DeliveryModel.PortableFlexiJob,  false)]
+        [TestCase(false, DeliveryModel.Regular, true)]
+        [TestCase(false, DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(false, DeliveryModel.PortableFlexiJob, true)]
+        public async Task Then_ShowDeliveryModel_If_Manual_Selection_Was_Made_Or_Was_Automatically_Set_To_Regular(bool skippedDeliveryModelSelection, Infrastructure.OuterApi.Types.DeliveryModel selectedDeliveryModel, bool expectShowDeliveryModel)
+        {
+            _fixture.cacheItem.SkippedDeliveryModelSelection = skippedDeliveryModelSelection;
+            _fixture.cacheItem.DeliveryModel = selectedDeliveryModel;
+            var result = await _fixture.Map();
+            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModel);
+        }
+
         [TestCase(true, false)]
         [TestCase(false, true)]
-        public async Task Then_ShowDeliveryModel_Is_False_If_Selection_Was_Skipped(bool skippedDeliveryModelSelection, bool expectShowDeliveryModel)
+        public async Task Then_ShowDeliveryModelChangeLink_Is_False_If_Selection_Was_Skipped(bool skippedDeliveryModelSelection, bool expectShowDeliveryModel)
         {
             _fixture.cacheItem.SkippedDeliveryModelSelection = skippedDeliveryModelSelection;
             var result = await _fixture.Map();
-            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModel);
+            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModelChangeLink);
         }
     }
 

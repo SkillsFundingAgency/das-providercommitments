@@ -12,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -65,7 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
-                    ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection,
+                    ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
+                                        (cacheItem.SkippedDeliveryModelSelection && cacheItem.DeliveryModel == DeliveryModel.Regular),
+                    ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
                     CacheKey = source.CacheKey
                 };
             }

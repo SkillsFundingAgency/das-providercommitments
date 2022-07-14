@@ -50,6 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         }
         public Guid CacheKey { get; set; }
         public bool ShowDeliveryModel { get; set; }
+        public bool ShowDeliveryModelChangeLink { get; set; }
         public CommitmentsV2.Types.DeliveryModel OldDeliveryModel { get; set; }
     }
 }
