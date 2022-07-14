@@ -168,6 +168,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(result.ExceedsFundingBandCap, fundingCapExceeded);
         }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public async Task Then_ShowDeliveryModel_Is_False_If_Selection_Was_Skipped(bool skippedDeliveryModelSelection, bool expectShowDeliveryModel)
+        {
+            _fixture.cacheItem.SkippedDeliveryModelSelection = skippedDeliveryModelSelection;
+            var result = await _fixture.Map();
+            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModel);
+        }
     }
 
     public class ConfirmViewModelMapperFixture

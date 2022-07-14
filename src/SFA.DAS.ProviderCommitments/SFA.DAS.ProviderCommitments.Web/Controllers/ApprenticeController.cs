@@ -239,8 +239,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             try
             {
-                var request = await _modelMapper.Map<StartDateRequest>(viewModel);
-                return RedirectToAction("StartDate", request);
+                if (viewModel.IsEdit)
+                {
+                    var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                    return RedirectToAction(nameof(Confirm), request);
+                }
+                else
+                {
+                    var request = await _modelMapper.Map<StartDateRequest>(viewModel);
+                    return RedirectToAction("StartDate", request);
+                }
             }
             catch (CacheItemNotFoundException)
             {
@@ -279,7 +287,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 {
                     var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
                     return RedirectToAction(nameof(Confirm), request);
-
                 }
                 else
                 {
