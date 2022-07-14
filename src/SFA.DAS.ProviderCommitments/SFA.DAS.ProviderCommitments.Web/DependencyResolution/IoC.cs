@@ -4,14 +4,14 @@ using SFA.DAS.Authorization.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.StructureMap;
 using SFA.DAS.AutoConfiguration.DependencyResolution;
-using SFA.DAS.CommitmentsV2.Shared.DependencyInjection;
 using SFA.DAS.CommitmentsV2.Api.Client.DependencyResolution;
-using SFA.DAS.ProviderCommitments.DependencyResolution;
-using StructureMap;
-using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
-using SFA.DAS.ProviderRelationships.Api.Client.DependencyResolution.StructureMap;
-using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.CommitmentsV2.Shared.DependencyInjection;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
+using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.DependencyResolution;
+using SFA.DAS.ProviderRelationships.Api.Client.DependencyResolution.StructureMap;
+using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {
@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<DefaultRegistry>();
 
-            registry.IncludeRegistry(new PasAccountApiClientRegistry(context => context.GetInstance<PasAccountApiConfiguration>()));
+            registry.IncludeRegistry(new PasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
 
             // Enable if you want to bypass MI locally - the 'Provider' role will
             // be added into a custom Authorization header which will be intercepted
