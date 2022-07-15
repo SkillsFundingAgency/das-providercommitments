@@ -74,17 +74,14 @@
                                 }
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
+                                    <label class="govuk-label govuk-radios__label" for="details-save">
+                                        Save all but don't send to employer(s)
+                                    </label>
                                     @if (AuthorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
                                     {
-                                        <label class="govuk-label govuk-radios__label" for="details-save">
+                                        <p>
                                             You need to manually add the RPL data for all new apprentices that started on or after 1 August 2022 before you can approve and send to the employer.
-                                        </label>
-                                    }
-                                    else
-                                    {
-                                        <label class="govuk-label govuk-radios__label" for="details-save">
-                                            Save all but don't send to employer(s)
-                                        </label>
+                                        </p>
                                     }
                                 </div>
                                 <div class="govuk-radios__item">
