@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -18,13 +20,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private PriceRequest _source;
         private Func<Task<PriceViewModel>> _act;
         private Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private Mock<ICacheStorageService> _cacheStorage;
         private GetApprenticeshipResponse _getApprenticeshipApiResponse;
+        private ChangeEmployerCacheItem _cacheItem;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Build<PriceRequest>().Without(x=>x.Price).Create();
+            _source = fixture.Build<PriceRequest>().Create();
 
             _getApprenticeshipApiResponse = new GetApprenticeshipResponse {EmployerName = "TestName"};
 
@@ -32,8 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(_source.ApprenticeshipId, default(CancellationToken)))
                 .ReturnsAsync(_getApprenticeshipApiResponse);
-                
-            _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object);
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == _source.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _mapper = new PriceViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
 
             _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
@@ -53,13 +63,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
         public async Task ThenLegalEntityNameIsMappedCorrectly()
         {
             var result = await _act();
@@ -67,19 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenStartDateIsMappedCorrectly()
+        public async Task ThenEditModeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartDate, result.StartDate);
-        }
-
-        [TestCase(null)]
-        [TestCase(345)]
-        public async Task ThenEditModeSetWhenPriceHasAValue(int? price)
-        {
-            _source.Price = price;
-            var result = await _act();
-            Assert.AreEqual(price.HasValue, result.InEditMode);
+            Assert.AreEqual(_source.IsEdit, result.InEditMode);
         }
     }
 }

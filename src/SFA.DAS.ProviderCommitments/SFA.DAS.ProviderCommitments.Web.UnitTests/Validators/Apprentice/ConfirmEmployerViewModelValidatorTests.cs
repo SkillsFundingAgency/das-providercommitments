@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;
 using System.Linq.Expressions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
@@ -27,14 +28,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.Confirm, model, expectedValid);
         }
 
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XYZ", true)]
-        public void Validate_EmployerAccountLegalEntityPublicHashedId_ShouldBeValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
+        [Test]
+        public void Validate_Portable_Apprenticeship_Cannot_Move_To_Flexi_Job_Agency_Employer()
         {
-            var model = new ConfirmEmployerViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
-            AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
+            var model = new ConfirmEmployerViewModel { IsFlexiJobAgency = true, DeliveryModel = DeliveryModel.PortableFlexiJob, Confirm = true };
+            AssertValidationResult(request => request.Confirm, model, false);
         }
 
         private void AssertValidationResult<T>(Expression<Func<ConfirmEmployerViewModel, T>> property, ConfirmEmployerViewModel instance, bool expectedValid)

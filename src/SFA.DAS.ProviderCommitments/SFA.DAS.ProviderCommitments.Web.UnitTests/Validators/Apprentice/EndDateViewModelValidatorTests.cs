@@ -1,11 +1,11 @@
 ﻿using FluentValidation.TestHelper;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;
 using System.Linq.Expressions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
@@ -19,25 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             var request = new EndDateViewModel { ProviderId = providerId };
 
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
-        }
-
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XYZ", true)]
-        public void ThenEmployerAccountLegalEntityPublicHashedIdIsValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
-        {
-            var model = new EndDateViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
-
-            AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
-        }
-
-        [TestCase(0, false)]
-        [TestCase(102, true)]
-        public void ThenAccountLegalEntityIdIsValidated(long accountLegalEntityId, bool expectedValid)
-        {
-            var model = new EndDateViewModel { AccountLegalEntityId = accountLegalEntityId };
-            AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
         }
 
         [TestCase("", false)]

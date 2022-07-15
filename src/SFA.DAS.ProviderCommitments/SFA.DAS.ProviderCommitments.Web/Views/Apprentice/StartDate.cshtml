@@ -1,10 +1,11 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types;
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using Microsoft.Azure.Documents.SystemFunctions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.StartDateViewModel
 
 @{
-    var isRegular = @Model.DeliveryModel == DeliveryModel.Regular;
+    var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
     ViewData["Title"] = isRegular ? "New training start date" : "Start date for this employment";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;    
@@ -38,7 +39,8 @@
 
         <form novalidate method="post">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
-                @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
+                @Html.HiddenFor(x => x.CacheKey)
+                @Html.HiddenFor(x => x.InEditMode)
                 @Html.HiddenFor(x => x.StopDate)
                 @Html.HiddenFor(x => x.EmploymentEndDate)
                 @Html.HiddenFor(x => x.EndDate)
@@ -95,16 +97,25 @@
 @section breadcrumb
 {
     @{
-        var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeConfirmEmployer;
+        string backRoute = "";
+        if (Model.InEditMode)
+        {
+            backRoute = RouteNames.ApprenticeConfirm;
+        }
+        else if (Model.SkippedDeliveryModelSelection)
+        {
+            backRoute = RouteNames.ApprenticeConfirmEmployer;
+        }
+        else
+        {
+            backRoute = RouteNames.ApprenticeSelectDeliveryModel;
+        }
+
         var backModel = new 
         {
-            Model.EmployerAccountLegalEntityPublicHashedId,
-            StartDate = Model.StartDate.MonthYear,
-            Model.EndDate,
-            Model.Price,
-            Model.DeliveryModel,
-            Model.EmploymentPrice,
-            Model.EmploymentEndDate,
+            Model.CacheKey,
+            Model.ProviderId,
+            Model.ApprenticeshipHashedId
         };
     }
 
