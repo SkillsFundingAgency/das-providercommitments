@@ -12,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -47,6 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 return new ConfirmViewModel
                 {
                     DeliveryModel = cacheItem.DeliveryModel.Value,
+                    OldDeliveryModel = data.Apprenticeship.DeliveryModel,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                     AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
@@ -64,6 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
+                    ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
+                                        (cacheItem.SkippedDeliveryModelSelection && (int) cacheItem.DeliveryModel != (int) data.Apprenticeship.DeliveryModel),
+                    ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
                     CacheKey = source.CacheKey
                 };
             }
