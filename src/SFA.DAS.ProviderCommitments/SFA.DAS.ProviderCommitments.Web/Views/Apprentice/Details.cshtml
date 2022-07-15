@@ -262,11 +262,11 @@
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if(Model.DeliveryModel != null)
+                @if(Model.DeliveryModel.HasValue)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
-                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel</td>
+                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel.ToDescription()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
@@ -307,7 +307,7 @@
                     <td class="govuk-table__cell"></td>
                 </tr>
 
-                @if(Model.DeliveryModel != null)
+                @if(Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Planned end date for this employment</th>
