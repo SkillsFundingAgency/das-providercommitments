@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
@@ -16,11 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
 
             RuleFor(x => x.ApprenticeshipHashedId)
                 .NotEmpty();
-            RuleFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-                .NotEmpty();
             RuleFor(x => x.ProviderId)
-                .GreaterThan(0);
-            RuleFor(x => x.AccountLegalEntityId)
                 .GreaterThan(0);
             RuleFor(x => x.StopDate)
                 .NotEmpty();

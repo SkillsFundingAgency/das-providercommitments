@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = "Confirm Employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm-employer";
-    ViewBag.GaData.Org = Model.EmployerAccountLegalEntityName;
+    ViewBag.GaData.Org = Model.LegalEntityName;
 }
 
 <div class="govuk-grid-row">
@@ -23,8 +23,9 @@
         <form method="post">
             <fieldset class="govuk-fieldset">
                 @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.IsFlexiJobAgency)
+                @Html.HiddenFor(x => x.DeliveryModel)
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-
 
                 <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">

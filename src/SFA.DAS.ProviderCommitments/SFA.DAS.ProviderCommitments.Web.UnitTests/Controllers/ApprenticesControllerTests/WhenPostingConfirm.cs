@@ -3,17 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Azure.Documents;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -54,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             private readonly ApprenticeController _sut;
             private readonly ConfirmViewModel _viewModel;
-            private readonly CreateChangeOfPartyRequestRequest _mapperResult;
+            private readonly SentRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
 
@@ -64,10 +61,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _apiClient.Setup(x => x.CreateChangeOfPartyRequest(It.IsAny<long>(), It.IsAny<CreateChangeOfPartyRequestRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _mapperResult = new CreateChangeOfPartyRequestRequest();
+                _mapperResult = new SentRequest();
 
                 _modelMapper = new Mock<IModelMapper>();
-                _modelMapper.Setup(x => x.Map<CreateChangeOfPartyRequestRequest>(It.IsAny<ConfirmViewModel>()))
+                _modelMapper.Setup(x => x.Map<SentRequest>(It.IsAny<ConfirmViewModel>()))
                     .ReturnsAsync(_mapperResult);
 
                 _viewModel = new ConfirmViewModel
@@ -91,9 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             public void VerifyChangeOfPartyRequestCreated()
             {
-                _apiClient.Verify(x => x.CreateChangeOfPartyRequest(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.Is<CreateChangeOfPartyRequestRequest>(r => r == _mapperResult),
-                    It.IsAny<CancellationToken>()));
+                _modelMapper.Verify(x => x.Map<SentRequest>(It.IsAny<ConfirmViewModel>()));
             }
 
             public void VerifyNewEmployerNameIsStoredInTempData()

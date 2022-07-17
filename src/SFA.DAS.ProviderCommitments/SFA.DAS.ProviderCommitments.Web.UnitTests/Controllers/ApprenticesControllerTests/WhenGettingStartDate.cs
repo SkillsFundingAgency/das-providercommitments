@@ -52,7 +52,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _request = new StartDateRequest
             {
                 ProviderId = 2342,
-                EmployerAccountLegalEntityPublicHashedId = "AB34CDS",
                 ApprenticeshipHashedId = "KG34DF989"
             };
             _viewModel = new StartDateViewModel();

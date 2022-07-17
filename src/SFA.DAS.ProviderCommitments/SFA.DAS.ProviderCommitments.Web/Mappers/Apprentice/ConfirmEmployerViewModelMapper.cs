@@ -1,30 +1,55 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class ConfirmEmployerViewModelMapper : IMapper<ConfirmEmployerRequest, ConfirmEmployerViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _outerApiClient;
+        private readonly ICacheStorageService _cacheStorage;
+        private readonly IEncodingService _encodingService;
 
-        public ConfirmEmployerViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ConfirmEmployerViewModelMapper(IOuterApiClient outerApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
         {
-            _commitmentsApiClient = commitmentsApiClient;
+            _outerApiClient = outerApiClient;
+            _cacheStorage = cacheStorage;
+            _encodingService = encodingService;
         }
 
         public async Task<ConfirmEmployerViewModel> Map(ConfirmEmployerRequest source)
         {
-            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId);
+            long accountLegalEntityId;
+
+            if (source.CacheKey.HasValue)
+            {
+                var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey.Value);
+                accountLegalEntityId = cacheItem.AccountLegalEntityId;
+            }
+            else
+            {
+                accountLegalEntityId = source.AccountLegalEntityId;
+            }
+
+            var apiRequest = new GetConfirmEmployerRequest(source.ProviderId, source.ApprenticeshipId, accountLegalEntityId);
+            var apiResponse = await _outerApiClient.Get<GetConfirmEmployerResponse>(apiRequest);
 
             return new ConfirmEmployerViewModel
             {
-                EmployerAccountName = accountLegalEntity.AccountName,
-                EmployerAccountLegalEntityName = accountLegalEntity.LegalEntityName,
+                LegalEntityName = apiResponse.LegalEntityName,
+                EmployerAccountName = apiResponse.AccountName,
+                EmployerAccountLegalEntityName = apiResponse.AccountLegalEntityName,
                 ProviderId = source.ProviderId,
-                EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
+                EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(accountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                IsFlexiJobAgency = apiResponse.IsFlexiJobAgency,
+                DeliveryModel = apiResponse.DeliveryModel
             };
         }
     }

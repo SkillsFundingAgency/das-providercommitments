@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public WhenConfirmRequestFixture()
         {
             _fixture = new Fixture();
-            ChangeOfEmployerRequest = _fixture.Build<ConfirmRequest>().With(x=>x.StartDate, "042020").Create();
+            ChangeOfEmployerRequest = _fixture.Build<ConfirmRequest>().Create();
             ChangeOfEmployerViewModel = _fixture.Build<ConfirmViewModel>()
                 .With(x => x.NewStartDate, "042020")
                 .Without(x => x.NewEmploymentEndDate)

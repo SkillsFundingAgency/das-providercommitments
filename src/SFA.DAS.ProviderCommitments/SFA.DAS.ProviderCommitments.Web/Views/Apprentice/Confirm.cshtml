@@ -1,23 +1,19 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmViewModel
 
 @{
     ViewBag.Title = "Confirm the information before sending your request";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
-    ViewBag.GaData.Org = Model.NewEmployerName;
+    ViewBag.GaData.Org = Model.OldEmployerName;
 
-    var isRegular = Model.DeliveryModel == SFA.DAS.CommitmentsV2.Types.DeliveryModel.Regular;
+    var isRegular = Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
 
     var changeData = new
     {
-        EmployerAccountLegalEntityPublicHashedId = Model.AccountLegalEntityPublicHashedId,
-        StartDate = Model.NewStartDate,
-        EndDate = Model.NewEndDate,
-        Price = Model.NewPrice,
-        EmploymentEndDate = Model.NewEmploymentEndDate,
-        EmploymentPrice = Model.NewEmploymentPrice,
-        DeliveryModel = Model.DeliveryModel,
+        CacheKey = Model.CacheKey,
+        IsEdit = true
     };
 }
 
@@ -141,12 +137,7 @@
 
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.AccountLegalEntityPublicHashedId)
-    @Html.HiddenFor(x => x.NewPrice)
-    @Html.HiddenFor(x => x.NewStartDate)
-    @Html.HiddenFor(x => x.NewEndDate)
-    @Html.HiddenFor(x => x.NewEmploymentEndDate)
-    @Html.HiddenFor(x => x.NewEmploymentPrice)
-    @Html.HiddenFor(x => x.ApprenticeshipHashedId)
+    @Html.HiddenFor(x => x.CacheKey)
 
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 
@@ -163,5 +154,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.CacheKey })">Back</a>
 }
