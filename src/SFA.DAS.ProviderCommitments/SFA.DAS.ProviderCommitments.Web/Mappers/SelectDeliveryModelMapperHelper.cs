@@ -14,9 +14,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             _client = client;
         }
-        public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, DeliveryModel? deliveryModel)
+        public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel)
         {
-            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode);
+            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, accountLegalEntityId ?? 0);
 
             return new SelectDeliveryModelViewModel
             {
@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode)
         {
-            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode);
+            var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, 0);
             return (response?.DeliveryModels.Count() > 1);
         }
     }

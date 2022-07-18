@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _fileParser.Setup(x => x.GetCsvRecords(It.IsAny<long>(), It.IsAny<IFormFile>())).Returns(() => _csvRecords);
             _cacheRequestId = Guid.NewGuid();
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.SetCache(_csvRecords)).ReturnsAsync(_cacheRequestId);
+            _cacheService.Setup(x => x.SetCache(_csvRecords, It.IsAny<string>())).ReturnsAsync(_cacheRequestId);
 
             _mapper = new FileUploadStartViewModelToReviewRequestMapper(_fileParser.Object, _cacheService.Object);
         }
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CacheServiceIsCalledOnce()
         {
             var result = await _mapper.Map(_viewModel);
-            _cacheService.Verify(x => x.SetCache(_csvRecords), Times.Once);
+            _cacheService.Verify(x => x.SetCache(_csvRecords, It.IsAny<string>()), Times.Once);
         }
 
         [Test]

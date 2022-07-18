@@ -1,8 +1,13 @@
-﻿using AutoFixture;
+﻿using System.Threading;
+using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
+using Moq;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.Encoding;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
@@ -11,15 +16,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
     {
         private AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper _mapper;
         private ReservationsAddDraftApprenticeshipRequest _source;
+        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private Mock<IEncodingService> _encodingService;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
 
-            _source = fixture.Build<ReservationsAddDraftApprenticeshipRequest>().With(x => x.StartMonthYear, "042020").Create();
+            _source = fixture.Build<ReservationsAddDraftApprenticeshipRequest>()
+                .With(x => x.StartMonthYear, "042020")
+                .With(x => x.CohortId, 1)
+                .Create();
 
-            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper();
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => new GetCohortResponse{ AccountLegalEntityId = 123 });
+
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Encode(123, EncodingType.PublicAccountLegalEntityId))
+                .Returns("EmployerAccountLegalEntityPublicHashedId");
+
+            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_commitmentsApiClient.Object, _encodingService.Object);
         }
 
         [Test]
@@ -62,6 +80,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         {
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.ReservationId, result.ReservationId);
+        }
+
+        [Test]
+        public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(123, result.AccountLegalEntityId);
+        }
+
+        [Test]
+        public async Task ThenPublicHashedAccountLegalEntityIdIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual("EmployerAccountLegalEntityPublicHashedId", result.EmployerAccountLegalEntityPublicHashedId);
         }
     }
 }

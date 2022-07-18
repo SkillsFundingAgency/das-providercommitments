@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -10,5 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string SortField { get; set; }
         public bool ReverseSort { get; set; }
         public string SearchTerm { get; set; }
+        public Guid CacheKey { get; set; }
     }
 }

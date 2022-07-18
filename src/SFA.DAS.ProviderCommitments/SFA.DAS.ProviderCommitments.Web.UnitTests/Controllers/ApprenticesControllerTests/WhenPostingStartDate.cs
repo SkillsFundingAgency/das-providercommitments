@@ -62,7 +62,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _viewModel = new StartDateViewModel
             {
                 ApprenticeshipHashedId = "DF34WG2",
-                EmployerAccountLegalEntityPublicHashedId = "DFF41G",
                 ProviderId = 2342,
                 StartDate = new MonthYearModel("62020"),
                 StopDate = DateTime.UtcNow.AddDays(-5)
@@ -71,10 +70,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _request = new EndDateRequest
             {
                 ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
-                EmployerAccountLegalEntityPublicHashedId = _viewModel.EmployerAccountLegalEntityPublicHashedId,
-                ProviderId = _viewModel.ProviderId,
-                StartDate = _viewModel.StartDate.MonthYear
+                ProviderId = _viewModel.ProviderId
             };
+
             _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
@@ -87,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         public PostStartDateFixture SetEditModeOn()
         {
-            _viewModel.Price = 1;
+            _viewModel.InEditMode = true;
             return this;
         }
 

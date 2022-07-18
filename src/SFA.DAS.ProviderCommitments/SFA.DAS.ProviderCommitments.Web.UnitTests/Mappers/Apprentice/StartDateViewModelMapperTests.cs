@@ -7,6 +7,9 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -46,14 +49,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.Request.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
         public async Task ThenStopDateIsMapped()
         {
             var result = await _fixture.Act();
@@ -61,6 +56,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
         }
 
+        [Test]
+        public async Task ThenCacheKeyIsMapped()
+        {
+            var result = await _fixture.Act();
+
+            Assert.AreEqual(_fixture.Request.CacheKey, result.CacheKey);
+        }
 
         [Test]
         public async Task ThenLegalEntityNameIsMapped()
@@ -69,64 +71,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(_fixture.Response.EmployerName, result.LegalEntityName);
         }
-
-        [TestCase("")]
-        [TestCase("042019")]
-        public async Task ThenStartDateIsMapped(string startDate)
-        {
-            _fixture.Request.StartDate = startDate;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.Request.StartDate, result.StartDate.MonthYear);
-        }
-
-        [TestCase(null)]
-        [TestCase(234)]
-        public async Task ThenPriceIsMapped(int? price)
-        {
-            _fixture.Request.Price = price;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(price, result.Price);
-        }
-
-        [TestCase(null)]
-        [TestCase("022020")]
-        public async Task ThenEndDateIsMapped(string endDate)
-        {
-            _fixture.Request.EndDate = endDate;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(endDate, result.EndDate);
-        }
-
-        [TestCase(null)]
-        [TestCase(234)]
-        public async Task ThenEditModeIsOnWhenAPriceHasAValue(int? price)
-        {
-            _fixture.Request.Price = price;
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(price.HasValue, result.InEditMode);
-        }
     }
 
     public class StartDateViewModelMapperFixture
     {
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private readonly Mock<ICacheStorageService> _cacheStorage;
         private readonly StartDateViewModelMapper _sut;
+        private readonly ChangeEmployerCacheItem _cacheItem;
 
         public StartDateRequest Request { get; }
         public GetApprenticeshipResponse Response { get; }
 
         public StartDateViewModelMapperFixture()
         {
+            var fixture = new Fixture();
+
             Request = new StartDateRequest
             {
                 ApprenticeshipHashedId = "SF45G54",
                 ApprenticeshipId = 234,
                 ProviderId = 645621,
-                EmployerAccountLegalEntityPublicHashedId = "GD35SD35"
             };
             Response = new GetApprenticeshipResponse
             {
@@ -137,7 +102,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(Response);
-            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object);
+
+            _cacheItem = fixture.Build<ChangeEmployerCacheItem>()
+                .With(x => x.StartDate, "042022")
+                .Create();
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == Request.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
         }
 
         public Task<StartDateViewModel> Act() => _sut.Map(Request);

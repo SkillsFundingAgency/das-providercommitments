@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public interface ISelectDeliveryModelMapperHelper
     {
-        Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, DeliveryModel? deliveryModel);
+        Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel);
         Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode);
     }
 }

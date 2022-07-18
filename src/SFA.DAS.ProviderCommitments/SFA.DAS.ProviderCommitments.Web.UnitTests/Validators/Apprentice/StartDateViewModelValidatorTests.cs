@@ -32,25 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(x => x.ProviderId, request, expectedValid);
         }
 
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        [TestCase(" ", false)]
-        [TestCase("XYZ", true)]
-        public void ThenEmployerAccountLegalEntityPublicHashedIdIsValidated(string employerAccountLegalEntityPublicHashedId, bool expectedValid)
-        {
-            var model = new StartDateViewModel { EmployerAccountLegalEntityPublicHashedId = employerAccountLegalEntityPublicHashedId };
-
-            AssertValidationResult(request => request.EmployerAccountLegalEntityPublicHashedId, model, expectedValid);
-        }
-
-        [TestCase(0, false)]
-        [TestCase(102, true)]
-        public void ThenAccountLegalEntityIdIsValidated(long accountLegalEntityId, bool expectedValid)
-        {
-            var model = new StartDateViewModel { AccountLegalEntityId = accountLegalEntityId };
-            AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
-        }
-
         [TestCase("", false)]
         [TestCase(" ", false)]
         [TestCase("AB76V", true)]
