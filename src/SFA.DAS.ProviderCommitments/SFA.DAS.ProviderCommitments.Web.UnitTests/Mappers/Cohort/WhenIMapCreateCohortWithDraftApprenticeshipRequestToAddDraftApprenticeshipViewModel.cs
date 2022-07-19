@@ -65,6 +65,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task ThenProviderIdIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+        }
+
+        [Test]
         public async Task ThenEmployerIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
