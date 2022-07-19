@@ -262,7 +262,7 @@
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if(Model.DeliveryModel.HasValue)
+                @if(!Model.DeliveryModel.Equals(DeliveryModel.Regular))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
