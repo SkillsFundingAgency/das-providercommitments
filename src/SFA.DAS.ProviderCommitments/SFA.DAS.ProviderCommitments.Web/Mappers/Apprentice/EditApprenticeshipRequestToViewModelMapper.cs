@@ -71,7 +71,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmailAddressConfirmedByApprentice = apprenticeship.EmailAddressConfirmedByApprentice,
                 EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
                 DeliveryModel = apprenticeship.DeliveryModel,
-                EmploymentPrice = apprenticeship.EmploymentPrice
+                EmploymentPrice = apprenticeship.EmploymentPrice,
+                AccountLegalEntityId = apprenticeship.AccountLegalEntityId
             };
 
             return result;

@@ -337,6 +337,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Assert
             Assert.AreEqual(expectedIsEndDateLockedForUpdate, viewModel.IsEndDateLockedForUpdate);
         }
+
+        [Test]
+        public async Task AccountLegalEntity_IsMapped()
+        {
+            //Act
+            await _fixture.Map();
+
+            //Assert
+            _fixture.VerifyCourseCodeIsMapped();
+        }
+
     }
 
     public class EditApprenticeshipRequestToViewModelMapperTestsFixture
@@ -537,6 +548,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             ApprenticeshipResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
             return this;
+        }
+
+        internal void VerifyAccountLegalEntityIsMapped()
+        {
+            Assert.AreEqual(ApprenticeshipResponse.AccountLegalEntityId, _viewModel.AccountLegalEntityId);
         }
 
         public EditApprenticeshipRequestToViewModelMapperTestsFixture()
