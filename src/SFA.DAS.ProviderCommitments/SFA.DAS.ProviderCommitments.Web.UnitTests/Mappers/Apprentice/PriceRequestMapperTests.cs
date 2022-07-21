@@ -1,7 +1,12 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
+using AutoFixture;
+using Moq;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -31,40 +36,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(_fixture.ViewModel.ProviderId, result.ProviderId);
         }
-
-        [Test]
-        public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
-        }
-
-        [Test]
-        public async Task ThenStartDateIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.StartDate, result.StartDate);
-        }
-
-        [Test]
-        public async Task ThenEndDateIsMapped()
-        {
-            var result = await _fixture.Act();
-
-            Assert.AreEqual(_fixture.ViewModel.EndDate.MonthYear, result.EndDate);
-        }
     }
 
     public class PriceRequestMapperFixture
     {
+        private readonly Fixture _fixture;
         private readonly PriceRequestMapper _sut;
+        private Mock<ICacheStorageService> _cacheStorage;
+        private ChangeEmployerCacheItem _cacheItem;
         
         public EndDateViewModel ViewModel { get; }
 
         public PriceRequestMapperFixture()
         {
+            _fixture = new Fixture();
+
             ViewModel = new EndDateViewModel
             {
                 ApprenticeshipHashedId = "DFE546SD",
@@ -74,7 +60,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 EndMonth = 6,
                 EndYear = 2020,
             };
-            _sut = new PriceRequestMapper();
+
+            _cacheItem = _fixture.Build<ChangeEmployerCacheItem>()
+                .Create();
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == ViewModel.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _sut = new PriceRequestMapper(_cacheStorage.Object);
         }
 
         public Task<PriceRequest> Act() => _sut.Map(ViewModel);

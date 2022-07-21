@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 {
@@ -24,12 +25,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
         public string CourseName { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public DateTime? OriginalStartDate { get; set; }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum DeliveryModel : byte
-    {
-        Regular = 0,
-        PortableFlexiJob = 1,
     }
 }
