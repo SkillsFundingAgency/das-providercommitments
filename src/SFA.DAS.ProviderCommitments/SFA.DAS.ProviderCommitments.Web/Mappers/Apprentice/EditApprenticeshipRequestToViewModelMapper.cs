@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Encoding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -15,12 +16,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IAcademicYearDateProvider _academicYearDateProvider;
         private readonly ICurrentDateTime _currentDateTime;
+        private readonly IEncodingService _encodingService;
 
-        public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime)
+        public EditApprenticeshipRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAcademicYearDateProvider academicYearDateProvider, ICurrentDateTime currentDateTime, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _academicYearDateProvider = academicYearDateProvider;
             _currentDateTime = currentDateTime;
+            _encodingService = encodingService;
         }
         public async Task<EditApprenticeshipRequestViewModel> Map(EditApprenticeshipRequest source)
         {
@@ -72,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EmailShouldBePresent = apprenticeship.EmailShouldBePresent,
                 DeliveryModel = apprenticeship.DeliveryModel,
                 EmploymentPrice = apprenticeship.EmploymentPrice,
-                AccountLegalEntityId = apprenticeship.AccountLegalEntityId
+                EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
             };
 
             return result;

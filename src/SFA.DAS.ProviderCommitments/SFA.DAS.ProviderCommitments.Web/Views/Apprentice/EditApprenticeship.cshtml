@@ -17,7 +17,7 @@
     ViewBag.GaData.Vpv = "provider/apprentices/apprentice/edit";
     ViewBag.GaData.Org = Model.EmployerName;
 
-    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.AccountLegalEntityId);
+    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.EmployerAccountLegalEntityPublicHashedId);
     Model.Cost = (int?)Model.Cost;
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
@@ -35,7 +35,7 @@
             @Html.HiddenFor(x => x.Version)
             @Html.HiddenFor(x => x.Option)
             @Html.HiddenFor(x => x.EmailShouldBePresent)
-            @Html.HiddenFor(x => x.AccountLegalEntityId)
+            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
 
             @if (Model.IsContinuation)
             {
