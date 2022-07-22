@@ -1,9 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
-@using Microsoft.AspNetCore.Mvc.ModelBinding
 @using SFA.DAS.ProviderCommitments.Extensions
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
@@ -27,6 +25,8 @@
         Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
     }
 }
+
+@Html.HiddenFor(x => x.Employer)
 
 @if (Model.IsContinuation)
 {
