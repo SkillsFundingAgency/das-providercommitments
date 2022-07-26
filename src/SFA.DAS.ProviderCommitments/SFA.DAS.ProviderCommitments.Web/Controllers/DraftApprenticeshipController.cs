@@ -111,8 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
-            request.CohortId = null;
-            return RedirectToAction("AddDraftApprenticeship", request);
+            return RedirectToAction("AddDraftApprenticeship", request.CloneBaseValues());
         }
 
         [HttpPost]

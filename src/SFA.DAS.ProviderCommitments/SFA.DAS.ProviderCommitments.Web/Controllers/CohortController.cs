@@ -113,11 +113,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
             {
-                return RedirectToAction(nameof(SelectCourse), request);
+                return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
             }
             else
             {
-                return RedirectToAction(nameof(AddDraftApprenticeship), request);
+                return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
             }
         }
 
@@ -169,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
-            return RedirectToAction(nameof(AddDraftApprenticeship), request);
+            return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 
         [HttpPost]

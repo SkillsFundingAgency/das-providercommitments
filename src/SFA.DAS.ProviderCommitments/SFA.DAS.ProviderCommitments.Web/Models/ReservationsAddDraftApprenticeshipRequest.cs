@@ -17,5 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string StartMonthYear { get; set; }
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+
+        public BaseReservationsAddDraftApprenticeshipRequest CloneBaseValues() => (BaseReservationsAddDraftApprenticeshipRequest) MemberwiseClone();
     }
 }
