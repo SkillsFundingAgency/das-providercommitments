@@ -88,7 +88,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenWhenUserSelectsToSendOverlapEmailToEmployer()
         {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
+            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.SendStopRequest)
+                .SetupTempEditDraftApprenticeship()
+                .DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
             _fixture.VerifyUserRedirectedTo("Details");
         }
@@ -96,7 +98,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenWhenUserSelectsToContactTheEmployer()
         {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();
+            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.ContactTheEmployer)
+                .SetupTempEditDraftApprenticeship()
+                .DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
             _fixture.VerifyUserRedirectedTo("Details");
         }

@@ -303,12 +303,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (string.IsNullOrWhiteSpace(viewModel.DraftApprenticeshipHashedId))
             {
-                var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
-                request.IgnoreStartDateOverlap = true;
-                request.UserId = User.Upn();
-
-                var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
-                viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;
+                await AddDraftApprenticeship(viewModel, model);
+            }
+            else
+            {
+                await UpdateDraftApprenticeship();
             }
 
             if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
@@ -318,6 +317,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("Details","Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+        }
+
+        private async Task AddDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
+        {
+            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
+            request.IgnoreStartDateOverlap = true;
+            request.UserId = User.Upn();
+
+            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;
+        }
+
+        private async Task UpdateDraftApprenticeship()
+        {
+            var editModel = GetStoredEditDraftApprenticeshipState();
+            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(editModel);
+            await _commitmentsApiClient.UpdateDraftApprenticeship(editModel.CohortId.Value, editModel.DraftApprenticeshipId.Value, updateRequest);
         }
 
         private bool RequireRpl(MonthYearModel startDate)
