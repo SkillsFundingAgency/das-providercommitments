@@ -1,0 +1,63 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Models
+@using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+@model EmployerNotifiedViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+          <partial name="_ValidationSummary" />
+<div class="govuk-panel govuk-panel--confirmation">
+  <h1 class="govuk-panel__title">
+    Employer notified to confirm changes
+  </h1>
+  
+</div>
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
+          <li>
+            an email has been sent to the employer requesting they update their records for this apprentice
+          </li>
+          <li>you will be notified once the employer has amended or rejected changes for this ULN</li>
+
+          <li>you cannot approve this apprentice request until the overlapping date has been resolved</li>
+      </ul>
+
+      <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m ">
+                <h1 class="govuk-fieldset__heading">
+                  What do you want to do next?
+                </h1>
+              </legend>
+             <div class="govuk-radios">
+    
+             <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="what-next" name="what-next" type="radio" value="service">
+                  <label class="govuk-label govuk-radios__label" for="what-next">
+                View all my cohorts
+               </label>
+             </div>
+   
+             <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="what-next-2" name="what-next" type="radio" value="offline">
+                  <label class="govuk-label govuk-radios__label" for="what-next-2">
+                    Add another apprentice's details
+                  </label>
+          
+             </div>
+
+             <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="what-next-3" name="what-next" type="radio" value="add-later">
+                  <label class="govuk-label govuk-radios__label" for="what-next-3">
+                   Go back to the main dashboard
+                  </label>
+             </div>
+            </div>
+ 
+        </fieldset>
+    </div>
+    <button class="govuk-button" data-module="govuk-button">
+      Continue
+    </button>
+  </div>
+</div>

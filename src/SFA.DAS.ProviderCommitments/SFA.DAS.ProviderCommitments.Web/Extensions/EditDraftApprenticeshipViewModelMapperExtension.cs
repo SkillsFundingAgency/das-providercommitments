@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
