@@ -1,6 +1,7 @@
 ﻿using System;
 using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -18,7 +19,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
 
-        public BaseCreateCohortWithDraftApprenticeshipRequest CloneBaseValues() =>
-            (BaseCreateCohortWithDraftApprenticeshipRequest) MemberwiseClone();
+        public BaseCreateCohortWithDraftApprenticeshipRequest CloneBaseValues()
+        {
+            return this.ExplicitClone();
+        }
     }
 }
