@@ -61,9 +61,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly ViewSelectOptionsViewModel _selectOptionsViewModel;
         private readonly Mock<ITempDataDictionary> _tempData;
         private readonly Mock<IOuterApiService> _outerApiService;
-       
-
         private ValidateUlnOverlapResult _validateUlnOverlapResult;
+        private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -202,7 +201,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .Returns(_draftApprenticeshipHashedId);
 
             _outerApiService = new Mock<IOuterApiService>();
-                   
+            _outerApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
+
             _controller = new DraftApprenticeshipController(
                 _mediator.Object,
                 _commitmentsApiClient.Object,
@@ -214,11 +214,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupStartDateOverlap(bool overlapStartDate, bool overlapEndDate)
         {
-            _validateUlnOverlapResult = new ValidateUlnOverlapResult
+            _validateUlnOverlapOnStartDateResult = new Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult
             {
-                HasOverlappingStartDate = overlapStartDate,
-                HasOverlappingEndDate = overlapEndDate,
-                ULN = "XXX"
+                HasOverlapWithApprenticeshipId = 1,
+                HasStartDateOverlap = overlapStartDate
             };
 
             return this;
