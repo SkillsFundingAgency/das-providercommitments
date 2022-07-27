@@ -104,7 +104,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             ModelMapperMock = new Mock<IModelMapper>();
             TempDataMock = new Mock<ITempDataDictionary>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
-            AuthorizationServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
 
             Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
             Sut.TempData = TempDataMock.Object;

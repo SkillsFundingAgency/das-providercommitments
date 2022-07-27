@@ -23,19 +23,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenAddingACohortWithDraftApprentice
     {
         [Test]
-        public void ThenRedirectedToAddApprenticeship()
-        {
-            var fixture = new WhenAddingACohortWithDraftApprenticeFixture();
-
-            var result = fixture.Act() as RedirectToActionResult;
-
-            result.ActionName.Should().Be("AddDraftApprenticeship");
-        }
-
-        [Test]
         public void AndDeliveryModelToggleIsOn_ThenRedirectedToSelectCourse()
         {
-            var fixture = new WhenAddingACohortWithDraftApprenticeFixture().SetDeliveryModelToggleOn();
+            var fixture = new WhenAddingACohortWithDraftApprenticeFixture();
 
             var result = fixture.Act() as RedirectToActionResult;
 
@@ -117,12 +107,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenAddingACohortWithDraftApprenticeFixture WithTempDataSet()
         {
             _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out _viewModelAsString));
-            return this;
-        }
-
-        public WhenAddingACohortWithDraftApprenticeFixture SetDeliveryModelToggleOn()
-        {
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.Is<string>(p => p == ProviderFeature.DeliveryModel))).Returns(true);
             return this;
         }
 
