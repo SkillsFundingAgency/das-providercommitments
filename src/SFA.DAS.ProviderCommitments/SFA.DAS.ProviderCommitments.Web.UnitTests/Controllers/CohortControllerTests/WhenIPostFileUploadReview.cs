@@ -62,35 +62,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             fixture.VerifyMapperIsCalled();
         }
 
-        [Test]
-        public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_RedirectToReview()
-        {
-            //Act
-            var result = await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
+        // TODO re-add these tests when the Add/Approve feature is turned back on
+        //[Test]
+        //public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_RedirectToReview()
+        //{
+        //    //Act
+        //    var result = await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
             
-            //Aseert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadSuccess"); ;
-        }
+        //    //Aseert
+        //    result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadSuccess"); ;
+        //}
 
-        [Test]
-        public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_CohortsAreCreated()
-        {
-            //Act
-            await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
+        //[Test]
+        //public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_CohortsAreCreated()
+        //{
+        //    //Act
+        //    await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
             
-            //Assert
-            fixture.VerifyCohortsAreCreatedAndSendToEmployer();
-        }
+        //    //Assert
+        //    fixture.VerifyCohortsAreCreatedAndSendToEmployer();
+        //}
 
-        [Test]
-        public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_MapperIsCalled()
-        {
-            //Act
-            await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
+        //[Test]
+        //public async Task When_SelectedOption_Is_ApproveAndSendToEmployer_MapperIsCalled()
+        //{
+        //    //Act
+        //    await fixture.WithSelectedOption(FileUploadReviewOption.ApproveAndSend).Act();
 
-            //Assert
-            fixture.VerifyApproveAndSendToEmployerMapperIsCalled();
-        }
+        //    //Assert
+        //    fixture.VerifyApproveAndSendToEmployerMapperIsCalled();
+        //}
 
         [Test]
         public async Task When_SelectedOption_Is_UploadAnAmendedFile_RedirectTo_FileUploadStart()

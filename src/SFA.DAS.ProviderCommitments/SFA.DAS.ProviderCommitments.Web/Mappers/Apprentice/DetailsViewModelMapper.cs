@@ -99,6 +99,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DeliveryModel = data.Apprenticeship.DeliveryModel.ToIrregularDescription(),
                     EmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
                     EmploymentPrice = data.Apprenticeship.EmploymentPrice,
+                    RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning.GetValueOrDefault(),
+                    DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
+                    PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
                 };
             }
             catch (Exception e)
