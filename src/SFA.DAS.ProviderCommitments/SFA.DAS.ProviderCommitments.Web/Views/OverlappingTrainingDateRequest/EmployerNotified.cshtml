@@ -3,6 +3,12 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
 @model EmployerNotifiedViewModel
 
+@{
+    ViewData["Title"] = "DraftApprenticeships";
+    ViewBag.GaData.Vpv = "/unapproved/add/cohortReference/employer-notified";
+}
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
           <partial name="_ValidationSummary" />
