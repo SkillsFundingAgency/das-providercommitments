@@ -10,6 +10,7 @@ using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.PAS.Account.Api.ClientV2.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderRelationships.Api.Client.DependencyResolution.StructureMap;
 using StructureMap;
 
@@ -39,6 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             if (config["UseLocalRegistry"] != null && bool.Parse(config["UseLocalRegistry"]))
             {
                 registry.IncludeRegistry<LocalRegistry>();
+                registry.IncludeRegistry(new LocalDevPasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
             }
         }
     }
