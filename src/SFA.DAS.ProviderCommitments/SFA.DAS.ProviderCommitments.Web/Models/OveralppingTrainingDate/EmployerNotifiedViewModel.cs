@@ -10,7 +10,7 @@
     public enum NextAction
     {
         ViewAllCohorts,
-        AddAddprentice,
+        AddAnotherApprentice,
         ViewDashBoard
     }
 }

@@ -13,7 +13,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -233,40 +232,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return await SaveDraftApprenticeship(model);
         }
-
-
-        //[HttpGet]
-        //[Route("add/apprenticeship/overlap-options")]
-        //public IActionResult DraftApprenticeshipOverlapOptions([FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
-        //{
-        //    var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
-        //    return View(new DraftApprenticeshipOverlapOptionViewModel() { 
-        //        OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled
-        //    });
-        //}
-
-        //[HttpPost]
-        //[Route("add/apprenticeship/overlap-options")]
-        //public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionViewModel viewModel)
-        //{
-        //    var model = GetStoredDraftApprenticeshipState();
-
-        //    if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
-        //        return RedirectToAction(nameof(Review));
-
-        //    var request = await _modelMapper.Map<CreateCohortRequest>(model);
-        //    request.IgnoreStartDateOverlap = true;
-        //    var response = await _mediator.Send(request);
-
-        //    if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
-        //    {
-        //        var createOverlappingTrainingDateApimRequest = await _modelMapper.Map<CreateOverlappingTrainingDateApimRequest>(response);
-        //        createOverlappingTrainingDateApimRequest.ProviderId = viewModel.ProviderId;
-        //        await _outerApiService.CreateOverlappingTrainingDateRequest(createOverlappingTrainingDateApimRequest);
-        //    }
-
-        //    return RedirectToAction(nameof(Details), new { viewModel.ProviderId, response.CohortReference });
-        //}
 
         private async Task<IActionResult> SaveDraftApprenticeship(AddDraftApprenticeshipViewModel model)
         {

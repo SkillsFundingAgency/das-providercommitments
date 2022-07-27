@@ -6,6 +6,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Overlappi
     {
         public long ProviderId { get; set; }
         public long DraftApprenticeshipId { get; set; }
-        public long PreviousApprenticeshipId { get; set; }
     }
 }
