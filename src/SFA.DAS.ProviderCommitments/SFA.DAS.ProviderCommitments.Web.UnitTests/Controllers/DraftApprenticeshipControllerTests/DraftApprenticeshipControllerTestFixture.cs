@@ -410,6 +410,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture SetupTempEditDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_editModel);
+            _tempData.Setup(x => x.TryGetValue(nameof(EditDraftApprenticeshipViewModel), out addModelAsString));
+            return this;
+        }
+
         public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
         {
             var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();

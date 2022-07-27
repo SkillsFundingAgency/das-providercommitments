@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
-            _fixture.VerifyUserRedirectedTo("Details");
+            _fixture.VerifyUserRedirectedTo("EmployerNotified");
         }
 
         [Test]
