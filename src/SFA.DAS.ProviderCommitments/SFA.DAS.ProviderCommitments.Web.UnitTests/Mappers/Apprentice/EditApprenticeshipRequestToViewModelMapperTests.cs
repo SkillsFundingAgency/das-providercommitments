@@ -9,7 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
@@ -337,6 +337,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Assert
             Assert.AreEqual(expectedIsEndDateLockedForUpdate, viewModel.IsEndDateLockedForUpdate);
         }
+
+        [Test]
+        public async Task AccountLegalEntity_IsMapped()
+        {
+            //Act
+            await _fixture.Map();
+
+            //Assert
+            _fixture.VerifyAccountLegalEntityIsMapped();
+        }
+
     }
 
     public class EditApprenticeshipRequestToViewModelMapperTestsFixture
@@ -346,6 +357,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
         private Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
         private Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
+        private Mock<IEncodingService> _mockEncodingService;
 
         private GetPriceEpisodesResponse _priceEpisodesResponse;
         private GetCohortResponse _cohortResponse;
@@ -539,6 +551,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             return this;
         }
 
+        internal void VerifyAccountLegalEntityIsMapped()
+        {
+            Assert.AreEqual("PALEID", _viewModel.EmployerAccountLegalEntityPublicHashedId);
+        }
+
         public EditApprenticeshipRequestToViewModelMapperTestsFixture()
         {
             //Arrange
@@ -595,7 +612,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             _mockCurrentDateTimeProvider = new Mock<ICurrentDateTime>();
 
-            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object);
+            _mockEncodingService = new Mock<IEncodingService>();
+            _mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
+                .Returns("PALEID");
+            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, _mockEncodingService.Object);
         }
     }
 }

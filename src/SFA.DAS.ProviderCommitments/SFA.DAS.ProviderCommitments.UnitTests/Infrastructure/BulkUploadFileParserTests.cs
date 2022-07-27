@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
             _fileContent = Headers + Environment.NewLine +
                            "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine +
-                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,0,,";
+                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,";
 
             var fileName = "test.pdf";
             var stream = new MemoryStream();
@@ -137,6 +137,30 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         }
 
         [Test]
+        public void RecognisePriorLearningIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("true", result.First().RecognisePriorLearning);
+            Assert.AreEqual("false", result.Last().RecognisePriorLearning);
+        }
+
+        [Test]
+        public void DurationReducedByLearningIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("12", result.First().DurationReducedBy);
+            Assert.AreEqual("", result.Last().DurationReducedBy);
+        }
+
+        [Test]
+        public void PriceReducedByLearningIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("99", result.First().PriceReducedBy);
+            Assert.AreEqual("", result.Last().PriceReducedBy);
+        }
+
+        [Test]
         public void CorrectNumberOfApprenticeshipMapped()
         {
             var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
@@ -171,6 +195,44 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
 
             var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
             Assert.AreEqual(0, result.Count());
+        }
+
+        [Test]
+        public void OptionalFieldsMayBeOmitted()
+        {
+            //Arrange          
+            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", "") + Environment.NewLine +
+                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+
+            CreateFile();
+
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            result.Should().ContainEquivalentOf(new
+            {
+                CohortRef = "P9DD4P",
+                RecognisePriorLearning = (bool?)null,
+                DurationReducedBy = (string)null,
+                PriceReducedBy = (string)null,
+            });
+        }
+
+        [Test]
+        public void OptionalFieldsWithoutHeaderName()
+        {
+            //Arrange          
+            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", ",,,") + Environment.NewLine +
+                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+
+            CreateFile();
+
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            result.Should().ContainEquivalentOf(new
+            {
+                CohortRef = "P9DD4P",
+                RecognisePriorLearning = (bool?)null,
+                DurationReducedBy = (string)null,
+                PriceReducedBy = (string)null,
+            });
         }
 
         private void CreateFile()
