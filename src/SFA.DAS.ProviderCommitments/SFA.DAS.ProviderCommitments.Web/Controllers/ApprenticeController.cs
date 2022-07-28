@@ -583,7 +583,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             draft.DeliveryModel = model.DeliveryModels.FirstOrDefault();
             TempData.Put(ViewModelForEdit, draft);
 
-            return RedirectToAction("EditApprenticeship", request);
+            return RedirectToAction("EditApprenticeship", new { request.ProviderId, request.ApprenticeshipHashedId });
         }
 
         [HttpPost]

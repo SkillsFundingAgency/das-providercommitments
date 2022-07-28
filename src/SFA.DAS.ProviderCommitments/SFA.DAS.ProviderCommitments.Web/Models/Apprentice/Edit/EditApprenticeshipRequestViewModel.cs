@@ -99,5 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         [Display(Name = "Year")]
         [SuppressArgumentException(nameof(EmploymentEndDate), "The employment end date is not valid")]
         public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
+
+        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
     }
 }

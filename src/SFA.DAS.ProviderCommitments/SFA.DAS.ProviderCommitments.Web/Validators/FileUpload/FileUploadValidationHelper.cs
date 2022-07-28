@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,8 +70,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 
         private async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
         {
-            var fileData = await ReadFileAsync(file);
-            return fileData.firstlineData.Length == _csvConfiguration.AllowedFileColumnCount;
+            var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
+            using var reader = new StringReader(fileContent);
+
+            var firstLine = await reader.ReadLineAsync();
+            var firstlineData = (firstLine).Split(',');
+
+            return
+                BulkUploadFileRequirements.CheckHeaderCount(firstlineData)
+                && await AllLinesHaveSameColumnCount(reader, firstlineData.Count());
+
+            static async Task<bool> AllLinesHaveSameColumnCount(StringReader reader, int count)
+            {
+                string line;
+
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    if (line.Split(',').Count() != count)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
 
         private async Task<bool> CheckFileRowCount(IFormFile file, CancellationToken cancellation)

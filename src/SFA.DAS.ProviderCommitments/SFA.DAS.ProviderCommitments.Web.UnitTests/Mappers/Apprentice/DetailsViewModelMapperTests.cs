@@ -177,6 +177,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(_fixture.ApiResponse.DeliveryModel.ToIrregularDescription(), _fixture.Result.DeliveryModel);
         }
 
+        [Test]
+        public async Task ThenRecognisePriorLearningIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
+        }
+
+        [Test]
+        public async Task ThenDurationReducedByIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.DurationReducedBy, _fixture.Result.DurationReducedBy);
+        }
+
+        [Test]
+        public async Task ThenPriceReducedByIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.PriceReducedBy, _fixture.Result.PriceReducedBy);
+        }
+
         [TestCase(ApprenticeshipStatus.Live, true)]
         [TestCase(ApprenticeshipStatus.Paused, true)]
         [TestCase(ApprenticeshipStatus.WaitingToStart, true)]

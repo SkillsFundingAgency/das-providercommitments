@@ -1,6 +1,8 @@
 ﻿@using SFA.DAS.ProviderUrlHelper
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.ProviderCommitments.Features
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadReviewViewModel
 
@@ -33,23 +35,23 @@
 
                 @foreach (var cachedRecord in Model.EmployerDetails)
                 {
-                <div class="bu-employer-details">
-                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
-                    <div class="group-header">
-                        <h2 class="govuk-heading-l group-title bu-employer-name">
-                            @cachedRecord.LegalEntityName
-                            <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
-                        </h2>
-                    </div>
+                    <div class="bu-employer-details">
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-bottom-8">
+                        <div class="group-header">
+                            <h2 class="govuk-heading-l group-title bu-employer-name">
+                                @cachedRecord.LegalEntityName
+                                <span class="govuk-caption-l bu-agreementId">Agreement ID: @cachedRecord.AgreementId</span>
+                            </h2>
+                        </div>
 
-                    @foreach (var cohortDetail in cachedRecord.CohortDetails)
-                    {
-                        <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
-                        <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
-                        <a href="@Url.Action("FileUploadReviewApprentices", new FileUploadReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef, AgreementId = cachedRecord.AgreementId })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">@cohortDetail.ReviewApprenticeshipsText</a><br><br><br>
-                        <p></p>
-                    }
-                </div>
+                        @foreach (var cohortDetail in cachedRecord.CohortDetails)
+                        {
+                            <p class="govuk-body-m bu-cohort-ref">Cohort: @cohortDetail.CohortRefText</p>
+                            <p class="govuk-paragraph-body bu-apprentice-count">@cohortDetail.NumberOfApprenticeshipsText, total cost: @cohortDetail.TotalCost.FormatCost()</p>
+                            <a href="@Url.Action("FileUploadReviewApprentices", new FileUploadReviewApprenticeRequest { ProviderId = @Model.ProviderId, CacheRequestId = @Model.CacheRequestId, CohortRef = @cohortDetail.CohortRef, AgreementId = cachedRecord.AgreementId })" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">@cohortDetail.ReviewApprenticeshipsText</a><br><br><br>
+                            <p></p>
+                        }
+                    </div>
                 }
 
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
@@ -61,7 +63,7 @@
                             </h2>
                             @Html.ValidationMessageFor(m => m.SelectedOption, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption) })
                             <div class="govuk-radios">
-                                @if (Model.CanApprove)
+                                @if (!AuthorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning) && Model.CanApprove)
                                 {
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
@@ -70,12 +72,18 @@
                                         </label>
                                     </div>
                                 }
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
-                                    <label class="govuk-label govuk-radios__label" for="details-save">
-                                        Save all but don't send to employer(s)
-                                    </label>
-                                </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
+                                <label class="govuk-label govuk-radios__label" for="details-save">
+                                    Save all but don't send to employer(s)
+                                </label>
+                                @if (AuthorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+                                {
+                                    <div id="details-save-hint" class="govuk-hint govuk-radios__hint">
+                                        You need to manually add the RPL data for all new apprentices that started on or after 1 August 2022 before you can approve and send to the employer.
+                                    </div>
+                                }
+                            </div>
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="details-new-file" name="SelectedOption" type="radio" value="@FileUploadReviewOption.UploadAmendedFile">
                                     <label class="govuk-label govuk-radios__label" for="details-new-file">

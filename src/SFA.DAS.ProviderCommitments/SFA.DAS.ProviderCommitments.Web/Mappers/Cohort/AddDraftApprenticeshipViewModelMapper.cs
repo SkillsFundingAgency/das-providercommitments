@@ -31,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             return new AddDraftApprenticeshipViewModel
             {
+                ProviderId = source.ProviderId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 StartDate = new MonthYearModel(source.StartMonthYear),
