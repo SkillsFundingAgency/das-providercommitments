@@ -164,7 +164,7 @@ Model.HasEmailOverlaps)
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell" data-label="Name">
-                    @if (draftApprenticeship.HasOverlappingEmail || !draftApprenticeship.IsComplete)
+                    @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete)
                     {
                         <span class="das-table-cell--highlight das-breakable">@draftApprenticeship.DisplayName</span>
                     }
