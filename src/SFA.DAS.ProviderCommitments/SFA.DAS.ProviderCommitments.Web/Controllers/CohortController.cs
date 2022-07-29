@@ -250,8 +250,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = GetStoredDraftApprenticeshipState();
 
             if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
+            {
+                RemoveStoredDraftApprenticeshipState();
                 return RedirectToAction(nameof(Review));
-           
+            }
+              
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
             request.IgnoreStartDateOverlap = true;
             var response = await _mediator.Send(request);
@@ -663,6 +666,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
+        private void RemoveStoredDraftApprenticeshipState()
+        {
+            TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
         }
 
         private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)

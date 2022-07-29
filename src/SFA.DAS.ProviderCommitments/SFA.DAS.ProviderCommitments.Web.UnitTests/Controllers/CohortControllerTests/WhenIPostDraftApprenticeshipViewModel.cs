@@ -109,6 +109,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirectedTo("Details");
         }
 
+        [Test]
+        public async Task AndWhenWhenUserSelectsAddTheApprenticeLater()
+        {
+            await _fixture
+                .SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.AddApprenticeshipLater)
+                .DraftApprenticeshipOverlapOptions();
+            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
+            _fixture.VerifyUserRedirectedTo("Review");
+            _fixture.VerifyCachedDraftApprenticeshipRemoved();
+        }
+
         private class UnapprovedControllerTestFixture
         {
             private readonly CohortController _controller;
@@ -306,6 +317,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmail_IsNotSent()
             {
                 _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<Infrastructure.OuterApi.Requests.CreateOverlappingTrainingDateApimRequest>()), Times.Never);
+                return this;
+            }
+
+            internal UnapprovedControllerTestFixture VerifyCachedDraftApprenticeshipRemoved()
+            {
+                _tempData.Verify(mock => mock.Remove(nameof(AddDraftApprenticeshipViewModel)), Times.Once);
                 return this;
             }
         }
