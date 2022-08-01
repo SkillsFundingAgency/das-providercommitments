@@ -251,6 +251,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
             {
+                // redirect 302 does not clear tempdata.
                 RemoveStoredDraftApprenticeshipState();
                 return RedirectToAction(nameof(Review));
             }

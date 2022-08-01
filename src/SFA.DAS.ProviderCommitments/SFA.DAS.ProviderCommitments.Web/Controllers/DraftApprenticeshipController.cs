@@ -299,8 +299,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = GetStoredAddDraftApprenticeshipState();
 
             if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
+            {
+                // redirect 302 does not clear tempdata.
+                RemoveStoredDraftApprenticeshipState();
                 return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
-
+            }
+                
             if (string.IsNullOrWhiteSpace(viewModel.DraftApprenticeshipHashedId))
             {
                 await AddDraftApprenticeship(viewModel, model);
@@ -333,6 +337,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var editModel = GetStoredEditDraftApprenticeshipState();
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(editModel);
+            updateRequest.IgnoreStartDateOverlap = true;
             await _commitmentsApiClient.UpdateDraftApprenticeship(editModel.CohortId.Value, editModel.DraftApprenticeshipId.Value, updateRequest);
         }
 
@@ -628,6 +633,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return false;
+        }
+
+        private void RemoveStoredDraftApprenticeshipState()
+        {
+            TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
         }
     }
 }

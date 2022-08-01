@@ -757,5 +757,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<CreateOverlappingTrainingDateApimRequest>()), Times.Never);
             return this;
         }
+
+        internal DraftApprenticeshipControllerTestFixture VerifyCachedDraftApprenticeshipRemoved()
+        {
+            _tempData.Verify(mock => mock.Remove(nameof(AddDraftApprenticeshipViewModel)), Times.Once);
+            return this;
+        }
     }
 }
