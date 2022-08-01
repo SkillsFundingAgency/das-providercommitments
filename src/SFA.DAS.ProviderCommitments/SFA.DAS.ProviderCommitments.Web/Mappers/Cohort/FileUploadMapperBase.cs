@@ -44,6 +44,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                  CohortId = GetValueOrDefault(csvRecord.CohortRef, EncodingType.CohortReference),
                  LegalEntityId = GetValueOrDefault(csvRecord.AgreementId, EncodingType.PublicAccountLegalEntityId),
                  TransferSenderId = GetTransferSenderId(csvRecord.CohortRef).Result,
+                 RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
+                 DurationReducedByAsString = csvRecord.DurationReducedBy,
+                 PriceReducedByAsString = csvRecord.PriceReducedBy,
              }).ToList();
         }
 
