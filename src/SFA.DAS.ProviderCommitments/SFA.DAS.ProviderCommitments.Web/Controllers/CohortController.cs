@@ -462,11 +462,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend && !_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
             {
-                case FileUploadReviewOption.ApproveAndSend:
-                    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-                    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
-                    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
-                    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+                var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
+                TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
+                return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+            }
+
+            switch (viewModel.SelectedOption)
+            {
+                // TODO re-add this route when the Add/Approve feature is turned back on
+                //case FileUploadReviewOption.ApproveAndSend:
+                //    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                //    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
+                //    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
+                //    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
 
                 case FileUploadReviewOption.SaveButDontSend:
                     var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
