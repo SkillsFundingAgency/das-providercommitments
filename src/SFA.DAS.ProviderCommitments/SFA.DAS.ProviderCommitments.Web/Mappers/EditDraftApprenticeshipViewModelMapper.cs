@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -11,20 +12,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class EditDraftApprenticeshipViewModelMapper : IMapper<EditDraftApprenticeshipRequest, IDraftApprenticeshipViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IEncodingService _encodingService;
+        private readonly IOuterApiClient _outerApiClient;
 
-        public EditDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService, IEncodingService encodingService)
+        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, IOuterApiClient outerApiClient)
         {
-            _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<IDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
         {
             try
             {
-                var apiResponse = await _commitmentsApiClient.GetDraftApprenticeship(source.Request.CohortId, source.Request.DraftApprenticeshipId);
+                var apiRequest = new GetEditDraftApprenticeshipRequest(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId);
+                var apiResponse = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
 
                 return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
                 {
@@ -43,10 +45,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     CourseCode = apiResponse.CourseCode,
                     HasStandardOptions = apiResponse.HasStandardOptions,
                     Cost = apiResponse.Cost,
-                    Reference = apiResponse.Reference,
+                    Reference = apiResponse.ProviderReference,
                     IsContinuation = apiResponse.IsContinuation,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
-                    DeliveryModel = apiResponse.DeliveryModel,
+                    DeliveryModel = (DeliveryModel?) apiResponse.DeliveryModel,
                     EmploymentPrice = apiResponse.EmploymentPrice,
                     RecognisePriorLearning = apiResponse.RecognisePriorLearning,
                     DurationReducedBy = apiResponse.DurationReducedBy,
