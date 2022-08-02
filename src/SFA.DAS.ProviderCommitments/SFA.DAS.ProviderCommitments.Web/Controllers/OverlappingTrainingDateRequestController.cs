@@ -51,14 +51,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
             var apprenticeshipDetails = _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value).Result;
-            
+
             var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
             var vm = new DraftApprenticeshipOverlapOptionViewModel
             {
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = true && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live 
+                EnableStopRequestEmail = true && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
             };
@@ -99,7 +99,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
-        /// TODO: Unit test
         [HttpGet]
         [Route("{cohortReference}/employer-notified")]
         public IActionResult EmployerNotified(EmployerNotifiedRequest request)
@@ -108,17 +107,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(vm);
         }
 
-        /// TODO: Unit test
         [HttpPost]
         [Route("{cohortReference}/employer-notified")]
         public IActionResult EmployerNotified(EmployerNotifiedViewModel vm)
         {
-           switch(vm.NextAction)
-           {
+            switch (vm.NextAction)
+            {
                 case NextAction.ViewAllCohorts:
                     return RedirectToAction("Review", "Cohort", new { vm.ProviderId });
+
                 case NextAction.AddAnotherApprentice:
                     return RedirectToAction("Details", "Cohort", new { vm.ProviderId, vm.CohortReference });
+
                 default:
                     return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
             }
@@ -179,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
-      
+
         private EditDraftApprenticeshipViewModel GetStoredEditDraftApprenticeshipState()
         {
             return TempData.Get<EditDraftApprenticeshipViewModel>(nameof(EditDraftApprenticeshipViewModel));

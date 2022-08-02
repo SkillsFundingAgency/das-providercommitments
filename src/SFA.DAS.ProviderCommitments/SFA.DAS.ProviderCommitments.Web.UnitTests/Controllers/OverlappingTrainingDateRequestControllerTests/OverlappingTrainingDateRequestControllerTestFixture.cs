@@ -49,9 +49,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
         private ProviderFeatureToggle _overlappingTrainingDateRequestFeatureToggle;
         private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
-
         private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
-
+        private readonly EmployerNotifiedRequest _employerNotifiedRequest;
+        private readonly EmployerNotifiedViewModel _employerNotifiedViewModel;
 
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
@@ -92,7 +92,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             {
                 OverlapOptions = OverlapOptions.AddApprenticeshipLater,
                 ProviderId = 2,
-                
             };
 
             _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
@@ -124,6 +123,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 Status = CommitmentsV2.Types.ApprenticeshipStatus.Live
             };
             _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+
+            _employerNotifiedRequest = _autoFixture.Create<EmployerNotifiedRequest>();
+            _employerNotifiedViewModel = _autoFixture.Create<EmployerNotifiedViewModel>();
 
             _controller = new OverlappingTrainingDateRequestController(
                 _mediator.Object,
@@ -226,6 +228,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
+        public OverlappingTrainingDateRequestControllerTestFixture GetEmployerNotified()
+        {
+            _actionResult = _controller.EmployerNotified(_employerNotifiedRequest);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture SetupEmployerNotified(NextAction nextAction)
+        {
+            _employerNotifiedViewModel.NextAction = nextAction;
+            _actionResult = _controller.EmployerNotified(_employerNotifiedViewModel);
+            return this;
+        }
+
         public OverlappingTrainingDateRequestControllerTestFixture VerifyCohortCreated()
         {
             //1. Verify that the viewmodel submitted was mapped
@@ -250,6 +265,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyUserRedirectedToUrl()
+        {
+            _actionResult.VerifyReturnsRedirect().WithUrl(_linkGeneratorRedirectUrl);
+            return this;
+        }
+
         public void SetModelStartDate(string monthYear)
         {
             _model.StartDate = new MonthYearModel(monthYear);
@@ -264,6 +285,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlappingTrainingDateRequestEmail_IsNotSent()
         {
             _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<CreateOverlappingTrainingDateApimRequest>()), Times.Never);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyEmployerNotifiedViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as EmployerNotifiedViewModel;
+            Assert.IsNotNull(model);
+
+            Assert.AreEqual(model.CohortReference, _employerNotifiedRequest.CohortReference);
+            Assert.AreEqual(model.ProviderId, _employerNotifiedRequest.ProviderId);
             return this;
         }
     }

@@ -227,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest",new {model.ProviderId,  ApprenticeshipHashedId = hashedApprenticeshipId  });
+                return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId });
             }
 
             return await SaveDraftApprenticeship(model);
@@ -467,11 +467,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
                     TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
                     return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+
                 case FileUploadReviewOption.SaveButDontSend:
                     var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);                    
+                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);
+
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
@@ -510,15 +512,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/discard-file")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadDiscard(FileDiscardViewModel viewModel)
-        {         
-            if (viewModel.FileDiscardConfirmed != null &&  (bool)viewModel.FileDiscardConfirmed)
+        {
+            if (viewModel.FileDiscardConfirmed != null && (bool)viewModel.FileDiscardConfirmed)
             {
                 return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
             }
 
             return RedirectToAction(nameof(FileUploadReview), new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
         }
-
 
         [HttpGet]
         [Route("add/file-upload/review-delete")]
@@ -598,7 +599,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review-cohort")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReviewApprentices(FileUploadReviewApprenticeRequest reviewApprenticeRequest)
-        {   
+        {
             var viewModel = await _modelMapper.Map<FileUploadReviewApprenticeViewModel>(reviewApprenticeRequest);
             return View(viewModel);
         }
