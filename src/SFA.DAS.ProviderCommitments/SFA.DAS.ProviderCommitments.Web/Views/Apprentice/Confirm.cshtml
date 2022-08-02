@@ -1,5 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
+@using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmViewModel
 
@@ -49,6 +51,11 @@
                     <td class="govuk-table__cell das-table-cell-width-40">@Model.OldEmployerName</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
+                <tr asp-hide="!@Model.ShowDeliveryModel" class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Delivery model</th>
+                    <td class="govuk-table__cell">@Model.OldDeliveryModel.ToDescription()</td>
+                    <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
                 <tr class="govuk-table__row">
                     <th asp-show="@isRegular" scope="row" class="govuk-table__header">Training start date</th>
                     <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Current employment start date</th>
@@ -89,6 +96,13 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">New employer</th>
                     <td class="govuk-table__cell das-table-cell-width-40">@Model.NewEmployerName</td>
                     <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
+                <tr asp-hide="!@Model.ShowDeliveryModel" class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Delivery model</th>
+                    <td class="govuk-table__cell">@Model.DeliveryModel.GetReferenceDataDescription()</td>
+                    <td class="govuk-table__cell">
+                        <a asp-hide="!@Model.ShowDeliveryModelChangeLink" id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, changeData)">Change</a>
+                    </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th asp-show="@isRegular" scope="row" class="govuk-table__header">New training start date</th>
