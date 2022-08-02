@@ -576,5 +576,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             return null;
         }
+
+        private void RemoveStoredDraftApprenticeshipState()
+        {
+            TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
+        }
     }
 }

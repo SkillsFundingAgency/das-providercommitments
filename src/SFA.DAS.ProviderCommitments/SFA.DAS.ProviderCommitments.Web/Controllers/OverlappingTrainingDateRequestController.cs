@@ -74,6 +74,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
             {
+                // redirect 302 does not clear tempdata.
+                RemoveStoredDraftApprenticeshipState();
                 return Redirect(viewModel);
             }
 
@@ -183,6 +185,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private EditDraftApprenticeshipViewModel GetStoredEditDraftApprenticeshipState()
         {
             return TempData.Get<EditDraftApprenticeshipViewModel>(nameof(EditDraftApprenticeshipViewModel));
+        }
+
+        private void RemoveStoredDraftApprenticeshipState()
+        {
+            TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
         }
     }
 }

@@ -460,7 +460,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
-            switch (viewModel.SelectedOption)
+            if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend && !_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
             {
                 case FileUploadReviewOption.ApproveAndSend:
                     var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
