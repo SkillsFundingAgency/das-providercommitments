@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -31,6 +32,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<bool> HasMultipleDeliveryModels(long providerId, string courseCode, string employerAccountLegalEntityPublicHashedId)
         {
+            if (String.IsNullOrWhiteSpace(courseCode))
+            {
+                return false;
+            }
             var aleId = _encodingService.Decode(employerAccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
             var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, aleId);
             return (response?.DeliveryModels.Count() > 1);

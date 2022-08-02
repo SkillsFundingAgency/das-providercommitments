@@ -102,5 +102,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
             Assert.IsFalse(result);
         }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public async Task ThenReturnsFalseWhenCourseIsEmpty(string courseCode)
+        {
+            _response.DeliveryModels = new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.FlexiJobAgency };
+            var result = await _mapper.HasMultipleDeliveryModels(_providerId, courseCode, "PALID");
+            Assert.IsFalse(result);
+        }
     }
 }
