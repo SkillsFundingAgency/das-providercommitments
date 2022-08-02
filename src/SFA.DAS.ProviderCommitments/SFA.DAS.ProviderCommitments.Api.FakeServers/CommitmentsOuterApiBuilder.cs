@@ -50,8 +50,9 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/approvals/providers/*/courses/650")
+                    .WithPath("/approvals/providers/*/courses?trainingCode=650")
                     .UsingGet())
+                .AtPriority(1)
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithHeader("Content-Type", "application/json")
