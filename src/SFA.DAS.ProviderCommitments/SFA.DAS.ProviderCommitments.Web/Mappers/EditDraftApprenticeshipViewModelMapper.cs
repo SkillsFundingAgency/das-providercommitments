@@ -53,7 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     RecognisePriorLearning = apiResponse.RecognisePriorLearning,
                     DurationReducedBy = apiResponse.DurationReducedBy,
                     PriceReducedBy = apiResponse.PriceReducedBy,
-                    RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered
+                    RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
+                    HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
                 };
             }
             catch (RestHttpClientException restEx)
