@@ -169,8 +169,10 @@ else
 }
 else if (Model.DeliveryModel != DeliveryModel.Regular)
 {
-    <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
-    <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
+    <dl class="das-definition-list">
+        <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
+        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
+    </dl>
 }
 
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
