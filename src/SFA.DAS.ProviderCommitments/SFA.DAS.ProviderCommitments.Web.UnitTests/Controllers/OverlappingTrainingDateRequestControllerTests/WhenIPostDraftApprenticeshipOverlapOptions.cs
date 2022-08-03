@@ -30,5 +30,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
             _fixture.VerifyUserRedirectedTo("Details");
         }
+
+        [Test]
+        public async Task AndWhenWhenUserSelectsToAddApprenticeshipLater()
+        {
+            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.AddApprenticeshipLater).DraftApprenticeshipOverlapOptions();
+            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
+            _fixture.VerifyUserRedirectedTo("Review");
+        }
     }
 }
