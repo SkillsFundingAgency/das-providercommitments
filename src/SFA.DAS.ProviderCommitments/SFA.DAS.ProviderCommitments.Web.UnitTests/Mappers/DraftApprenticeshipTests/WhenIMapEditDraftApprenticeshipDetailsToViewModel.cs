@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -21,8 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private EditDraftApprenticeshipViewModelMapper _mapper;
         private EditDraftApprenticeshipRequest _source;
         private Func<Task<EditDraftApprenticeshipViewModel>> _act;
-        private GetDraftApprenticeshipResponse _apiResponse;
-        private Mock<IAuthorizationService> _authorizationService;
+        private GetEditDraftApprenticeshipResponse _apiResponse;
         private string _cohortReference;
 
         [SetUp]
@@ -32,15 +28,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
 
             _cohortReference = fixture.Create<string>();
 
-            _apiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
-            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _apiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
+            var commitmentsApiClient = new Mock<IOuterApiClient>();
             commitmentsApiClient.Setup(x =>
-                    x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                    x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _authorizationService = new Mock<IAuthorizationService>();
-
-            _mapper = new EditDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _authorizationService.Object, Mock.Of<IEncodingService>());
+            _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object);
             _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
@@ -145,7 +139,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenOriginatorReferenceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.Reference, result.Reference);
+            Assert.AreEqual(_apiResponse.ProviderReference, result.Reference);
         }
 
         [Test]
@@ -194,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         [TestCase(DeliveryModel.PortableFlexiJob)]
         public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
         {
-            _apiResponse.DeliveryModel = dm;
+            _apiResponse.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel) dm;
             var result = await _act();
             Assert.AreEqual(dm, result.DeliveryModel);
         }
