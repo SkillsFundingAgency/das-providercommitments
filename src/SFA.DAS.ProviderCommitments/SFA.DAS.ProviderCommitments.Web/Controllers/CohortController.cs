@@ -39,6 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [Route("{providerId}/unapproved")]
     public class CohortController : Controller
     {
+        //TODO: Test
         private readonly IMediator _mediator;
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
@@ -226,13 +227,39 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (await HasStartDateOverlap(model))
             {
                 StoreDraftApprenticeshipState(model);
-                return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions));
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert));
             }
 
             return await SaveDraftApprenticeship(model);
         }
 
-          
+        [HttpGet]
+        [Route("add/apprenticeship/overlap-alert")]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request, [FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
+        {
+            var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
+            var model = PeekStoredDraftApprenticeshipState();
+            
+            var vm = new DraftApprenticeshipOverlapAlertViewModel
+            {
+                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
+                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
+                StartDate = model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model.EndDate.Date.GetValueOrDefault(),
+                Uln = model.Uln,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("add/apprenticeship/overlap-alert")]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
+        {
+            return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions), new { DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId });
+        }
+
         [HttpGet]
         [Route("add/apprenticeship/overlap-options")]
         public IActionResult DraftApprenticeshipOverlapOptions([FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
@@ -654,6 +681,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
         {
             return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
+        private AddDraftApprenticeshipViewModel PeekStoredDraftApprenticeshipState()
+        {
+            return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
 
         private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)
