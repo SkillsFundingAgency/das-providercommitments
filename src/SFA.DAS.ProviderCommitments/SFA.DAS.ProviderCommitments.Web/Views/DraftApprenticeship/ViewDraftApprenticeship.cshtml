@@ -86,35 +86,6 @@
                     </dd>
                 </div>
 
-            }
-            @if (Model.HasTrainingCourseOption)
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Option
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @DisplayOptionalField(Model.TrainingCourseOption)
-                    </dd>
-                </div>
-            }
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @startDateLabel
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @DisplayOptionalEstimatedDate(Model.StartDate)
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @endDateLabel
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @DisplayOptionalEstimatedDate(Model.EndDate)
-                </dd>
-            </div>
-
             @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
             {
                 <div class="govuk-summary-list__row">

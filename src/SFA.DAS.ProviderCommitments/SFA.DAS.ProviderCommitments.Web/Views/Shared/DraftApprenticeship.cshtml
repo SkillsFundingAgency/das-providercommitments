@@ -1,12 +1,12 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
-@using Microsoft.AspNetCore.Mvc.ModelBinding
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Mappers
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
+@inject ISelectDeliveryModelMapperHelper SelectDeliveryModelMapperHelper;
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
 
 @Html.HiddenFor(x => x.ReservationId)
@@ -16,6 +16,7 @@
 @{
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
+    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.EmployerAccountLegalEntityPublicHashedId);
 
     ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 
@@ -49,7 +50,6 @@
 
         <dt class="das-definition-list__title">Unique learner number</dt>
         <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.Uln</dd>
-
 
         @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
@@ -147,7 +147,7 @@ else
             </p>
         </div>
 
-        if (@Model.DeliveryModel != DeliveryModel.Regular)
+        @if (multipleDeliveryModels)
         {
             <div class="govuk-form-group">
                 <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>
