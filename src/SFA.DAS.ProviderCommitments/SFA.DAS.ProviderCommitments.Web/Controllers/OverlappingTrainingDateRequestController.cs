@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apprenticeshipDetails = _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value).Result;
 
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
+            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
             var vm = new DraftApprenticeshipOverlapOptionViewModel
             {
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
@@ -138,7 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task CreateOverlappingTrainingDateRequest(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
+            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
             if (featureToggleEnabled)
             {
                 var createOverlappingTrainingDateApimRequest = await _modelMapper.Map<CreateOverlappingTrainingDateApimRequest>(viewModel);

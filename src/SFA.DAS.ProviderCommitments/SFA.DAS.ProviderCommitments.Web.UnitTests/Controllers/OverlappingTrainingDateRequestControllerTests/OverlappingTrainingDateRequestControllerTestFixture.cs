@@ -115,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _overlappingTrainingDateRequestFeatureToggle = new ProviderFeatureToggle() { IsEnabled = true };
             _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
-            _featureToggleService.Setup(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate)).Returns(() => _overlappingTrainingDateRequestFeatureToggle);
+            _featureToggleService.Setup(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix)).Returns(() => _overlappingTrainingDateRequestFeatureToggle);
 
             _apprenticeshipDetails = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse()
             {
@@ -147,7 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled()
         {
-            _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate), Times.Once);
+            _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix), Times.Once);
             return this;
         }
 

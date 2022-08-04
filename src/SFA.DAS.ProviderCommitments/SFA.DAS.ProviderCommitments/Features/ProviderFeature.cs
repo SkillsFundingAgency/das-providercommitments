@@ -11,6 +11,7 @@
         public const string DeliveryModelWithoutPrefix = "DeliveryModel";
         public const string RecognitionOfPriorLearning = Prefix + "RecognitionOfPriorLearning";
         public const string OverlappingTrainingDate = Prefix + "OverlappingTrainingDateRequest";
+        public const string OverlappingTrainingDateWithoutPrefix = "OverlappingTrainingDateRequest";
 
     }
 }
