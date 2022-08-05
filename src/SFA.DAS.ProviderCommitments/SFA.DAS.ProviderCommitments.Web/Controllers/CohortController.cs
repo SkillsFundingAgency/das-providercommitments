@@ -243,11 +243,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                StartDate = model.StartDate.Date.GetValueOrDefault(),
-                EndDate = model.EndDate.Date.GetValueOrDefault(),
-                Uln = model.Uln,
-                FirstName = model.FirstName,
-                LastName = model.LastName
+                StartDate = model is null ? DateTime.MinValue : model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model is null ? DateTime.MaxValue : model.EndDate.Date.GetValueOrDefault(),
+                Uln = model is null ? string.Empty : model.Uln,
+                FirstName = model is null ? string.Empty : model.FirstName,
+                LastName = model is null ? string.Empty : model.LastName
             };
             return View(vm);
         }
