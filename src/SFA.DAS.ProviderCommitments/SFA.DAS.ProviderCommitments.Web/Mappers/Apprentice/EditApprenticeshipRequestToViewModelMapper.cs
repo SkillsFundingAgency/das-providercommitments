@@ -35,14 +35,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var apiRequest = new GetEditApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
             
-            var apiResponseTask = _apiClient.Get<GetEditApprenticeshipResponse>(apiRequest);
+            var editApprenticeshipTask = _apiClient.Get<GetEditApprenticeshipResponse>(apiRequest);
             var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId, CancellationToken.None);
             var priceEpisodesTask = _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId, CancellationToken.None);
 
-            await Task.WhenAll(apiResponseTask, apprenticeshipTask, priceEpisodesTask);
+            await Task.WhenAll(editApprenticeshipTask, apprenticeshipTask, priceEpisodesTask);
 
             var apprenticeship = apprenticeshipTask.Result;
-            var apiResponse = apiResponseTask.Result;
+            var editApprenticeship = editApprenticeshipTask.Result;
             var priceEpisodes = priceEpisodesTask.Result;
 
             var courseDetailsTask = _commitmentsApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var courseDetails = courseDetailsTask.Result;
             var accountDetails = accountDetailsTask.Result;
 
-            var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || apiResponse.IsFundedByTransfer
+            var courses = accountDetails.LevyStatus == ApprenticeshipEmployerType.NonLevy || editApprenticeship.IsFundedByTransfer
                 ? (await _commitmentsApiClient.GetAllTrainingProgrammeStandards(CancellationToken.None)).TrainingProgrammes
                 : (await _commitmentsApiClient.GetAllTrainingProgrammes(CancellationToken.None)).TrainingProgrammes;
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsLiveAndIsNotWithInFundingPeriod(apprenticeship)
                                     ||
-                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, apiResponse.IsFundedByTransfer);
+                                    IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
 
             
             var result = new EditApprenticeshipRequestViewModel(apprenticeship.DateOfBirth, apprenticeship.StartDate, apprenticeship.EndDate, apprenticeship.EmploymentEndDate)
@@ -78,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Courses = courses,
                 IsContinuation = apprenticeship.IsContinuation,
                 IsLockedForUpdate = isLockedForUpdate,
-                IsUpdateLockedForStartDateAndCourse = apiResponse.IsFundedByTransfer && !apprenticeship.HasHadDataLockSuccess,
+                IsUpdateLockedForStartDateAndCourse = editApprenticeship.IsFundedByTransfer && !apprenticeship.HasHadDataLockSuccess,
                 IsEndDateLockedForUpdate = IsEndDateLocked(isLockedForUpdate, apprenticeship.HasHadDataLockSuccess, apprenticeship.Status),
                 TrainingName = courseDetails.TrainingProgramme.Name,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
@@ -89,7 +89,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DeliveryModel = apprenticeship.DeliveryModel,
                 EmploymentPrice = apprenticeship.EmploymentPrice,
                 EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
-                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+                HasMultipleDeliveryModelOptions = editApprenticeship.HasMultipleDeliveryModelOptions,
+                CourseName = editApprenticeship.CourseName
             };
 
             return result;
