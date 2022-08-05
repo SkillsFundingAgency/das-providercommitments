@@ -46,8 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For<IApprovalsOuterApiHttpClientFactory>().Use<ApprovalsOuterApiHttpClientFactory>();
             For<IApprovalsOuterApiClient>().Use(c => c.GetInstance<IApprovalsOuterApiHttpClientFactory>().CreateClient()).Singleton();
 
-            //TODO: Review
-            Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient2>("UseStubProviderRelationships");
+            Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
         
         private void Toggle<TPluginType, TConcreteType>(string configurationKey) where TConcreteType : TPluginType

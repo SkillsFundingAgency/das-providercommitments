@@ -39,7 +39,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [Route("{providerId}/unapproved")]
     public class CohortController : Controller
     {
-        //TODO: Test
         private readonly IMediator _mediator;
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;

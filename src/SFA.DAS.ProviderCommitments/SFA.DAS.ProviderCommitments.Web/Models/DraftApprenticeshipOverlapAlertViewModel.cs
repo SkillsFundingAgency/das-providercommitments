@@ -1,5 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models

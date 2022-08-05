@@ -65,6 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IFeatureTogglesService<ProviderFeatureToggle>> _featureToggleService;
         private ProviderFeatureToggle _overlappingTrainingDateRequestFeatureToggle;
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
+        private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
 
         private ValidateUlnOverlapResult _validateUlnOverlapResult;
 
@@ -207,6 +208,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _overlappingTrainingDateRequestFeatureToggle = new ProviderFeatureToggle() { IsEnabled = false };
             _draftApprenticeshipOverlapOptionRequest = new DraftApprenticeshipOverlapOptionRequest() { DraftApprenticeshipHashedId = "XXXXX" };
+            _draftApprenticeshipOverlapAlertRequest = new DraftApprenticeshipOverlapAlertRequest() { DraftApprenticeshipHashedId = "XXXXX" };
             _featureToggleService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
             _featureToggleService.Setup(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate)).Returns(() => _overlappingTrainingDateRequestFeatureToggle);
 
@@ -287,6 +289,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture GetDraftApprenticeshipOverlapOptions()
         {
             _actionResult = _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionRequest, _featureToggleService.Object);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture GetDraftApprenticeshipOverlapAlert()
+        {
+            _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest, _featureToggleService.Object);
             return this;
         }
 
@@ -692,6 +700,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
+            Assert.IsNotNull(model);
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled()
         {
             _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate), Times.Once);
@@ -703,6 +720,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var viewResult = _actionResult as ViewResult;
             Assert.IsNotNull(viewResult);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
+            Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyWhenGettingOverlappingTrainingDateAlert_ModelIsMapped(bool isEnabled)
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
             Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
             return this;
         }

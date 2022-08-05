@@ -66,27 +66,14 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
         internal CommitmentsOuterApiBuilder WithBulkUpload()
         {
             _server
-                .Given(Request.Create()
-                    .WithPath("*")
-                    .UsingAnyMethod())
+                .Given(
+                    Request.Create()
+                        .WithPath("*")
+                        .UsingAnyMethod())
                     .AtPriority(10)
-                .RespondWith(Response.Create()
-                    .WithProxy("https://localhost:5021/api/"));
-
-            //TODO: Review
-
-            _server
-                .Given(Request.Create()
-                    .WithPath("/OverlappingTrainingDateRequest/validate")
-                    .UsingPost())
-                .RespondWith(Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(new
-                    {
-                        ULN = "9253821662",
-                        HasOverlappingStartDate = true,
-                        HasOverlappingEndDate = false
-                    }));
+                .RespondWith(
+                    Response.Create()
+                        .WithProxy("https://localhost:5011/api"));
 
             _server
                 .Given(Request.Create()
