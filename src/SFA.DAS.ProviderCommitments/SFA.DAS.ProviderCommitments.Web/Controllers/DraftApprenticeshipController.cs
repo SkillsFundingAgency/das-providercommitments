@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
+            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(request);
 
             if (model.DeliveryModels.Length > 1)
             {
@@ -125,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/select-delivery-model")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
+        public async Task<IActionResult> SetDeliveryModel(Models.SelectDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {
@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectDeliveryModelForEdit(DraftApprenticeshipRequest request)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
-            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(draft);
+            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(draft);
 
             if (model.DeliveryModels.Length > 1)
             {
@@ -193,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModelForEdit(SelectDeliveryModelViewModel model)
+        public async Task<IActionResult> SetDeliveryModelForEdit(Models.SelectDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {

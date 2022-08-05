@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -25,9 +25,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
         public string NewEmployerName { get; set; }
         public string NewStartDate { get; set; }
-        public DateTime NewStartDateTime => new MonthYearModel(NewStartDate).Date.Value;
+        public DateTime NewStartDateTime => string.IsNullOrWhiteSpace(NewStartDate) ? DateTime.MinValue : new MonthYearModel(NewStartDate).Date.Value;
         public string NewEndDate { get; set; }
-        public DateTime NewEndDateTime => new MonthYearModel(NewEndDate).Date.Value;
+        public DateTime NewEndDateTime => string.IsNullOrWhiteSpace(NewEndDate) ? DateTime.MinValue : new MonthYearModel(NewEndDate).Date.Value;
         public string NewEmploymentEndDate { get; set; }
         public DateTime? NewEmploymentEndDateTime
             => NewEmploymentEndDate == null ? default : new MonthYearModel(NewEmploymentEndDate).Date.Value;
@@ -48,5 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 return false;
             }
         }
+        public Guid CacheKey { get; set; }
     }
 }

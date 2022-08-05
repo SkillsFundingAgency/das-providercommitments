@@ -7,6 +7,7 @@ using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 using StructureMap;
+using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
 {

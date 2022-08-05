@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
         {
             _server
                 .Given(Request.Create()
-                    .WithPath("/approvals/providers/*/courses/*")
+                    .WithPath("/approvals/providers/*/courses*")
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
@@ -46,18 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
                     .WithBodyAsJson(new
                     {
                         DeliveryModels = new[] { "Regular", "PortableFlexiJob" },
-                    }));
-
-            _server
-                .Given(Request.Create()
-                    .WithPath("/approvals/providers/*/courses/650")
-                    .UsingGet())
-                .RespondWith(Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new
-                    {
-                        DeliveryModels = new[] { "Regular" },
                     }));
 
             return this;
