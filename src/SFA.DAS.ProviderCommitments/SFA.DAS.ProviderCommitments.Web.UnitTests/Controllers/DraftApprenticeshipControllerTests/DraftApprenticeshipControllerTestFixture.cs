@@ -463,6 +463,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture SetupTempEditDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_editModel);
+            _tempData.Setup(x => x.TryGetValue(nameof(EditDraftApprenticeshipViewModel), out addModelAsString));
+            return this;
+        }
+
         public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
         {
             var model = _actionResult.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
@@ -774,6 +781,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyOverlappingTrainingDateRequestEmail_IsNotSent()
         {
             _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<CreateOverlappingTrainingDateApimRequest>()), Times.Never);
+            return this;
+        }
+
+        internal DraftApprenticeshipControllerTestFixture VerifyCachedDraftApprenticeshipRemoved()
+        {
+            _tempData.Verify(mock => mock.Remove(nameof(AddDraftApprenticeshipViewModel)), Times.Once);
             return this;
         }
     }
