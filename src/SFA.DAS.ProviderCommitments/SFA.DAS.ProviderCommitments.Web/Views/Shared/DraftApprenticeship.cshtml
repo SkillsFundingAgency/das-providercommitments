@@ -14,6 +14,7 @@
 <input type="hidden" asp-for="TrainingCourseOption" />
 
 @{
+    string editCourseLabel = "Add";
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
     var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.EmployerAccountLegalEntityPublicHashedId);
@@ -25,8 +26,10 @@
 
     if (!string.IsNullOrWhiteSpace(Model.CourseCode))
     {
+        editCourseLabel = "Edit";
         Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
     }
+
 }
 
 @if (Model.IsContinuation)
@@ -142,7 +145,7 @@ else
             <p class="govuk-body">
                 @Model.CourseName
                 <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                    Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
+                    @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
                 </button>
             </p>
         </div>
