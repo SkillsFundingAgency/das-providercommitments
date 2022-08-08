@@ -66,11 +66,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,InvalidColumn";
 
-            const string fileContents = HeaderLine;
-            var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
-            _file.Setup(m => m.OpenReadStream()).Returns(textStream);
+            var file = CreateFakeFormFile(HeaderLine);
+            var model = new FileUploadStartViewModel { Attachment = file };
 
-            var model = new FileUploadStartViewModel { Attachment = _file.Object };
             AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
@@ -79,11 +77,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
 
-            const string fileContents = HeaderLine;
-            var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
-            _file.Setup(m => m.OpenReadStream()).Returns(textStream);
+            var file = CreateFakeFormFile(HeaderLine);
+            var model = new FileUploadStartViewModel { Attachment = file };
 
-            var model = new FileUploadStartViewModel { Attachment = _file.Object };
+            AssertValidationResult(vm => vm.Attachment, model, false);
+        }
+
+        [TestCase(
+@"CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef
+1,2,3,4,5,6,7,8,9,10,11,12")]
+        [TestCase(
+@"CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef
+1,2,3,4,5,6,7,8,9,10,11,12,13
+1,2,3,4,5,6,7,8,9,10,11,12")]
+        [TestCase(
+@"CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy
+1,2,3,4,5,6,7,8,9,10,11,12,13,14")]
+        [TestCase(
+@"CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15")]
+        public void ShouldReturnInvalidMessageWhenAnyRowsColumnCountIsWrong(string fileContents)
+        {
+            var file = CreateFakeFormFile(fileContents);
+            var model = new FileUploadStartViewModel { Attachment = file };
             AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
@@ -143,6 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,Price,EPAOrgID,ProviderRef")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,,,")]
         public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
         {
             //Arrange            
