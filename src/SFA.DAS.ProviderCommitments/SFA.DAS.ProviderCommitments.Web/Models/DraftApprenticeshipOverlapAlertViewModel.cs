@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -19,5 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Uln { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string ChangeURLRoute => string.IsNullOrEmpty(DraftApprenticeshipHashedId) ? RouteNames.CohortOverlapAlert : RouteNames.DraftApprenticeshipOverlapAlert;
+
     }
 }

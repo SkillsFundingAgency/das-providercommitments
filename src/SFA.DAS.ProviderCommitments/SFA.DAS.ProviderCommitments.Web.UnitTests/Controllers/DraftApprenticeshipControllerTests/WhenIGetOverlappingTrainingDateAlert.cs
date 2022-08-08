@@ -11,6 +11,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public void Arrange()
         {
             _fixture = new DraftApprenticeshipControllerTestFixture();
+
+            _fixture.SetupPeekTempDraftApprenticeship();
+            _fixture.SetupPeekTempEditDraftApprenticeship();
         }
 
         [Test]

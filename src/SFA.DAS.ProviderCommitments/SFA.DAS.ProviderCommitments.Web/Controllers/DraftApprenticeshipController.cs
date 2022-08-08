@@ -280,7 +280,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add/apprenticeship/overlap-alert")]
+        [Route("add/apprenticeship/overlap-alert", Name = RouteNames.DraftApprenticeshipOverlapAlert)]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request, [FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
             var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
@@ -299,11 +299,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                StartDate = model is null ? DateTime.MinValue : model.StartDate.Date.GetValueOrDefault(),
-                EndDate = model is null ? DateTime.MaxValue : model.EndDate.Date.GetValueOrDefault(),
-                Uln = model is null ? string.Empty : model.Uln,
-                FirstName = model is null ? string.Empty : model.FirstName,
-                LastName = model is null ? string.Empty : model.LastName
+                StartDate = model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model.EndDate.Date.GetValueOrDefault(),
+                Uln = model.Uln,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
             return View(vm);
         }
@@ -340,7 +340,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 RemoveStoredDraftApprenticeshipState();
                 return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
             }
-                
+
             if (string.IsNullOrWhiteSpace(viewModel.DraftApprenticeshipHashedId))
             {
                 await AddDraftApprenticeship(viewModel, model);
@@ -356,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _outerApiService.CreateOverlappingTrainingDateRequest(createOverlappingTrainingDateApimRequest);
             }
 
-            return RedirectToAction("Details","Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+            return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
         private async Task AddDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
@@ -400,7 +400,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (await HasStartDateOverlap(model))
             {
                 StoreEditDraftApprenticeshipState(model);
-                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new { DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId});
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new { DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId });
             }
 
 
@@ -409,7 +409,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (RequireRpl(model.StartDate))
             {
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new 
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
                 {
                     model.CohortReference,
                     model.DraftApprenticeshipHashedId,
@@ -528,9 +528,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
         {
             var request = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
-            
+
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
-            
+
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 

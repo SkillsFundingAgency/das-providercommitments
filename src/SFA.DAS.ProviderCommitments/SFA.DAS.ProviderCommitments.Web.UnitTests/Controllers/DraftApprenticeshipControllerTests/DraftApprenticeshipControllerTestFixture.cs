@@ -28,6 +28,7 @@ using System;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -232,6 +233,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 encodingService.Object,
                 _providerFeatureToggle.Object, _outerApiService.Object);
             _controller.TempData = _tempData.Object;
+
         }
 
         public DraftApprenticeshipControllerTestFixture SetupStartDateOverlap(bool overlapStartDate, bool overlapEndDate)
@@ -469,6 +471,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _tempData.Setup(x => x.TryGetValue(nameof(EditDraftApprenticeshipViewModel), out addModelAsString));
             return this;
         }
+
+        public DraftApprenticeshipControllerTestFixture SetupPeekTempDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_addModel);
+            _tempData.Setup(x => x.Peek(nameof(AddDraftApprenticeshipViewModel))).Returns(addModelAsString);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupPeekTempEditDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_addModel);
+            _tempData.Setup(x => x.Peek(nameof(EditDraftApprenticeshipViewModel))).Returns(addModelAsString);
+            return this;
+        }
+
 
         public void VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet()
         {

@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapAlertViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapAlertViewModel
 @{
     ViewBag.Title = "Training Date Overlap Alert";
     ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-alert";
@@ -24,6 +25,7 @@
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         @Html.ActionLink("Change", null, null, null, new { href = Context.Request.Headers["Referer"].ToString() })
+                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -34,7 +36,7 @@
                         @Model.EndDate.ToString("Y")
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        @Html.ActionLink("Change", null, null, null, new { href = Context.Request.Headers["Referer"].ToString() })
+                        <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -45,7 +47,7 @@
                         @Model.Uln
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        @Html.ActionLink("Change", null, null, null, new { href = Context.Request.Headers["Referer"].ToString() })
+                        <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -56,7 +58,7 @@
                         @Model.FirstName @Model.LastName
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        @Html.ActionLink("Change", null, null, null, new { href = Context.Request.Headers["Referer"].ToString() })
+                        <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
                     </dd>
                 </div>
             </dl>

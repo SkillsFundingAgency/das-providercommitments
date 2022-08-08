@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
+using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -13,8 +15,8 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -27,12 +29,9 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
-using System.Linq;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -233,21 +232,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add/apprenticeship/overlap-alert")]
+        [Route("add/apprenticeship/overlap-alert", Name = RouteNames.CohortOverlapAlert)]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request, [FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
             var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
             var model = PeekStoredDraftApprenticeshipState();
-            
+
             var vm = new DraftApprenticeshipOverlapAlertViewModel
             {
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                StartDate = model is null ? DateTime.MinValue : model.StartDate.Date.GetValueOrDefault(),
-                EndDate = model is null ? DateTime.MaxValue : model.EndDate.Date.GetValueOrDefault(),
-                Uln = model is null ? string.Empty : model.Uln,
-                FirstName = model is null ? string.Empty : model.FirstName,
-                LastName = model is null ? string.Empty : model.LastName
+                StartDate = model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model.EndDate.Date.GetValueOrDefault(),
+                Uln = model.Uln,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
             return View(vm);
         }
@@ -264,7 +263,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult DraftApprenticeshipOverlapOptions([FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
         {
             var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
-            return View(new DraftApprenticeshipOverlapOptionViewModel() { 
+            return View(new DraftApprenticeshipOverlapOptionViewModel()
+            {
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled
             });
         }
@@ -281,7 +281,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 RemoveStoredDraftApprenticeshipState();
                 return RedirectToAction(nameof(Review));
             }
-              
+
             var request = await _modelMapper.Map<CreateCohortRequest>(model);
             request.IgnoreStartDateOverlap = true;
             var response = await _mediator.Send(request);
@@ -543,7 +543,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);                    
+                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
@@ -582,8 +582,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/discard-file")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadDiscard(FileDiscardViewModel viewModel)
-        {         
-            if (viewModel.FileDiscardConfirmed != null &&  (bool)viewModel.FileDiscardConfirmed)
+        {
+            if (viewModel.FileDiscardConfirmed != null && (bool)viewModel.FileDiscardConfirmed)
             {
                 return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
             }
@@ -670,7 +670,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review-cohort")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> FileUploadReviewApprentices(FileUploadReviewApprenticeRequest reviewApprenticeRequest)
-        {   
+        {
             var viewModel = await _modelMapper.Map<FileUploadReviewApprenticeViewModel>(reviewApprenticeRequest);
             return View(viewModel);
         }

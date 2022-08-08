@@ -38,6 +38,8 @@
         public const string SuccessSaveDraft = "success-save-draft";
         public const string SuccessSendToEmployer = "success-sendto-employer";
         public const string SelectCourse = "add/select-course";
+        public const string CohortOverlapAlert = "cohort-overlap-alert";
+        public const string DraftApprenticeshipOverlapAlert = "draft-apprentice-overlap-alert";
     }
 }
 
