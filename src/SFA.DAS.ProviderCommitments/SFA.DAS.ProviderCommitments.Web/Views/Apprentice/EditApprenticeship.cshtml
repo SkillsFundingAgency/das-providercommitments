@@ -2,7 +2,12 @@
 @using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
+@using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Mappers
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@inject ICommitmentsApiClient CommitmentsApiClient
+@inject ISelectDeliveryModelMapperHelper SelectDeliveryModelMapperHelper;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel
 
 @{
@@ -12,6 +17,7 @@
     ViewBag.GaData.Vpv = "provider/apprentices/apprentice/edit";
     ViewBag.GaData.Org = Model.EmployerName;
 
+    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.EmployerAccountLegalEntityPublicHashedId);
     Model.Cost = (int?)Model.Cost;
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
@@ -30,11 +36,6 @@
             @Html.HiddenFor(x => x.Option)
             @Html.HiddenFor(x => x.EmailShouldBePresent)
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-            @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)
-            @Html.HiddenFor(x => x.IsLockedForUpdate)
-            @Html.HiddenFor(x => x.IsUpdateLockedForStartDateAndCourse)
-            @Html.HiddenFor(x => x.IsContinuation)
-            @Html.HiddenFor(x => x.CourseName)
 
             @if (Model.IsContinuation)
             {
@@ -164,37 +165,6 @@
                     @Html.HiddenFor(x => x.CourseCode)
                     @Html.HiddenFor(x => x.TrainingName)
                 </dl>
-            }
-            else
-            {
-                <div class="govuk-form-group">
-                    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
-                    <p class="govuk-body">
-                        @Model.CourseName
-                        <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                            Edit<span class="govuk-visually-hidden"> apprenticeship training course</span>
-                        </button>
-                    </p>
-                </div>
-                <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
-            }
-
-            <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
-
-            @if (Model.HasMultipleDeliveryModelOptions)
-            {
-                <div class="govuk-form-group">
-                    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
-                    <p class="govuk-body">
-                        @Model.DeliveryModel.ToDescription()
-                        <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
-                            Edit<span class="govuk-visually-hidden"> apprenticeship delivery model</span>
-                        </button>
-                    </p>
-                </div>
-            }
-            else
-            {
                 @if (Model.DeliveryModel != DeliveryModel.Regular)
                 {
                     <dl class="das-definition-list">
@@ -202,10 +172,42 @@
                         <dd class="das-definition-list__definition" id="trainingName">@Model.DeliveryModel.ToIrregularDescription()</dd>
                     </dl>
                 }
+                @Html.HiddenFor(x => x.DeliveryModel)
             }
+            else
+            {
 
-            @Html.HiddenFor(x => x.DeliveryModel)
+                if (!string.IsNullOrWhiteSpace(Model.CourseCode))
+                {
+                    Model.CourseName = (await CommitmentsApiClient.GetTrainingProgramme(Model.CourseCode)).TrainingProgramme.Name;
+                }
 
+                <div class="govuk-form-group">
+                    <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
+                    <p class="govuk-body">
+                        @Model.CourseName
+                        <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                            Edit<span class="govuk-visually-hidden"> aprenticeship training course</span>
+                        </button>
+                    </p>
+                </div>
+                <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
+
+                if (multipleDeliveryModels)
+                {
+                    <div class="govuk-form-group">
+                        <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Delivery model</p>
+                        <p class="govuk-body">
+                            @Model.DeliveryModel.ToDescription()
+                            <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
+                                Edit<span class="govuk-visually-hidden"> delivery model</span>
+                            </button>
+                        </p>
+                    </div>
+                }
+                
+                @Html.HiddenFor(x => x.DeliveryModel)
+            }
 
             <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6" />
             @if (Model.IsLockedForUpdate || Model.IsUpdateLockedForStartDateAndCourse)
@@ -259,7 +261,7 @@
                 @Html.HiddenFor(x => x.EndMonth)
                 @Html.HiddenFor(x => x.EndYear)
 
-                @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+                @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <dl class="das-definition-list">
                         <dt class="das-definition-list__title">Planned end date for this employment</dt>
@@ -303,7 +305,7 @@
                         </div>
                     </fieldset>
                 </div>
-                @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+                @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-form-group--error")">
                         <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">

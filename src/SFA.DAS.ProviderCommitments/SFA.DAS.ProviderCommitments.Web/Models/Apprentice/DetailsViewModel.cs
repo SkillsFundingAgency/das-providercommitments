@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool SingleOption { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
         public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice;
-        public string DeliveryModel { get; set; }
+        public DeliveryModel? DeliveryModel { get; set; }
         public int? EmploymentPrice { get; set; }
         public string EmploymentPriceDisplay => EmploymentPrice?.ToGdsCostFormat() ?? string.Empty;
         public DateTime? EmploymentEndDate { get; set; }

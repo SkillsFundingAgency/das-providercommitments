@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
@@ -42,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 LegalEntityName = apiResponse.LegalEntityName,
                 DeliveryModels = apiResponse.DeliveryModels,
                 DeliveryModel = cacheItem.DeliveryModel,
-                CacheKey = source.CacheKey
+                CacheKey = source.CacheKey,
+                IsEdit = source.IsEdit
             };
         }
     }
