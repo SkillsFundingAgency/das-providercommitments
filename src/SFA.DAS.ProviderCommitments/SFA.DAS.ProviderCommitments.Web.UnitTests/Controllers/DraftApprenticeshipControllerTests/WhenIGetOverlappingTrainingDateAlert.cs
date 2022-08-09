@@ -24,17 +24,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapAlert_FeatureToggleServiceIsCalled()
+        public void AndWhenIGetDraftApprenticeshipOverlapAlert_PeekStoredEditDraftApprenticeshipStateIsCalled()
         {
             _fixture.GetDraftApprenticeshipOverlapAlert();
-            _fixture.VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled();
+            _fixture.VerifyPeekStoredEditDraftApprenticeshipStateIsCalled();
         }
 
-        [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapAlert_ModelIsMapped()
-        {
-            _fixture.SetOverlappingTrainingDateRequestFeatureToggle(true).GetDraftApprenticeshipOverlapAlert();
-            _fixture.VerifyWhenGettingOverlappingTrainingDateAlert_ModelIsMapped(true);
-        }
     }
 }

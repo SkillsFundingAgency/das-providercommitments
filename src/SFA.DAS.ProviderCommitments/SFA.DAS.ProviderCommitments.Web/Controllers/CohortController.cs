@@ -233,14 +233,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/apprenticeship/overlap-alert", Name = RouteNames.CohortOverlapAlert)]
-        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request, [FromServices] IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request)
         {
-            var featureToggleEnabled = featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDate).IsEnabled;
             var model = PeekStoredDraftApprenticeshipState();
 
             var vm = new DraftApprenticeshipOverlapAlertViewModel
             {
-                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 StartDate = model.StartDate.Date.GetValueOrDefault(),
                 EndDate = model.EndDate.Date.GetValueOrDefault(),

@@ -296,7 +296,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture GetDraftApprenticeshipOverlapAlert()
         {
-            _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest, _featureToggleService.Object);
+            _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);
             return this;
         }
 
@@ -739,20 +739,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
+        public DraftApprenticeshipControllerTestFixture VerifyPeekStoredEditDraftApprenticeshipStateIsCalled()
+        {
+            _tempData.Verify(mock => mock.Peek(nameof(EditDraftApprenticeshipViewModel)), Times.Once);
+            return this;
+        }
+
         public DraftApprenticeshipControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped(bool isEnabled)
         {
             var viewResult = _actionResult as ViewResult;
             Assert.IsNotNull(viewResult);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture VerifyWhenGettingOverlappingTrainingDateAlert_ModelIsMapped(bool isEnabled)
-        {
-            var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
-            var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
             Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
             return this;
         }

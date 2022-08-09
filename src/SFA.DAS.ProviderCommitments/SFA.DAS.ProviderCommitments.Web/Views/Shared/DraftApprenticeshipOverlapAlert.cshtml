@@ -24,7 +24,6 @@
                         @Model.StartDate.ToString("Y")
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        @Html.ActionLink("Change", null, null, null, new { href = Context.Request.Headers["Referer"].ToString() })
                         <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
                     </dd>
                 </div>
@@ -86,5 +85,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href=@Context.Request.Headers["Referer"].ToString()>Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Back</a>
 }
