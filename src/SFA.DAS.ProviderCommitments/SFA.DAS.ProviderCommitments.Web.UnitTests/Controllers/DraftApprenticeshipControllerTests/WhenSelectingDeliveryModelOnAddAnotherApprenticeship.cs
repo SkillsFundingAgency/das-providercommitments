@@ -91,7 +91,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             ModelMapperMock = new Mock<IModelMapper>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
-            AuthorizationServiceMock.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
 
             Sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
