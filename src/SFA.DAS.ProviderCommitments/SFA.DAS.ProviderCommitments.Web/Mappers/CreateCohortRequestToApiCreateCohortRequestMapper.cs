@@ -27,7 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EmploymentEndDate = source.EmploymentEndDate,
                 EndDate = source.EndDate,
                 OriginatorReference = source.OriginatorReference,
-                ReservationId = source.ReservationId
+                ReservationId = source.ReservationId,
+                IgnoreStartDateOverlap = source.IgnoreStartDateOverlap
             });
         }
     }
