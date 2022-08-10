@@ -48,5 +48,15 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             await _outerApiClient.Post<object>(new PostValidateBulkUploadDataRequest(data));
         }
+
+        public async Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data)
+        {
+            await _outerApiClient.Post<CreateOverlappingTrainingDateResponse>(new PostCreateOveralappingTrainingDateRequest(data));
+        }
+
+        public async Task ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(ValidateDraftApprenticeshipApimRequest data)
+        {
+            await _outerApiClient.Post<object>(new PostValidateDraftApprenticeshipforOverlappingTrainingDateRequest(data));
+        }
     }
 }

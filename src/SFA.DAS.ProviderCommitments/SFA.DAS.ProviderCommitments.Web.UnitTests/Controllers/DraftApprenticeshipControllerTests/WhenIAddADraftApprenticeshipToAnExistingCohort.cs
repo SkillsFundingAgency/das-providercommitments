@@ -140,5 +140,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await _fixture.PostToAddDraftApprenticeship(changeDeliveryModel: "Edit");
             _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
         }
+
+        [Test]
+        public async Task AndWhenThereIsStartDateOverlap()
+        {
+            await _fixture.SetupStartDateOverlap(true, false).SetupAddDraftApprenticeshipViewModelForStartDateOverlap().PostToAddDraftApprenticeship();
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
+        }
     }
 }

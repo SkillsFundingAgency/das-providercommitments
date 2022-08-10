@@ -9,6 +9,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -53,7 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _apiClient.Object,
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                _providerFeatureToggle.Object);
+                _providerFeatureToggle.Object,
+                Mock.Of<IOuterApiService>());
             Sut.TempData = tempData;
         }
 

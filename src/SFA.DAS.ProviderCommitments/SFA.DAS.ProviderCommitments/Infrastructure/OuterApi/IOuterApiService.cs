@@ -13,5 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task ValidateBulkUploadRequest(BulkUploadValidateApimRequest data);
         Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest request);
         Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest request);
+        Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data);
+        Task ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(ValidateDraftApprenticeshipApimRequest data);
     }
 }
