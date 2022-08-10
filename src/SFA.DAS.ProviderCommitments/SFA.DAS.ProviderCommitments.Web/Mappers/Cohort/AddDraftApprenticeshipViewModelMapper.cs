@@ -38,27 +38,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ReservationId = source.ReservationId.Value,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
-                Courses = await GetCoursesIfPreDeliveryModel(ale),
+                Courses = null,
                 Employer = ale.LegalEntityName
             };
-        }
-
-        private async Task<TrainingProgramme[]> GetCoursesIfPreDeliveryModel(AccountLegalEntityResponse accountLegalEntity)
-        {
-            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
-            {
-                return null;
-            }
-            else
-            {
-                return await GetCourses(accountLegalEntity.LevyStatus);
-            }
-        }
-
-        private async Task<TrainingProgramme[]> GetCourses(ApprenticeshipEmployerType levyStatus)
-        {
-            var result = await _mediator.Send(new GetTrainingCoursesQueryRequest { IncludeFrameworks = levyStatus != ApprenticeshipEmployerType.NonLevy });
-            return result.TrainingCourses;
         }
     }
 }

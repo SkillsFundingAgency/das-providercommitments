@@ -64,12 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
-            {
-                return RedirectToAction(nameof(SelectCourse), request);
-            }
-
-            return RedirectToAction(nameof(AddDraftApprenticeship), request);
+            return RedirectToAction(nameof(SelectCourse), request);
         }
 
         [HttpGet]
