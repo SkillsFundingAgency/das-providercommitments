@@ -86,28 +86,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task ThenCoursesAreMappedCorrectly()
-        {
-            var result = await _mapper.Map(_source);
-            Assert.AreEqual(_trainingCoursesQueryResponse.TrainingCourses, result.Courses);
-        }
-
-        [Test]
         public async Task ThenCourseNameIsNullWhenNoCourseCode()
         {
             _source.CourseCode = null;
             var result = await _mapper.Map(_source);
             Assert.IsNull(result.CourseName);
             Assert.IsNull(result.CourseCode);
-        }
-
-        [TestCase(ApprenticeshipEmployerType.Levy, true)]
-        [TestCase(ApprenticeshipEmployerType.NonLevy, false)]
-        public async Task ThenFrameworkCoursesAreIncludeOrNotInMediatorRequest(ApprenticeshipEmployerType levyStatus, bool frameworksAreIncluded)
-        {
-            _accountLegalEntityResponse.LevyStatus = levyStatus;
-            await _mapper.Map(_source);
-            _mediator.Verify(x=>x.Send(It.Is<GetTrainingCoursesQueryRequest>(p=>p.IncludeFrameworks == frameworksAreIncluded), It.IsAny<CancellationToken>()));
         }
 
         [Test]

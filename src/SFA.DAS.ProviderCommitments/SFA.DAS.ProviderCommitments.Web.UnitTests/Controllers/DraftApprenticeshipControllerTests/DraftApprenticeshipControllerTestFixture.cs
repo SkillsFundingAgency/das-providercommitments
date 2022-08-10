@@ -431,13 +431,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture SetupDeliveryModelFeatureToggle()
-        {
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.DeliveryModel)).Returns(true);
-            return this;
-        }
-
-
         public DraftApprenticeshipControllerTestFixture SetCohortWithChangeOfParty(bool isChangeOfParty)
         {
             if (isChangeOfParty)
