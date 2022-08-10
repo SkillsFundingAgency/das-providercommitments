@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = draftApprenticeship.Uln,
                 DateOfBirth = draftApprenticeship.DateOfBirth,
                 TrainingCourse = trainingCourse?.TrainingProgramme.Name,
-                DeliveryModel = draftApprenticeship.DeliveryModel.ToIrregularDescription(),
+                DeliveryModel = draftApprenticeship.DeliveryModel,
                 Cost = draftApprenticeship.Cost,
                 EmploymentPrice = draftApprenticeship.EmploymentPrice,
                 StartDate = draftApprenticeship.StartDate,

@@ -219,11 +219,11 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
-                <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
                 @if (!string.IsNullOrEmpty(Model.Email) || Model.EmailShouldBePresent)
                 {
                     <tr class="govuk-table__row">
@@ -262,14 +262,14 @@
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if(Model.DeliveryModel != null)
+                @if (!Model.DeliveryModel.Equals(DeliveryModel.Regular))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
-                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel</td>
+                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel.ToDescription()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
-                }                
+                }
                 @if (!string.IsNullOrEmpty(Model.Version))
                 {
                     <tr class="govuk-table__row">
@@ -306,7 +306,8 @@
                     <td id="apprentice-end-date" class="govuk-table__cell">@Model.EndDate.ToGdsFormatWithoutDay()</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if (Model.DeliveryModel != null)
+
+                @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Planned end date for this employment</th>
@@ -314,7 +315,7 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                @if(Model.RecognisePriorLearning)
+                @if (Model.RecognisePriorLearning)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
@@ -322,7 +323,7 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                @if (Model.DeliveryModel != null)
+                @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Training price for this employment</th>
@@ -330,7 +331,7 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                @if(Model.RecognisePriorLearning)
+                @if (Model.RecognisePriorLearning)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
