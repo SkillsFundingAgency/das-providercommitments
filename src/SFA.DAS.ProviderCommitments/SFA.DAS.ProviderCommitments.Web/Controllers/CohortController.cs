@@ -111,14 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.DeliveryModel))
-            {
-                return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
-            }
-            else
-            {
-                return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
-            }
+            return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
         }
 
         [HttpGet]
