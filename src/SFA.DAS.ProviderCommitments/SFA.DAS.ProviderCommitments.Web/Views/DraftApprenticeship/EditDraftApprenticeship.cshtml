@@ -43,9 +43,12 @@
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-            <partial name="DraftApprenticeship" for="@Model" />
-            <button type="submit" class="govuk-button">Save</button>
 
+            <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
+
+            <partial name="DraftApprenticeship" for="@Model" />
+
+            <button type="submit" class="govuk-button">Save</button>
 
             @if (!Model.IsContinuation)
             {
