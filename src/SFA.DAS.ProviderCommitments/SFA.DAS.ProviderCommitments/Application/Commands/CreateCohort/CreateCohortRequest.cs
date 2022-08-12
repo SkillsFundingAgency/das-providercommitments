@@ -23,5 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public DateTime? EndDate { get; set; }
         public string OriginatorReference { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
+        public bool IgnoreStartDateOverlap { get; set; }
     }
 }

@@ -77,11 +77,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
             if (IsNot200RangeResponseCode(response.StatusCode))
             {
-                 //Plug this in when moving another Post endpoint which throws domain errors
-                //if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
-                //{
-                //    throw CreateApiModelException(response, json);
-                //}
+                //Plug this in when moving another Post endpoint which throws domain errors
+                if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
+                {
+                    throw CreateApiModelException(response, json);
+                }
                 if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.BulkUploadDomainException)
                 {
                     throw CreateBulkUploadApiModelException(response, json);
@@ -115,6 +115,23 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             var errors = new CommitmentsApiBulkUploadModelException(JsonConvert.DeserializeObject<BulkUploadErrorResponse>(content).DomainErrors?.ToList());
             return errors;
         }
+
+        private Exception CreateApiModelException(HttpResponseMessage httpResponseMessage, string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
+                return new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(new List<CommitmentsV2.Api.Types.Validation.ErrorDetail>());
+            }
+
+            var errors = new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(JsonConvert.DeserializeObject<CommitmentsV2.Api.Types.Validation.ErrorResponse>(content).Errors);
+
+            var errorDetails = string.Join(";", errors.Errors.Select(e => $"{e.Field} ({e.Message})"));
+            _logger.Log(errors.Errors.Count == 0 ? LogLevel.Warning : LogLevel.Debug, $"{httpResponseMessage.RequestMessage.RequestUri} has returned {errors.Errors.Count} errors: {errorDetails}");
+
+            return errors;
+        }
+
     }
 
 

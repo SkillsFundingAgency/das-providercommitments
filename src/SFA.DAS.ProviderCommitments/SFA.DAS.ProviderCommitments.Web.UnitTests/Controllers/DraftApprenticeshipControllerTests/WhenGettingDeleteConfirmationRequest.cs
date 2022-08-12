@@ -6,6 +6,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
@@ -41,7 +42,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Mock.Of<ICommitmentsApiClient>(),
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                _providerFeatureToggle.Object);
+                _providerFeatureToggle.Object,
+                Mock.Of<IOuterApiService>());
         }
 
         [Test]
