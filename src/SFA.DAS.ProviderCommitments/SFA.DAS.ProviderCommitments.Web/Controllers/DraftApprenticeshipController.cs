@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddNewDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
+        public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
             return RedirectToAction(nameof(SelectCourse), request);
         }
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
-            return RedirectToAction("AddDraftApprenticeship", request);
+            return RedirectToAction("AddDraftApprenticeship", request.CloneBaseValues());
         }
 
         [HttpPost]

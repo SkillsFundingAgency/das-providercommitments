@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -129,6 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly AddDraftApprenticeshipViewModel _model;
             private readonly CreateCohortRequest _createCohortRequest;
             private readonly CreateCohortResponse _createCohortResponse;
+            private readonly CreateCohortWithDraftApprenticeshipRequest _createCohortWithDraftApprenticeshipRequest;
             private IActionResult _actionResult;
             private readonly string _linkGeneratorRedirectUrl;
             private string _linkGeneratorParameter;
@@ -152,6 +152,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _mockModelMapper = new Mock<IModelMapper>();
                 _linkGenerator = new Mock<ILinkGenerator>();
                 _encodingService = new Mock<IEncodingService>();
+                _createCohortWithDraftApprenticeshipRequest =
+                    _autoFixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
 
                 _model = new AddDraftApprenticeshipViewModel
                 {
@@ -167,6 +169,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _mockModelMapper
                     .Setup(x => x.Map<CreateCohortRequest>(It.IsAny<AddDraftApprenticeshipViewModel>()))
                     .ReturnsAsync(_createCohortRequest);
+
+                _mockModelMapper
+                    .Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(_model))
+                    .ReturnsAsync(_createCohortWithDraftApprenticeshipRequest);
 
                 _createCohortResponse = new CreateCohortResponse
                 {
