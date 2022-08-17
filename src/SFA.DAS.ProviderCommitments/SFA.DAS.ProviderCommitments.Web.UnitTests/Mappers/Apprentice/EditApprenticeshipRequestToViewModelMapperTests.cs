@@ -10,6 +10,8 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
@@ -54,16 +56,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             //Assert
             _fixture.VerifyGetPriceEpisodeIsCalled();
-        }
-
-        [Test]
-        public async Task GetCohortIsCalled()
-        {
-            //Act
-            await _fixture.Map();
-
-            //Assert
-            _fixture.VerifyGetCohortIsCalled();
         }
 
         [Test]
@@ -348,6 +340,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.VerifyAccountLegalEntityIsMapped();
         }
 
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task HasMultipleDeliveryModelOptions_IsMapped(bool hasMultiple)
+        {
+            _fixture.WithMultipleDeliveryModels(hasMultiple);
+
+            //Act
+            await _fixture.Map();
+
+            _fixture.VerifyHasMultipleDeliveryModelsIsMapped();
+        }
     }
 
     public class EditApprenticeshipRequestToViewModelMapperTestsFixture
@@ -358,9 +362,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
         private Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
         private Mock<IEncodingService> _mockEncodingService;
+        private Mock<IOuterApiClient> _outerApiClient;
 
         private GetPriceEpisodesResponse _priceEpisodesResponse;
-        private GetCohortResponse _cohortResponse;
         private AccountResponse _accountResponse;
         private GetAllTrainingProgrammeStandardsResponse _allTrainingProgrammeStandardsResponse;
         private GetAllTrainingProgrammesResponse _allTrainingProgrammeResponse;
@@ -368,6 +372,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private EditApprenticeshipRequestToViewModelMapper _mapper;
         private EditApprenticeshipRequestViewModel _viewModel;
         private IEnumerable<TrainingProgramme> _courses;
+        private GetEditApprenticeshipResponse _editApprenticeshipResponse;
 
         public async Task<EditApprenticeshipRequestViewModel> Map()
         {
@@ -393,12 +398,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             return this;
         }
 
-        internal EditApprenticeshipRequestToViewModelMapperTestsFixture VerifyGetCohortIsCalled()
-        {
-            _mockCommitmentsApiClient.Verify(t => t.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());
-            return this;
-        }
-
         internal EditApprenticeshipRequestToViewModelMapperTestsFixture VerifyGetAccountIsCalled()
         {
             _mockCommitmentsApiClient.Verify(t => t.GetAccount(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -419,12 +418,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         internal EditApprenticeshipRequestToViewModelMapperTestsFixture NotTransferSender()
         {
-            _cohortResponse.TransferSenderId = null;
+            _editApprenticeshipResponse.IsFundedByTransfer = false;
             return this;
         }
         internal EditApprenticeshipRequestToViewModelMapperTestsFixture AsTransferSender()
         {
-            _cohortResponse.TransferSenderId = 22;
+            _editApprenticeshipResponse.IsFundedByTransfer = true;
+            return this;
+        }
+
+        internal EditApprenticeshipRequestToViewModelMapperTestsFixture WithMultipleDeliveryModels(bool value)
+        {
+            _editApprenticeshipResponse.HasMultipleDeliveryModelOptions = value;
             return this;
         }
 
@@ -556,6 +561,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual("PALEID", _viewModel.EmployerAccountLegalEntityPublicHashedId);
         }
 
+        internal void VerifyHasMultipleDeliveryModelsIsMapped()
+        {
+            Assert.AreEqual(_editApprenticeshipResponse.HasMultipleDeliveryModelOptions, _viewModel.HasMultipleDeliveryModelOptions);
+        }
+
         public EditApprenticeshipRequestToViewModelMapperTestsFixture()
         {
             //Arrange
@@ -574,7 +584,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     new PriceEpisode { Cost = 1000, ToDate = DateTime.Now.AddMonths(-1)}})
                 .Create();
 
-            _cohortResponse = autoFixture.Create<GetCohortResponse>();
             _accountResponse = autoFixture.Create<AccountResponse>();
             _allTrainingProgrammeStandardsResponse = autoFixture.Create<GetAllTrainingProgrammeStandardsResponse>();
             _allTrainingProgrammeResponse = autoFixture.Create<GetAllTrainingProgrammesResponse>();
@@ -589,9 +598,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             _mockCommitmentsApiClient.Setup(t => t.GetTrainingProgramme(ApprenticeshipResponse.CourseCode, It.IsAny<CancellationToken>()))
                .ReturnsAsync(_trainingProgrammeResponse);
-
-            _mockCommitmentsApiClient.Setup(t => t.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => _cohortResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetAccount(ApprenticeshipResponse.EmployerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => _accountResponse);
@@ -615,7 +621,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _mockEncodingService = new Mock<IEncodingService>();
             _mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
                 .Returns("PALEID");
-            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, _mockEncodingService.Object);
+
+            _editApprenticeshipResponse = autoFixture.Create<GetEditApprenticeshipResponse>();
+            _outerApiClient = new Mock<IOuterApiClient>();
+            _outerApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
+                    r.ApprenticeshipId == _request.ApprenticeshipId && r.ProviderId == _request.ProviderId)))
+                .ReturnsAsync(_editApprenticeshipResponse);
+
+            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, _mockEncodingService.Object, _outerApiClient.Object);
         }
     }
 }
