@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -102,6 +103,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning.GetValueOrDefault(),
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
+                    CourseCode = data.Apprenticeship.CourseCode,
+                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(data.Apprenticeship.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
                 };
             }
             catch (Exception e)

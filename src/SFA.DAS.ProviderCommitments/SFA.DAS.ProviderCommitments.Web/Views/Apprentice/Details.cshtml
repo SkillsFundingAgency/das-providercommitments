@@ -4,13 +4,17 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.Mappers
 
+@inject ISelectDeliveryModelMapperHelper SelectDeliveryModelMapperHelper;
 @inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
 
 @{
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
+
+    var multipleDeliveryModels = await SelectDeliveryModelMapperHelper.HasMultipleDeliveryModels(Model.ProviderId, Model.CourseCode, Model.EmployerAccountLegalEntityPublicHashedId);
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -262,7 +266,7 @@
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if (!Model.DeliveryModel.Equals(DeliveryModel.Regular))
+                @if (multipleDeliveryModels)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
