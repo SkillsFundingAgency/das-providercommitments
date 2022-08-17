@@ -173,13 +173,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectDeliveryModelForEdit(DraftApprenticeshipRequest request)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
-            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(draft);
+            var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
+            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
 
-            if (model.DeliveryModels.Length > 1)
+            if (model.DeliveryModels.Count > 1)
             {
-                return View("SelectDeliveryModel", model);
+                return View(model);
             }
-            draft.DeliveryModel = model.DeliveryModels.FirstOrDefault();
+            draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
             StoreEditDraftApprenticeshipState(draft);
 
             return RedirectToAction("EditDraftApprenticeship", request);
@@ -188,20 +189,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModelForEdit(Models.SelectDeliveryModelViewModel model)
+        public async Task<IActionResult> SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
         {
-            if (model.DeliveryModel == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
-            }
-
             var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.DeliveryModel = model.DeliveryModel;
+            draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
             StoreEditDraftApprenticeshipState(draft);
 
+            var request = new BaseDraftApprenticeshipRequest
+            {
+                CohortReference = draft.CohortReference,
+                DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
+                ProviderId = draft.ProviderId
+            };
 
-            var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
             return RedirectToAction("EditDraftApprenticeship", request);
         }
 
