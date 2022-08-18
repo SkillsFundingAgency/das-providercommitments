@@ -13,7 +13,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -348,7 +347,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         public async Task<IActionResult> Details(DetailsRequest request)
@@ -357,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]
