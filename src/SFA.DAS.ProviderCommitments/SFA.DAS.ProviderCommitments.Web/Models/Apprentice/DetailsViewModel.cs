@@ -66,8 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int DurationReducedBy { get; set; }
         public string DurationReducedByDisplay => $"{DurationReducedBy} weeks";
         public int PriceReducedBy { get; set; }
-        public string EmployerAccountLegalEntityPublicHashedId { get; set; }
-        public string CourseCode { get; set; }
+        public bool HasMultipleDeliveryModelOptions { get; set; }
 
         public enum DataLockSummaryStatus
         {
