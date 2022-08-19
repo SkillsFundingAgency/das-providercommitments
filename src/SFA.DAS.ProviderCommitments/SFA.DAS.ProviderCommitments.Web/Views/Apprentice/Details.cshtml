@@ -263,7 +263,7 @@
                     <td id="apprentice-course" class="govuk-table__cell">@Model.CourseName</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
-                @if (Model.HasMultipleDeliveryModelOptions)
+                @if (!Model.DeliveryModel.Equals(DeliveryModel.Regular) || Model.HasMultipleDeliveryModelOptions)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
