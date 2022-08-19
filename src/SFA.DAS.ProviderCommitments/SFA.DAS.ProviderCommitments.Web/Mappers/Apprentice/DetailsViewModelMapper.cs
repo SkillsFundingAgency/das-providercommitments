@@ -53,8 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
                 var showOptions = hasOptions && !preDateStandardVersioning;
 
-                var apiRequest = new GetDetailsApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
-                var detailsApprenticeship = await _apiClient.Get<GetDetailsApprenticeshipResponse>(apiRequest);
+                var apiRequest = new GetApprenticeshipDetailsRequest(source.ProviderId, source.ApprenticeshipId);
+                var apprenticeshipDetails = await _apiClient.Get<GetApprenticeshipDetailsResponse>(apiRequest);
 
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning.GetValueOrDefault(),
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
-                    HasMultipleDeliveryModelOptions = detailsApprenticeship.HasMultipleDeliveryModelOptions,
+                    HasMultipleDeliveryModelOptions = apprenticeshipDetails.HasMultipleDeliveryModelOptions,
                 };
             }
             catch (Exception e)

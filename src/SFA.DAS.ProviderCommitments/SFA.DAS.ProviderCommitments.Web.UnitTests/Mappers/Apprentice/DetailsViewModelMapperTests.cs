@@ -628,7 +628,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
-            public GetDetailsApprenticeshipResponse GetDetailsApprenticeshipResponse { get; private set; }
+            public GetApprenticeshipDetailsResponse GetApprenticeshipDetailsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -685,7 +685,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 GetTrainingProgrammeByStandardUIdResponse = new GetTrainingProgrammeResponse();
 
-                GetDetailsApprenticeshipResponse = Fixture.Build<GetDetailsApprenticeshipResponse>().Create();
+                GetApprenticeshipDetailsResponse = Fixture.Build<GetApprenticeshipDetailsResponse>().Create();
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
@@ -727,8 +727,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
 
                 commitmentsApiClient.Setup(x =>
-                    x.Get<GetDetailsApprenticeshipResponse>(It.IsAny<GetDetailsApprenticeshipRequest>()))
-                    .ReturnsAsync(GetDetailsApprenticeshipResponse);
+                    x.Get<GetApprenticeshipDetailsResponse>(It.IsAny<GetApprenticeshipDetailsRequest>()))
+                    .ReturnsAsync(GetApprenticeshipDetailsResponse);
 
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
