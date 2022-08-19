@@ -53,8 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
                 var showOptions = hasOptions && !preDateStandardVersioning;
 
-                var apiRequest = new GetEditApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
-                var detailsApprenticeship = await _apiClient.Get<GetEditApprenticeshipResponse>(apiRequest);
+                var apiRequest = new GetDetailsApprenticeshipRequest(source.ProviderId, source.ApprenticeshipId);
+                var detailsApprenticeship = await _apiClient.Get<GetDetailsApprenticeshipResponse>(apiRequest);
 
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
