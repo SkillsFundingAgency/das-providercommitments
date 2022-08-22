@@ -101,5 +101,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
 
         public string EmployerAccountLegalEntityPublicHashedId { get; set; }
+        public bool HasMultipleDeliveryModelOptions { get; set; }
     }
 }
