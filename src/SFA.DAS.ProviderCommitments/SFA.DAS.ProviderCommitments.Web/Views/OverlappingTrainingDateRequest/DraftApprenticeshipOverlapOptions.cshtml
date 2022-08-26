@@ -1,6 +1,13 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models
-@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapOptionViewModel
+@using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+@model DraftApprenticeshipOverlapOptionViewModel
+
+@{
+    ViewData["Title"] = "DraftApprenticeships";
+    ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-options";
+}
+
 
 @{
     ViewData["Title"] = "This apprentice already has an existing apprenticeship record";
@@ -20,12 +27,15 @@
 
     <p>To request a stop date you can:</p>
     <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
-        @if (Model.OverlappingTrainingDateRequestToggleEnabled)
+        @if (Model.EnableStopRequestEmail)
         {
         <li>send an email from the service</li>
         }
         <li>contact the employer, if you have their details</li>
-        <li><a class="govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb" target="_blank">contact the help desk</a></li>
+         @if (!@Model.EnableStopRequestEmail)
+         {
+            <li><a class="govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb" target="_blank">contact the help desk</a></li>
+         }
     </ul>
     <form method="post">
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.OverlapOptions, "govuk-form-group--error")">
@@ -36,7 +46,7 @@
               <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
               @Html.ValidationMessageFor(m => m.OverlapOptions, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.OverlapOptions) })
               <div class="govuk-radios" data-module="radios">
-                @if (Model.OverlappingTrainingDateRequestToggleEnabled)
+                @if (Model.EnableStopRequestEmail)
                 {
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="overlap-option-1" name="OverlapOptions" type="radio" value="@OverlapOptions.SendStopRequest" aria-describedby="hint-previous-employer">

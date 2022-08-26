@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
 using System;
 
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest
 {
     public class ValidateDraftApprenticeshipApimRequest : ApimSaveDataRequest
     {
