@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = true && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
+                EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
             };
