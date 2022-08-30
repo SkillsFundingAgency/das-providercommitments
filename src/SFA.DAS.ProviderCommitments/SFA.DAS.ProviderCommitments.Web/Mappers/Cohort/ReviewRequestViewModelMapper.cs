@@ -47,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 var hasRelationshipTask = _providerRelationshipsApiClient.HasRelationshipWithPermission(new HasRelationshipWithPermissionRequest { Ukprn = source.ProviderId, Operation = Operation.CreateCohort });
                 var providerAgreement = _pasAccountApiClient.GetAgreement(source.ProviderId);
 
-                await Task.WhenAll(getCohortsTask, hasRelationshipTask);
+                await Task.WhenAll(getCohortsTask, hasRelationshipTask, providerAgreement);
                 return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result, providerAgreement.Result.Status);
             }
 
@@ -78,8 +78,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private string GetMessage(Message latestMessageFromProvider)
         {
-            return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text) 
-                ? latestMessageFromProvider.Text 
+            return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text)
+                ? latestMessageFromProvider.Text
                 : "No message added";
         }
     }
@@ -91,39 +91,39 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             switch (sortField)
             {
                 case "Employer":
-                {
-                    if (reverse)
+                    {
+                        if (reverse)
+                            return cohorts
+                                .OrderByDescending(c => c.EmployerName)
+                                .ThenBy(c => c.DateReceived.Date)
+                                .ThenBy(c => c.CohortReference);
+
                         return cohorts
-                            .OrderByDescending(c => c.EmployerName)
+                            .OrderBy(c => c.EmployerName)
                             .ThenBy(c => c.DateReceived.Date)
                             .ThenBy(c => c.CohortReference);
-
-                    return cohorts
-                        .OrderBy(c => c.EmployerName)
-                        .ThenBy(c => c.DateReceived.Date)
-                        .ThenBy(c => c.CohortReference);
-                }
+                    }
 
                 case "CohortReference":
-                {
-                    return reverse 
-                        ? cohorts.OrderByDescending(c => c.CohortReference) 
-                        : cohorts.OrderBy(c => c.CohortReference);
-                }
+                    {
+                        return reverse
+                            ? cohorts.OrderByDescending(c => c.CohortReference)
+                            : cohorts.OrderBy(c => c.CohortReference);
+                    }
 
                 case "DateReceived":
-                {
-                    if (reverse)
+                    {
+                        if (reverse)
+                            return cohorts
+                                .OrderByDescending(c => c.DateReceived.Date)
+                                .ThenBy(c => c.EmployerName)
+                                .ThenBy(c => c.CohortReference);
+
                         return cohorts
-                            .OrderByDescending(c => c.DateReceived.Date)
+                            .OrderBy(c => c.DateReceived.Date)
                             .ThenBy(c => c.EmployerName)
                             .ThenBy(c => c.CohortReference);
-
-                    return cohorts
-                        .OrderBy(c => c.DateReceived.Date)
-                        .ThenBy(c => c.EmployerName)
-                        .ThenBy(c => c.CohortReference);
-                }
+                    }
             }
 
             return cohorts

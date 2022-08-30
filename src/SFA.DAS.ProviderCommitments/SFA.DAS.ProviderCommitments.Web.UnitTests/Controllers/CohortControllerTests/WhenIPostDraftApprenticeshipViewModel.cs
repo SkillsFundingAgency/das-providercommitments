@@ -15,9 +15,11 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -92,33 +94,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
         }
 
-        [Test]
-        public async Task AndWhenWhenUserSelectsToSendOverlapEmailToEmployer()
-        {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
-            _fixture.VerifyUserRedirectedTo("Details");
-        }
-
-        [Test]
-        public async Task AndWhenWhenUserSelectsToContactTheEmployer()
-        {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Details");
-        }
-
-        [Test]
-        public async Task AndWhenWhenUserSelectsAddTheApprenticeLater()
-        {
-            await _fixture
-                .SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.AddApprenticeshipLater)
-                .DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Review");
-            _fixture.VerifyCachedDraftApprenticeshipRemoved();
-        }
-
         private class UnapprovedControllerTestFixture
         {
             private readonly CohortController _controller;
@@ -141,6 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
 
             private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
+            private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
 
             public UnapprovedControllerTestFixture()
@@ -204,7 +180,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
                 _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
 
-                _mockModelMapper.Setup(x => x.Map<Infrastructure.OuterApi.Requests.CreateOverlappingTrainingDateApimRequest>(It.IsAny<CreateCohortResponse>())).ReturnsAsync(() => new Infrastructure.OuterApi.Requests.CreateOverlappingTrainingDateApimRequest());
+                _outerApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
+
                 _mockModelMapper.Setup(x => x.Map<CreateCohortRequest>(It.IsAny<DraftApprenticeshipOverlapOptionViewModel>())).ReturnsAsync(() => new CreateCohortRequest());
 
                 _controller = new CohortController(
@@ -226,11 +203,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public UnapprovedControllerTestFixture SetupStartDateOverlap(bool overlapStartDate, bool overlapEndDate)
             {
-                _validateUlnOverlapResult = new CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult
+                _validateUlnOverlapOnStartDateResult = new Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult
                 {
-                    HasOverlappingStartDate = overlapStartDate,
-                    HasOverlappingEndDate = overlapEndDate,
-                    ULN = "XXX"
+                    HasOverlapWithApprenticeshipId = 1,
+                    HasStartDateOverlap = overlapStartDate
                 };
 
                 return this;
@@ -244,12 +220,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _model.EndYear = 2023;
                 _model.Uln = "XXXX";
 
-                return this;
-            }
-
-            public async Task<UnapprovedControllerTestFixture> DraftApprenticeshipOverlapOptions()
-            {
-                _actionResult = await _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionViewModel);
                 return this;
             }
 
@@ -316,19 +286,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmailSent()
             {
-                _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<Infrastructure.OuterApi.Requests.CreateOverlappingTrainingDateApimRequest>()), Times.Once);
+                _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<CreateOverlappingTrainingDateApimRequest>()), Times.Once);
                 return this;
             }
 
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmail_IsNotSent()
             {
-                _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<Infrastructure.OuterApi.Requests.CreateOverlappingTrainingDateApimRequest>()), Times.Never);
-                return this;
-            }
-
-            internal UnapprovedControllerTestFixture VerifyCachedDraftApprenticeshipRemoved()
-            {
-                _tempData.Verify(mock => mock.Remove(nameof(AddDraftApprenticeshipViewModel)), Times.Once);
+                _outerApiService.Verify(x => x.CreateOverlappingTrainingDateRequest(It.IsAny<CreateOverlappingTrainingDateApimRequest>()), Times.Never);
                 return this;
             }
         }
