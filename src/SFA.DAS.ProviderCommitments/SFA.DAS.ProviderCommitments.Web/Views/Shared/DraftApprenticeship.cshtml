@@ -3,6 +3,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Features
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -141,33 +142,36 @@ else
         <input asp-for="IsOnFlexiPaymentPilot" class="govuk-input govuk-!-width-three-quarters" />
     </div>
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot,  "govuk-form-group--error")">
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                <h1 class="govuk-fieldset__heading">
-                    Will this apprentice be part of the Flexible Payments pilot program?
-                </h1>
-            </legend>
-            <span id="finish-date-hint" class="govuk-hint">
-                Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
-            </span>
-            <div class="govuk-radios">
-                @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot) })
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true">
-                    <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
-                        Yes
-                    </label>
+    @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+    {
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h1 class="govuk-fieldset__heading">
+                        Will this apprentice be part of the Flexible Payments pilot program?
+                    </h1>
+                </legend>
+                <span id="finish-date-hint" class="govuk-hint">
+                    Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
+                </span>
+                <div class="govuk-radios">
+                    @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true">
+                        <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false">
+                        <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
+                            No
+                        </label>
+                    </div>
                 </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false">
-                    <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
-                        No
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-    </div>
+            </fieldset>
+        </div>
+    }
 
 
     <div class="govuk-form-group">
