@@ -121,5 +121,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool IsOnFlexiPaymentPilot { get; set; }
     }
 }
