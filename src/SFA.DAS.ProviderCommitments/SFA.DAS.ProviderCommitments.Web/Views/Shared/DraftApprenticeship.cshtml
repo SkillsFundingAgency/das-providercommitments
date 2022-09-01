@@ -132,6 +132,43 @@ else
         <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
     </div>
 
+    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
+        <label asp-for="IsOnFlexiPaymentPilot" class="govuk-label govuk-!-font-weight-bold">Will this apprentice be part of the Flexible Payments pilot program?</label>
+        <span id="finish-date-hint" class="govuk-hint">
+            Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
+        </span>
+        @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot) })
+        <input asp-for="IsOnFlexiPaymentPilot" class="govuk-input govuk-!-width-three-quarters" />
+    </div>
+
+    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot,  "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h1 class="govuk-fieldset__heading">
+                    Will this apprentice be part of the Flexible Payments pilot program?
+                </h1>
+            </legend>
+            <span id="finish-date-hint" class="govuk-hint">
+                Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
+            </span>
+            <div class="govuk-radios">
+                @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot) })
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true">
+                    <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false">
+                    <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
+                        No
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
 
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
