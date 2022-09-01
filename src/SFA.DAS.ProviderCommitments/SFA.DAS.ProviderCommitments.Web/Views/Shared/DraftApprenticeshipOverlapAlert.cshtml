@@ -1,0 +1,101 @@
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapAlertViewModel
+@{
+    ViewBag.Title = "Training Date Overlap Alert";
+    ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-alert";
+
+    var routeData = new
+    {
+        providerId = Model.ProviderId,
+        cohortReference = Model.CohortReference,
+        DraftApprenticeshipHashedId = Model.DraftApprenticeshipHashedId,
+        ReservationId = Model.ReservationId,
+        StartMonthYear = Model.StartMonthYear,
+        CourseCode = Model.CourseCode,
+        DeliveryModel = Model.DeliveryModel,
+        EmployerAccountLegalEntityPublicHashedId = Model.EmployerAccountLegalEntityPublicHashedId
+    };
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="_ValidationSummary" />
+
+        <h1 class="govuk-heading-xl">There may be a problem with the proposed training details</h1>
+
+        <h2 class="govuk-heading-m">Proposed training details</h2>
+        <p>Check you have entered the correct ULN, check the dates you have entered are correct.</p>
+
+        <div>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Planned start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.StartDate.ToString("Y")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Projected finish date
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.EndDate.ToString("Y")
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Unique learning number
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.Uln
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Apprentice name
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.FirstName @Model.LastName
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+            </dd>
+        </div>
+        </dl>
+    </div>
+
+    <form method="post">
+        <div class="govuk-form-group">
+            <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
+            @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
+            <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
+                    <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
+                        Yes, these details are correct
+                    </label>
+                </div>
+            </div>
+        </div>
+        <button class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
+    </form>
+</div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Back</a>
+} 

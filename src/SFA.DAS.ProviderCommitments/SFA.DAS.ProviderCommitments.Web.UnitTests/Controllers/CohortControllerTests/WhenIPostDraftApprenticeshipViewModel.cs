@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task AndWhenThereIsStartDateOverlap()
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupAddDraftApprenticeshipViewModelForStartDateOverlap().PostDraftApprenticeshipViewModel();
-            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapAlert");
         }
 
         private class UnapprovedControllerTestFixture

@@ -2,9 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -23,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System;
 using System.Collections.Generic;
@@ -57,6 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _outerApiService = outerApiService;
         }
+
 
         [HttpGet]
         [Route("add")]
@@ -206,7 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-another")]
+        [Route("add-another", Name = RouteNames.DraftApprenticeshipAddAnother)]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
@@ -244,7 +244,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId, model.CohortReference });
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new
+                {
+                    OverlapApprenticeshipHashedId = hashedApprenticeshipId,
+                    ReservationId = model.ReservationId,
+                    StartMonthYear = model.StartDate.MonthYear,
+                    CourseCode = model.CourseCode,
+                    DeliveryModel = model.DeliveryModel
+                });
             }
 
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
@@ -284,6 +291,55 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
+        [HttpGet]
+        [Route("add/apprenticeship/overlap-alert", Name = RouteNames.DraftApprenticeshipOverlapAlert)]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request)
+        {
+            DraftApprenticeshipViewModel model;
+            if (request.DraftApprenticeshipHashedId != null)
+            {
+                model = PeekStoredEditDraftApprenticeshipState();
+            }
+            else
+            {
+                model = PeekStoredAddDraftApprenticeshipState();
+            }
+
+            var vm = new DraftApprenticeshipOverlapAlertViewModel
+            {
+                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
+                DraftApprenticeshipId = request.DraftApprenticeshipId,
+                OverlapApprenticeshipHashedId = request.OverlapApprenticeshipHashedId,
+                OverlapApprenticeshipId = request.OverlapApprenticeshipId,
+                CohortReference = model.CohortReference,
+                ProviderId = model.ProviderId,
+                StartDate = model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model.EndDate.Date.GetValueOrDefault(),
+                Uln = model.Uln,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ReservationId = request.ReservationId,
+                StartMonthYear = request.StartMonthYear,
+                CourseCode = request.CourseCode,
+                DeliveryModel = request.DeliveryModel
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("add/apprenticeship/overlap-alert")]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
+        {
+            return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new DraftApprenticeshipOverlapOptionRequest
+            {
+                CohortReference = viewModel.CohortReference,
+                DraftApprenticeshipId = viewModel.DraftApprenticeshipId,
+                DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
+                ApprenticeshipId = viewModel.OverlapApprenticeshipId,
+                ApprenticeshipHashedId = viewModel.OverlapApprenticeshipHashedId
+            });
+        }
+
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -301,16 +357,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreEditDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId, model.CohortReference, model.DraftApprenticeshipHashedId });
+                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new
+                {
+                    DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
+                    DraftApprenticeshipId = model.DraftApprenticeshipId,
+                    OverlapApprenticeshipHashedId = hashedApprenticeshipId,
+                    OverlapApprenticeshipId = overlapResult.HasOverlapWithApprenticeshipId.Value
+                });
             }
-
 
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
             if (RequireRpl(model.StartDate))
             {
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new 
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
                 {
                     model.CohortReference,
                     model.DraftApprenticeshipHashedId,
@@ -328,7 +389,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/edit")]
+        [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
@@ -429,9 +490,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
         {
             var request = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
-            
+
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
-            
+
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 

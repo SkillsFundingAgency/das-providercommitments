@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -38,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture
                 .SetApprenticeshipStarting("2022-08-01")
                 .SetupCommitmentsApiToReturnADraftApprentice();
-            
+
             await _fixture.PostToEditDraftApprenticeship();
             _fixture.VerifyUpdateMappingToApiTypeIsCalled()
                 .VerifyApiUpdateMethodIsCalled()
@@ -55,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public async Task AndWhenEditingDeliveryModel()
         {
-            await _fixture.PostToEditDraftApprenticeship(changeDeliveryModel:"Edit");
+            await _fixture.PostToEditDraftApprenticeship(changeDeliveryModel: "Edit");
             _fixture.VerifyRedirectedToSelectDeliveryForEditModelPage();
         }
 
@@ -83,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenThereIsStartDateOverlap()
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupEditDraftApprenticeshipViewModelForStartDateOverlap().PostToEditDraftApprenticeship();
-            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapAlert");
         }
     }
 }

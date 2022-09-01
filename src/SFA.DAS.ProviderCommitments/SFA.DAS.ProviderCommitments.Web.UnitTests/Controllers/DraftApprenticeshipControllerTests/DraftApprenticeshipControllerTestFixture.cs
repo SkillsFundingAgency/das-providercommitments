@@ -1,33 +1,28 @@
 using AutoFixture;
-using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Newtonsoft.Json;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Configuration;
-using System;
-using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -63,6 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IOuterApiService> _outerApiService;
         private ValidateUlnOverlapResult _validateUlnOverlapResult;
         private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
+        private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -175,8 +171,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<GetDraftApprenticeshipResponse>()))
                 .ReturnsAsync(_updateDraftApprenticeshipRequest);
-            
-            _modelMapper.Setup(x=>x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<ViewSelectOptionsViewModel>()))
+
+            _modelMapper.Setup(x => x.Map<UpdateDraftApprenticeshipRequest>(It.IsAny<ViewSelectOptionsViewModel>()))
                 .ReturnsAsync(_updateDraftApprenticeshipRequest);
 
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -202,6 +198,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _outerApiService = new Mock<IOuterApiService>();
             _outerApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
+
+            _draftApprenticeshipOverlapAlertRequest = new DraftApprenticeshipOverlapAlertRequest() { DraftApprenticeshipHashedId = "XXXXX" };
 
             _controller = new DraftApprenticeshipController(
                 _mediator.Object,
@@ -284,7 +282,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _modelMapper.Setup(x => x.Map<ViewSelectOptionsViewModel>(_selectOptionsRequest))
                 .ReturnsAsync(_viewSelectOptionsViewModel);
-            
+
             _actionResult = await _controller.SelectOptions(_selectOptionsRequest);
             return this;
         }
@@ -309,7 +307,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public async Task<DraftApprenticeshipControllerTestFixture> PostToAddDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
         {
-            _actionResult = await _controller.AddDraftApprenticeship(changeCourse, changeDeliveryModel,_addModel);
+            _actionResult = await _controller.AddDraftApprenticeship(changeCourse, changeDeliveryModel, _addModel);
             return this;
         }
 
@@ -336,7 +334,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _updateDraftApprenticeshipRequest.CourseOption = string.Empty;
             return this;
         }
-        
+
         public DraftApprenticeshipControllerTestFixture SetupUpdateRequestCourseOption()
         {
             _updateDraftApprenticeshipRequest.CourseOption = _selectOptionsViewModel.SelectedOption;
@@ -568,7 +566,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyApiUpdateWithStandardOptionSet(string standardOption = null)
         {
             _commitmentsApiClient.Verify(
-                x => x.UpdateDraftApprenticeship(_cohortId, _draftApprenticeshipId, It.Is<UpdateDraftApprenticeshipRequest>(c=>c.CourseOption.Equals(standardOption ??_updateDraftApprenticeshipRequest.CourseOption)), It.IsAny<CancellationToken>()), Times.Once);
+                x => x.UpdateDraftApprenticeship(_cohortId, _draftApprenticeshipId, It.Is<UpdateDraftApprenticeshipRequest>(c => c.CourseOption.Equals(standardOption ?? _updateDraftApprenticeshipRequest.CourseOption)), It.IsAny<CancellationToken>()), Times.Once);
             return this;
         }
 
@@ -632,7 +630,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var viewResult = _actionResult as ViewResult;
             Assert.IsNotNull(viewResult);
-            Assert.AreEqual("SelectStandardOption",viewResult.ViewName);
+            Assert.AreEqual("SelectStandardOption", viewResult.ViewName);
             var model = viewResult.Model as ViewSelectOptionsViewModel;
             Assert.IsNotNull(model);
             return this;
@@ -667,6 +665,41 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyUserRedirectedTo(string page)
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture GetDraftApprenticeshipOverlapAlert()
+        {
+            _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupPeekTempDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_addModel);
+            _tempData.Setup(x => x.Peek(nameof(AddDraftApprenticeshipViewModel))).Returns(addModelAsString);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture SetupPeekTempEditDraftApprenticeship()
+        {
+            object addModelAsString = JsonConvert.SerializeObject(_addModel);
+            _tempData.Setup(x => x.Peek(nameof(EditDraftApprenticeshipViewModel))).Returns(addModelAsString);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
+            Assert.IsNotNull(model);
+            return this;
+        }
+
+        public DraftApprenticeshipControllerTestFixture VerifyPeekStoredEditDraftApprenticeshipStateIsCalled()
+        {
+            _tempData.Verify(mock => mock.Peek(nameof(EditDraftApprenticeshipViewModel)), Times.Once);
             return this;
         }
     }
