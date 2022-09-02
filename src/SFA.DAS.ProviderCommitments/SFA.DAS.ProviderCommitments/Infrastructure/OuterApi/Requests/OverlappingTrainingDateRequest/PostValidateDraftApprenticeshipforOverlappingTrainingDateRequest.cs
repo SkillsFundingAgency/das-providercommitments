@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest
 {
     public class PostValidateDraftApprenticeshipforOverlappingTrainingDateRequest : IPostApiRequest
     {

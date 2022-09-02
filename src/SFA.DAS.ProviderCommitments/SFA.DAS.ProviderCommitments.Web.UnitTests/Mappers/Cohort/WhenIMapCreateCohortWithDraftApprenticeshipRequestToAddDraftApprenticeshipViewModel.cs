@@ -1,14 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture;
-using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -19,11 +14,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private AddDraftApprenticeshipViewModelMapper _mapper;
         private CreateCohortWithDraftApprenticeshipRequest _source;
-        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private Mock<IMediator> _mediator;
-        private AccountLegalEntityResponse _accountLegalEntityResponse;
-        private GetTrainingCoursesQueryResponse _trainingCoursesQueryResponse;
-        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
+        private Mock<IOuterApiClient> _apiClient;
+        private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
 
         [SetUp]
         public void Arrange()
@@ -31,23 +23,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new Fixture();
 
             _source = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().With(x => x.StartMonthYear, "042020").Create();
-            _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
+            _apiResponse = fixture.Create<GetAddDraftApprenticeshipDetailsResponse>();
 
-            _trainingCoursesQueryResponse = fixture.Create<GetTrainingCoursesQueryResponse>();
-            _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
+            _apiClient = new Mock<IOuterApiClient>();
+            _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDetailsResponse>(It.IsAny<GetAddDraftApprenticeshipDetailsRequest>()))
+                .ReturnsAsync(_apiResponse);
 
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.GetAccountLegalEntity(_source.AccountLegalEntityId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_accountLegalEntityResponse);
-
-            _commitmentsApiClient.Setup(x => x.GetTrainingProgramme(_source.CourseCode, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_trainingProgrammeResponse);
-
-            _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_trainingCoursesQueryResponse);
-
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_commitmentsApiClient.Object, _mediator.Object, Mock.Of<IAuthorizationService>());
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object);
         }
 
         [Test]
@@ -75,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenEmployerIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_accountLegalEntityResponse.LegalEntityName, result.Employer);
+            Assert.AreEqual(_apiResponse.LegalEntityName, result.Employer);
         }
 
         [Test]
@@ -106,6 +88,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.ReservationId, result.ReservationId);
+        }
+
+        [Test]
+        public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
         }
     }
 }
