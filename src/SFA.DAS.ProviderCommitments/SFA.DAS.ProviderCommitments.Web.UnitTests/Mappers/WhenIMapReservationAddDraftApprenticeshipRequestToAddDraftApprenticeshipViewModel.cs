@@ -1,13 +1,12 @@
-﻿using System.Threading;
-using AutoFixture;
+﻿using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 using Moq;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
@@ -16,8 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
     {
         private AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper _mapper;
         private ReservationsAddDraftApprenticeshipRequest _source;
-        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private Mock<IOuterApiClient> _commitmentsApiClient;
         private Mock<IEncodingService> _encodingService;
+        private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
 
         [SetUp]
         public void Arrange()
@@ -29,15 +29,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
                 .With(x => x.CohortId, 1)
                 .Create();
 
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => new GetCohortResponse{ AccountLegalEntityId = 123 });
+            _apiResponse = fixture.Create<GetAddDraftApprenticeshipDetailsResponse>();
+            _commitmentsApiClient = new Mock<IOuterApiClient>();
+            _commitmentsApiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDetailsResponse>(It.IsAny<GetAddDraftApprenticeshipDetailsRequest>()))
+                .ReturnsAsync(_apiResponse);
 
             _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Encode(123, EncodingType.PublicAccountLegalEntityId))
+            _encodingService.Setup(x => x.Encode(_apiResponse.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId))
                 .Returns("EmployerAccountLegalEntityPublicHashedId");
 
-            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_commitmentsApiClient.Object, _encodingService.Object);
+            _mapper = new AddDraftApprenticeshipViewModelFromReservationsAddDraftApprenticeshipMapper(_encodingService.Object, _commitmentsApiClient.Object);
         }
 
         [Test]
@@ -86,7 +87,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(123, result.AccountLegalEntityId);
+            Assert.AreEqual(_apiResponse.AccountLegalEntityId, result.AccountLegalEntityId);
+        }
+
+        [Test]
+        public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
         }
 
         [Test]
