@@ -26,7 +26,6 @@
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="4.0.3" />
     <PackageReference Include="FluentValidation" Version="10.3.4" />
-    <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="StructureMap" Version="4.7.1" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
   </ItemGroup>

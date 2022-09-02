@@ -47,233 +47,220 @@
                 <div class="govuk-grid-column-full">
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key"> Name </dt>
-                            <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.Name</dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key"> Unique learner number </dt>
-                            <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.ULN</dd>
-                        </div>
-                        @if (Model.OriginalApprenticeship.DeliveryModel == DeliveryModel.PortableFlexiJob)
-                        {
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key"> Apprenticeship delivery model</dt>
-                                <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.DeliveryModel.Value.ToIrregularDescription()</dd>
-                            </div>
-                        }
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key"> Apprenticeship training course </dt>
-                            <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.CourseName</dd>
-                        </div>
-                    </dl>
+                        <dt class="govuk-summary-list__key"> Name </dt>
+                        <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.Name</dd>
                 </div>
-            </div>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <table class="govuk-table">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th class="govuk-table__header"></th>
-                                <th scope="col" class="govuk-table__header ">Current</th>
-                                <th scope="col" class="govuk-table__header ">Changed to</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-
-                            @if (!string.IsNullOrWhiteSpace(Model.Name))
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Name</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.Name</td>
-                                    <td class="govuk-table__cell">@Model.Name</td>
-
-                                </tr>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(Model.Email))
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Email address</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.Email</td>
-                                    <td class="govuk-table__cell">@Model.Email</td>
-
-                                </tr>
-                            }
-                            @if (Model.DateOfBirth.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Date of birth</th>
-                                    <td class="govuk-table__cell">
-                                        @Model.OriginalApprenticeship.DateOfBirth.Value.ToGdsFormat()
-                                    </td>
-                                    <td class="govuk-table__cell">@Model.DateOfBirth.Value.ToGdsFormat()</td>
-
-                                </tr>
-                            }
-                            @if (Model.DeliveryModel.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.DeliveryModel.ToDescription() </td>
-                                    <td class="govuk-table__cell">@Model.DeliveryModel.ToDescription()</td>
-                                </tr>
-                                @if (Model.DeliveryModel == DeliveryModel.Regular)
-                                {
-                                    <tr>
-                                        <th scope="row" class="govuk-table__header">Planned end date of this employment</th>
-                                        <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentEndDate.HasValue ? Model.OriginalApprenticeship.EmploymentEndDate.Value.ToGdsFormat() : "Not applicable")</td>
-                                        <td class="govuk-table__cell">Not applicable</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row" class="govuk-table__header">Training price for this employment</th>
-                                        <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentPrice.HasValue ? Model.OriginalApprenticeship.EmploymentPrice.FormatCost() : "Not applicable")</td>
-                                        <td class="govuk-table__cell">Not applicable</td>
-                                    </tr>
-                                }
-                            }
-                            @if (Model.EmploymentEndDate.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Planned end date of this employment</th>
-                                    <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentEndDate.HasValue ? Model.OriginalApprenticeship.EmploymentEndDate.Value.ToGdsFormat() : "Not applicable")</td>
-                                    <td class="govuk-table__cell">@Model.EmploymentEndDate.Value.ToGdsFormat()</td>
-                                </tr>
-                            }
-                            @if (Model.EmploymentPrice.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Training price for this employment</th>
-                                    <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentPrice.HasValue ? Model.OriginalApprenticeship.EmploymentPrice.FormatCost() : "Not applicable")</td>
-                                    <td class="govuk-table__cell">@Model.EmploymentPrice.FormatCost()</td>
-                                </tr>
-                            }
-
-                            @if (!string.IsNullOrWhiteSpace(Model.CourseCode) || !string.IsNullOrWhiteSpace(Model.CourseName))
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.CourseName </td>
-                                    <td class="govuk-table__cell">@Model.CourseName</td>
-                                </tr>
-                            }
-                            @if (Model.StartDate.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Planned training start date</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.StartDate.Value.ToGdsFormat() </td>
-                                    <td class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormat()</td>
-
-                                </tr>
-                            }
-                            @if (Model.EndDate.HasValue)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Planned training end date</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.EndDate.Value.ToGdsFormat() </td>
-                                    <td class="govuk-table__cell">@Model.EndDate.Value.ToGdsFormat()</td>
-
-                                </tr>
-                            }
-                            @if (!string.IsNullOrWhiteSpace(Model.Version) || !string.IsNullOrWhiteSpace(Model.CourseCode))
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Version</th>
-                                    <td class="govuk-table__cell">
-                                        @(Model.OriginalApprenticeship.Version != null ? Model.OriginalApprenticeship.Version : "Not applicable" )
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        @(Model.Version != null ? Model.Version : "Not applicable" )
-                                    </td>
-                                </tr>
-                            }
-                            @if (Model.Option != Model.OriginalApprenticeship.Option || (!string.IsNullOrWhiteSpace(Model.CourseCode) && Model.Option == "TBC"))
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Option</th>
-                                    <td class="govuk-table__cell">
-                                        @if (Model.OriginalApprenticeship.Option == null)
-                                        {
-                                            <span> Not applicable </span>
-                                        }
-                                        else if (Model.OriginalApprenticeship.Option == "TBC")
-                                        {
-                                            <span> To be confirmed </span>
-                                        }
-                                        else
-                                        {
-                                            <span> @Model.OriginalApprenticeship.Option </span>
-                                        }
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        @if (Model.Option == null)
-                                        {
-                                            <span> Not applicable </span>
-                                        }
-                                        else if (Model.Option == "TBC")
-                                        {
-                                            <span> To be confirmed </span>
-                                        }
-                                        else
-                                        {
-                                            <span> @Model.Option </span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                            @if (Model.Cost.HasValue)
-                            {
-                        <tr>
-                            <th scope="row" class="govuk-table__header">Cost</th>
-                            <td class="govuk-table__cell">@Model.OriginalApprenticeship.Cost.FormatCost() </td>
-                            <td class="govuk-table__cell">@Model.Cost.FormatCost()</td>
-
-                        </tr>
-                    }
-
-                            @if (Model.ProviderReference != Model.OriginalApprenticeship.ProviderReference)
-                            {
-                                <tr>
-                                    <th scope="row" class="govuk-table__header">Reference</th>
-                                    <td class="govuk-table__cell">@Model.OriginalApprenticeship.ProviderReference</td>
-                                    <td class="govuk-table__cell">@Model.ProviderReference</td>
-
-                                </tr>
-                            }
-                        </tbody>
-
-                    </table>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key"> Unique learner number </dt>
+                    <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.ULN</dd>
                 </div>
-            </div>
-
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ConfirmChanges,  "govuk-form-group--error")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h1 class="govuk-fieldset__heading">
-                            Do you want to make these changes?
-                        </h1>
-                    </legend>
-                    <div class="govuk-radios">
-                        @Html.ValidationMessageFor(m => m.ConfirmChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ConfirmChanges) })
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="ConfirmChanges" name="ConfirmChanges" type="radio" value="true">
-                            <label class="govuk-label govuk-radios__label" for="ConfirmChanges">
-                                Yes, change these details
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="ConfirmChanges-no" name="ConfirmChanges" type="radio" value="false">
-                            <label class="govuk-label govuk-radios__label" for="ConfirmChanges-no">
-                                No, don't change these details
-                            </label>
-                        </div>
+                @if (Model.OriginalApprenticeship.DeliveryModel == DeliveryModel.PortableFlexiJob)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key"> Apprenticeship delivery model</dt>
+                        <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.DeliveryModel.Value.ToIrregularDescription()</dd>
                     </div>
-                </fieldset>
+                }
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key"> Apprenticeship training course </dt>
+                    <dd class="govuk-summary-list__value"> @Model.OriginalApprenticeship.CourseName</dd>
+                </div>
+                </dl>
             </div>
-
-            <button type="submit" class="govuk-button" aria-label="Finish" id="submit-confirm-change">Finish</button>
-
-
         </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header ">Current</th>
+                            <th scope="col" class="govuk-table__header ">Changed to</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Name))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Name</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.Name</td>
+                                <td class="govuk-table__cell">@Model.Name</td>
+
+                            </tr>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Email))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Email address</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.Email</td>
+                                <td class="govuk-table__cell">@Model.Email</td>
+
+                            </tr>
+                        }
+                        @if (Model.DateOfBirth.HasValue)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Date of birth</th>
+                                <td class="govuk-table__cell">
+                                    @Model.OriginalApprenticeship.DateOfBirth.Value.ToGdsFormat()
+                                </td>
+                                <td class="govuk-table__cell">@Model.DateOfBirth.Value.ToGdsFormat()</td>
+
+                            </tr>
+                        }
+                        @if (Model.DeliveryModel.HasValue)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.DeliveryModel.ToDescription() </td>
+                                <td class="govuk-table__cell">@Model.DeliveryModel.ToDescription()</td>
+                            </tr>
+                        }
+                        @if (Model.EmploymentEndDate.HasValue && Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Planned end date of this employment</th>
+                                <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentEndDate.HasValue ? Model.OriginalApprenticeship.EmploymentEndDate.Value.ToGdsFormat() : "Not applicable")</td>
+                                <td class="govuk-table__cell">@Model.EmploymentEndDate.Value.ToGdsFormat()</td>
+                            </tr>
+                        }
+                        @if (Model.EmploymentPrice.HasValue && Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Training price for this employment</th>
+                                <td class="govuk-table__cell">@(Model.OriginalApprenticeship.EmploymentPrice.HasValue ? Model.OriginalApprenticeship.EmploymentPrice.FormatCost() : "Not applicable")</td>
+                                <td class="govuk-table__cell">@Model.EmploymentPrice.FormatCost()</td>
+                            </tr>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(Model.CourseCode) || !string.IsNullOrWhiteSpace(Model.CourseName))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Apprenticeship training course</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.CourseName </td>
+                                <td class="govuk-table__cell">@Model.CourseName</td>
+                            </tr>
+                        }
+                        @if (Model.StartDate.HasValue)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Planned training start date</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.StartDate.Value.ToGdsFormat() </td>
+                                <td class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormat()</td>
+
+                            </tr>
+                        }
+                        @if (Model.EndDate.HasValue)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Planned training end date</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.EndDate.Value.ToGdsFormat() </td>
+                                <td class="govuk-table__cell">@Model.EndDate.Value.ToGdsFormat()</td>
+
+                            </tr>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Version) || !string.IsNullOrWhiteSpace(Model.CourseCode))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Version</th>
+                                <td class="govuk-table__cell">
+                                    @(Model.OriginalApprenticeship.Version != null ? Model.OriginalApprenticeship.Version : "Not applicable" )
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(Model.Version != null ? Model.Version : "Not applicable" )
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.Option != Model.OriginalApprenticeship.Option || (!string.IsNullOrWhiteSpace(Model.CourseCode) && Model.Option == "TBC"))
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Option</th>
+                                <td class="govuk-table__cell">
+                                    @if (Model.OriginalApprenticeship.Option == null)
+                                    {
+                                        <span> Not applicable </span>
+                                    }
+                                    else if (Model.OriginalApprenticeship.Option == "TBC")
+                                    {
+                                        <span> To be confirmed </span>
+                                    }
+                                    else
+                                    {
+                                        <span> @Model.OriginalApprenticeship.Option </span>
+                                    }
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @if (Model.Option == null)
+                                    {
+                                        <span> Not applicable </span>
+                                    }
+                                    else if (Model.Option == "TBC")
+                                    {
+                                        <span> To be confirmed </span>
+                                    }
+                                    else
+                                    {
+                                        <span> @Model.Option </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.Cost.HasValue)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Cost</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.Cost.FormatCost() </td>
+                                <td class="govuk-table__cell">@Model.Cost.FormatCost()</td>
+
+                            </tr>
+                        }
+
+                        @if (Model.ProviderReference != Model.OriginalApprenticeship.ProviderReference)
+                        {
+                            <tr>
+                                <th scope="row" class="govuk-table__header">Reference</th>
+                                <td class="govuk-table__cell">@Model.OriginalApprenticeship.ProviderReference</td>
+                                <td class="govuk-table__cell">@Model.ProviderReference</td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ConfirmChanges,  "govuk-form-group--error")">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h1 class="govuk-fieldset__heading">
+                        Do you want to make these changes?
+                    </h1>
+                </legend>
+                <div class="govuk-radios">
+                    @Html.ValidationMessageFor(m => m.ConfirmChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ConfirmChanges) })
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="ConfirmChanges" name="ConfirmChanges" type="radio" value="true">
+                        <label class="govuk-label govuk-radios__label" for="ConfirmChanges">
+                            Yes, change these details
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="ConfirmChanges-no" name="ConfirmChanges" type="radio" value="false">
+                        <label class="govuk-label govuk-radios__label" for="ConfirmChanges-no">
+                            No, don't change these details
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <button type="submit" class="govuk-button" aria-label="Finish" id="submit-confirm-change">Finish</button>
+
+
+</div>
     </form>
 </div>
 

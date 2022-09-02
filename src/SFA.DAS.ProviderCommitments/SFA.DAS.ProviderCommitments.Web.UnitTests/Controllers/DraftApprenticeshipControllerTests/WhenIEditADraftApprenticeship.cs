@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -83,37 +84,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupEditDraftApprenticeshipViewModelForStartDateOverlap().PostToEditDraftApprenticeship();
             _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapAlert");
-        }
-
-        [Test]
-        public async Task AndWhenWhenUserSelectsToSendOverlapEmailToEmployer()
-        {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.SendStopRequest)
-                .SetupTempEditDraftApprenticeship()
-                .DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
-            _fixture.VerifyUserRedirectedTo("Details");
-        }
-
-        [Test]
-        public async Task AndWhenWhenUserSelectsToContactTheEmployer()
-        {
-            await _fixture.SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.ContactTheEmployer)
-                .SetupTempEditDraftApprenticeship()
-                .DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Details");
-        }
-
-        [Test]
-        public async Task AndWhenWhenUserSelectsAddTheApprenticeLater()
-        {
-            await _fixture
-                .SetupStartDraftOverlapOptions(Web.Models.OverlapOptions.AddApprenticeshipLater)
-                .DraftApprenticeshipOverlapOptions();
-            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Details");
-            _fixture.VerifyCachedDraftApprenticeshipRemoved();
         }
     }
 }

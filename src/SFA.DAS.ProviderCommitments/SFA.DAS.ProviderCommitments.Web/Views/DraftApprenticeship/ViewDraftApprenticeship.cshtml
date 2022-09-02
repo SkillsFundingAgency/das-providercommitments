@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.CommitmentsV2.Types
 @model SFA.DAS.ProviderCommitments.Web.Models.ViewDraftApprenticeshipViewModel
 
 @{
@@ -83,7 +84,7 @@
             <dd class="govuk-summary-list__value">
                 @DisplayOptionalField(Model.TrainingCourseVersion)
             </dd>
-        </div>    
+        </div>
     }
     @if (Model.HasTrainingCourseOption)
     {
@@ -124,7 +125,7 @@
             </dd>
         </div>
     }
-    @if (Model.DeliveryModel != null)
+    @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
     {
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -134,16 +135,16 @@
                 @DisplayCost(Model.EmploymentPrice)
             </dd>
         </div>
-    }
 
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            Total agreed apprenticeship price
-        </dt>
-        <dd class="govuk-summary-list__value">
-            @DisplayCost(Model.Cost)
-        </dd>
-    </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Total agreed apprenticeship price
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @DisplayCost(Model.Cost)
+            </dd>
+        </div>
+    }
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
             Reference
