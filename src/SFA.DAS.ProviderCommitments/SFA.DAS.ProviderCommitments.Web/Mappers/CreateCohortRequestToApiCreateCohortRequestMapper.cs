@@ -28,7 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = source.EndDate,
                 OriginatorReference = source.OriginatorReference,
                 ReservationId = source.ReservationId,
-                IgnoreStartDateOverlap = source.IgnoreStartDateOverlap
+                IgnoreStartDateOverlap = source.IgnoreStartDateOverlap,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             });
         }
     }
