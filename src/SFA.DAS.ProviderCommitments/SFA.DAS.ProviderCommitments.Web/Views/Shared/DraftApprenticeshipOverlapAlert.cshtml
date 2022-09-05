@@ -3,6 +3,18 @@
 @{
     ViewBag.Title = "Training Date Overlap Alert";
     ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-alert";
+
+    var routeData = new
+    {
+        providerId = Model.ProviderId,
+        cohortReference = Model.CohortReference,
+        DraftApprenticeshipHashedId = Model.DraftApprenticeshipHashedId,
+        ReservationId = Model.ReservationId,
+        StartMonthYear = Model.StartMonthYear,
+        CourseCode = Model.CourseCode,
+        DeliveryModel = Model.DeliveryModel,
+        EmployerAccountLegalEntityPublicHashedId = Model.EmployerAccountLegalEntityPublicHashedId
+    };
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -24,7 +36,7 @@
                         @Model.StartDate.ToString("Y")
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
+                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -35,7 +47,7 @@
                         @Model.EndDate.ToString("Y")
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
+                        <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -46,7 +58,7 @@
                         @Model.Uln
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
+                        <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -57,7 +69,7 @@
                         @Model.FirstName @Model.LastName
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Change</a>
+                        <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
                     </dd>
                 </div>
             </dl>
@@ -85,5 +97,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(Model.ChangeURLRoute, Model.DraftApprenticeshipHashedId)">Back</a>
-}
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Back</a>
+} 
