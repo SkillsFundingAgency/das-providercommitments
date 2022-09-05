@@ -1,7 +1,7 @@
-﻿using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -31,6 +31,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string ChangeURLRoute => string.IsNullOrEmpty(this.DraftApprenticeshipHashedId)
             ? (string.IsNullOrEmpty(this.CohortReference) ? RouteNames.CohortAddApprenticeship : RouteNames.DraftApprenticeshipAddAnother)
             : RouteNames.DraftApprenticeshipEdit;
-
     }
 }

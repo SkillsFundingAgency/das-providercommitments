@@ -132,15 +132,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-alert", Name = RouteNames.DraftApprenticeshipOverlapAlert)]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request)
         {
-            DraftApprenticeshipViewModel model;
-            if (request.DraftApprenticeshipHashedId != null)
-            {
-                model = PeekStoredEditDraftApprenticeshipState();
-            }
-            else
-            {
-                model = PeekStoredAddDraftApprenticeshipState();
-            }
+            DraftApprenticeshipViewModel model = request.DraftApprenticeshipHashedId == null 
+                ? PeekStoredAddDraftApprenticeshipState() 
+                : PeekStoredEditDraftApprenticeshipState();
 
             var vm = new DraftApprenticeshipOverlapAlertViewModel
             {
@@ -161,6 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 DeliveryModel = request.DeliveryModel,
                 EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId
             };
+
             return View(vm);
         }
 
