@@ -408,7 +408,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<DraftApprenticeship>()
+                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                 .With(x => x.Cost, 100)
                 .With(x => x.CourseName, "CourseName")
                 .With(x => x.StartDate, DefaultStartDate)
@@ -425,7 +425,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<DraftApprenticeship>()
+                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                .With(x => x.Cost, 3000)
                .With(x => x.CourseName, "CourseName")
                .With(x => x.StartDate, DefaultStartDate)

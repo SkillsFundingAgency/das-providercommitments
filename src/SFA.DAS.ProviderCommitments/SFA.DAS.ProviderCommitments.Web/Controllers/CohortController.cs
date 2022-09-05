@@ -317,7 +317,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         public async Task<IActionResult> Details(DetailsRequest request)
@@ -326,7 +326,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]

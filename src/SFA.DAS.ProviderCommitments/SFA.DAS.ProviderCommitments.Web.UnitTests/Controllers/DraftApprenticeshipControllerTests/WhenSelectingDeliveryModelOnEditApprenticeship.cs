@@ -8,16 +8,14 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -43,26 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            result.ViewName.Should().Be("SelectDeliveryModel");
-        }
-
-        [Test]
-        public async Task WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
-        {
-            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture();
-
-            fixture.ViewModel.DeliveryModel = null;
-
-            try
-            {
-                var result = await fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel);
-                Assert.Fail("Should have had exception thrown");
-            }
-            catch (CommitmentsApiModelException e)
-            {
-                e.Errors[0].Field.Should().Be("DeliveryModel");
-                e.Errors[0].Message.Should().Be("You must select the apprenticeship delivery model");
-            }
+            Assert.IsNotNull(result);
         }
 
         [Test]
@@ -72,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithDraftApprenticeship()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
+            fixture.ViewModel.DeliveryModel = Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob;
 
             var result = await fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditDraftApprenticeship");
@@ -87,14 +66,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public Mock<IModelMapper> ModelMapperMock;
         public Mock<IAuthorizationService> AuthorizationServiceMock;
         public Mock<ITempDataDictionary> TempDataMock;
-        public SelectDeliveryModelViewModel ViewModel;
+        public SelectDeliveryModelForEditViewModel ViewModel;
         public DraftApprenticeshipRequest Request;
         public EditDraftApprenticeshipViewModel DraftApprenticeship;
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
+            ViewModel = fixture.Create<SelectDeliveryModelForEditViewModel>();
             Request = fixture.Create<DraftApprenticeshipRequest>();
             DraftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
@@ -116,8 +95,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(It.IsAny<EditDraftApprenticeshipViewModel>()))
-                .ReturnsAsync(new SelectDeliveryModelViewModel { DeliveryModels = list.ToArray() });
+            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelForEditViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+                .ReturnsAsync(new SelectDeliveryModelForEditViewModel { DeliveryModels = list });
             return this;
         }
 
