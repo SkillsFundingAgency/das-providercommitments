@@ -20,8 +20,8 @@
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.97" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.22.10" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.22.10" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="8.22.12" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="8.22.12" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="1.1.1039" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="4.0.3" />

@@ -133,15 +133,6 @@ else
         <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
     </div>
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
-        <label asp-for="IsOnFlexiPaymentPilot" class="govuk-label govuk-!-font-weight-bold">Will this apprentice be part of the Flexible Payments pilot program?</label>
-        <span id="finish-date-hint" class="govuk-hint">
-            Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
-        </span>
-        @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot) })
-        <input asp-for="IsOnFlexiPaymentPilot" class="govuk-input govuk-!-width-three-quarters" />
-    </div>
-
     @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
     {
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
