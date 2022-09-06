@@ -19,7 +19,7 @@
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
 
-    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,IsOnFlexiPaymentPilot,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
@@ -148,13 +148,13 @@ else
                 <div class="govuk-radios">
                     @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true" @(Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
                         <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
                             Yes
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false" @(Model.IsOnFlexiPaymentPilot.HasValue && !Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
                         <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
                             No
                         </label>
