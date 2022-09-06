@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +26,7 @@ using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -206,7 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add-another", Name = RouteNames.DraftApprenticeshipAddAnother)]
+        [Route("add/details", Name = RouteNames.DraftApprenticeshipAddAnother)]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
@@ -228,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add-another")]
+        [Route("add/details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
         {
@@ -244,7 +243,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new
+                return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     ReservationId = model.ReservationId,
@@ -291,55 +290,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
-        [HttpGet]
-        [Route("add/apprenticeship/overlap-alert", Name = RouteNames.DraftApprenticeshipOverlapAlert)]
-        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request)
-        {
-            DraftApprenticeshipViewModel model;
-            if (request.DraftApprenticeshipHashedId != null)
-            {
-                model = PeekStoredEditDraftApprenticeshipState();
-            }
-            else
-            {
-                model = PeekStoredAddDraftApprenticeshipState();
-            }
-
-            var vm = new DraftApprenticeshipOverlapAlertViewModel
-            {
-                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                DraftApprenticeshipId = request.DraftApprenticeshipId,
-                OverlapApprenticeshipHashedId = request.OverlapApprenticeshipHashedId,
-                OverlapApprenticeshipId = request.OverlapApprenticeshipId,
-                CohortReference = model.CohortReference,
-                ProviderId = model.ProviderId,
-                StartDate = model.StartDate.Date.GetValueOrDefault(),
-                EndDate = model.EndDate.Date.GetValueOrDefault(),
-                Uln = model.Uln,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                ReservationId = request.ReservationId,
-                StartMonthYear = request.StartMonthYear,
-                CourseCode = request.CourseCode,
-                DeliveryModel = request.DeliveryModel
-            };
-            return View(vm);
-        }
-
-        [HttpPost]
-        [Route("add/apprenticeship/overlap-alert")]
-        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
-        {
-            return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new DraftApprenticeshipOverlapOptionRequest
-            {
-                CohortReference = viewModel.CohortReference,
-                DraftApprenticeshipId = viewModel.DraftApprenticeshipId,
-                DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
-                ApprenticeshipId = viewModel.OverlapApprenticeshipId,
-                ApprenticeshipHashedId = viewModel.OverlapApprenticeshipHashedId
-            });
-        }
-
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -357,7 +307,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreEditDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction(nameof(DraftApprenticeshipOverlapAlert), new
+                return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
                     DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
                     DraftApprenticeshipId = model.DraftApprenticeshipId,
@@ -567,11 +517,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private void StoreAddDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
-        }
-
-        private AddDraftApprenticeshipViewModel PeekStoredAddDraftApprenticeshipState()
-        {
-            return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
 
         private AddDraftApprenticeshipViewModel GetStoredAddDraftApprenticeshipState()

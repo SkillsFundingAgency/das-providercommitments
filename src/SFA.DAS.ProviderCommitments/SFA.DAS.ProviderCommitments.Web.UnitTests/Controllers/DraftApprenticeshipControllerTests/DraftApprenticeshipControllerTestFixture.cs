@@ -58,7 +58,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         private readonly Mock<IOuterApiService> _outerApiService;
         private ValidateUlnOverlapResult _validateUlnOverlapResult;
         private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
-        private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
 
         public DraftApprenticeshipControllerTestFixture()
         {
@@ -198,8 +197,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             _outerApiService = new Mock<IOuterApiService>();
             _outerApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
-
-            _draftApprenticeshipOverlapAlertRequest = new DraftApprenticeshipOverlapAlertRequest() { DraftApprenticeshipHashedId = "XXXXX" };
 
             _controller = new DraftApprenticeshipController(
                 _mediator.Object,
@@ -665,41 +662,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifyUserRedirectedTo(string page)
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture GetDraftApprenticeshipOverlapAlert()
-        {
-            _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture SetupPeekTempDraftApprenticeship()
-        {
-            object addModelAsString = JsonConvert.SerializeObject(_addModel);
-            _tempData.Setup(x => x.Peek(nameof(AddDraftApprenticeshipViewModel))).Returns(addModelAsString);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture SetupPeekTempEditDraftApprenticeship()
-        {
-            object addModelAsString = JsonConvert.SerializeObject(_addModel);
-            _tempData.Setup(x => x.Peek(nameof(EditDraftApprenticeshipViewModel))).Returns(addModelAsString);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
-        {
-            var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
-            var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
-            Assert.IsNotNull(model);
-            return this;
-        }
-
-        public DraftApprenticeshipControllerTestFixture VerifyPeekStoredEditDraftApprenticeshipStateIsCalled()
-        {
-            _tempData.Verify(mock => mock.Peek(nameof(EditDraftApprenticeshipViewModel)), Times.Once);
             return this;
         }
     }
