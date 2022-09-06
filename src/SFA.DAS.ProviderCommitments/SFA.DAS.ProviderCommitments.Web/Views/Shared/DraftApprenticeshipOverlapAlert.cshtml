@@ -29,71 +29,71 @@
         <div>
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Planned start date
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.StartDate.ToString("Y")
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-                </dd>
+                    <dt class="govuk-summary-list__key">
+                        Planned start date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.StartDate.ToString("Y")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Projected finish date
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.EndDate.ToString("Y")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Unique learning number
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Uln
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Apprentice name
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.FirstName @Model.LastName
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </dd>
+                </div>
+            </dl>
         </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Projected finish date
-            </dt>
-            <dd class="govuk-summary-list__value">
-                @Model.EndDate.ToString("Y")
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Unique learning number
-            </dt>
-            <dd class="govuk-summary-list__value">
-                @Model.Uln
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Apprentice name
-            </dt>
-            <dd class="govuk-summary-list__value">
-                @Model.FirstName @Model.LastName
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-            </dd>
-        </div>
-        </dl>
-    </div>
 
-    <form method="post">
-        <div class="govuk-form-group">
-            <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-            <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
-            @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
-            <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
-                    <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
-                        Yes, these details are correct
-                    </label>
+        <form method="post">
+            <div class="govuk-form-group">
+                <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
+                <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
+                @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
+                <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
+                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
+                            Yes, these details are correct
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <button class="govuk-button" data-module="govuk-button">
-            Continue
-        </button>
-    </form>
-</div>
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+    </div>
 </div>
 
 @section breadcrumb

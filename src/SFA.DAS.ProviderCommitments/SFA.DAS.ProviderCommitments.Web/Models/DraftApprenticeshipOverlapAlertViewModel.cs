@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
-    public class DraftApprenticeshipOverlapAlertViewModel : IAuthorizationContextModel
+    public class DraftApprenticeshipOverlapAlertViewModel
     {
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
