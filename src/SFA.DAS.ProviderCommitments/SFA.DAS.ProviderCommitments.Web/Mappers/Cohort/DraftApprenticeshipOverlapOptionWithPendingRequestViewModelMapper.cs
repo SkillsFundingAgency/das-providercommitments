@@ -1,7 +1,6 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -16,7 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CohortReference = source.CohortReference,
                 OverlapOptions = source.OverlapOptions,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                OverlappingTrainingDateRequestToggleEnabled = source.OverlappingTrainingDateRequestToggleEnabled,
                 Status = source.Status,
                 EnableStopRequestEmail = source.EnableStopRequestEmail
             });

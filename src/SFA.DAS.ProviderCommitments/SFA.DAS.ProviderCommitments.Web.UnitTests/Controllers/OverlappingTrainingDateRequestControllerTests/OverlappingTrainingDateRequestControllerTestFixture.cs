@@ -186,9 +186,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
-        public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapOptions()
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> GetDraftApprenticeshipOverlapOptions()
         {
-            _actionResult = _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionRequest);
+            _actionResult = await _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionRequest);
             return this;
         }
 
@@ -338,15 +338,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyfeatureTogglesServiceToGetPendingRequestsIsCalled()
         {
             _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix), Times.Once);
-            return this;
-        }
-
-        public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlapPendingRequests_ModelIsMapped(bool isEnabled)
-        {
-            var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
-            var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
-            Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
             return this;
         }
 

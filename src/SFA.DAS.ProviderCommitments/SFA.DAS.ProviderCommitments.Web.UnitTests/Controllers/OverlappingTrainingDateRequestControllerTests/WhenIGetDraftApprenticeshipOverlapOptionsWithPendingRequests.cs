@@ -1,6 +1,4 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
@@ -28,13 +26,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.GetDraftApprenticeshipOverlapOptionsWithPendingRequest();
             _fixture.VerifyfeatureTogglesServiceToGetPendingRequestsIsCalled();
         }
-
-        [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
-        {
-            _fixture.SetOverlappingTrainingDateRequestFeatureToggle(true).GetDraftApprenticeshipOverlapOptionsWithPendingRequest();
-            _fixture.VerifyWhenGettingOverlapPendingRequests_ModelIsMapped(true);
-        }
-
     }
 }

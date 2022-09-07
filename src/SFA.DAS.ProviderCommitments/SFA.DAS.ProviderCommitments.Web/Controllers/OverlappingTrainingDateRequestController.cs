@@ -57,7 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 CohortReference = request.CohortReference,
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 DraftApprenticeshipId = request.DraftApprenticeshipId,
-                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 CreatedOn = request.CreatedOn,
                 Status = request.Status,
                 EnableStopRequestEmail = request.EnableStopRequestEmail
@@ -70,19 +69,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequestViewModel viewModel)
         {
             var mappedViewModel = await _modelMapper.Map<DraftApprenticeshipOverlapOptionViewModel>(viewModel);
-            return await DraftApprenticeshipOverlapOptions(mappedViewModel);
+            return await OverlapOptionsAction(mappedViewModel);
         }
 
         [HttpGet]
         [Route("overlap-options")]
-        public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
+        public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
-            var apprenticeshipDetails = _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value).Result;
+            var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
             var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
 
             if (request.DraftApprenticeshipId.HasValue)
             {
-                var pendingOverlapRequests = _outerApiService.GetOverlapRequest(request.DraftApprenticeshipId.Value).Result;
+                var pendingOverlapRequests = await _outerApiService.GetOverlapRequest(request.DraftApprenticeshipId.Value);
                 if (pendingOverlapRequests.DraftApprenticeshipId.HasValue)
                 {
                     return RedirectToAction(nameof(DraftApprenticeshipOverlapOptionsWithPendingRequest), new
@@ -116,6 +115,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("overlap-options")]
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionViewModel viewModel)
+        {
+            return await OverlapOptionsAction(viewModel);
+        }
+
+        private async Task<IActionResult> OverlapOptionsAction(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
             var model = GetStoredAddDraftApprenticeshipState();
 
