@@ -29,6 +29,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.GetDraftApprenticeshipOverlapAlert();
             _fixture.VerifyPeekStoredEditDraftApprenticeshipStateIsCalled();
         }
-
     }
 }

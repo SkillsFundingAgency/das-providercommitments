@@ -56,7 +56,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _outerApiService = outerApiService;
         }
 
-
         [HttpGet]
         [Route("add")]
         [RequireQueryParameter("ReservationId")]
