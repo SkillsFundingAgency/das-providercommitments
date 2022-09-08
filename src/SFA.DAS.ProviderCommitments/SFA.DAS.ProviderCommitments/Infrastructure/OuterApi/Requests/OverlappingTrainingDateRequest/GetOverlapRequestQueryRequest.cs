@@ -8,6 +8,6 @@
         {
             ApprenticeshipId = apprenticeshipId;
         }
-        public string GetUrl => $"OverlappingTrainingDateRequest/{ApprenticeshipId}/get";
+        public string GetUrl => $"OverlappingTrainingDateRequest/{ApprenticeshipId}/getOverlapRequest";
     }
 }
