@@ -709,6 +709,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
+
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public async Task ShowRofjaaRemovalBanner(bool hasUnavailableFlexiJobAgencyDeliveryModel, bool expectShowBanner)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .UnavailableFlexiJobAgencyDeliveryModel(hasUnavailableFlexiJobAgencyDeliveryModel);
+
+            var result = await fixture.Map();
+
+            result.ShowRofjaaRemovalBanner.Should().Be(expectShowBanner);
+        }
     }
 
     public class DetailsViewModelMapperTestsFixture
@@ -1016,6 +1028,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
              .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = hasOverlap, HasOverlappingStartDate = hasOverlap });
 
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
+        {
+            CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;
         }
     }

@@ -7,7 +7,7 @@
 @{
     ViewData["Title"] = Model.PageTitle;
     ViewBag.GaData.Vpv = "/unapproved/cohort";
-    ViewBag.GaData.Org = Model.LegalEntityName;    
+    ViewBag.GaData.Org = Model.LegalEntityName;
     var reservationUrl = $"{Model.ProviderId}/reservations/{ Model.AccountLegalEntityHashedId}/select?cohortReference={Model.CohortReference}&encodedPledgeApplicationId={Model.EncodedPledgeApplicationId}";
 
     if (!string.IsNullOrWhiteSpace(Model.TransferSenderHashedId))
@@ -54,6 +54,31 @@ Model.HasEmailOverlaps)
                             <li>all apprentice records are complete</li>
                         }
                     </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+@if (Model.ShowRofjaaRemovalBanner)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        <strong>@Model.LegalEntityName is no longer on the Register of Flexi-Job Apprenticeship Agencies</strong>
+                    </p>
+                    <p>
+                        You need to edit the delivery model for each Flexi-Job Apprenticeship or delete them.
+                    </p>
                 </div>
             </div>
 
@@ -159,70 +184,70 @@ Model.HasEmailOverlaps)
                 <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
         </thead>
-    <tbody class="govuk-table__body">
-        @foreach (var draftApprenticeship in course.DraftApprenticeships)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" data-label="Name">
-                    @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete)
-                    {
-                        <span class="das-table-cell--highlight das-breakable">@draftApprenticeship.DisplayName</span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayName
-                    }
-                </td>
-                <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
-                <td class="govuk-table__cell" data-label="Training dates">
-                    @if (draftApprenticeship.HasOverlappingUln)
-                    {
-                        <span class="das-table-cell--highlight">
+        <tbody class="govuk-table__body">
+            @foreach (var draftApprenticeship in course.DraftApprenticeships)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell" data-label="Name">
+                        @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete)
+                        {
+                            <span class="das-table-cell--highlight das-breakable">@draftApprenticeship.DisplayName</span>
+                        }
+                        else
+                        {
+                            @draftApprenticeship.DisplayName
+                        }
+                    </td>
+                    <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
+                    <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
+                    <td class="govuk-table__cell" data-label="Training dates">
+                        @if (draftApprenticeship.HasOverlappingUln)
+                        {
+                            <span class="das-table-cell--highlight">
+                                @draftApprenticeship.DisplayTrainingDates
+                            </span>
+                        }
+                        else
+                        {
                             @draftApprenticeship.DisplayTrainingDates
-                        </span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayTrainingDates
-                    }
-                </td>
-                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Employment end date">
-                    @(draftApprenticeship.EmploymentEndDate?.ToGdsFormatWithoutDay() ?? "-")
-                </td>
-                <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
-                    @draftApprenticeship.DisplayEmploymentPrice
-                </td>
-                <td class="govuk-table__cell" data-label="Price">
-                    @if (@draftApprenticeship.ExceedsFundingBandCap)
-                    {
-                        <span class="das-table-cell--highlight">
+                        }
+                    </td>
+                    <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Employment end date">
+                        @(draftApprenticeship.EmploymentEndDate?.ToGdsFormatWithoutDay() ?? "-")
+                    </td>
+                    <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
+                        @draftApprenticeship.DisplayEmploymentPrice
+                    </td>
+                    <td class="govuk-table__cell" data-label="Price">
+                        @if (@draftApprenticeship.ExceedsFundingBandCap)
+                        {
+                            <span class="das-table-cell--highlight">
+                                @draftApprenticeship.DisplayCost
+                            </span>
+                        }
+                        else
+                        {
                             @draftApprenticeship.DisplayCost
-                        </span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayCost
-                    }
-                </td>
-                <td class="govuk-table__cell govuk-table__cell--numeric">
-                    <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
-                        @(Model.IsReadOnly ? "View" : "Edit")
-                        <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
-                    </a>
-                    @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
-                    {
-                        <br /><br />
-                        <a class="govuk-link delete-apprentice"
-                           href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
-                            Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
+                        }
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                        <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
+                            @(Model.IsReadOnly ? "View" : "Edit")
+                            <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                         </a>
-                    }
-                </td>
-            </tr>
-        }
+                        @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
+                        {
+                            <br /><br />
+                            <a class="govuk-link delete-apprentice"
+                               href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
+                                Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
         </tbody>
-     </table>
+    </table>
 }
 
 <table class="govuk-table">
