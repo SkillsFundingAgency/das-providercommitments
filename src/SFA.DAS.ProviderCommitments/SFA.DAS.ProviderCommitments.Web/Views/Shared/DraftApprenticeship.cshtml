@@ -334,9 +334,68 @@
 
 <script type="text/javascript">
     function continueJourney() {
-        alert(1);
+        resetErrors();
+        validateDraftApprenticeship();
+    }
+
+    function showNextPage() {
         $("#draftApprenticeshipSection1").addClass("das-hide");
         $("#draftApprenticeshipSection2").removeClass("das-js-hide");
         $("#draftApprenticeshipSection2").addClass("das-show");
+    }
+
+    function resetErrors() {
+        $("#validationSummaryErrorList").empty();
+        $("#validationSummary").removeClass("das-show");
+        $("#validationSummary").addClass("das-hide");
+        $("*").removeClass("govuk-form-group--error");
+    }
+
+    function showError(errorDetail) {
+        var fieldId = errorDetail.field;
+        $("#validationSummary").removeClass("das-hide");
+        $("#validationSummary").addClass("das-show");
+        $("#validationSummaryErrorList").append("<li><a href=\"#error-message-" + fieldId + "\" data-focuses=\"error-message-" + fieldId + "\">" + errorDetail.message + "</a></li>");
+        $("#" + fieldId).closest(".govuk-fieldset__legend").after("<span class=\"field-validation-error govuk-error-message\" data-valmsg-for=\"" + fieldId + "\" data-valmsg-replace=\"true\" id=\"error-message-" + fieldId + "\">" + errorDetail.message + "</span>");
+    }
+
+    function validateDraftApprenticeship() {
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        var formData = getFormData($("#LastName").closest("form"));
+        formData.__RequestVerificationToken = token;
+        formData.providerId = "@Model.ProviderId";
+        $.ajax({
+            url: '@Url.Action("Validate", "DraftApprenticeship")',
+            method: "POST",
+            data: formData,
+            success: function(data) {
+                if (!data) {
+                    showNextPage();
+                    return;
+                }
+                console.log(data);
+                data.forEach(function(errorDetail) {
+                    showError(errorDetail);
+                });
+            },
+            error: function(data) {
+                alert("Error");
+                console.log(data);
+            }
+        });
+
+        return false;
+    }
+
+    function getFormData($form){
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function(n, i){
+            indexed_array[n['name']] = n['value'];
+        });
+
+        return indexed_array;
     }
 </script>
