@@ -54,7 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     DurationReducedBy = apiResponse.DurationReducedBy,
                     PriceReducedBy = apiResponse.PriceReducedBy,
                     RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
-                    HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+                    HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
+                    HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency
                 };
             }
             catch (RestHttpClientException restEx)

@@ -753,7 +753,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Cohort = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
-            CohortDetails = _autoFixture.Create<GetCohortDetailsResponse>();
+            CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>().With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false).Create();
 
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);

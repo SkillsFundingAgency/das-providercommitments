@@ -236,5 +236,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
         }
+        
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.Regular, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.Regular, false)]
+
+        public async Task ThenHasUnavailableFlexiJobAgencyDeliveryModelIsMappedCorrectly(bool hasUnavailableDeliveryModel, Infrastructure.OuterApi.Types.DeliveryModel deliveryModel, bool expectedResult)
+        {
+            _apiResponse.DeliveryModel = deliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
+
+            var result = await _act();
+            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+        }
     }
 }

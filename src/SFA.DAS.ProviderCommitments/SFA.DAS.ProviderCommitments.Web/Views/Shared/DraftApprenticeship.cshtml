@@ -151,7 +151,7 @@ else
 }
 
 
-@if (Model.HasMultipleDeliveryModelOptions)
+@if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
 {
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
