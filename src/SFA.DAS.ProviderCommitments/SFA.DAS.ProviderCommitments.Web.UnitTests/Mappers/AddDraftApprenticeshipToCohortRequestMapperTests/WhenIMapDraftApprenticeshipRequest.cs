@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
 
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
+            var actualStartDate = fixture.Create<DateTime?>();
             var employmentEndDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
             var deliveryModel = fixture.Create<DeliveryModel?>();
@@ -43,6 +44,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
+                .With(x => x.ActualStartDay, actualStartDate?.Day)
+                .With(x => x.ActualStartMonth, actualStartDate?.Month)
+                .With(x => x.ActualStartYear, actualStartDate?.Year)
                 .With(x => x.DeliveryModel, deliveryModel)
                 .With(x => x.EmploymentPrice, employmentPrice)
                 .With(x => x.IsOnFlexiPaymentPilot, true)
@@ -107,6 +111,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         {
             var result = await _act();
             Assert.AreEqual(_source.StartDate.Date, result.StartDate);
+        }
+
+        [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.ActualStartDate.Date, result.ActualStartDate);
         }
 
         [Test]

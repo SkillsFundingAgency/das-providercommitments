@@ -101,6 +101,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestT
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.ActualStartDate, result.ActualStartDate);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);

@@ -128,6 +128,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Month, result.ActualStartDate.Month);
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Day, result.ActualStartDate.Day);
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Year, result.ActualStartDate.Year);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();
