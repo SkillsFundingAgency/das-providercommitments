@@ -202,6 +202,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View("AddDraftApprenticeship", model);
         }
 
+
+        [HttpPost]
+        [Route("add/validate")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> Validate(Models.AddDraftApprenticeshipViewModel model)
+        {
+            var request = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+            request.UserId = User.Upn();
+            try
+            {
+                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(request);
+            }
+            catch (CommitmentsApiModelException ex)
+            {
+                return Json(ex.Errors);
+            }
+            return new OkResult();
+        }
+
         [HttpPost]
         [Route("add/apprenticeship")]
         [DasAuthorize(ProviderOperation.CreateCohort)]

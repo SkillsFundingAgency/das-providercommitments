@@ -25,7 +25,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,
                 ReservationId = source.ReservationId,
-                IgnoreStartDateOverlap = true
+                IgnoreStartDateOverlap = true,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }

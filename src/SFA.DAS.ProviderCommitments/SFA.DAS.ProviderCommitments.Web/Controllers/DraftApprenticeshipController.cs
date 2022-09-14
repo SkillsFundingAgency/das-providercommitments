@@ -132,24 +132,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction("AddDraftApprenticeship", request);
         }
 
-        [HttpPost]
-        [Route("add/validate")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> Validate(Models.AddDraftApprenticeshipViewModel model)
-        {
-            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
-            request.UserId = User.Upn();
-            try
-            {
-                await _commitmentsApiClient.ValidateDraftApprenticeship(model.CohortId.Value, request);
-            }
-            catch (CommitmentsApiModelException ex)
-            {
-                return Json(ex.Errors);
-            }
-            return new OkResult();
-        }
-
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
