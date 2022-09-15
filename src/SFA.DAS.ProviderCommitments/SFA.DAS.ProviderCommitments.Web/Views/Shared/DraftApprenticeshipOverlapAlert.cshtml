@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipOverlapAlertViewModel
 @{
     ViewBag.Title = "Training Date Overlap Alert";
@@ -52,7 +52,7 @@
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Unique learning number
+                        Unique learner number
                     </dt>
                     <dd class="govuk-summary-list__value">
                         @Model.Uln
@@ -76,18 +76,20 @@
         </div>
 
         <form method="post">
-            <div class="govuk-form-group">
-                <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-                <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
-                @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
-                <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
-                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
-                            Yes, these details are correct
-                        </label>
+            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DetailsAcknowledgement, " govuk-form-group--error")">
+                <fieldset class="govuk-fieldset">
+                    <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
+                    <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
+                    @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
+                    <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
+                            <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
+                                Yes, these details are correct
+                            </label>
+                        </div>
                     </div>
-                </div>
+                </fieldset>
             </div>
             <button class="govuk-button" data-module="govuk-button">
                 Continue
