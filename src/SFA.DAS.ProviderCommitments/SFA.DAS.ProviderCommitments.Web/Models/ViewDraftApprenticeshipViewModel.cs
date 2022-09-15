@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourse { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? EmploymentPrice { get; set; }

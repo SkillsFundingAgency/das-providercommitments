@@ -99,6 +99,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.ActualStartDate.Date, result.ActualStartDate);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();

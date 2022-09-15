@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseCode = source.CourseCode,
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,
+                ActualStartDate = source.ActualStartDate.Date,
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference,
                 CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
