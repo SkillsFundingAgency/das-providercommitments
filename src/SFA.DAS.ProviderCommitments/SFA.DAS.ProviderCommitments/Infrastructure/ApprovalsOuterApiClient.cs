@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             CancellationToken cancellationToken = default)
         {
             return await _client.Get<ProviderCourseDeliveryModels>
-                ($"/providers/{providerId}/courses?trainingCode={courseCode}&accountLegalEntityId={accountLegalEntityId}",
+                ($"providers/{providerId}/courses?trainingCode={courseCode}&accountLegalEntityId={accountLegalEntityId}",
                 cancellationToken: cancellationToken);
         }
     }
