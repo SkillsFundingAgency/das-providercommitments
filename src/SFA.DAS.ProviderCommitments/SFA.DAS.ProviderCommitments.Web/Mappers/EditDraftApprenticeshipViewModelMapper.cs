@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 var apiRequest = new GetEditDraftApprenticeshipRequest(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId);
                 var apiResponse = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
 
-                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
+                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.ActualStartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
                 {
                     AccountLegalEntityId = source.Cohort.AccountLegalEntityId,
                     EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(source.Cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),

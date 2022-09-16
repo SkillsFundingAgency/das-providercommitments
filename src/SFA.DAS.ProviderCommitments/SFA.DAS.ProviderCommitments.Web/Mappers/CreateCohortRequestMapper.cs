@@ -41,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Cost = source.Cost,
                 EmploymentPrice = source.EmploymentPrice,
                 StartDate = source.StartDate.Date,
+                ActualStartDate = source.ActualStartDate.Date,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,

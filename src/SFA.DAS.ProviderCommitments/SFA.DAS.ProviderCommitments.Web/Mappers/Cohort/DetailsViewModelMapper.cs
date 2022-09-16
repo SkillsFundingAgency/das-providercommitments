@@ -182,6 +182,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             DateOfBirth = a.DateOfBirth,
                             EndDate = a.EndDate,
                             StartDate = a.StartDate,
+                            ActualStartDate = a.ActualStartDate,
                             OriginalStartDate = a.OriginalStartDate,
                             ULN = a.Uln,
                             HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
