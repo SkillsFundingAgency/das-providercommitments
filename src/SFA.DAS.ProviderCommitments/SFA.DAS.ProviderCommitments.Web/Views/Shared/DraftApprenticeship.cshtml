@@ -3,6 +3,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Features
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -18,7 +19,7 @@
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
 
-    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,IsOnFlexiPaymentPilot,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
@@ -131,6 +132,41 @@ else
         @Html.ValidationMessageFor(m => m.Uln, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln) })
         <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
     </div>
+
+    @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+    {
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h1 class="govuk-fieldset__heading">
+                        Will this apprentice be part of the Flexible Payments pilot program?
+                    </h1>
+                </legend>
+                <span id="finish-date-hint" class="govuk-hint">
+                    Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
+                </span>
+                <div class="govuk-radios">
+                    @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true" @(Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false" @(Model.IsOnFlexiPaymentPilot.HasValue && !Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
+    }
 
 
     <div class="govuk-form-group">

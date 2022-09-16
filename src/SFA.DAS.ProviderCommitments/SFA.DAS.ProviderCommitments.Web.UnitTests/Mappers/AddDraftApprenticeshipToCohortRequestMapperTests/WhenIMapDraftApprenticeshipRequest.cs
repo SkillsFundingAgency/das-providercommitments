@@ -45,6 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
                 .With(x => x.StartYear, startDate?.Year)
                 .With(x => x.DeliveryModel, deliveryModel)
                 .With(x => x.EmploymentPrice, employmentPrice)
+                .With(x => x.IsOnFlexiPaymentPilot, true)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();
@@ -148,6 +149,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         {
             var result = await _act();
             Assert.AreEqual(_source.EmploymentPrice, result.EmploymentPrice);
+        }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
     }
 }

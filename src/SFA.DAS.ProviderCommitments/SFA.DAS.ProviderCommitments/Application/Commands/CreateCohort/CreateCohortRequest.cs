@@ -24,5 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public string OriginatorReference { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }
