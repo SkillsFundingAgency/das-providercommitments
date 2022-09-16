@@ -79,6 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task ThenCanResendInvitationIsFalse()
         {
+            _fixture.ApiResponse.Status = ApprenticeshipStatus.Stopped;
             await _fixture.Map();
             Assert.IsFalse(_fixture.Result.CanResendInvitation);
         }
