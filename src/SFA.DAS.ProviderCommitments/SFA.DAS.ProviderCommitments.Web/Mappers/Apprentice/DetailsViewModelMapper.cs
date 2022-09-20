@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -17,12 +19,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
+        private readonly IOuterApiClient _apiClient;
         private readonly ILogger<DetailsViewModelMapper> _logger;
-        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService,
+
+        public DetailsViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingService, IOuterApiClient apiClient,
              ILogger<DetailsViewModelMapper> logger)
         {
             _commitmentApiClient = commitmentApiClient;
             _encodingService = encodingService;
+            _apiClient = apiClient;
             _logger = logger;            
         }
 
@@ -47,6 +52,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var preDateStandardVersioning = apprenticeshipStopped && data.Apprenticeship.Option == null;
                 (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
                 var showOptions = hasOptions && !preDateStandardVersioning;
+
+                var apiRequest = new GetApprenticeshipDetailsRequest(source.ProviderId, source.ApprenticeshipId);
+                var apprenticeshipDetails = await _apiClient.Get<GetApprenticeshipDetailsResponse>(apiRequest);
 
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
@@ -102,6 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning.GetValueOrDefault(),
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
+                    HasMultipleDeliveryModelOptions = apprenticeshipDetails.HasMultipleDeliveryModelOptions,
                 };
             }
             catch (Exception e)
