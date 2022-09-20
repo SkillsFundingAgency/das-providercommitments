@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
@@ -14,21 +15,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     {
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiClient _outerApiClient;
+        private readonly ITempDataStorageService _storageService;
 
-        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, IOuterApiClient outerApiClient)
+        public EditDraftApprenticeshipViewModelMapper(IEncodingService encodingService, IOuterApiClient outerApiClient, ITempDataStorageService storageService)
         {
             _encodingService = encodingService;
             _outerApiClient = outerApiClient;
+            _storageService = storageService;
         }
 
         public async Task<IDraftApprenticeshipViewModel> Map(EditDraftApprenticeshipRequest source)
         {
             try
             {
-                var apiRequest = new GetEditDraftApprenticeshipRequest(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId);
+                var cachedModel = _storageService.RetrieveFromCache<EditDraftApprenticeshipViewModel>();
+
+                var apiRequest = new GetEditDraftApprenticeshipRequest(source.Request.ProviderId, source.Request.CohortId, source.Request.DraftApprenticeshipId, cachedModel?.CourseCode);
                 var apiResponse = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(apiRequest);
 
-                return new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
+                var newModel = new EditDraftApprenticeshipViewModel(apiResponse.DateOfBirth, apiResponse.StartDate, apiResponse.EndDate, apiResponse.EmploymentEndDate)
                 {
                     AccountLegalEntityId = source.Cohort.AccountLegalEntityId,
                     EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(source.Cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
@@ -57,6 +62,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                     HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency
                 };
+
+                if (cachedModel != null)
+                {
+                    cachedModel.HasMultipleDeliveryModelOptions = newModel.HasMultipleDeliveryModelOptions;
+                    return cachedModel;
+                }
+
+                return newModel;
             }
             catch (RestHttpClientException restEx)
             {
