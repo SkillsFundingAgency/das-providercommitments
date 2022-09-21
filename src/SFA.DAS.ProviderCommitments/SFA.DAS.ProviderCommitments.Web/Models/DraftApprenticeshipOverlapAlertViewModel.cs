@@ -11,9 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
-        public long? DraftApprenticeshipId { get; set; }
         public string OverlapApprenticeshipHashedId { get; set; }
-        public long? OverlapApprenticeshipId { get; set; }
 
         [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm these details are correct")]
         public bool DetailsAcknowledgement { get; set; }

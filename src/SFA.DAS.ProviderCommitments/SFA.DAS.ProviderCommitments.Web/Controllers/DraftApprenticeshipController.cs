@@ -309,9 +309,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
                     DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
-                    DraftApprenticeshipId = model.DraftApprenticeshipId,
-                    OverlapApprenticeshipHashedId = hashedApprenticeshipId,
-                    OverlapApprenticeshipId = overlapResult.HasOverlapWithApprenticeshipId.Value
+                    OverlapApprenticeshipHashedId = hashedApprenticeshipId
                 });
             }
 
