@@ -11,7 +11,7 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
         <h1 class="govuk-heading-xl">This apprentice already has an existing apprenticeship record</h1>
-        <h3 class="govuk-heading-m">A stop request was made on @Model.CreatedOn.ToShortDateString() to resolve an overlapping training date.</h3>
+        <h3 class="govuk-heading-m">A stop request was made on @Model.CreatedOn.ToGdsFormatLongMonth() to resolve an overlapping training date.</h3>
         <p>You can save the changes that you have just made but you cannot send a further request to the employer.</p>
 
         <form method="post">
