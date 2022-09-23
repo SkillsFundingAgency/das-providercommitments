@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -24,18 +26,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
+        private readonly ITempDataStorageService _storageService;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient)
+            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
             _pasAccountsApiClient = pasAccountApiClient;
             _outerApiClient = outerApiClient;
+            _storageService = storageService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
+            //clear leftover tempdata from add/edit
+            //this solution should NOT use tempdata in this way
+            _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
+
             var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, source.CohortId));
             var cohortTask = _commitmentsApiClient.GetCohort(source.CohortId);
             var draftApprenticeshipsTask = _commitmentsApiClient.GetDraftApprenticeships(source.CohortId);
