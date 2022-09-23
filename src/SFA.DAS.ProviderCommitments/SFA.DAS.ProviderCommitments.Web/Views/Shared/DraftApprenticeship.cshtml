@@ -90,6 +90,7 @@ else
                         </ul>
                     </div>
                 </details>
+                <label asp-for="Email" class="govuk-label">Email address</label>
                 @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
                 <input asp-for="Email" class="govuk-input" />
             </div>
@@ -178,8 +179,6 @@ else if (Model.DeliveryModel != DeliveryModel.Regular)
         </legend>
         <span id="start-date-hint" class="govuk-hint">
             For example, 09 2017
-        </span>
-        <span id="start-date-hint" class="govuk-hint">
             The standard version will be based on the planned training start date provided
         </span>
         @Html.ValidationMessageFor(m => m.StartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
