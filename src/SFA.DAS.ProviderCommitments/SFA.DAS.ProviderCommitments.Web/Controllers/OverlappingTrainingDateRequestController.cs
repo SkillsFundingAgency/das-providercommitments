@@ -51,7 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-options-with-pending-request")]
         public IActionResult DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequest request)
         {
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
             var vm = new DraftApprenticeshipOverlapOptionWithPendingRequestViewModel()
             {
                 CohortReference = request.CohortReference,
@@ -61,6 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 Status = request.Status,
                 EnableStopRequestEmail = request.EnableStopRequestEmail
             };
+
             return View(vm);
         }
 
