@@ -205,6 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/validate")]
+        [AjaxValidation]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Validate(Models.AddDraftApprenticeshipViewModel model)
         {
