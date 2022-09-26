@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -63,6 +64,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         {
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+        }
+        
+        [TestCase(true, DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(true, DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(false, DeliveryModel.FlexiJobAgency, false)]
+        public async Task HasUnavailableFlexiJobAgencyDeliveryModel_Is_Mapped_Correctly(bool hasUnavailableDeliveryModel, DeliveryModel currentDeliveryModel, bool expectedResult)
+        {
+            _apiResponse.DeliveryModel = currentDeliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
         }
     }
 }
