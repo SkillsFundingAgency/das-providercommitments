@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private EditDraftApprenticeshipRequest _source;
         private Func<Task<EditDraftApprenticeshipViewModel>> _act;
         private GetEditDraftApprenticeshipResponse _apiResponse;
+        private Mock<ITempDataStorageService> _tempDataStorageService;
         private string _cohortReference;
 
         [SetUp]
@@ -35,7 +36,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
                     x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object, Mock.Of<ITempDataStorageService>());
+            _tempDataStorageService = new Mock<ITempDataStorageService>();
+            _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
+                .Returns(() => null);
+
+            _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object, _tempDataStorageService.Object);
             _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
@@ -261,6 +266,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var result = await _act();
             Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
+        }
+
+        [TestCase(DeliveryModel.Regular, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(DeliveryModel.FlexiJobAgency, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, false)]
+        public async Task ThenHasChangedDeliveryModelIsMappedCorrectly(DeliveryModel editedDeliveryModel, Infrastructure.OuterApi.Types.DeliveryModel persistedDeliveryModel, bool expectedResult)
+        {
+            _tempDataStorageService.Setup(x => x.RetrieveFromCache<EditDraftApprenticeshipViewModel>())
+                .Returns(new EditDraftApprenticeshipViewModel(null, null, null, null)
+                {
+                    DeliveryModel = editedDeliveryModel
+                });
+
+            _apiResponse.DeliveryModel = persistedDeliveryModel;
+
+            var result = await _act();
+            Assert.AreEqual(expectedResult, result.HasChangedDeliveryModel);
         }
     }
 }

@@ -122,5 +122,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
+        public bool HasChangedDeliveryModel { get; set; }
     }
 }
