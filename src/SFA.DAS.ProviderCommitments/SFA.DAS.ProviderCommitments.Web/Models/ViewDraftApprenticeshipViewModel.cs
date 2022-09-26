@@ -23,6 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string Reference { get; set; }
         public string TrainingCourseVersion { get ; set ; }
         public string TrainingCourseOption { get ; set ; }
-        public bool HasTrainingCourseOption { get ; set ; }
+        public bool HasTrainingCourseOption { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }
