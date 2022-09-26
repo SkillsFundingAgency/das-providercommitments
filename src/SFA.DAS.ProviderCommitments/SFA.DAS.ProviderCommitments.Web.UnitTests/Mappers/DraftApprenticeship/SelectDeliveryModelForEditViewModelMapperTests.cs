@@ -76,5 +76,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
             var result = await _mapper.Map(_request);
             Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
         }
+
+        [TestCase(DeliveryModel.FlexiJobAgency, true, false, true)]
+        [TestCase(DeliveryModel.PortableFlexiJob, true, false, false)]
+        [TestCase(DeliveryModel.FlexiJobAgency, false, false, false)]
+        [TestCase(DeliveryModel.FlexiJobAgency, true, true, false)]
+        public async Task ShowFlexiJobAgencyDeliveryModelConfirmation_Is_Mapped_Correctly(DeliveryModel deliveryModel, bool deliveryModelIsUnavailable, bool hasOtherOptions, bool expectShowConfirmation)
+        {
+            _apiResponse.DeliveryModels.Clear();
+            _apiResponse.DeliveryModels.Add(DeliveryModel.Regular);
+            _apiResponse.DeliveryModel = deliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = deliveryModelIsUnavailable;
+
+            if (hasOtherOptions)
+            {
+                _apiResponse.DeliveryModels.Add(DeliveryModel.PortableFlexiJob);
+            }
+
+            var result = await _mapper.Map(_request);
+
+            Assert.AreEqual(expectShowConfirmation, result.ShowFlexiJobAgencyDeliveryModelConfirmation);
+        }
     }
 }

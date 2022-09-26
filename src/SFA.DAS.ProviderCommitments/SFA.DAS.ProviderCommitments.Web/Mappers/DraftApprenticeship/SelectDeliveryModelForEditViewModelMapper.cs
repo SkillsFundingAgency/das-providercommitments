@@ -32,7 +32,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                 DeliveryModels = apiResponse.DeliveryModels,
                 HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency,
                 LegalEntityName = apiResponse.EmployerName,
-                CourseCode = editModel.CourseCode
+                CourseCode = editModel.CourseCode,
+                ShowFlexiJobAgencyDeliveryModelConfirmation = apiResponse.HasUnavailableDeliveryModel &&
+                                                              apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency &&
+                                                              apiResponse.DeliveryModels.Count == 1
             };
         }
     }
