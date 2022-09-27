@@ -19,6 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Employer { get ; private set ; }
         [Name("Apprenticeship training course")]
         public string CourseName { get ; private set ; }
+        [Name("Apprenticeship delivery model")]
+        public string DeliveryModel { get; private set; }
         [Name("Planned start date")]
         public string PlannedStartDate { get ; private set ; }
         [Name("Planned end date")]
@@ -41,8 +43,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Status { get ; private set ; }
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
-        [Name("Delivery model")]
-        public string DeliveryModel { get; private set; }
 
         public ApprenticeshipDetailsCsvModel Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model, IEncodingService encodingService)
         {
