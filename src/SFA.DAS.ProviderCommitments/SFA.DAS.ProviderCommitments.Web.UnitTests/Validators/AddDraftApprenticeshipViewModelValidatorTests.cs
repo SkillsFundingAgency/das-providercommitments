@@ -22,6 +22,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             AssertValidationResult(request => request.DateOfBirth, model, expectedValid);
         }
 
+        [TestCase(12, 12, 2000, true)]
+        [TestCase(31, 2, 2000, false)]
+        [TestCase(null, 2, 2000, false)]
+        [TestCase(31, null, 2000, false)]
+        [TestCase(31, 1, null, false)]
+        [TestCase(null, null, null, true)]
+        public void Validate_ActualStartDate_ShouldBeValidated(int? day, int? month, int? year, bool expectedValid)
+        {
+            var model = new AddDraftApprenticeshipViewModel { ActualStartDay = day, ActualStartMonth = month, ActualStartYear = year };
+            AssertValidationResult(request => request.ActualStartDate, model, expectedValid);
+        }
+
         [TestCase(12, 2000, true)]
         [TestCase(13, 2000, false)]
         [TestCase(null, 2000, false)]

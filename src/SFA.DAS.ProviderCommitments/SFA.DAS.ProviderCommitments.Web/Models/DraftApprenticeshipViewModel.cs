@@ -85,6 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? ActualStartYear { get => ActualStartDate.Year; set => ActualStartDate.Year = value; }
 
         [Display(Name = "Planned apprenticeship training start date")]
+        [DataType(DataType.Date)]
         public DateModel ActualStartDate { get; set; }
 
         [Display(Name = "Month")]

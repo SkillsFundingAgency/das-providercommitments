@@ -121,7 +121,7 @@
                     For example, 08 12 2001
                 </span>
                 @Html.ValidationMessageFor(m => m.DateOfBirth, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DateOfBirth)})
-                <div class="govuk-date-input">
+                <div class="govuk-date-input" id="DateOfBirth">
                     <div class="govuk-date-input__item">
                         <div class="govuk-form-group">
                             <label asp-for="BirthDay" class="govuk-label govuk-date-input__label">Day</label>
@@ -240,7 +240,7 @@
                 The standard version will be based on the planned training start date provided
             </span>
             @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
-            <div class="govuk-date-input">
+            <div class="govuk-date-input" id="StartDate">
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
@@ -269,7 +269,7 @@
                 The standard version will be based on the planned training start date provided
             </span>
             @Html.ValidationMessageFor(m => m.ActualStartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ActualStartDate) })
-            <div class="govuk-date-input">
+            <div class="govuk-date-input" id="ActualStartDate">
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="ActualStartDay" class="govuk-label govuk-date-input__label">Day</label>
@@ -301,7 +301,7 @@
                 For example, 09 2019
             </span>
             @Html.ValidationMessageFor(m => m.EndDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate)})
-            <div class="govuk-date-input">
+            <div class="govuk-date-input" id="EndDate">
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
@@ -346,10 +346,6 @@
             </fieldset>
         </div>
     }
-    else
-    {
-        <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
-    }
 
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
         <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
@@ -392,9 +388,11 @@
 </div>
 
 <script type="text/javascript">
+
+    var page1Complete = false;
     function continueJourney() {
         resetErrors();
-        validateDraftApprenticeship();
+        validateDraftApprenticeship(showNextPage);
     }
 
     function showNextPage() {
@@ -404,12 +402,13 @@
         $("#submitAddDraftApprenticeship").removeClass("das-js-hide");
         $("#submitAddDraftApprenticeship").addClass("das-show");
 		
-		if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
+        if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
             $("#start-date-section").addClass("das-hide");
         } else {
             $("#actual-start-date-section").addClass("das-hide");
         }
 
+        $("#LastName").closest("form").on('submit', handleSubmit);
     }
 
     function resetErrors() {
@@ -428,22 +427,24 @@
         $("#" + fieldId).closest(".govuk-fieldset__legend").after("<span class=\"field-validation-error govuk-error-message\" data-valmsg-for=\"" + fieldId + "\" data-valmsg-replace=\"true\" id=\"error-message-" + fieldId + "\">" + errorDetail.message + "</span>");
     }
 
-    function validateDraftApprenticeship() {
+    function validateDraftApprenticeship(onSuccess) {
         var token = $('input[name="__RequestVerificationToken"]').val();
 
-        var formData = getFormData($("#LastName").closest("form"));
+        var $form = $("#LastName").closest("form");
+        var formData = getFormData($form);
         formData.__RequestVerificationToken = token;
         formData.providerId = "@Model.ProviderId";
         $.ajax({
             url: '@Url.Action("Validate", "Cohort")',
             method: "POST",
             data: formData,
+            context: $form,
             success: function(data) {
                 if (!data) {
-                    showNextPage();
+                    onSuccess($form);
                     return;
                 }
-                console.log(data);
+                $("#submitAddDraftApprenticeship").prop("disabled", false);
                 data.forEach(function(errorDetail) {
                     showError(errorDetail);
                 });
@@ -454,6 +455,18 @@
         });
 
         return false;
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        e.returnValue = false;
+
+        validateDraftApprenticeship(submitForm);
+    }
+
+    function submitForm($form) {
+        $form.off('submit');
+        $form.submit();
     }
 
     function getFormData($form){
