@@ -39,10 +39,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeConfirmation { get; private set; }
         [Name("Status")]
         public string Status { get ; private set ; }
-
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
-
+        [Name("Delivery model")]
+        public string DeliveryModel { get; private set; }
 
         public ApprenticeshipDetailsCsvModel Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model, IEncodingService encodingService)
         {
@@ -62,7 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 AgreementId = encodingService.Encode(model.AccountLegalEntityId,EncodingType.PublicAccountLegalEntityId),
                 DateOfBirth = model.DateOfBirth.ToGdsFormat(),
                 PausedDate = model.PauseDate != DateTime.MinValue ? model.PauseDate.ToGdsFormatWithoutDay() : "",
-                TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}"
+                TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}",
+                DeliveryModel = ToDeliveryModelDescription(model.DeliveryModel)
             };
         }
 
@@ -80,6 +81,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             }
 
             return alertString;
+        }
+
+        private static string ToDeliveryModelDescription(DeliveryModel deliveryModel)
+        {
+            return deliveryModel switch
+            {
+                CommitmentsV2.Types.DeliveryModel.FlexiJobAgency => "Flexi-job agency",
+                CommitmentsV2.Types.DeliveryModel.PortableFlexiJob => "Portable flexi-job",
+                CommitmentsV2.Types.DeliveryModel.Regular => "Regular",
+                _ => null
+            };
         }
     }
 }
