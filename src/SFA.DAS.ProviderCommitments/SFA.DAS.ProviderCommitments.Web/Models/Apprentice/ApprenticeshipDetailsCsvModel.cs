@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 DateOfBirth = model.DateOfBirth.ToGdsFormat(),
                 PausedDate = model.PauseDate != DateTime.MinValue ? model.PauseDate.ToGdsFormatWithoutDay() : "",
                 TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}",
-                DeliveryModel = ToDeliveryModelDescription(model.DeliveryModel)
+                DeliveryModel = model.DeliveryModel.ToDescription(),
             };
         }
 
@@ -81,17 +81,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             }
 
             return alertString;
-        }
-
-        private static string ToDeliveryModelDescription(DeliveryModel deliveryModel)
-        {
-            return deliveryModel switch
-            {
-                CommitmentsV2.Types.DeliveryModel.FlexiJobAgency => "Flexi-job agency",
-                CommitmentsV2.Types.DeliveryModel.PortableFlexiJob => "Portable flexi-job",
-                CommitmentsV2.Types.DeliveryModel.Regular => "Regular",
-                _ => null
-            };
         }
     }
 }
