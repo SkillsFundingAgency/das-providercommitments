@@ -179,11 +179,10 @@
                 </fieldset>
             </div>
         }
-    else
-    {
-        <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
-    }
-
+        else
+        {
+            <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
+        }
 
         <div class="govuk-form-group">
             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
@@ -446,7 +445,6 @@
                 });
             },
             error: function(data) {
-                alert("Error");
                 console.log(data);
             }
         });
