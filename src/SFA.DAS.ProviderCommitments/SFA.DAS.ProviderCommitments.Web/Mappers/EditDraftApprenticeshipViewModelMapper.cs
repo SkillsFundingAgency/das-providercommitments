@@ -54,7 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     DurationReducedBy = apiResponse.DurationReducedBy,
                     PriceReducedBy = apiResponse.PriceReducedBy,
                     RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
-                    HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+                    HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
+                    IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot
                 };
             }
             catch (RestHttpClientException restEx)

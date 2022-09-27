@@ -28,13 +28,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = apiResponse.Uln,
                 CourseCode = apiResponse.CourseCode,
                 Cost = apiResponse.Cost,
+                ActualStartDate = apiResponse.ActualStartDate,
                 StartDate = apiResponse.StartDate?.Date,
                 EndDate = apiResponse.EndDate?.Date,
                 Reference = apiResponse.Reference,
                 CourseOption = source.SelectedOption == "-1" ? string.Empty : source.SelectedOption,
                 DeliveryModel = apiResponse.DeliveryModel,
                 EmploymentEndDate = apiResponse.EmploymentEndDate,
-                EmploymentPrice = apiResponse.EmploymentPrice
+                EmploymentPrice = apiResponse.EmploymentPrice,
+                IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot
             };
         }
     }
