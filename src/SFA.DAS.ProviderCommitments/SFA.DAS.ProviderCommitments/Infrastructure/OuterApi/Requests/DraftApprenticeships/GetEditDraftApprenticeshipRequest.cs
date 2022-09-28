@@ -8,15 +8,17 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public long ProviderId { get; }
         public long CohortId { get; }
         public long DraftApprenticeshipId { get; }
+        public string CourseCode { get; }
 
-        public GetEditDraftApprenticeshipRequest(long providerId, long cohortId, long draftApprenticeshipId)
+        public GetEditDraftApprenticeshipRequest(long providerId, long cohortId, long draftApprenticeshipId, string courseCode)
         {
             ProviderId = providerId;
             CohortId = cohortId;
             DraftApprenticeshipId = draftApprenticeshipId;
+            CourseCode = courseCode;
         }
 
-        public string GetUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/edit";
+        public string GetUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/edit?courseCode={CourseCode}";
     }
 
     public class GetEditDraftApprenticeshipResponse
@@ -59,5 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }

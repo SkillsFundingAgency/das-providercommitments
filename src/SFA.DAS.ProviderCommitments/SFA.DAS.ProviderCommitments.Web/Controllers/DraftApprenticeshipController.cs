@@ -193,6 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
+            draft.CourseCode = model.CourseCode;
             StoreEditDraftApprenticeshipState(draft);
 
             var request = new BaseDraftApprenticeshipRequest
@@ -304,6 +305,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId, model.CohortReference, model.DraftApprenticeshipHashedId });
             }
 
+            if (model.IsOnFlexiPaymentPilot is true) model.StartDate = null; 
+            else if (model.IsOnFlexiPaymentPilot is false) model.ActualStartDay = null; 
 
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
@@ -334,7 +337,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             try
             {
-                IDraftApprenticeshipViewModel model = GetStoredEditDraftApprenticeshipState() ?? await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {

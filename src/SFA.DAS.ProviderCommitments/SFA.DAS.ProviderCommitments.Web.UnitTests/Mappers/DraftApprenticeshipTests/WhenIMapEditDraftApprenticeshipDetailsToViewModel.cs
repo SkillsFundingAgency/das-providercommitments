@@ -9,6 +9,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests
 {
@@ -34,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
                     x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object);
+            _mapper = new EditDraftApprenticeshipViewModelMapper(Mock.Of<IEncodingService>(), commitmentsApiClient.Object, Mock.Of<ITempDataStorageService>());
             _source = fixture.Build<EditDraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as EditDraftApprenticeshipViewModel;
@@ -244,6 +245,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var result = await _act();
             Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+        }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
+		
+		[Test]
+        public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
         }
     }
 }
