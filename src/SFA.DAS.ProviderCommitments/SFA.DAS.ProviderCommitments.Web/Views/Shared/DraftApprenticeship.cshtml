@@ -390,7 +390,6 @@
 <script type="text/javascript">
 
     function continueJourney() {
-        resetErrors();
         validateDraftApprenticeship(showNextPage);
     }
 
@@ -427,6 +426,8 @@
     }
 
     function validateDraftApprenticeship(onSuccess) {
+        resetErrors();
+
         var token = $('input[name="__RequestVerificationToken"]').val();
 
         var $form = $("#LastName").closest("form");
