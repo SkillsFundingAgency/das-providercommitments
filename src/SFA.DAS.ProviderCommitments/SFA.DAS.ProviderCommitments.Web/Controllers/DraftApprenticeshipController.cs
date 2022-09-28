@@ -193,6 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
+            draft.CourseCode = model.CourseCode;
             StoreEditDraftApprenticeshipState(draft);
 
             var request = new BaseDraftApprenticeshipRequest
@@ -334,7 +335,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             try
             {
-                IDraftApprenticeshipViewModel model = GetStoredEditDraftApprenticeshipState() ?? await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
+                var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {

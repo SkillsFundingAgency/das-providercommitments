@@ -27,6 +27,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -93,6 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<ITempDataStorageService, TempDataStorageService>();
             services.AddTransient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiService, OuterApiService>();
         }
