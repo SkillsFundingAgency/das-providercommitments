@@ -8,5 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
         public long? DraftApprenticeshipId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
         public long? ApprenticeshipId { get; set; }
+        public string CohortReference { get; set; }
     }
 }
