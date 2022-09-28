@@ -475,18 +475,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationViewModel viewModel)
         {
-            if (viewModel.DeleteConfirmed != null && !viewModel.DeleteConfirmed.Value)
+            if (viewModel.DeleteConfirmed != null && viewModel.DeleteConfirmed.Value)
             {
-                return RedirectToAction("ViewEditDraftApprenticeship", "DraftApprenticeship", new DraftApprenticeshipRequest
-                {
-                    ProviderId = viewModel.ProviderId,
-                    CohortReference = viewModel.CohortReference,
-                    DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId
-                });
+                await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
+                TempData.AddFlashMessage(DraftApprenticeDeleted, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             }
 
-            await _commitmentsApiClient.DeleteDraftApprenticeship(viewModel.CohortId, viewModel.DraftApprenticeshipId, new DeleteDraftApprenticeshipRequest(), CancellationToken.None);
-            TempData.AddFlashMessage(DraftApprenticeDeleted, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
             return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
