@@ -127,8 +127,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             //Assert           
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.AreEqual("ViewEditDraftApprenticeship", redirect.ActionName);
-            Assert.AreEqual("DraftApprenticeship", redirect.ControllerName);
+            Assert.AreEqual("Details", redirect.ActionName);
+            Assert.AreEqual("Cohort", redirect.ControllerName);
         }
 
         [Test]
