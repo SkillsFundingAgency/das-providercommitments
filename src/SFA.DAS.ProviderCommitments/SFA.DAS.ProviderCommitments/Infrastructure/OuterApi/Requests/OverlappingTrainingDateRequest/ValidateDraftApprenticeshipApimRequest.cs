@@ -18,6 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Overlappi
         public DeliveryModel? DeliveryModel { get; set; }
         public int? Cost { get; set; }
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string OriginatorReference { get; set; }
         public Guid? ReservationId { get; set; }
