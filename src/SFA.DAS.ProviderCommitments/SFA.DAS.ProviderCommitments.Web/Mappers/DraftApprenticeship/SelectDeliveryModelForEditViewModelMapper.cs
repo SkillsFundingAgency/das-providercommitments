@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
             {
                 DeliveryModel = apiResponse.DeliveryModel,
                 DeliveryModels = apiResponse.DeliveryModels,
-                HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency,
+                HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && editModel.DeliveryModel == CommitmentsV2.Types.DeliveryModel.FlexiJobAgency,
                 LegalEntityName = apiResponse.EmployerName,
                 CourseCode = editModel.CourseCode,
                 ShowFlexiJobAgencyDeliveryModelConfirmation = apiResponse.HasUnavailableDeliveryModel &&

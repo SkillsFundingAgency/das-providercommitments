@@ -157,7 +157,7 @@ else
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
         <p class="govuk-body">
             @Model.DeliveryModel.ToDescription()
-            @if (!Model.HasChangedDeliveryModel)
+            @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
                     Edit<span class="govuk-visually-hidden"> delivery model</span>
