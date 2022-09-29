@@ -248,12 +248,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId, model.CohortReference });
             }
 
+            SetStartDatesBasedOnFlexiPaymentPilotRules(model);
+
             var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
             request.UserId = User.Upn();
 
             var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            if (RequireRpl(model.StartDate))
+            if (RequireRpl(model))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
@@ -277,8 +279,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private bool RequireRpl(MonthYearModel startDate)
+        private bool RequireRpl(DraftApprenticeshipViewModel model)
         {
+            var startDate = model.ActualStartDate.Date ?? model.StartDate.Date;
             if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
                 return false;
 
@@ -305,13 +308,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId, model.CohortReference, model.DraftApprenticeshipHashedId });
             }
 
-            if (model.IsOnFlexiPaymentPilot is true) model.StartDate = null; 
-            else if (model.IsOnFlexiPaymentPilot is false) model.ActualStartDay = null; 
+            SetStartDatesBasedOnFlexiPaymentPilotRules(model);
 
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
-            if (RequireRpl(model.StartDate))
+            if (RequireRpl(model))
             {
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new 
                 {
@@ -328,6 +330,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     model.DraftApprenticeshipHashedId,
                     model.CohortReference);
             }
+        }
+
+        private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
+        {
+            if (model.IsOnFlexiPaymentPilot is null or false) model.ActualStartDate = new DateModel();
+            else if (model.IsOnFlexiPaymentPilot is true) model.StartDate = new MonthYearModel("");
         }
 
         [HttpGet]
