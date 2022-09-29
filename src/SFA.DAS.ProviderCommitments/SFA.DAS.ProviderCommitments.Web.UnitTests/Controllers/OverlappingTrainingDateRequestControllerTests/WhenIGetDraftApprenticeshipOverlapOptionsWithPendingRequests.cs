@@ -19,12 +19,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.GetDraftApprenticeshipOverlapOptionsWithPendingRequest();
             _fixture.VerifyOverlapRequestsViewReturned();
         }
-
-        [Test]
-        public void AndWhenIGetOverlapRequests_FeatureToggleServiceIsCalled()
-        {
-            _fixture.GetDraftApprenticeshipOverlapOptionsWithPendingRequest();
-            _fixture.VerifyfeatureTogglesServiceToGetPendingRequestsIsCalled();
-        }
     }
 }
