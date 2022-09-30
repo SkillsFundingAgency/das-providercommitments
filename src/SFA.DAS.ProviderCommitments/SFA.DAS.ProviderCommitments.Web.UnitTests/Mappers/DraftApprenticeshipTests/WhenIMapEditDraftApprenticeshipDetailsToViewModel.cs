@@ -252,6 +252,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
 
             var result = await _act();
             Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+        }
 
         [Test]
         public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
