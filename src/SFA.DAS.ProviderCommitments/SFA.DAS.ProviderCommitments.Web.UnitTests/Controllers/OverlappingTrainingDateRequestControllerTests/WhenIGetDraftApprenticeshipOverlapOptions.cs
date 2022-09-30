@@ -30,13 +30,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
-        {
-            _fixture.SetOverlappingTrainingDateRequestFeatureToggle(true).GetDraftApprenticeshipOverlapOptions();
-            _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped(true);
-        }
-
-        [Test]
         public async Task AndWhenWhenUserSelectsToSendOverlapEmailToEmployer()
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
