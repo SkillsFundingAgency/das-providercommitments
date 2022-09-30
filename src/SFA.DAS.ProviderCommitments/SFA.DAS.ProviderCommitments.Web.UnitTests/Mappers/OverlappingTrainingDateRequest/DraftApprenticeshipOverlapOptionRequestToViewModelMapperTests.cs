@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.OverlappingTrainingD
             Assert.AreEqual(true, result.EnableStopRequestEmail);
         }
 
-        [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, false)]
+        [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Live, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Stopped, false)]

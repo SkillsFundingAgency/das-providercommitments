@@ -32,7 +32,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.OverlappingTrainingDateRequest
                 Status = apprenticeshipDetails.Status,
                 EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
+                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
+                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed )
             };
 
             return vm;
