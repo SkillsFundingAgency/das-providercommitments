@@ -49,21 +49,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("overlap-options")]
-        public IActionResult DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
+        public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
-            var apprenticeshipDetails = _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value).Result;
-
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
-            var vm = new DraftApprenticeshipOverlapOptionViewModel
-            {
-                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
-                Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
-            };
-
+            var vm = await _modelMapper.Map<DraftApprenticeshipOverlapOptionViewModel>(request);
             return View(vm);
         }
 
