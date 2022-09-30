@@ -94,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.OverlappingTrainingD
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Live, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart, true)]
-        [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Stopped, false)]
+        [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Stopped, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Paused, true)]
         public async Task ThenEnableStopRequestEmailIsMappedCorrectly(CommitmentsV2.Types.ApprenticeshipStatus apprenticeshipStatus, bool sendEmail)
         {
