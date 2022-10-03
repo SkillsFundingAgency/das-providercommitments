@@ -12,6 +12,7 @@
         <h1 class="govuk-heading-xl">Select the apprenticeship delivery model</h1>
 
         <form id="selectDeliveryModel" novalidate method="post">
+            <input type="hidden" asp-for="CourseCode" />
 
             <partial name="_SelectDeliveryModelPartial" />
 
