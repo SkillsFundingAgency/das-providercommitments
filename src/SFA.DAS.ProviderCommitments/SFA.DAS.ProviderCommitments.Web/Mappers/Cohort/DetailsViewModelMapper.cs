@@ -197,6 +197,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                             EmploymentPrice = a.EmploymentPrice,
                             EmploymentEndDate = a.EmploymentEndDate,
+                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
                         })
                 .ToList()
                 })
@@ -222,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             if (draftApprenticeship.DateOfBirth == null
                 || draftApprenticeship.Uln == null
-                || draftApprenticeship.StartDate == null
+                || (draftApprenticeship.ActualStartDate == null && draftApprenticeship.StartDate == null)
                 || draftApprenticeship.EndDate == null
                 || draftApprenticeship.Cost == null)
             {

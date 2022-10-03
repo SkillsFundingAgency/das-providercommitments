@@ -641,7 +641,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(nameof(DraftApprenticeshipDto.LastName))]
         [TestCase(nameof(DraftApprenticeshipDto.CourseName))]
         [TestCase(nameof(DraftApprenticeshipDto.DateOfBirth))]
-        [TestCase(nameof(DraftApprenticeshipDto.StartDate))]
         [TestCase(nameof(DraftApprenticeshipDto.EndDate))]
         [TestCase(nameof(DraftApprenticeshipDto.Cost))]
         [TestCase(nameof(DraftApprenticeshipDto.Uln))]
@@ -650,6 +649,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateDraftApprenticeship()
                 .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            var result = await fixture.Map();
+            Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
+        }
+
+        [Test]
+        public async Task IsCompleteIsFalseWhenStartDatesAreBothNull()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship()
+                .SetValueOfDraftApprenticeshipProperty("StartDate", null)
+                .SetValueOfDraftApprenticeshipProperty("ActualStartDate", null);
             var result = await fixture.Map();
             Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
         }
@@ -910,8 +920,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(source.EmploymentPrice, result.EmploymentPrice);
             Assert.AreEqual(source.EmploymentEndDate, result.EmploymentEndDate);
             Assert.AreEqual(source.StartDate, result.StartDate);
+            Assert.AreEqual(source.ActualStartDate, result.ActualStartDate);
             Assert.AreEqual(source.EndDate, result.EndDate);
             Assert.AreEqual($"X{source.Id}X", result.DraftApprenticeshipHashedId);
+            Assert.AreEqual(source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
 
         public void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)

@@ -21,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsComplete { get; set; }
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public bool ExceedsFundingBandCap
         {
@@ -78,6 +79,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
             
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
+
+        public string DislayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
 
         public DateTime? OriginalStartDate { get; set; }

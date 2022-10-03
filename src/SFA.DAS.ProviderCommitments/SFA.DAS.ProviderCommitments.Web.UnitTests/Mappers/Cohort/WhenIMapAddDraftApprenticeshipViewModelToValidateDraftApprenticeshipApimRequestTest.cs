@@ -131,7 +131,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ActualStartDate, result.ActualStartDate);
+            Assert.AreEqual(_source.ActualStartDate.Date, result.ActualStartDate);
         }
     }
 }
