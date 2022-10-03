@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
+using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using System;
 using System.Threading.Tasks;
@@ -70,10 +71,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-options")]
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
-            var model = GetStoredAddDraftApprenticeshipState();
+            DraftApprenticeshipViewModel model = string.IsNullOrEmpty(viewModel.DraftApprenticeshipHashedId) ? GetStoredAddDraftApprenticeshipState() : GetStoredEditDraftApprenticeshipState();
 
             // redirect 302 does not clear tempdata.
-            RemoveStoredDraftApprenticeshipState();
+            RemoveStoredDraftApprenticeshipState(viewModel.DraftApprenticeshipHashedId);
 
             if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
             {
@@ -82,15 +83,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (string.IsNullOrEmpty(viewModel.CohortReference))
             {
-                await CreateCohortAndDraftApprenticeship(viewModel, model);
+                await CreateCohortAndDraftApprenticeship(viewModel, model as AddDraftApprenticeshipViewModel);
             }
             else if (string.IsNullOrWhiteSpace(viewModel.DraftApprenticeshipHashedId))
             {
-                await AddDraftApprenticeship(viewModel, model);
+                await AddDraftApprenticeship(viewModel, model as AddDraftApprenticeshipViewModel);
             }
             else
             {
-                await UpdateDraftApprenticeship();
+                await UpdateDraftApprenticeship(viewModel.DraftApprenticeshipId.Value, model as EditDraftApprenticeshipViewModel);
             }
 
             if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
@@ -127,6 +128,47 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("overlap-alert", Name = RouteNames.DraftApprenticeshipOverlapAlert)]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertRequest request)
+        {
+            DraftApprenticeshipViewModel model = request.DraftApprenticeshipHashedId == null
+                ? PeekStoredAddDraftApprenticeshipState()
+                : PeekStoredEditDraftApprenticeshipState();
+
+            var vm = new DraftApprenticeshipOverlapAlertViewModel
+            {
+                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
+                OverlapApprenticeshipHashedId = request.OverlapApprenticeshipHashedId,
+                CohortReference = model.CohortReference,
+                ProviderId = model.ProviderId,
+                StartDate = model.StartDate.Date.GetValueOrDefault(),
+                EndDate = model.EndDate.Date.GetValueOrDefault(),
+                Uln = model.Uln,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ReservationId = request.ReservationId,
+                StartMonthYear = request.StartMonthYear,
+                CourseCode = request.CourseCode,
+                DeliveryModel = request.DeliveryModel,
+                EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("overlap-alert")]
+        public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
+        {
+            return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new DraftApprenticeshipOverlapOptionRequest
+            {
+                CohortReference = viewModel.CohortReference,
+                DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
+                ApprenticeshipHashedId = viewModel.OverlapApprenticeshipHashedId
+            });
+        }
+
         private IActionResult Redirect(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
             if (!string.IsNullOrWhiteSpace(viewModel.CohortReference))
@@ -151,12 +193,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private async Task UpdateDraftApprenticeship()
+        private async Task UpdateDraftApprenticeship(long draftApprenticeshipId, EditDraftApprenticeshipViewModel editModel)
         {
-            var editModel = GetStoredEditDraftApprenticeshipState();
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(editModel);
             updateRequest.IgnoreStartDateOverlap = true;
-            await _commitmentsApiClient.UpdateDraftApprenticeship(editModel.CohortId.Value, editModel.DraftApprenticeshipId.Value, updateRequest);
+            await _commitmentsApiClient.UpdateDraftApprenticeship(editModel.CohortId.Value, draftApprenticeshipId, updateRequest);
         }
 
         private async Task AddDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
@@ -188,9 +229,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return TempData.Get<EditDraftApprenticeshipViewModel>(nameof(EditDraftApprenticeshipViewModel));
         }
 
-        private void RemoveStoredDraftApprenticeshipState()
+        private void RemoveStoredDraftApprenticeshipState(string draftApprenticeshipHashedId)
         {
-            TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
+            if (string.IsNullOrEmpty(draftApprenticeshipHashedId))
+            {
+                TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
+            }
+            else
+            {
+                TempData.Remove(nameof(EditDraftApprenticeshipViewModel));
+            }
         }
+
+        private AddDraftApprenticeshipViewModel PeekStoredAddDraftApprenticeshipState()
+        {
+            return TempData.GetButDontRemove<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+        }
+
+        private EditDraftApprenticeshipViewModel PeekStoredEditDraftApprenticeshipState()
+        {
+            return TempData.GetButDontRemove<EditDraftApprenticeshipViewModel>(nameof(EditDraftApprenticeshipViewModel));
+        }
+
     }
 }
