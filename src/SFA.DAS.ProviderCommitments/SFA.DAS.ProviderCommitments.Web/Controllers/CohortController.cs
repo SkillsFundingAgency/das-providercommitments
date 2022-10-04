@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +18,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -24,14 +29,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
-using System.Linq;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -203,7 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("add/apprenticeship")]
+        [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
@@ -220,7 +218,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new { model.ProviderId, ApprenticeshipHashedId = hashedApprenticeshipId });
+                return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
+                {
+                    OverlapApprenticeshipHashedId = hashedApprenticeshipId,
+                    ReservationId = model.ReservationId,
+                    StartMonthYear = model.StartDate.MonthYear,
+                    CourseCode = model.CourseCode,
+                    DeliveryModel = model.DeliveryModel,
+                    EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId
+                });
             }
 
             return await SaveDraftApprenticeship(model);
@@ -311,7 +317,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         public async Task<IActionResult> Details(DetailsRequest request)
@@ -320,7 +326,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("{cohortReference}/details")]
+        [Route("{cohortReference}")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]

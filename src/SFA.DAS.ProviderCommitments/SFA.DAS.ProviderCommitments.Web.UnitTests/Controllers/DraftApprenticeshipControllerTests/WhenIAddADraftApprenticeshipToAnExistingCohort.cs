@@ -145,7 +145,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenThereIsStartDateOverlap()
         {
             await _fixture.SetupStartDateOverlap(true, false).SetupAddDraftApprenticeshipViewModelForStartDateOverlap().PostToAddDraftApprenticeship();
-            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptions");
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapAlert");
         }
     }
 }

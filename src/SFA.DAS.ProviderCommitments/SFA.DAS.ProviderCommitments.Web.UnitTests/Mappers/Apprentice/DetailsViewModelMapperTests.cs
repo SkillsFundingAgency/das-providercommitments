@@ -16,6 +16,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -70,6 +74,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _fixture.Map();
             Assert.AreEqual(_fixture.ApiResponse.StopDate, _fixture.Result.StopDate);
+        }
+
+        [Test]
+        public async Task ThenCanResendInvitationIsFalse()
+        {
+            _fixture.ApiResponse.Status = ApprenticeshipStatus.Stopped;
+            await _fixture.Map();
+            Assert.IsFalse(_fixture.Result.CanResendInvitation);
         }
 
         [Test]
@@ -624,6 +636,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
+            public GetApprenticeshipDetailsResponse GetApprenticeshipDetailsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -634,6 +647,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public string EncodedNewApprenticeshipId { get; }
             public string EncodedPreviousApprenticeshipId { get; }
             public string EncodedNextApprenticeshipId { get; }
+            
 
             public DetailsViewModelMapperFixture()
             {
@@ -679,6 +693,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 GetTrainingProgrammeByStandardUIdResponse = new GetTrainingProgrammeResponse();
 
+                GetApprenticeshipDetailsResponse = Fixture.Build<GetApprenticeshipDetailsResponse>().Create();
+
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId)).Returns(AgreementId);
@@ -692,6 +708,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public async Task<DetailsViewModelMapperFixture> Map()
             {
                 var apiClient = new Mock<ICommitmentsApiClient>();
+                var commitmentsApiClient = new Mock<IOuterApiClient>();
+
                 apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(ApiResponse);
 
@@ -716,7 +734,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
 
-                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+                commitmentsApiClient.Setup(x =>
+                    x.Get<GetApprenticeshipDetailsResponse>(It.IsAny<GetApprenticeshipDetailsRequest>()))
+                    .ReturnsAsync(GetApprenticeshipDetailsResponse);
+
+                _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
                 Result = await _sut.Map(Source);
                 return this;

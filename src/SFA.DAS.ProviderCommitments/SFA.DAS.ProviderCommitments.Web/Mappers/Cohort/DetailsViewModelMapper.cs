@@ -13,37 +13,49 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
     {
+        private readonly IOuterApiClient _outerApiClient;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
+        private readonly ITempDataStorageService _storageService;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IPasAccountApiClient pasAccountApiClient)
+            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
             _pasAccountsApiClient = pasAccountApiClient;
+            _outerApiClient = outerApiClient;
+            _storageService = storageService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
         {
-            GetCohortResponse cohort;
+            //clear leftover tempdata from add/edit
+            //this solution should NOT use tempdata in this way
+            _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
+            var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, source.CohortId));
             var cohortTask = _commitmentsApiClient.GetCohort(source.CohortId);
             var draftApprenticeshipsTask = _commitmentsApiClient.GetDraftApprenticeships(source.CohortId);
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
             var emailOverlapsTask = _commitmentsApiClient.GetEmailOverlapChecks(source.CohortId);
 
-            await Task.WhenAll(cohortTask, draftApprenticeshipsTask, agreementStatusTask, emailOverlapsTask);
+            await Task.WhenAll(cohortDetailsTask, cohortTask, draftApprenticeshipsTask, agreementStatusTask, emailOverlapsTask);
 
-            cohort = await cohortTask;
+            var cohort = cohortTask.Result;
+            var cohortDetails = cohortDetailsTask.Result;
             var draftApprenticeships = (await draftApprenticeshipsTask).DraftApprenticeships;
-            var agreementStatus = await agreementStatusTask;
+            var agreementStatus = agreementStatusTask.Result;
             var emailOverlaps = (await emailOverlapsTask).ApprenticeshipEmailOverlaps.ToList();
 
             var courses = await GroupCourses(draftApprenticeships, emailOverlaps, cohort);
@@ -56,8 +68,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CohortReference = source.CohortReference,
                 WithParty = cohort.WithParty,
                 AccountLegalEntityHashedId = _encodingService.Encode(cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
-                LegalEntityName = cohort.LegalEntityName,
-                ProviderName = cohort.ProviderName,
+                LegalEntityName = cohortDetails.LegalEntityName,
+                ProviderName = cohortDetails.ProviderName,
                 TransferSenderHashedId = cohort.TransferSenderId == null ? null : _encodingService.Encode(cohort.TransferSenderId.Value, EncodingType.PublicAccountId),
                 EncodedPledgeApplicationId = cohort.PledgeApplicationId == null ? null : _encodingService.Encode(cohort.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
                 Message = cohort.LatestMessageCreatedByEmployer,

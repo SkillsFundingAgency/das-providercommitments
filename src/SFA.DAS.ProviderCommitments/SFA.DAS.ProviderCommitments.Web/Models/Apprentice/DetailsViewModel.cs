@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasOptions { get; set; }
         public bool SingleOption { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
-        public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice;
+        public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice && Status != ApprenticeshipStatus.Stopped;
         public DeliveryModel? DeliveryModel { get; set; }
         public int? EmploymentPrice { get; set; }
         public string EmploymentPriceDisplay => EmploymentPrice?.ToGdsCostFormat() ?? string.Empty;
@@ -66,6 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int DurationReducedBy { get; set; }
         public string DurationReducedByDisplay => $"{DurationReducedBy} weeks";
         public int PriceReducedBy { get; set; }
+        public bool HasMultipleDeliveryModelOptions { get; set; }
 
         public enum DataLockSummaryStatus
         {
