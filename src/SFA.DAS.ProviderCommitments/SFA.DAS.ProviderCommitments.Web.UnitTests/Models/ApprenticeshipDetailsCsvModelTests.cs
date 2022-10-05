@@ -1,10 +1,12 @@
 ﻿using System;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
@@ -207,6 +209,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
             var result = model.Map(source, encodingService.Object);
 
             result.Alerts.Should().Be(expectedAlertString);
+        }
+
+        [TestCase(DeliveryModel.FlexiJobAgency, "Flexi-job agency")]
+        [TestCase(DeliveryModel.PortableFlexiJob, "Portable flexi-job")]
+        [TestCase(DeliveryModel.Regular, "Regular")]
+        public void Then_Maps_DeliveryModel(DeliveryModel deliveryModel, string desc)
+        {
+            var f = new Fixture();
+            var source = f.Build<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()
+                .With(x => x.DeliveryModel, deliveryModel).Create();
+        
+            var encodingService = new Mock<IEncodingService>();
+            var model = new ApprenticeshipDetailsCsvModel();
+        
+            var result = model.Map(source, encodingService.Object);
+
+            result.DeliveryModel.Should().Be(desc);
         }
     }
 }

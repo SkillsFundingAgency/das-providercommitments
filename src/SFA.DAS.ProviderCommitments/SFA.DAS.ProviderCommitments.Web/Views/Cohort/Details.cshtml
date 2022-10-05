@@ -102,6 +102,16 @@ Model.HasEmailOverlaps)
     </h3>
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
     {
+        if (draftApprenticeship.OverlappingTrainingDateRequest != null && draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.HasValue)
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">You submitted an overlapping date enquiry on @draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.Value.ToGdsFormatLongMonth() for @draftApprenticeship.FirstName @draftApprenticeship.LastName</h3>
+                    <p>
+                        This can take up to 4 weeks for the previous employer to action
+                   </p>
+            </div>
+
+        }
         if (draftApprenticeship.HasOverlappingUln && !course.ErrorHasOverlappingUlnDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
