@@ -2,12 +2,12 @@
 {
     public class GetOverlapRequestQueryRequest : IGetApiRequest
     {
-        public long ApprenticeshipId;
+        public long DraftApprenticeshipId;
 
-        public GetOverlapRequestQueryRequest(long apprenticeshipId)
+        public GetOverlapRequestQueryRequest(long draftApprenticeshipId)
         {
-            ApprenticeshipId = apprenticeshipId;
+            DraftApprenticeshipId = draftApprenticeshipId;
         }
-        public string GetUrl => $"OverlappingTrainingDateRequest/{ApprenticeshipId}/getOverlapRequest";
+        public string GetUrl => $"OverlappingTrainingDateRequest/{DraftApprenticeshipId}/getOverlapRequest";
     }
 }
