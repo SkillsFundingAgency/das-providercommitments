@@ -18,5 +18,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data);
         Task ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(ValidateDraftApprenticeshipApimRequest data);
         Task<ValidateUlnOverlapOnStartDateQueryResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate);
+        Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId);
     }
 }
