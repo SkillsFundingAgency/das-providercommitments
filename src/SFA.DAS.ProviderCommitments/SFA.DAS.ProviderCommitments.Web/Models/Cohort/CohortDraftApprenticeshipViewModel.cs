@@ -5,6 +5,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class CohortDraftApprenticeshipViewModel
     {
+        public CohortDraftApprenticeshipViewModel()
+        {
+            OverlappingTrainingDateRequest = new OverlappingTrainingDateRequestViewModel();
+        }
         public long Id { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public string FirstName { get; set; }
@@ -17,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string ULN { get; set; }
         public bool HasOverlappingUln { get; set; }
         public bool HasOverlappingEmail { get; set; }
+        public OverlappingTrainingDateRequestViewModel OverlappingTrainingDateRequest { get; set; }
         public bool IsComplete { get; set; }
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
@@ -65,7 +70,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
-
         public DateTime? OriginalStartDate { get; set; }
+
+        public class OverlappingTrainingDateRequestViewModel
+        {
+            public DateTime? CreatedOn { get; set; }
+        }
     }
 }
