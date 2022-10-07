@@ -328,6 +328,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{cohortReference}")]
+        [Route("{cohortReference}/details")]
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]
