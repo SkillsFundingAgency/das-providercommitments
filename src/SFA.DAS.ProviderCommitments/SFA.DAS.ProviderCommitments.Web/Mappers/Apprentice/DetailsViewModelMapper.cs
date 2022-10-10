@@ -76,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     CourseName = data.Apprenticeship.CourseName,
                     Version = data.Apprenticeship.Version,
                     Option = data.Apprenticeship.Option,
-                    StartDate = data.Apprenticeship.StartDate,
+                    StartDate = data.Apprenticeship.StartDate.Value,
                     EndDate = data.Apprenticeship.EndDate,
                     ProviderRef = data.Apprenticeship.ProviderReference,
                     Cost = data.PriceEpisodes.PriceEpisodes.GetPrice(),
