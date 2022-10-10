@@ -65,5 +65,10 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             return await _outerApiClient.Get<ValidateUlnOverlapOnStartDateQueryResult>(new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate));
         }
+
+        public async Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId)
+        {
+            return await _outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(apprenticeshipId));
+        }
     }
 }
