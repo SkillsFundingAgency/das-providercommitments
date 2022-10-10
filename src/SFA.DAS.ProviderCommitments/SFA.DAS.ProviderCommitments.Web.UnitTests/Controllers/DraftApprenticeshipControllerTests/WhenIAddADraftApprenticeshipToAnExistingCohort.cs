@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndWhenReturningToPageAfterChnagingTheCourseOrDeliveryModel()
         {
             _fixture.SetupTempDraftApprenticeship();
-            
+
             await _fixture.AddDraftApprenticeshipWithReservation();
 
             _fixture.VerifyViewModelFromTempDataHasDeliveryModelAndCourseValuesSet();
@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .SetUpStandardToReturnNoOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
-            
+
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectedBackToCohortDetailsPage();
@@ -95,7 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .SetUpStandardToReturnNoOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
-            
+
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectedBackToCohortDetailsPage();
@@ -109,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .SetUpStandardToReturnOptions();
 
             await _fixture.PostToAddDraftApprenticeship();
-            
+
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectToSelectOptionsPage();
@@ -121,7 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _fixture.SetApprenticeshipStarting(DateAfterRplRequired);
 
             await _fixture.PostToAddDraftApprenticeship();
-            
+
             _fixture.VerifyMappingToApiTypeIsCalled()
                 .VerifyApiAddMethodIsCalled()
                 .VerifyRedirectToRecognisePriorLearningPage();

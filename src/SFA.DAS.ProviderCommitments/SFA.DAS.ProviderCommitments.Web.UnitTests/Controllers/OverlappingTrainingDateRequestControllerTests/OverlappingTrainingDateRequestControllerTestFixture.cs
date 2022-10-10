@@ -54,6 +54,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private ProviderFeatureToggle _overlappingTrainingDateRequestFeatureToggle;
         private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
         private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
+
+        private readonly DraftApprenticeshipOverlapOptionWithPendingRequest _overlapRequest;
+        private readonly DraftApprenticeshipOverlapOptionWithPendingRequestViewModel _overlapViewModel;
+
         private readonly EmployerNotifiedRequest _employerNotifiedRequest;
         private readonly EmployerNotifiedViewModel _employerNotifiedViewModel;
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
@@ -133,6 +137,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             };
             _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
 
+            _overlapRequest = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequest>();
+            _overlapViewModel = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequestViewModel>();
+
             _employerNotifiedRequest = _autoFixture.Create<EmployerNotifiedRequest>();
             _employerNotifiedViewModel = _autoFixture.Create<EmployerNotifiedViewModel>();
 
@@ -184,9 +191,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
-        public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapOptions()
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> GetDraftApprenticeshipOverlapOptions()
         {
-            _actionResult = _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionRequest);
+            _actionResult = await _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionRequest);
             return this;
         }
 
@@ -325,6 +332,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             Assert.AreEqual(model.CohortReference, _employerNotifiedRequest.CohortReference);
             Assert.AreEqual(model.ProviderId, _employerNotifiedRequest.ProviderId);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapOptionsWithPendingRequest()
+        {
+            _actionResult = _controller.DraftApprenticeshipOverlapOptionsWithPendingRequest(_overlapRequest);
+            return this;
+        }
+
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> DraftApprenticeshipOverlapOptionsWithPendingRequest()
+        {
+            _actionResult = await _controller.DraftApprenticeshipOverlapOptionsWithPendingRequest(_overlapViewModel);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapRequestsViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
+            Assert.IsNotNull(model);
+
+            Assert.AreEqual(model.CohortReference, _overlapRequest.CohortReference);
+            Assert.AreEqual(model.DraftApprenticeshipId, _overlapRequest.DraftApprenticeshipId);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyfeatureTogglesServiceToGetPendingRequestsIsCalled()
+        {
+            _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix), Times.Once);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture SetupOLTDWithPendingRequestsOverlapOptions(OverlapOptions overlapOption)
+        {
+            _overlapViewModel.OverlapOptions = overlapOption;
             return this;
         }
 
