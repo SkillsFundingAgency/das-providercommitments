@@ -98,8 +98,8 @@ else
                                 </div>
                             </div>
                         </div>
-                        <div class="govuk-grid-row">
 
+                        <div class="govuk-grid-row">
                             <div class="govuk-grid-column-one-third">
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="selectedStartDate">Planned start date</label>
@@ -157,7 +157,6 @@ else
                                     </select>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="govuk-grid-row">
@@ -178,7 +177,26 @@ else
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="govuk-grid-column-one-third">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="selectedDeliveryModel">Delivery model</label>
+                                    <select class="govuk-select govuk-!-width-full" id="selectedDeliveryModel" name="selectedDeliveryModel">
+                                        <option label="All" aria-label="All delivery models" value="">All</option>
+                                        @foreach (var deliveryModel in Model.FilterModel.DeliveryModelFilters)
+                                        {
+                                            if (deliveryModel == Model.FilterModel.SelectedDeliveryModel)
+                                            {
+                                                <option label="@deliveryModel.GetDescription()" value="@deliveryModel" selected="selected">@deliveryModel.GetDescription()</option> }
+                                            else
+                                            {
+                                                <option label="@deliveryModel.GetDescription()" value="@deliveryModel">@deliveryModel.GetDescription()</option>}
+                                            }
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+
                         <button class="govuk-button govuk-!-margin-0" type="submit">Apply filters</button>
                     </div>
                 </div>

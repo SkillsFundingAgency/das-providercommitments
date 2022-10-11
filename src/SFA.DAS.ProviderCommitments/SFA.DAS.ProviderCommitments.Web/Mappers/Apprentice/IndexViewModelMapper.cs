@@ -21,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<IndexViewModel> Map(IndexRequest source)
         {
+            
             var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
@@ -35,7 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 StartDate = source.SelectedStartDate,
                 EndDate = source.SelectedEndDate,
                 Alert = source.SelectedAlert,
-                ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation
+                ApprenticeConfirmationStatus = source.SelectedApprenticeConfirmation,
+                DeliveryModel = source.SelectedDeliveryModel,
             });
 
             var statusFilters = new[]
@@ -71,6 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SelectedEndDate = source.SelectedEndDate,
                 SelectedAlert = source.SelectedAlert,
                 SelectedApprenticeConfirmation = source.SelectedApprenticeConfirmation,
+                SelectedDeliveryModel = source.SelectedDeliveryModel,
                 StatusFilters = statusFilters,
                 AlertFilters = alertFilters
             };
