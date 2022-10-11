@@ -26,6 +26,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             DownloadApprenticesRequestMapper mapper)
         {
+            csvRequest.SelectedDeliveryModel = CommitmentsV2.Types.DeliveryModel.Regular;
+
             await mapper.Map(csvRequest);
 
             mockApiClient.Verify(client => client.GetApprenticeships(
@@ -36,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     apiRequest.CourseName == csvRequest.SelectedCourse &&
                     apiRequest.Status == csvRequest.SelectedStatus &&
                     apiRequest.ApprenticeConfirmationStatus == csvRequest.SelectedApprenticeConfirmation &&
-                    //apiRequest.DeliveryModel == csvRequest.SelectedDeliveryModel &&
+                    apiRequest.DeliveryModel == csvRequest.SelectedDeliveryModel &&
                     apiRequest.Alert == csvRequest.SelectedAlert &&
                     apiRequest.StartDate == csvRequest.SelectedStartDate &&
                     apiRequest.EndDate == csvRequest.SelectedEndDate),
