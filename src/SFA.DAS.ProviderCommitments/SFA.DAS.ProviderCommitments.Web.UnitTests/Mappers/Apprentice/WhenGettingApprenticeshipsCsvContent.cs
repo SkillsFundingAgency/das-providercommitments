@@ -26,8 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             [Frozen] Mock<ICommitmentsApiClient> mockApiClient,
             DownloadApprenticesRequestMapper mapper)
         {
-            csvRequest.SelectedDeliveryModel = CommitmentsV2.Types.DeliveryModel.Regular;
-
             await mapper.Map(csvRequest);
 
             mockApiClient.Verify(client => client.GetApprenticeships(
