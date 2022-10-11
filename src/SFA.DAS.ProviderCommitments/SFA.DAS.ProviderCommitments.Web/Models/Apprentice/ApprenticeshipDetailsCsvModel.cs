@@ -19,6 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Employer { get ; private set ; }
         [Name("Apprenticeship training course")]
         public string CourseName { get ; private set ; }
+        [Name("Apprenticeship delivery model")]
+        public string DeliveryModel { get; private set; }
         [Name("Planned start date")]
         public string PlannedStartDate { get ; private set ; }
         [Name("Planned end date")]
@@ -39,10 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeConfirmation { get; private set; }
         [Name("Status")]
         public string Status { get ; private set ; }
-
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
-
 
         public ApprenticeshipDetailsCsvModel Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model, IEncodingService encodingService)
         {
@@ -62,7 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 AgreementId = encodingService.Encode(model.AccountLegalEntityId,EncodingType.PublicAccountLegalEntityId),
                 DateOfBirth = model.DateOfBirth.ToGdsFormat(),
                 PausedDate = model.PauseDate != DateTime.MinValue ? model.PauseDate.ToGdsFormatWithoutDay() : "",
-                TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}"
+                TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}",
+                DeliveryModel = model.DeliveryModel.ToDescription(),
             };
         }
 
