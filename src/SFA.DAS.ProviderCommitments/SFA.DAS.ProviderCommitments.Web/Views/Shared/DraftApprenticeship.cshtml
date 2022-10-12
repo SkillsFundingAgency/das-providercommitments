@@ -32,6 +32,8 @@
 
 }
 
+<span class="govuk-caption-xl">Add an apprentice</span>
+
 <div id="draftApprenticeshipSection1">
     
     <h1 class="govuk-heading-xl">Personal details</h1>
@@ -77,11 +79,15 @@
     }
     else
     {
+        <h2 class="govuk-heading-m">Apprentice personal details</h2>
+
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
+            <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
+            @Html.ValidationMessageFor(m => m.Uln, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln)})
+            <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters"/>
+        </div>
         <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    Apprentice name
-                </legend>
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
                     <label asp-for="FirstName" class="govuk-label">First name</label>
                     @Html.ValidationMessageFor(m => m.FirstName, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName)})
@@ -93,10 +99,13 @@
                     <input asp-for="LastName" class="govuk-input"/>
                 </div>
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
+                    <label asp-for="Email" class="govuk-label">Email Address</label>
+                    @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
+                    <input asp-for="Email" class="govuk-input"/>
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                Email address
+                                Why do we need an email address?
                             </span>
                         </summary>
                         <div class="govuk-details__text">
@@ -108,8 +117,6 @@
                             </ul>
                         </div>
                     </details>
-                    @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
-                    <input asp-for="Email" class="govuk-input"/>
                 </div>
             </fieldset>
         </div>
@@ -144,14 +151,11 @@
                 </div>
             </fieldset>
         </div>
-        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
-            <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
-            @Html.ValidationMessageFor(m => m.Uln, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln)})
-            <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters"/>
-        </div>
 
         @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
         {
+            <h2 class="govuk-heading-m">Pilot Program</h2>
+
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -184,30 +188,26 @@
         {
             <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
         }
-
-        <div class="govuk-form-group">
-            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
-            <p class="govuk-body">
-                @Model.CourseName
-                <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                    @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
-                </button>
-            </p>
-        </div>
-
-
-        <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
-
-
-        <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
     }
 
-    <button type="button" class="govuk-button" onclick="javascript: continueJourney();">Save and continue</button>
+    <button type="button" class="govuk-button" onclick="javascript: continueJourney();">Continue</button>
 </div>
 
 <div id="draftApprenticeshipSection2" class="das-js-hide">
     
     <h1 class="govuk-heading-xl">Training details</h1>
+    
+    <div class="govuk-form-group">
+        <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
+        <p class="govuk-body">
+            @Model.CourseName
+            <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
+            </button>
+        </p>
+    </div>
+    <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
+    <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
     @if (Model.HasMultipleDeliveryModelOptions)
     {
@@ -261,7 +261,7 @@
     <div id="actual-start-date-section"  class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                @startDateLabel
+                Actual start date
             </legend>
             <span id="actual-start-date-hint" class="govuk-hint">
                 For example, 30 12 2022
