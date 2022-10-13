@@ -402,12 +402,38 @@
         $("#submitAddDraftApprenticeship").addClass("das-show");
 		
         if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
+            copyStartDate();
             $("#start-date-section").addClass("das-hide");
         } else {
+            copyActualStartDate();
             $("#actual-start-date-section").addClass("das-hide");
         }
 
         $("#LastName").closest("form").on('submit', handleSubmit);
+    }
+
+    function copyStartDate() {
+        var month = $("input#StartMonth").val();
+        var year = $("input#StartYear").val();
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val(month);
+        $("input#ActualStartYear").val(year);
+
+        $("input#StartMonth").val("");
+        $("input#StartYear").val("");
+    }
+
+    function copyActualStartDate() {
+        var month = $("input#ActualStartMonth").val();
+        var year = $("input#ActualStartYear").val();
+
+        $("input#StartMonth").val(month);
+        $("input#StartYear").val(year);
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val("");
+        $("input#ActualStartYear").val("");
     }
 
     function resetErrors() {
