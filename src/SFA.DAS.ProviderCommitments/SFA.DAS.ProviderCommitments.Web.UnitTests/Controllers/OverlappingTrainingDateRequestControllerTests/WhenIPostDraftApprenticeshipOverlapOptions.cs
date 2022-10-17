@@ -24,6 +24,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
+        public async Task AndWhenEixstingDraftApprenticeship_AndUserSelectsToSendOverlapEmailToEmployer_ThenUpdateRecord()
+        {
+            await _fixture
+                .SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest)
+                .SetupUpdateDraftApprenticeshipRequestMapper()
+                .SetupGetTempEditDraftApprenticeship()
+                .WithCohortReference()
+                .WithDraftApprenticeshipHashedId()
+                .DraftApprenticeshipOverlapOptions();
+            
+            _fixture.VerifyExistingDraftApprenticeshipUpdated();
+        }
+
+        [Test]
         public async Task AndWhenWhenUserSelectsToContactTheEmployer()
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();

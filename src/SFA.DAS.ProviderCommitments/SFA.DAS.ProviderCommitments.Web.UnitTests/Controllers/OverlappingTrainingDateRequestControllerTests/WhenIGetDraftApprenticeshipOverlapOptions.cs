@@ -16,23 +16,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapOptions_CorrectViewModelIsReturned()
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_CorrectViewModelIsReturned()
         {
-            _fixture.GetDraftApprenticeshipOverlapOptions();
+            await _fixture.GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
         }
 
         [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapOptions_FeatureToggleServiceIsCalled()
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_FeatureToggleServiceIsCalled()
         {
-            _fixture.GetDraftApprenticeshipOverlapOptions();
+            await _fixture.GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled();
         }
 
         [Test]
-        public void AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
         {
-            _fixture.SetOverlappingTrainingDateRequestFeatureToggle(true).GetDraftApprenticeshipOverlapOptions();
+            await _fixture
+                .SetOverlappingTrainingDateRequestFeatureToggle(true)
+                .GetDraftApprenticeshipOverlapOptions();
+            
             _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped(true);
         }
 
