@@ -69,10 +69,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         [TestCase(true, DeliveryModel.FlexiJobAgency, true)]
         [TestCase(true, DeliveryModel.PortableFlexiJob, false)]
         [TestCase(false, DeliveryModel.FlexiJobAgency, false)]
-        public async Task HasUnavailableFlexiJobAgencyDeliveryModel_Is_Mapped_Correctly(bool hasUnavailableDeliveryModel, DeliveryModel currentDeliveryModel, bool expectedResult)
+        public async Task HasUnavailableFlexiJobAgencyDeliveryModel_Is_Mapped_Correctly(bool hasUnavailableDeliveryModel, CommitmentsV2.Types.DeliveryModel currentDeliveryModel, bool expectedResult)
         {
-            _apiResponse.DeliveryModel = currentDeliveryModel;
+            _cacheModel.DeliveryModel = currentDeliveryModel;
             _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
+
             var result = await _mapper.Map(_request);
             Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
         }
