@@ -71,6 +71,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 filters.Add(WebUtility.HtmlEncode(model.SelectedAlert.Value.GetDescription()));
             }
 
+            if (model.SelectedApprenticeConfirmation.HasValue)
+            {
+                filters.Add(WebUtility.HtmlEncode(model.SelectedApprenticeConfirmation.Value.GetDescription()));
+            }
+
             if (model.SelectedDeliveryModel.HasValue)
             {
                 filters.Add(WebUtility.HtmlEncode(model.SelectedDeliveryModel.Value.ToDescription()));
