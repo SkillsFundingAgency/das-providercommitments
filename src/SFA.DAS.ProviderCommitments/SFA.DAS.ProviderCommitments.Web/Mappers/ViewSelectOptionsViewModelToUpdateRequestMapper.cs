@@ -36,7 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DeliveryModel = apiResponse.DeliveryModel,
                 EmploymentEndDate = apiResponse.EmploymentEndDate,
                 EmploymentPrice = apiResponse.EmploymentPrice,
-                IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot
+                IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
+                IsProviderOnFlexiPaymentPilot = apiResponse.IsProviderOnFlexiPaymentPilot
             };
         }
     }
