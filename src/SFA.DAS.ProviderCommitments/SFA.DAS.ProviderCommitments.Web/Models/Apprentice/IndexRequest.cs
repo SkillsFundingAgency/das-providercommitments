@@ -26,5 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool FromSearch { get; set; }
         public Alerts? SelectedAlert { get; set; }
         public ConfirmationStatus? SelectedApprenticeConfirmation { get; set; }
+        public DeliveryModel? SelectedDeliveryModel { get; set; }
     }   
 }
