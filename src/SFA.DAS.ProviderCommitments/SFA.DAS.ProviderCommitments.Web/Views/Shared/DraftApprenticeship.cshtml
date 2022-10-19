@@ -4,6 +4,7 @@
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Features
+@using SFA.DAS.ProviderCommitments.Web.Models
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -32,11 +33,17 @@
 
 }
 
-<span class="govuk-caption-xl">Add an apprentice</span>
-
 <div id="draftApprenticeshipSection1">
     
-    <h1 class="govuk-heading-xl">Personal details</h1>
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit personal details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add personal details</h1>
+    }
+
     <div class="govuk-inset-text">
         <p class="govuk-body">You can only receive payments for this apprentice if:</p>
         <ul class="govuk-list govuk-list--bullet">
@@ -192,8 +199,16 @@
 </div>
 
 <div id="draftApprenticeshipSection2" class="das-js-hide">
-    
-    <h1 class="govuk-heading-xl">Training details</h1>
+
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit training details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add training details</h1>
+    }
+
     
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
