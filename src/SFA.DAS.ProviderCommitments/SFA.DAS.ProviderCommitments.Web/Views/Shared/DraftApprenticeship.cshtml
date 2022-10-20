@@ -426,10 +426,7 @@
     }
 
     function ensureActualStartDatePopulation() {
-
-        var actualStartMonth = $("input#ActualStartMonth").val();
-        if (actualStartMonth != null && actualStartMonth.trim() !== '')
-            return;
+        if (!$("input#ActualStartMonth").val()) return;
 
         var month = $("input#StartMonth").val();
         var year = $("input#StartYear").val();
@@ -443,10 +440,7 @@
     }
 
     function ensureStartDatePopulation() {
-
-        var startMonth = $("input#StartMonth").val();
-        if (startMonth != null && startMonth.trim() !== '')
-            return;
+        if (!$("input#StartMonth").val()) return;
 
         var month = $("input#ActualStartMonth").val();
         var year = $("input#ActualStartYear").val();
