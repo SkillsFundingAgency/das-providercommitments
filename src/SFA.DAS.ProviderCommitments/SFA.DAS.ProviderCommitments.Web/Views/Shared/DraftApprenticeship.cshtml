@@ -35,7 +35,7 @@
 <span class="govuk-caption-xl">Add an apprentice</span>
 
 <div id="draftApprenticeshipSection1">
-    
+
     <h1 class="govuk-heading-xl">Personal details</h1>
     <div class="govuk-inset-text">
         <p class="govuk-body">You can only receive payments for this apprentice if:</p>
@@ -84,24 +84,24 @@
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
             <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
             @Html.ValidationMessageFor(m => m.Uln, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln)})
-            <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters"/>
+            <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
         </div>
         <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
                     <label asp-for="FirstName" class="govuk-label">First name</label>
                     @Html.ValidationMessageFor(m => m.FirstName, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName)})
-                    <input asp-for="FirstName" class="govuk-input"/>
+                    <input asp-for="FirstName" class="govuk-input" />
                 </div>
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
                     <label asp-for="LastName" class="govuk-label">Last name</label>
                     @Html.ValidationMessageFor(m => m.LastName, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName)})
-                    <input asp-for="LastName" class="govuk-input"/>
+                    <input asp-for="LastName" class="govuk-input" />
                 </div>
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
                     <label asp-for="Email" class="govuk-label">Email Address</label>
                     @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
-                    <input asp-for="Email" class="govuk-input"/>
+                    <input asp-for="Email" class="govuk-input" />
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
@@ -192,9 +192,9 @@
 </div>
 
 <div id="draftApprenticeshipSection2" class="das-js-hide">
-    
+
     <h1 class="govuk-heading-xl">Training details</h1>
-    
+
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
         <p class="govuk-body">
@@ -226,7 +226,7 @@
             <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
         </dl>
     }
-    
+
     <div id="start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -256,7 +256,7 @@
         </fieldset>
     </div>
 
-    <div id="actual-start-date-section"  class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
+    <div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                 Actual start date
@@ -352,7 +352,7 @@
             Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
         </span>
         @Html.ValidationMessageFor(m => m.Cost, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost)})
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5"/>
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5" />
     </div>
 
     @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
@@ -363,7 +363,7 @@
                 Enter the price in whole pounds. For example, for £1,500 enter 1500
             </span>
             @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice)})
-            <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5"/>
+            <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
         </div>
     }
 
@@ -375,7 +375,7 @@
             </span>
             @Html.ValidationMessageFor(m => m.Reference, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference)})
 
-            <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count"/>
+            <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
         </div>
     </div>
 
@@ -398,7 +398,7 @@
         $("#draftApprenticeshipSection2").addClass("das-show");
         $("#submitAddDraftApprenticeship").removeClass("das-js-hide");
         $("#submitAddDraftApprenticeship").addClass("das-show");
-		
+
         if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
             $("#start-date-section").addClass("das-hide");
         } else {
@@ -468,14 +468,26 @@
         $form.submit();
     }
 
-    function getFormData($form){
+    function getFormData($form) {
         var unindexed_array = $form.serializeArray();
         var indexed_array = {};
 
-        $.map(unindexed_array, function(n, i){
-            indexed_array[n['name']] = n['value'];
-        });
+        $.map(unindexed_array,
+            function(n, i) {
+                indexed_array[n['name']] = n['value'];
+            });
 
         return indexed_array;
     }
+
+    document.addEventListener("DOMContentLoaded", showTrainingDetailsIfRequired);
+
+    function showTrainingDetailsIfRequired() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var showTrainingDetails = urlParams.get('showTrainingDetails');
+        if (showTrainingDetails) {
+            continueJourney();
+        }
+    }
+
 </script>
