@@ -30,7 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 OriginatorReference = source.OriginatorReference,
                 ReservationId = source.ReservationId,
                 IgnoreStartDateOverlap = source.IgnoreStartDateOverlap,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
+                IsProviderOnFlexiPaymentPilot = source.IsProviderOnFlexiPaymentPilot
             });
         }
     }

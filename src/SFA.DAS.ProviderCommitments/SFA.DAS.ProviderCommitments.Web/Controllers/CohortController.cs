@@ -226,6 +226,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, AddDraftApprenticeshipViewModel model)
         {
+            model.IsProviderOnFlexiPaymentPilot = await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
+
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
             {
                 StoreDraftApprenticeshipState(model);

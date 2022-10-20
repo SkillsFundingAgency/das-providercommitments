@@ -202,5 +202,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var result = await _act();
             Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
+
+        [Test]
+        public async Task ThenIsProviderOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.IsProviderOnFlexiPaymentPilot, result.IsProviderOnFlexiPaymentPilot);
+        }
     }
 }

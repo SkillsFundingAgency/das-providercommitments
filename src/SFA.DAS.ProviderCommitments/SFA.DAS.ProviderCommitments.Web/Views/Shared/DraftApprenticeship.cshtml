@@ -4,6 +4,7 @@
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Features
+@using SFA.DAS.ProviderCommitments.Web.Models
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -32,11 +33,17 @@
 
 }
 
-<span class="govuk-caption-xl">Add an apprentice</span>
-
 <div id="draftApprenticeshipSection1">
+    
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit personal details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add personal details</h1>
+    }
 
-    <h1 class="govuk-heading-xl">Personal details</h1>
     <div class="govuk-inset-text">
         <p class="govuk-body">You can only receive payments for this apprentice if:</p>
         <ul class="govuk-list govuk-list--bullet">
@@ -193,13 +200,20 @@
 
 <div id="draftApprenticeshipSection2" class="das-js-hide">
 
-    <h1 class="govuk-heading-xl">Training details</h1>
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit training details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add training details</h1>
+    }
 
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
         <p class="govuk-body">
             @Model.CourseName
-            <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+            <button id="change-course-link" type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
                 @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
             </button>
         </p>
@@ -213,7 +227,7 @@
             <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
             <p class="govuk-body">
                 @Model.DeliveryModel.ToDescription()
-                <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
+                <button id="change-delivery-model-link" type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
                     Edit<span class="govuk-visually-hidden"> delivery model</span>
                 </button>
             </p>
@@ -400,12 +414,38 @@
         $("#submitAddDraftApprenticeship").addClass("das-show");
 
         if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
+            copyStartDate();
             $("#start-date-section").addClass("das-hide");
         } else {
+            copyActualStartDate();
             $("#actual-start-date-section").addClass("das-hide");
         }
 
         $("#LastName").closest("form").on('submit', handleSubmit);
+    }
+
+    function copyStartDate() {
+        var month = $("input#StartMonth").val();
+        var year = $("input#StartYear").val();
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val(month);
+        $("input#ActualStartYear").val(year);
+
+        $("input#StartMonth").val("");
+        $("input#StartYear").val("");
+    }
+
+    function copyActualStartDate() {
+        var month = $("input#ActualStartMonth").val();
+        var year = $("input#ActualStartYear").val();
+
+        $("input#StartMonth").val(month);
+        $("input#StartYear").val(year);
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val("");
+        $("input#ActualStartYear").val("");
     }
 
     function resetErrors() {
@@ -457,6 +497,8 @@
     }
 
     function handleSubmit(e) {
+        var submitterId = e.originalEvent.submitter.id;
+        if (submitterId === "change-course-link" || submitterId === "change-delivery-model-link") return;
         e.preventDefault();
         e.returnValue = false;
 
