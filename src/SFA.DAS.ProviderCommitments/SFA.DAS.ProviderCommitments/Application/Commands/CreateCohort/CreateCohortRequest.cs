@@ -26,6 +26,5 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
         public DeliveryModel? DeliveryModel { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
-        public bool IsProviderOnFlexiPaymentPilot { get; set; }
     }
 }

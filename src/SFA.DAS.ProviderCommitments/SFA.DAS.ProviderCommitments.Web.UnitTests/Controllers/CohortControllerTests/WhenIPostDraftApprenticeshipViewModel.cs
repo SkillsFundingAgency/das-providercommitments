@@ -175,8 +175,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 var authorizationService = Mock.Of<IAuthorizationService>();
                 Mock.Get(authorizationService).Setup(x =>
                     x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
-                Mock.Get(authorizationService).Setup(x =>
-                    x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot)).ReturnsAsync(true);
 
                 _outerApiService = new Mock<IOuterApiService>();
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();

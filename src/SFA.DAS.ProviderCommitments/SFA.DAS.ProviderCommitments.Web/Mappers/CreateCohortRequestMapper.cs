@@ -46,8 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,
                 DeliveryModel = source.DeliveryModel,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
-                IsProviderOnFlexiPaymentPilot = source.IsProviderOnFlexiPaymentPilot
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }
