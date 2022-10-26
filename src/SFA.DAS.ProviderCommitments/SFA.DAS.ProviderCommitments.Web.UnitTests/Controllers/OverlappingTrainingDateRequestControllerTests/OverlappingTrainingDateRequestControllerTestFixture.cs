@@ -60,6 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         private readonly EmployerNotifiedRequest _employerNotifiedRequest;
         private readonly EmployerNotifiedViewModel _employerNotifiedViewModel;
+
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
         private readonly UpdateDraftApprenticeshipRequest _updateDraftApprenticeshipRequest;
 
@@ -156,6 +157,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _controller.TempData = _tempData.Object;
         }
 
+        public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(CommitmentsV2.Types.ApprenticeshipStatus status)
+        {
+            _apprenticeshipDetails.Status = status;
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyEnableEmployerRequestEmail(bool enabled)
+        {
+            Assert.AreEqual(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail, enabled);
+            return this;
+        }
+
         public OverlappingTrainingDateRequestControllerTestFixture SetOverlappingTrainingDateRequestFeatureToggle(bool isEnabled)
         {
             _overlappingTrainingDateRequestFeatureToggle.IsEnabled = isEnabled;
@@ -165,6 +178,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled()
         {
             _featureToggleService.Verify(x => x.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix), Times.Once);
+            return this;
+        }
+
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped(bool isEnabled)
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
+            Assert.AreEqual(isEnabled, model.OverlappingTrainingDateRequestToggleEnabled);
             return this;
         }
 
