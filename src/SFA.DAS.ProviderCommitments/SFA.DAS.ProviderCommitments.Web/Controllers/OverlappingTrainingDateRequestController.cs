@@ -47,7 +47,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _featureTogglesService = featureTogglesService;
         }
 
-        [HttpGet]
         [Route("overlap-options-with-pending-request")]
         public IActionResult DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequest request)
         {
@@ -76,37 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-options")]
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
-            var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
-
-            if (request.DraftApprenticeshipId.HasValue)
-            {
-                var pendingOverlapRequests = await _outerApiService.GetOverlapRequest(request.DraftApprenticeshipId.Value);
-                if (pendingOverlapRequests.DraftApprenticeshipId.HasValue)
-                {
-                    return RedirectToAction(nameof(DraftApprenticeshipOverlapOptionsWithPendingRequest), new
-                    {
-                        CohortReference = request.CohortReference,
-                        DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                        CreatedOn = pendingOverlapRequests.CreatedOn,
-                        Status = apprenticeshipDetails.Status,
-                        EnableStopRequestEmail = true && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
-                    });
-                }
-            }
-
-            var vm = new DraftApprenticeshipOverlapOptionViewModel
-            {
-                DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
-                Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
-            };
-
+            var vm = await _modelMapper.Map<DraftApprenticeshipOverlapOptionViewModel>(request);
             return View(vm);
         }
 
