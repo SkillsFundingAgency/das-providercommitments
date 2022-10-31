@@ -10,8 +10,6 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-        <h1 class="govuk-heading-xl">Edit apprentice details</h1>
-
         <div asp-show="@Model.RecognisingPriorLearningStillNeedsToBeConsidered" class="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -28,18 +26,6 @@
             </div>
         </div>
         
-        <div class="govuk-inset-text">
-            <p class="govuk-body">You can only receive payments for this apprentice if:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>all the fields have been completed - either by yourself or the employer</li>
-                <li>the data matches the individualised learner record (ILR) data you send us</li>
-            </ul>
-        </div>
-
-        <dl class="das-definition-list">
-            <dt class="das-definition-list__title">Employer</dt>
-            <dd class="das-definition-list__definition">@Model.Employer</dd>
-        </dl>
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
@@ -49,7 +35,7 @@
 
             <partial name="DraftApprenticeship" for="@Model" />
 
-            <button type="submit" class="govuk-button">Save</button>
+            <button type="submit" class="govuk-button das-js-hide" id="submitAddDraftApprenticeship">Save</button>
 
             @if (!Model.IsContinuation)
             {

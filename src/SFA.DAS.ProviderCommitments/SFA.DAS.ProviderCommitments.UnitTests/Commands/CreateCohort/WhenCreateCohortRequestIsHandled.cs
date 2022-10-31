@@ -201,6 +201,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                         && r.CourseCode == _apiRequest.CourseCode
                         && r.Cost == _apiRequest.Cost
                         && r.StartDate == _apiRequest.StartDate
+                        && r.ActualStartDate == _apiRequest.ActualStartDate
                         && r.EndDate == _apiRequest.EndDate
                         && r.OriginatorReference == _apiRequest.OriginatorReference
                     ), It.IsAny<CancellationToken>()));

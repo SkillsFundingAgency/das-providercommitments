@@ -520,7 +520,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _mockCurrentDateTimeProvider.Setup(x => x.UtcNow).Returns(DateTime.Now);
 
             // Make the start date later than CurrentAcademicYearStartDate
-            _mockAcademicYearDateProvider.Setup(t => t.CurrentAcademicYearStartDate).Returns(ApprenticeshipResponse.StartDate.AddMonths(-1));
+            _mockAcademicYearDateProvider.Setup(t => t.CurrentAcademicYearStartDate).Returns(ApprenticeshipResponse.StartDate.Value.AddMonths(-1));
 
             // Make the DateTime Now earlier than LastAcademicYearFundingPeriod
             _mockAcademicYearDateProvider.Setup(t => t.LastAcademicYearFundingPeriod).Returns(DateTime.Now.AddMonths(2));
@@ -536,7 +536,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _mockCurrentDateTimeProvider.Setup(x => x.UtcNow).Returns(DateTime.Now);
 
             // Make the start date earlier than CurrentAcademicYearStartDate
-            _mockAcademicYearDateProvider.Setup(t => t.CurrentAcademicYearStartDate).Returns(ApprenticeshipResponse.StartDate.AddMonths(1));
+            _mockAcademicYearDateProvider.Setup(t => t.CurrentAcademicYearStartDate).Returns(ApprenticeshipResponse.StartDate.Value.AddMonths(1));
 
             // Make the DateTime Now later than LastAcademicYearFundingPeriod
             _mockAcademicYearDateProvider.Setup(t => t.LastAcademicYearFundingPeriod).Returns(DateTime.Now.AddMonths(-1));

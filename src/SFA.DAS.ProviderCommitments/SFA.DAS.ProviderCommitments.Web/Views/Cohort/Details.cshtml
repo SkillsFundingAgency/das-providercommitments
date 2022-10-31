@@ -1,7 +1,9 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
 @{
@@ -166,6 +168,10 @@ Model.HasEmailOverlaps)
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
                 <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
+                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                {
+                    <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot user?</th>
+                }
                 <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
         </thead>
@@ -215,6 +221,12 @@ Model.HasEmailOverlaps)
                         @draftApprenticeship.DisplayCost
                     }
                 </td>
+                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                {
+                    <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
+                        @draftApprenticeship.DislayIsPilot
+                    </td>
+                }
                 <td class="govuk-table__cell govuk-table__cell--numeric">
                     <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
                         @(Model.IsReadOnly ? "View" : "Edit")

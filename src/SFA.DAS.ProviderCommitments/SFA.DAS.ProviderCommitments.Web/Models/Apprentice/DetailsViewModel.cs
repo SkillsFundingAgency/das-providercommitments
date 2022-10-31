@@ -23,7 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string CourseName { get; set; }
         public string Version { get; set; }
         public string Option { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string ProviderRef { get; set; }
         public decimal Cost { get; set; }
