@@ -24,11 +24,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 EmploymentPrice = source.EmploymentPrice,
                 Cost = source.Cost,
                 StartDate = source.StartDate,
+                ActualStartDate = source.ActualStartDate,
                 EmploymentEndDate = source.EmploymentEndDate,
                 EndDate = source.EndDate,
                 OriginatorReference = source.OriginatorReference,
                 ReservationId = source.ReservationId,
-                IgnoreStartDateOverlap = source.IgnoreStartDateOverlap
+                IgnoreStartDateOverlap = source.IgnoreStartDateOverlap,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             });
         }
     }

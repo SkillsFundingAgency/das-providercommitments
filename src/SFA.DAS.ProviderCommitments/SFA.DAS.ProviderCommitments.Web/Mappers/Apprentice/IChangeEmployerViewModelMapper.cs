@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EndDate = changeOfPartyRequest.EndDate.GetValueOrDefault(),
                     EmployerName = changeOfPartyRequest.EmployerName,
                     CurrentEmployerName = apprenticeDetails.EmployerName,
-                    CurrentStartDate = apprenticeDetails.StartDate,
+                    CurrentStartDate = apprenticeDetails.StartDate.Value,
                     CurrentEndDate = apprenticeDetails.EndDate,
                     CurrentPrice = priceEpisodes.PriceEpisodes.GetPrice(),
                     CohortId = changeOfPartyRequest.CohortId,

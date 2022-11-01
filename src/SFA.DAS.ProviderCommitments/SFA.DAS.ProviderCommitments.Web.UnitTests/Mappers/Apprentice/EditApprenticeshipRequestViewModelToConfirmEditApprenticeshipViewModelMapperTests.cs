@@ -106,7 +106,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task WhenStartDateIsChanged()
         {
-            var newStartDate = fixture._apprenticeshipResponse.StartDate.AddMonths(-1);
+            var newStartDate = fixture._apprenticeshipResponse.StartDate.Value.AddMonths(-1);
             fixture.source.StartDate = new CommitmentsV2.Shared.Models.MonthYearModel(newStartDate.Month.ToString() + newStartDate.Year);
 
             var result = await fixture.Map();
@@ -318,7 +318,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             source.DateOfBirth = new DateModel(_apprenticeshipResponse.DateOfBirth);
             source.Cost = 1000;
             source.ProviderReference = _apprenticeshipResponse.ProviderReference;
-            source.StartDate = new MonthYearModel(_apprenticeshipResponse.StartDate.Month.ToString() + _apprenticeshipResponse.StartDate.Year);
+            source.StartDate = new MonthYearModel(_apprenticeshipResponse.StartDate.Value.Month.ToString() + _apprenticeshipResponse.StartDate.Value.Year);
             source.EndDate = new MonthYearModel(_apprenticeshipResponse.EndDate.Month.ToString() + _apprenticeshipResponse.EndDate.Year);
 
             _priceEpisodeResponse = autoFixture.Build<GetPriceEpisodesResponse>()
