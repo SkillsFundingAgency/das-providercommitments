@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? Cost { get; set; }
         public int? FundingBandCap { get; set; }
@@ -25,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsComplete { get; set; }
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public bool ExceedsFundingBandCap
         {
@@ -52,6 +54,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                     return $"{StartDate.Value.ToGdsFormatWithoutDay()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
                 }
 
+                if (ActualStartDate.HasValue && EndDate.HasValue)
+                {
+                    return $"{ActualStartDate.Value.ToGdsFormat()} to {EndDate.Value.ToGdsFormatWithoutDay()}";
+                }
+
                 return "-";
             }
         }
@@ -60,15 +67,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             get
             {
-                return (StartDate.HasValue && EmploymentEndDate.HasValue)
-                    ? $"{StartDate.Value.ToGdsFormatWithoutDay()} to {EmploymentEndDate.Value.ToGdsFormatWithoutDay()}"
-                    : "-";
+                if (StartDate.HasValue && EmploymentEndDate.HasValue)
+                {
+                    return $"{StartDate.Value.ToGdsFormatWithoutDay()} to {EmploymentEndDate.Value.ToGdsFormatWithoutDay()}";
+                }
+
+                if (ActualStartDate.HasValue && EmploymentEndDate.HasValue)
+                {
+                    return $"{ActualStartDate.Value.ToGdsFormatWithoutDay()} to {EmploymentEndDate.Value.ToGdsFormatWithoutDay()}";
+                }
+
+                return "-";
             }
         }
 
         public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
             
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
+
+        public string DislayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
         public DateTime? OriginalStartDate { get; set; }
 

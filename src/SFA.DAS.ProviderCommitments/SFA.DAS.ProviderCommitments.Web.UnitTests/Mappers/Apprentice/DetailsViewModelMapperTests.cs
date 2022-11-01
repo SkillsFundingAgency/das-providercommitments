@@ -148,6 +148,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.ActualStartDate, _fixture.Result.ActualStartDate);
+        }
+
+        [Test]
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             await _fixture.Map();

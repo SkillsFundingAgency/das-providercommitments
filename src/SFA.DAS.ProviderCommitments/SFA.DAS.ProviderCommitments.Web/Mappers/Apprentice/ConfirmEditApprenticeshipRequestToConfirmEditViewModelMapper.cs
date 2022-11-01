@@ -80,8 +80,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 vm.StartMonth = source.StartMonth;
                 vm.StartYear = source.StartYear;
             }
-            vm.OriginalApprenticeship.StartMonth = apprenticeship.StartDate.Month;
-            vm.OriginalApprenticeship.StartYear = apprenticeship.StartDate.Year;
+            vm.OriginalApprenticeship.StartMonth = apprenticeship.StartDate.Value.Month;
+            vm.OriginalApprenticeship.StartYear = apprenticeship.StartDate.Value.Year;
 
             if (source.EndDate.Date != apprenticeship.EndDate)
             {

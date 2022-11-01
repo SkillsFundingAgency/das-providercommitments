@@ -3,6 +3,8 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Features
+@using SFA.DAS.ProviderCommitments.Web.Models
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -18,7 +20,7 @@
     var startDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Planned training start date" : "Planned apprenticeship training start date";
     var endDateLabel = Model.DeliveryModel == DeliveryModel.Regular ? "Projected training finish date" : "Projected apprenticeship training finish date";
 
-    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
+    ViewBag.ValidationOrder = "FirstName,LastName,Email,DateOfBirth,IsOnFlexiPaymentPilot,Uln,StartDate,EndDate,EmploymentEndDate,Cost,EmploymentPrice,Reference";
 
     Model.CourseCode = ViewData.ModelState[nameof(Model.CourseCode)]?.AttemptedValue ?? Model.CourseCode;
     Model.DeliveryModel = ViewData.ModelState[nameof(Model.DeliveryModel)]?.AttemptedValue.ToEnum<DeliveryModel>() ?? Model.DeliveryModel;
@@ -31,263 +33,514 @@
 
 }
 
-@if (Model.IsContinuation)
-{
-    @Html.HiddenFor(x => x.FirstName)
-    @Html.HiddenFor(x => x.LastName)
-    @Html.HiddenFor(x => x.Email)
-    @Html.HiddenFor(x => x.BirthDay)
-    @Html.HiddenFor(x => x.BirthMonth)
-    @Html.HiddenFor(x => x.BirthYear)
-    @Html.HiddenFor(x => x.Uln)
-    @Html.HiddenFor(x => x.CourseCode)
-    @Html.HiddenFor(x => x.DeliveryModel)
+<div id="draftApprenticeshipSection1">
+    
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit personal details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add personal details</h1>
+    }
+
+    <div class="govuk-inset-text">
+        <p class="govuk-body">You can only receive payments for this apprentice if:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>all the fields have been completed - either by yourself or the employer</li>
+            <li>the data matches the individual learner record (ILR) data you send us</li>
+        </ul>
+    </div>
 
     <dl class="das-definition-list">
-        <dt class="das-definition-list__title">Apprentice name</dt>
-        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.FirstName @Model.LastName</dd>
-
-        <dt class="das-definition-list__title">Date of birth</dt>
-        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@(Model.DateOfBirth.HasValue ? Model.DateOfBirth.Date.Value.ToGdsFormat() : string.Empty)</dd>
-
-        <dt class="das-definition-list__title">Unique learner number</dt>
-        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.Uln</dd>
-
-        <dt class="das-definition-list__title">Apprenticeship training course</dt>
-        <dd class="das-definition-list__definition">@Model.CourseName</dd>
+        <dt class="das-definition-list__title">Employer</dt>
+        <dd class="das-definition-list__definition">@Model.Employer</dd>
     </dl>
-}
-else
-{
-    <div class="govuk-form-group">
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Apprentice name
-            </legend>
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
-                <label asp-for="FirstName" class="govuk-label">First name</label>
-                @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName) })
-                <input asp-for="FirstName" class="govuk-input" />
-            </div>
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
-                <label asp-for="LastName" class="govuk-label">Last name</label>
-                @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName) })
-                <input asp-for="LastName" class="govuk-input" />
-            </div>
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
-                <details class="govuk-details" data-module="govuk-details">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            Email address
-                        </span>
-                    </summary>
-                    <div class="govuk-details__text">
-                        Your apprentice will receive an email alert inviting them to the My apprenticeship service. On the service, your apprentice will be able to:
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>review and confirm their apprenticeship details</li>
-                            <li>understand the roles and responsibilities of an apprentice, an employer and a training provider</li>
-                            <li>find help and support during their apprenticeship</li>
-                        </ul>
-                    </div>
-                </details>
-                @Html.ValidationMessageFor(m => m.Email, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email) })
-                <input asp-for="Email" class="govuk-input" />
-            </div>
-        </fieldset>
-    </div>
-    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.DateOfBirth, "govuk-form-group--error")">
-        <fieldset class="govuk-fieldset" aria-describedby="dob-hint" role="group">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Date of birth
-            </legend>
-            <span id="dob-hint" class="govuk-hint">
-                For example, 08 12 2001
-            </span>
-            @Html.ValidationMessageFor(m => m.DateOfBirth, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DateOfBirth) })
-            <div class="govuk-date-input">
-                <div class="govuk-date-input__item">
-                    <div class="govuk-form-group">
-                        <label asp-for="BirthDay" class="govuk-label govuk-date-input__label">Day</label>
-                        <input asp-for="BirthDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                    </div>
-                </div>
-                <div class="govuk-date-input__item">
-                    <div class="govuk-form-group">
-                        <label asp-for="BirthMonth" class="govuk-label govuk-date-input__label">Month</label>
-                        <input asp-for="BirthMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                    </div>
-                </div>
-                <div class="govuk-date-input__item">
-                    <div class="govuk-form-group">
-                        <label asp-for="BirthYear" class="govuk-label govuk-date-input__label">Year</label>
-                        <input asp-for="BirthYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
-        <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
-        @Html.ValidationMessageFor(m => m.Uln, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln) })
-        <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
-    </div>
 
+    @if (Model.IsContinuation)
+    {
+        @Html.HiddenFor(x => x.FirstName)
+        @Html.HiddenFor(x => x.LastName)
+        @Html.HiddenFor(x => x.Email)
+        @Html.HiddenFor(x => x.BirthDay)
+        @Html.HiddenFor(x => x.BirthMonth)
+        @Html.HiddenFor(x => x.BirthYear)
+        @Html.HiddenFor(x => x.Uln)
+        @Html.HiddenFor(x => x.CourseCode)
+        @Html.HiddenFor(x => x.DeliveryModel)
+        @Html.HiddenFor(x => x.IsOnFlexiPaymentPilot)
+
+        <dl class="das-definition-list">
+            <dt class="das-definition-list__title">Apprentice name</dt>
+            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.FirstName @Model.LastName</dd>
+
+            <dt class="das-definition-list__title">Date of birth</dt>
+            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@(Model.DateOfBirth.HasValue ? Model.DateOfBirth.Date.Value.ToGdsFormat() : string.Empty)</dd>
+
+            <dt class="das-definition-list__title">Unique learner number</dt>
+            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.Uln</dd>
+
+            <dt class="das-definition-list__title">Apprenticeship training course</dt>
+            <dd class="das-definition-list__definition">@Model.CourseName</dd>
+        </dl>
+    }
+    else
+    {
+        <h2 class="govuk-heading-m">Apprentice personal details</h2>
+
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
+            <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
+            @Html.ValidationMessageFor(m => m.Uln, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln)})
+            <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
+        </div>
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.FirstName, "govuk-form-group--error")">
+                    <label asp-for="FirstName" class="govuk-label">First name</label>
+                    @Html.ValidationMessageFor(m => m.FirstName, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.FirstName)})
+                    <input asp-for="FirstName" class="govuk-input" />
+                </div>
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.LastName, "govuk-form-group--error")">
+                    <label asp-for="LastName" class="govuk-label">Last name</label>
+                    @Html.ValidationMessageFor(m => m.LastName, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.LastName)})
+                    <input asp-for="LastName" class="govuk-input" />
+                </div>
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
+                    <label asp-for="Email" class="govuk-label">Email Address</label>
+                    @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
+                    <input asp-for="Email" class="govuk-input" />
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Why do we need an email address?
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            Your apprentice will receive an email alert inviting them to the My apprenticeship service. On the service, your apprentice will be able to:
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>review and confirm their apprenticeship details</li>
+                                <li>understand the roles and responsibilities of an apprentice, an employer and a training provider</li>
+                                <li>find help and support during their apprenticeship</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.DateOfBirth, "govuk-form-group--error")">
+            <fieldset class="govuk-fieldset" aria-describedby="dob-hint" role="group">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Date of birth
+                </legend>
+                <span id="dob-hint" class="govuk-hint">
+                    For example, 08 12 2001
+                </span>
+                @Html.ValidationMessageFor(m => m.DateOfBirth, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DateOfBirth)})
+                <div class="govuk-date-input" id="DateOfBirth">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label asp-for="BirthDay" class="govuk-label govuk-date-input__label">Day</label>
+                            <input asp-for="BirthDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label asp-for="BirthMonth" class="govuk-label govuk-date-input__label">Month</label>
+                            <input asp-for="BirthMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label asp-for="BirthYear" class="govuk-label govuk-date-input__label">Year</label>
+                            <input asp-for="BirthYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+        {
+            <h2 class="govuk-heading-m">Pilot Program</h2>
+
+            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Will this apprentice be part of the Flexible Payments pilot program?
+                    </legend>
+                    <span id="finish-date-hint" class="govuk-hint">
+                        Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
+                    </span>
+                    <div class="govuk-radios">
+                        @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true" @(Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false" @(Model.IsOnFlexiPaymentPilot.HasValue && !Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" asp-for="IsOnFlexiPaymentPilot" value="false" />
+        }
+    }
+
+    <button type="button" class="govuk-button" onclick="javascript: continueJourney();">Continue</button>
+</div>
+
+<div id="draftApprenticeshipSection2" class="das-js-hide">
+
+    @if (Model is EditDraftApprenticeshipViewModel)
+    {
+        <h1 class="govuk-heading-xl">Edit training details</h1>
+    }
+    else
+    {
+        <h1 class="govuk-heading-xl">Add training details</h1>
+    }
 
     <div class="govuk-form-group">
         <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship training course</p>
         <p class="govuk-body">
             @Model.CourseName
-            <button type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+            <button id="change-course-link" type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
                 @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
             </button>
         </p>
     </div>
-
-
     <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
-
-
     <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
-}
 
-
-@if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
-{
-    <div class="govuk-form-group">
-        <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
-        <p class="govuk-body">
-            @Model.DeliveryModel.ToDescription()
-            <button type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
-                Edit<span class="govuk-visually-hidden"> delivery model</span>
-            </button>
-        </p>
-    </div>
-}
-else if (Model.DeliveryModel != DeliveryModel.Regular)
-{
-    <dl class="das-definition-list">
-        <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
-        <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
-    </dl>
-}
-
-<div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
-    <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            @startDateLabel
-        </legend>
-        <span id="start-date-hint" class="govuk-hint">
-            For example, 09 2017
-        </span>
-        <span id="start-date-hint" class="govuk-hint">
-            The standard version will be based on the planned training start date provided
-        </span>
-        @Html.ValidationMessageFor(m => m.StartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate) })
-        <div class="govuk-date-input">
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="StartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                </div>
-            </div>
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="StartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
-                </div>
-            </div>
+    @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
+    {
+        <div class="govuk-form-group">
+            <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">Apprenticeship delivery model</p>
+            <p class="govuk-body">
+                @Model.DeliveryModel.ToDescription()
+                <button id="change-delivery-model-link" type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
+                    Edit<span class="govuk-visually-hidden"> delivery model</span>
+                </button>
+            </p>
         </div>
-    </fieldset>
-</div>
-<div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
-    <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            @endDateLabel
-        </legend>
-        <span id="finish-date-hint" class="govuk-hint">
-            For example, 09 2019
-        </span>
-        @Html.ValidationMessageFor(m => m.EndDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate) })
-        <div class="govuk-date-input">
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="EndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                </div>
-            </div>
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="EndYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="EndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
-                </div>
-            </div>
-        </div>
-    </fieldset>
-</div>
+    }
+    else if (Model.DeliveryModel != DeliveryModel.Regular)
+    {
+        <dl class="das-definition-list">
+            <dt class="das-definition-list__title">Apprenticeship delivery model</dt>
+            <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.DeliveryModel.ToDescription()</dd>
+        </dl>
+    }
 
-@if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
-{
-    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-form-group--error")">
-        <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
+    <div id="start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Planned end date for this employment
+                @startDateLabel
             </legend>
-            <span id="employment-finish-date-hint" class="govuk-hint">
-                For example, 09 2019
+            <span id="start-date-hint" class="govuk-hint">
+                For example, 09 2017
             </span>
-            @Html.ValidationMessageFor(m => m.EmploymentEndDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentEndDate) })
-            <div class="govuk-date-input">
+            <span id="start-date-hint" class="govuk-hint">
+                The standard version will be based on the planned training start date provided
+            </span>
+            @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
+            <div class="govuk-date-input" id="StartDate">
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
-                        <label asp-for="EmploymentEndMonth" class="govuk-label govuk-date-input__label">Month</label>
-                        <input asp-for="EmploymentEndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="StartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
                     </div>
                 </div>
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
-                        <label asp-for="EmploymentEndYear" class="govuk-label govuk-date-input__label">Year</label>
-                        <input asp-for="EmploymentEndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="StartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
                     </div>
                 </div>
             </div>
         </fieldset>
     </div>
-}
 
-<div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
-    <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
-    <span id="price-hint" class="govuk-hint">
-        Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
-    </span>
-    @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
-    <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5" />
-</div>
-
-@if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
-{
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
-        <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Agreed training price for this period of employment (excluding VAT)</label>
-        <span id="employment-price-hint" class="govuk-hint">
-            Enter the price in whole pounds. For example, for £1,500 enter 1500
-        </span>
-        @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
+    <div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Actual start date
+            </legend>
+            <span id="actual-start-date-hint" class="govuk-hint">
+                For example, 30 12 2022
+            </span>
+            <span id="actual-start-date-hint" class="govuk-hint">
+                The standard version will be based on the planned training start date provided
+            </span>
+            @Html.ValidationMessageFor(m => m.ActualStartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ActualStartDate) })
+            <div class="govuk-date-input" id="ActualStartDate">
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartDay" class="govuk-label govuk-date-input__label">Day</label>
+                        <input asp-for="ActualStartDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="ActualStartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="ActualStartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
     </div>
-}
 
-<div class="govuk-character-count" data-module="character-count" data-maxlength="20">
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
-        <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
-        <span id="reference-hint" class="govuk-hint">
-            Add a reference, such as employee number or location - this won’t be seen by the employer
-        </span>
-        @Html.ValidationMessageFor(m => m.Reference, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference) })
-
-        <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
+    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                @endDateLabel
+            </legend>
+            <span id="finish-date-hint" class="govuk-hint">
+                For example, 09 2019
+            </span>
+            @Html.ValidationMessageFor(m => m.EndDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate)})
+            <div class="govuk-date-input" id="EndDate">
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="EndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EndYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="EndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
     </div>
+
+    @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+    {
+        <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-form-group--error")">
+            <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Planned end date for this employment
+                </legend>
+                <span id="employment-finish-date-hint" class="govuk-hint">
+                    For example, 09 2019
+                </span>
+                @Html.ValidationMessageFor(m => m.EmploymentEndDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentEndDate)})
+                <div class="govuk-date-input">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label asp-for="EmploymentEndMonth" class="govuk-label govuk-date-input__label">Month</label>
+                            <input asp-for="EmploymentEndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label asp-for="EmploymentEndYear" class="govuk-label govuk-date-input__label">Year</label>
+                            <input asp-for="EmploymentEndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    }
+
+    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
+        <label asp-for="Cost" class="govuk-label govuk-!-font-weight-bold">Total agreed apprenticeship price (excluding VAT)</label>
+        <span id="price-hint" class="govuk-hint">
+            Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
+        </span>
+        @Html.ValidationMessageFor(m => m.Cost, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost)})
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5" />
+    </div>
+
+    @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+    {
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error")">
+            <label asp-for="EmploymentPrice" class="govuk-label govuk-!-font-weight-bold">Agreed training price for this period of employment (excluding VAT)</label>
+            <span id="employment-price-hint" class="govuk-hint">
+                Enter the price in whole pounds. For example, for £1,500 enter 1500
+            </span>
+            @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice)})
+            <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
+        </div>
+    }
+
+    <div class="govuk-character-count" data-module="character-count" data-maxlength="20">
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Reference, "govuk-form-group--error")">
+            <label asp-for="Reference" class="govuk-label govuk-!-font-weight-bold">Reference (optional)</label>
+            <span id="reference-hint" class="govuk-hint">
+                Add a reference, such as employee number or location - this won’t be seen by the employer
+            </span>
+            @Html.ValidationMessageFor(m => m.Reference, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reference)})
+
+            <input maxlength="20" asp-for="Reference" class="govuk-input govuk-!-width-three-quarters js-character-count" />
+        </div>
+    </div>
+
+    <div class="govuk-inset-text">
+        <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
+        <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
+    </div>
+
 </div>
 
-<div class="govuk-inset-text">
-    <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
-    <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
-</div>
+<script type="text/javascript">
+
+    function continueJourney() {
+        validateDraftApprenticeship(showNextPage);
+    }
+
+    function showNextPage() {
+        $("#draftApprenticeshipSection1").addClass("das-hide");
+        $("#draftApprenticeshipSection2").removeClass("das-js-hide");
+        $("#draftApprenticeshipSection2").addClass("das-show");
+        $("#submitAddDraftApprenticeship").removeClass("das-js-hide");
+        $("#submitAddDraftApprenticeship").addClass("das-show");
+
+        if ($("#IsOnFlexiPaymentPilot").prop("checked") === true) {
+            ensureActualStartDatePopulation();
+            $("#start-date-section").addClass("das-hide");
+        } else {
+            ensureStartDatePopulation();
+            $("#actual-start-date-section").addClass("das-hide");
+        }
+
+        $("#LastName").closest("form").on('submit', handleSubmit);
+        window.scrollTo(0, 0);
+    }
+
+    function ensureActualStartDatePopulation() {
+
+        var actualStartMonth = $("input#ActualStartMonth").val();
+        if (actualStartMonth != null && actualStartMonth.trim() !== '')
+            return;
+
+        var month = $("input#StartMonth").val();
+        var year = $("input#StartYear").val();
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val(month);
+        $("input#ActualStartYear").val(year);
+
+        $("input#StartMonth").val("");
+        $("input#StartYear").val("");
+    }
+
+    function ensureStartDatePopulation() {
+
+        var startMonth = $("input#StartMonth").val();
+        if (startMonth != null && startMonth.trim() !== '')
+            return;
+
+        var month = $("input#ActualStartMonth").val();
+        var year = $("input#ActualStartYear").val();
+
+        $("input#StartMonth").val(month);
+        $("input#StartYear").val(year);
+
+        $("input#ActualStartDay").val("");
+        $("input#ActualStartMonth").val("");
+        $("input#ActualStartYear").val("");
+    }
+
+    function resetErrors() {
+        $("#validationSummaryErrorList").empty();
+        $("#validationSummary").removeClass("das-show");
+        $("#validationSummary").addClass("das-hide");
+        $("*").removeClass("govuk-form-group--error");
+    }
+
+    function showError(errorDetail) {
+        var fieldId = errorDetail.field;
+        $("#validationSummary").removeClass("das-hide");
+        $("#validationSummary").addClass("das-show");
+        $("#validationSummaryErrorList").append("<li><a href=\"#error-message-" + fieldId + "\" data-focuses=\"error-message-" + fieldId + "\">" + errorDetail.message + "</a></li>");
+        $("#" + fieldId).closest(".govuk-form-group").addClass("govuk-form-group--error");
+        $("#" + fieldId).closest(".govuk-fieldset__legend").after("<span class=\"field-validation-error govuk-error-message\" data-valmsg-for=\"" + fieldId + "\" data-valmsg-replace=\"true\" id=\"error-message-" + fieldId + "\">" + errorDetail.message + "</span>");
+    }
+
+    function validateDraftApprenticeship(onSuccess) {
+        resetErrors();
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        var $form = $("#LastName").closest("form");
+        var formData = getFormData($form);
+        formData.__RequestVerificationToken = token;
+        formData.providerId = "@Model.ProviderId";
+        $.ajax({
+            url: '@Url.Action("Validate", "Cohort")',
+            method: "POST",
+            data: formData,
+            context: $form,
+            success: function(data) {
+                if (!data) {
+                    onSuccess($form);
+                    return;
+                }
+                $("#submitAddDraftApprenticeship").prop("disabled", false);
+                data.forEach(function(errorDetail) {
+                    showError(errorDetail);
+                });
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+
+        return false;
+    }
+
+    function handleSubmit(e) {
+        var submitterId = e.originalEvent.submitter.id;
+        if (submitterId === "change-course-link" || submitterId === "change-delivery-model-link") return;
+        e.preventDefault();
+        e.returnValue = false;
+
+        validateDraftApprenticeship(submitForm);
+    }
+
+    function submitForm($form) {
+        $form.off('submit');
+        $form.submit();
+    }
+
+    function getFormData($form) {
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array,
+            function(n, i) {
+                indexed_array[n['name']] = n['value'];
+            });
+
+        return indexed_array;
+    }
+
+    document.addEventListener("DOMContentLoaded", showTrainingDetailsIfRequired);
+
+    function showTrainingDetailsIfRequired() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var showTrainingDetails = urlParams.get('showTrainingDetails');
+        if (showTrainingDetails) {
+            continueJourney();
+        }
+    }
+
+</script>
