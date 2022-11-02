@@ -16,7 +16,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm these details are correct")]
         public bool DetailsAcknowledgement { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? ActualStartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Uln { get; set; }
         public string FirstName { get; set; }

@@ -28,17 +28,34 @@
 
         <div>
             <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Planned start date
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.StartDate.ToString("Y")
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)&showTrainingDetails=true">Change</a>
-                    </dd>
-                </div>
+                @if (Model.ActualStartDate.HasValue)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Actual training start date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ActualStartDate.Value.ToGdsFormatLongMonth()
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)&showTrainingDetails=true">Change</a>
+                        </dd>
+                    </div>
+                }
+                else
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Planned start date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.StartDate.Value.ToString("Y")
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)&showTrainingDetails=true">Change</a>
+                        </dd>
+                    </div>
+                }
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Projected finish date
