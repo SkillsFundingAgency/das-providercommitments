@@ -248,8 +248,6 @@
             </legend>
             <span id="start-date-hint" class="govuk-hint">
                 For example, 09 2017
-            </span>
-            <span id="start-date-hint" class="govuk-hint">
                 The standard version will be based on the planned training start date provided
             </span>
             @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
