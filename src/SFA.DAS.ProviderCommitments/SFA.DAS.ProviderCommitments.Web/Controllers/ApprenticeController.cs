@@ -497,7 +497,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(viewModel.ApprenticeshipId);
             var triggerCalculate = viewModel.CourseCode != apprenticeship.CourseCode ||
-                (viewModel.CourseCode == apprenticeship.CourseCode && apprenticeship.StartDate <= viewModel.StartDate.Date.Value);
+                (viewModel.CourseCode == apprenticeship.CourseCode && apprenticeship.StartDate < viewModel.StartDate.Date.Value);
 
             if (triggerCalculate)
             {
