@@ -38,6 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 EndDate = request.SelectedEndDate,
                 Alert = request.SelectedAlert,
                 ApprenticeConfirmationStatus = request.SelectedApprenticeConfirmation,
+                DeliveryModel = request.SelectedDeliveryModel,
                 PageNumber = 0
             };
 

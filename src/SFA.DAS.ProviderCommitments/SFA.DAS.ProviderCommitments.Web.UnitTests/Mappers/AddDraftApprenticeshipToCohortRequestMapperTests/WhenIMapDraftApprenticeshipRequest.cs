@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
 
             var birthDate = fixture.Create<DateTime?>();
             var startDate = fixture.Create<DateTime?>();
+            var actualStartDate = fixture.Create<DateTime?>();
             var employmentEndDate = fixture.Create<DateTime?>();
             var endDate = fixture.Create<DateTime?>();
             var deliveryModel = fixture.Create<DeliveryModel?>();
@@ -43,8 +44,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
+                .With(x => x.ActualStartDay, actualStartDate?.Day)
+                .With(x => x.ActualStartMonth, actualStartDate?.Month)
+                .With(x => x.ActualStartYear, actualStartDate?.Year)
                 .With(x => x.DeliveryModel, deliveryModel)
                 .With(x => x.EmploymentPrice, employmentPrice)
+                .With(x => x.IsOnFlexiPaymentPilot, true)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();
@@ -109,6 +114,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.ActualStartDate.Date, result.ActualStartDate);
+        }
+
+        [Test]
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             var result = await _act();
@@ -148,6 +160,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         {
             var result = await _act();
             Assert.AreEqual(_source.EmploymentPrice, result.EmploymentPrice);
+        }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
     }
 }

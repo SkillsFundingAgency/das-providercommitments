@@ -18,13 +18,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = source.Uln,
                 CourseCode = source.CourseCode,
                 Cost = source.Cost,
-                StartDate = source.StartDate.Date,
+                StartDate = source.StartDate?.Date,
+                ActualStartDate = source.ActualStartDate?.Date,
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference,
                 CourseOption = source.TrainingCourseOption == "-1" ? string.Empty : source.TrainingCourseOption,
                 DeliveryModel = source.DeliveryModel.Value,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
-                EmploymentPrice = source.EmploymentPrice
+                EmploymentPrice = source.EmploymentPrice,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             });
     }
 }

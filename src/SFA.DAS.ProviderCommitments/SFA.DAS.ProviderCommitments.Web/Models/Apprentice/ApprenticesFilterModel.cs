@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ReverseSort { get; set; }
         public Alerts? SelectedAlert { get; set; }
         public ConfirmationStatus? SelectedApprenticeConfirmation { get; set; }
+        public DeliveryModel? SelectedDeliveryModel { get; set; } 
 
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
@@ -29,6 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public IEnumerable<Alerts> AlertFilters { get; set; } = new List<Alerts>();
         public IEnumerable<ConfirmationStatus> ApprenticeConfirmationFilters =>
                 Enum.GetValues(typeof(ConfirmationStatus)).Cast<ConfirmationStatus>().ToList();
+        public IEnumerable<DeliveryModel> DeliveryModelFilters =>
+                Enum.GetValues(typeof(DeliveryModel)).Cast<DeliveryModel>().ToList();
 
         private const int PageSize = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
@@ -48,7 +51,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                                               || SelectedStartDate.HasValue
                                               || SelectedEndDate.HasValue
                                               || SelectedAlert.HasValue
-                                              || SelectedApprenticeConfirmation.HasValue;
+                                              || SelectedApprenticeConfirmation.HasValue
+                                              || SelectedDeliveryModel.HasValue;
 
         public HtmlString FiltersUsedMessage => this.GetFiltersUsedMessage();
 
@@ -155,6 +159,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             if (SelectedApprenticeConfirmation.HasValue)
             {
                 routeData.Add(nameof(SelectedApprenticeConfirmation), SelectedApprenticeConfirmation.Value.ToString());
+            }
+
+            if (SelectedDeliveryModel.HasValue)
+            {
+                routeData.Add(nameof(SelectedDeliveryModel), SelectedDeliveryModel.Value.ToString());
             }
 
             return routeData;
