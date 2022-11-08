@@ -348,7 +348,7 @@ else
                         {
                             @apprenticeship.ActualStartDate.GetValueOrDefault().ToGdsFormat();
                         }
-                        else
+                        else if(!apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault())
                         {
                             @apprenticeship.PlannedStartDate.ToGdsFormatWithoutDay();
                         }
