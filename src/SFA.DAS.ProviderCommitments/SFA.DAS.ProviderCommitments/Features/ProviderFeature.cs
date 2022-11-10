@@ -10,5 +10,6 @@
         public const string DeliveryModelWithoutPrefix = "DeliveryModel";
         public const string OverlappingTrainingDate = Prefix + "OverlappingTrainingDateRequest";
         public const string OverlappingTrainingDateWithoutPrefix = "OverlappingTrainingDateRequest";
+        public const string FlexiblePaymentsPilot = Prefix + "FlexiblePaymentsPilot";
     }
 }

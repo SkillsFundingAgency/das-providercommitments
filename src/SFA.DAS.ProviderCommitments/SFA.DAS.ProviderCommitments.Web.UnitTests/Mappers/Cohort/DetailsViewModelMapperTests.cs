@@ -641,7 +641,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(nameof(DraftApprenticeshipDto.LastName))]
         [TestCase(nameof(DraftApprenticeshipDto.CourseName))]
         [TestCase(nameof(DraftApprenticeshipDto.DateOfBirth))]
-        [TestCase(nameof(DraftApprenticeshipDto.StartDate))]
         [TestCase(nameof(DraftApprenticeshipDto.EndDate))]
         [TestCase(nameof(DraftApprenticeshipDto.Cost))]
         [TestCase(nameof(DraftApprenticeshipDto.Uln))]
@@ -650,6 +649,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateDraftApprenticeship()
                 .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            var result = await fixture.Map();
+            Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
+        }
+
+        [Test]
+        public async Task IsCompleteIsFalseWhenStartDatesAreBothNull()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship()
+                .SetValueOfDraftApprenticeshipProperty("StartDate", null)
+                .SetValueOfDraftApprenticeshipProperty("ActualStartDate", null);
             var result = await fixture.Map();
             Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
         }
@@ -711,17 +721,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
-        [Test]
-        public async Task OverlappingTraininDateRequestIsMappedCorrectly()
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public async Task ShowRofjaaRemovalBanner(bool hasUnavailableFlexiJobAgencyDeliveryModel, bool expectShowBanner)
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
-                .WithOverlappingTrainingDateRequest();
+                .UnavailableFlexiJobAgencyDeliveryModel(hasUnavailableFlexiJobAgencyDeliveryModel);
+
             var result = await fixture.Map();
-            var draftApprenticeshipWithOverlappingTrainingDateRequest = result.Courses
-                .SelectMany(x => x.DraftApprenticeships)
-                .FirstOrDefault(x => x.Id == fixture.GetOverlapRequestQueryResult.DraftApprenticeshipId);
-            Assert.IsNotNull(draftApprenticeshipWithOverlappingTrainingDateRequest);
-            Assert.AreEqual(fixture.GetOverlapRequestQueryResult.CreatedOn, draftApprenticeshipWithOverlappingTrainingDateRequest.OverlappingTrainingDateRequest.CreatedOn);
+
+            result.ShowRofjaaRemovalBanner.Should().Be(expectShowBanner);
         }
     }
 
@@ -741,7 +750,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
         public GetEmailOverlapsResponse EmailOverlapResponse;
-        public Infrastructure.OuterApi.Responses.GetOverlapRequestQueryResult GetOverlapRequestQueryResult;
 
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
@@ -756,7 +764,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Cohort = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
-            CohortDetails = _autoFixture.Create<GetCohortDetailsResponse>();
+            CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>().With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false).Create();
 
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);
@@ -777,8 +785,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             OuterApiClient = new Mock<IOuterApiClient>();
             OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
                 .ReturnsAsync(CohortDetails);
-
-            GetOverlapRequestQueryResult = new Infrastructure.OuterApi.Responses.GetOverlapRequestQueryResult { CreatedOn = DateTime.Now, DraftApprenticeshipId = draftApprenticeships.First().Id, PreviousApprenticeshipId = 1 };
 
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
@@ -926,8 +932,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(source.EmploymentPrice, result.EmploymentPrice);
             Assert.AreEqual(source.EmploymentEndDate, result.EmploymentEndDate);
             Assert.AreEqual(source.StartDate, result.StartDate);
+            Assert.AreEqual(source.ActualStartDate, result.ActualStartDate);
             Assert.AreEqual(source.EndDate, result.EndDate);
             Assert.AreEqual($"X{source.Id}X", result.DraftApprenticeshipHashedId);
+            Assert.AreEqual(source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
 
         public void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)
@@ -1036,10 +1044,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
-        internal DetailsViewModelMapperTestsFixture WithOverlappingTrainingDateRequest()
+        public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
-            OuterApiClient.Setup(x => x.Get<Infrastructure.OuterApi.Responses.GetOverlapRequestQueryResult>(It.Is<Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest.GetOverlapRequestQueryRequest>(x =>  x.DraftApprenticeshipId == GetOverlapRequestQueryResult.DraftApprenticeshipId)))
-             .ReturnsAsync(GetOverlapRequestQueryResult);
+            CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;
         }
     }

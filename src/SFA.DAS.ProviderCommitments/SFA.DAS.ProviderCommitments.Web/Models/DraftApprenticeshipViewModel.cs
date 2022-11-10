@@ -8,10 +8,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class DraftApprenticeshipViewModel
     {
-        public DraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? endDate, DateTime? employmentEndDate = null) : base()
+        public DraftApprenticeshipViewModel(DateTime? dateOfBirth, DateTime? startDate, DateTime? actualStartDate, DateTime? endDate, DateTime? employmentEndDate = null) : base()
         {
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
             StartDate = startDate == null ? new MonthYearModel("") : new MonthYearModel($"{startDate.Value.Month}{startDate.Value.Year}");
+            ActualStartDate = actualStartDate == null ? new DateModel() : new DateModel(actualStartDate.Value);
             EndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
             EmploymentEndDate = employmentEndDate == null ? new MonthYearModel("") : new MonthYearModel($"{employmentEndDate.Value.Month}{employmentEndDate.Value.Year}");
         }
@@ -20,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         {
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
+            ActualStartDate = new DateModel();
             EndDate = new MonthYearModel("");
             EmploymentEndDate = new MonthYearModel("");
         }
@@ -69,6 +71,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Planned apprenticeship training start date")]
         public MonthYearModel StartDate { get; set; }
+
+        [Display(Name = "Day")]
+        [SuppressArgumentException(nameof(ActualStartDate), "The start date is not valid")]
+        public int? ActualStartDay { get => ActualStartDate.Day; set => ActualStartDate.Day = value; }
+
+        [Display(Name = "Month")]
+        [SuppressArgumentException(nameof(ActualStartDate), "The start date is not valid")]
+        public int? ActualStartMonth { get => ActualStartDate.Month; set => ActualStartDate.Month = value; }
+
+        [Display(Name = "Year")]
+        [SuppressArgumentException(nameof(ActualStartDate), "The start date is not valid")]
+        public int? ActualStartYear { get => ActualStartDate.Year; set => ActualStartDate.Year = value; }
+
+        [Display(Name = "Planned apprenticeship training start date")]
+        [DataType(DataType.Date)]
+        public DateModel ActualStartDate { get; set; }
 
         [Display(Name = "Month")]
         [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
@@ -121,5 +139,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        
+        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
+        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
+        public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
     }
 }

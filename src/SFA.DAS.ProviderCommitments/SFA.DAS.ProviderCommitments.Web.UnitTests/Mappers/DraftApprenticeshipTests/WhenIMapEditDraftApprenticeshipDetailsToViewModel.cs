@@ -129,6 +129,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         }
 
         [Test]
+        public async Task ThenActualStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Month, result.ActualStartDate.Month);
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Day, result.ActualStartDate.Day);
+            Assert.AreEqual(_apiResponse.ActualStartDate?.Year, result.ActualStartDate.Year);
+        }
+
+        [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();
@@ -237,8 +246,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
         }
+        
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.Regular, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(false, Infrastructure.OuterApi.Types.DeliveryModel.Regular, false)]
+
+        public async Task ThenHasUnavailableFlexiJobAgencyDeliveryModelIsMappedCorrectly(bool hasUnavailableDeliveryModel, Infrastructure.OuterApi.Types.DeliveryModel deliveryModel, bool expectedResult)
+        {
+            _apiResponse.DeliveryModel = deliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
+
+            var result = await _act();
+            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+        }
 
         [Test]
+        public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
+		
+		[Test]
         public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
         {
             var result = await _act();

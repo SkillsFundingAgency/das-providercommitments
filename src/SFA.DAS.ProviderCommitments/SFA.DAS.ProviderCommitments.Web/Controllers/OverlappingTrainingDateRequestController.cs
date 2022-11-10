@@ -47,7 +47,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _featureTogglesService = featureTogglesService;
         }
 
-        [HttpGet]
         [Route("overlap-options-with-pending-request")]
         public IActionResult DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequest request)
         {
@@ -90,9 +89,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,
                         Status = apprenticeshipDetails.Status,
-                        EnableStopRequestEmail = true && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
+                        EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                         || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
+                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
+                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
+                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
                     });
                 }
             }
@@ -104,7 +105,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 Status = apprenticeshipDetails.Status,
                 EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused)
+                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
+                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
+                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
             };
 
             return View(vm);

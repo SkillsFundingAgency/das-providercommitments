@@ -89,7 +89,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
                 && !cohort.IsLinkedToChangeOfPartyRequest,
                 IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
-                Status = GetCohortStatus(cohort, draftApprenticeships)
+                Status = GetCohortStatus(cohort, draftApprenticeships),
+                ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel
             };
         }
 
@@ -193,12 +194,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             DateOfBirth = a.DateOfBirth,
                             EndDate = a.EndDate,
                             StartDate = a.StartDate,
+                            ActualStartDate = a.ActualStartDate,
                             OriginalStartDate = a.OriginalStartDate,
                             ULN = a.Uln,
                             HasOverlappingEmail = emailOverlaps.Any(x => x.Id == a.Id),
                             IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                             EmploymentPrice = a.EmploymentPrice,
                             EmploymentEndDate = a.EmploymentEndDate,
+                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
                         })
                 .ToList()
                 })
@@ -225,7 +228,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             if (draftApprenticeship.DateOfBirth == null
                 || draftApprenticeship.Uln == null
-                || draftApprenticeship.StartDate == null
+                || (draftApprenticeship.ActualStartDate == null && draftApprenticeship.StartDate == null)
                 || draftApprenticeship.EndDate == null
                 || draftApprenticeship.Cost == null)
             {

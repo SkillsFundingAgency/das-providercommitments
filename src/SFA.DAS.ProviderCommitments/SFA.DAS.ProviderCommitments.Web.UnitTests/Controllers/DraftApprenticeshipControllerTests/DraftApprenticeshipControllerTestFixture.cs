@@ -343,14 +343,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public DraftApprenticeshipControllerTestFixture SetApprenticeshipStarting(string startDate)
+        public DraftApprenticeshipControllerTestFixture SetApprenticeshipStarting(string startDateAsString, bool actual = false)
         {
-            if (startDate != null)
+            if (startDateAsString != null)
             {
-                var startDate_ = DateTime.Parse(startDate);
-                _addModel.StartDate = new MonthYearModel($"{startDate_.Month}{startDate_.Year}");
-                _editModel.StartDate = _addModel.StartDate;
-                _viewModel.StartDate = startDate_;
+                var startDate = DateTime.Parse(startDateAsString);
+                if (actual)
+                {
+                    _addModel.StartDate = new MonthYearModel("");
+                    _addModel.ActualStartDate = new DateModel(startDate);
+                    _editModel.StartDate = _addModel.StartDate;
+                    _editModel.ActualStartDate = _addModel.ActualStartDate;
+                    _viewModel.StartDate = null;
+                    _viewModel.ActualStartDate = startDate;
+                    _addModel.IsOnFlexiPaymentPilot = _editModel.IsOnFlexiPaymentPilot = _viewModel.IsOnFlexiPaymentPilot = true;
+                }
+                else
+                {
+                    _addModel.StartDate = new MonthYearModel($"{startDate.Month}{startDate.Year}");
+                    _addModel.ActualStartDate = new DateModel();
+                    _editModel.StartDate = _addModel.StartDate;
+                    _editModel.ActualStartDate = _addModel.ActualStartDate;
+                    _viewModel.StartDate = startDate;
+                    _viewModel.ActualStartDate = null;
+                }
             }
 
             SetupCommitmentsApiToReturnADraftApprentice();

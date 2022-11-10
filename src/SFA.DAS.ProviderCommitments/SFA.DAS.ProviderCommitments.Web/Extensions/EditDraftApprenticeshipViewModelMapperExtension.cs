@@ -21,11 +21,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 EmploymentPrice = source.EmploymentPrice,
                 Cost = source.Cost,
                 StartDate = source.StartDate.Date,
+                ActualStartDate = source.ActualStartDate.Date,
                 EmploymentEndDate = source.EmploymentEndDate.Date,
                 EndDate = source.EndDate.Date,
                 OriginatorReference = source.Reference,
                 ReservationId = source.ReservationId,
-                IgnoreStartDateOverlap = true
+                IgnoreStartDateOverlap = true,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }
