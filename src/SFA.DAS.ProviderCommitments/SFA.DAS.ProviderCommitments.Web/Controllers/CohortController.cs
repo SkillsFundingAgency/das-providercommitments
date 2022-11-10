@@ -253,13 +253,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         private bool RequireRpl(MonthYearModel startDate)
-        {
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
-                return false;
-
-            return startDate?.Date >= new DateTime(2022, 08, 01);
-        }
-
+            => startDate?.Date >= new DateTime(2022, 08, 01);
+        
         [HttpGet]
         [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -461,7 +456,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
         {
-            if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend && !_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
+            if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend)
             {
                 var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
                 var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);

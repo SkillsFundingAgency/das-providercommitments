@@ -187,7 +187,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
 
             _tempData = new Mock<ITempDataDictionary>();
 

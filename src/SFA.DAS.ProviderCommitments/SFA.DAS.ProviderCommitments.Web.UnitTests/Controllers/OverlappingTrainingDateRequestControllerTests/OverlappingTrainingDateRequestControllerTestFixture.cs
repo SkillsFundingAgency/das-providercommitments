@@ -116,8 +116,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 .Callback((string value) => _linkGeneratorParameter = value);
 
             var authorizationService = Mock.Of<IAuthorizationService>();
-            Mock.Get(authorizationService).Setup(x =>
-                x.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning)).Returns(true);
 
             _outerApiService = new Mock<IOuterApiService>();
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();

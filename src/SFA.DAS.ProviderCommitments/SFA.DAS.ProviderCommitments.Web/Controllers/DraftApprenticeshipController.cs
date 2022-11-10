@@ -284,9 +284,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private bool RequireRpl(MonthYearModel startDate)
         {
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
-                return false;
-
             return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
