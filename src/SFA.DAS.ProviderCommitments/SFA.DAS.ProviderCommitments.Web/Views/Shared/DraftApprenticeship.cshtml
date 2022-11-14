@@ -168,9 +168,6 @@
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         Will this apprentice be part of the Flexible Payments pilot program?
                     </legend>
-                    <span id="finish-date-hint" class="govuk-hint">
-                        Once this apprentice has been approved, you will need to get in touch with the Flexible Payments team to take them off the pilot.
-                    </span>
                     <div class="govuk-radios">
                         @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
                         <div class="govuk-radios__item">
@@ -271,7 +268,7 @@
     <div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Actual start date
+                Actual training start date
             </legend>
             <span id="actual-start-date-hint" class="govuk-hint">
                 For example, 30 12 2022
@@ -534,11 +531,21 @@
     document.addEventListener("DOMContentLoaded", showTrainingDetailsIfRequired);
 
     function showTrainingDetailsIfRequired() {
+        var editing = window.location.pathname.endsWith("edit");
         var urlParams = new URLSearchParams(window.location.search);
-        var showTrainingDetails = urlParams.get('showTrainingDetails');
+        var showTrainingDetails = urlParams.get("showTrainingDetails") ||
+            (editing && previousPageWasEitherOf("select-course", "select-delivery-model"));
+
         if (showTrainingDetails) {
             continueJourney();
         }
+    }
+
+    function previousPageWasEitherOf() {
+        for (var i = 0; i < arguments.length; i++) {
+            if (document.referrer.indexOf(arguments[i]) > -1) return true;
+        }
+        return false;
     }
 
 </script>

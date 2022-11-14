@@ -195,7 +195,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
                 <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
                 @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
                 {
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot user?</th>
+                    <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
                 }
                 <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
