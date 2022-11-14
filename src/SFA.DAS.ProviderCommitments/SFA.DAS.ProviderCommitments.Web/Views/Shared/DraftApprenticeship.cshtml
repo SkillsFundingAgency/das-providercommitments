@@ -5,7 +5,6 @@
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Models
-@using Microsoft.ApplicationInsights.AspNetCore
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
@@ -397,10 +396,9 @@
 </div>
 
 <script type="text/javascript">
-    window.urls = {
-        validate: "@Url.Action("Validate", "Cohort")",
-        providerId: "@Model.ProviderId"
-    }
+    window.urls = window.urls || {};
+    window.urls.validate = "@Url.Action("Validate", "Cohort")";
+    window.urls.validate.providerId = "@Model.ProviderId";
 </script>
 
 <script type="text/javascript" src="~/js/private-beta.js" no-cdn></script>

@@ -133,8 +133,9 @@ document.addEventListener("DOMContentLoaded", showTrainingDetailsIfRequired);
 
 function showTrainingDetailsIfRequired() {
     var urlParams = new URLSearchParams(window.location.search);
+    var editing = document.referrer.indexOf("CourseCode=") > -1 || window.location.pathname.endsWith("edit");
     var showTrainingDetails = urlParams.get("showTrainingDetails") ||
-        previousPageWasEitherOf("select-course", "select-delivery-model");
+        (editing && previousPageWasEitherOf("select-course", "select-delivery-model"));
 
     if (showTrainingDetails) {
         continueJourney();
