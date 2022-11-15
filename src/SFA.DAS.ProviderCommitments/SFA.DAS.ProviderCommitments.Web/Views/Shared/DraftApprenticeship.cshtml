@@ -33,7 +33,7 @@
 
 }
 
-<div id="draftApprenticeshipSection1">
+<div id="draftApprenticeshipSection1" class="@(Model.ShowTrainingDetails ? "das-hide" : "das-show")">
     
     @if (Model is EditDraftApprenticeshipViewModel)
     {
@@ -195,7 +195,7 @@
     <button type="button" class="govuk-button" onclick="javascript: continueJourney();">Continue</button>
 </div>
 
-<div id="draftApprenticeshipSection2" class="das-js-hide">
+<div id="draftApprenticeshipSection2" class="@(Model.ShowTrainingDetails ? "das-show" : "das-js-hide")">
 
     @if (Model is EditDraftApprenticeshipViewModel)
     {

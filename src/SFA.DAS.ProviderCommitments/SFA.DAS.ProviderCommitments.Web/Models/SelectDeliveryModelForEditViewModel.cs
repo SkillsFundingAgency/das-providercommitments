@@ -9,5 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public Infrastructure.OuterApi.Types.DeliveryModel? DeliveryModel { get; set; }
         public string LegalEntityName { get; set; }
         public string CourseCode { get; set; }
+        public bool ShowTrainingDetails { get; set; }
     }
 }
