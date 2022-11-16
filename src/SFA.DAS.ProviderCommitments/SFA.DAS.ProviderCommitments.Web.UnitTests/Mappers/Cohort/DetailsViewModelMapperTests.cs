@@ -721,19 +721,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
-        [Test]
-        public async Task OverlappingTraininDateRequestIsMappedCorrectly()
-        {
-            var fixture = new DetailsViewModelMapperTestsFixture()
-                .WithOverlappingTrainingDateRequest();
-            var result = await fixture.Map();
-            var draftApprenticeshipWithOverlappingTrainingDateRequest = result.Courses
-                .SelectMany(x => x.DraftApprenticeships)
-                .FirstOrDefault(x => x.Id == fixture.GetOverlapRequestQueryResult.DraftApprenticeshipId);
-            Assert.IsNotNull(draftApprenticeshipWithOverlappingTrainingDateRequest);
-            Assert.AreEqual(fixture.GetOverlapRequestQueryResult.CreatedOn, draftApprenticeshipWithOverlappingTrainingDateRequest.OverlappingTrainingDateRequest.CreatedOn);
-        }
-		
 		[TestCase(true, true)]
         [TestCase(false, false)]
         public async Task ShowRofjaaRemovalBanner(bool hasUnavailableFlexiJobAgencyDeliveryModel, bool expectShowBanner)
@@ -1054,13 +1041,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
              .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = hasOverlap, HasOverlappingStartDate = hasOverlap });
 
-            return this;
-        }
-
-        internal DetailsViewModelMapperTestsFixture WithOverlappingTrainingDateRequest()
-        {
-            OuterApiClient.Setup(x => x.Get<Infrastructure.OuterApi.Responses.GetOverlapRequestQueryResult>(It.Is<Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest.GetOverlapRequestQueryRequest>(x =>  x.DraftApprenticeshipId == GetOverlapRequestQueryResult.DraftApprenticeshipId)))
-             .ReturnsAsync(GetOverlapRequestQueryResult);
             return this;
         }
 		
