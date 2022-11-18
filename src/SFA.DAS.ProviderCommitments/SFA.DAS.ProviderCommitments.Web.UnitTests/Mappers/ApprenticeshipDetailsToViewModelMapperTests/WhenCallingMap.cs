@@ -121,5 +121,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.ApprenticeshipDetail
 
             result.Alerts.Should().BeEquivalentTo(alertStrings);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_Maps_ActualStartDate(
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+            ApprenticeshipDetailsToViewModelMapper mapper)
+        {
+            var result = await mapper.Map(source);
+
+            result.ActualStartDate.Should().Be(source.ActualStartDate);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Maps_IsOnFlexiPaymentPilot(
+            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+            ApprenticeshipDetailsToViewModelMapper mapper)
+        {
+            var result = await mapper.Map(source);
+
+            result.IsOnFlexiPaymentPilot.Should().Be(source.IsOnFlexiPaymentPilot);
+        }
     }
 }
