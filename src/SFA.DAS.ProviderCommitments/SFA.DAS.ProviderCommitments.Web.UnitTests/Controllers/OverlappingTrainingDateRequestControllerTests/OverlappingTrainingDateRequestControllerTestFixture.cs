@@ -160,7 +160,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture SetOverlappingTrainingDateRequestDraftApprenticeshipHashedId()
         {
             _draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId = "AAA";
- 
             return this;
         }
 
