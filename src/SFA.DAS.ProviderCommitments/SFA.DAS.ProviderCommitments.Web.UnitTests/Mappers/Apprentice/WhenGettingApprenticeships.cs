@@ -69,6 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         apiRequest.EmployerName == webRequest.SelectedEmployer &&
                         apiRequest.CourseName == webRequest.SelectedCourse &&
                         apiRequest.ApprenticeConfirmationStatus == webRequest.SelectedApprenticeConfirmation &&
+                        apiRequest.DeliveryModel == webRequest.SelectedDeliveryModel &&
                         apiRequest.Status == webRequest.SelectedStatus &&
                         apiRequest.StartDate == webRequest.SelectedStartDate &&
                         apiRequest.EndDate == webRequest.SelectedEndDate),
@@ -176,6 +177,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(request.SelectedStartDate, viewModel.FilterModel.SelectedStartDate);
             Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
             Assert.AreEqual(request.SelectedApprenticeConfirmation, viewModel.FilterModel.SelectedApprenticeConfirmation);
+            Assert.AreEqual(request.SelectedDeliveryModel, viewModel.FilterModel.SelectedDeliveryModel);
         }
 
         [Test, MoqAutoData]
