@@ -129,7 +129,27 @@ function getFormData($form) {
     return indexed_array;
 }
 
-document.addEventListener("DOMContentLoaded", showTrainingDetailsIfRequired);
+function onFormSubmitted(e) {
+    e.preventDefault();
+    if ($("#draftApprenticeshipSection1").hasClass("das-hide") === false)
+        continueJourney();
+    else return;
+}
+
+function addOnFormSubmittedEvent() {
+    var form = document.getElementById("addApprenticeship");
+    if (form.attachEvent) {
+        form.attachEvent("submit", onFormSubmitted);
+    } else {
+        form.addEventListener("submit", onFormSubmitted);
+    }
+}
+
+document.addEventListener("DOMContentLoaded",
+    function () {
+        showTrainingDetailsIfRequired();
+        addOnFormSubmittedEvent();
+    });
 
 function showTrainingDetailsIfRequired() {
     var urlParams = new URLSearchParams(window.location.search);
