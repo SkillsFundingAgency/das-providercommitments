@@ -26,7 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
         {
             await _fixture
-                .SetOverlappingTrainingDateRequestDraftApprenticeshipHashedId()
                 .GetDraftApprenticeshipOverlapOptions();
 
             _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped();
