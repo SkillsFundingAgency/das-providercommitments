@@ -15,7 +15,6 @@ ProviderCommitments has no home or landing page. The user is typically redirecte
   * SFA.DAS.ProviderCommitments
   * SFA.DAS.ProviderUrlHelper
   * SFA.DAS.Encoding
-  * SFA.DAS.Reservations.Api.Client
 * Start Microsoft Azure Storage Emulator
 * Run SFA.DAS.ProviderCommitments.Web project (run under kestrel)
 
