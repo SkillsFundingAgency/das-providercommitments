@@ -12,9 +12,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel;
@@ -72,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithTempViewModel()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
+            fixture.ViewModel.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) DeliveryModel.PortableFlexiJob;
 
             var result = fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditApprenticeship");
@@ -87,14 +85,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public Mock<IModelMapper> ModelMapperMock;
         public Mock<IAuthorizationService> AuthorizationServiceMock;
         public Mock<ITempDataDictionary> TempDataMock;
-        public SelectDeliveryModelViewModel ViewModel;
+        public EditApprenticeshipDeliveryModelViewModel ViewModel;
         public EditApprenticeshipRequest Request;
         public EditApprenticeshipRequestViewModel Apprenticeship;
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
+            ViewModel = fixture.Create<EditApprenticeshipDeliveryModelViewModel>();
             Request = fixture.Create<EditApprenticeshipRequest>();
             Apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
