@@ -11,11 +11,10 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -41,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            result.ViewName.Should().Be("../Shared/SelectDeliveryModel");
+            Assert.IsNotNull(result);
         }
 
         [Test]
@@ -107,10 +106,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             Sut.TempData = TempDataMock.Object;
         }
 
-        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
+        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<Infrastructure.OuterApi.Types.DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
-                .ReturnsAsync(new SelectDeliveryModelViewModel { DeliveryModels = list.ToArray() });
+            ModelMapperMock.Setup(x => x.Map<EditApprenticeshipDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
+                .ReturnsAsync(new EditApprenticeshipDeliveryModelViewModel { DeliveryModels = list });
             return this;
         }
 
