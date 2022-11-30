@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -7,11 +8,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     public class TestController : Controller
     {
         [HttpGet]
-        public IActionResult Index([FromServices] IOuterApiClient outerApiClient)
+        public async Task<IActionResult> Index([FromServices] IOuterApiClient outerApiClient)
         {
-            var result = outerApiClient.Get<string>(new TestApimRole());
+            var result = await outerApiClient.Get<ResponseRole>(new TestApimRole());
             return Ok(result);
         }
+    }
+
+    public class ResponseRole
+    {
+        public string Role { get; set; }
     }
 
     public class TestApimRole : IGetApiRequest
