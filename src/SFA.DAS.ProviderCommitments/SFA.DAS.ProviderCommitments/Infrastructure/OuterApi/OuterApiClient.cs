@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
             _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyRequestHeaderKey, _config.SubscriptionKey);
             _httpClient.DefaultRequestHeaders.Add(VersionRequestHeaderKey, "1");
-            _httpClient.DefaultRequestHeaders.Add("RoleClaim", "Provider");
+            _httpClient.DefaultRequestHeaders.Add("x-party", "Provider");
         }
 
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
