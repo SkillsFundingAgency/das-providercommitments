@@ -3,8 +3,10 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
+    [Route("{providerId}/[controller]")]
     public class TestController : Controller
     {
+        [HttpGet]
         public IActionResult Index([FromServices] IOuterApiClient outerApiClient)
         {
             var result = outerApiClient.Get<string>(new TestApimRole());
