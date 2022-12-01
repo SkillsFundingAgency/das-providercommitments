@@ -145,5 +145,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool ShowTrainingDetails { get; set; }
+        public bool HasChangedDeliveryModel { get; set; }
     }
 }

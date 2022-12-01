@@ -721,7 +721,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
-        [TestCase(true, true)]
+		[TestCase(true, true)]
         [TestCase(false, false)]
         public async Task ShowRofjaaRemovalBanner(bool hasUnavailableFlexiJobAgencyDeliveryModel, bool expectShowBanner)
         {
@@ -1043,8 +1043,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             return this;
         }
-
-        public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
+		
+		public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
             CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;

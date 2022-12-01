@@ -68,6 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 if (cachedModel != null)
                 {
                     cachedModel.HasMultipleDeliveryModelOptions = newModel.HasMultipleDeliveryModelOptions;
+                    cachedModel.HasChangedDeliveryModel = cachedModel.DeliveryModel != (DeliveryModel?)apiResponse.DeliveryModel;
                     return cachedModel;
                 }
 
