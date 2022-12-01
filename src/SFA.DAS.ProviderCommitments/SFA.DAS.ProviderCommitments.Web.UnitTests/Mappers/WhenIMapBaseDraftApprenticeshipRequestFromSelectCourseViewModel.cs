@@ -42,5 +42,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var result = await _mapper.Map(_source);
             result.DraftApprenticeshipHashedId.Should().Be(_source.DraftApprenticeshipHashedId);
         }
+
+        [Test]
+        public async Task ShowTrainingDetailsIsMapped()
+        {
+            var result = await _mapper.Map(_source);
+            result.ShowTrainingDetails.Should().Be(_source.ShowTrainingDetails);
+        }
     }
 }

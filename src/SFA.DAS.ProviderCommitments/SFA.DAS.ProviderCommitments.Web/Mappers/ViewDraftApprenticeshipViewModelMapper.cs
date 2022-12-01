@@ -43,7 +43,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Reference = draftApprenticeship.Reference,
                 TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
-
                 HasTrainingCourseOption = draftApprenticeship.HasStandardOptions
             };
 

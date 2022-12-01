@@ -144,6 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
+        public bool ShowTrainingDetails { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
     }
 }
