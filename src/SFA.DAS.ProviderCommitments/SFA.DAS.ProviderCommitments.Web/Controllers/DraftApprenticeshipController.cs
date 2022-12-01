@@ -174,7 +174,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
             model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
 
-            if (model.DeliveryModels.Count > 1)
+            if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 return View(model);
             }
