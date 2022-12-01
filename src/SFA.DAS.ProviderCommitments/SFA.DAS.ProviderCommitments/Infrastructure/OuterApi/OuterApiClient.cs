@@ -51,7 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         private void AddHeaders()
         {
-            
             //The http handler life time is set to 5 minutes
             //hence once the headers are added they don't need added again
             if (_httpClient.DefaultRequestHeaders.Contains(SubscriptionKeyRequestHeaderKey)) return;

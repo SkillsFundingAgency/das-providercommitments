@@ -77,14 +77,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Verify_DateSentToEmployer_Is_Mapped();
         }
 
-        //[Test]
-        //public async Task Then_Cohort_OrderBy_OnDateCreated_Correctly()
-        //{
-        //    var fixture = new WhenMappingWithEmployerToViewModelFixture();
-        //    await fixture.Map();
+        [Test]
+        public async Task Then_Cohort_OrderBy_OnDateCreated_Correctly()
+        {
+            var fixture = new WhenMappingWithEmployerToViewModelFixture();
+            await fixture.Map();
 
-        //    fixture.Verify_Ordered_By_Correctly();
-        //}
+            fixture.Verify_Ordered_By_Correctly();
+        }
 
         [Test]
         public async Task Then_ProviderId_IsMapped()
@@ -95,20 +95,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Verify_ProviderId_IsMapped();
         }
 
-        //[TestCase("", false, "5_Encoded", "2_Encoded")]
-        //[TestCase("Employer", false, "5_Encoded", "2_Encoded")]
-        //[TestCase("Employer", true, "2_Encoded", "5_Encoded")]
-        //[TestCase("CohortReference", false, "1_Encoded", "5_Encoded")]
-        //[TestCase("CohortReference", true, "5_Encoded", "1_Encoded")]
-        //[TestCase("DateSentToEmployer", false, "5_Encoded", "2_Encoded")]
-        //[TestCase("DateSentToEmployer", true, "5_Encoded", "2_Encoded")]
-        //public async Task Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
-        //{
-        //    var fixture = new WhenMappingWithEmployerToViewModelFixture().WithSortApplied(sortField, reverse);
-        //    await fixture.Map();
+        [TestCase("", false, "5_Encoded", "2_Encoded")]
+        [TestCase("Employer", false, "5_Encoded", "2_Encoded")]
+        [TestCase("Employer", true, "2_Encoded", "5_Encoded")]
+        [TestCase("CohortReference", false, "1_Encoded", "5_Encoded")]
+        [TestCase("CohortReference", true, "5_Encoded", "1_Encoded")]
+        [TestCase("DateSentToEmployer", false, "5_Encoded", "2_Encoded")]
+        [TestCase("DateSentToEmployer", true, "5_Encoded", "2_Encoded")]
+        public async Task Then_Sort_IsApplied_Correctly(string sortField, bool reverse, string expectedFirstId, string expectedLastId)
+        {
+            var fixture = new WhenMappingWithEmployerToViewModelFixture().WithSortApplied(sortField, reverse);
+            await fixture.Map();
 
-        //    fixture.Verify_Sort_IsApplied(expectedFirstId, expectedLastId);
-        //}
+            fixture.Verify_Sort_IsApplied(expectedFirstId, expectedLastId);
+        }
     }
 
     public class WhenMappingWithEmployerToViewModelFixture
