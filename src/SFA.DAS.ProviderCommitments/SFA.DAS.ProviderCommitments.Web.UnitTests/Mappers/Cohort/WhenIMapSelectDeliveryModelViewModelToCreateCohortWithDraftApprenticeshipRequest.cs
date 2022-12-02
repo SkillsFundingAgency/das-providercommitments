@@ -1,10 +1,9 @@
 ﻿using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
@@ -74,6 +73,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _act();
             Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
+        }
+
+        [Test]
+        public async Task ThenShowTrainingDetailsIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.ShowTrainingDetails, result.ShowTrainingDetails);
         }
     }
 }

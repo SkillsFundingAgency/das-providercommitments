@@ -14,5 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             : "Select the apprenticeship delivery model";
         public string LegalEntityName { get; set; }
         public string CourseCode { get; set; }
+        public bool ShowTrainingDetails { get; set; }
     }
 }

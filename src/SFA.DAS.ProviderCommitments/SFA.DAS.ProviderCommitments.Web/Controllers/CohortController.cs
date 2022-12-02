@@ -144,7 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
             }
 
-            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model); //?
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModel), request.CloneBaseValues());
         }
 
@@ -230,6 +230,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreDraftApprenticeshipState(model);
                 var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
+                request.ShowTrainingDetails = true;
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), request.CloneBaseValues());
             }
 
