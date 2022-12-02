@@ -558,6 +558,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task StatusIsMappedCorrectly_When_rejected_From_TransferSender()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetTransferSender()
+                .SetCohortWithParty(Party.TransferSender);
+
+            fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
+            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Rejected;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Rejected by transfer sending employer", result.Status);
+        }
+
+        [Test]
         public async Task StatusIsMappedCorrectly_When_WithProvider_And_New_Cohort()
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
