@@ -563,7 +563,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
                 .SetTransferSender()
-                .SetCohortWithParty(Party.TransferSender);
+                .SetCohortWithParty(Party.TransferSender)
+                .SetTransferApprovalStatus(TransferApprovalStatus.Rejected)
+                .SetCohortApprovedStatus(true);
 
             fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
             fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Rejected;
@@ -1002,6 +1004,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DetailsViewModelMapperTestsFixture SetTransferSender()
         {
             Cohort.TransferSenderId = _autoFixture.Create<long>();
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
+        {
+            Cohort.TransferApprovalStatus = transferApprovalStatus; ;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetCohortApprovedStatus(bool isApproved)
+        {
+            Cohort.IsApprovedByEmployer = Cohort.IsApprovedByProvider = isApproved; ;
             return this;
         }
 
