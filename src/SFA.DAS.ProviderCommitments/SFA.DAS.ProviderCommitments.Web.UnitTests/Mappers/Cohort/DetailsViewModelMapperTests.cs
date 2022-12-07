@@ -558,6 +558,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task StatusIsMappedCorrectly_When_rejected_From_TransferSender()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetTransferSender()
+                .SetCohortWithParty(Party.TransferSender)
+                .SetTransferApprovalStatus(TransferApprovalStatus.Rejected)
+                .SetCohortApprovedStatus(true);
+
+            fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
+            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Rejected;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Rejected by transfer sending employer", result.Status);
+        }
+
+        [Test]
         public async Task StatusIsMappedCorrectly_When_WithProvider_And_New_Cohort()
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
@@ -987,6 +1004,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DetailsViewModelMapperTestsFixture SetTransferSender()
         {
             Cohort.TransferSenderId = _autoFixture.Create<long>();
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
+        {
+            Cohort.TransferApprovalStatus = transferApprovalStatus; ;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetCohortApprovedStatus(bool isApproved)
+        {
+            Cohort.IsApprovedByEmployer = Cohort.IsApprovedByProvider = isApproved; ;
             return this;
         }
 
