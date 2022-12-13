@@ -45,6 +45,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public async Task GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneInvalidOption_ShouldRedirectToSelectDeliveryModel()
+        {
+            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
+                .WithDraftApprenticeship()
+                .WithUnavailableDeliveryModel()
+                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
+
+            var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
         public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
@@ -69,6 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public SelectDeliveryModelForEditViewModel ViewModel;
         public DraftApprenticeshipRequest Request;
         public EditDraftApprenticeshipViewModel DraftApprenticeship;
+        public SelectDeliveryModelForEditViewModel MapperResult;
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
@@ -84,6 +97,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             TempDataMock = new Mock<ITempDataDictionary>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
 
+            MapperResult = new SelectDeliveryModelForEditViewModel();
+            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelForEditViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+                .ReturnsAsync(MapperResult);
+
             Sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 Mock.Of<ICommitmentsApiClient>(),
@@ -95,8 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelForEditViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
-                .ReturnsAsync(new SelectDeliveryModelForEditViewModel { DeliveryModels = list });
+            MapperResult.DeliveryModels = list;
             return this;
         }
 
@@ -104,6 +120,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             object asString = JsonConvert.SerializeObject(DraftApprenticeship);
             TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            return this;
+        }
+
+        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithUnavailableDeliveryModel()
+        {
+            MapperResult.HasUnavailableFlexiJobAgencyDeliveryModel = true;
             return this;
         }
 

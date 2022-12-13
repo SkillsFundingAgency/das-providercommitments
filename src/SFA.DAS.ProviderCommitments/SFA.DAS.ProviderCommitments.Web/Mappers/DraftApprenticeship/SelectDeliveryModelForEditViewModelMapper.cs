@@ -2,6 +2,7 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
 
@@ -29,8 +30,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
             {
                 DeliveryModel = apiResponse.DeliveryModel,
                 DeliveryModels = apiResponse.DeliveryModels,
+                HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && editModel.DeliveryModel == CommitmentsV2.Types.DeliveryModel.FlexiJobAgency,
                 LegalEntityName = apiResponse.EmployerName,
-                CourseCode = editModel.CourseCode
+                CourseCode = editModel.CourseCode,
+                ShowFlexiJobAgencyDeliveryModelConfirmation = apiResponse.HasUnavailableDeliveryModel &&
+                                                              apiResponse.DeliveryModel == DeliveryModel.FlexiJobAgency &&
+                                                              apiResponse.DeliveryModels.Count == 1
             };
         }
     }
