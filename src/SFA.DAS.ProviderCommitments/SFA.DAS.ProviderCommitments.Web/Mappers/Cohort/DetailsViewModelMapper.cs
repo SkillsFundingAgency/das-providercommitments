@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var emailOverlaps = (await emailOverlapsTask).ApprenticeshipEmailOverlaps.ToList();
 
             var courses = await GroupCourses(draftApprenticeships, emailOverlaps, cohort);
-            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Approve" : "View";
+            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Check" : "View";
             var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel

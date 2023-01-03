@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public int TotalCost => Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
         public string DisplayTotalCost => TotalCost.ToGdsCostFormat();
         public bool IsAgreementSigned { get; set; }
-        public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
+        public string OptionsTitle => ProviderCanApprove ? "Submit this application?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
         public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 {
                     return "Yes, send to employer to review or add details";
                 }
-                return "No, send to employer to review or add details";
+                return "No, send to the employer to review first";
             }
         }
 

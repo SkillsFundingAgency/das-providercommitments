@@ -317,7 +317,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="radio-approve" name="selection" type="radio" value="@CohortDetailsOptions.Approve" data-aria-controls="conditional-approve">
                                     <label class="govuk-label govuk-radios__label" for="radio-approve">
-                                        Yes, approve and notify employer
+                                        Yes, submit to the apprenticeship service (the employer will be notified)
                                     </label>
                                 </div>
                             }
@@ -359,6 +359,15 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
 
                         </div>
                     </fieldset>
+                </div>
+                
+                <div>
+                    <h3>Declaration</h3>
+                    <p>By submitting this application, you confirm that:</p>
+                    <ul>
+                        <li>to the best of your knowledge, the details you are providing are correct</li>
+                        <li>this application meets the <a href="https://www.gov.uk/guidance/apprenticeship-funding-rules-for-training-providers" target="_blank">apprenticeship funding rules (opens in new tab)</a></li>
+                    </ul>
                 </div>
 
                 <button type="submit" id="continue-button" class="govuk-button">Save and submit</button>

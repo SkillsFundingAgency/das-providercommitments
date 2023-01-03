@@ -322,9 +322,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsNull(excessModel);
         }
 
-        [TestCase(0, "Approve apprentice details", Party.Provider)]
-        [TestCase(1, "Approve apprentice details", Party.Provider)]
-        [TestCase(2, "Approve 2 apprentices' details", Party.Provider)]
+        [TestCase(0, "Check apprentice details", Party.Provider)]
+        [TestCase(1, "Check apprentice details", Party.Provider)]
+        [TestCase(2, "Check 2 apprentices' details", Party.Provider)]
         [TestCase(0, "View apprentice details", Party.Employer)]
         [TestCase(1, "View apprentice details", Party.Employer)]
         [TestCase(2, "View 2 apprentices' details", Party.Employer)]
