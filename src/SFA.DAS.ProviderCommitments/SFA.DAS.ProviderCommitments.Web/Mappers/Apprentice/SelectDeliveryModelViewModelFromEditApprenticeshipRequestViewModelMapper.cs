@@ -1,26 +1,31 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper : IMapper<EditApprenticeshipRequestViewModel, SelectDeliveryModelViewModel>
+    public class SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper : IMapper<EditApprenticeshipRequestViewModel, EditApprenticeshipDeliveryModelViewModel>
     {
-        private readonly ISelectDeliveryModelMapperHelper _helper;
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _apiClient;
 
-        public SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(ISelectDeliveryModelMapperHelper helper, ICommitmentsApiClient commitmentsApiClient)
+        public SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(IOuterApiClient apiClient)
         {
-            _helper = helper;
-            _commitmentsApiClient = commitmentsApiClient;
+            _apiClient = apiClient;
         }
 
-        public async Task<SelectDeliveryModelViewModel> Map(EditApprenticeshipRequestViewModel source)
+        public async Task<EditApprenticeshipDeliveryModelViewModel> Map(EditApprenticeshipRequestViewModel source)
         {
-            var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
-            return await _helper.Map(source.ProviderId, source.CourseCode, apprenticeship.AccountLegalEntityId, source.DeliveryModel);
+            var apiRequest = new GetEditApprenticeshipDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId);
+            var apiResponse = await _apiClient.Get<GetEditApprenticeshipDeliveryModelResponse>(apiRequest);
+
+            return new EditApprenticeshipDeliveryModelViewModel
+            {
+                DeliveryModel = (DeliveryModel)source.DeliveryModel,
+                DeliveryModels = apiResponse.DeliveryModels
+            };
         }
     }
 }
