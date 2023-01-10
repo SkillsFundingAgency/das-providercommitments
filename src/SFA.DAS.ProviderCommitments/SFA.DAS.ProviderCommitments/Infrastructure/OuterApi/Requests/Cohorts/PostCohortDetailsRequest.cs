@@ -19,8 +19,6 @@
         {
             public CohortSubmissionType SubmissionType { get; set; }
             public string Message { get; set; }
-            public object Data { get; set; }
-
         }
 
         public enum CohortSubmissionType
@@ -28,5 +26,9 @@
             Send,
             Approve
         }
+    }
+
+    public class PostCohortDetailsResponse
+    {
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
@@ -38,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             var apiRequest = new PostCohortDetailsRequest(source.ProviderId, source.CohortId, apiRequestBody);
 
-            await _outerApiClient.Post<PostConfirmResponse>(apiRequest);
+            await _outerApiClient.Post<PostCohortDetailsResponse>(apiRequest);
 
             return new AcknowledgementRequest
             {
