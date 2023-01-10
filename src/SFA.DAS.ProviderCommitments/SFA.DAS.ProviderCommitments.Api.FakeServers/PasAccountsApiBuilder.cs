@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Net;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -25,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 
         public MockApi Build()
         {
+            Console.WriteLine($"PasAccounts Fake Api Running ({_server.Urls[0]})");
             return new MockApi(_server);
         }
 

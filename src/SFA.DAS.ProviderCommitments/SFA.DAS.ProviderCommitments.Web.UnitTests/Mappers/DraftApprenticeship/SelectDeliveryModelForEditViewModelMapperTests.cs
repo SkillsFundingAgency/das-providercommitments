@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -63,6 +64,39 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         {
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+        }
+        
+        [TestCase(true, DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(true, DeliveryModel.PortableFlexiJob, false)]
+        [TestCase(false, DeliveryModel.FlexiJobAgency, false)]
+        public async Task HasUnavailableFlexiJobAgencyDeliveryModel_Is_Mapped_Correctly(bool hasUnavailableDeliveryModel, CommitmentsV2.Types.DeliveryModel currentDeliveryModel, bool expectedResult)
+        {
+            _cacheModel.DeliveryModel = currentDeliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
+
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+        }
+
+        [TestCase(DeliveryModel.FlexiJobAgency, true, false, true)]
+        [TestCase(DeliveryModel.PortableFlexiJob, true, false, false)]
+        [TestCase(DeliveryModel.FlexiJobAgency, false, false, false)]
+        [TestCase(DeliveryModel.FlexiJobAgency, true, true, false)]
+        public async Task ShowFlexiJobAgencyDeliveryModelConfirmation_Is_Mapped_Correctly(DeliveryModel deliveryModel, bool deliveryModelIsUnavailable, bool hasOtherOptions, bool expectShowConfirmation)
+        {
+            _apiResponse.DeliveryModels.Clear();
+            _apiResponse.DeliveryModels.Add(DeliveryModel.Regular);
+            _apiResponse.DeliveryModel = deliveryModel;
+            _apiResponse.HasUnavailableDeliveryModel = deliveryModelIsUnavailable;
+
+            if (hasOtherOptions)
+            {
+                _apiResponse.DeliveryModels.Add(DeliveryModel.PortableFlexiJob);
+            }
+
+            var result = await _mapper.Map(_request);
+
+            Assert.AreEqual(expectShowConfirmation, result.ShowFlexiJobAgencyDeliveryModelConfirmation);
         }
     }
 }

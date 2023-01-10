@@ -558,6 +558,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task StatusIsMappedCorrectly_When_rejected_From_TransferSender()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateThisNumberOfApprenticeships(1)
+                .SetTransferSender()
+                .SetCohortWithParty(Party.TransferSender)
+                .SetTransferApprovalStatus(TransferApprovalStatus.Rejected)
+                .SetCohortApprovedStatus(true);
+
+            fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
+            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Rejected;
+
+            var result = await fixture.Map();
+            Assert.AreEqual("Rejected by transfer sending employer", result.Status);
+        }
+
+        [Test]
         public async Task StatusIsMappedCorrectly_When_WithProvider_And_New_Cohort()
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
@@ -721,7 +738,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
-        [TestCase(true, true)]
+		[TestCase(true, true)]
         [TestCase(false, false)]
         public async Task ShowRofjaaRemovalBanner(bool hasUnavailableFlexiJobAgencyDeliveryModel, bool expectShowBanner)
         {
@@ -990,6 +1007,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
+        public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
+        {
+            Cohort.TransferApprovalStatus = transferApprovalStatus; ;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetCohortApprovedStatus(bool isApproved)
+        {
+            Cohort.IsApprovedByEmployer = Cohort.IsApprovedByProvider = isApproved; ;
+            return this;
+        }
+
         public DetailsViewModelMapperTestsFixture SetupChangeOfPartyScenario()
         {
             Cohort.ChangeOfPartyRequestId = 1;
@@ -1043,8 +1072,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             return this;
         }
-
-        public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
+		
+		public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
             CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;

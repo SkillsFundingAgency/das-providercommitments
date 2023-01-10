@@ -573,13 +573,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectDeliveryModelForEdit(EditApprenticeshipRequest request)
         {
             var draft = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
-            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(draft);
+            var model = await _modelMapper.Map<EditApprenticeshipDeliveryModelViewModel>(draft);
 
-            if (model.DeliveryModels.Length > 1)
+            if (model.DeliveryModels.Count > 1)
             {
-                return View("../Shared/SelectDeliveryModel", model);
+                return View(model);
             }
-            draft.DeliveryModel = model.DeliveryModels.FirstOrDefault();
+            draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
             TempData.Put(ViewModelForEdit, draft);
 
             return RedirectToAction("EditApprenticeship", new { request.ProviderId, request.ApprenticeshipHashedId });
@@ -588,7 +588,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SetDeliveryModelForEdit(Models.SelectDeliveryModelViewModel model)
+        public IActionResult SetDeliveryModelForEdit(EditApprenticeshipDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {
@@ -597,7 +597,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var draft = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
-            draft.DeliveryModel = model.DeliveryModel.Value;
+            draft.DeliveryModel = (DeliveryModel) model.DeliveryModel.Value;
             TempData.Put(ViewModelForEdit, draft);
             return RedirectToAction("EditApprenticeship", new { draft.ProviderId, draft.ApprenticeshipHashedId });
         }

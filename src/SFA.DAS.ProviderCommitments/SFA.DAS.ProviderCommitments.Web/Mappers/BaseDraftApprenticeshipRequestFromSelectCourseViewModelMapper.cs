@@ -12,7 +12,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 ProviderId = source.ProviderId,
                 CohortReference = source.CohortReference,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId
+                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
+                ShowTrainingDetails = source.ShowTrainingDetails
             });
         }
     }

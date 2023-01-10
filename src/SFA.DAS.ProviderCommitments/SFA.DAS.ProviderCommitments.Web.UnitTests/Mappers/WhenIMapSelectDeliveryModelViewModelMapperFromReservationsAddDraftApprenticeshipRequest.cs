@@ -53,5 +53,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_model, result);
         }
+
+        [Test]
+        public async Task ThenShowTrainingDetailsIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.ShowTrainingDetails, result.ShowTrainingDetails);
+        }
     }
 }

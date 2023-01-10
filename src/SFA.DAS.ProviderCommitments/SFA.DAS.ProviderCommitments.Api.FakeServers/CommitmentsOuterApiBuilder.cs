@@ -31,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 
         public MockApi Build()
         {
+            Console.WriteLine($"Approvals Outer Fake Api Running ({_server.Urls[0]})");
             return new MockApi(_server);
         }
 

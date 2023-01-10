@@ -1,14 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -18,11 +14,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class WhenIMapSelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModel
     {
         private SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper _mapper;
-        private Mock<ISelectDeliveryModelMapperHelper> _helper;
-        private SelectDeliveryModelViewModel _model;
         private EditApprenticeshipRequestViewModel _request;
-        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private GetApprenticeshipResponse _getApprenticeshipResponse;
+        private Mock<IOuterApiClient> _outerApiClient;
+        private GetEditApprenticeshipDeliveryModelResponse _apiResponse;
 
         [SetUp]
         public void Arrange()
@@ -32,31 +26,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Without(x => x.StartDate).Without(x => x.StartMonth).Without(x => x.StartYear)
                 .Without(x => x.EndDate).Without(x => x.EndMonth).Without(x => x.EndYear).Create();
 
-            _model = fixture.Create<SelectDeliveryModelViewModel>();
+            _outerApiClient = new Mock<IOuterApiClient>();
+            _apiResponse = fixture.Create<GetEditApprenticeshipDeliveryModelResponse>();
+            _outerApiClient.Setup(x =>
+                    x.Get<GetEditApprenticeshipDeliveryModelResponse>(
+                        It.Is<GetEditApprenticeshipDeliveryModelRequest>(r =>
+                            r.ApprenticeshipId == _request.ApprenticeshipId)))
+                .ReturnsAsync(() => _apiResponse);
 
-            _helper = new Mock<ISelectDeliveryModelMapperHelper>();
-            _helper.Setup(x => x.Map(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<long>(),It.IsAny<DeliveryModel?>())).ReturnsAsync(_model);
-
-            _getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_getApprenticeshipResponse);
-
-            _mapper = new SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(_helper.Object, _commitmentsApiClient.Object);
+            _mapper = new SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(_outerApiClient.Object);
         }
 
         [Test]
-        public async Task TheParamsArePassedInCorrectly()
-        {
-            await _mapper.Map(_request);
-            _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _getApprenticeshipResponse.AccountLegalEntityId, _request.DeliveryModel));
-       }
-
-        [Test]
-        public async Task ThenModelIsReturned()
+        public async Task Then_DeliveryModels_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_model, result);
+            Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+        }
+
+        [Test]
+        public async Task Then_DeliveryModel_Is_Mapped_Correctly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual((SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel) _request.DeliveryModel, result.DeliveryModel);
         }
     }
 }

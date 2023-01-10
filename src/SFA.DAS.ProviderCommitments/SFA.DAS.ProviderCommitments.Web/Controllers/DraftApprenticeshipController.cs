@@ -162,6 +162,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             StoreEditDraftApprenticeshipState(draft);
 
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+            if (request != null) request.ShowTrainingDetails = true;
+
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
         }
 
@@ -174,7 +176,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
             model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
 
-            if (model.DeliveryModels.Count > 1)
+            if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 return View(model);
             }
@@ -198,7 +200,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 CohortReference = draft.CohortReference,
                 DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
-                ProviderId = draft.ProviderId
+                ProviderId = draft.ProviderId,
+                ShowTrainingDetails = true
             };
 
             return RedirectToAction("EditDraftApprenticeship", request);
@@ -235,6 +238,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
+                if (req != null) req.ShowTrainingDetails = true;
+
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), req);
             }
 
@@ -287,9 +292,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private bool RequireRpl(DraftApprenticeshipViewModel model)
         {
             var startDate = model.ActualStartDate.Date ?? model.StartDate.Date;
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RecognitionOfPriorLearning))
-                return false;
-
             return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
@@ -302,6 +304,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
+                if (req != null) req.ShowTrainingDetails = true;
+
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourseForEdit) : nameof(SelectDeliveryModelForEdit), req);
             }
 
@@ -357,7 +361,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
-
                     await AddLegalEntityAndCoursesToModel(editModel);
                     return View("EditDraftApprenticeship", editModel);
                 }
