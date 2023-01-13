@@ -21,7 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             var cohort = await _commitmentsApiClient.GetCohort(source.CohortId.Value);
 
             var deliveryModelViewModel = await _helper.Map(source.ProviderId, source.CourseCode, cohort.AccountLegalEntityId, source.DeliveryModel);
-            deliveryModelViewModel.ShowTrainingDetails = source.ShowTrainingDetails;
             return deliveryModelViewModel;
         }
     }

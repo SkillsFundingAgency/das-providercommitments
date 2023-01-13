@@ -230,7 +230,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreDraftApprenticeshipState(model);
                 var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-                request.ShowTrainingDetails = true;
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), request.CloneBaseValues());
             }
 
