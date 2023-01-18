@@ -10,6 +10,7 @@
 
 @Html.HiddenFor(x => x.ReservationId)
 @Html.HiddenFor(x => x.IsContinuation)
+@Html.HiddenFor(x => x.IsOnFlexiPaymentPilot)
 <input type="hidden" asp-for="HasStandardOptions" />
 <input type="hidden" asp-for="TrainingCourseOption" />
 <input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
@@ -65,7 +66,6 @@ else
     @Html.HiddenFor(x => x.Uln)
     @Html.HiddenFor(x => x.CourseCode)
     @Html.HiddenFor(x => x.DeliveryModel)
-    @Html.HiddenFor(x => x.IsOnFlexiPaymentPilot)
 
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
@@ -201,67 +201,72 @@ else if (Model.DeliveryModel != DeliveryModel.Regular)
     </dl>
 }
 
-<div id="start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
-    <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            @startDateLabel
-        </legend>
-        <span id="start-date-hint" class="govuk-hint">
-            For example, 09 2017
-            The standard version will be based on the planned training start date provided
-        </span>
-        @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
-        <div class="govuk-date-input" id="StartDate">
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="StartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+@if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
+{
+    <div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Actual training start date
+            </legend>
+            <span id="actual-start-date-hint" class="govuk-hint">
+                For example, 30 12 2022
+            </span>
+            <span id="actual-start-date-hint" class="govuk-hint">
+                The standard version will be based on the training start date provided
+            </span>
+            @Html.ValidationMessageFor(m => m.ActualStartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ActualStartDate) })
+            <div class="govuk-date-input" id="ActualStartDate">
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartDay" class="govuk-label govuk-date-input__label">Day</label>
+                        <input asp-for="ActualStartDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="ActualStartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="ActualStartYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="ActualStartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    </div>
                 </div>
             </div>
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="StartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+        </fieldset>
+    </div>
+}
+else
+{
+    <div id="start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
+        <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                @startDateLabel
+            </legend>
+            <span id="start-date-hint" class="govuk-hint">
+                For example, 09 2017
+                The standard version will be based on the planned training start date provided
+            </span>
+            @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
+            <div class="govuk-date-input" id="StartDate">
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
+                        <input asp-for="StartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
+                        <input asp-for="StartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    </div>
                 </div>
             </div>
-        </div>
-    </fieldset>
-</div>
-
-<div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
-    <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            Actual training start date
-        </legend>
-        <span id="actual-start-date-hint" class="govuk-hint">
-            For example, 30 12 2022
-        </span>
-        <span id="actual-start-date-hint" class="govuk-hint">
-            The standard version will be based on the training start date provided
-        </span>
-        @Html.ValidationMessageFor(m => m.ActualStartDate, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ActualStartDate) })
-        <div class="govuk-date-input" id="ActualStartDate">
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="ActualStartDay" class="govuk-label govuk-date-input__label">Day</label>
-                    <input asp-for="ActualStartDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                </div>
-            </div>
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="ActualStartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="ActualStartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
-                </div>
-            </div>
-            <div class="govuk-date-input__item">
-                <div class="govuk-form-group">
-                    <label asp-for="ActualStartYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="ActualStartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
-                </div>
-            </div>
-        </div>
-    </fieldset>
-</div>
+        </fieldset>
+    </div>
+}
 
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
     <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
