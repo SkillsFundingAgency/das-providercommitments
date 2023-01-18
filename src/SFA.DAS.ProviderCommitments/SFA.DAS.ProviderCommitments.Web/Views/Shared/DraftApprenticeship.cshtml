@@ -140,7 +140,7 @@ else
 }
 else
 {
-    <h2 class="govuk-heading-m">Apprentice personal details</h2>
+    <h2 class="govuk-heading-l">Apprentice personal details</h2>
 
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
         <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
@@ -163,7 +163,7 @@ else
                 <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email Address</label>
                 @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
                 <input asp-for="Email" class="govuk-input" />
-                <details class="govuk-details" data-module="govuk-details">
+                <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
                             Why do we need an email address?
@@ -214,15 +214,7 @@ else
     </div>
 }
 
-@if (Model is EditDraftApprenticeshipViewModel)
-{
-    <h1 class="govuk-heading-xl">Edit training details</h1>
-}
-else
-{
-    <h1 class="govuk-heading-xl">Add training details</h1>
-}
-
+<h1 class="govuk-heading-l  govuk-!-margin-top-9">Apprentice training details</h1>
 
 @if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
 {
