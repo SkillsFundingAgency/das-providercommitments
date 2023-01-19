@@ -10,7 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
         public OverlapOptions? OverlapOptions { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public long? DraftApprenticeshipId { get; set; }
-        public bool OverlappingTrainingDateRequestToggleEnabled { get; set; }
         public ApprenticeshipStatus Status { get; set; }
         public bool EnableStopRequestEmail { get; set; }
     }
