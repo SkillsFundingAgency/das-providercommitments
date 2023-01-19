@@ -23,6 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         private GetTrainingCoursesQueryResponse _trainingCourses;
         private int _accountLegalEntityId;
         private string _courseCode;
+        private bool? _isOnFlexiPaymentsPilot;
 
         [SetUp]
         public void Arrange()
@@ -30,6 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var fixture = new Fixture();
             _accountLegalEntityId = fixture.Create<int>();
             _courseCode = fixture.Create<string>();
+            _isOnFlexiPaymentsPilot = fixture.Create<bool?>();
 
             _ale = fixture.Create<AccountLegalEntityResponse>();
             _trainingCourses = fixture.Create<GetTrainingCoursesQueryResponse>();
@@ -50,15 +52,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
-            var result = await _mapper.Map(_courseCode, _accountLegalEntityId);
+            var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
             Assert.AreEqual(_courseCode, result.CourseCode);
         }
 
         [Test]
         public async Task ThenCoursesAreReturnedCorrectly()
         {
-            var result = await _mapper.Map(_courseCode, _accountLegalEntityId);
+            var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
             Assert.AreEqual(_trainingCourses.TrainingCourses, result.Courses);
+        }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
+            Assert.AreEqual(_isOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
         }
     }
 }

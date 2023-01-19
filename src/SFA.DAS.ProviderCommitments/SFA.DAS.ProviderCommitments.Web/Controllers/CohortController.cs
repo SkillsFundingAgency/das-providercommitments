@@ -128,6 +128,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
         {
+            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentPilot == null)
+            {
+                return RedirectToAction("ChoosePilotStatus", request);
+            }
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
             return View("SelectCourse", model);
         }
@@ -164,14 +168,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
         {
-            if (string.IsNullOrEmpty(model.CourseCode))
+            if (model.Selection == null)
             {
                 throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
+                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
             }
 
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(SelectDeliveryModel), request.CloneBaseValues());
+            return RedirectToAction("SelectCourse", request);
         }
 
         [HttpGet]

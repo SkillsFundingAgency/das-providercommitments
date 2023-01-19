@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _mediator = mediator;
         }
 
-        public async Task<SelectCourseViewModel> Map(string courseCode, long accountLegalEntityId)
+        public async Task<SelectCourseViewModel> Map(string courseCode, long accountLegalEntityId, bool? isOnFlexiPaymentsPilot)
         {
             var ale = await _commitmentsApiClient.GetAccountLegalEntity(accountLegalEntityId);
 
@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 CourseCode = courseCode,
                 Courses = await GetCourses(ale.LevyStatus),
+                IsOnFlexiPaymentsPilot = isOnFlexiPaymentsPilot
             };
         }
 

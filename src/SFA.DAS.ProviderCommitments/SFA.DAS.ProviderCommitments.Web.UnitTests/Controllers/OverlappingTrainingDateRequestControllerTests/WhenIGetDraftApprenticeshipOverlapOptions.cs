@@ -22,22 +22,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
         }
 
-
-        [Test]
-        public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_FeatureToggleServiceIsCalled()
-        {
-            await _fixture.GetDraftApprenticeshipOverlapOptions();
-            _fixture.VerifyfeatureTogglesServiceToGetOverlappingTrainingDateIsCalled();
-        }
-
         [Test]
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
         {
             await _fixture
-                .SetOverlappingTrainingDateRequestFeatureToggle(true)
                 .GetDraftApprenticeshipOverlapOptions();
 
-            _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped(true);
+            _fixture.VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped();
         }
 
         [Test]
@@ -72,7 +63,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public async Task ThenEnableStopRequestEmailIsMappedCorrectly(CommitmentsV2.Types.ApprenticeshipStatus apprenticeshipStatus, bool sendEmail)
         {
             await _fixture
-           .SetOverlappingTrainingDateRequestFeatureToggle(true)
            .SetApprenticeshipStatus(apprenticeshipStatus)
            .GetDraftApprenticeshipOverlapOptions();
 
