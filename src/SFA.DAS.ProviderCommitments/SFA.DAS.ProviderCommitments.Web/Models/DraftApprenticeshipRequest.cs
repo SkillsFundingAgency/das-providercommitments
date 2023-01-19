@@ -14,6 +14,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
-        public bool ShowTrainingDetails { get; set; }
     }
 }

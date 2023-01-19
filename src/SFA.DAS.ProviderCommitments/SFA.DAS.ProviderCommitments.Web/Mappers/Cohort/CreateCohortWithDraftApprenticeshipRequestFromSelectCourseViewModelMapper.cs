@@ -16,8 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 CourseCode = source.CourseCode,
                 StartMonthYear = source.StartMonthYear,
-                DeliveryModel = source.DeliveryModel,
-                ShowTrainingDetails = source.ShowTrainingDetails
+                DeliveryModel = source.DeliveryModel
             });
         }
     }
