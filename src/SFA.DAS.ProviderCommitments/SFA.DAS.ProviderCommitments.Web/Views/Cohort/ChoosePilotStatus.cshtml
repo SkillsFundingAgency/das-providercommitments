@@ -14,9 +14,14 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                             <h1 class="govuk-fieldset__heading">
-                            Will this apprentice be part of the Simplified Payments pilot?
+                                Will this apprentice be part of the Simplified Payments pilot?
                             </h1>
                         </legend>
+                        
+                        <div class="govuk-hint">
+                            To be eligible for the simplified payment pilot, an apprenticeship must start after [date service live]
+                        </div>
+                        
                         @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
 
 
