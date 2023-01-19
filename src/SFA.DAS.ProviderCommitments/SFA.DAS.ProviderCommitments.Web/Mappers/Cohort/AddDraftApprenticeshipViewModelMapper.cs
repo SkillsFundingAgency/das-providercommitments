@@ -32,7 +32,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 DeliveryModel = source.DeliveryModel,
                 Courses = null,
                 Employer = apiResponse.LegalEntityName,
-                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             };
         }
     }

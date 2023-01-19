@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             var cohort = await _commitmentsApiClient.GetCohort(source.CohortId.Value);
 
-            var deliveryModelViewModel = await _helper.Map(source.ProviderId, source.CourseCode, cohort.AccountLegalEntityId, source.DeliveryModel);
+            var deliveryModelViewModel = await _helper.Map(source.ProviderId, source.CourseCode, cohort.AccountLegalEntityId, source.DeliveryModel, null); //todo is this right here?
             deliveryModelViewModel.ShowTrainingDetails = source.ShowTrainingDetails;
             return deliveryModelViewModel;
         }

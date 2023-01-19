@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _client = client;
             _encodingService = encodingService;
         }
-        public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel)
+        public async Task<SelectDeliveryModelViewModel> Map(long providerId, string courseCode, long? accountLegalEntityId, DeliveryModel? deliveryModel, bool? isOnFlexiPaymentsPilot)
         {
             var response = await _client.GetProviderCourseDeliveryModels(providerId, courseCode, accountLegalEntityId ?? 0);
 
@@ -25,7 +25,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             {
                 CourseCode = courseCode,
                 DeliveryModel = deliveryModel,
-                DeliveryModels = response.DeliveryModels.ToArray()
+                DeliveryModels = response.DeliveryModels.ToArray(),
+                IsOnFlexiPaymentsPilot = isOnFlexiPaymentsPilot
             };
         }
 

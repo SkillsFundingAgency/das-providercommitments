@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -17,7 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CourseCode = source.CourseCode,
                 StartMonthYear = source.StartMonthYear,
                 DeliveryModel = source.DeliveryModel,
-                ShowTrainingDetails = source.ShowTrainingDetails
+                ShowTrainingDetails = source.ShowTrainingDetails,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
             });
         }
     }

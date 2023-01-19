@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _cohortResponse = fixture.Create<GetCohortResponse>();
 
             _helper = new Mock<ISelectCourseViewModelMapperHelper>();
-            _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(_model);
+            _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<bool?>())).ReturnsAsync(_model);
 
             _client = new Mock<ICommitmentsApiClient>();
             _client.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_apprenticeshipResponse);
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_request);
             _client.Verify(x => x.GetApprenticeship(_request.ApprenticeshipId, CancellationToken.None));
             _client.Verify(x => x.GetCohort(_apprenticeshipResponse.CohortId, CancellationToken.None));
-            _helper.Verify(x=>x.Map(_request.CourseCode, _cohortResponse.AccountLegalEntityId));
+            _helper.Verify(x=>x.Map(_request.CourseCode, _cohortResponse.AccountLegalEntityId, null));
        }
 
         [Test]
