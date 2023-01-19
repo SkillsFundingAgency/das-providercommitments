@@ -76,13 +76,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task ThenShowTrainingDetailsIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.ShowTrainingDetails, result.ShowTrainingDetails);
-        }
-
-        [Test]
         public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
         {
             var result = await _act();

@@ -162,8 +162,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             StoreEditDraftApprenticeshipState(draft);
 
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-            if (request != null) request.ShowTrainingDetails = true;
-
+            
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
         }
 
@@ -201,7 +200,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 CohortReference = draft.CohortReference,
                 DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
                 ProviderId = draft.ProviderId,
-                ShowTrainingDetails = true
             };
 
             return RedirectToAction("EditDraftApprenticeship", request);
@@ -238,7 +236,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
-                if (req != null) req.ShowTrainingDetails = true;
 
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourse) : nameof(SelectDeliveryModel), req);
             }
@@ -304,7 +301,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-                if (req != null) req.ShowTrainingDetails = true;
 
                 return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourseForEdit) : nameof(SelectDeliveryModelForEdit), req);
             }

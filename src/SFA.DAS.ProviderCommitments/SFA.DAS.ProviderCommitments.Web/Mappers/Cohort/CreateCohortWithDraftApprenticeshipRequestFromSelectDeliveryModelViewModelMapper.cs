@@ -18,7 +18,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 CourseCode = source.CourseCode,
                 StartMonthYear = source.StartMonthYear,
                 DeliveryModel = source.DeliveryModel,
-                ShowTrainingDetails = source.ShowTrainingDetails,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
             });
         }
