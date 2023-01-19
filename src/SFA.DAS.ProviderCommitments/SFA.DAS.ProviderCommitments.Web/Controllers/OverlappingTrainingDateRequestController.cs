@@ -1,13 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -27,15 +23,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IOuterApiService _outerApiService;
-        private IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
 
         public OverlappingTrainingDateRequestController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
-            IOuterApiService outerApiService,
-            IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService
+            IOuterApiService outerApiService
             )
         {
             _mediator = mediator;
@@ -44,7 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _commitmentsApiClient = commitmentsApiClient;
             _authorizationService = authorizationService;
             _outerApiService = outerApiService;
-            _featureTogglesService = featureTogglesService;
         }
 
         [Route("overlap-options-with-pending-request")]
@@ -76,7 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
             var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
 
             if (request.DraftApprenticeshipId.HasValue)
             {
@@ -89,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,
                         Status = apprenticeshipDetails.Status,
-                        EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
+                        EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                         || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
                         || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
                         || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
@@ -101,9 +93,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var vm = new DraftApprenticeshipOverlapOptionViewModel
             {
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
-                OverlappingTrainingDateRequestToggleEnabled = featureToggleEnabled,
                 Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = featureToggleEnabled && (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
+                EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
                 || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
@@ -232,16 +223,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task CreateOverlappingTrainingDateRequest(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
-            var featureToggleEnabled = _featureTogglesService.GetFeatureToggle(ProviderFeature.OverlappingTrainingDateWithoutPrefix).IsEnabled;
-            if (featureToggleEnabled)
-            {
-                var createOverlappingTrainingDateApimRequest = await _modelMapper.Map<CreateOverlappingTrainingDateApimRequest>(viewModel);
-                await _outerApiService.CreateOverlappingTrainingDateRequest(createOverlappingTrainingDateApimRequest);
-            }
-            else
-            {
-                throw new InvalidOperationException("Invalid operation");
-            }
+            var createOverlappingTrainingDateApimRequest = await _modelMapper.Map<CreateOverlappingTrainingDateApimRequest>(viewModel);
+            await _outerApiService.CreateOverlappingTrainingDateRequest(createOverlappingTrainingDateApimRequest);
         }
 
         private async Task UpdateDraftApprenticeship(long draftApprenticeshipId, EditDraftApprenticeshipViewModel editModel)
