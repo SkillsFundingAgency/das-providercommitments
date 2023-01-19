@@ -17,7 +17,6 @@ public class CreateCohortWithDraftApprenticeshipRequestFromChoosePilotStatusView
             CourseCode = source.CourseCode,
             StartMonthYear = source.StartMonthYear,
             DeliveryModel = source.DeliveryModel,
-            ShowTrainingDetails = source.ShowTrainingDetails,
             IsOnFlexiPaymentPilot = source.Selection == ChoosePilotStatusOptions.Pilot
         });
     }

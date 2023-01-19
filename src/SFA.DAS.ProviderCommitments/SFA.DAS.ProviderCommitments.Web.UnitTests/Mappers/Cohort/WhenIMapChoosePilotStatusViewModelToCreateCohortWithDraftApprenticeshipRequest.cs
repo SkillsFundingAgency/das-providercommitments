@@ -74,13 +74,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
         }
 
-        [Test]
-        public async Task ThenShowTrainingDetailsIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.AreEqual(_source.ShowTrainingDetails, result.ShowTrainingDetails);
-        }
-
         [TestCase(ChoosePilotStatusOptions.Pilot, true)]
         [TestCase(ChoosePilotStatusOptions.NonPilot, false)]
         public async Task ThenPilotChoiceIsMappedCorrectly(ChoosePilotStatusOptions option, bool expected)

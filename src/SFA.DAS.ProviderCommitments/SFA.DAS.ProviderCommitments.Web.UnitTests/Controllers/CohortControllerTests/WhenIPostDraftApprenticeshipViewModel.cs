@@ -221,9 +221,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 return this;
             }
 
-            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel(string changeCourse = null, string changeDeliveryModel = null)
+            public async Task<UnapprovedControllerTestFixture> PostDraftApprenticeshipViewModel(string changeCourse = null, string changeDeliveryModel = null, string changePilotStatus = null)
             {
-                _actionResult = await _controller.AddDraftApprenticeshipOrRoute(changeCourse, changeDeliveryModel, _model);
+                _actionResult = await _controller.AddDraftApprenticeshipOrRoute(changeCourse, changeDeliveryModel, changePilotStatus, _model);
                 return this;
             }
 
