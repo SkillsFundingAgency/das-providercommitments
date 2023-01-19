@@ -162,30 +162,7 @@
 
         @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
         {
-            <h2 class="govuk-heading-m">Pilot Program</h2>
-
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsOnFlexiPaymentPilot, "govuk-form-group--error")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                        Will this apprentice be part of the Flexible Payments pilot program?
-                    </legend>
-                    <div class="govuk-radios">
-                        @Html.ValidationMessageFor(m => m.IsOnFlexiPaymentPilot, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsOnFlexiPaymentPilot)})
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot" name="IsOnFlexiPaymentPilot" type="radio" value="true" @(Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot">
-                                Yes
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="IsOnFlexiPaymentPilot-no" name="IsOnFlexiPaymentPilot" type="radio" value="false" @(Model.IsOnFlexiPaymentPilot.HasValue && !Model.IsOnFlexiPaymentPilot.Value ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="IsOnFlexiPaymentPilot-no">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+            <input type="hidden" asp-for="IsOnFlexiPaymentPilot"/>
         }
         else
         {
