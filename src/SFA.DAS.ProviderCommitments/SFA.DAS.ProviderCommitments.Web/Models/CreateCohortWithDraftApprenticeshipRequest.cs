@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public bool ShowTrainingDetails { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public BaseCreateCohortWithDraftApprenticeshipRequest CloneBaseValues()
         {
