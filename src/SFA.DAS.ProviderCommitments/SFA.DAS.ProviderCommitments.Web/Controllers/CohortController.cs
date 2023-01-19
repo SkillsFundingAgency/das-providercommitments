@@ -149,6 +149,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/choose-pilot-status")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatus(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
+            return View("ChoosePilotStatus", model);
+        }
+
+        [HttpPost]
+        [Route("add/choose-pilot-status")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.CourseCode))
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
+            }
+
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
+            return RedirectToAction(nameof(SelectDeliveryModel), request.CloneBaseValues());
+        }
+
+        [HttpGet]
         [Route("add/select-delivery-model")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -302,7 +328,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+                //return Redirect($"https://at-permissions-api.apprenticeships.education.gov.uk/{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
+                var url = _urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
+                return Redirect(url);
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
