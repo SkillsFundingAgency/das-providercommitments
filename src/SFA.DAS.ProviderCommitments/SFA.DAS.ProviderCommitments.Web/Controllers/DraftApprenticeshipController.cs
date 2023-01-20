@@ -169,7 +169,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(DraftApprenticeshipRequest request)
         {
@@ -179,7 +178,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
         {
@@ -329,7 +327,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourseForEdit) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatus);
                 return RedirectToAction(redirectAction, req);
             }
 
