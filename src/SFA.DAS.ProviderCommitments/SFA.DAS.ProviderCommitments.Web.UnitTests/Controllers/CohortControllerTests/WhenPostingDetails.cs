@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task And_User_Selected_Send_Then_Cohort_Is_Sent_To_Provider()
         {
             await _fixture.Post(CohortDetailsOptions.Send);
-            _fixture.VerifyCohortSentToProvider();
+            _fixture.VerifyCohortSubmission();
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task And_User_Selected_Approve_Then_Cohort_Is_Approved_By_Employer()
         {
             await _fixture.Post(CohortDetailsOptions.Approve);
-            _fixture.VerifyCohortApprovedByProvider();
+            _fixture.VerifyCohortSubmission();
         }
 
         [Test]
@@ -98,6 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             private readonly CohortController _controller;
             private IActionResult _result;
             private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
+            private Mock<IModelMapper> _modelMapper;
 
             private readonly DetailsViewModel _viewModel;
             private readonly long _cohortId;
@@ -112,7 +113,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 var autoFixture = new Fixture();
 
-                var modelMapper = new Mock<IModelMapper>();
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
                 _policyAuthorizationWrapper = new Mock<IPolicyAuthorizationWrapper>();
                 var linkGenerator = new Mock<ILinkGenerator>();
@@ -131,10 +131,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 _sendCohortApiRequest = new SendCohortRequest();
                 _approveCohortApiRequest = new ApproveCohortRequest();
 
-                modelMapper.Setup(x => x.Map<SendCohortRequest>(It.Is<DetailsViewModel>(vm => vm == _viewModel)))
+                _modelMapper = new Mock<IModelMapper>();
+                _modelMapper.Setup(x => x.Map<SendCohortRequest>(It.Is<DetailsViewModel>(vm => vm == _viewModel)))
                     .ReturnsAsync(_sendCohortApiRequest);
 
-                modelMapper.Setup(x => x.Map<ApproveCohortRequest>(It.Is<DetailsViewModel>(vm => vm == _viewModel)))
+                _modelMapper.Setup(x => x.Map<ApproveCohortRequest>(It.Is<DetailsViewModel>(vm => vm == _viewModel)))
                     .ReturnsAsync(_approveCohortApiRequest);
 
                 _commitmentsApiClient.Setup(x => x.SendCohort(It.Is<long>(c => c == _cohortId),
@@ -152,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     .Returns(_linkGeneratorResult);
 
                 _controller = new CohortController(Mock.Of<IMediator>(),
-                    modelMapper.Object,
+                    _modelMapper.Object,
                     linkGenerator.Object,
                     _commitmentsApiClient.Object, 
                     Mock.Of<IAuthorizationService>(), 
@@ -167,12 +168,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 _result = await _controller.Details(_policyAuthorizationWrapper.Object, _viewModel);
             }
 
-            public void VerifyCohortSentToProvider()
+            public void VerifyCohortSubmission()
             {
-                _commitmentsApiClient.Verify(x => x.SendCohort(It.Is<long>(c => c == _cohortId),
-                        It.Is<SendCohortRequest>(r => r == _sendCohortApiRequest),
-                        It.IsAny<CancellationToken>()),
-                    Times.Once);
+                _modelMapper.Verify(x => x.Map<AcknowledgementRequest>(It.Is<DetailsViewModel>(vm => vm == _viewModel)), Times.Once);
             }
 
             public void VerifyRedirectedToSendConfirmation()
@@ -180,14 +178,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
                 Assert.AreEqual("Acknowledgement", redirect.ActionName);
-            }
-
-            public void VerifyCohortApprovedByProvider()
-            {
-                _commitmentsApiClient.Verify(x => x.ApproveCohort(It.Is<long>(c => c == _cohortId),
-                        It.Is<ApproveCohortRequest>(r => r == _approveCohortApiRequest),
-                        It.IsAny<CancellationToken>()),
-                    Times.Once);
             }
 
             public void VerifyRedirectedToAcknowledgement()
