@@ -169,9 +169,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(DraftApprenticeshipRequest request)
+        public async Task<IActionResult> ChoosePilotStatus(BaseDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
             return View("ChoosePilotStatus", model);
@@ -179,7 +178,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
         {
@@ -189,7 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
             }
 
-            var request = await _modelMapper.Map<DraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
             return RedirectToAction("EditDraftApprenticeship", request);
         }
 
