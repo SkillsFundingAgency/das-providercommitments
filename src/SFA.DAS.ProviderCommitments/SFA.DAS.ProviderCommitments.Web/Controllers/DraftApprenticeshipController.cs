@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
+using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -164,6 +165,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
             
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatus(DraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
+            return View("ChoosePilotStatus", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
+        {
+            if (model.Selection == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
+            }
+
+            var request = await _modelMapper.Map<DraftApprenticeshipRequest>(model);
+            return RedirectToAction("EditDraftApprenticeship", request);
         }
 
         [HttpGet]
