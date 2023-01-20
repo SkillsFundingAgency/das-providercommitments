@@ -307,9 +307,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null)
+        public async Task<DraftApprenticeshipControllerTestFixture> PostToEditDraftApprenticeship(string changeCourse = null, string changeDeliveryModel = null, string changePilotStatus = null)
         {
-            _actionResult = await _controller.EditDraftApprenticeship(changeCourse, changeDeliveryModel, _editModel);
+            _actionResult = await _controller.EditDraftApprenticeship(changeCourse, changeDeliveryModel, changePilotStatus, _editModel);
             return this;
         }
 
