@@ -322,14 +322,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, EditDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
         {
-            if (changeCourse == "Edit" || changeDeliveryModel == "Edit")
+            if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
             {
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
-                return RedirectToAction(changeCourse == "Edit" ? nameof(SelectCourseForEdit) : nameof(SelectDeliveryModelForEdit), req);
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
+                return RedirectToAction(redirectAction, req);
             }
 
             var overlapResult = await HasStartDateOverlap(model);
