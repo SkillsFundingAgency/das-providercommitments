@@ -14,7 +14,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -69,6 +68,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             await _fixture.PostDraftApprenticeshipViewModel(changeDeliveryModel: "Edit");
             _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
+        }
+
+        [Test]
+        public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
+        {
+            await _fixture.PostDraftApprenticeshipViewModel(changePilotStatus: "Edit");
+            _fixture.VerifyUserRedirectedTo("ChoosePilotStatus");
         }
 
         [Test]
