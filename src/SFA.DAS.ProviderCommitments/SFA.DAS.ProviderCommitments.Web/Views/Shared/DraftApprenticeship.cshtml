@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Features;
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
@@ -99,7 +100,7 @@ else
             </div>
         }
 
-        @if (Model.IsOnFlexiPaymentPilot.HasValue)
+        @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
         {
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
                 <dt class="govuk-summary-list__key">
@@ -230,7 +231,7 @@ else
                 Actual training start date
             </legend>
             <span id="actual-start-date-hint" class="govuk-hint">
-                For example, 30 12 2022
+                For example, 21 9 2022
             </span>
             <span id="actual-start-date-hint" class="govuk-hint">
                 The standard version will be based on the training start date provided
@@ -267,7 +268,7 @@ else
                 @startDateLabel
             </legend>
             <span id="start-date-hint" class="govuk-hint">
-                For example, 09 2017
+                For example, 9 2022
                 The standard version will be based on the planned training start date provided
             </span>
             @Html.ValidationMessageFor(m => m.StartDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.StartDate)})
