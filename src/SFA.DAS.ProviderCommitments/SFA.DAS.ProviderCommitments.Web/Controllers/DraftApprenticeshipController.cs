@@ -172,7 +172,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ChoosePilotStatus(BaseDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
+            var draft = PeekStoredEditDraftApprenticeshipState();
+            await AddLegalEntityAndCoursesToModel(draft);
+            var model = new ChoosePilotStatusViewModel
+            {
+                Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot
+            };
+
             return View("ChoosePilotStatus", model);
         }
 
