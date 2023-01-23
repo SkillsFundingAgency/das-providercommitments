@@ -187,8 +187,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
             }
 
-            var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-            return RedirectToAction("EditDraftApprenticeship", request);
+            var draft = PeekStoredEditDraftApprenticeshipState();
+            draft.IsOnFlexiPaymentPilot = model.Selection == ChoosePilotStatusOptions.Pilot;
+            StoreEditDraftApprenticeshipState(draft);
+
+            var request = new BaseDraftApprenticeshipRequest
+            {
+                CohortReference = draft.CohortReference,
+                DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
+                ProviderId = draft.ProviderId,
+            };
+
+            return RedirectToAction("ViewEditDraftApprenticeship", request);
         }
 
         [HttpGet]
