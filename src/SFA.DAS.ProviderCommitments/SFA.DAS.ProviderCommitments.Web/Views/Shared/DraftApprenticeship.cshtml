@@ -59,18 +59,18 @@ else
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-            <dt class="govuk-summary-list__key">
+            <dt class="govuk-summary-list__key" id="employer-label">
                 Employer
             </dt>
-            <dd class="govuk-summary-list__value">
+            <dd class="govuk-summary-list__value" id="employer-value">
                 @Model.Employer
             </dd>
         </div>
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
+            <dt class="govuk-summary-list__key" id="course-label">
                 Training course
             </dt>
-            <dd class="govuk-summary-list__value">
+            <dd class="govuk-summary-list__value" id="course-value">
                 @Model.CourseName
             </dd>
             <dd class="govuk-summary-list__actions">
@@ -83,10 +83,10 @@ else
         @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel || Model.HasChangedDeliveryModel || Model.DeliveryModel != DeliveryModel.Regular)
         {
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
+                <dt class="govuk-summary-list__key" id="delivery-model-label">
                     Delivery model
                 </dt>
-                <dd class="govuk-summary-list__value">
+                <dd class="govuk-summary-list__value" id="delivery-model-value">
                     @Model.DeliveryModel.ToDescription()
                 </dd>
                 @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
@@ -103,10 +103,10 @@ else
         @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
         {
             <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                <dt class="govuk-summary-list__key">
+                <dt class="govuk-summary-list__key" id="pilot-status-label">
                     Simplified payments pilot
                 </dt>
-                <dd class="govuk-summary-list__value">
+                <dd class="govuk-summary-list__value" id="pilot-status-value">
                     @Model.DisplayIsPilot
                 </dd>
                 <dd class="govuk-summary-list__actions">
