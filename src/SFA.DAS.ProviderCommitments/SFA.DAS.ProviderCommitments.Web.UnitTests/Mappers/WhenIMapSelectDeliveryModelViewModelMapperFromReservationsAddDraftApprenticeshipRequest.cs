@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task TheParamsArePassedInCorrectly()
         {
             await _mapper.Map(_request);
-            _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _getCohortResponse.AccountLegalEntityId, _request.DeliveryModel, null));
+            _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _getCohortResponse.AccountLegalEntityId, _request.DeliveryModel, _request.IsOnFlexiPaymentsPilot));
        }
 
         [Test]

@@ -226,6 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 model.CourseCode = request.CourseCode;
                 model.DeliveryModel = request.DeliveryModel;
+                model.IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot;
             }
             return View("AddDraftApprenticeship", model);
         }

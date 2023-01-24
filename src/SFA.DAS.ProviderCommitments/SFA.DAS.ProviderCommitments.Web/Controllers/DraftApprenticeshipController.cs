@@ -119,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> ChoosePilotStatusForAdd(ChoosePilotStatusViewModel model)
+        public async Task<ActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
         {
             if (model.Selection == null)
             {
@@ -203,7 +203,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(BaseDraftApprenticeshipRequest request)
+        public async Task<IActionResult> ChoosePilotStatusForEdit(BaseDraftApprenticeshipRequest request)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             await AddLegalEntityAndCoursesToModel(draft);
@@ -218,7 +218,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
+        public async Task<IActionResult> ChoosePilotStatusForEdit(ChoosePilotStatusViewModel model)
         {
             if (model.Selection == null)
             {
@@ -295,6 +295,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 model.CourseCode = request.CourseCode;
                 model.DeliveryModel = request.DeliveryModel;
                 model.CohortId = request.CohortId;
+                model.IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentsPilot;
             }
 
             await AddLegalEntityAndCoursesToModel(model);
@@ -376,7 +377,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourseForEdit) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatus);
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourseForEdit) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatusForEdit);
                 return RedirectToAction(redirectAction, req);
             }
 
