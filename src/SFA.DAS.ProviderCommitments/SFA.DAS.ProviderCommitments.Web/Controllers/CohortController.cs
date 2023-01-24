@@ -332,24 +332,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             switch (viewModel.Selection)
             {
                 case CohortDetailsOptions.Send:
-                    {
-                        await ValidateAuthorization(authorizationService);
-                        var request = await _modelMapper.Map<SendCohortRequest>(viewModel);
-                        await _commitmentApiClient.SendCohort(viewModel.CohortId, request);
-                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = SaveStatus.AmendAndSend });
-                    }
                 case CohortDetailsOptions.Approve:
-                    {
-                        await ValidateAuthorization(authorizationService);
-                        var request = await _modelMapper.Map<ApproveCohortRequest>(viewModel);
-                        await _commitmentApiClient.ApproveCohort(viewModel.CohortId, request);
-                        var saveStatus = viewModel.IsApprovedByEmployer && string.IsNullOrEmpty(viewModel.TransferSenderHashedId) ? SaveStatus.Approve : SaveStatus.ApproveAndSend;
-                        return RedirectToAction(nameof(Acknowledgement), new { viewModel.CohortReference, viewModel.ProviderId, SaveStatus = saveStatus });
-                    }
+                {
+                    await ValidateAuthorization(authorizationService);
+                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                    return RedirectToAction(nameof(Acknowledgement), request);
+                }
                 case CohortDetailsOptions.ApprenticeRequest:
-                    {
-                        return RedirectToAction("Review", new { viewModel.ProviderId });
-                    }
+                {
+                    return RedirectToAction("Review", new { viewModel.ProviderId });
+                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
