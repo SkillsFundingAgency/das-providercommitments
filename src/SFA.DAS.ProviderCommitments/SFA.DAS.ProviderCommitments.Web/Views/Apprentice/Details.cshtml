@@ -1,6 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -66,6 +67,13 @@
         }
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
+        
+        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot)) //todo && Model.???.IsOnFlexiPaymentsPilot which needs to come from commitments api
+        {
+                <div class="govuk-inset-text">
+                    This apprentice is part of the simplified payments pilot. To change these details, you must contact <a class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We aim to respond within 2 working days.
+            </div>
+        }
 
         @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
