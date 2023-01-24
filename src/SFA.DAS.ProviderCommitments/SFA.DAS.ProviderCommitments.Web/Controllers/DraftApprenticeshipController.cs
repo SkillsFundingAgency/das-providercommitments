@@ -245,7 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForEdit(ChoosePilotStatusViewModel model)
+        public IActionResult ChoosePilotStatusForEdit(ChoosePilotStatusViewModel model)
         {
             if (model.Selection == null)
             {
