@@ -132,6 +132,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/choose-pilot-status-draft-change")]
+        [RequireQueryParameter("ReservationId")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ReservationsAddDraftApprenticeshipRequest request)
+        {
+            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            await AddLegalEntityAndCoursesToModel(draft);
+
+            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
+        }
+
+        [HttpPost]
+        [Route("add/choose-pilot-status-draft-change")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<ActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
+        {
+            if (model.Selection == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
+            }
+
+            var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
+            return RedirectToAction("AddDraftApprenticeship", request);
+        }
+
+        [HttpGet]
         [Route("add/select-delivery-model")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -311,7 +338,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
                 return RedirectToAction(redirectAction, req);
             }
 

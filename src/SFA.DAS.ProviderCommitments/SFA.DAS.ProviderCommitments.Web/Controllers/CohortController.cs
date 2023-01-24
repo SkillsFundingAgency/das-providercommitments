@@ -153,6 +153,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
+        [Route("add/choose-pilot-status-draft-change")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatusForDraftChange(CreateCohortWithDraftApprenticeshipRequest request)
+        {
+            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
+            return View("ChoosePilotStatus", model);
+        }
+
+        [HttpPost]
+        [Route("add/choose-pilot-status-draft-change")]
+        [DasAuthorize(ProviderOperation.CreateCohort)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
+        {
+            if (model.Selection == null)
+            {
+                throw new CommitmentsApiModelException(new List<ErrorDetail>
+                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
+            }
+
+            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
+            return RedirectToAction(nameof(AddDraftApprenticeship), request);
+        }
+
+        [HttpGet]
         [Route("add/choose-pilot-status")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
@@ -241,7 +267,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreDraftApprenticeshipState(model);
                 var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
                 return RedirectToAction(redirectAction, request.CloneBaseValues());
             }
 
