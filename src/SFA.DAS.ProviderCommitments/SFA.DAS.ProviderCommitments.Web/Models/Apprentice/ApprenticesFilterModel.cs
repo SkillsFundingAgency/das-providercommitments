@@ -34,6 +34,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public IEnumerable<DeliveryModel> DeliveryModelFilters =>
                 Enum.GetValues(typeof(DeliveryModel)).Cast<DeliveryModel>().ToList();
 
+        public Dictionary<bool, string> YesNoFilters => new() { { true, "Yes"}, { false, "No"} };
+
         private const int PageSize = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage;
         public int PagedRecordsFrom => TotalNumberOfApprenticeshipsFound == 0 ? 0 : (PageNumber - 1) * PageSize + 1;
         public int PagedRecordsTo {
