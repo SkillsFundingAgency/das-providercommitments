@@ -145,7 +145,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
         {
             await _fixture.PostToAddDraftApprenticeship(changePilotStatus: "Edit");
-            _fixture.VerifyUserRedirectedTo("ChoosePilotStatus");
+            _fixture.VerifyUserRedirectedTo("ChoosePilotStatusForDraftChange");
         }
 
         [Test]
