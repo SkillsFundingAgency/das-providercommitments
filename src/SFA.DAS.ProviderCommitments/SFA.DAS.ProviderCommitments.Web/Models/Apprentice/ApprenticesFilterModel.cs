@@ -20,7 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ReverseSort { get; set; }
         public Alerts? SelectedAlert { get; set; }
         public ConfirmationStatus? SelectedApprenticeConfirmation { get; set; }
-        public DeliveryModel? SelectedDeliveryModel { get; set; } 
+        public DeliveryModel? SelectedDeliveryModel { get; set; }
+        public bool? SelectedPilotStatus { get; set; }
 
         public IEnumerable<string> EmployerFilters { get; set; } = new List<string>();
         public IEnumerable<string> CourseFilters { get; set; } = new List<string>();
@@ -52,7 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                                               || SelectedEndDate.HasValue
                                               || SelectedAlert.HasValue
                                               || SelectedApprenticeConfirmation.HasValue
-                                              || SelectedDeliveryModel.HasValue;
+                                              || SelectedDeliveryModel.HasValue
+                                              || SelectedPilotStatus.HasValue;
 
         public HtmlString FiltersUsedMessage => this.GetFiltersUsedMessage();
 
@@ -164,6 +166,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             if (SelectedDeliveryModel.HasValue)
             {
                 routeData.Add(nameof(SelectedDeliveryModel), SelectedDeliveryModel.Value.ToString());
+            }
+
+            if (SelectedPilotStatus.HasValue)
+            {
+                routeData.Add(nameof(SelectedPilotStatus), SelectedPilotStatus.Value.ToString());
             }
 
             return routeData;
