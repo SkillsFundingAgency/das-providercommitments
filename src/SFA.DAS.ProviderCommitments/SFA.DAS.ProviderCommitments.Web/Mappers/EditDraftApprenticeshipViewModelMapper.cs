@@ -62,7 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
                     HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
-                    ShowTrainingDetails = source.Request.ShowTrainingDetails
+                    ShowTrainingDetails = source.Request.ShowTrainingDetails,
+                    EmailAddressConfirmed = apiResponse.EmailAddressConfirmed
                 };
 
                 if (cachedModel != null)
