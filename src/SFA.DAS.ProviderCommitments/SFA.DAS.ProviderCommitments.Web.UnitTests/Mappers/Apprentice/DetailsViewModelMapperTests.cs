@@ -221,7 +221,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(ApprenticeshipStatus.Completed, false)]
         public async Task ThenAllowEditApprenticeIsMappedCorrectly(ApprenticeshipStatus status, bool expectedAllowEditApprentice)
         {
-            _fixture.WithApprenticeshipStatus(status);
+            _fixture
+                .WithApprenticeshipFlexiPilotStatus(false)
+                .WithApprenticeshipStatus(status);
 
             await _fixture.Map();
 
@@ -254,6 +256,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task WhenThereAreNoDataLocks_ThenAllowEditApprenticeIsTrue()
         {
+            _fixture.WithApprenticeshipFlexiPilotStatus(false);
+
             await _fixture.Map();
 
             Assert.IsTrue(_fixture.Result.AllowEditApprentice);
@@ -269,6 +273,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.IsFalse(_fixture.Result.AllowEditApprentice);
+        }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        [TestCase(null, true)]
+        public async Task ThenAllowEditApprenticeIsMappedCorrectly(bool? pilotStatus, bool expectedAllowEditApprentice)
+        {
+            _fixture.WithApprenticeshipFlexiPilotStatus(pilotStatus);
+
+            await _fixture.Map();
+
+            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
         }
 
         [TestCase(true)]
@@ -808,6 +824,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ConfirmationStatus? status)
             {
                 ApiResponse.ConfirmationStatus = status;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithApprenticeshipFlexiPilotStatus(
+                bool? pilotStatus)
+            {
+                ApiResponse.IsOnFlexiPaymentPilot = pilotStatus;
                 return this;
             }
 
