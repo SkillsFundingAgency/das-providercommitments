@@ -1,10 +1,12 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Mappers
+@using SFA.DAS.Authorization.Services
 
 @inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
 
@@ -111,6 +113,13 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
+                @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.IsOnFlexiPaymentPilot</td>
+                    </tr>
+                }
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>

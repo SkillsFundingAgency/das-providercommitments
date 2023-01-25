@@ -68,6 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string DurationReducedByDisplay => $"{DurationReducedBy} weeks";
         public int PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
 
         public enum DataLockSummaryStatus
         {
