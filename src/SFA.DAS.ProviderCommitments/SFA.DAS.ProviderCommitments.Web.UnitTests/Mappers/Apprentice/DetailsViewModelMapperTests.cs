@@ -6,7 +6,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System;
@@ -17,8 +16,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -630,6 +627,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
         }
 
+        [Test]
+        public async Task CheckIsOnFlexiPaymentPilotIsMappedCorrectly()
+        {
+            var isOnPilot = true;
+            _fixture.WithIsOnFlexiPaymentPilotPopulated(isOnPilot);
+
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(isOnPilot, _fixture.Result.IsOnFlexiPaymentPilot);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -1009,6 +1017,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
             {
                 ApiResponse.EmailShouldBePresent =present;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithIsOnFlexiPaymentPilotPopulated(bool isOnPilot)
+            {
+                ApiResponse.IsOnFlexiPaymentPilot = isOnPilot;
                 return this;
             }
         }
