@@ -77,18 +77,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyUserRedirectedTo("ChoosePilotStatusForDraftChange");
         }
 
-        [Test]
-        public async Task UserIsRedirectedToRecognisePriorLearningPageWhenStartDateIsAfterActivationDate()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task UserIsRedirectedToRecognisePriorLearningPageWhenStartDateIsAfterActivationDate(bool setActualDate)
         {
-            _fixture.SetModelStartDate("012023");
+            _fixture.SetModelStartDate("012023", setActualDate);
             await _fixture.PostDraftApprenticeshipViewModel();
             _fixture.VerifyUserRedirectedTo("RecognisePriorLearning");
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
         [Test]
-        public async Task UserIsNotRedirectedToRecognisePriorLearningPageWhenStartDateIsBeforeActivationDate()
+        public async Task UserIsNotRedirectedToRecognisePriorLearningPageWhenStartDateIsBeforeActivationDate(bool setActualDate)
         {
-            _fixture.SetModelStartDate("012022");
+            _fixture.SetModelStartDate("012022", setActualDate);
             await _fixture.PostDraftApprenticeshipViewModel();
             _fixture.VerifyUserRedirectIsNotToRecognisePriorLearning();
         }
@@ -275,9 +278,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 return this;
             }
 
-            public void SetModelStartDate(string monthYear)
+            public void SetModelStartDate(string monthYear, bool setActual = false)
             {
-                _model.StartDate = new MonthYearModel(monthYear);
+                if (setActual)
+                {
+                    _model.StartDate = new MonthYearModel("");
+                    _model.ActualStartDate = new MonthYearModel(monthYear);
+                }
+                else
+                {
+                    _model.StartDate = new MonthYearModel(monthYear);
+                    _model.ActualStartDate = new MonthYearModel("");
+                }
             }
 
             public void VerifyUserRedirectIsNotToRecognisePriorLearning()
