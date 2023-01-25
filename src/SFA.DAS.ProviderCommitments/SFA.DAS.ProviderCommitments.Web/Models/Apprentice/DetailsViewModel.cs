@@ -69,6 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public string IsOnFlexiPaymentPilotDisplay => IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
         public enum DataLockSummaryStatus
         {
