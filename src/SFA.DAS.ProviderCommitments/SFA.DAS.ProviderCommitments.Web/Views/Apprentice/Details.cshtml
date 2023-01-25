@@ -69,7 +69,7 @@
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
         
-        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot)) //todo && Model.???.IsOnFlexiPaymentsPilot which needs to come from commitments api
+        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault()) //todo && Model.???.IsOnFlexiPaymentsPilot which needs to come from commitments api
         {
                 <div class="govuk-inset-text">
                     This apprentice is part of the simplified payments pilot. To change these details, you must contact <a class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We aim to respond within 2 working days.
