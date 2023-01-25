@@ -6,12 +6,10 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
@@ -72,7 +70,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         apiRequest.DeliveryModel == webRequest.SelectedDeliveryModel &&
                         apiRequest.Status == webRequest.SelectedStatus &&
                         apiRequest.StartDate == webRequest.SelectedStartDate &&
-                        apiRequest.EndDate == webRequest.SelectedEndDate),
+                        apiRequest.EndDate == webRequest.SelectedEndDate &&
+                        apiRequest.IsOnFlexiPaymentPilot == webRequest.SelectedPilotStatus),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }
@@ -178,6 +177,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
             Assert.AreEqual(request.SelectedApprenticeConfirmation, viewModel.FilterModel.SelectedApprenticeConfirmation);
             Assert.AreEqual(request.SelectedDeliveryModel, viewModel.FilterModel.SelectedDeliveryModel);
+            Assert.AreEqual(request.SelectedPilotStatus, viewModel.FilterModel.SelectedPilotStatus);
         }
 
         [Test, MoqAutoData]
