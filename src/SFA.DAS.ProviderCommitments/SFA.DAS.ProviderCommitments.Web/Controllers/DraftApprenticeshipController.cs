@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -25,6 +24,7 @@ using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -367,7 +367,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
 
-            if (RequireRpl(model))
+            if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
@@ -389,12 +389,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
             }
-        }
-
-        private bool RequireRpl(DraftApprenticeshipViewModel model)
-        {
-            var startDate = model.ActualStartDate.Date ?? model.StartDate.Date;
-            return startDate?.Date >= new DateTime(2022, 08, 01);
         }
 
         [HttpPost]
@@ -427,7 +421,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
             await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
-            if (RequireRpl(model))
+            if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
                 {
