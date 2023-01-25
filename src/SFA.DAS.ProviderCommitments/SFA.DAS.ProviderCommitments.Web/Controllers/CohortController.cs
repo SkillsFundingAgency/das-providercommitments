@@ -133,6 +133,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("ChoosePilotStatus", request);
             }
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
+
+            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                model.IsOnFlexiPaymentsPilot = false;
+
             return View("SelectCourse", model);
         }
 

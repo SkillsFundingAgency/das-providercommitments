@@ -86,6 +86,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 IsOnFlexiPaymentsPilot = draft.IsOnFlexiPaymentPilot
             };
 
+            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                model.IsOnFlexiPaymentsPilot = false;
+
             return View("SelectCourse", model);
         }
 
