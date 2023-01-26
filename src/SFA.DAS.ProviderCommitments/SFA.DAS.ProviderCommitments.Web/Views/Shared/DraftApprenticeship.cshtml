@@ -83,10 +83,10 @@
                 <dt class="das-definition-list__title">Email Address</dt>
                 <dd class="das-definition-list__definition govuk-!-margin-bottom-4">@Model.Email</dd>
             }
-            else if (Model.Email != null)
+            else if (!string.IsNullOrEmpty(Model.Email))
             {
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Email, "govuk-form-group--error")">
-                    <label asp-for="Email" class="govuk-label">Email Address</label>
+                    <label asp-for="Email" class="govuk-label govuk-!-font-weight-bold">Email Address</label>
                     @Html.ValidationMessageFor(m => m.Email, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Email)})
                     <input asp-for="Email" class="govuk-input" />
                     <details class="govuk-details" data-module="govuk-details">
