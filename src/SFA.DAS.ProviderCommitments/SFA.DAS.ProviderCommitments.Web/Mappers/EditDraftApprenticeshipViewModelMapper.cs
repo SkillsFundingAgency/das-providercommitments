@@ -61,8 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
                     HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
-                    HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
-                    ShowTrainingDetails = source.Request.ShowTrainingDetails
+                    HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency
                 };
 
                 if (cachedModel != null)

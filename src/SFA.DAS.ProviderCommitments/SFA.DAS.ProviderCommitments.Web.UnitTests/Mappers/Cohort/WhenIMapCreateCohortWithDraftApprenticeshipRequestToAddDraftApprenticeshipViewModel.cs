@@ -96,5 +96,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
         }
+
+        [Test]
+        public async Task ThenPilotStatusIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
     }
 }
