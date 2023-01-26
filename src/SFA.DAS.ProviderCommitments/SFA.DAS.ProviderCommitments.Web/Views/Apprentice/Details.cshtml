@@ -174,7 +174,7 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
                     <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                        @if (Model.ShowChangeEmployerLink)
+                        @if (Model.ShowChangeEmployerLink && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
                         {
                             <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }
