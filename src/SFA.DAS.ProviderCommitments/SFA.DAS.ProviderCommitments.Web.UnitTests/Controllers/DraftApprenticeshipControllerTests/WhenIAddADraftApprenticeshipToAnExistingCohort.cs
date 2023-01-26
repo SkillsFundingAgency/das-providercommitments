@@ -115,10 +115,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .VerifyRedirectToSelectOptionsPage();
         }
 
-        [Test]
-        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning(bool isActualDate)
         {
-            _fixture.SetApprenticeshipStarting(DateAfterRplRequired);
+            _fixture.SetApprenticeshipStarting(DateAfterRplRequired, isActualDate);
 
             await _fixture.PostToAddDraftApprenticeship();
 

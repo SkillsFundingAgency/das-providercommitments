@@ -10,11 +10,9 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
@@ -25,6 +23,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
@@ -290,7 +289,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId
                 });
             }
-
+            
             return await SaveDraftApprenticeship(model);
         }
 
@@ -300,7 +299,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var response = await _mediator.Send(request);
 
-            if (RequireRpl(model.StartDate))
+            if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { response.CohortReference, draftApprenticeshipHashedId });
@@ -314,9 +313,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
         }
 
-        private bool RequireRpl(MonthYearModel startDate)
-            => startDate?.Date >= new DateTime(2022, 08, 01);
-        
         [HttpGet]
         [Route("add/select-employer", Name = RouteNames.NewCohortSelectEmployer)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
