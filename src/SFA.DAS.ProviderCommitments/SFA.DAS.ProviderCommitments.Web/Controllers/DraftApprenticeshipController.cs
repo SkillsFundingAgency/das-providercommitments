@@ -27,6 +27,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderUrlHelper;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -46,7 +47,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
             IAuthorizationService authorizationService,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService
+            )
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
@@ -63,6 +65,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
             return RedirectToAction(nameof(SelectCourse), request);
+        }
+
+        [HttpGet]
+        [Route("add/reservation")]
+        public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
+        {
+// This DEBUG section can be uncommented so that it can run locally without needing the reservations UI 
+//#if DEBUG
+//            var reservationDetails = new ReservationsAddDraftApprenticeshipRequest
+//            {
+//                ProviderId = request.ProviderId,
+//                CohortReference = request.CohortReference,
+//                CohortId = request.CohortId,
+//                ReservationId = Guid.NewGuid()
+//            };
+//            return RedirectToAction(nameof(AddNewDraftApprenticeship), reservationDetails);
+//#else
+            var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
+            if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
+            {
+                reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";
+            }
+            return Redirect(urlHelper.ReservationsLink(reservationUrl));
+//#endif
         }
 
         [HttpGet]
