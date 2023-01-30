@@ -458,6 +458,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 if (model is EditDraftApprenticeshipViewModel editModel)
                 {
                     await AddLegalEntityAndCoursesToModel(editModel);
+                    PrePopulateDates(editModel);
                     return View("EditDraftApprenticeship", editModel);
                 }
 
@@ -601,6 +602,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             model.Employer = cohortDetail.LegalEntityName;
             model.Courses = courses;
+        }
+
+        private void PrePopulateDates(EditDraftApprenticeshipViewModel model)
+        {
+            if (model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                EnsureActualStartDatePrePopulation(model);
+            }
+            else
+            {
+                EnsurePlannedStartDatePrePopulation(model);
+            }
+        }
+
+        private void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        {
+            if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
+                return;
+
+
+            model.ActualStartYear = model.StartYear;
+            model.ActualStartMonth = model.StartMonth;
+        }
+
+        private void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        {
+            if (model.StartDate.HasValue)
+                return;
+
+            model.StartYear = model.ActualStartYear;
+            model.StartMonth = model.ActualStartMonth;
         }
 
         private async Task<TrainingProgramme[]> GetCourses(GetCohortResponse cohortDetails)
