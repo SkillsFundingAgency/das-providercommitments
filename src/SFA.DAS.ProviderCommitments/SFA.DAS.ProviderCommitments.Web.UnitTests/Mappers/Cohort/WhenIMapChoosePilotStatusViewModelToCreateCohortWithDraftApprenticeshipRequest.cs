@@ -1,27 +1,26 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
-
 {
     [TestFixture]
-    public class WhenIMapSelectDeliveryModelViewModelToCreateCohortWithDraftApprenticeshipRequest
+    public class WhenIMapChoosePilotStatusViewModelToCreateCohortWithDraftApprenticeshipRequest
     {
-        private CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper _mapper;
-        private SelectDeliveryModelViewModel _source;
+        private CreateCohortWithDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper _mapper;
+        private ChoosePilotStatusViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<SelectDeliveryModelViewModel>();
+            _source = fixture.Create<ChoosePilotStatusViewModel>();
 
-            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper();
+            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper();
 
             _act = async () => await _mapper.Map(_source);
         }
@@ -75,11 +74,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
         }
 
-        [Test]
-        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        [TestCase(ChoosePilotStatusOptions.Pilot, true)]
+        [TestCase(ChoosePilotStatusOptions.NonPilot, false)]
+        public async Task ThenPilotChoiceIsMappedCorrectly(ChoosePilotStatusOptions option, bool expected)
         {
+            _source.Selection = option;
             var result = await _act();
-            Assert.AreEqual(_source.IsOnFlexiPaymentsPilot, result.IsOnFlexiPaymentPilot);
+            Assert.AreEqual(expected, result.IsOnFlexiPaymentPilot);
         }
     }
 }

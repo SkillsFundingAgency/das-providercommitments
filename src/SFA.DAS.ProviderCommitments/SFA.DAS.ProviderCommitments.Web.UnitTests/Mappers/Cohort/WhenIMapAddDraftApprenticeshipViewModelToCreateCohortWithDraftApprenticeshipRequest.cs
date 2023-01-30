@@ -72,5 +72,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _act();
             Assert.AreEqual(_source.StartDate.MonthYear, result.StartMonthYear);
         }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
     }
 }

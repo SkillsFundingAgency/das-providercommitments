@@ -36,7 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 ReservationId = source.ReservationId,
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
-                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions
+                HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
             };
         }
     }
