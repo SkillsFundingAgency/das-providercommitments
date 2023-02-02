@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         private ProviderCourseDeliveryModels _response;
         private long _providerId;
         private string _courseCode;
+        private bool? _isOnFlexiPaymentsPilot;
 
         [SetUp]
         public void Arrange()
@@ -27,6 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var fixture = new Fixture();
             _providerId = fixture.Create<long>();
             _courseCode = fixture.Create<string>();
+            _isOnFlexiPaymentsPilot = fixture.Create<bool?>();
             _response = fixture.Create<ProviderCourseDeliveryModels>();
 
             _outerApiClient = new Mock<IApprovalsOuterApiClient>();
@@ -40,14 +42,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
-            var result = await _mapper.Map(_providerId, _courseCode, 1234, null);
+            var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
             Assert.AreEqual(_courseCode, result.CourseCode);
         }
 
         [Test]
         public async Task ThenDeliveryModelsAreReturnedCorrectly()
         {
-            var result = await _mapper.Map(_providerId, _courseCode, 1234, null);
+            var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
             Assert.AreEqual(_response.DeliveryModels, result.DeliveryModels);
         }
 
@@ -56,8 +58,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [TestCase(null)]
         public async Task ThenDeliveryModelisMappedCorrectly(DeliveryModel? dm)
         {
-            var result = await _mapper.Map(_providerId, _courseCode, 1234, dm);
+            var result = await _mapper.Map(_providerId, _courseCode, 1234, dm, _isOnFlexiPaymentsPilot);
             Assert.AreEqual(dm, result.DeliveryModel);
+        }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
+            Assert.AreEqual(_isOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
         }
     }
 

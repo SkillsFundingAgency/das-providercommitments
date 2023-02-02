@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(ActualStartDate), "The start date is not valid")]
         public int? ActualStartYear { get => ActualStartDate.Year; set => ActualStartDate.Year = value; }
 
-        [Display(Name = "Planned apprenticeship training start date")]
+        [Display(Name = "Actual apprenticeship training start date")]
         [DataType(DataType.Date)]
         public DateModel ActualStartDate { get; set; }
 
@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(StartDate), "The start date is not valid")]
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
-        [Display(Name = "Projected apprenticeship training finish date")]
+        [Display(Name = "Planned apprenticeship training finish date")]
         public MonthYearModel EndDate { get; }
 
         [Display(Name = "Month")]
@@ -143,8 +143,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
         [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
-        public bool ShowTrainingDetails { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
     }

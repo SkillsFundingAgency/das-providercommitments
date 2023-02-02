@@ -103,5 +103,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             var result = await _mapper.Map(_source);
             Assert.AreEqual("EmployerAccountLegalEntityPublicHashedId", result.EmployerAccountLegalEntityPublicHashedId);
         }
+
+        [Test]
+        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.IsOnFlexiPaymentsPilot, result.IsOnFlexiPaymentPilot);
+        }
     }
 }

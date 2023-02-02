@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _model = fixture.Create<SelectCourseViewModel>();
 
             _helper = new Mock<ISelectCourseViewModelMapperHelper>();
-            _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>())).ReturnsAsync(_model);
+            _helper.Setup(x => x.Map(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<bool?>())).ReturnsAsync(_model);
 
             _mapper = new SelectCourseViewModelFromAddDraftApprenticeshipViewModelMapper(_helper.Object);
         }
@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task TheParamsArePassedInCorrectly()
         {
             var result = await _mapper.Map(_request);
-            _helper.Verify(x=>x.Map(_request.CourseCode, _request.AccountLegalEntityId));
+            _helper.Verify(x=>x.Map(_request.CourseCode, _request.AccountLegalEntityId, _request.IsOnFlexiPaymentPilot));
        }
 
         [Test]

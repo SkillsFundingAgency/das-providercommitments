@@ -6,23 +6,22 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
-
 {
     [TestFixture]
-    public class WhenIMapSelectCourseViewModelToReservationsAddDraftApprenticeshipRequest
+    public class WhenIMapChoosePilotStatusViewModelToReservationsAddDraftApprenticeshipRequest
     {
-        private ReservationsAddDraftApprenticeshipRequestFromSelectCourseViewModelMapper _mapper;
-        private SelectCourseViewModel _source;
+        private ReservationsAddDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper _mapper;
+        private ChoosePilotStatusViewModel _source;
         private Func<Task<ReservationsAddDraftApprenticeshipRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<SelectCourseViewModel>();
+            _source = fixture.Create<ChoosePilotStatusViewModel>();
             _source.StartMonthYear = "092022";
 
-            _mapper = new ReservationsAddDraftApprenticeshipRequestFromSelectCourseViewModelMapper();
+            _mapper = new ReservationsAddDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper();
 
             _act = async () => await _mapper.Map(_source);
         }
@@ -69,11 +68,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
             Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
         }
 
-        [Test]
-        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+        [TestCase(ChoosePilotStatusOptions.Pilot, true)]
+        [TestCase(ChoosePilotStatusOptions.NonPilot, false)]
+        [TestCase(null, null)]
+        public async Task ThenPilotStatusIsMappedCorrectly(ChoosePilotStatusOptions? option, bool? expected)
         {
+            _source.Selection = option;
             var result = await _act();
-            Assert.AreEqual(_source.IsOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
+            Assert.AreEqual(expected, result.IsOnFlexiPaymentsPilot);
         }
     }
 }
