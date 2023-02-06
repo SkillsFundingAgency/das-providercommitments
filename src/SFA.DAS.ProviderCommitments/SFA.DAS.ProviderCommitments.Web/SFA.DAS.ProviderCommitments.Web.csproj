@@ -30,6 +30,7 @@
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.542" />
     <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.12" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="1.1.749" />
+    <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7" />
     <PackageReference Include="StructureMap" Version="4.7.1" />
     <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
