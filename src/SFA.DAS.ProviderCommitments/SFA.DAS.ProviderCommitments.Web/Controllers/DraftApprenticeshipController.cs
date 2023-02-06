@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -42,12 +43,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IEncodingService _encodingService;
         private readonly IAuthorizationService _authorizationService;
         private readonly IOuterApiService _outerApiService;
+        private readonly ILogger<DraftApprenticeshipController> _logger;
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
             IAuthorizationService authorizationService,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService,
+            ILogger<DraftApprenticeshipController> logger)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
@@ -55,6 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _encodingService = encodingService;
             _authorizationService = authorizationService;
             _outerApiService = outerApiService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -451,6 +455,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
+            _logger.LogInformation($"FLP-202 In ViewEditDraftApprenticeship with request: {request}");
             try
             {
                 var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);
