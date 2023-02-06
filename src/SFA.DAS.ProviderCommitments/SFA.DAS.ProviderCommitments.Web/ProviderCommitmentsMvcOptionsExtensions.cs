@@ -34,19 +34,19 @@ public class DomainExceptionRedirectGetFilterWithLoggingAttribute : ExceptionFil
 
     public override void OnException(ExceptionContext context)
     {
-        WriteLog(x =>  x.Log(LogLevel.Information, context.Exception, "FLP-202 OnException Triggered."));
+        WriteLog(x =>  x.Log(LogLevel.Warning, context.Exception, "FLP-202 OnException Triggered."));
         if (!(context.Exception is CommitmentsApiModelException exception))
             return;
         ITempDataDictionary tempData = context.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>().GetTempData(context.HttpContext);
         ModelStateDictionary modelState = context.ModelState;
         modelState.AddModelExceptionErrors(exception);
-        WriteLog(x => x.Log(LogLevel.Information, $"FLP-202 Exception errors added to model state: {context.ModelState}"));
+        WriteLog(x => x.Log(LogLevel.Warning, $"FLP-202 Exception errors added to model state: {context.ModelState}"));
         SerializableModelStateDictionary serializable = modelState.ToSerializable();
         tempData.Set<SerializableModelStateDictionary>(serializable);
         context.RouteData.Values.Merge(context.HttpContext.Request.Query);
-        WriteLog(x => x.Log(LogLevel.Information, $"FLP-202 Route Data Constructed: {context.RouteData}"));
+        WriteLog(x => x.Log(LogLevel.Warning, $"FLP-202 Route Data Constructed: {context.RouteData}"));
         context.Result = (IActionResult)new RedirectToRouteResult((object)context.RouteData.Values);
-        WriteLog(x => x.Log(LogLevel.Information, $"FLP-202 Result Constructed: {context.Result}"));
+        WriteLog(x => x.Log(LogLevel.Warning, $"FLP-202 Result Constructed: {context.Result}"));
     }
 
     private void WriteLog(Action<ILogger> action)
