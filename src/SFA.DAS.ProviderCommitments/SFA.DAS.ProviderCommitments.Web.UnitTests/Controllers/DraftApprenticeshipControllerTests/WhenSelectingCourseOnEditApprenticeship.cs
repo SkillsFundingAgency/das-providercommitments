@@ -18,6 +18,7 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -112,7 +113,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ModelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
                 AuthorizationServiceMock.Object,
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+            Mock.Of<ILogger<DraftApprenticeshipController>>());
             Sut.TempData = TempDataMock.Object;
         }
 

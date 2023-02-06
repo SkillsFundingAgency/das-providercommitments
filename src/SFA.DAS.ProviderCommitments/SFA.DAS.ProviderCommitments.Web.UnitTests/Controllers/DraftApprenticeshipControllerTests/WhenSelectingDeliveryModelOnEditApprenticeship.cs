@@ -16,6 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -106,7 +107,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Mock.Of<ICommitmentsApiClient>(),
                 ModelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                AuthorizationServiceMock.Object, Mock.Of<IOuterApiService>());
+                AuthorizationServiceMock.Object, Mock.Of<IOuterApiService>(),
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
             Sut.TempData = TempDataMock.Object;
         }
 

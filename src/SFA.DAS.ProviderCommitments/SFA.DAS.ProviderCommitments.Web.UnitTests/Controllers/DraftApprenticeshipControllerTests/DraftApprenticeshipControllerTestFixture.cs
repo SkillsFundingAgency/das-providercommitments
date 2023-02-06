@@ -6,6 +6,7 @@ using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -202,7 +203,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _commitmentsApiClient.Object,
                 _modelMapper.Object,
                 encodingService.Object,
-                _providerFeatureToggle.Object, _outerApiService.Object);
+                _providerFeatureToggle.Object, _outerApiService.Object,
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
             _controller.TempData = _tempData.Object;
         }
 

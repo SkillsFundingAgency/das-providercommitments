@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
@@ -98,7 +99,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Mock.Of<ICommitmentsApiClient>(),
                 ModelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                AuthorizationServiceMock.Object, Mock.Of<IOuterApiService>());
+                AuthorizationServiceMock.Object, Mock.Of<IOuterApiService>(),
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
         public WhenSelectingDeliveryModelOnAddAnotherApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)

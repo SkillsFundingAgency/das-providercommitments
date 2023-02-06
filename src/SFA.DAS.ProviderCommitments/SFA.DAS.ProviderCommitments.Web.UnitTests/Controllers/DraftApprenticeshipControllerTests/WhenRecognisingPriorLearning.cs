@@ -2,6 +2,7 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
@@ -200,7 +201,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IAuthorizationService>(),
-                Mock.Of<IOuterApiService>())
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<ILogger<DraftApprenticeshipController>>())
             {
                 TempData = Mock.Of<ITempDataDictionary>()
             };
