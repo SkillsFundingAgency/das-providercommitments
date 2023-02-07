@@ -13,7 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 CourseCode = source.CourseCode,
                 DeliveryModel = source.DeliveryModel,
                 ReservationId = source.ReservationId.Value,
-                StartMonthYear = source.StartDate.MonthYear
+                StartMonthYear = source.StartDate.MonthYear,
+                IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentPilot
             });
         }
     }

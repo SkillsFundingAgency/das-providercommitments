@@ -1,25 +1,25 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
     [TestFixture]
-    public class WhenIMapBaseDraftApprenticeshipRequestFromSelectCourseViewModel
+    public class WhenIMapBaseDraftApprenticeshipRequestFromChoosePilotStatusViewModel
     {
-        private BaseDraftApprenticeshipRequestFromSelectCourseViewModelMapper _mapper;
-        private SelectCourseViewModel _source;
+        private BaseDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper _mapper;
+        private ChoosePilotStatusViewModel _source;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<SelectCourseViewModel>();
+            _source = fixture.Create<ChoosePilotStatusViewModel>();
 
-            _mapper = new BaseDraftApprenticeshipRequestFromSelectCourseViewModelMapper();
+            _mapper = new BaseDraftApprenticeshipRequestFromChoosePilotStatusViewModelMapper();
         }
 
         [Test]
