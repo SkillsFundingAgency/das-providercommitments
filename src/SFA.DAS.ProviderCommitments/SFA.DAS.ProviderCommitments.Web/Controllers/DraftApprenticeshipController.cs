@@ -25,6 +25,7 @@ using SFA.DAS.ProviderCommitments.Web.Attributes;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -395,9 +396,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost] //validation
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(HandleValidationErrorsAttribute))]
         public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
         {
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
@@ -455,7 +457,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
-            _logger.LogInformation($"FLP-202 In ViewEditDraftApprenticeship with request: {request}");
+            _logger.LogWarning($"FLP-202 In ViewEditDraftApprenticeship with request: {request}");
+            //need to get the error somehow?
             try
             {
                 var model = await _modelMapper.Map<IDraftApprenticeshipViewModel>(request);

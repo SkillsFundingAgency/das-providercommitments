@@ -11,6 +11,7 @@ using SFA.DAS.Validation.Mvc.Extensions;
 using SFA.DAS.Validation.Mvc.Filters;
 using SFA.DAS.Validation.Mvc.ModelBinding;
 using System;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -21,6 +22,12 @@ public static class ProviderCommitmentsMvcOptionsExtensions
         mvcOptions.Filters.Add(new DomainExceptionRedirectGetFilterWithLoggingAttribute(services));
         mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
     }
+
+    //public static void AddValidationWithoutTempData(this MvcOptions mvcOptions, IServiceCollection services)
+    //{
+    //    mvcOptions.Filters.Add(new HandleValidationErrorsAttribute());
+    //    mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
+    //}
 }
 
 public class DomainExceptionRedirectGetFilterWithLoggingAttribute : ExceptionFilterAttribute

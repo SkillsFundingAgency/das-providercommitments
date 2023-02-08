@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.EnableEndpointRouting = false;
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
-                    options.AddValidationWithLogging(services);
+                    //options.AddValidation();
                     options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
                     options.Filters.Add<AuthorizationFilter>(int.MaxValue);
                     options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
@@ -76,6 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
             services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
+            services.AddScoped<HandleValidationErrorsAttribute>();
 
             services
                 .AddAuthorizationService()

@@ -260,10 +260,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View("AddDraftApprenticeship", model);
         }
 
-        [HttpPost]
+        [HttpPost] //validation
         [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(HandleValidationErrorsAttribute))]
         public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
