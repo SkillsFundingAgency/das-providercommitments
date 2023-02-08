@@ -287,7 +287,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
     <p>
         @if (Model.ShowAddAnotherApprenticeOption)
         {
-            <a class="govuk-link edit-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new {@Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId})">
+            <a class="govuk-link add-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new {@Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId})">
                 Add another apprentice
             </a>
         }
