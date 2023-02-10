@@ -33,7 +33,7 @@ public static class ProviderCommitmentsMvcOptionsExtensions
 
     public static void AddValidation(this MvcOptions mvcOptions)
     {
-        mvcOptions.Filters.Add<DomainExceptionRedirectGetFilterAttribute>();
+        mvcOptions.Filters.Add<DomainExceptionRedirectGetFilterAttribute>(int.MaxValue);
         mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
     }
 }
