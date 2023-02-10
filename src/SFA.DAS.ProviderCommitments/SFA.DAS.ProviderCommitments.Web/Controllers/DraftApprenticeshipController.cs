@@ -399,7 +399,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost] //validation
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ServiceFilter(typeof(HandleValidationErrorsAttribute))]
+        [ServiceFilter(typeof(StoreValidationErrorsInCacheAttribute))]
+        //[ServiceFilter(typeof(DomainExceptionRedirectGetFilterAttribute))]
         public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
         {
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")

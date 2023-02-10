@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
         public HandleValidationErrorsAttribute(ICacheStorageService cacheStorageService)
         {
             _cacheStorageService = cacheStorageService;
-            Order = int.MaxValue;
+            Order = 2;
         }
 
         public override void OnException(ExceptionContext context)
