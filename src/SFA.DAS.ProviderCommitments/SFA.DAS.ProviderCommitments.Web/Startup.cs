@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.EnableEndpointRouting = false;
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
-                    options.AddValidation();
+                    //options.AddValidation();
                     options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
                     options.Filters.Add<AuthorizationFilter>(int.MaxValue);
                     options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
