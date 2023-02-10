@@ -11,6 +11,7 @@ using SFA.DAS.Validation.Mvc.Extensions;
 using SFA.DAS.Validation.Mvc.Filters;
 using SFA.DAS.Validation.Mvc.ModelBinding;
 using System;
+using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web;
@@ -23,11 +24,17 @@ public static class ProviderCommitmentsMvcOptionsExtensions
         mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
     }
 
-    //public static void AddValidationWithoutTempData(this MvcOptions mvcOptions, IServiceCollection services)
-    //{
-    //    mvcOptions.Filters.Add(new HandleValidationErrorsAttribute());
-    //    mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
-    //}
+    public static void AddValidationWithoutTempData(this MvcOptions mvcOptions)
+    {
+        mvcOptions.Filters.Add<HandleValidationErrorsAttribute>();
+        mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
+    }
+
+    public static void AddValidation(this MvcOptions mvcOptions)
+    {
+        mvcOptions.Filters.Add<DomainExceptionRedirectGetFilterWithLoggingAttribute>();
+        mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
+    }
 }
 
 public class DomainExceptionRedirectGetFilterWithLoggingAttribute : ExceptionFilterAttribute
@@ -41,6 +48,11 @@ public class DomainExceptionRedirectGetFilterWithLoggingAttribute : ExceptionFil
 
     public override void OnException(ExceptionContext context)
     {
+        if (context.Filters.Any(x => x.GetType() == typeof(HandleValidationErrorsAttribute)))
+        {
+            return; //errors to be handled by non temp data version
+        }
+
         WriteLog(x =>  x.Log(LogLevel.Warning, context.Exception, "FLP-202 OnException Triggered."));
         if (!(context.Exception is CommitmentsApiModelException exception))
             return;

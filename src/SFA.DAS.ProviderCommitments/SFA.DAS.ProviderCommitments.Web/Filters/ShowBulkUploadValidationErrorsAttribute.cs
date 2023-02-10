@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -10,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.Validation.Mvc.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using SFA.DAS.CommitmentsV2.Shared.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters
 {
@@ -35,6 +37,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
         }
     }
 
+    public class NoTempDataValidationAttribute : ActionFilterAttribute
+    {
+
+    }
+
     public class HandleValidationErrorsAttribute : ExceptionFilterAttribute
     {
         private readonly ICacheStorageService _cacheStorageService;
@@ -47,6 +54,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
 
         public override void OnException(ExceptionContext context)
         {
+            //if (!context.Filters.Any(x => x.GetType() == typeof(NoTempDataValidationAttribute)))
+            //{
+            //    //todo can we avoid newing this up like this?
+            //    //new DomainExceptionRedirectGetFilterAttribute().OnException(context);
+            //    return;
+            //}
+            
             // This was using TempData before. Reading from TempData failed as size of the response increased.
             // Now instead of using TempData using BlobStorage.
             if (!(context.Exception is CommitmentsApiModelException exception)) return;
@@ -60,6 +74,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
             context.RouteData.Values.Merge(context.HttpContext.Request.Query);
             context.Result = new RedirectToRouteResult(context.RouteData.Values);
         }
+
+        //private bool ValidateUsingCache(ExceptionContext context)
+        //{
+        //    MethodInfo method = context.Controller.GetType().GetMethods()
+        //        .FirstOrDefault(x => x.DeclaringType == context.Controller.GetType()
+        //                             && x.Name == actionName);
+
+        //    IEnumerable<Attribute> attributes = method.GetCustomAttributes();
+        //}
     }
 
     public class PopulateValidationErrorsAttribute : ActionFilterAttribute
@@ -71,6 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
             _cacheStorageService = cacheStorageService;
             Order = int.MaxValue;
         }
+
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
