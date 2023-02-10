@@ -340,9 +340,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
+// This section can be uncommented to run locally if you need to add a new apprenticeship
+//#if DEBUG
+//                var reservationId = Guid.NewGuid();
+//                return RedirectToAction("AddNewDraftApprenticeship",
+//                    new CreateCohortWithDraftApprenticeshipRequest
+//                    {
+//                        ProviderId = viewModel.ProviderId,
+//                        ReservationId = reservationId,
+//                        EmployerAccountLegalEntityPublicHashedId = viewModel.EmployerAccountLegalEntityPublicHashedId,
+//                        ShowTrainingDetails = false
+//                    });
+//#else
                 //return Redirect($"https://at-permissions-api.apprenticeships.education.gov.uk/{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
-                var url = _urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
-                return Redirect(url);
+                return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+//#endif
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });

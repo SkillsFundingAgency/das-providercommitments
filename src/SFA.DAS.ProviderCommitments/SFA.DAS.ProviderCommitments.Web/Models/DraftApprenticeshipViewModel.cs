@@ -146,5 +146,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
+        public bool? EmailAddressConfirmed { get; set; }
     }
 }
