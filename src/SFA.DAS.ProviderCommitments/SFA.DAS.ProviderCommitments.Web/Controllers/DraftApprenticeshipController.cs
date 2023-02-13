@@ -343,6 +343,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/details", Name = RouteNames.DraftApprenticeshipAddAnother)]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
             var model = GetStoredAddDraftApprenticeshipState();
@@ -365,6 +366,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
