@@ -22,12 +22,14 @@ using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
+using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -76,6 +78,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
             services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
+            services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
+            services.AddScoped<ValidateModelStateFilter>();
 
             services
                 .AddAuthorizationService()

@@ -7,7 +7,7 @@ public static class ProviderCommitmentsMvcOptionsExtensions
 {
     public static void AddProviderCommitmentsValidation(this MvcOptions mvcOptions)
     {
-        mvcOptions.Filters.Add<CommitmentsApiModelExceptionHandleFilter>(int.MaxValue);
-        mvcOptions.Filters.Add<NewValidateModelStateFilter>(int.MaxValue);
+        mvcOptions.Filters.Add<CacheFriendlyCommitmentsValidationFilter>(int.MaxValue);
+        mvcOptions.Filters.Add<CacheFriendlyValidateModelStateFilter>(int.MaxValue);
     }
 }
