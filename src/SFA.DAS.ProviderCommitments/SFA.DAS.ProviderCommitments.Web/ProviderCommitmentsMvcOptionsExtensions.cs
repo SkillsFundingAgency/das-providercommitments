@@ -12,8 +12,12 @@ using SFA.DAS.Validation.Mvc.Filters;
 using SFA.DAS.Validation.Mvc.ModelBinding;
 using System;
 using System.Linq;
+using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.Validation.Exceptions;
+using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -33,18 +37,18 @@ public static class ProviderCommitmentsMvcOptionsExtensions
 
     public static void AddValidation(this MvcOptions mvcOptions)
     {
-        mvcOptions.Filters.Add<DomainExceptionRedirectGetFilterAttribute>(int.MaxValue);
-        mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
+        mvcOptions.Filters.Add<NewDomainExceptionRedirectGetFilterAttribute>(int.MaxValue);
+        mvcOptions.Filters.Add<NewValidateModelStateFilter>(int.MaxValue);
     }
 }
 
 public class StoreValidationErrorsInCacheAttribute : ActionFilterAttribute {}
 
-public class DomainExceptionRedirectGetFilterAttribute : ExceptionFilterAttribute
+public class NewDomainExceptionRedirectGetFilterAttribute : ExceptionFilterAttribute
 {
     private readonly ICacheStorageService _cacheStorageService;
 
-    public DomainExceptionRedirectGetFilterAttribute(ICacheStorageService cacheStorageService)
+    public NewDomainExceptionRedirectGetFilterAttribute(ICacheStorageService cacheStorageService)
     {
         _cacheStorageService = cacheStorageService;
     }
@@ -79,6 +83,84 @@ public class DomainExceptionRedirectGetFilterAttribute : ExceptionFilterAttribut
 
             context.RouteData.Values.Merge(context.HttpContext.Request.Query);
             context.Result = new RedirectToRouteResult(context.RouteData.Values);
+        }
+        base.OnException(context);
+    }
+}
+
+public class NewValidateModelStateFilter : ActionFilterAttribute
+{
+    private static readonly string ModelStateKey = typeof(SerializableModelStateDictionary).FullName;
+    private readonly ICacheStorageService _cacheStorageService;
+
+    public NewValidateModelStateFilter(ICacheStorageService cacheStorageService)
+    {
+        _cacheStorageService = cacheStorageService;
+    }
+
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        if (filterContext.Filters.Any(x => x.GetType() == typeof(StoreValidationErrorsInCacheAttribute)))
+        {
+            if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedErrorGuid"].ToString(), out var cachedErrorId))
+            {
+                base.OnActionExecuting(filterContext);
+                return;
+            }
+
+
+            var errors = _cacheStorageService.RetrieveFromCache<List<ErrorDetail>>(cachedErrorId).Result;
+            //var errors = _cacheStorageService.GetFromCache<List<ErrorDetail>>(nameof(HandleValidationErrorsAttribute)).Result;
+
+            if (errors != null && errors.Any())
+            {
+                var controller = (Controller)filterContext.Controller;
+                controller.ModelState.AddModelExceptionErrors(errors);
+            }
+        }
+        else
+        {
+            if (filterContext.HttpContext.Request.Method == "GET")
+            {
+                if (!filterContext.ModelState.IsValid)
+                {
+                    filterContext.Result = (IActionResult)new BadRequestObjectResult(filterContext.ModelState);
+                }
+                else
+                {
+                    SerializableModelStateDictionary serializableModelState = filterContext.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>().GetTempData(filterContext.HttpContext).Get<SerializableModelStateDictionary>();
+                    ModelStateDictionary dictionary = serializableModelState != null ? serializableModelState.ToModelState() : (ModelStateDictionary)null;
+                    filterContext.ModelState.Merge(dictionary);
+                }
+            }
+            else
+            {
+                if (filterContext.ModelState.IsValid)
+                    return;
+                filterContext.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>().GetTempData(filterContext.HttpContext).Set<SerializableModelStateDictionary>(filterContext.ModelState.ToSerializable());
+                filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
+                filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
+            }
+        }
+    }
+
+    public override void OnActionExecuted(ActionExecutedContext filterContext)
+    {
+        if (!(filterContext.HttpContext.Request.Method != "GET"))
+            return;
+        if (filterContext.Exception is ValidationException exception)
+        {
+            filterContext.ModelState.AddModelError(exception);
+            filterContext.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>().GetTempData(filterContext.HttpContext).Set<SerializableModelStateDictionary>(filterContext.ModelState.ToSerializable());
+            filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
+            filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
+            filterContext.ExceptionHandled = true;
+        }
+        else
+        {
+            if (filterContext.ModelState.IsValid)
+                return;
+            filterContext.HttpContext.RequestServices.GetRequiredService<ITempDataDictionaryFactory>().GetTempData(filterContext.HttpContext).Set<SerializableModelStateDictionary>(filterContext.ModelState.ToSerializable());
         }
     }
 }

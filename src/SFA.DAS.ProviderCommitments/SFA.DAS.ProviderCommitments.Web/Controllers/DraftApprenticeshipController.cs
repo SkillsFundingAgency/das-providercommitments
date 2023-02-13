@@ -425,7 +425,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/edit")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(StoreValidationErrorsInCacheAttribute))]
-        [ServiceFilter(typeof(DomainExceptionRedirectGetFilterAttribute))]
+        //[ServiceFilter(typeof(NewDomainExceptionRedirectGetFilterAttribute))]
         public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
         {
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
@@ -481,7 +481,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [ServiceFilter(typeof(PopulateValidationErrorsAttribute))]
+        //[ServiceFilter(typeof(PopulateValidationErrorsAttribute))]
+        [ServiceFilter(typeof(StoreValidationErrorsInCacheAttribute))]
         public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
         {
             _logger.LogWarning($"FLP-202 In ViewEditDraftApprenticeship with request: {request}");
