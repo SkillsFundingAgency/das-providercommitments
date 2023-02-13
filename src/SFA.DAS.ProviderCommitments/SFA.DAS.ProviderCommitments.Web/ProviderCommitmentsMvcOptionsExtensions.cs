@@ -23,32 +23,20 @@ namespace SFA.DAS.ProviderCommitments.Web;
 
 public static class ProviderCommitmentsMvcOptionsExtensions
 {
-    //public static void AddValidationWithLogging(this MvcOptions mvcOptions, IServiceCollection services)
-    //{
-    //    mvcOptions.Filters.Add(new DomainExceptionRedirectGetFilterWithLoggingAttribute(services));
-    //    mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
-    //}
-
-    //public static void AddValidationWithoutTempData(this MvcOptions mvcOptions, IServiceCollection services)
-    //{
-    //    mvcOptions.Filters.Add(new HandleValidationErrorsAttribute());
-    //    mvcOptions.Filters.Add<ValidateModelStateFilter>(int.MaxValue);
-    //}
-
     public static void AddValidation(this MvcOptions mvcOptions)
     {
-        mvcOptions.Filters.Add<NewDomainExceptionRedirectGetFilterAttribute>(int.MaxValue);
+        mvcOptions.Filters.Add<CommitmentsApiModelExceptionHandleFilter>(int.MaxValue);
         mvcOptions.Filters.Add<NewValidateModelStateFilter>(int.MaxValue);
     }
 }
 
-public class StoreValidationErrorsInCacheAttribute : ActionFilterAttribute {}
+public class UseCacheForValidationAttribute : ActionFilterAttribute {}
 
-public class NewDomainExceptionRedirectGetFilterAttribute : ExceptionFilterAttribute
+public class CommitmentsApiModelExceptionHandleFilter : ExceptionFilterAttribute
 {
     private readonly ICacheStorageService _cacheStorageService;
 
-    public NewDomainExceptionRedirectGetFilterAttribute(ICacheStorageService cacheStorageService)
+    public CommitmentsApiModelExceptionHandleFilter(ICacheStorageService cacheStorageService)
     {
         _cacheStorageService = cacheStorageService;
     }
@@ -56,14 +44,17 @@ public class NewDomainExceptionRedirectGetFilterAttribute : ExceptionFilterAttri
     {
         if (!(context.Exception is CommitmentsApiModelException exception)) return;
 
-        if (context.Filters.Any(x => x.GetType() == typeof(StoreValidationErrorsInCacheAttribute)))
+        if (context.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
         {
             //cache logic
             var cachedErrorId = Guid.NewGuid();
+            var modelStateId = Guid.NewGuid();
             _cacheStorageService.SaveToCache(cachedErrorId, exception.Errors, 1);
+            _cacheStorageService.SaveToCache(modelStateId, context.ModelState.ToSerializable(), 1);
             //var cachedData = _cacheService.SetCache(exception.Errors, nameof(HandleValidationErrorsAttribute)).Result;
 
             context.RouteData.Values["CachedErrorGuid"] = cachedErrorId;
+            context.RouteData.Values["CachedModelStateGuid"] = modelStateId;
             //context.HttpContext.Items.Add("CachedErrorGuid", cachedErrorId);
 
             context.RouteData.Values.Merge(context.HttpContext.Request.Query);
@@ -100,8 +91,18 @@ public class NewValidateModelStateFilter : ActionFilterAttribute
 
     public override void OnActionExecuting(ActionExecutingContext filterContext)
     {
-        if (filterContext.Filters.Any(x => x.GetType() == typeof(StoreValidationErrorsInCacheAttribute)))
+        if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
         {
+            if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedModelStateGuid"].ToString(), out var modelStateId))
+            {
+                base.OnActionExecuting(filterContext);
+                return;
+            }
+
+            var serializableModelState = _cacheStorageService.RetrieveFromCache<SerializableModelStateDictionary>(modelStateId).Result;
+            var dictionary = serializableModelState?.ToModelState();
+            filterContext.ModelState.Merge(dictionary);
+
             if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedErrorGuid"].ToString(), out var cachedErrorId))
             {
                 base.OnActionExecuting(filterContext);
