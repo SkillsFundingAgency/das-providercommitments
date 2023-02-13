@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.Validation.Mvc.Extensions;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters
 {
@@ -32,23 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
             context.RouteData.Values["action"] = nameof(CohortController.FileUploadValidationErrors);
             context.RouteData.Values["CachedErrorGuid"] = cachedData.ToString();
             context.Result = new RedirectToRouteResult(context.RouteData.Values);
-        }
-    }
-
-    public static class ModelStateExtensions //todo move this
-    {
-        public static void AddModelExceptionErrors(
-            this ModelStateDictionary modelState,
-            List<ErrorDetail> errors,
-            Func<string, string> fieldNameMapper = null)
-        {
-            if (errors == null)
-                return;
-            foreach (ErrorDetail error in errors)
-            {
-                string key = fieldNameMapper == null ? error.Field : fieldNameMapper(error.Field);
-                modelState.AddModelError(key, error.Message);
-            }
         }
     }
 }
