@@ -263,6 +263,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> ChoosePilotStatusForEdit(BaseDraftApprenticeshipRequest request)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
@@ -278,6 +279,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/choose-pilot-status")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public IActionResult ChoosePilotStatusForEdit(ChoosePilotStatusViewModel model)
         {
             if (model.Selection == null)
