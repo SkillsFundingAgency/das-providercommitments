@@ -60,6 +60,9 @@ public class CacheFriendlyValidateModelStateFilter : ValidateModelStateFilter
 
     public override void OnActionExecuted(ActionExecutedContext filterContext)
     {
+        if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
+            return;
+
         _validateModelStateFilter.OnActionExecuted(filterContext);
     }
 }
