@@ -12,7 +12,7 @@ using SFA.DAS.Validation.Mvc.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters;
 
-public class CacheFriendlyValidateModelStateFilter : ValidateModelStateFilter
+public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
 {
     private readonly ICacheStorageService _cacheStorageService;
     private readonly ValidateModelStateFilter _validateModelStateFilter;
