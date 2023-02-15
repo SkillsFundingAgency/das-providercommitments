@@ -201,8 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IAuthorizationService>(),
-                Mock.Of<IOuterApiService>(),
-                Mock.Of<ILogger<DraftApprenticeshipController>>())
+                Mock.Of<IOuterApiService>())
             {
                 TempData = Mock.Of<ITempDataDictionary>()
             };

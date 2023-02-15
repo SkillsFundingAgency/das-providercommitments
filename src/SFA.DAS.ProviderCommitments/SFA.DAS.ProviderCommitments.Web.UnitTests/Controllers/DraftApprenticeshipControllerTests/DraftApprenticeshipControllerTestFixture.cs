@@ -210,8 +210,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _commitmentsApiClient.Object,
                 _modelMapper.Object,
                 encodingService.Object,
-                _providerFeatureToggle.Object, _outerApiService.Object,
-                Mock.Of<ILogger<DraftApprenticeshipController>>());
+                _providerFeatureToggle.Object, _outerApiService.Object);
             _controller.TempData = _tempData.Object;
 
             _linkGenerator = new Mock<ILinkGenerator>();
