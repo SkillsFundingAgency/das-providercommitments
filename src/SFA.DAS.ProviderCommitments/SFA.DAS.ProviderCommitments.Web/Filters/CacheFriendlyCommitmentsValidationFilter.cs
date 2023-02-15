@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Filters;
@@ -21,7 +22,7 @@ public class CacheFriendlyCommitmentsValidationFilter : ExceptionFilterAttribute
     }
     public override void OnException(ExceptionContext context)
     {
-        if (!(context.Exception is CommitmentsApiModelException exception)) return;
+        if (context.Exception is not CommitmentsApiModelException exception) return;
 
         if (context.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
         {
@@ -33,7 +34,7 @@ public class CacheFriendlyCommitmentsValidationFilter : ExceptionFilterAttribute
             context.RouteData.Values["CachedErrorGuid"] = cachedErrorId;
             context.RouteData.Values["CachedModelStateGuid"] = modelStateId;
 
-            context.RouteData.Values.Merge(context.HttpContext.Request.Query);
+            context.RouteData.Values.AddQueryValuesToRoute(context.HttpContext.Request.Query);
             context.Result = new RedirectToRouteResult(context.RouteData.Values);
         }
         else
