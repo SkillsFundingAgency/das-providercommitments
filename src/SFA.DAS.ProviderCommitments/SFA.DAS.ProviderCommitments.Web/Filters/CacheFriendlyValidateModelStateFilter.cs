@@ -23,6 +23,16 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
         _validateModelStateFilter = validateModelStateFilter;
     }
 
+    public override void OnActionExecuted(ActionExecutedContext filterContext)
+    {
+        if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
+        {
+            return;
+        }
+
+        _validateModelStateFilter.OnActionExecuted(filterContext);
+    }
+
     public override void OnActionExecuting(ActionExecutingContext filterContext)
     {
         if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
@@ -34,43 +44,6 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
         {
             _validateModelStateFilter.OnActionExecuting(filterContext);
         }
-    }
-
-    private bool TryGetFromCache<T>(ActionExecutingContext filterContext, string key, out T cacheResult)
-    {
-        cacheResult = default;
-
-        try
-        {
-            if (!filterContext.HttpContext.Request.Query.TryGetValue(key, out var queryValue))
-            {
-                return false;
-            }
-
-            if (Guid.TryParse(queryValue.ToString(), out var guidValue))
-            {
-                cacheResult = _cacheStorageService.RetrieveFromCache<T>(guidValue).Result;
-            }
-            else
-            {
-                cacheResult = _cacheStorageService.RetrieveFromCache<T>(queryValue.ToString()).Result;
-            }
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    public override void OnActionExecuted(ActionExecutedContext filterContext)
-    {
-        if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
-        {
-            return;
-        }
-
-        _validateModelStateFilter.OnActionExecuted(filterContext);
     }
 
     private void AddErrorsFromCache(ActionExecutingContext filterContext)
@@ -108,6 +81,33 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
             filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
             filterContext.RouteData.Values["CachedModelStateGuid"] = modelStateErrorGuid;
             filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
+        }
+    }
+
+    private bool TryGetFromCache<T>(ActionExecutingContext filterContext, string key, out T cacheResult)
+    {
+        cacheResult = default;
+
+        try
+        {
+            if (!filterContext.HttpContext.Request.Query.TryGetValue(key, out var queryValue))
+            {
+                return false;
+            }
+
+            if (Guid.TryParse(queryValue.ToString(), out var guidValue))
+            {
+                cacheResult = _cacheStorageService.RetrieveFromCache<T>(guidValue).Result;
+            }
+            else
+            {
+                cacheResult = _cacheStorageService.RetrieveFromCache<T>(queryValue.ToString()).Result;
+            }
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }

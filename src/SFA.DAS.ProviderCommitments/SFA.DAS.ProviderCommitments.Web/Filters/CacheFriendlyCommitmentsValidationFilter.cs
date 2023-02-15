@@ -20,6 +20,7 @@ public class CacheFriendlyCommitmentsValidationFilter : ExceptionFilterAttribute
         _cacheStorageService = cacheStorageService;
         _domainExceptionRedirectGetFilterAttribute = domainExceptionRedirectGetFilterAttribute;
     }
+
     public override void OnException(ExceptionContext context)
     {
         if (context.Exception is not CommitmentsApiModelException exception) return;
