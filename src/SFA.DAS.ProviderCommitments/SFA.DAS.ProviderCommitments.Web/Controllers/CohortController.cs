@@ -261,7 +261,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             return View("AddDraftApprenticeship", model);
         }
 
-        [HttpPost] //validation
+        [HttpPost]
         [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
