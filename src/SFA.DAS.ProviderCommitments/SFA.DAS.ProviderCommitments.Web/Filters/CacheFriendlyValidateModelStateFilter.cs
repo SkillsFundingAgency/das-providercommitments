@@ -27,30 +27,9 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
     {
         if (filterContext.Filters.Any(x => x.GetType() == typeof(UseCacheForValidationAttribute)))
         {
-            if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedModelStateGuid"].ToString(), out var modelStateId))
-            {
-                base.OnActionExecuting(filterContext);
-                return;
-            }
+            AddErrorsFromCache(filterContext);
 
-            var serializableModelState = _cacheStorageService.RetrieveFromCache<SerializableModelStateDictionary>(modelStateId).Result;
-            var dictionary = serializableModelState?.ToModelState();
-            filterContext.ModelState.Merge(dictionary);
-
-            if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedErrorGuid"].ToString(), out var cachedErrorId))
-            {
-                base.OnActionExecuting(filterContext);
-                return;
-            }
-
-
-            var errors = _cacheStorageService.RetrieveFromCache<List<ErrorDetail>>(cachedErrorId).Result;
-
-            if (errors != null && errors.Any())
-            {
-                var controller = (Controller)filterContext.Controller;
-                controller.ModelState.AddModelExceptionErrors(errors);
-            }
+            PopulateErrorsFromModelState(filterContext);
         }
         else
         {
@@ -64,5 +43,45 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
             return;
 
         _validateModelStateFilter.OnActionExecuted(filterContext);
+    }
+
+    private void AddErrorsFromCache(ActionExecutingContext filterContext)
+    {
+        if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedModelStateGuid"].ToString(), out var modelStateId))
+        {
+            base.OnActionExecuting(filterContext);
+            return;
+        }
+
+        var serializableModelState = _cacheStorageService.RetrieveFromCache<SerializableModelStateDictionary>(modelStateId).Result;
+        var dictionary = serializableModelState?.ToModelState();
+        filterContext.ModelState.Merge(dictionary);
+
+        if (!Guid.TryParse(filterContext.HttpContext.Request.Query["CachedErrorGuid"].ToString(), out var cachedErrorId))
+        {
+            base.OnActionExecuting(filterContext);
+            return;
+        }
+
+
+        var errors = _cacheStorageService.RetrieveFromCache<List<ErrorDetail>>(cachedErrorId).Result;
+
+        if (errors != null && errors.Any())
+        {
+            var controller = (Controller)filterContext.Controller;
+            controller.ModelState.AddModelExceptionErrors(errors);
+        }
+    }
+
+    private void PopulateErrorsFromModelState(ActionExecutingContext filterContext)
+    {
+        if (filterContext.HttpContext.Request.Method != "GET" && !filterContext.ModelState.IsValid)
+        {
+            var modelStateErrorGuid = Guid.NewGuid();
+            _cacheStorageService.SaveToCache(modelStateErrorGuid, filterContext.ModelState.ToSerializable(), 1);
+            filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
+            filterContext.RouteData.Values["CachedModelStateGuid"] = modelStateErrorGuid;
+            filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
+        }
     }
 }
