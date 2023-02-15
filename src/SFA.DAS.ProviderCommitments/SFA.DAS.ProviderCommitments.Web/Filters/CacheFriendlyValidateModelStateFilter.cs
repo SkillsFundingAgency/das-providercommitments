@@ -17,6 +17,8 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
     private readonly ICacheStorageService _cacheStorageService;
     private readonly ValidateModelStateFilter _validateModelStateFilter;
 
+    
+
     public CacheFriendlyValidateModelStateFilter(ICacheStorageService cacheStorageService, ValidateModelStateFilter validateModelStateFilter)
     {
         _cacheStorageService = cacheStorageService;
@@ -48,7 +50,7 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
 
     private void AddErrorsFromCache(ActionExecutingContext filterContext)
     {
-        if (!TryGetFromCache<SerializableModelStateDictionary>(filterContext, "CachedModelStateGuid", out var serializableModelState))
+        if (!TryGetFromCache<SerializableModelStateDictionary>(filterContext, CacheKeyConstants.CachedModelStateGuidKey, out var serializableModelState))
         {
             base.OnActionExecuting(filterContext);
             return;
@@ -56,9 +58,9 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
 
         var dictionary = serializableModelState?.ToModelState();
         filterContext.ModelState.Merge(dictionary);
-        _cacheStorageService.DeleteFromCache(filterContext.HttpContext.Request.Query["CachedModelStateGuid"].ToString());
+        _cacheStorageService.DeleteFromCache(filterContext.HttpContext.Request.Query[CacheKeyConstants.CachedModelStateGuidKey].ToString());
 
-        if (!TryGetFromCache<List<ErrorDetail>>(filterContext, "CachedErrorGuid", out var errors))
+        if (!TryGetFromCache<List<ErrorDetail>>(filterContext, CacheKeyConstants.CachedErrorGuidKey, out var errors))
         {
             base.OnActionExecuting(filterContext);
             return;
@@ -68,7 +70,7 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
         {
             var controller = (Controller)filterContext.Controller;
             controller.ModelState.AddModelExceptionErrors(errors);
-            _cacheStorageService.DeleteFromCache(filterContext.HttpContext.Request.Query["CachedErrorGuid"].ToString());
+            _cacheStorageService.DeleteFromCache(filterContext.HttpContext.Request.Query[CacheKeyConstants.CachedErrorGuidKey].ToString());
         }
     }
 
@@ -79,7 +81,7 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
             var modelStateErrorGuid = Guid.NewGuid();
             _cacheStorageService.SaveToCache(modelStateErrorGuid, filterContext.ModelState.ToSerializable(), 1);
             filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
-            filterContext.RouteData.Values["CachedModelStateGuid"] = modelStateErrorGuid;
+            filterContext.RouteData.Values[CacheKeyConstants.CachedModelStateGuidKey] = modelStateErrorGuid;
             filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
         }
     }

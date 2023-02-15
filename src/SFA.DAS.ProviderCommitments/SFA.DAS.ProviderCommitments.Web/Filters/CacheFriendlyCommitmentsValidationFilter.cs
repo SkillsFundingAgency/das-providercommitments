@@ -32,8 +32,8 @@ public class CacheFriendlyCommitmentsValidationFilter : ExceptionFilterAttribute
             _cacheStorageService.SaveToCache(cachedErrorId, exception.Errors, 1);
             _cacheStorageService.SaveToCache(modelStateId, context.ModelState.ToSerializable(), 1);
 
-            context.RouteData.Values["CachedErrorGuid"] = cachedErrorId;
-            context.RouteData.Values["CachedModelStateGuid"] = modelStateId;
+            context.RouteData.Values[CacheKeyConstants.CachedErrorGuidKey] = cachedErrorId;
+            context.RouteData.Values[CacheKeyConstants.CachedModelStateGuidKey] = modelStateId;
 
             context.RouteData.Values.AddQueryValuesToRoute(context.HttpContext.Request.Query);
             context.Result = new RedirectToRouteResult(context.RouteData.Values);
