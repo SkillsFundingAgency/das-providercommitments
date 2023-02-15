@@ -2,7 +2,6 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;

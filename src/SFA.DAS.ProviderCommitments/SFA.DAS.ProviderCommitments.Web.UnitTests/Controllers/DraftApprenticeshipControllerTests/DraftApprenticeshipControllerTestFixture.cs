@@ -7,7 +7,6 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;

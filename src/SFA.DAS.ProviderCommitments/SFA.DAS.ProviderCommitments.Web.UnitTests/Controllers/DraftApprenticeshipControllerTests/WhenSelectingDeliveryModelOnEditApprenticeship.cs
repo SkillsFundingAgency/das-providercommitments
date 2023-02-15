@@ -16,7 +16,6 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
