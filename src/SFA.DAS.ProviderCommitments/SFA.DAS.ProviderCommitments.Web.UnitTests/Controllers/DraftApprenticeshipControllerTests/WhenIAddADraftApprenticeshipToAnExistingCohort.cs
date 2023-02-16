@@ -74,6 +74,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public void AndWhenCallingTheGetReservationIdEndpointRedirectToReservationsPage()
+        {
+            _fixture.GetReservationId();
+            _fixture.VerifyRedirectedToReservationsPage();
+        }
+
+        [Test]
+        public void AndWhenCallingTheGetReservationIdEndpointRedirectToReservationsPageWithTransferSender()
+        {
+            _fixture.GetReservationId("ABCD");
+            _fixture.VerifyRedirectedToReservationsPage();
+            _fixture.VerifyRedirectedToReservationsPageContainsTransferSenderId();
+        }
+
+        [Test]
         public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
         {
             _fixture

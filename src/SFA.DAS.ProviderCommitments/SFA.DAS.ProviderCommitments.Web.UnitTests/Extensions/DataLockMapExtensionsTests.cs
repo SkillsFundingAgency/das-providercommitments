@@ -243,5 +243,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Assert
             Assert.AreEqual(2, result.Count());
         }
+
+        [Test]
+        public void PriceDataLocks_With_No_Matching_Price_Episodes_AreMapped_To_First_Price_Episode()
+        {
+            //Arrange
+            var ilrEffectiveFromDate = DateTime.UtcNow;
+
+            _dataLocksWithPriceMismatch = new List<DataLock>
+            {
+                new DataLock
+                {
+                    IsResolved = false,
+                    DataLockStatus = Status.Fail,
+                    ErrorCode = DataLockErrorCode.Dlock07,
+                    IlrEffectiveFromDate = ilrEffectiveFromDate,
+                    ApprenticeshipId = 123,
+                    IlrTotalCost = 1500.00M
+                }
+            };
+            _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
+                .With(x => x.DataLocksWithOnlyPriceMismatch, _dataLocksWithPriceMismatch)
+                .Create();
+
+            _priceEpisodes = new List<PriceEpisode>
+            {
+                new PriceEpisode { ApprenticeshipId = 123, FromDate = ilrEffectiveFromDate.AddDays(1), ToDate = null, Cost = 1000.0M }
+            };
+            _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
+                .With(x => x.PriceEpisodes, _priceEpisodes)
+                .Create();
+
+            //Act
+            var result = _priceEpisodesResponse.PriceEpisodes.MapPriceDataLock(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch);
+
+            //Assert
+            Assert.AreEqual(1, result.Count());
+        }
     }
 }
