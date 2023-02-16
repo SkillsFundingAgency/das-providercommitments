@@ -69,6 +69,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
 
+        private bool? _isOnFlexiPaymentPilot;
+        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
+        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
+        public bool? IsOnFlexiPaymentPilot
+        {
+            get => _isOnFlexiPaymentPilot;
+            set
+            {
+                _isOnFlexiPaymentPilot = value;
+                if (_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(DateModel))
+                {
+                    EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
+                }
+                else if (!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
+                {
+                    var endMonth = EndMonth;
+                    var endYear = EndYear;
+                    EndDate = new MonthYearModel("");
+                    EndDate.Year = endYear;
+                    EndDate.Month = endMonth;
+                }
+            }
+        }
+
         [Display(Name = "Planned apprenticeship training start date")]
         public MonthYearModel StartDate { get; set; }
 
@@ -101,7 +125,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Day")]
         [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
-        public int? EndDay { get => EndDate.Day; set => EndDate.Day = value; }
+        public int? EndDay
+        {
+            get => EndDate.Day;
+            set
+            {
+                if (EndDate.GetType() != typeof(MonthYearModel))
+                    EndDate.Day = value;
+            }
+        }
 
         [Display(Name = "Month")]
         [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
@@ -143,26 +175,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-
-        private bool? _isOnFlexiPaymentPilot;
-        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
-        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
-        public bool? IsOnFlexiPaymentPilot
-        {
-            get => _isOnFlexiPaymentPilot;
-            set
-            {
-                _isOnFlexiPaymentPilot = value;
-                if (_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(DateModel))
-                {
-                    EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
-                }
-                else if(!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
-                {
-                    EndDate = EndMonth.HasValue && EndYear.HasValue ? new MonthYearModel(EndMonth.Value.ToString() + EndYear.Value.ToString()) : new MonthYearModel("");
-                }
-            }
-        }
         public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
