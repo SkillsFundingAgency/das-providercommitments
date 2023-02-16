@@ -157,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
                 {
                     EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
                 }
-                else if(EndDate.GetType() != typeof(MonthYearModel))
+                else if(!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
                 {
                     EndDate = EndMonth.HasValue && EndYear.HasValue ? new MonthYearModel(EndMonth.Value.ToString() + EndYear.Value.ToString()) : new MonthYearModel("");
                 }
