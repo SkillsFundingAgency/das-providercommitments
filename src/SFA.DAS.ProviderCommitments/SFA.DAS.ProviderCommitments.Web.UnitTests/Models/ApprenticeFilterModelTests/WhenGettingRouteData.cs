@@ -22,7 +22,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
                 {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()},
                 {nameof(filterModel.SelectedApprenticeConfirmation), filterModel.SelectedApprenticeConfirmation.ToString()},
-                {nameof(filterModel.SelectedDeliveryModel), filterModel.SelectedDeliveryModel.ToString()}
+                {nameof(filterModel.SelectedDeliveryModel), filterModel.SelectedDeliveryModel.ToString()},
+                {nameof(filterModel.SelectedPilotStatus), filterModel.SelectedPilotStatus.ToString()}
             });
         }
 
