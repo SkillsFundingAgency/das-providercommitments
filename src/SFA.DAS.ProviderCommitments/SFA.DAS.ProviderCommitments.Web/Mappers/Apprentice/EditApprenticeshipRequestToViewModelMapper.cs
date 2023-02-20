@@ -61,6 +61,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                     ||
                                     IsLiveAndIsNotWithInFundingPeriod(apprenticeship)
                                     ||
+                                    IsPausedAndHasHadDataLockSuccess(apprenticeship)
+                                    ||
+                                    IsPausedAndIsNotWithInFundingPeriod(apprenticeship)
+                                    ||
+                                    IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer)
+                                    ||
                                     IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(apprenticeship, editApprenticeship.IsFundedByTransfer);
 
             
@@ -94,6 +100,31 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             };
 
             return result;
+        }
+
+        private bool IsPausedAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+        {
+            if (CheckWaitingToStart(apprenticeship)) return isFundedByTransfer && HasHadDataLockSuccess(apprenticeship) && IsPaused(apprenticeship); else return false;
+        }
+
+        private bool IsPausedAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        {
+            if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && HasHadDataLockSuccess(apprenticeship); else return false;
+        }
+
+        private bool IsPausedAndIsNotWithInFundingPeriod(GetApprenticeshipResponse apprenticeship)
+        {
+            if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value); else return false;
+        }
+
+        private bool IsPaused(GetApprenticeshipResponse apprenticeship)
+        {
+            return apprenticeship.Status == ApprenticeshipStatus.Paused;
+        }
+
+        private bool CheckWaitingToStart(GetApprenticeshipResponse apprenticeship)
+        {
+            return apprenticeship.StartDate.Value > new DateTime(_currentDateTime.UtcNow.Year, _currentDateTime.UtcNow.Month, 1);
         }
 
         private bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
