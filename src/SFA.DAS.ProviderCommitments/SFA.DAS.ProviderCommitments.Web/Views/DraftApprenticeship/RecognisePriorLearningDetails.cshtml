@@ -63,15 +63,14 @@
 
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Qualification, "govuk-form-group--error")">
                         <label asp-for="Qualification" class="govuk-label govuk-!-font-weight-bold">
-                            What qualitications have contributed to the reduction in content due to RPC?
+                            What qualifications have contributed to the reduction in content due to RPC?
                         </label>
                         <span id="price-hint" class="govuk-hint">
                             List any formal qualifications that form the prior learning
                         </span>
                         @Html.ValidationMessageFor(m => m.Qualification, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Qualification) })
                         <div class="govuk-input__wrapper">
-                            <input asp-for="Qualification" class="govuk-input govuk-input--width-5" />
-                            <div class="govuk-input__suffix" aria-hidden="true"> %</div>
+                            <input asp-for="Qualification" class="govuk-input govuk-input--width-full" />
                         </div>
                     </div>
 
@@ -81,8 +80,7 @@
                         </label>
                         @Html.ValidationMessageFor(m => m.Reason, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Reason) })
                         <div class="govuk-input__wrapper">
-                            <input asp-for="Reason" class="govuk-input govuk-input--width-5" />
-                            <div class="govuk-input__suffix" aria-hidden="true"> %</div>
+                            <input asp-for="Reason" class="govuk-input govuk-input--width-full" />
                         </div>
                     </div>
 
