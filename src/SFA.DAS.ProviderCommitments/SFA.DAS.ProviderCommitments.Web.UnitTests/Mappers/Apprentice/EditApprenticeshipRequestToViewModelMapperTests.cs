@@ -265,40 +265,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         [TestCase(ApprenticeshipStatus.Live, true)]
         [TestCase(ApprenticeshipStatus.WaitingToStart, false)]
+        [TestCase(ApprenticeshipStatus.Paused, true)]
         public async Task IsLockedForUpdate_Is_Mapped_With_ApprenticeshipStatus_And_IsNotWithInFundingPeriod_Condition(ApprenticeshipStatus status, bool expectedIsLockedForUpdated)
         {
             _fixture.NotTransferSender()
                 .IsNotWithInFundingPeriod()
-                .SetApprenticeshipStatus(status)
-                .SetDataLockSuccess(false);
-
-            //Act
-            var viewModel = await _fixture.Map();
-
-            //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
-        }
-
-        [TestCase(ApprenticeshipStatus.Paused, true)]
-        public async Task IsLockedForUpdate_And_IsLive_Is_Mapped_With_ApprenticeshipStatus_And_IsNotWithInFundingPeriod_Condition(ApprenticeshipStatus status, bool expectedIsLockedForUpdated)
-        {
-            _fixture.NotTransferSender()
-                .IsNotWithInFundingPeriod()
-                .SetApprenticeshipStatus(status)
-                .SetDataLockSuccess(false);
-
-            //Act
-            var viewModel = await _fixture.Map();
-
-            //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
-        }
-
-        [TestCase(ApprenticeshipStatus.Paused, false)]
-        public async Task IsLockedForUpdate_IsWaitingToStart_Is_Mapped_With_ApprenticeshipStatus_And_IsNotWithInFundingPeriod_Condition(ApprenticeshipStatus status, bool expectedIsLockedForUpdated)
-        {
-            _fixture.NotTransferSender()
-                .IsWaitingToStartAndIsNotWithInFundingPeriod()
                 .SetApprenticeshipStatus(status)
                 .SetDataLockSuccess(false);
 
@@ -539,22 +510,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         internal void VerifyFirstNameIsMapped()
         {
             Assert.AreEqual(ApprenticeshipResponse.FirstName, _viewModel.FirstName);
-        }
-
-        internal EditApprenticeshipRequestToViewModelMapperTestsFixture IsWaitingToStartAndIsNotWithInFundingPeriod()
-        {
-            ApprenticeshipResponse.StartDate = DateTime.Now.AddMonths(+1);
-            ApprenticeshipResponse.EndDate = DateTime.Now.AddYears(1);
-
-            _mockCurrentDateTimeProvider.Setup(x => x.UtcNow).Returns(DateTime.Now);
-
-            // Make the start date later than CurrentAcademicYearStartDate
-            _mockAcademicYearDateProvider.Setup(t => t.CurrentAcademicYearStartDate).Returns(ApprenticeshipResponse.StartDate.Value.AddMonths(+1));
-
-            // Make the DateTime Now earlier than LastAcademicYearFundingPeriod
-            _mockAcademicYearDateProvider.Setup(t => t.LastAcademicYearFundingPeriod).Returns(DateTime.Now.AddMonths(-1));
-
-            return this;
         }
 
         internal EditApprenticeshipRequestToViewModelMapperTestsFixture IsWithInFundingPeriod()
