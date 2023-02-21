@@ -285,8 +285,6 @@ else
             </div>
         </fieldset>
     </div>
-    @Html.HiddenFor(x => x.StartYear)
-    @Html.HiddenFor(x => x.StartMonth)
 }
 else
 {
@@ -316,9 +314,6 @@ else
             </div>
         </fieldset>
     </div>
-    @Html.HiddenFor(x => x.ActualStartYear)
-    @Html.HiddenFor(x => x.ActualStartMonth)
-    @Html.HiddenFor(x => x.ActualStartDay)
 }
 
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
@@ -413,5 +408,3 @@ else
     <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
     <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
 </div>
-
-<script type="text/javascript" src="~/js/private-beta.js" no-cdn></script>
