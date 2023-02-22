@@ -27,6 +27,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
                 ReducedDuration = apprenticeship.DurationReducedBy,
                 ReducedPrice = apprenticeship.PriceReducedBy,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                WeightageReducedBy = apprenticeship.WeightageReducedBy,
+                QualificationsForRplReduction = apprenticeship.QualificationsForRplReduction,
+                ReasonForRplReduction = apprenticeship.ReasonForRplReduction
             };
         }
     }

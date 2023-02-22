@@ -7,8 +7,8 @@
         public const string ApprenticeDetailsV2 = Prefix + "ApprenticeDetailsV2";
         public const string ManageApprenticesV2 = Prefix + ManageApprenticesV2WithoutPrefix;
         public const string ManageApprenticesV2WithoutPrefix = "ManageApprenticesV2";
-        public const string DeliveryModelWithoutPrefix = "DeliveryModel";
         public const string OverlappingTrainingDateWithoutPrefix = "OverlappingTrainingDateRequest";
         public const string FlexiblePaymentsPilot = Prefix + "FlexiblePaymentsPilot";
+        public const string Rpl2 = Prefix + "RPL2";
     }
 }

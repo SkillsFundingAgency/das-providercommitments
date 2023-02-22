@@ -15,12 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
     {
         public int? ReducedPrice { get; set; }
         public int? ReducedDuration { get; set; }
-        public double? DurationReducedByHours { get; set; }
-        public double? WeightageReducedBy { get; set; }
-        public string Qualification { get; set; }
-        public string Reason { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-
+        public int? DurationReducedByHours { get; set; }
+        public int? WeightageReducedBy { get; set; }
+        public string QualificationsForRplReduction { get; set; }
+        public string ReasonForRplReduction { get; set; }
     }
 
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest
