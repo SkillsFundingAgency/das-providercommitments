@@ -25,7 +25,7 @@
                 </legend>
                 <div class="govuk-form-group">
 
-                    @if (!AuthorizationService.IsAuthorized(ProviderFeature.Rpl2))
+                    @if (!AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
                     {
                         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedDuration, "govuk-form-group--error")">
                             <label asp-for="ReducedDuration" class="govuk-label govuk-!-font-weight-bold">
@@ -68,7 +68,7 @@
                         <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="ReducedPrice" class="govuk-input govuk-input--width-5" />
                     </div>
 
-                    @if (AuthorizationService.IsAuthorized(ProviderFeature.Rpl2))
+                    @if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
                     {
                         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.WeightageReducedBy, "govuk-form-group--error")">
                             <label asp-for="WeightageReducedBy" class="govuk-label govuk-!-font-weight-bold">
@@ -93,7 +93,7 @@
                             </span>
                             @Html.ValidationMessageFor(m => m.QualificationsForRplReduction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.QualificationsForRplReduction) })
                             <div class="govuk-input__wrapper">
-                                <textarea asp-for="QualificationsForRplReduction" rows="2" class="govuk-input govuk-input--width-full" ></textarea>
+                                <textarea asp-for="QualificationsForRplReduction" rows="2" class="govuk-textarea govuk-input--width-full"></textarea>
                             </div>
                         </div>
 
@@ -103,7 +103,7 @@
                             </label>
                             @Html.ValidationMessageFor(m => m.ReasonForRplReduction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReasonForRplReduction) })
                             <div class="govuk-input__wrapper">
-                                <textarea asp-for="ReasonForRplReduction" rows="4" class="govuk-input govuk-input--width-full"></textarea>
+                                <textarea asp-for="ReasonForRplReduction" rows="4" class="govuk-textarea govuk-input--width-full"></textarea>
                             </div>
                         </div>
                     }

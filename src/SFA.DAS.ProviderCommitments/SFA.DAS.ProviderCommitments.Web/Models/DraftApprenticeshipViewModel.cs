@@ -138,6 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         
         [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
