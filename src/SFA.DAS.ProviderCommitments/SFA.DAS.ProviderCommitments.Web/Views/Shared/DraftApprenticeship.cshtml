@@ -16,6 +16,8 @@
 <input type="hidden" asp-for="HasStandardOptions" />
 <input type="hidden" asp-for="TrainingCourseOption" />
 <input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
+<input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
+<input type="hidden" asp-for="DeliveryModel"value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
 @{
     string editCourseLabel = "Add";
@@ -54,9 +56,6 @@ else
 </div>
 
 <div>
-    <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
-    <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
-
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key" id="employer-label">
@@ -127,8 +126,6 @@ else
         @Html.HiddenFor(x => x.BirthMonth)
         @Html.HiddenFor(x => x.BirthYear)
         @Html.HiddenFor(x => x.Uln)
-        @Html.HiddenFor(x => x.CourseCode)
-        @Html.HiddenFor(x => x.DeliveryModel)
 
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
@@ -288,8 +285,6 @@ else
             </div>
         </fieldset>
     </div>
-    @Html.HiddenFor(x => x.StartYear)
-    @Html.HiddenFor(x => x.StartMonth)
 }
 else
 {
@@ -319,9 +314,6 @@ else
             </div>
         </fieldset>
     </div>
-    @Html.HiddenFor(x => x.ActualStartYear)
-    @Html.HiddenFor(x => x.ActualStartMonth)
-    @Html.HiddenFor(x => x.ActualStartDay)
 }
 
 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EndDate, "govuk-form-group--error")">
@@ -416,5 +408,3 @@ else
     <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
     <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
 </div>
-
-<script type="text/javascript" src="~/js/private-beta.js" no-cdn></script>

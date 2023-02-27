@@ -15,13 +15,13 @@ using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Validators;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using StructureMap;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
+using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                     options.EnableEndpointRouting = false;
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new GoogleAnalyticsFilter());
-                    options.AddValidation();
+                    options.AddProviderCommitmentsValidation();
                     options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
                     options.Filters.Add<AuthorizationFilter>(int.MaxValue);
                     options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
@@ -79,6 +79,8 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
             services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
+            services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
+            services.AddScoped<ValidateModelStateFilter>();
 
             services
                 .AddAuthorizationService()
