@@ -322,10 +322,19 @@ else
             @endDateLabel
         </legend>
         <span id="finish-date-hint" class="govuk-hint">
-            For example, 6 2024
+            For example, @(Model.IsOnFlexiPaymentPilot.GetValueOrDefault() ? "18 " : "")6 2024
         </span>
         @Html.ValidationMessageFor(m => m.EndDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate)})
         <div class="govuk-date-input" id="EndDate">
+            @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EndDay" class="govuk-label govuk-date-input__label">Day</label>
+                        <input asp-for="EndDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+            }
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
