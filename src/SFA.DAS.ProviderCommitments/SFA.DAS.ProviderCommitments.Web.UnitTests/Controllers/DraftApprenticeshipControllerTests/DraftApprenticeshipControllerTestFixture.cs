@@ -230,6 +230,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupAddDraftApprenticeshipViewModelForStartDateOverlap()
         {
+            _addModel.IsOnFlexiPaymentPilot = false;
             _addModel.StartMonth = 1;
             _addModel.StartYear = 2022;
             _addModel.EndMonth = 1;
@@ -241,6 +242,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture SetupEditDraftApprenticeshipViewModelForStartDateOverlap()
         {
+            _editModel.IsOnFlexiPaymentPilot = false;
             _editModel.StartMonth = 1;
             _editModel.StartYear = 2022;
             _editModel.EndMonth = 1;

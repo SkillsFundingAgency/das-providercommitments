@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = dateOfBirth == null ? new DateModel() : new DateModel(dateOfBirth.Value);
             StartDate = startDate == null ? new MonthYearModel("") : new MonthYearModel($"{startDate.Value.Month}{startDate.Value.Year}");
             ActualStartDate = actualStartDate == null ? new DateModel() : new DateModel(actualStartDate.Value);
-            EndDate = endDate == null ? new MonthYearModel("") : new MonthYearModel($"{endDate.Value.Month}{endDate.Value.Year}");
+            EndDate = endDate == null ? new DateModel() : new DateModel(endDate.Value);
             EmploymentEndDate = employmentEndDate == null ? new MonthYearModel("") : new MonthYearModel($"{employmentEndDate.Value.Month}{employmentEndDate.Value.Year}");
         }
 
@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             DateOfBirth = new DateModel();
             StartDate = new MonthYearModel("");
             ActualStartDate = new DateModel();
-            EndDate = new MonthYearModel("");
+            EndDate = new DateModel();
             EmploymentEndDate = new MonthYearModel("");
         }
 
@@ -69,6 +69,30 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
 
+        private bool? _isOnFlexiPaymentPilot;
+        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
+        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
+        public bool? IsOnFlexiPaymentPilot
+        {
+            get => _isOnFlexiPaymentPilot;
+            set
+            {
+                _isOnFlexiPaymentPilot = value;
+                if (_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(DateModel))
+                {
+                    EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
+                }
+                else if (!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
+                {
+                    var endMonth = EndMonth;
+                    var endYear = EndYear;
+                    EndDate = new MonthYearModel("");
+                    EndDate.Year = endYear;
+                    EndDate.Month = endMonth;
+                }
+            }
+        }
+
         [Display(Name = "Planned apprenticeship training start date")]
         public MonthYearModel StartDate { get; set; }
 
@@ -97,7 +121,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
 
         [Display(Name = "Planned apprenticeship training finish date")]
-        public MonthYearModel EndDate { get; }
+        public DateModel EndDate { get; private set; }
+
+        [Display(Name = "Day")]
+        [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
+        public int? EndDay
+        {
+            get => EndDate.Day;
+            set
+            {
+                if (EndDate.GetType() != typeof(MonthYearModel))
+                    EndDate.Day = value;
+            }
+        }
 
         [Display(Name = "Month")]
         [SuppressArgumentException(nameof(EndDate), "The end date is not valid")]
@@ -140,10 +176,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
-        
-        [Display(Name = "Will this apprentice be part of the Flexible Payments pilot program?")]
-        [SuppressArgumentException(nameof(IsOnFlexiPaymentPilot), "Select whether this apprentice will be on the pilot programme.")]
-        public bool? IsOnFlexiPaymentPilot { get; set; }
         public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool HasChangedDeliveryModel { get; set; }

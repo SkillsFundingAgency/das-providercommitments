@@ -16,6 +16,8 @@
 <input type="hidden" asp-for="HasStandardOptions" />
 <input type="hidden" asp-for="TrainingCourseOption" />
 <input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
+<input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
+<input type="hidden" asp-for="DeliveryModel"value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
 @{
     string editCourseLabel = "Add";
@@ -54,9 +56,6 @@ else
 </div>
 
 <div>
-    <input type="hidden" asp-for="CourseCode" class="govuk-radios__input" value="@Model.CourseCode">
-    <input type="hidden" asp-for="DeliveryModel" class="govuk-radios__input" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
-
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
             <dt class="govuk-summary-list__key" id="employer-label">
@@ -127,8 +126,6 @@ else
         @Html.HiddenFor(x => x.BirthMonth)
         @Html.HiddenFor(x => x.BirthYear)
         @Html.HiddenFor(x => x.Uln)
-        @Html.HiddenFor(x => x.CourseCode)
-        @Html.HiddenFor(x => x.DeliveryModel)
 
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprentice name</dt>
@@ -325,10 +322,19 @@ else
             @endDateLabel
         </legend>
         <span id="finish-date-hint" class="govuk-hint">
-            For example, 6 2024
+            For example, @(Model.IsOnFlexiPaymentPilot.GetValueOrDefault() ? "18 " : "")6 2024
         </span>
         @Html.ValidationMessageFor(m => m.EndDate, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndDate)})
         <div class="govuk-date-input" id="EndDate">
+            @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                        <label asp-for="EndDay" class="govuk-label govuk-date-input__label">Day</label>
+                        <input asp-for="EndDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    </div>
+                </div>
+            }
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
