@@ -35,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
                 .With(x => x.EndYear, endDate?.Year)
                 .With(x => x.StartMonth, startDate?.Month)
                 .With(x => x.StartYear, startDate?.Year)
+                .With(x => x.IsOnFlexiPaymentPilot, false)
                 .Without(x => x.StartDate)
                 .Without(x => x.Courses)
                 .Create();

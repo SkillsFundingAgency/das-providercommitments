@@ -1,5 +1,9 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using SFA.DAS.Authorization.Services
+@using SFA.DAS.ProviderCommitments.Features
+
+@inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
 
 @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
 {
@@ -9,25 +13,39 @@
 }
 else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
 {
-    <p class="govuk-notification-banner__heading">
-        <span>ILR data mismatch: Payment for @Model.ApprenticeName can't be made until this is resolved. </span>
-        @if (!Model.SuppressDataLockStatusReviewLink)
-        {
-            @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
+    @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+    {
+        <p class="govuk-notification-banner__heading">
+            <span>ILR data mismatch: Payment for @Model.ApprenticeName can't be made until this is resolved. </span>
+        </p>
+        <p>The apprenticeship training course or total agreed price you’ve provided doesn’t match with this apprentice’s ILR. To fix this data mismatch:</p>
+        <ol class="govuk-list govuk-list--number">
+            <li id="fix-data-mismatch-resubmit">Resubmit the ILR if it's incorrect.</li>
+            <li id="fix-data-mismatch-email">Contact <a id ="fix-data-mismatch-email-link" class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a> if the details on this page are incorrect. We aim to respond within 2 working days.</li>
+        </ol>
+    }
+    else
+    {
+        <p class="govuk-notification-banner__heading">
+            <span>ILR data mismatch: Payment for @Model.ApprenticeName can't be made until this is resolved. </span>
+            @if (!Model.SuppressDataLockStatusReviewLink)
             {
-                <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View details</a>
+                @if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Restart)
+                {
+                    <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View details</a>
+                }
+                else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
+                {
+                    <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View details</a>
+                }
+                else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
+                {
+                    <br />
+                    <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View course mismatch</a>
+                    <br />
+                    <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View price mismatch</a>
+                }
             }
-            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Update)
-            {
-                <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View details</a>
-            }
-            else if (Model.AvailableTriageOption == DetailsViewModel.TriageOption.Both)
-            {
-                <br />
-                <a id="triage-link-restart" href="@Url.Action("DataLockRequestRestart", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View course mismatch</a>
-                <br />
-                <a id="triage-link-update" href="@Url.Action("UpdateDataLock", new {Model.ProviderId, Model.ApprenticeshipHashedId})" class="govuk-notification-banner__link">View price mismatch</a>
-            }
-        }
-    </p>
+        </p>
+    }
 }

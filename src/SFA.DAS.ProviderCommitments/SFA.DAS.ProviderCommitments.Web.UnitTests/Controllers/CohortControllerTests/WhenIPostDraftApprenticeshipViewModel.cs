@@ -145,7 +145,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     ProviderId = _autoFixture.Create<int>(),
                     EmployerAccountLegalEntityPublicHashedId = _autoFixture.Create<string>(),
                     AccountLegalEntityId = _autoFixture.Create<long>(),
-                    ReservationId = _autoFixture.Create<Guid>()
+                    ReservationId = _autoFixture.Create<Guid>(),
+                    IsOnFlexiPaymentPilot = false
                 };
 
                 _tempData = new Mock<ITempDataDictionary>();
