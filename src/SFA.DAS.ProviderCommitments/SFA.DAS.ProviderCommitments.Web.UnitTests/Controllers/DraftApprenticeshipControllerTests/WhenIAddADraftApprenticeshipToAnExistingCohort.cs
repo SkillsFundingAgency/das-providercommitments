@@ -74,6 +74,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        public void AndWhenCallingTheGetReservationIdEndpointRedirectToReservationsPage()
+        {
+            _fixture.GetReservationId();
+            _fixture.VerifyRedirectedToReservationsPage();
+        }
+
+        [Test]
+        public void AndWhenCallingTheGetReservationIdEndpointRedirectToReservationsPageWithTransferSender()
+        {
+            _fixture.GetReservationId("ABCD");
+            _fixture.VerifyRedirectedToReservationsPage();
+            _fixture.VerifyRedirectedToReservationsPageContainsTransferSenderId();
+        }
+
+        [Test]
         public async Task AndWhenApprenticeshipStartsBeforeMandatoryRplAndThereAreNoStandardOptionsThenRedirectToCohort()
         {
             _fixture
@@ -115,10 +130,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .VerifyRedirectToSelectOptionsPage();
         }
 
-        [Test]
-        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task AndWhenApprenticeshipStartsAfterMandatoryRplThenRedirectToRecognitionOfPriorLearning(bool isActualDate)
         {
-            _fixture.SetApprenticeshipStarting(DateAfterRplRequired);
+            _fixture.SetApprenticeshipStarting(DateAfterRplRequired, isActualDate);
 
             await _fixture.PostToAddDraftApprenticeship();
 
@@ -139,6 +155,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             await _fixture.PostToAddDraftApprenticeship(changeDeliveryModel: "Edit");
             _fixture.VerifyUserRedirectedTo("SelectDeliveryModel");
+        }
+
+        [Test]
+        public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
+        {
+            await _fixture.PostToAddDraftApprenticeship(changePilotStatus: "Edit");
+            _fixture.VerifyUserRedirectedTo("ChoosePilotStatusForDraftChange");
         }
 
         [Test]

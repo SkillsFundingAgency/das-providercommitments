@@ -37,14 +37,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {                
                 var data = await GetApprenticeshipData(source.ApprenticeshipId);
                 var dataLockSummaryStatus = data.DataLocks.DataLocks.GetDataLockSummaryStatus();
-                
-                var allowEditApprentice =
+
+                var allowEditApprentice = 
                     (data.Apprenticeship.Status == ApprenticeshipStatus.Live ||
                      data.Apprenticeship.Status == ApprenticeshipStatus.WaitingToStart ||
                      data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
                     !data.HasProviderUpdates && 
                     !data.HasEmployerUpdates &&
-                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None;
+                    dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None &&
+                    !data.Apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault();
 
                 // If It's completed or stopped and option is null, dont show options as it could predate standard versioning
                 // even if the version has options
@@ -112,6 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
                     HasMultipleDeliveryModelOptions = apprenticeshipDetails.HasMultipleDeliveryModelOptions,
+                    IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot
                 };
             }
             catch (Exception e)

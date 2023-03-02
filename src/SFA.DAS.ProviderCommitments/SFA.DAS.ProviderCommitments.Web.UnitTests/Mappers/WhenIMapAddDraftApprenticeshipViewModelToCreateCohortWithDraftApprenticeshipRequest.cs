@@ -67,13 +67,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         {
             var result = await _act();
             Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
-        }       
-        
+        }
+
         [Test]
-        public async Task ThenSShowTrainingDetailsIsMappedCorrectly()
+        public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ShowTrainingDetails, result.ShowTrainingDetails);
+            Assert.AreEqual(_source.IsOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
         }
     }
 }

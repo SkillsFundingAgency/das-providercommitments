@@ -46,8 +46,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                    var previousPriceEpisode = priceEpisodes
                        .OrderByDescending(m => m.FromDate)
                        .FirstOrDefault(m => m.FromDate <= dataLock.IlrEffectiveFromDate);
-                   
-                    return new PriceDataLockViewModel
+
+                   if (previousPriceEpisode == null)
+                   {
+                       previousPriceEpisode = priceEpisodes
+                           .OrderByDescending(m => m.FromDate)
+                           .FirstOrDefault();
+                   }
+
+                   return new PriceDataLockViewModel
                     {
                         ApprenticeshipId = previousPriceEpisode.ApprenticeshipId,
                         CurrentStartDate = previousPriceEpisode?.FromDate ?? DateTime.MinValue, 

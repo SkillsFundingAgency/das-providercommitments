@@ -1,10 +1,12 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Mappers
+@using SFA.DAS.Authorization.Services
 
 @inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
 
@@ -67,6 +69,13 @@
 
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
+        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
+        {
+            <div class="govuk-inset-text">
+                This apprentice is part of the simplified payments pilot. To change these details, you must contact <a class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We aim to respond within 2 working days.
+            </div>
+        }
+
         @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
@@ -101,9 +110,6 @@
         }
 
         <h2 class="govuk-heading-m">Apprentice status</h2>
-        <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-            @*<a href="#" class="govuk-link">Edit apprentice</a>*@
-        </div>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -111,6 +117,13 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
                 </tr>
+                @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>
+                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.IsOnFlexiPaymentPilotDisplay</td>
+                    </tr>
+                }
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
@@ -145,9 +158,6 @@
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-m">Overview</h2>
             </div>
-            <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
-                @*<a href="#" class="govuk-link">Edit apprentice</a>*@
-            </div>
         </div>
 
         <table class="govuk-table">
@@ -158,7 +168,7 @@
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
                     <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
-                        @if (Model.ShowChangeEmployerLink)
+                        @if (Model.ShowChangeEmployerLink && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
                         {
                             <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }

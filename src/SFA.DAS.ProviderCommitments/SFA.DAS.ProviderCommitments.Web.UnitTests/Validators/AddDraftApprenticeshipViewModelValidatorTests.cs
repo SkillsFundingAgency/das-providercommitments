@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         [TestCase(null, null, true)]
         public void Validate_FinishDate_ShouldBeValidated(int? month, int? year, bool expectedValid)
         {
-            var model = new AddDraftApprenticeshipViewModel { EndMonth = month, EndYear = year };
+            var model = new AddDraftApprenticeshipViewModel { IsOnFlexiPaymentPilot = false, EndMonth = month, EndYear = year };
             AssertValidationResult(request => request.EndDate, model, expectedValid);
         }
         private void AssertValidationResult<T>(Expression<Func<AddDraftApprenticeshipViewModel, T>> property, AddDraftApprenticeshipViewModel instance, bool expectedValid)
