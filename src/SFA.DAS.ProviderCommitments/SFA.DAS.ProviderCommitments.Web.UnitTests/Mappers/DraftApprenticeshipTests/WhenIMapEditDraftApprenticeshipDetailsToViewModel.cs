@@ -95,6 +95,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_apiResponse.EmailAddressConfirmed, result.EmailAddressConfirmed);
         }
 
+        [Test]
+        public async Task ThenIsChangeOfProviderScenarioIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.IsChangeOfProviderScenario, result.IsChangeOfProviderScenario);
+        }
+
 
         [Test]
         public async Task ThenLastNameIsMappedCorrectly()
