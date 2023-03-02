@@ -28,6 +28,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web
@@ -46,6 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web
         // This method gets called by the runtime. Use this method to add services to the container.    
         public void ConfigureServices(IServiceCollection services)
         {
+            var useDfeSignIn = Configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
             services
                 .Configure<CookiePolicyOptions>(options =>
                 {
@@ -72,6 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddNavigationBarSettings(Configuration)
                 .EnableGoogleAnalytics()
                 .EnableCookieBanner()
+                .SetDfESignInConfiguration(useDfeSignIn)
                 .AddZenDeskSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddControllersAsServices()
