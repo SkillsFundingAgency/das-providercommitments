@@ -16,5 +16,6 @@
         public const string BulkUploadFileValidationConfiguration = "BulkUploadFileValidationConfiguration";
         public const string RecognitionOfPriorLearningConfiguration = "RecognitionOfPriorLearningConfiguration";
         public const string ProviderAccountApiConfiguration = "ProviderAccountApiConfiguration";
+        public const string UseDfeSignIn = "UseDfeSignIn";
     }
 }
