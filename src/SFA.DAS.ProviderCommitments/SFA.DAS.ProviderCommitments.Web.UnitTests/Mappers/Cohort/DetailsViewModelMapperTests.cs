@@ -22,6 +22,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -768,11 +769,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public ProviderAgreement ProviderAgreement;
         public GetEmailOverlapsResponse EmailOverlapResponse;
 
+
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
         private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
         private DateTime _startFundingPeriod = new DateTime(2019, 10, 1);
         private DateTime _endFundingPeriod = new DateTime(2019, 10, 30);
+        private Mock<IAuthorizationService> _providerFeatureToggle;
 
         public DetailsViewModelMapperTestsFixture()
         {
@@ -803,6 +806,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
                 .ReturnsAsync(CohortDetails);
 
+            _providerFeatureToggle = new Mock<IAuthorizationService>();
+            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
                 new TrainingProgrammeFundingPeriod{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000},
@@ -827,7 +833,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
 
-            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>());
+            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();
         }
 
