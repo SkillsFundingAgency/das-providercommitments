@@ -55,72 +55,68 @@ else
     </ul>
 </div>
 
-@if (!(Model is EditDraftApprenticeshipViewModel && ((EditDraftApprenticeshipViewModel)Model).IsChangeOfProviderScenario.GetValueOrDefault()))
-{
-    <div>
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                <dt class="govuk-summary-list__key" id="employer-label">
-                    Employer
-                </dt>
-                <dd class="govuk-summary-list__value" id="employer-value">
-                    @Model.Employer
-                </dd>
-            </div>
+<div>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+            <dt class="govuk-summary-list__key" id="employer-label">
+                Employer
+            </dt>
+            <dd class="govuk-summary-list__value" id="employer-value">
+                @Model.Employer
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" id="course-label">
+                Training course
+            </dt>
+            <dd class="govuk-summary-list__value" id="course-value">
+                @Model.CourseName
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <button id="change-course-link" type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
+                    @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
+                </button>
+            </dd>
+        </div>
+        
+        @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel || Model.HasChangedDeliveryModel || Model.DeliveryModel != DeliveryModel.Regular)
+        {
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key" id="course-label">
-                    Training course
+                <dt class="govuk-summary-list__key" id="delivery-model-label">
+                    Delivery model
                 </dt>
-                <dd class="govuk-summary-list__value" id="course-value">
-                    @Model.CourseName
+                <dd class="govuk-summary-list__value" id="delivery-model-value">
+                    @Model.DeliveryModel.ToDescription()
+                </dd>
+                @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
+                {
+                    <dd class="govuk-summary-list__actions">
+                        <button id="change-delivery-model-link" type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
+                            @editDeliveryModelLabel<span class="govuk-visually-hidden"> delivery model</span>
+                        </button>
+                    </dd>
+                }
+            </div>
+        }
+
+        @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+        {
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                <dt class="govuk-summary-list__key" id="pilot-status-label">
+                    Simplified payments pilot
+                </dt>
+                <dd class="govuk-summary-list__value" id="pilot-status-value">
+                    @Model.DisplayIsPilot
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <button id="change-course-link" type="submit" name="ChangeCourse" value="Edit" class="das-button--inline-link">
-                        @editCourseLabel<span class="govuk-visually-hidden"> apprenticeship training course</span>
+                    <button id="change-pilot-status-link" type="submit" name="ChangePilotStatus" value="Edit" class="das-button--inline-link">
+                        Change<span class="govuk-visually-hidden"> simplified payments pilot</span>
                     </button>
                 </dd>
             </div>
-            
-            @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel || Model.HasChangedDeliveryModel || Model.DeliveryModel != DeliveryModel.Regular)
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key" id="delivery-model-label">
-                        Delivery model
-                    </dt>
-                    <dd class="govuk-summary-list__value" id="delivery-model-value">
-                        @Model.DeliveryModel.ToDescription()
-                    </dd>
-                    @if (Model.HasMultipleDeliveryModelOptions || Model.HasUnavailableFlexiJobAgencyDeliveryModel)
-                    {
-                        <dd class="govuk-summary-list__actions">
-                            <button id="change-delivery-model-link" type="submit" name="ChangeDeliveryModel" value="Edit" class="das-button--inline-link">
-                                @editDeliveryModelLabel<span class="govuk-visually-hidden"> delivery model</span>
-                            </button>
-                        </dd>
-                    }
-                </div>
-            }
-
-            @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-            {
-                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
-                    <dt class="govuk-summary-list__key" id="pilot-status-label">
-                        Simplified payments pilot
-                    </dt>
-                    <dd class="govuk-summary-list__value" id="pilot-status-value">
-                        @Model.DisplayIsPilot
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <button id="change-pilot-status-link" type="submit" name="ChangePilotStatus" value="Edit" class="das-button--inline-link">
-                            Change<span class="govuk-visually-hidden"> simplified payments pilot</span>
-                        </button>
-                    </dd>
-                </div>
-            }
-        </dl>
-    </div>
-}
-
+        }
+    </dl>
+</div>
 
     @if (Model.IsContinuation)
     {
