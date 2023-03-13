@@ -391,10 +391,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             SetStartDatesBasedOnFlexiPaymentPilotRules(model);
 
-            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.UserId = User.Upn();
 
-            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {

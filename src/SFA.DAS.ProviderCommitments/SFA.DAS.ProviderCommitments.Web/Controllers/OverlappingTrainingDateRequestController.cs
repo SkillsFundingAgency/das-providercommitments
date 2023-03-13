@@ -237,11 +237,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task AddDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
         {
-            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.IgnoreStartDateOverlap = true;
             request.UserId = User.Upn();
 
-            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
             viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;
         }
 
