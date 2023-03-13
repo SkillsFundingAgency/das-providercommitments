@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -69,6 +70,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId)
         {
             return await _outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(apprenticeshipId));
+        }
+
+        public async Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request)
+        {
+            await _outerApiClient.Post<object>(new PostUpdateDraftApprenticeshipRequest(apprenticeshipId, apprenticeshipId) { Data = request });
         }
     }
 }

@@ -6,8 +6,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
     {
         private ViewSelectOptionsViewModel _source;
         private ViewSelectOptionsViewModelToUpdateRequestMapper _mapper;
-        private Func<Task<UpdateDraftApprenticeshipRequest>> _act;
+        private Func<Task<UpdateDraftApprenticeshipApimRequest>> _act;
         private Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private GetDraftApprenticeshipResponse _apiResponse;
 

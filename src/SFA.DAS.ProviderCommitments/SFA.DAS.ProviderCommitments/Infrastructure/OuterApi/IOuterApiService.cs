@@ -3,6 +3,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
 {
@@ -19,5 +20,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(ValidateDraftApprenticeshipApimRequest data);
         Task<ValidateUlnOverlapOnStartDateQueryResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate);
         Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId);
+        Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request);
     }
 }

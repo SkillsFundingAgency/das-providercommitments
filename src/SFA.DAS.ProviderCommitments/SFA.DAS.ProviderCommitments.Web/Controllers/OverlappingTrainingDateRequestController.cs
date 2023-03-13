@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -229,9 +230,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task UpdateDraftApprenticeship(long draftApprenticeshipId, EditDraftApprenticeshipViewModel editModel)
         {
-            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(editModel);
+            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(editModel);
             updateRequest.IgnoreStartDateOverlap = true;
-            await _commitmentsApiClient.UpdateDraftApprenticeship(editModel.CohortId.Value, draftApprenticeshipId, updateRequest);
+            await _outerApiService.UpdateDraftApprenticeship(editModel.CohortId.Value, draftApprenticeshipId, updateRequest);
         }
 
         private async Task AddDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
