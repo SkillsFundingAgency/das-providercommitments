@@ -5,6 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
 {
     public class UpdateDraftApprenticeshipApimRequest : ApimSaveDataRequest
     {
+        public Party? RequestingParty => Party.Provider;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

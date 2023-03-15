@@ -5,6 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
 {
     public class CreateCohortApimRequest : ApimSaveDataRequest
     {
+        public Party? RequestingParty => Party.Provider;
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public long ProviderId { get; set; }
