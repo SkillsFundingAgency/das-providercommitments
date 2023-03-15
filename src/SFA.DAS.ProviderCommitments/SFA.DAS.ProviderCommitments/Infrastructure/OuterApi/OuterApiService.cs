@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         public async Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request)
         {
-            await _outerApiClient.Post<object>(new PostUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
+            await _outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
         }
 
         public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
