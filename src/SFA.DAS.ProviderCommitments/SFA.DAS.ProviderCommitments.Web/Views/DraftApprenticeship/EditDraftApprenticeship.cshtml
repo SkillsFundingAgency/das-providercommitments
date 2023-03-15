@@ -1,16 +1,31 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.EditDraftApprenticeshipViewModel
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.TagHelpers
+@using SFA.DAS.ProviderCommitments.Features
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+
 
 @{
     ViewData["Title"] = "Apprenticeships";
     ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/edit";
     ViewBag.GaData.Org = Model.Employer;
+
+    bool rplStillNeedsConsideration;
+    if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
+    {
+        rplStillNeedsConsideration = Model.RecognisingPriorLearningExtendedStillNeedsToBeConsidered;
+    }
+    else
+    {
+        rplStillNeedsConsideration = Model.RecognisingPriorLearningStillNeedsToBeConsidered;
+    }
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-        <div asp-show="@Model.RecognisingPriorLearningStillNeedsToBeConsidered" class="govuk-notification-banner">
+        <div asp-show="@rplStillNeedsConsideration" class="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                     Important

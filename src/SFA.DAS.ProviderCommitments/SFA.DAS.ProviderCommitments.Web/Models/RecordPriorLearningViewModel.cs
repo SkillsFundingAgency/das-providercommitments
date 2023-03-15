@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models
+﻿using System;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class RecognisePriorLearningRequest : DraftApprenticeshipRequest
     {
@@ -13,6 +15,10 @@
     {
         public int? ReducedPrice { get; set; }
         public int? ReducedDuration { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public int? WeightageReducedBy { get; set; }
+        public string QualificationsForRplReduction { get; set; }
+        public string ReasonForRplReduction { get; set; }
     }
 
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest

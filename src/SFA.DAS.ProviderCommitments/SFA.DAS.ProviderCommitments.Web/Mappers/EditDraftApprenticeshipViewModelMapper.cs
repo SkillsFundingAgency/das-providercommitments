@@ -59,6 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     DurationReducedBy = apiResponse.DurationReducedBy,
                     PriceReducedBy = apiResponse.PriceReducedBy,
                     RecognisingPriorLearningStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered,
+                    RecognisingPriorLearningExtendedStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                     HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
                     HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
