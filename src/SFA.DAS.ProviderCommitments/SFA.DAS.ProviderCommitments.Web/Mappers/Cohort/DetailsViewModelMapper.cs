@@ -19,7 +19,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
-
+using SFA.DAS.ProviderCommitments.Features;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -30,15 +31,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
         private readonly ITempDataStorageService _storageService;
+        private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService)
+            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
+            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
             _pasAccountsApiClient = pasAccountApiClient;
             _outerApiClient = outerApiClient;
             _storageService = storageService;
+            _authorizationService = authorizationService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -254,9 +258,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
-            if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
             {
-                return false;
+                if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
+                {
+                    return false;
+                }
             }
 
             return true;

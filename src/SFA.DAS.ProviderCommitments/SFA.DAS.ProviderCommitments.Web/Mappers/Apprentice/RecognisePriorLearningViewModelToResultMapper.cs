@@ -3,6 +3,8 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -40,9 +42,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class PriorLearningDetailsViewModelToResultMapper : IMapper<PriorLearningDetailsViewModel, RecognisePriorLearningResult>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PriorLearningDetailsViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
-            => _commitmentsApiClient = commitmentsApiClient;
+        public PriorLearningDetailsViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
+        {
+            _commitmentsApiClient = commitmentsApiClient;
+            _authorizationService = authorizationService;
+        }
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDetailsViewModel source)
         {
@@ -53,6 +59,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 {
                     DurationReducedBy = source.ReducedDuration,
                     PriceReducedBy = source.ReducedPrice,
+                    DurationReducedByHours = source.DurationReducedByHours,
+                    WeightageReducedBy = source.WeightageReducedBy,
+                    QualificationsForRplReduction = source.QualificationsForRplReduction,
+                    ReasonForRplReduction = source.ReasonForRplReduction,
+                    Rpl2Mode = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended)
                 });
 
             var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
