@@ -16,8 +16,6 @@
 <input type="hidden" asp-for="HasStandardOptions" />
 <input type="hidden" asp-for="TrainingCourseOption" />
 <input type="hidden" asp-for="HasUnavailableFlexiJobAgencyDeliveryModel" />
-<input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
-<input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
 @{
     string editCourseLabel = "Add";
@@ -37,6 +35,9 @@
     }
 
 }
+
+<input type="hidden" asp-for="CourseCode" value="@Model.CourseCode">
+<input type="hidden" asp-for="DeliveryModel" value="@(Model.DeliveryModel ?? DeliveryModel.Regular)">
 
 @if (Model is EditDraftApprenticeshipViewModel)
 {
@@ -219,9 +220,6 @@ else
 
 @if (Model.IsContinuation)
 {
-    @Html.HiddenFor(x => x.CourseCode)
-    @Html.HiddenFor(x => x.DeliveryModel)
-
     <dl class="das-definition-list">
         <dt class="das-definition-list__title">Apprenticeship training course</dt>
         <dd class="das-definition-list__definition">@Model.CourseName</dd>
