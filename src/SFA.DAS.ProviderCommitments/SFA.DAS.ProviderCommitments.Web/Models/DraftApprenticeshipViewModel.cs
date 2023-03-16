@@ -77,10 +77,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
             get => _isOnFlexiPaymentPilot;
             set
             {
+                var nonPilotToPilot = value.GetValueOrDefault() && !_isOnFlexiPaymentPilot.GetValueOrDefault();
+
                 _isOnFlexiPaymentPilot = value;
                 if (_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(DateModel))
                 {
                     EndDate = EndDate.Date.HasValue ? new DateModel(EndDate.Date.Value) : new DateModel();
+                    if (nonPilotToPilot) EndDay = null;
                 }
                 else if (!_isOnFlexiPaymentPilot.GetValueOrDefault() && EndDate.GetType() != typeof(MonthYearModel))
                 {
