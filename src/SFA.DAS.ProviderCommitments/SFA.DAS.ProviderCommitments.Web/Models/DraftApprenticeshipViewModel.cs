@@ -174,6 +174,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
