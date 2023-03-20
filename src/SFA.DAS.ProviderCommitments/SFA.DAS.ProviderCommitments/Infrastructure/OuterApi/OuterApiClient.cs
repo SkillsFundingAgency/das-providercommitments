@@ -20,9 +20,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
         const string VersionRequestHeaderKey = "X-Version";
 
-        public OuterApiClient(HttpClient httpClient, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
+        public OuterApiClient(IHttpClientFactory httpClientFactory, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
             _config = config;
             _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
             _logger = logger;
