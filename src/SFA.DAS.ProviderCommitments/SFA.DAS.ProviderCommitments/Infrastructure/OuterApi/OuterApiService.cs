@@ -4,6 +4,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -69,6 +71,21 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId)
         {
             return await _outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(apprenticeshipId));
+        }
+
+        public async Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request)
+        {
+            await _outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
+        }
+
+        public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
+        {
+            return await _outerApiClient.Post<AddDraftApprenticeshipResponse>(new PostAddDraftApprenticeshipRequest(cohortId) { Data = request });
+        }
+
+        public async Task<CreateCohortResponse> CreateCohort(CreateCohortApimRequest request)
+        {
+            return await _outerApiClient.Post<CreateCohortResponse>(new PostCreateCohortRequest { Data = request });
         }
     }
 }

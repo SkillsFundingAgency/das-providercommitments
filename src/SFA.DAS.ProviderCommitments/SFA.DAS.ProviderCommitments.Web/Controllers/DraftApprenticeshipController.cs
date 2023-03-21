@@ -17,6 +17,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
@@ -390,10 +391,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             SetStartDatesBasedOnFlexiPaymentPilotRules(model);
 
-            var request = await _modelMapper.Map<AddDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.UserId = User.Upn();
 
-            var response = await _commitmentsApiClient.AddDraftApprenticeship(model.CohortId.Value, request);
+            var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
@@ -447,8 +448,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             SetStartDatesBasedOnFlexiPaymentPilotRules(model);
-            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
-            await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
+            var updateRequest = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
+            await _outerApiService.UpdateDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value, updateRequest);
 
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
@@ -577,9 +578,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/select-options")]
         public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
         {
-            var request = await _modelMapper.Map<UpdateDraftApprenticeshipRequest>(model);
+            var request = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);
 
-            await _commitmentsApiClient.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
+            await _outerApiService.UpdateDraftApprenticeship(model.CohortId, model.DraftApprenticeshipId, request);
 
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
