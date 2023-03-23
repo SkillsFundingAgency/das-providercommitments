@@ -15,6 +15,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -55,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly EmployerNotifiedViewModel _employerNotifiedViewModel;
 
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
-        private readonly UpdateDraftApprenticeshipRequest _updateDraftApprenticeshipRequest;
+        private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
 
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
@@ -68,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _encodingService = new Mock<IEncodingService>();
 
             _draftApprenticeshipOverlapAlertRequest = _autoFixture.Create<DraftApprenticeshipOverlapAlertRequest>();
-            _updateDraftApprenticeshipRequest = _autoFixture.Create<UpdateDraftApprenticeshipRequest>();
+            _updateDraftApprenticeshipRequest = _autoFixture.Create<UpdateDraftApprenticeshipApimRequest>();
 
             _model = new DraftApprenticeshipViewModel
             {
@@ -212,7 +213,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture SetupUpdateDraftApprenticeshipRequestMapper()
         {
-            _mockModelMapper.Setup(m => m.Map<UpdateDraftApprenticeshipRequest>(It.Is<EditDraftApprenticeshipViewModel>(x => x.Uln == _model.Uln))).ReturnsAsync(_updateDraftApprenticeshipRequest);
+            _mockModelMapper.Setup(m => m.Map<UpdateDraftApprenticeshipApimRequest>(It.Is<EditDraftApprenticeshipViewModel>(x => x.Uln == _model.Uln))).ReturnsAsync(_updateDraftApprenticeshipRequest);
             return this;
         }
 
@@ -342,11 +343,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyExistingDraftApprenticeshipUpdated()
         {
-            _commitmentsApiClient.Verify(m => m.UpdateDraftApprenticeship(
+            _outerApiService.Verify(m => m.UpdateDraftApprenticeship(
                 _model.CohortId.Value,
                 _draftApprenticeshipOverlapOptionViewModel.DraftApprenticeshipId.Value,
-                It.Is<UpdateDraftApprenticeshipRequest>(u => u.Cost == _updateDraftApprenticeshipRequest.Cost),
-                It.IsAny<CancellationToken>()));
+                It.Is<UpdateDraftApprenticeshipApimRequest>(u => u.Cost == _updateDraftApprenticeshipRequest.Cost)));
 
             return this;
         }

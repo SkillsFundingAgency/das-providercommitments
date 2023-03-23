@@ -96,6 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
+            services.AddHttpClient();
             services.AddProviderUiServiceRegistration(Configuration);
             services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();

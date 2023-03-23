@@ -20,9 +20,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
         const string VersionRequestHeaderKey = "X-Version";
 
-        public OuterApiClient(HttpClient httpClient, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
+        public OuterApiClient(IHttpClientFactory httpClientFactory, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
             _config = config;
             _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
             _logger = logger;
@@ -61,28 +61,43 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
-            AddHeaders();
-            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), System.Text.Encoding.UTF8, "application/json") : null;
+            return await PutOrPost<TResponse>(request.Data, HttpMethod.Post, request.PostUrl);
+        }
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
+        public async Task<TResponse> Put<TResponse>(IPutApiRequest request)
+        {
+            return await PutOrPost<TResponse>(request.Data, HttpMethod.Put, request.PutUrl);
+        }
+
+        private async Task<TResponse> PutOrPost<TResponse>(object data, HttpMethod method, string url)
+        {
+            AddHeaders();
+            var stringContent = data != null
+                ? new StringContent(JsonConvert.SerializeObject(data), System.Text.Encoding.UTF8, "application/json")
+                : null;
+
+            var requestMessage = new HttpRequestMessage(method, url);
             requestMessage.Content = stringContent;
 
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-           // var errorContent = "";
-            var responseBody = (TResponse)default;
+            // var errorContent = "";
+            var responseBody = (TResponse) default;
 
 
             if (IsNot200RangeResponseCode(response.StatusCode))
             {
                 //Plug this in when moving another Post endpoint which throws domain errors
-                if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
+                if (response.StatusCode == HttpStatusCode.BadRequest &&
+                    response.GetSubStatusCode() == HttpSubStatusCode.DomainException)
                 {
                     throw CreateApiModelException(response, json);
                 }
-                if (response.StatusCode == HttpStatusCode.BadRequest && response.GetSubStatusCode() == HttpSubStatusCode.BulkUploadDomainException)
+
+                if (response.StatusCode == HttpStatusCode.BadRequest &&
+                    response.GetSubStatusCode() == HttpSubStatusCode.BulkUploadDomainException)
                 {
                     throw CreateBulkUploadApiModelException(response, json);
                 }
@@ -140,5 +155,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
     {
         Task<TResponse> Get<TResponse>(IGetApiRequest request);
         Task<TResponse> Post<TResponse>(IPostApiRequest request);
+        Task<TResponse> Put<TResponse>(IPutApiRequest request);
     }
 }
