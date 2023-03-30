@@ -28,6 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             AddConfiguration<ProviderSharedUIConfiguration>(ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
             AddConfiguration<BlobStorageSettings>(ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
             AddConfiguration<ApprovalsOuterApiConfiguration>(ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
+            AddConfiguration<OpenAiConfiguration>(ProviderCommitmentsConfigurationKeys.RplOpenAiConfiguration);
         }
 
         private void AddConfiguration<T>(string key) where T : class

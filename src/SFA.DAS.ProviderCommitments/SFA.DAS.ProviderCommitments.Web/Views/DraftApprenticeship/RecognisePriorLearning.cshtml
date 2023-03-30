@@ -14,6 +14,8 @@
             @Html.HiddenFor(x => x.ProviderId)
             @Html.HiddenFor(x => x.CohortReference)
             @Html.HiddenFor(x => x.DraftApprenticeshipId)
+            
+            
 
             <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
@@ -22,6 +24,51 @@
                             Recognition of prior learning (RPL)
                         </h1>
                     </legend>
+                    @if (Model.RplCourseResponse.HasCourses)
+                    {
+                        <div id="changed-name-hint" class="govuk-hint">
+                        Do you consider these qualifications would constitute prior learning for this apprenticeship - @Model.CourseName?
+                        </div>
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        @foreach (var qual in Model.RplCourseResponse.Courses)
+                                        {
+                                            <li>@qual</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td>
+                                    <div class="govuk-radios">
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="WouldConstitutePriorLearning-yes" asp-for="@Model.RplQualRating" type="radio" value="3">
+                                            <label class="govuk-label govuk-radios__label" for="WouldConstitutePriorLearning-yes">
+                                                All do
+                                            </label>
+                                        </div>
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="WouldConstitutePriorLearning-yes" asp-for="@Model.RplQualRating" type="radio" value="2">
+                                            <label class="govuk-label govuk-radios__label" for="WouldConstitutePriorLearning-yes">
+                                                Some
+                                            </label>
+                                        </div>
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="WouldConstitutePriorLearning-no" asp-for="@Model.RplQualRating" type="radio" value="1">
+                                            <label class="govuk-label govuk-radios__label" for="WouldConstitutePriorLearning-no">
+                                                None
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                    }
+
+                    
+
                     <div id="changed-name-hint" class="govuk-hint">
                         Is there any recognised prior learning for this apprenticeship?
                     </div>

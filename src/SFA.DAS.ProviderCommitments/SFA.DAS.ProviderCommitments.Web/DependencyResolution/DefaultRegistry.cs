@@ -12,6 +12,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderUrlHelper;
 using StructureMap;
@@ -45,6 +46,10 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
             For(typeof(HttpContext)).Use(c => c.GetInstance<IHttpContextAccessor>().HttpContext);
             For<IApprovalsOuterApiHttpClientFactory>().Use<ApprovalsOuterApiHttpClientFactory>();
             For<IApprovalsOuterApiClient>().Use(c => c.GetInstance<IApprovalsOuterApiHttpClientFactory>().CreateClient()).Singleton();
+
+            For<IOpenAiHttpClientFactory>().Use<OpenAiHttpClientFactory>();
+            For<IOpenAiHttpClient>().Use(c => c.GetInstance<IOpenAiHttpClientFactory>().CreateClient()).Singleton();
+            For<IRplOpenAiService>().Use<RplOpenAiService>();
 
             Toggle<IProviderRelationshipsApiClient, StubProviderRelationshipsApiClient>("UseStubProviderRelationships");
         }
