@@ -143,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [TestCase(100, 1, null, null)]
-        [TestCase(2, null, null, null, null, null)]
+        [TestCase(2, null, null, null)]
         [TestCase(null, 3, null, null)]
         [TestCase(null, null, null, null)]
         [TestCase(null, null, 100, 10)]
