@@ -26,6 +26,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -444,6 +445,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         [TestCase(true, false)]
         [TestCase(false, true)]
+        public async Task ShowApprovalOptionIsMappedCorrectlyWithAnInvalidCourse(bool hasInvalidCourse, bool expectedShowApprovalOption)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture();
+            fixture.SetHasInvalidCourse(hasInvalidCourse);
+            var result = await fixture.Map();
+            Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
+        }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
         public async Task ShowApprovalOptionIsMappedCorrectlyWhenOverlap(bool hasOverlap, bool expectedShowApprovalOption)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
@@ -796,7 +807,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Cohort = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
-            CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>().With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false).Create();
+            CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
+                .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
+                .With(x => x.InvalidProviderCourseCodes,Enumerable.Empty<string>())
+                .Create();
 
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);
@@ -1094,6 +1108,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 		public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
             CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture SetHasInvalidCourse(bool hasInvalidCourse)
+        {
+            CohortDetails.InvalidProviderCourseCodes = hasInvalidCourse ? new List<string> { "test-invalid-course-code" } : Enumerable.Empty<string>();
             return this;
         }
     }
