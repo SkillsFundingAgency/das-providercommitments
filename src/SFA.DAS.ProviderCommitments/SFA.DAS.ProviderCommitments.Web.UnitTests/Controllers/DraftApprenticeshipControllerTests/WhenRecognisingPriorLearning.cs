@@ -301,6 +301,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             result.VerifyRedirectsToSelectOptionsPage(fixture.DetailsViewModel.DraftApprenticeshipHashedId);
         }
+
+        [Test]
+        public async Task After_submitting_prior_learning_data_then_show_Cohort()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
+
+            var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+
+            result.VerifyRedirectsToCohortDetailsPage(
+                fixture.DataViewModel.ProviderId,
+                fixture.DataViewModel.CohortReference);
+        }
+
+        [Test]
+        public async Task After_submitting_prior_learning_data_then_show_Options_when_appropriate()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture().WithStandardOptions();
+
+            var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+
+            result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+        }
     }
 
     public class WhenRecognisingPriorLearningFixture
