@@ -25,12 +25,54 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 ProviderId = source.ProviderId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                ReducedDuration = apprenticeship.DurationReducedBy,
-                ReducedPrice = apprenticeship.PriceReducedBy,
-                DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 WeightageReducedBy = apprenticeship.WeightageReducedBy,
                 QualificationsForRplReduction = apprenticeship.QualificationsForRplReduction,
-                ReasonForRplReduction = apprenticeship.ReasonForRplReduction
+                ReasonForRplReduction = apprenticeship.ReasonForRplReduction,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                ReducedDuration = apprenticeship.DurationReducedBy,
+                ReducedPrice = apprenticeship.PriceReducedBy,
+            };
+        }
+    }
+
+    public class RecognisePriorLearningRequestToDataViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDataViewModel>
+    {
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
+
+        public RecognisePriorLearningRequestToDataViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        {
+            _commitmentsApiClient = commitmentsApiClient;
+        }
+
+        public async Task<PriorLearningDataViewModel> Map(RecognisePriorLearningRequest source)
+        {
+            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+            var reducedDuration = apprenticeship.DurationReducedBy;
+            var isDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl;
+
+            if (isDurationReducedByRpl == null && reducedDuration != null)
+            {
+                isDurationReducedByRpl = true;
+            }
+
+            if (isDurationReducedByRpl == false && reducedDuration != null)
+            {
+                reducedDuration = null;
+            }
+
+            return new PriorLearningDataViewModel
+            {
+                CohortId = source.CohortId,
+                CohortReference = source.CohortReference,
+                DraftApprenticeshipId = source.DraftApprenticeshipId,
+                ProviderId = source.ProviderId,
+                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
+                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                IsDurationReducedByRpl = isDurationReducedByRpl,
+                ReducedDuration = reducedDuration,
+                CostBeforeRpl = apprenticeship.CostBeforeRpl,
+                ReducedPrice = apprenticeship.PriceReducedBy,
             };
         }
     }

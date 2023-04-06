@@ -541,6 +541,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
         {
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            {
+                return RedirectToAction("RecognisePriorLearningData",
+                    new { request.CohortReference, request.DraftApprenticeshipHashedId });
+            }
+
             var model = await _modelMapper.Map<PriorLearningDetailsViewModel>(request);
             return View("RecognisePriorLearningDetails", model);
         }
@@ -549,6 +555,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDetails(PriorLearningDetailsViewModel request)
+        {
+            var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
+
+            return RedirectToOptionalPages(
+                result.HasStandardOptions,
+                request.ProviderId,
+                request.DraftApprenticeshipHashedId,
+                request.CohortReference);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
+        {
+            if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            {
+                return RedirectToAction("RecognisePriorLearningDetails",
+                    new {request.CohortReference, request.DraftApprenticeshipHashedId});
+            }
+
+            var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
+            return View("RecognisePriorLearningData", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel request)
         {
             var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
 
