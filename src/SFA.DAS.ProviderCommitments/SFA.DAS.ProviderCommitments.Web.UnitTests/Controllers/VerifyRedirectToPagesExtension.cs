@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers

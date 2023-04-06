@@ -1,7 +1,5 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDataViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
-
 @{
     ViewData["Title"] = "Add recognition of prior learning details";
     ViewBag.ValidationOrder = "TrainingTotalHours,DurationReducedByHours,IsDurationReducedByRpl,ReducedDuration,CostBeforeRpl,ReducedPrice";
@@ -20,7 +18,7 @@
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
-                        Recognition of prior learning details
+                        Add recognition of prior learning details
                     </h1>
                 </legend>
                 <div class="govuk-form-group">
