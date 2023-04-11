@@ -159,7 +159,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             model.TrainingTotalHours.Should().Be(totalHours);
             model.DurationReducedByHours.Should().Be(hoursReducedBy);
             model.CostBeforeRpl.Should().Be(costBeforeRpl);
-            model.ReducedPrice.Should().Be(priceReducedBy);
+            model.PriceReduced.Should().Be(priceReducedBy);
         }
 
         [TestCase(true, 20, true, 20)]
@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
             model.IsDurationReducedByRpl.Should().Be(expectedIsDurationReducedByRpl);
-            model.ReducedDuration.Should().Be(expectedReductionInWeeks);
+            model.DurationReducedBy.Should().Be(expectedReductionInWeeks);
         }
 
         [Test]
@@ -231,9 +231,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                         r.TrainingTotalHours == model.TrainingTotalHours &&
                         r.DurationReducedByHours == model.DurationReducedByHours &&
                         r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
-                        r.DurationReducedBy == model.ReducedDuration &&
+                        r.DurationReducedBy == model.DurationReducedBy &&
                         r.CostBeforeRpl == model.CostBeforeRpl &&
-                        r.PriceReducedBy == model.ReducedPrice
+                        r.PriceReducedBy == model.PriceReduced
                     ),
                     It.IsAny<CancellationToken>()));
         }
@@ -244,7 +244,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var model = new PriorLearningDataViewModel
             {
                 IsDurationReducedByRpl = false,
-                ReducedDuration = 10
+                DurationReducedBy = 10
             };
 
             var fixture = new WhenRecognisingPriorLearningFixture()
@@ -457,9 +457,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             DataViewModel.TrainingTotalHours = model.TrainingTotalHours;
             DataViewModel.DurationReducedByHours = model.DurationReducedByHours;
             DataViewModel.IsDurationReducedByRpl = model.IsDurationReducedByRpl;
-            DataViewModel.ReducedDuration = model.ReducedDuration;
+            DataViewModel.DurationReducedBy = model.DurationReducedBy;
             DataViewModel.CostBeforeRpl = model.CostBeforeRpl;
-            DataViewModel.ReducedPrice = model.ReducedPrice;
+            DataViewModel.PriceReduced = model.PriceReduced;
             return this;
         }
     }

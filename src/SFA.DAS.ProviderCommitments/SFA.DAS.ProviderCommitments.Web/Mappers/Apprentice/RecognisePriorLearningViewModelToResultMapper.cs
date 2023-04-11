@@ -99,9 +99,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     TrainingTotalHours = source.TrainingTotalHours,
                     DurationReducedByHours = source.DurationReducedByHours,
                     IsDurationReducedByRpl = source.IsDurationReducedByRpl,
-                    DurationReducedBy = source.IsDurationReducedByRpl == true ? source.ReducedDuration : null,
+                    DurationReducedBy = source.IsDurationReducedByRpl == true ? source.DurationReducedBy : null,
                     CostBeforeRpl = source.CostBeforeRpl,
-                    PriceReducedBy = source.ReducedPrice,
+                    PriceReducedBy = source.PriceReduced,
                 });
 
             var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(

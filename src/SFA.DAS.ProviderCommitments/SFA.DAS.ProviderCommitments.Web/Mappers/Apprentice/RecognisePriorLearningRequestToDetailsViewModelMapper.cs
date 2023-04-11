@@ -70,9 +70,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 TrainingTotalHours = apprenticeship.TrainingTotalHours,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 IsDurationReducedByRpl = isDurationReducedByRpl,
-                ReducedDuration = reducedDuration,
+                DurationReducedBy = reducedDuration,
                 CostBeforeRpl = apprenticeship.CostBeforeRpl,
-                ReducedPrice = apprenticeship.PriceReducedBy,
+                PriceReduced = apprenticeship.PriceReducedBy,
             };
         }
     }
