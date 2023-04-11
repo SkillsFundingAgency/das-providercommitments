@@ -28,7 +28,7 @@
                             Total off-the-job training time for this apprenticeship standard
                         </label>
                         <span id="total-hours-hint" class="govuk-hint">
-                            The training an apprentice does outside of their workplace. Enter the total in hours
+                            The training an apprentice on this standard receives away from their job role, before any reductions. Enter the total in hours
                         </span>
                         @Html.ValidationMessageFor(m => m.TrainingTotalHours, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingTotalHours) })
                         <div class="govuk-input__wrapper">
