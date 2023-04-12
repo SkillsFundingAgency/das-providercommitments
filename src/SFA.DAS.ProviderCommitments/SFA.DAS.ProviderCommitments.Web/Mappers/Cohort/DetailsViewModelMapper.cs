@@ -89,13 +89,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 IsCompleteForProvider = cohort.IsCompleteForProvider,
                 HasEmailOverlaps = emailOverlaps.Any(),
                 ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest,
-                AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
-                && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
+                AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy
+                && cohort.WithParty == CommitmentsV2.Types.Party.Provider
                 && !cohort.IsLinkedToChangeOfPartyRequest,
                 IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
                 Status = GetCohortStatus(cohort, draftApprenticeships),
                 ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
-                ShowInvalidProviderCoursesBanner = cohortDetails.InvalidProviderCourseCodes.Any()
+                InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList()
             };
         }
 

@@ -70,7 +70,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsLinkedToChangeOfPartyRequest { get; set; }
         public string Status { get; set; }
         public bool ShowRofjaaRemovalBanner { get; set; }
-        public bool ShowInvalidProviderCoursesBanner { get; set; }
+        public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes.Any();
+        public List<string> InvalidProviderCourseCodes { get; set; }
     }
 
     public enum CohortDetailsOptions

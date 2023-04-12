@@ -146,6 +146,14 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             <span class="govuk-tag">Flexi-Job Agency</span>
         }
     </h3>
+    @if (Model.InvalidProviderCourseCodes.Contains(course.CourseCode))
+    {
+        <div class="govuk-inset-text das-inset-text--highlight">
+            <p>
+                This training course has not been declared. You can change it or add it to <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'Your standards and training venues'</a>.
+            </p>
+        </div>
+    }
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
     {
         if (draftApprenticeship.OverlappingTrainingDateRequest != null && draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.HasValue)
@@ -200,7 +208,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             </div>
             course.ErrorFundingBandExcessDisplayed = true;
         }
-    }
+     }
     <table class="govuk-table das-table--responsive  das-table--condensed">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
