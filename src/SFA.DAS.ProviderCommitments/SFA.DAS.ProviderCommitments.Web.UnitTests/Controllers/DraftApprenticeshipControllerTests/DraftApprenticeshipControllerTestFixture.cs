@@ -643,7 +643,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectForEditCoursePage()
         {
-            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourseForEdit");
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeshipCourse");
             return this;
         }
 

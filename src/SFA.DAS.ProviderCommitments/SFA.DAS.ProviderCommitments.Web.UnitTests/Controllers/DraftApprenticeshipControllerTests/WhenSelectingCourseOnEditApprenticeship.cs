@@ -12,10 +12,13 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,11 +33,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship();
 
-            var result = await fixture.Sut.SelectCourseForEdit(fixture.Request);
-            result.VerifyReturnsViewModel().ViewName.Should().Be("SelectCourse");
-            var model = result.VerifyReturnsViewModel().WithModel<SelectCourseViewModel>();
-            model.CourseCode.Should().Be(fixture.DraftApprenticeship.CourseCode);
-            model.Courses.Should().BeEquivalentTo(fixture.TrainingCourseResponse.TrainingCourses);
+            var result = await fixture.Sut.EditDraftApprenticeshipCourse(fixture.Request);
+            result.VerifyReturnsViewModel().ViewName.Should().Be(null);
+            var model = result.VerifyReturnsViewModel().WithModel<EditDraftApprenticeshipCourseViewModel>();
+
+            Assert.AreEqual(fixture.ViewModel, model);
         }
 
         [Test]
@@ -77,32 +80,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public Mock<IAuthorizationService> AuthorizationServiceMock;
         public Mock<ITempDataDictionary> TempDataMock;
         public Mock<IMediator> MediatorMock;
-        public SelectCourseViewModel ViewModel;
         public DraftApprenticeshipRequest Request;
         public EditDraftApprenticeshipViewModel DraftApprenticeship;
         public GetCohortResponse Cohort;
-        public GetTrainingCoursesQueryResponse TrainingCourseResponse;
+        public EditDraftApprenticeshipCourseViewModel ViewModel;
         public Mock<ICommitmentsApiClient> CommitmentsApiClientMock;
 
         public WhenSelectingCourseOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
-            ViewModel = fixture.Create<SelectCourseViewModel>();
             Request = fixture.Create<DraftApprenticeshipRequest>();
             DraftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x => x.EndMonth).Without(x => x.EndYear)
                 .Create();
             Cohort = fixture.Create<GetCohortResponse>();
-            TrainingCourseResponse = fixture.Create<GetTrainingCoursesQueryResponse>();
+            ViewModel = fixture.Create<EditDraftApprenticeshipCourseViewModel>();
 
             ModelMapperMock = new Mock<IModelMapper>();
             TempDataMock = new Mock<ITempDataDictionary>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
             MediatorMock = new Mock<IMediator>();
-            MediatorMock.Setup(x => x.Send(It.IsAny<GetTrainingCoursesQueryRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(TrainingCourseResponse);
 
+            ModelMapperMock.Setup(x => x.Map<EditDraftApprenticeshipCourseViewModel>(It.IsAny<DraftApprenticeshipRequest>())).ReturnsAsync(ViewModel);
+                
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClientMock.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(Cohort);
 

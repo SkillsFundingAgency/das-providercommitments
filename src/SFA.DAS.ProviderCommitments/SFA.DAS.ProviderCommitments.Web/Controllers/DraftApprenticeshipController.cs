@@ -234,7 +234,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourseForEdit(SelectCourseViewModel model)
+        public async Task<ActionResult> SetCourseForEdit(EditDraftApprenticeshipCourseViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
