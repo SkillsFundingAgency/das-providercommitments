@@ -1,0 +1,29 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.EditDraftApprenticeshipCourseViewModel
+@inject ILinkGenerator LinkGenerator;
+
+@{
+    ViewData["Title"] = "Select standard";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <h1 class="govuk-heading-xl">Select standard</h1>
+
+        @if (Model.ShowManagingStandardsContent)
+        {
+            <div class="govuk-inset-text">
+                If the apprenticeship course is not listed you need to tell us that you now offer this training. You need to add it to <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'Your standards and training venues'</a> section.
+            </div>
+        }
+
+        <form id="addApprenticeship" novalidate method="post">
+
+            <partial name="_SelectStandardPartial" />
+
+            <button type="submit" class="govuk-button">Continue</button>
+
+        </form>
+    </div>
+</div>
