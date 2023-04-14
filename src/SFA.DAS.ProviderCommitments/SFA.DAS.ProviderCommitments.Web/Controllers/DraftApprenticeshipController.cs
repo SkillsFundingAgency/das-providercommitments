@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -236,18 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<ActionResult> SetCourseForEdit(EditDraftApprenticeshipCourseViewModel model)
         {
-            if (string.IsNullOrEmpty(model.CourseCode))
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
-            }
-
-            var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.CourseCode = model.CourseCode;
-            StoreEditDraftApprenticeshipState(draft);
-
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-            
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
         }
 

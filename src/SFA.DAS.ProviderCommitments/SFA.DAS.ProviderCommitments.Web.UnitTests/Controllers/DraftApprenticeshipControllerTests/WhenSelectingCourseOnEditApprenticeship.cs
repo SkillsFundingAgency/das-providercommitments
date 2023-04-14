@@ -9,16 +9,12 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     public class WhenSelectingCourseOnEditApprenticeship
     {
         [Test]
-        public async Task GettingCourses_ShouldShowViewWithCourseSetAndCoursesListed()
+        public async Task Should_Return_View_With_Mapped_ViewModel()
         {
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship();
@@ -41,30 +37,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task WhenSettingCourse_AndNoCourseSelected_ShouldThrowException()
-        {
-            var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture();
-            fixture.ViewModel.CourseCode = null;
-
-            try
-            {
-                var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
-                Assert.Fail("Should have had exception thrown");
-            }
-            catch (CommitmentsApiModelException e)
-            {
-                e.Errors[0].Field.Should().Be("CourseCode");
-                e.Errors[0].Message.Should().Be("You must select a training course");
-            }
-        }
-
-        [Test]
-        public async Task WhenSettingCourse_AndCourseSelected_ShouldRedirectToEditDraftApprenticeship()
+        public async Task Should_Redirect_To_Select_Delivery_Model_Page()
         {
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship();
-
-            fixture.ViewModel.CourseCode = "123";
 
             var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
             result.VerifyReturnsRedirectToActionResult().ActionName.Should().Be("SelectDeliveryModelForEdit");
