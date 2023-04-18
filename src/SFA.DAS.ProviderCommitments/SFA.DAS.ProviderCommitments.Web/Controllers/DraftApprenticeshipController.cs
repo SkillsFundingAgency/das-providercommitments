@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
-            return RedirectToAction(nameof(SelectCourse), request);
+            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
         }
 
         [HttpGet]
@@ -99,26 +99,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/select-course")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectCourse(ReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentsPilot == null)
             {
                 return RedirectToAction("ChoosePilotStatus", request);
             }
 
-            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-            var model = new SelectCourseViewModel
-            {
-                CourseCode = draft.CourseCode,
-                Courses = draft.Courses,
-                IsOnFlexiPaymentsPilot = draft.IsOnFlexiPaymentPilot
-            };
-
-            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-                model.IsOnFlexiPaymentsPilot = false;
-
-            return View("SelectCourse", model);
+            var model = await _modelMapper.Map<AddDraftApprenticeshipCourseViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
@@ -160,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(SelectCourse), request);
+            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
         }
 
         [HttpGet]
@@ -354,7 +343,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
+                var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
                 return RedirectToAction(redirectAction, req);
             }
 
