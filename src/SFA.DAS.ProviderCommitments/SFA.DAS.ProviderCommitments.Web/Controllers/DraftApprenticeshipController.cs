@@ -75,24 +75,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/reservation")]
         public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
         {
-// This DEBUG section can be uncommented so that it can run locally without needing the reservations UI 
-//#if DEBUG
-//            var reservationDetails = new ReservationsAddDraftApprenticeshipRequest
-//            {
-//                ProviderId = request.ProviderId,
-//                CohortReference = request.CohortReference,
-//                CohortId = request.CohortId,
-//                ReservationId = Guid.NewGuid()
-//            };
-//            return RedirectToAction(nameof(AddNewDraftApprenticeship), reservationDetails);
-//#else
             var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
             if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
             {
                 reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";
             }
             return Redirect(urlHelper.ReservationsLink(reservationUrl));
-//#endif
         }
 
         [HttpGet]
