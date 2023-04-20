@@ -586,10 +586,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
             var request = await _modelMapper.Map<CreatePriorLearningDataApimRequest>(model);
-            var response = await _outerApiService.PriorLearningData(model.CohortId, model.DraftApprenticeshipId, request);
+            await _outerApiService.PriorLearningData(model.CohortId, model.DraftApprenticeshipId, request);
 
             return RedirectToOptionalPages(
-                response.HasStandardOptions,
+                request.HasStandardOptions,
                 model.ProviderId,
                 model.DraftApprenticeshipHashedId,
                 model.CohortReference);

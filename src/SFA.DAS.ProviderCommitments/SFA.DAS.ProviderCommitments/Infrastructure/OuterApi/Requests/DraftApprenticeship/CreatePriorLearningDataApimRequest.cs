@@ -12,6 +12,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public int? CostBeforeRpl { get; set; }
         public int? PriceReducedBy { get; set; }
 
-        public bool? HasStandardOptions {get; set; }
+        public bool HasStandardOptions {get; set; }
     }
 }
