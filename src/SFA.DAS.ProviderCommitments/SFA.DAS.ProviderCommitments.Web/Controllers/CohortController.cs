@@ -241,18 +241,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var model = GetStoredDraftApprenticeshipState();
-            if (model == null)
-            {
-                model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            }
-            else
-            {
-                model.CourseCode = request.CourseCode;
-                model.DeliveryModel = request.DeliveryModel;
-                model.IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot;
-            }
-            return View("AddDraftApprenticeship", model);
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
@@ -668,11 +658,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private void StoreDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
-        }
-
-        private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
-        {
-            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
 
         private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
@@ -6,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -15,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private AddDraftApprenticeshipViewModelMapper _mapper;
         private CreateCohortWithDraftApprenticeshipRequest _source;
         private Mock<IOuterApiClient> _apiClient;
+        private Mock<ITempDataStorageService> _tempData;
         private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
 
         [SetUp]
@@ -29,7 +32,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDetailsResponse>(It.IsAny<GetAddDraftApprenticeshipDetailsRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object);
+            _tempData = new Mock<ITempDataStorageService>();
+            _tempData.Setup(x => x.RetrieveFromCache<AddDraftApprenticeshipViewModel>())
+                .Returns(() => null);
+
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _tempData.Object);
         }
 
         [Test]
