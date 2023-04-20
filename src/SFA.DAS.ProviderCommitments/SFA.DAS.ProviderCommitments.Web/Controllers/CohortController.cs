@@ -111,6 +111,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
+            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+            {
+                return RedirectToAction("ChoosePilotStatus", request);
+            }
+
+            request.IsOnFlexiPaymentPilot = false;
+
             return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
         }
 
@@ -128,11 +135,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentPilot == null)
-            {
-                return RedirectToAction("ChoosePilotStatus", request);
-            }
-
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
             return View(model);
         }

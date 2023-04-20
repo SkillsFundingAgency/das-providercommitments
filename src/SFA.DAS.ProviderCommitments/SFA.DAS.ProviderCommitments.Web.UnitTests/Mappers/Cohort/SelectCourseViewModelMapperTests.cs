@@ -69,13 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public async Task IsOnFlexiPaymentsPilot_Is_Mapped_Correctly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.IsFalse(result.IsOnFlexiPaymentsPilot);
-        }
-
-        [Test]
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);

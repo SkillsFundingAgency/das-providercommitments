@@ -14,14 +14,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     public class SelectCourseViewModelMapper : IMapper<CreateCohortWithDraftApprenticeshipRequest, SelectCourseViewModel>
     {
         private readonly IOuterApiClient _apiClient;
-        private readonly IAuthorizationService _authorizationService;
 
         public SelectCourseViewModelMapper(
             IOuterApiClient apiClient,
             IAuthorizationService authorizationService)
         {
             _apiClient = apiClient;
-            _authorizationService = authorizationService;
         }
 
         public async Task<SelectCourseViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
@@ -38,11 +36,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ShowManagingStandardsContent = apiResponse.IsMainProvider,
                 Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
             };
-
-            if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-            {
-                result.IsOnFlexiPaymentsPilot = false;
-            }
 
             return result;
         }
