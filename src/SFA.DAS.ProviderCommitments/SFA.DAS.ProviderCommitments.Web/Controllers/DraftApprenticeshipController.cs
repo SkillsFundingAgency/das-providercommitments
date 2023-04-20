@@ -583,15 +583,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel request)
+        public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
-            var result = await _modelMapper.Map<RecognisePriorLearningResult>(request);
+            var request = await _modelMapper.Map<CreatePriorLearningDataApimRequest>(model);
+            var response = await _outerApiService.PriorLearningData(model.CohortId, model.DraftApprenticeshipId, request);
 
             return RedirectToOptionalPages(
-                result.HasStandardOptions,
-                request.ProviderId,
-                request.DraftApprenticeshipHashedId,
-                request.CohortReference);
+                response.HasStandardOptions,
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference);
         }
 
         [HttpGet]
