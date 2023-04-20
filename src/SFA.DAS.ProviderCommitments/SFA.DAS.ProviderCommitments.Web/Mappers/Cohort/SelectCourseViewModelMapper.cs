@@ -5,18 +5,18 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Features;
-using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectCourseViewModel;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class AddDraftApprenticeshipCourseViewModelMapper : IMapper<ReservationsAddDraftApprenticeshipRequest, SelectCourseViewModel>
+    public class SelectCourseViewModelMapper : IMapper<CreateCohortWithDraftApprenticeshipRequest, SelectCourseViewModel>
     {
         private readonly IOuterApiClient _apiClient;
         private readonly IAuthorizationService _authorizationService;
 
-        public AddDraftApprenticeshipCourseViewModelMapper(
+        public SelectCourseViewModelMapper(
             IOuterApiClient apiClient,
             IAuthorizationService authorizationService)
         {
@@ -24,9 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
             _authorizationService = authorizationService;
         }
 
-        public async Task<SelectCourseViewModel> Map(ReservationsAddDraftApprenticeshipRequest source)
+        public async Task<SelectCourseViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var apiRequest = new GetAddDraftApprenticeshipCourseRequest(source.ProviderId, source.CohortId.Value);
+            var apiRequest = new GetAddDraftApprenticeshipCourseRequest(source.ProviderId, source.AccountLegalEntityId);
             var apiResponse = await _apiClient.Get<GetAddDraftApprenticeshipCourseResponse>(apiRequest);
 
             var result = new SelectCourseViewModel
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
                 CourseCode = source.CourseCode,
                 ProviderId = source.ProviderId,
                 EmployerName = apiResponse.EmployerName,
-                IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentsPilot,
+                IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentPilot,
                 ShowManagingStandardsContent = apiResponse.IsMainProvider,
                 Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
             };

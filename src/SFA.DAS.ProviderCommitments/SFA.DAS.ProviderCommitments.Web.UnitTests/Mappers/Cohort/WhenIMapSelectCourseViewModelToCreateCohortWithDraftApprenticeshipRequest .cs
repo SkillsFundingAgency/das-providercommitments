@@ -12,14 +12,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenIMapSelectCourseViewModelToCreateCohortWithDraftApprenticeshipRequest
     {
         private CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper _mapper;
-        private SelectCourseViewModel _source;
+        private Web.Models.Cohort.SelectCourseViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _source = fixture.Create<SelectCourseViewModel>();
+            _source = fixture.Create<Web.Models.Cohort.SelectCourseViewModel>();
 
             _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper();
 

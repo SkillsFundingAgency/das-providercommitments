@@ -94,14 +94,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("ChoosePilotStatus", request);
             }
 
-            var model = await _modelMapper.Map<AddDraftApprenticeshipCourseViewModel>(request);
+            var model = await _modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
             return View(model);
         }
 
         [HttpPost]
         [Route("add/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
+        public async Task<ActionResult> SetCourse(Models.SelectCourseViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {

@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper : IMapper<SelectCourseViewModel, CreateCohortWithDraftApprenticeshipRequest>
+    public class CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper : IMapper<Models.Cohort.SelectCourseViewModel, CreateCohortWithDraftApprenticeshipRequest>
     {
-        public Task<CreateCohortWithDraftApprenticeshipRequest> Map(SelectCourseViewModel source)
+        public Task<CreateCohortWithDraftApprenticeshipRequest> Map(Models.Cohort.SelectCourseViewModel source)
         {
             return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
             {

@@ -29,6 +29,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -131,12 +132,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction("ChoosePilotStatus", request);
             }
+
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
-
-            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-                model.IsOnFlexiPaymentsPilot = false;
-
-            return View("SelectCourse", model);
+            return View(model);
         }
 
         [HttpPost]
@@ -341,21 +339,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-// This section can be uncommented to run locally if you need to add a new apprenticeship
-//#if DEBUG
-//                var reservationId = Guid.NewGuid();
-//                return RedirectToAction("AddNewDraftApprenticeship",
-//                    new CreateCohortWithDraftApprenticeshipRequest
-//                    {
-//                        ProviderId = viewModel.ProviderId,
-//                        ReservationId = reservationId,
-//                        EmployerAccountLegalEntityPublicHashedId = viewModel.EmployerAccountLegalEntityPublicHashedId,
-//                        ShowTrainingDetails = false
-//                    });
-//#else
-                //return Redirect($"https://at-permissions-api.apprenticeships.education.gov.uk/{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
                 return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
-//#endif
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
