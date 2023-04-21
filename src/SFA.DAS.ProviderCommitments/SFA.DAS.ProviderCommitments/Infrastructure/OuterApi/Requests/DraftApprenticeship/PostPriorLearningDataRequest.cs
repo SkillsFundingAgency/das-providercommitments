@@ -11,6 +11,6 @@
             _cohortId = cohortId;
             _draftApprenticeshipId = draftApprenticeshipId;
         }
-        public string PostUrl => $"priorlearningdata/{_cohortId}/{_draftApprenticeshipId}";
+        public string PostUrl => $"cohorts/{_cohortId}/draft-apprenticeships/{_draftApprenticeshipId}/prior-learning-data";
     }
 }
