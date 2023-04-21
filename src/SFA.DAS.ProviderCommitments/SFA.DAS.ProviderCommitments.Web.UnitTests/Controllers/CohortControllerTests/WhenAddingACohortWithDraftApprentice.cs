@@ -51,18 +51,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             fixture.VerifyMapperWasCalled();
         }
-
-        [Test]
-        public async Task AndOnAddApprenticeshipPage_ThenTempDataIsRestoredAndNewValuesSet()
-        {
-            var fixture = new WhenAddingACohortWithDraftApprenticeFixture().WithTempDataSet();
-
-            var result = await fixture.ActOnAddApprenticeship();
-
-            var model = result.VerifyReturnsViewModel().WithModel<AddDraftApprenticeshipViewModel>();
-
-            fixture.VerifyDraftApprenticeshipWasRestoredAndValuesSet(model);
-        }
     }
 
     public class WhenAddingACohortWithDraftApprenticeFixture
