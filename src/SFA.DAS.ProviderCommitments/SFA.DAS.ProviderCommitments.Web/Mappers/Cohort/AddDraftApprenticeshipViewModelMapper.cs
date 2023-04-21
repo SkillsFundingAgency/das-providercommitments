@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
             var result = _tempData.RetrieveFromCache<AddDraftApprenticeshipViewModel>();
+            _tempData.RemoveFromCache<AddDraftApprenticeshipViewModel>();
 
             if (result == null)
             {
