@@ -16,6 +16,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -59,6 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IModelMapper> _modelMapper;
         private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _viewModel;
+        private readonly CreateCohortRedirectModel _redirectModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
         private readonly Mock<ITempDataDictionary> _tempData;
         private object _viewModelAsString;
@@ -69,12 +71,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _request.DeliveryModel = DeliveryModel.PortableFlexiJob;
             _request.CourseCode = "ABC123";
 
+            _redirectModel = new CreateCohortRedirectModel { RedirectTo = CreateCohortRedirectModel.RedirectTarget.SelectCourse };
             _viewModel = new AddDraftApprenticeshipViewModel();
             _viewModel.DeliveryModel = DeliveryModel.Regular;
             _viewModel.CourseCode = "DIFF123";
             _viewModelAsString = JsonConvert.SerializeObject(_viewModel);
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
+            _modelMapper.Setup(x => x.Map<CreateCohortRedirectModel>(_request)).ReturnsAsync(_redirectModel);
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
@@ -116,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
         }
 
-        public IActionResult Act() => Sut.AddNewDraftApprenticeship(_request);
+        public IActionResult Act() => Sut.AddNewDraftApprenticeship(_request).Result;
         public async Task<IActionResult> ActOnAddApprenticeship() => await Sut.AddDraftApprenticeship(_request);
     }
 }

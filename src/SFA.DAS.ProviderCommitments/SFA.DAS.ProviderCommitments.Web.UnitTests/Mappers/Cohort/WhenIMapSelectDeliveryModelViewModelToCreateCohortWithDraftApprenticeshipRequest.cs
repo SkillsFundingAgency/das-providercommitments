@@ -1,9 +1,14 @@
 ﻿using AutoFixture;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using System;
 using System.Threading.Tasks;
+using Moq;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
+using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
@@ -14,6 +19,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper _mapper;
         private SelectDeliveryModelViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
+        private Mock<ICacheStorageService> _cacheService;
+        private CreateCohortCacheModel _cacheModel;
 
         [SetUp]
         public void Arrange()
@@ -21,7 +28,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new Fixture();
             _source = fixture.Create<SelectDeliveryModelViewModel>();
 
-            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper();
+            _cacheModel = fixture.Create<CreateCohortCacheModel>();
+            _cacheService = new Mock<ICacheStorageService>();
+            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheModel);
+
+            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectDeliveryModelViewModelMapper(_cacheService.Object);
 
             _act = async () => await _mapper.Map(_source);
         }
@@ -37,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.CourseCode, result.CourseCode);
+            Assert.AreEqual(_cacheModel.CourseCode, result.CourseCode);
         }
 
         [Test]
@@ -51,21 +63,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenAccountLegalEntityIdIsMapped()
         {
             var result = await _act();
-            Assert.AreEqual(_source.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.AreEqual(_cacheModel.AccountLegalEntityId, result.AccountLegalEntityId);
         }
 
         [Test]
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
+            Assert.AreEqual(_cacheModel.DeliveryModel, result.DeliveryModel);
         }
 
         [Test]
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ReservationId, result.ReservationId);
+            Assert.AreEqual(_cacheModel.ReservationId, result.ReservationId);
         }
 
         [Test]

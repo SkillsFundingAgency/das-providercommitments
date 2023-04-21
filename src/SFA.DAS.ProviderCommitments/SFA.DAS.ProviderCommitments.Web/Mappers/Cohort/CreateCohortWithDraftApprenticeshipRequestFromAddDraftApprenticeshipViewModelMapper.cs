@@ -10,6 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
             {
+                CacheKey = source.CacheKey,
                 ProviderId = source.ProviderId,
                 CourseCode = source.CourseCode,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,

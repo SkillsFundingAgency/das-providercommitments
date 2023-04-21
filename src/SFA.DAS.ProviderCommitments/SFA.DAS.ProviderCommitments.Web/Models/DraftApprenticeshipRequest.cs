@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
@@ -11,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
     public class BaseDraftApprenticeshipRequest
     {
+        public Guid CacheKey { get; set; }
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }

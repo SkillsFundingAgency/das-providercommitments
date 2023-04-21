@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
 using SFA.DAS.Authorization.ModelBinding;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
-namespace SFA.DAS.ProviderCommitments.Web.Models
+namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class SelectDeliveryModelViewModel : IAuthorizationContextModel
+    public class SelectDeliveryModelViewModel : IAuthorizationContextModel, IDeliveryModelSelection
     {
         public Guid CacheKey { get; set; }
+        public string EmployerName { get; set; }
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
@@ -17,7 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public string StartMonthYear { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
-        public DeliveryModel[] DeliveryModels { get; set; }
+        public List<DeliveryModel> DeliveryModels { get; set; }
         public bool? IsOnFlexiPaymentsPilot { get; set; }
+        
     }
 }

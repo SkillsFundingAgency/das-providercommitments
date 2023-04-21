@@ -13,6 +13,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Features;
@@ -30,6 +31,7 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -109,16 +111,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-            {
-                return RedirectToAction("ChoosePilotStatus", request);
-            }
+            var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
-            request.IsOnFlexiPaymentPilot = false;
+            var action = redirectModel.RedirectTo == CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
+                ? nameof(ChoosePilotStatus)
+                : nameof(SelectCourse);
 
-            return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
+            request.CacheKey = redirectModel.CacheKey;
+            return RedirectToAction(action, request.CloneBaseValues());
         }
 
         [HttpGet]
@@ -198,7 +200,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction("SelectCourse", request);
+            return RedirectToAction("SelectCourse", request.CloneBaseValues());
         }
 
         [HttpGet]
@@ -209,12 +211,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
-            if (model.DeliveryModels.Length > 1)
+            if (model.DeliveryModels.Count > 1)
             {
-                return View("SelectDeliveryModel", model);
+                return View(model);
             }
 
-            request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
+            request.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
             return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 

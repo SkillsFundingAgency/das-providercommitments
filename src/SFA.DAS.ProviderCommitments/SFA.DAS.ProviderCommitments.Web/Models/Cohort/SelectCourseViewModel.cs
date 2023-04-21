@@ -7,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class SelectCourseViewModel : IStandardSelection
     {
+        public Guid CacheKey { get; set; }
         public long ProviderId { get; set; }
         public string EmployerName { get; set; }
         public bool ShowManagingStandardsContent { get; set; }

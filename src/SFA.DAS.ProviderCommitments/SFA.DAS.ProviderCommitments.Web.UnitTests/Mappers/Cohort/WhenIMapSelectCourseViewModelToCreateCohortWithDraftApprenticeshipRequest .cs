@@ -4,6 +4,9 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using Moq;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
@@ -14,6 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper _mapper;
         private Web.Models.Cohort.SelectCourseViewModel _source;
         private Func<Task<CreateCohortWithDraftApprenticeshipRequest>> _act;
+        private Mock<ICacheStorageService> _cacheService;
+        private CreateCohortCacheModel _cacheModel;
 
         [SetUp]
         public void Arrange()
@@ -21,7 +26,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new Fixture();
             _source = fixture.Create<Web.Models.Cohort.SelectCourseViewModel>();
 
-            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper();
+            _cacheModel = fixture.Create<CreateCohortCacheModel>();
+            _cacheService = new Mock<ICacheStorageService>();
+            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheModel);
+
+            _mapper = new CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper(_cacheService.Object);
 
             _act = async () => await _mapper.Map(_source);
         }

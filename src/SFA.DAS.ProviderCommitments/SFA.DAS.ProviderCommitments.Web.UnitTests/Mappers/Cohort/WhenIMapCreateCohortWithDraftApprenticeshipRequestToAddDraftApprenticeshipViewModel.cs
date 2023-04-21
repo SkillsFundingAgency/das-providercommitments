@@ -1,13 +1,16 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -18,6 +21,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private CreateCohortWithDraftApprenticeshipRequest _source;
         private Mock<IOuterApiClient> _apiClient;
         private Mock<ITempDataStorageService> _tempData;
+        private Mock<ICacheStorageService> _cacheService;
+        private CreateCohortCacheModel _cacheModel;
         private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
 
         [SetUp]
@@ -36,14 +41,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _tempData.Setup(x => x.RetrieveFromCache<AddDraftApprenticeshipViewModel>())
                 .Returns(() => null);
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _tempData.Object);
+            _cacheModel = fixture.Create<CreateCohortCacheModel>();
+            _cacheService = new Mock<ICacheStorageService>();
+            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheModel);
+
+
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _tempData.Object, _cacheService.Object);
         }
 
         [Test]
         public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.AreEqual(_cacheModel.AccountLegalEntityId, result.AccountLegalEntityId);
         }
 
         [Test]
@@ -71,16 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.CourseCode, result.CourseCode);
-        }
-
-        [Test]
-        public async Task ThenCourseNameIsNullWhenNoCourseCode()
-        {
-            _source.CourseCode = null;
-            var result = await _mapper.Map(_source);
-            Assert.IsNull(result.CourseName);
-            Assert.IsNull(result.CourseCode);
+            Assert.AreEqual(_cacheModel.CourseCode, result.CourseCode);
         }
 
         [Test]
@@ -94,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ReservationId, result.ReservationId);
+            Assert.AreEqual(_cacheModel.ReservationId, result.ReservationId);
         }
 
         [Test]

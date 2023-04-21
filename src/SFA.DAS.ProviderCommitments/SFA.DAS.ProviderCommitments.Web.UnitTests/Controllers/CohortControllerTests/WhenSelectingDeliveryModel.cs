@@ -13,7 +13,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
@@ -79,14 +79,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public string RedirectUrl;
         public Mock<IModelMapper> ModelMapperMock;
         public CreateCohortWithDraftApprenticeshipRequest Request;
-        public SelectDeliveryModelViewModel ViewModel;
+        public Web.Models.Cohort.SelectDeliveryModelViewModel ViewModel;
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().Create();
             ModelMapperMock = new Mock<IModelMapper>();
-            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
+            ViewModel = fixture.Create<Web.Models.Cohort.SelectDeliveryModelViewModel>();
 
             ModelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel)).ReturnsAsync(Request);
 
@@ -96,8 +96,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(Request))
-                .ReturnsAsync(new SelectDeliveryModelViewModel { DeliveryModels = list.ToArray() });
+            ModelMapperMock.Setup(x => x.Map<Web.Models.Cohort.SelectDeliveryModelViewModel>(Request))
+                .ReturnsAsync(new Web.Models.Cohort.SelectDeliveryModelViewModel { DeliveryModels = list });
             return this;
         }
 

@@ -9,6 +9,9 @@ using System.Linq;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -17,9 +20,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private SelectCourseViewModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
-        private Mock<IAuthorizationService> _authorizationService;
         private CreateCohortWithDraftApprenticeshipRequest _request;
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
+        private Mock<ICacheStorageService> _cacheService;
+        private CreateCohortCacheModel _cacheModel;
         private readonly Fixture _fixture = new Fixture();
 
         [SetUp]
@@ -33,11 +37,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
-            _authorizationService = new Mock<IAuthorizationService>();
-            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
-                .ReturnsAsync(false);
+            _cacheModel = _fixture.Create<CreateCohortCacheModel>();
+            _cacheService = new Mock<ICacheStorageService>();
+            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheModel);
 
-            _mapper = new SelectCourseViewModelMapper(_apiClient.Object, _authorizationService.Object);
+            _mapper = new SelectCourseViewModelMapper(_apiClient.Object, _cacheService.Object);
         }
 
         [Test]
@@ -72,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CourseCode, result.CourseCode);
+            Assert.AreEqual(_cacheModel.CourseCode, result.CourseCode);
         }
     }
 }
