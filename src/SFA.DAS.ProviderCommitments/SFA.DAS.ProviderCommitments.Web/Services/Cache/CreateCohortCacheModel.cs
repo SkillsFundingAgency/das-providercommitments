@@ -1,9 +1,10 @@
 ﻿using System;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
 {
-    public class CreateCohortCacheModel
+    public class CreateCohortCacheModel : ICacheModel
     {
         public CreateCohortCacheModel(Guid key)
         {
@@ -16,5 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

@@ -54,6 +54,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             result.Employer = apiResponse.LegalEntityName;
             result.AccountLegalEntityId = cacheItem.AccountLegalEntityId;
 
+            result.FirstName = cacheItem.FirstName;
+            result.LastName = cacheItem.LastName;
+
             return result;
         }
     }

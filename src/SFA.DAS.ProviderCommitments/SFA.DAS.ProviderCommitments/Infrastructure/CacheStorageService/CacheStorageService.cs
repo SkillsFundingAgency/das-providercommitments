@@ -31,6 +31,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService
             return SaveToCache(key.ToString(), item, expirationInHours);
         }
 
+        public Task SaveToCache<T>(T item, int expirationInHours) where T: ICacheModel
+        {
+            return SaveToCache(item.CacheKey.ToString(), item, expirationInHours);
+        }
+
         public async Task<T> RetrieveFromCache<T>(string key)
         {
             var json = await _distributedCache.GetStringAsync(key);
