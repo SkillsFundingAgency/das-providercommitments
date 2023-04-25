@@ -53,7 +53,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _mapper.Map(_request);
             _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-                    It.Is<CreateCohortCacheModel>(m => m.ReservationId == _request.ReservationId),
+                    It.Is<CreateCohortCacheItem>(m => m.ReservationId == _request.ReservationId),
+                    1),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task StartMonthYear_Is_Added_To_Cache()
+        {
+            var result = await _mapper.Map(_request);
+            _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                    It.Is<CreateCohortCacheItem>(m => m.StartMonthYear == _request.StartMonthYear),
                     1),
                 Times.Once);
         }
@@ -63,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _mapper.Map(_request);
             _cacheStorage.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
-                    It.Is<CreateCohortCacheModel>(m => m.AccountLegalEntityId == _request.AccountLegalEntityId),
+                    It.Is<CreateCohortCacheItem>(m => m.AccountLegalEntityId == _request.AccountLegalEntityId),
                     1),
                 Times.Once);
         }
@@ -73,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _mapper.Map(_request);
             _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(k => k == result.CacheKey),
-                    It.IsAny<CreateCohortCacheModel>(), It.IsAny<int>()),
+                    It.IsAny<CreateCohortCacheItem>(), It.IsAny<int>()),
                 Times.Once);
         }
     }

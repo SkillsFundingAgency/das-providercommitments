@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -11,12 +10,10 @@ using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -133,9 +130,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/select-course")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectCourse(SelectCourseRequest request)
         {
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
             return View(model);
@@ -143,7 +139,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/select-course")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(SelectCourseViewModel model)
         {
@@ -152,60 +147,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("add/choose-pilot-status-draft-change")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(CreateCohortWithDraftApprenticeshipRequest request)
-        {
-            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
-            return View("ChoosePilotStatus", model);
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status-draft-change")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(AddDraftApprenticeship), request);
-        }
-
-        [HttpGet]
         [Route("add/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusRequest request)
         {
-            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
-            return View("ChoosePilotStatus", model);
+            var model = await _modelMapper.Map<SelectPilotStatusViewModel>(request);
+            return View("SelectPilotStatus", model);
         }
 
         [HttpPost]
         [Route("add/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
+        public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusViewModel model)
         {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction("SelectCourse", request.CloneBaseValues());
+            var redirectModel = await _modelMapper.Map<SelectPilotStatusRedirectModel>(model);
+            var redirectAction = model.IsEdit ? nameof(AddDraftApprenticeship) : nameof(SelectCourse);
+            return RedirectToAction(redirectAction, redirectModel);
         }
 
         [HttpGet]
         [Route("add/select-delivery-model")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(CreateCohortWithDraftApprenticeshipRequest request)
         {
@@ -222,23 +183,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/select-delivery-model")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
-            if (model.DeliveryModel == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
-            }
-
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 
         [HttpGet]
         [Route("add/apprenticeship")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
@@ -249,17 +202,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
+            StoreDraftApprenticeshipState(model);
+            var redirectModel = await _modelMapper.Map<AddDraftApprenticeshipRedirectModel>(model);
+
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
             {
-                StoreDraftApprenticeshipState(model);
-                var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
-                return RedirectToAction(redirectAction, request.CloneBaseValues());
+                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
+                return RedirectToAction(redirectAction, redirectModel);
             }
 
             var overlapResult = await HasStartDateOverlap(model);
@@ -269,12 +222,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
+                    CacheKey = model.CacheKey,
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     ReservationId = model.ReservationId,
                     StartMonthYear = model.StartDate.MonthYear,
                     CourseCode = model.CourseCode,
                     DeliveryModel = model.DeliveryModel,
-                    EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId
+                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
                 });
             }
             

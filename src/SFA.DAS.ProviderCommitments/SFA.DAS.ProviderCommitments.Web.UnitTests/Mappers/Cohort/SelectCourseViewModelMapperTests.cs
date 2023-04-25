@@ -6,12 +6,11 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 using System.Linq;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using System;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -20,16 +19,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     {
         private SelectCourseViewModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
-        private CreateCohortWithDraftApprenticeshipRequest _request;
+        private SelectCourseRequest _request;
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
         private Mock<ICacheStorageService> _cacheService;
-        private CreateCohortCacheModel _cacheModel;
+        private CreateCohortCacheItem _cacheItem;
         private readonly Fixture _fixture = new Fixture();
 
         [SetUp]
         public void Setup()
         {
-            _request = _fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
+            _request = _fixture.Create<SelectCourseRequest>();
             _apiResponse = _fixture.Create<GetAddDraftApprenticeshipCourseResponse>();
 
             _apiClient = new Mock<IOuterApiClient>();
@@ -37,10 +36,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
-            _cacheModel = _fixture.Create<CreateCohortCacheModel>();
+            _cacheItem = _fixture.Create<CreateCohortCacheItem>();
             _cacheService = new Mock<ICacheStorageService>();
-            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
-                .ReturnsAsync(_cacheModel);
+            _cacheService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheItem);
 
             _mapper = new SelectCourseViewModelMapper(_apiClient.Object, _cacheService.Object);
         }
@@ -77,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheModel.CourseCode, result.CourseCode);
+            Assert.AreEqual(_cacheItem.CourseCode, result.CourseCode);
         }
     }
 }

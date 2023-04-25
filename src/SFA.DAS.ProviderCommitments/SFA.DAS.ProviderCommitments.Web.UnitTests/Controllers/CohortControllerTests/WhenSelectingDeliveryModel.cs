@@ -33,31 +33,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
-        public async Task GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectToAddDraftApprenticeship()
+        public async Task GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectTo_SelectDeliveryModel()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as ViewResult;
-            result.ViewName.Should().Be("SelectDeliveryModel");
-        }
-
-        [Test]
-        public async Task WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
-        {
-            var fixture = new WhenSelectingDeliveryModelFixture();
-            fixture.ViewModel.DeliveryModel = null;
-
-            try
-            {
-                var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel);
-                Assert.Fail("Should have had exception thrown");
-            }
-            catch (CommitmentsApiModelException e)
-            {
-                e.Errors[0].Field.Should().Be("DeliveryModel");
-                e.Errors[0].Message.Should().Be("You must select the apprenticeship delivery model");
-            }
+            result.ViewName.Should().Be(null);
         }
 
         [Test]

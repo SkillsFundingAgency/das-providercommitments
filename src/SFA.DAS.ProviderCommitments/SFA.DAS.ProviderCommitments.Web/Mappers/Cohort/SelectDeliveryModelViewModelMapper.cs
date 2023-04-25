@@ -24,7 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<SelectDeliveryModelViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var apiRequest = new GetAddDraftApprenticeshipDeliveryModelRequest(source.ProviderId, source.AccountLegalEntityId, source.CourseCode);
+            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
+
+            var apiRequest = new GetAddDraftApprenticeshipDeliveryModelRequest(source.ProviderId, cacheItem.AccountLegalEntityId, cacheItem.CourseCode);
             var apiResponse = await _apiClient.Get<GetAddDraftApprenticeshipDeliveryModelResponse>(apiRequest);
 
             var result = new SelectDeliveryModelViewModel
@@ -32,15 +34,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ProviderId = source.ProviderId,
                 EmployerName = apiResponse.EmployerName,
                 DeliveryModels = apiResponse.DeliveryModels,
-                DeliveryModel = (DeliveryModel?) source.DeliveryModel,
-                IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentPilot
+                DeliveryModel = cacheItem.DeliveryModel
             };
 
             if (apiResponse.DeliveryModels.Count == 1)
             {
-                var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheModel>(source.CacheKey);
                 cacheItem.DeliveryModel = apiResponse.DeliveryModels.Single();
-                await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
+                await _cacheStorage.SaveToCache(cacheItem, 1);
             }
 
             return result;

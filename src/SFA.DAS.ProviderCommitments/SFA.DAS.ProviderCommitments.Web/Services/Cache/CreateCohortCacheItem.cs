@@ -4,15 +4,16 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
 {
-    public class CreateCohortCacheModel : ICacheModel
+    public class CreateCohortCacheItem : ICacheModel
     {
-        public CreateCohortCacheModel(Guid key)
+        public CreateCohortCacheItem(Guid key)
         {
             CacheKey = key;
         }
 
         public Guid CacheKey { get; set; }
         public Guid ReservationId { get; set; }
+        public string StartMonthYear { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
@@ -20,5 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Uln { get; set; }
+        public string Email { get; set; }
     }
 }

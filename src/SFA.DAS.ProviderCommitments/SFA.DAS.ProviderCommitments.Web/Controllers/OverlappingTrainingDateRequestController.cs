@@ -197,6 +197,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 EmployerAccountLegalEntityPublicHashedId = request.EmployerAccountLegalEntityPublicHashedId
             };
 
+            if (request.DraftApprenticeshipHashedId == null)
+            {
+                vm.CacheKey = request.CacheKey.Value;
+            }
+
             return View(vm);
         }
 

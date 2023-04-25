@@ -26,9 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<AddDraftApprenticeshipViewModel> Map(CreateCohortWithDraftApprenticeshipRequest source)
         {
-            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheModel>(source.CacheKey);
+            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
 
-            var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, source.AccountLegalEntityId, cacheItem.CourseCode);
+            var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, cacheItem.AccountLegalEntityId, cacheItem.CourseCode);
             var apiResponse = await _outerApiClient.Get<GetAddDraftApprenticeshipDetailsResponse>(apiRequest);
 
             var result = _tempData.RetrieveFromCache<AddDraftApprenticeshipViewModel>();
@@ -41,21 +41,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     CacheKey = source.CacheKey,
                     ProviderId = source.ProviderId,
                     EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                    StartDate = new MonthYearModel(source.StartMonthYear),
-                    Courses = null,
-                    IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
+                    Courses = null
                 };
             }
 
             result.ReservationId = cacheItem.ReservationId;
+            result.StartDate = new MonthYearModel(cacheItem.StartMonthYear);
             result.CourseCode = cacheItem.CourseCode;
             result.DeliveryModel = (DeliveryModel) cacheItem.DeliveryModel.Value;
             result.HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions;
             result.Employer = apiResponse.LegalEntityName;
             result.AccountLegalEntityId = cacheItem.AccountLegalEntityId;
+            result.IsOnFlexiPaymentPilot = cacheItem.IsOnFlexiPaymentPilot;
 
             result.FirstName = cacheItem.FirstName;
             result.LastName = cacheItem.LastName;
+            result.Email = cacheItem.Email;
+            result.Uln = cacheItem.Uln;
 
             return result;
         }

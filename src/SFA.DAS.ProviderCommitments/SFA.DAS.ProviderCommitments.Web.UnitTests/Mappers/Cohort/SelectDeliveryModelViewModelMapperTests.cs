@@ -9,6 +9,7 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -22,23 +23,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private CreateCohortWithDraftApprenticeshipRequest _request;
         private GetAddDraftApprenticeshipDeliveryModelResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
-        private CreateCohortCacheModel _cacheModel;
+        private CreateCohortCacheItem _cacheItem;
 
         [SetUp]
         public void Setup()
         {
             _request = _fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
             _apiResponse = _fixture.Create<GetAddDraftApprenticeshipDeliveryModelResponse>();
-            _cacheModel = new CreateCohortCacheModel(Guid.NewGuid());
+            _cacheItem = new CreateCohortCacheItem(Guid.NewGuid());
 
             _cacheStorageService = new Mock<ICacheStorageService>();
-            _cacheStorageService.Setup(x => x.RetrieveFromCache<CreateCohortCacheModel>(It.IsAny<Guid>()))
-                .ReturnsAsync(_cacheModel);
+            _cacheStorageService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(It.IsAny<Guid>()))
+                .ReturnsAsync(_cacheItem);
 
             _apiClient = new Mock<IOuterApiClient>();
             _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDeliveryModelResponse>(It.Is<GetAddDraftApprenticeshipDeliveryModelRequest>(r =>
-                    r.AccountLegalEntityId == _request.AccountLegalEntityId
-                    && r.CourseCode == _cacheModel.CourseCode
+                    r.AccountLegalEntityId == _cacheItem.AccountLegalEntityId
+                    && r.CourseCode == _cacheItem.CourseCode
                     && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
@@ -59,12 +60,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
         }
 
-
         [Test]
-        public void When_Only_One_Delivery_Model_Is_Available_It_Is_Saved_To_Cache()
+        public async Task DeliveryModel_Is_Mapped_Correctly()
         {
-            throw new NotImplementedException();
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModels);
         }
 
+        [TestCase(DeliveryModel.Regular)]
+        [TestCase(DeliveryModel.FlexiJobAgency)]
+        [TestCase(DeliveryModel.PortableFlexiJob)]
+        public async Task When_Only_One_Delivery_Model_Is_Available_It_Is_Saved_To_Cache(DeliveryModel selection)
+        {
+            _apiResponse.DeliveryModels.Clear();
+            _apiResponse.DeliveryModels.Add(selection);
+
+            await _mapper.Map(_request);
+
+            _cacheStorageService.Setup(x =>
+                x.SaveToCache<ICacheModel>(
+                    It.Is<CreateCohortCacheItem>(m => m.DeliveryModel == selection), It.IsAny<int>()));
+        }
     }
 }

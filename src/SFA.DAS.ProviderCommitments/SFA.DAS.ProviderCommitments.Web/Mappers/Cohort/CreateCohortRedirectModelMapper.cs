@@ -26,9 +26,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var flexiPaymentsAuthorized = await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot);
 
             var cacheKey = Guid.NewGuid();
-            var cacheItem = new CreateCohortCacheModel(cacheKey)
+            var cacheItem = new CreateCohortCacheItem(cacheKey)
             {
                 ReservationId = source.ReservationId.Value,
+                StartMonthYear = source.StartMonthYear,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 IsOnFlexiPaymentPilot = flexiPaymentsAuthorized ? null : false
             };

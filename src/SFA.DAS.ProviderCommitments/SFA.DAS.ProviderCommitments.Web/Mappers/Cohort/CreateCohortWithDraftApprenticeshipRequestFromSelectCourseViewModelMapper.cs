@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<CreateCohortWithDraftApprenticeshipRequest> Map(Models.Cohort.SelectCourseViewModel source)
         {
             var cacheItem = await
-                _cacheStorage.RetrieveFromCache<CreateCohortCacheModel>(source.CacheKey);
+                _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
             cacheItem.CourseCode = source.CourseCode;
             await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 

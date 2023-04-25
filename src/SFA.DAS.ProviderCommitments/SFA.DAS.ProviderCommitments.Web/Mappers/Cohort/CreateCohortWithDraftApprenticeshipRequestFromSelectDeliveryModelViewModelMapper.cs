@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<CreateCohortWithDraftApprenticeshipRequest> Map(SelectDeliveryModelViewModel source)
         {
-            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheModel>(source.CacheKey);
+            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
             cacheItem.DeliveryModel = source.DeliveryModel;
             await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
@@ -30,11 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
-                AccountLegalEntityId = source.AccountLegalEntityId,
-                CourseCode = source.CourseCode,
-                StartMonthYear = source.StartMonthYear,
-                DeliveryModel = (DeliveryModel?) source.DeliveryModel,
-                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
+                StartMonthYear = source.StartMonthYear
             };
         }
     }

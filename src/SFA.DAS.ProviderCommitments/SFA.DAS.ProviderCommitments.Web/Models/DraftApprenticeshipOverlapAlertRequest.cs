@@ -5,6 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class DraftApprenticeshipOverlapAlertRequest
     {
+        public Guid? CacheKey { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
         public string OverlapApprenticeshipHashedId { get; set; }
         public Guid ReservationId { get; set; }
