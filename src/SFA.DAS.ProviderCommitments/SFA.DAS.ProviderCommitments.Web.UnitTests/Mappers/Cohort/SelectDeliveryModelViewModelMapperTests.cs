@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task DeliveryModel_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModels);
+            Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModel);
         }
 
         [TestCase(DeliveryModel.Regular)]

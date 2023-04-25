@@ -23,5 +23,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public string LastName { get; set; }
         public string Uln { get; set; }
         public string Email { get; set; }
+        public DateTime? DateOfBirth { get; set; }
     }
 }

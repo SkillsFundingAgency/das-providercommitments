@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService
             
             if (json == null)
             {
-                throw new CacheItemNotFoundException($"Cache item {key} of type {typeof(T).Name} not found");
+                throw new CacheItemNotFoundException<T>($"Cache item {key} of type {typeof(T).Name} not found");
             }
             
             return JsonConvert.DeserializeObject<T>(json);
