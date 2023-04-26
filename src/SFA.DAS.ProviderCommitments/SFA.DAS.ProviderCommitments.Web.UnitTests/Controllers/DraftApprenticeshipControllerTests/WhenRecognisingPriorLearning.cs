@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Azure;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -8,15 +9,21 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Testing.Builders;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -223,19 +230,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            fixture.ApiClient.Verify(x =>
+            fixture.OuterApiService.Verify(x =>
                 x.PriorLearningData(
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.PriorLearningDataRequest>(r =>
+                    It.Is<CreatePriorLearningDataApimRequest>(r =>
                         r.TrainingTotalHours == model.TrainingTotalHours &&
                         r.DurationReducedByHours == model.DurationReducedByHours &&
                         r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
                         r.DurationReducedBy == model.DurationReducedBy &&
                         r.CostBeforeRpl == model.CostBeforeRpl &&
                         r.PriceReducedBy == model.PriceReduced
-                    ),
-                    It.IsAny<CancellationToken>()));
+                    )));
         }
 
         [Test]
@@ -250,7 +256,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .EnterRplData(model);
 
-            await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+            await fixture.Sut.RecognisePriorLearningDetails(fixture.DataViewModel);
 
             fixture.ApiClient.Verify(x =>
                 x.PriorLearningData(
@@ -334,6 +340,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public RecognisePriorLearningViewModel ViewModel;
         public PriorLearningDetailsViewModel DetailsViewModel;
         public PriorLearningDataViewModel DataViewModel;
+        public CreatePriorLearningDataRequestMapper RequestMapper;
+        public GetEditDraftApprenticeshipResponse ApimApprentiship;
+
+        public Mock<IOuterApiClient> OuterApiClient;
+        public Mock<IOuterApiService> OuterApiService;
+
         public Mock<ICommitmentsApiClient> ApiClient { get; }
         public Mock<IAuthorizationService> AuthorizationService { get; }
 
@@ -346,11 +358,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             DetailsViewModel = fixture.Build<PriorLearningDetailsViewModel>().Create();
             DataViewModel = fixture.Build<PriorLearningDataViewModel>().Create();
             Apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
+            ApimApprentiship = fixture.Create<GetEditDraftApprenticeshipResponse>();
+
 
             ApiClient = new Mock<ICommitmentsApiClient>();
             ApiClient.Setup(x =>
                 x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Apprenticeship);
+            .ReturnsAsync(Apprenticeship);
+
+            OuterApiClient = new Mock<IOuterApiClient>();
+            OuterApiClient.Setup(x => x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>())).ReturnsAsync(ApimApprentiship);
+
+            OuterApiService = new Mock<IOuterApiService>();
 
             AuthorizationService = new Mock<IAuthorizationService>();
 
@@ -363,13 +382,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDataViewModelMapper(ApiClient.Object),
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object),
-                    new PriorLearningDataViewModelToResultMapper(ApiClient.Object)),
+                    new PriorLearningDataViewModelToResultMapper(ApiClient.Object),
+                    new CreatePriorLearningDataRequestMapper(OuterApiClient.Object, Mock.Of<ITempDataStorageService>())),
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
-                Mock.Of<IOuterApiService>())
-            {
-                TempData = Mock.Of<ITempDataDictionary>()
-            };
+                OuterApiService.Object);
         }
 
         internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
