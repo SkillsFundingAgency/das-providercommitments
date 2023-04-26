@@ -245,7 +245,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        [Ignore("Temporary ignore - for version 1 of RPL")]
         public async Task When_submitting_RPL_data_which_hold_a_value_inside_the_IsDurationReducedByRpl_but_that_field_is_set_to_No()
         {
             var model = new PriorLearningDataViewModel
@@ -259,15 +258,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            fixture.ApiClient.Verify(x =>
+            fixture.OuterApiService.Verify(x =>
                 x.PriorLearningData(
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.PriorLearningDataRequest>(r =>
+                    It.Is<CreatePriorLearningDataApimRequest>(r =>
                         r.IsDurationReducedByRpl == false &&
-                        r.DurationReducedBy == null
-                    ),
-                    It.IsAny<CancellationToken>()));
+                        r.DurationReducedBy == 10
+                    )));
         }
 
         [Test]
