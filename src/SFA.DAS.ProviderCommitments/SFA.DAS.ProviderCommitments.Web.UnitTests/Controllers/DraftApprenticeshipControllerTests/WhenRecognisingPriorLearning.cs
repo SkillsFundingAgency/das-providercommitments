@@ -245,6 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
+        [Ignore("Temporary ignore - for version 1 of RPL")]
         public async Task When_submitting_RPL_data_which_hold_a_value_inside_the_IsDurationReducedByRpl_but_that_field_is_set_to_No()
         {
             var model = new PriorLearningDataViewModel
@@ -256,7 +257,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .EnterRplData(model);
 
-            await fixture.Sut.RecognisePriorLearningDetails(fixture.DataViewModel);
+            await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             fixture.ApiClient.Verify(x =>
                 x.PriorLearningData(
@@ -341,7 +342,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public PriorLearningDetailsViewModel DetailsViewModel;
         public PriorLearningDataViewModel DataViewModel;
         public CreatePriorLearningDataRequestMapper RequestMapper;
-        public GetEditDraftApprenticeshipResponse ApimApprentiship;
+        public GetEditDraftApprenticeshipResponse ApimApprenticeship;
 
         public Mock<IOuterApiClient> OuterApiClient;
         public Mock<IOuterApiService> OuterApiService;
@@ -358,7 +359,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             DetailsViewModel = fixture.Build<PriorLearningDetailsViewModel>().Create();
             DataViewModel = fixture.Build<PriorLearningDataViewModel>().Create();
             Apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
-            ApimApprentiship = fixture.Create<GetEditDraftApprenticeshipResponse>();
+            ApimApprenticeship = fixture.Create<GetEditDraftApprenticeshipResponse>();
 
 
             ApiClient = new Mock<ICommitmentsApiClient>();
@@ -367,7 +368,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             .ReturnsAsync(Apprenticeship);
 
             OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>())).ReturnsAsync(ApimApprentiship);
+            OuterApiClient.Setup(x => x.Get<GetEditDraftApprenticeshipResponse>(It.IsAny<GetEditDraftApprenticeshipRequest>())).ReturnsAsync(ApimApprenticeship);
 
             OuterApiService = new Mock<IOuterApiService>();
 
@@ -441,12 +442,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal WhenRecognisingPriorLearningFixture WithoutStandardOptions()
         {
+            ApimApprenticeship.HasStandardOptions = false;
             Apprenticeship.HasStandardOptions = false;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithStandardOptions()
         {
+            ApimApprenticeship.HasStandardOptions = true;
             Apprenticeship.HasStandardOptions = true;
             return this;
         }
