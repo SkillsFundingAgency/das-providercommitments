@@ -24,6 +24,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             cacheItem.StartMonthYear = source.StartDate.MonthYear;
             cacheItem.Email = source.Email;
             cacheItem.Uln = source.Uln;
+            cacheItem.StartDate = source.StartDate.Date;
+            cacheItem.EndDate = source.EndDate.Date;
+            cacheItem.DateOfBirth = source.DateOfBirth.Date;
+            cacheItem.ActualStartDate = source.ActualStartDate.Date;
+            cacheItem.EmploymentEndDate = source.EmploymentEndDate.Date;
+            cacheItem.EmploymentPrice = source.EmploymentPrice;
+            cacheItem.Cost = source.Cost;
+            cacheItem.Reference = source.Reference;
+
             await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
 
             return new AddDraftApprenticeshipRedirectModel

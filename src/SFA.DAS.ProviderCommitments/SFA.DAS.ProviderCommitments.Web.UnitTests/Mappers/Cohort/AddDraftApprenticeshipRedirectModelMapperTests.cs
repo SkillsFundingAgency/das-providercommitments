@@ -92,5 +92,77 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 It.Is<CreateCohortCacheItem>(y => y.Email == _source.Email),
                 It.IsAny<int>()));
         }
+
+        [Test]
+        public async Task Then_DateOfBirth_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.DateOfBirth == _source.DateOfBirth.Date),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_StartDate_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.StartDate == _source.StartDate.Date),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_EndDate_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.EndDate == _source.EndDate.Date),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_ActualStartDate_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.ActualStartDate == _source.ActualStartDate.Date),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_EmploymentEndDate_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.EmploymentEndDate == _source.EmploymentEndDate.Date),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_EmploymentPrice_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.EmploymentPrice == _source.EmploymentPrice),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_Cost_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.Cost == _source.Cost),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_Reference_Is_Saved_To_Cache()
+        {
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.Reference == _source.Reference),
+                It.IsAny<int>()));
+        }
     }
 }
