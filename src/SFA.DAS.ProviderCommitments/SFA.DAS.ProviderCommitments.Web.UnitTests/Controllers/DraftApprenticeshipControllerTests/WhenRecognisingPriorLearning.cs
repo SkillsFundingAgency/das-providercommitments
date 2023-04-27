@@ -1,13 +1,16 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -16,7 +19,6 @@ using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Features;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -115,7 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [TestCase(null, 3, null, null, null, null)]
         [TestCase(null, null, 10, 20, "1 ALevel", "Because of his qual")]
         [TestCase(null, null, 30, 2, null, "Because I like him/her")]
-        public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours, 
+        public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours,
             int? weightageReduction, string qualifications, string reason)
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
@@ -223,19 +225,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            fixture.ApiClient.Verify(x =>
+            fixture.OuterApiService.Verify(x =>
                 x.PriorLearningData(
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.PriorLearningDataRequest>(r =>
+                    It.Is<CreatePriorLearningDataApimRequest>(r =>
                         r.TrainingTotalHours == model.TrainingTotalHours &&
                         r.DurationReducedByHours == model.DurationReducedByHours &&
                         r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
                         r.DurationReducedBy == model.DurationReducedBy &&
                         r.CostBeforeRpl == model.CostBeforeRpl &&
                         r.PriceReducedBy == model.PriceReduced
-                    ),
-                    It.IsAny<CancellationToken>()));
+                    )));
         }
 
         [Test]
@@ -252,15 +253,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            fixture.ApiClient.Verify(x =>
+            fixture.OuterApiService.Verify(x =>
                 x.PriorLearningData(
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.PriorLearningDataRequest>(r =>
+                    It.Is<CreatePriorLearningDataApimRequest>(r =>
                         r.IsDurationReducedByRpl == false &&
-                        r.DurationReducedBy == null
-                    ),
-                    It.IsAny<CancellationToken>()));
+                        r.DurationReducedBy == 10
+                    )));
         }
 
         [Test]
@@ -334,6 +334,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public RecognisePriorLearningViewModel ViewModel;
         public PriorLearningDetailsViewModel DetailsViewModel;
         public PriorLearningDataViewModel DataViewModel;
+
+        public Mock<IOuterApiService> OuterApiService;
+
         public Mock<ICommitmentsApiClient> ApiClient { get; }
         public Mock<IAuthorizationService> AuthorizationService { get; }
 
@@ -350,7 +353,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             ApiClient = new Mock<ICommitmentsApiClient>();
             ApiClient.Setup(x =>
                 x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Apprenticeship);
+            .ReturnsAsync(Apprenticeship);
+
+            OuterApiService = new Mock<IOuterApiService>();
 
             AuthorizationService = new Mock<IAuthorizationService>();
 
@@ -363,13 +368,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDataViewModelMapper(ApiClient.Object),
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object),
-                    new PriorLearningDataViewModelToResultMapper(ApiClient.Object)),
+                    new PriorLearningDataViewModelToResultMapper(OuterApiService.Object, ApiClient.Object)),
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
-                Mock.Of<IOuterApiService>())
-            {
-                TempData = Mock.Of<ITempDataDictionary>()
-            };
+                OuterApiService.Object);
         }
 
         internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
@@ -392,7 +394,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours, 
+        internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours,
             int? weightageReducedBy, string qualificationsForRplReduction, string reasonForRplReduction)
         {
             Apprenticeship.DurationReducedBy = durationReducedBy;

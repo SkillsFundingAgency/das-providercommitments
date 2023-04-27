@@ -5,6 +5,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using System.Threading;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
 {
@@ -24,5 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request);
         Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request);
         Task<CreateCohortResponse> CreateCohort(CreateCohortApimRequest request);
+        Task<CreatePriorLearningDataResponse> PriorLearningData(long cohortId, long draftApprenticeshipId, CreatePriorLearningDataApimRequest request);
     }
 }
