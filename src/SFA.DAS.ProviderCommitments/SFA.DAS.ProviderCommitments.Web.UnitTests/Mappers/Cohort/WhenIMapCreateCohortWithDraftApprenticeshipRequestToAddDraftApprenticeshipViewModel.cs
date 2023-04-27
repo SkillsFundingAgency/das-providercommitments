@@ -9,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
@@ -20,7 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private AddDraftApprenticeshipViewModelMapper _mapper;
         private CreateCohortWithDraftApprenticeshipRequest _source;
         private Mock<IOuterApiClient> _apiClient;
-        private Mock<ITempDataStorageService> _tempData;
         private Mock<ICacheStorageService> _cacheService;
         private CreateCohortCacheItem _cacheItem;
         private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
@@ -40,10 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDetailsResponse>(It.IsAny<GetAddDraftApprenticeshipDetailsRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _tempData = new Mock<ITempDataStorageService>();
-            _tempData.Setup(x => x.RetrieveFromCache<AddDraftApprenticeshipViewModel>())
-                .Returns(() => null);
-
             _cacheItem = fixture.Build<CreateCohortCacheItem>()
                 .With(x => x.StartMonthYear, "042020")
                 .Create();
@@ -52,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(_cacheItem);
 
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _tempData.Object, _cacheService.Object);
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _cacheService.Object);
         }
 
         [Test]

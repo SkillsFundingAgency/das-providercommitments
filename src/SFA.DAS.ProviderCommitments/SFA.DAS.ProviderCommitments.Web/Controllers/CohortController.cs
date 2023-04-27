@@ -206,7 +206,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
-            StoreDraftApprenticeshipState(model);
             var redirectModel = await _modelMapper.Map<AddDraftApprenticeshipRedirectModel>(model);
 
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
