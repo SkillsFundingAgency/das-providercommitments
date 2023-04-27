@@ -1,7 +1,4 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Types;
-
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship
 {
     public class CreatePriorLearningDataApimRequest : ApimSaveDataRequest
     {
@@ -11,7 +8,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public int? DurationReducedBy { get; set; }
         public int? CostBeforeRpl { get; set; }
         public int? PriceReducedBy { get; set; }
-
-        public bool HasStandardOptions {get; set; }
     }
 }

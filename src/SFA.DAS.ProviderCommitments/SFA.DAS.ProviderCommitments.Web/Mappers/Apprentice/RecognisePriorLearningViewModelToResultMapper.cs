@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -82,27 +84,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
     public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDataViewModel, RecognisePriorLearningResult>
     {
+        private readonly IOuterApiService _outerApiService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public PriorLearningDataViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
+        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient)
         {
+            _outerApiService = outerApiService;
             _commitmentsApiClient = commitmentsApiClient;
         }
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDataViewModel source)
         {
-            var update = _commitmentsApiClient.PriorLearningData(
-                source.CohortId,
-                source.DraftApprenticeshipId,
-                new CommitmentsV2.Api.Types.Requests.PriorLearningDataRequest
+            var update = _outerApiService.PriorLearningData(source.CohortId, source.DraftApprenticeshipId,
+                new CreatePriorLearningDataApimRequest
                 {
-                    TrainingTotalHours = source.TrainingTotalHours,
+                    DurationReducedBy = source.DurationReducedBy,
+                    CostBeforeRpl = source.CostBeforeRpl,
                     DurationReducedByHours = source.DurationReducedByHours,
                     IsDurationReducedByRpl = source.IsDurationReducedByRpl,
-                    DurationReducedBy = source.IsDurationReducedByRpl == true ? source.DurationReducedBy : null,
-                    CostBeforeRpl = source.CostBeforeRpl,
                     PriceReducedBy = source.PriceReduced,
-                });
+                    TrainingTotalHours = source.TrainingTotalHours
+                }
+            );
 
             var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
                 source.CohortId,

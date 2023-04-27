@@ -585,8 +585,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
-            var request = await _modelMapper.Map<CreatePriorLearningDataApimRequest>(model);
-            await _outerApiService.PriorLearningData(model.CohortId, model.DraftApprenticeshipId, request);
+            var request = await _modelMapper.Map<RecognisePriorLearningResult>(model);
 
             return RedirectToOptionalPages(
                 request.HasStandardOptions,
