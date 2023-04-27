@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -7,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
@@ -94,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenStartMonthYearIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.StartMonthYear, result.StartDate.MonthYear);
+            Assert.AreEqual(_cacheItem.StartMonthYear, _source.StartMonthYear);
         }
 
         [Test]
@@ -124,6 +124,58 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_cacheItem.Uln, result.Uln);
         }
+
+        [Test]
+        public async Task Then_StartDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.StartDate.GetFirstDayOfMonth(), result.StartDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_EndDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EndDate.Value.Date, result.EndDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_ActualStartDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.ActualStartDate.Value.Date, result.ActualStartDate.Date);
+        }
+
+        [Test]
+        public async Task Then_EmploymentEndDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EmploymentEndDate.GetFirstDayOfMonth(), result.EmploymentEndDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_EmploymentPrice_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EmploymentPrice, result.EmploymentPrice);
+        }
+
+
+        [Test]
+        public async Task Then_Cost_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.Cost, result.Cost);
+        }
+
+
+        [Test]
+        public async Task Then_Reference_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.Reference, result.Reference);
+        }
+
 
         [Test]
         public async Task ThenEmailIsMappedCorrectly()

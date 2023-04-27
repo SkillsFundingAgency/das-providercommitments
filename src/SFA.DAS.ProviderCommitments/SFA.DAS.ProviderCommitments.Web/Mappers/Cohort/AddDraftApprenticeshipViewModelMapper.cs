@@ -53,11 +53,46 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             result.Employer = apiResponse.LegalEntityName;
             result.AccountLegalEntityId = cacheItem.AccountLegalEntityId;
             result.IsOnFlexiPaymentPilot = cacheItem.IsOnFlexiPaymentPilot;
-
             result.FirstName = cacheItem.FirstName;
             result.LastName = cacheItem.LastName;
             result.Email = cacheItem.Email;
             result.Uln = cacheItem.Uln;
+            result.Cost = cacheItem.Cost;
+            result.Reference = cacheItem.Reference;
+            result.EmploymentPrice = cacheItem.EmploymentPrice;
+
+            if (cacheItem.StartDate.HasValue)
+            {
+                result.StartMonth = cacheItem.StartDate.Value.Month;
+                result.StartYear = cacheItem.StartDate.Value.Year;
+            }
+
+            if (cacheItem.EndDate.HasValue)
+            {
+                result.EndDay = cacheItem.EndDate.Value.Day;
+                result.EndMonth = cacheItem.EndDate.Value.Month;
+                result.EndYear = cacheItem.EndDate.Value.Year;
+            }
+
+            if (cacheItem.DateOfBirth.HasValue)
+            {
+                result.BirthDay = cacheItem.DateOfBirth.Value.Day;
+                result.BirthMonth = cacheItem.DateOfBirth.Value.Month;
+                result.BirthYear = cacheItem.DateOfBirth.Value.Year;
+            }
+
+            if (cacheItem.ActualStartDate.HasValue)
+            {
+                result.ActualStartDay = cacheItem.ActualStartDate.Value.Day;
+                result.ActualStartMonth = cacheItem.ActualStartDate.Value.Month;
+                result.ActualStartYear = cacheItem.ActualStartDate.Value.Year;
+            }
+
+            if (cacheItem.EmploymentEndDate.HasValue)
+            {
+                result.EmploymentEndMonth = cacheItem.EmploymentEndDate.Value.Month;
+                result.EmploymentEndYear = cacheItem.EmploymentEndDate.Value.Year;
+            }
 
             return result;
         }

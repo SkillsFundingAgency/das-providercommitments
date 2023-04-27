@@ -11,7 +11,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
-
 {
     [TestFixture]
     public class AddDraftApprenticeshipRedirectModelMapperTests
