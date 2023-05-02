@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
@@ -224,36 +226,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectCourseForEdit(DraftApprenticeshipRequest request)
+        public async Task<IActionResult> EditDraftApprenticeshipCourse(DraftApprenticeshipRequest request)
         {
-            var draft = PeekStoredEditDraftApprenticeshipState();
-            await AddLegalEntityAndCoursesToModel(draft);
-            var model = new SelectCourseViewModel
-            {
-                CourseCode = draft.CourseCode,
-                Courses = draft.Courses
-            };
-
-            return View("SelectCourse", model);
+            var model = await _modelMapper.Map<EditDraftApprenticeshipCourseViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourseForEdit(SelectCourseViewModel model)
+        public async Task<ActionResult> SetCourseForEdit(EditDraftApprenticeshipCourseViewModel model)
         {
-            if (string.IsNullOrEmpty(model.CourseCode))
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
-            }
-
-            var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.CourseCode = model.CourseCode;
-            StoreEditDraftApprenticeshipState(draft);
-
             var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-            
             return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
         }
 
@@ -431,7 +415,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 StoreEditDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourseForEdit) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatusForEdit);
+                var redirectAction = changeCourse == "Edit" ? nameof(EditDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatusForEdit);
                 return RedirectToAction(redirectAction, req);
             }
 
