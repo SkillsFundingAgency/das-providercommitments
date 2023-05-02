@@ -2,7 +2,6 @@
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
         {
             var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, source.CohortId.Value, source.CourseCode);
             var apiResponse = await _outerApiClient.Get<GetAddDraftApprenticeshipDetailsResponse>(apiRequest);
-            
+
             return new AddDraftApprenticeshipViewModel
             {
                 AccountLegalEntityId = apiResponse.AccountLegalEntityId,
