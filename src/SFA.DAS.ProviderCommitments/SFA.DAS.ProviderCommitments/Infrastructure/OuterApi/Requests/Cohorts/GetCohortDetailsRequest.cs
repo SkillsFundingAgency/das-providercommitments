@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
 {
     public class GetCohortDetailsRequest : IGetApiRequest
     {
@@ -19,5 +21,6 @@
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
+        public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
     }
 }

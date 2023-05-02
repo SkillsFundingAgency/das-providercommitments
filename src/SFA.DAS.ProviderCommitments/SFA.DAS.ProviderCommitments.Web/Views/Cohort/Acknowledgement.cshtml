@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.AcknowledgementViewModel
 
 @{
@@ -96,11 +97,11 @@
         }
 
     }
-    <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId})"> Go to apprentice requests</a>
+        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId})"> Go to apprentice requests</a>
 
     <br />
     <br />
 
-    <a class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
+        <a class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Go to homepage</a>
 </div>
 </div>

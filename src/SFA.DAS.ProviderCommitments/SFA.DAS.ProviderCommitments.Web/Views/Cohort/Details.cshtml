@@ -3,7 +3,11 @@
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using SFA.DAS.ProviderCommitments.Web.TagHelpers
+@using SFA.DAS.ProviderUrlHelper
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
 @{
@@ -18,7 +22,7 @@
 ||
 Model.HasOverlappingUln
 ||
-Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
+Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -82,6 +86,27 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
     </div>
 }
 
+@if (Model.ShowInvalidProviderCoursesBanner)
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p>
+                        One or more training courses is not on your declared list. You need to either change the selected training course or add it in <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'Your standards and training venues'</a> section.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
 <partial name="_ValidationSummary" />
 <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
 <dl class="das-definition-list das-definition-list--inline">
@@ -121,6 +146,14 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
             <span class="govuk-tag">Flexi-Job Agency</span>
         }
     </h3>
+    @if (Model.InvalidProviderCourseCodes.Contains(course.CourseCode))
+    {
+        <div class="govuk-inset-text das-inset-text--highlight">
+            <p>
+                This training course has not been declared. You can change it or add it to <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'Your standards and training venues'</a>.
+            </p>
+        </div>
+    }
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
     {
         if (draftApprenticeship.OverlappingTrainingDateRequest != null && draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.HasValue)
@@ -175,7 +208,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner)
             </div>
             course.ErrorFundingBandExcessDisplayed = true;
         }
-    }
+     }
     <table class="govuk-table das-table--responsive  das-table--condensed">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
