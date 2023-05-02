@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship
 {
-    public class AddDraftApprenticeshipCourseViewModel : IStandardSelection
+    public class SelectCourseViewModel : IStandardSelection
     {
         public long ProviderId { get; set; }
         public string EmployerName { get; set; }

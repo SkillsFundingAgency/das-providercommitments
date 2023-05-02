@@ -1,24 +1,38 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using ChoosePilotStatusOptions = SFA.DAS.ProviderCommitments.Web.Models.ChoosePilotStatusOptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
-    public class WhenIMapCreateCohortWithAddDraftApprenticeshipViewModelToChoosePilotStatusViewModel
+    public class SelectPilotStatusViewModelMapperTests
     {
-        private ChoosePilotStatusViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper _mapper;
-        private CreateCohortWithDraftApprenticeshipRequest _request;
+        private SelectPilotStatusViewModelMapper _mapper;
+        private SelectPilotStatusRequest _request;
+        private Mock<ICacheStorageService> _cacheStorage;
+        private CreateCohortCacheItem _cacheItem;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-            _request = fixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
+            _request = fixture.Create<SelectPilotStatusRequest>();
 
-            _mapper = new ChoosePilotStatusViewModelFromCreateCohortWithDraftApprenticeshipRequestMapper();
+            _cacheItem = fixture.Create<CreateCohortCacheItem>();
+
+            _cacheStorage = new Mock<ICacheStorageService>();
+            _cacheStorage.Setup(x =>
+                    x.RetrieveFromCache<CreateCohortCacheItem>(It.Is<Guid>(key => key == _request.CacheKey)))
+                .ReturnsAsync(_cacheItem);
+
+            _mapper = new SelectPilotStatusViewModelMapper(_cacheStorage.Object);
         }
 
         [TestCase(true, ChoosePilotStatusOptions.Pilot)]
@@ -26,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(null, null)]
         public async Task ThenPilotStatusIsMappedCorrectly(bool? pilotStatus, ChoosePilotStatusOptions? expectedOption)
         {
-            _request.IsOnFlexiPaymentPilot = pilotStatus;
+            _cacheItem.IsOnFlexiPaymentPilot = pilotStatus;
             var result = await _mapper.Map(_request);
             Assert.AreEqual(expectedOption, result.Selection);
         }
