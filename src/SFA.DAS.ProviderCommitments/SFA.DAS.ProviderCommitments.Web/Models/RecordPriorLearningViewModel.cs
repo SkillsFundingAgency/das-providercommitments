@@ -40,7 +40,6 @@
 
     public class PriorLearningSummaryViewModel : DraftApprenticeshipRequest
     {
-        public bool HasStandardOptions { get; set; }
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }
         public int? CostBeforeRpl { get; set; }
@@ -50,6 +49,9 @@
         public double? MinimumPercentageReduction { get; set; }
         public int? MinimumPriceReduction { get; set; }
         public bool? RplPriceReductionError { get; set; }
+        public int? TotalCost { get; set; }
+        public string? FullName { get; set; }
+        public bool HasStandardOptions { get; set; }
     }
     public class PriorLearningSummaryResult : DraftApprenticeshipRequest
     {

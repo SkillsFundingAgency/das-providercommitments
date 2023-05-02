@@ -94,8 +94,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
         {
-            //var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
+
+            // debug
+            if (priorLearningSummary == null)
+            {
+                priorLearningSummary = new Infrastructure.OuterApi.Responses.GetPriorLearningSummaryQueryResult();
+                priorLearningSummary.PercentageOfPriorLearning = 15;
+                priorLearningSummary.TrainingTotalHours = 8;
+                priorLearningSummary.DurationReducedByHours = 5;
+                priorLearningSummary.CostBeforeRpl = 1000;
+                priorLearningSummary.PriceReducedBy = 10;
+                priorLearningSummary.FundingBandMaximum = 25;
+                priorLearningSummary.PercentageOfPriorLearning = 18;
+                priorLearningSummary.MinimumPercentageReduction = 65;
+                priorLearningSummary.MinimumPriceReduction = 55;
+                priorLearningSummary.RplPriceReductionError = true;
+            }
+
+
 
             return new PriorLearningSummaryViewModel
             {
@@ -112,7 +130,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning,
                 MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction,
                 MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction,
-                RplPriceReductionError = priorLearningSummary.RplPriceReductionError
+                RplPriceReductionError = priorLearningSummary.RplPriceReductionError,
+                TotalCost = apprenticeship.Cost,
+                FullName = string.Format("{0} {1}", apprenticeship.FirstName, apprenticeship.LastName),
+                HasStandardOptions = apprenticeship.HasStandardOptions
             };
         }
     }

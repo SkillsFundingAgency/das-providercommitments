@@ -20,6 +20,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
@@ -589,7 +590,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<RecognisePriorLearningResult>(model);
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
 
-            if (!priorLearningSummary.RplPriceReductionError.Value)
+
+            // debug
+            if (priorLearningSummary == null)
+            {
+                priorLearningSummary = new Infrastructure.OuterApi.Responses.GetPriorLearningSummaryQueryResult();
+                priorLearningSummary.PercentageOfPriorLearning = 15;
+                priorLearningSummary.TrainingTotalHours = 8;
+                priorLearningSummary.DurationReducedByHours = 5;
+                priorLearningSummary.CostBeforeRpl = 1000;
+                priorLearningSummary.PriceReducedBy = 10;
+                priorLearningSummary.FundingBandMaximum = 25;
+                priorLearningSummary.PercentageOfPriorLearning = 18;
+                priorLearningSummary.MinimumPercentageReduction = 65;
+                priorLearningSummary.MinimumPriceReduction = 55;
+                priorLearningSummary.RplPriceReductionError = true;
+            }
+
+
+
+
+            if (priorLearningSummary.RplPriceReductionError.Value)
             {
                 return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });

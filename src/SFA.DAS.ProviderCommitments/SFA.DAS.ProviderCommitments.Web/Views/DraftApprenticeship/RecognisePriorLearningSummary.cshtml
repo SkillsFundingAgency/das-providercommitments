@@ -4,7 +4,7 @@
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = "Check your recognised prior learning";
+    ViewData["Title"] = "RPL price reduction error";
     ViewBag.ValidationOrder = "";
 }
 
@@ -27,7 +27,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        RPL price reduction error: Bobby Newmark can't be added until this is resolved.
+                        RPL price reduction error: @Model.FullName can't be added until this is resolved.
                     </p>
                     <p class="govuk-body">
                         The price reduction you’ve provided is lower than the minimum reduction based on the reduction in off-the-job training time that you have entered. 
@@ -35,8 +35,7 @@
                     <ol class="govuk-list govuk-list--number">
                         <li>Check the price reduction figure is correct.</li>
                         <li>Check the total off-the-job training time and the reduction due to RPL.</li>
-                        <li>Re-enter the data for the <a class="govuk-link" href="rpl-details"> RPL reductions</a> if the details on
-                    this page are incorrect.</li>
+                        <li>Re-enter the data for the <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)"> RPL reductions</a> if the details on this page are incorrect.</li>
                     </ol>
                 </div>
             </div>
@@ -50,10 +49,10 @@
                         Price reduction due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value ">
-                        <p class="govuk-body govuk-table__cell--numeric">£ 480</p>
+                        <p class="govuk-body govuk-table__cell--numeric">£@Model.PriceReducedBy</p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="rpl-details">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
                             Change<span class="govuk-visually-hidden"> contact details</span>
                         </a>
                     </dd>
@@ -64,10 +63,10 @@
                         Total off-the-job training time for this apprenticeship standard
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        1000 hours
+                        @Model.TrainingTotalHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="rpl-details">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
                             Change<span class="govuk-visually-hidden"> contact details</span>
                         </a>
                     </dd>
@@ -77,10 +76,10 @@
                         Total reduction in off-the-job training time due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        100 hours
+                        @Model.TrainingTotalHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="rpl-details">
+                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
                             Change<span class="govuk-visually-hidden"> name</span>
                         </a>
                     </dd>
@@ -90,7 +89,7 @@
 
             <p class="govuk-body">
                 Based on the figures you have entered the minimum price reduction due to RPL should be
-                <strong>£ 500</strong>.
+                <strong>£@Model.CostBeforeRpl</strong>.
             </p>
 
             <p class="govuk-body">
@@ -127,7 +126,7 @@
                         Minimum percentage reduction due to RPL (from funding rules P25.5.2)
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        <p class="govuk-body">5 %</p>
+                        <p class="govuk-body">@Model.MinimumPercentageReduction %</p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -138,7 +137,7 @@
                         Maximum funding band
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        £ 10000
+                        £@Model.FundingBandMaximum
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -150,7 +149,7 @@
                         Minimum price reduction due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value  govuk-table__cell--numeric">
-                        £ 500
+                        £@Model.MinimumPriceReduction
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -175,6 +174,6 @@
 </div>
 
 @section breadcrumb
-    {
+{
     <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">Back</a>
 }
