@@ -92,5 +92,10 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             return await _outerApiClient.Post<CreatePriorLearningDataResponse>(new PostPriorLearningDataRequest(cohortId, draftApprenticeshipId) { Data = request });
         }
+
+        public async Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long cohortId, long draftApprenticeshipId)
+        {
+            return await _outerApiClient.Get<GetPriorLearningSummaryQueryResult>(new GetPriorLearningSummaryQueryRequest(cohortId, draftApprenticeshipId));
+        }
     }
 }

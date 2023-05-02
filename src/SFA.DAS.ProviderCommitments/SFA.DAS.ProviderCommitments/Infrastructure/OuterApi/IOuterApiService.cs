@@ -26,5 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request);
         Task<CreateCohortResponse> CreateCohort(CreateCohortApimRequest request);
         Task<CreatePriorLearningDataResponse> PriorLearningData(long cohortId, long draftApprenticeshipId, CreatePriorLearningDataApimRequest request);
+        Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long cohortId, long apprenticeshipId);
     }
 }
