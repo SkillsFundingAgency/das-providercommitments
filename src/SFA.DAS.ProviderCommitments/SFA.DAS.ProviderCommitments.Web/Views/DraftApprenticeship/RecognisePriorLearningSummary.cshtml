@@ -1,0 +1,180 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Features;
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Check your recognised prior learning";
+    ViewBag.ValidationOrder = "";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+        <form method="post">
+
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.CohortReference)
+            @Html.HiddenFor(x => x.DraftApprenticeshipId)
+            @Html.HiddenFor(x => x.HasStandardOptions)
+
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Action required
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        RPL price reduction error: Bobby Newmark can't be added until this is resolved.
+                    </p>
+                    <p class="govuk-body">
+                        The price reduction you’ve provided is lower than the minimum reduction based on the reduction in off-the-job training time that you have entered. 
+                    </p>
+                    <ol class="govuk-list govuk-list--number">
+                        <li>Check the price reduction figure is correct.</li>
+                        <li>Check the total off-the-job training time and the reduction due to RPL.</li>
+                        <li>Re-enter the data for the <a class="govuk-link" href="rpl-details"> RPL reductions</a> if the details on
+                    this page are incorrect.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m govuk-!-margin-top-9">Check the details of recognised prior learning</h2>
+
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key half-column">
+                        Price reduction due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value ">
+                        <p class="govuk-body govuk-table__cell--numeric">£ 480</p>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="rpl-details">
+                            Change<span class="govuk-visually-hidden"> contact details</span>
+                        </a>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Total off-the-job training time for this apprenticeship standard
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        1000 hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="rpl-details">
+                            Change<span class="govuk-visually-hidden"> contact details</span>
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row ">
+                    <dt class="govuk-summary-list__key">
+                        Total reduction in off-the-job training time due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        100 hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="rpl-details">
+                            Change<span class="govuk-visually-hidden"> name</span>
+                        </a>
+                    </dd>
+                </div>
+
+            </dl>
+
+            <p class="govuk-body">
+                Based on the figures you have entered the minimum price reduction due to RPL should be
+                <strong>£ 500</strong>.
+            </p>
+
+            <p class="govuk-body">
+                Details of this funding calculation are shown below.
+            </p>
+
+            <h3 class="govuk-heading-s ">Funding calculation</h3>
+
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key half-column">
+                        Percentage of prior learning <br>(from funding rules P25.5.1)
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        100 /  1000
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row ">
+                    <dt class="govuk-summary-list__key">
+                        Percentage figure
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        10 %
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Minimum percentage reduction due to RPL (from funding rules P25.5.2)
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        <p class="govuk-body">5 %</p>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Maximum funding band
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                        £ 10000
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Minimum price reduction due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value  govuk-table__cell--numeric">
+                        £ 500
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+            </dl>
+
+            <p class="govuk-body">
+                If the figures you have entered are correct then you need to re-check your funding calculation for the minimum price reduction due to RPL to ensure it follows the funding rules.
+            </p>
+
+                <input type="hidden" name="answers-checked" value="true">
+                <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+                    Continue
+                </button>
+                <br>
+                <a class="govuk-link" id="save-and-exit-cohort" href="index">
+                    Save and exit
+                </a>
+            </form>
+    </div>
+</div>
+
+@section breadcrumb
+    {
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">Back</a>
+}

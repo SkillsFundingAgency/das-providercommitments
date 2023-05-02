@@ -34,4 +34,19 @@
     {
         public bool HasStandardOptions { get; set; }
     }
+    public class PriorLearningSummaryRequest : DraftApprenticeshipRequest
+    {
+    }
+
+    public class PriorLearningSummaryViewModel : DraftApprenticeshipRequest
+    {
+        public bool HasStandardOptions { get; set; }
+        public bool? IsAllowed { get; set; }
+    }
+    public class PriorLearningSummaryResult : DraftApprenticeshipRequest
+    {
+        public bool IsAllowed { get; set; }
+        public bool HasStandardOptions { get; set; }
+
+    }
 }

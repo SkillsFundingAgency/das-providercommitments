@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -570,7 +571,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
         {
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
             {
                 return RedirectToAction("RecognisePriorLearningDetails",
                     new {request.CohortReference, request.DraftApprenticeshipHashedId});
@@ -586,6 +587,40 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
             var request = await _modelMapper.Map<RecognisePriorLearningResult>(model);
+
+            var errors = true;
+            if (errors)
+            {
+                return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
+                    new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
+            }
+            else
+            {
+                return RedirectToOptionalPages(
+                    request.HasStandardOptions,
+                    model.ProviderId,
+                    model.DraftApprenticeshipHashedId,
+                    model.CohortReference);
+            }
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-summary")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryRequest request)
+        {
+
+            var model = await _modelMapper.Map<PriorLearningSummaryViewModel>(request);
+            return View("RecognisePriorLearningSummary", model);
+
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-summary")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
+        {
+            var request = await _modelMapper.Map<PriorLearningSummaryResult>(model);
 
             return RedirectToOptionalPages(
                 request.HasStandardOptions,

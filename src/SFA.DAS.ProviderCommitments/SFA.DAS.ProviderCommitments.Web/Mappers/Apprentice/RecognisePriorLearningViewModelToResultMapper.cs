@@ -120,4 +120,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             };
         }
     }
+
+    public class PriorLearningSummaryViewModelToResultMapper : IMapper<PriorLearningSummaryViewModel, PriorLearningSummaryResult>
+    {
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
+
+        public PriorLearningSummaryViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
+            => _commitmentsApiClient = commitmentsApiClient;
+
+        public async Task<PriorLearningSummaryResult> Map(PriorLearningSummaryViewModel source)
+        {
+            //var update = _commitmentsApiClient.RecognisePriorLearning(
+            //    source.CohortId,
+            //    source.DraftApprenticeshipId,
+            //    new CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest
+            //    {
+            //        RecognisePriorLearning = source.IsTherePriorLearning
+            //    });
+
+            //var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
+            //    source.CohortId,
+            //    source.DraftApprenticeshipId,
+            //    CancellationToken.None);
+
+            //await Task.WhenAll(update, apprenticeship);
+
+            return new PriorLearningSummaryResult
+            {
+                IsAllowed = true
+            };
+        }
+
+    }
+
+
 }
