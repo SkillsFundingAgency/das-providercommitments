@@ -1,5 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using Azure.Core;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 
@@ -80,15 +84,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMapper<PriorLearningSummaryRequest, PriorLearningSummaryViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiService _outerApiService;
 
-        public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _outerApiService = outerApiService;
         }
 
         public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
         {
-            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+            //var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
 
             return new PriorLearningSummaryViewModel
             {
@@ -97,8 +104,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 ProviderId = source.ProviderId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
+                TrainingTotalHours = priorLearningSummary.TrainingTotalHours,
+                DurationReducedByHours = priorLearningSummary.DurationReducedByHours,
+                CostBeforeRpl = priorLearningSummary.CostBeforeRpl,
+                PriceReducedBy = priorLearningSummary.PriceReducedBy,
+                FundingBandMaximum = priorLearningSummary.FundingBandMaximum,
+                PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning,
+                MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction,
+                MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction,
+                RplPriceReductionError = priorLearningSummary.RplPriceReductionError
             };
         }
     }
-
 }
