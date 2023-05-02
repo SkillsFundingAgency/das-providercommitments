@@ -610,7 +610,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
 
 
-            if (priorLearningSummary.RplPriceReductionError.Value)
+            if (priorLearningSummary.RplPriceReductionError)
             {
                 return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
@@ -643,7 +643,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<PriorLearningSummaryResult>(model);
 
             return RedirectToOptionalPages(
-                request.HasStandardOptions,
+                model.HasStandardOptions,
                 model.ProviderId,
                 model.DraftApprenticeshipHashedId,
                 model.CohortReference);

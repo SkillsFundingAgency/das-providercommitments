@@ -97,6 +97,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
 
+
+
             // debug
             if (priorLearningSummary == null)
             {
@@ -112,8 +114,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 priorLearningSummary.MinimumPriceReduction = 55;
                 priorLearningSummary.RplPriceReductionError = true;
             }
-
-
 
             return new PriorLearningSummaryViewModel
             {

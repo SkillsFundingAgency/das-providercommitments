@@ -19,8 +19,10 @@
             @Html.HiddenFor(x => x.DraftApprenticeshipId)
             @Html.HiddenFor(x => x.HasStandardOptions)
 
-            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
+            @if (Model.RplPriceReductionError.Equals(true))
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
                     <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                         Action required
                     </h2>
@@ -38,7 +40,8 @@
                         <li>Re-enter the data for the <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)"> RPL reductions</a> if the details on this page are incorrect.</li>
                     </ol>
                 </div>
-            </div>
+                </div>
+            }
 
             <h2 class="govuk-heading-m govuk-!-margin-top-9">Check the details of recognised prior learning</h2>
 
@@ -76,7 +79,7 @@
                         Total reduction in off-the-job training time due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        @Model.TrainingTotalHours hours
+                        @Model.DurationReducedByHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
@@ -88,8 +91,7 @@
             </dl>
 
             <p class="govuk-body">
-                Based on the figures you have entered the minimum price reduction due to RPL should be
-                <strong>£@Model.CostBeforeRpl</strong>.
+                Based on the figures you have entered the minimum price reduction due to RPL should be <strong>£@Model.MinimumPriceReduction</strong>.
             </p>
 
             <p class="govuk-body">
@@ -105,7 +107,7 @@
                         Percentage of prior learning <br>(from funding rules P25.5.1)
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        100 /  1000
+                        @Model.DurationReducedByHours /  @Model.TrainingTotalHours
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -115,7 +117,7 @@
                         Percentage figure
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        10 %
+                        @Model.PercentageOfPriorLearning %
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
