@@ -591,10 +591,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
 
 
-            // debug
+            //#if DEBUG
             if (priorLearningSummary == null)
             {
-                priorLearningSummary = new Infrastructure.OuterApi.Responses.GetPriorLearningSummaryQueryResult();
+                priorLearningSummary = new GetPriorLearningSummaryQueryResult();
                 priorLearningSummary.PercentageOfPriorLearning = 15;
                 priorLearningSummary.TrainingTotalHours = 8;
                 priorLearningSummary.DurationReducedByHours = 5;
@@ -606,9 +606,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 priorLearningSummary.MinimumPriceReduction = 55;
                 priorLearningSummary.RplPriceReductionError = true;
             }
-
-
-
+            //#endif
 
             if (priorLearningSummary.RplPriceReductionError)
             {
@@ -632,16 +630,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var model = await _modelMapper.Map<PriorLearningSummaryViewModel>(request);
             return View("RecognisePriorLearningSummary", model);
-
         }
 
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-summary")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
+        public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
         {
-            var request = await _modelMapper.Map<PriorLearningSummaryResult>(model);
-
             return RedirectToOptionalPages(
                 model.HasStandardOptions,
                 model.ProviderId,

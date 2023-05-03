@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
@@ -97,9 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
 
-
-
-            // debug
+            //#if DEBUG
             if (priorLearningSummary == null)
             {
                 priorLearningSummary = new Infrastructure.OuterApi.Responses.GetPriorLearningSummaryQueryResult();
@@ -114,6 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 priorLearningSummary.MinimumPriceReduction = 55;
                 priorLearningSummary.RplPriceReductionError = true;
             }
+            //#endif
 
             return new PriorLearningSummaryViewModel
             {

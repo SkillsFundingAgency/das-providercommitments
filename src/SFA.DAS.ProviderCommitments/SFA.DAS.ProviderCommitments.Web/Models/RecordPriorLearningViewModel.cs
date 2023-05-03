@@ -53,10 +53,4 @@
         public string? FullName { get; set; }
         public bool HasStandardOptions { get; set; }
     }
-    public class PriorLearningSummaryResult : DraftApprenticeshipRequest
-    {
-        public bool IsAllowed { get; set; }
-        public bool HasStandardOptions { get; set; }
-
-    }
 }
