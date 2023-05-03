@@ -587,9 +587,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
-            var request = await _modelMapper.Map<RecognisePriorLearningResult>(model);
-            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
+            var requestTask = _modelMapper.Map<RecognisePriorLearningResult>(model);
+            await Task.WhenAll(requestTask);
 
+            var request = requestTask.Result;
+
+            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
 
             //#if DEBUG
             if (priorLearningSummary == null)
