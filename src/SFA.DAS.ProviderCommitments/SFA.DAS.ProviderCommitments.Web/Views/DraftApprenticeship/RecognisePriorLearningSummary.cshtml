@@ -4,12 +4,15 @@
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 
 @{
-    ViewData["Title"] = "RPL price reduction error";
+    ViewData["Title"] = "Check your recognised prior learning";
     ViewBag.ValidationOrder = "";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">Check your recognised prior learning</h1>
+
         <partial name="_ValidationSummary" />
         <form method="post">
 
