@@ -611,19 +611,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             //#endif
 
-            if (priorLearningSummary.RplPriceReductionError)
-            {
+            if (priorLearningSummary.RplPriceReductionError) {
                 return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
-            else
-            {
-                return RedirectToOptionalPages(
+
+            return RedirectToOptionalPages(
                     request.HasStandardOptions,
                     model.ProviderId,
                     model.DraftApprenticeshipHashedId,
                     model.CohortReference);
-            }
         }
 
         [HttpGet]
