@@ -620,7 +620,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectCoursePage()
         {
-            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourse");
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("AddDraftApprenticeshipCourse");
             return this;
         }
 
@@ -643,7 +643,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyRedirectedToSelectForEditCoursePage()
         {
-            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectCourseForEdit");
+            _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("EditDraftApprenticeshipCourse");
             return this;
         }
 

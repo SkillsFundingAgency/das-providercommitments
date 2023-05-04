@@ -1,4 +1,5 @@
-﻿@{
+﻿@inject ILinkGenerator LinkGenerator
+@{
     ViewData["Title"] = "You do not have permission to access this page";
     ViewBag.GaData.Vpv = "/error/403";
 }
@@ -7,6 +8,6 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">You do not have permission to access this page</h1>
         <p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an IdAMS super user.</p>
-        <a id="back-link" class="govuk-link" href="@Url.ProviderApprenticeshipServiceLink("/account")">Go back to home page</a>
+        <a id="back-link" class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Go back to home page</a>
     </div>
 </div>

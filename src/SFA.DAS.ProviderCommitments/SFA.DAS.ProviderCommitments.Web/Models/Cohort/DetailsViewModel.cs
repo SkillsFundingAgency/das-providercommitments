@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsAgreementSigned { get; set; }
         public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
-        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner;
+        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
         public bool IsReadOnly => WithParty != Party.Provider;
         public bool IsCompleteForProvider { get; set; }
@@ -70,6 +70,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsLinkedToChangeOfPartyRequest { get; set; }
         public string Status { get; set; }
         public bool ShowRofjaaRemovalBanner { get; set; }
+        public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes == null? false : InvalidProviderCourseCodes.Any();
+        public List<string> InvalidProviderCourseCodes { get; set; }
     }
 
     public enum CohortDetailsOptions

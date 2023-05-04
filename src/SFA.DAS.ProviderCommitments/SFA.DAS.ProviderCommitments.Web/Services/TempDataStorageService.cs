@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services
@@ -9,6 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Services
     {
         T RetrieveFromCache<T>() where T : class;
         void RemoveFromCache<T>() where T: class;
+        void AddToCache(object value);
     }
 
     public class TempDataStorageService : ITempDataStorageService
@@ -41,6 +43,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Services
             {
                 tempData.Remove(new KeyValuePair<string, object>(key, o));
             }
+        }
+
+        public void AddToCache(object value)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var tempData = _tempDataDictionaryFactory.GetTempData(httpContext);
+            var key = value.GetType().Name;
+            tempData[key] = JsonConvert.SerializeObject(value);
         }
     }
 }
