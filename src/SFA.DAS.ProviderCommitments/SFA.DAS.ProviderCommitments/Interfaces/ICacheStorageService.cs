@@ -9,6 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<T> RetrieveFromCache<T>(Guid key);
         Task SaveToCache<T>(string key, T item, int expirationInHours);
         Task SaveToCache<T>(Guid key, T item, int expirationInHours);
+        Task SaveToCache<T>(T item, int expirationInHours) where T : ICacheModel;
         Task DeleteFromCache(string key);
         
     }

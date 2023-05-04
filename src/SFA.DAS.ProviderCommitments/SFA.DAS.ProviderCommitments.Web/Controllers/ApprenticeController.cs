@@ -171,16 +171,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerRequest request)
         {
-            try
-            {
-                var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
-                return View(viewModel);
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            var viewModel = await _modelMapper.Map<ConfirmEmployerViewModel>(request);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -191,16 +183,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                try
-                {
-                    var request = await _modelMapper.Map<SelectDeliveryModelRequest>(viewModel);
-                    return RedirectToAction("SelectDeliveryModel", request);
-                }
-                catch (CacheItemNotFoundException)
-                {
-                    return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                        new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
-                }
+                var request = await _modelMapper.Map<SelectDeliveryModelRequest>(viewModel);
+                return RedirectToAction("SelectDeliveryModel", request);
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
@@ -212,21 +196,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelRequest request)
         {
-            try
+            var viewModel = await _modelMapper.Map<Models.Apprentice.SelectDeliveryModelViewModel>(request);
+            if (viewModel.DeliveryModels.Count > 1)
             {
-                var viewModel = await _modelMapper.Map<Models.Apprentice.SelectDeliveryModelViewModel>(request);
-                if (viewModel.DeliveryModels.Count > 1)
-                {
-                    return View(viewModel);
-                }
+                return View(viewModel);
+            }
 
-                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
         [HttpPost]
@@ -235,23 +211,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> SelectDeliveryModel(Models.Apprentice.SelectDeliveryModelViewModel viewModel)
         {
-            try
+            if (viewModel.IsEdit)
             {
-                if (viewModel.IsEdit)
-                {
-                    var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                    return RedirectToAction(nameof(Confirm), request);
-                }
-                else
-                {
-                    var request = await _modelMapper.Map<StartDateRequest>(viewModel);
-                    return RedirectToAction("StartDate", request);
-                }
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
             }
-            catch (CacheItemNotFoundException)
+            else
             {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+                var request = await _modelMapper.Map<StartDateRequest>(viewModel);
+                return RedirectToAction("StartDate", request);
             }
         }
 
@@ -261,16 +229,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> StartDate(StartDateRequest request)
         {
-            try
-            {
-                var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
-                return View(viewModel);
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -279,23 +239,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> StartDate(StartDateViewModel viewModel)
         {
-            try
+            if (viewModel.InEditMode)
             {
-                if (viewModel.InEditMode)
-                {
-                    var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                    return RedirectToAction(nameof(Confirm), request);
-                }
-                else
-                {
-                    var request = await _modelMapper.Map<EndDateRequest>(viewModel);
-                    return RedirectToAction(nameof(EndDate), request);
-                }
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
             }
-            catch (CacheItemNotFoundException)
+            else
             {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+                var request = await _modelMapper.Map<EndDateRequest>(viewModel);
+                return RedirectToAction(nameof(EndDate), request);
             }
         }
 
@@ -305,18 +257,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> EndDate(EndDateRequest request)
         {
-            try
-            {
-                var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
-
-                return View(viewModel);
-
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -325,24 +267,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> EndDate(EndDateViewModel viewModel)
         {
-            try
+            if (viewModel.InEditMode)
             {
-                if (viewModel.InEditMode)
-                {
-                    var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                    return RedirectToAction(nameof(Confirm), request);
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
 
-                }
-                else
-                {
-                    var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                    return RedirectToAction(nameof(Price), request);
-                }
             }
-            catch (CacheItemNotFoundException)
+            else
             {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+                var request = await _modelMapper.Map<PriceRequest>(viewModel);
+                return RedirectToAction(nameof(Price), request);
             }
         }
 
@@ -392,16 +326,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceRequest request)
         {
-            try
-            {
-                var model = await _modelMapper.Map<PriceViewModel>(request);
-                return View(model);
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            var model = await _modelMapper.Map<PriceViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
@@ -410,17 +336,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
-            try
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
-            }
-
+            var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
         }
 
         [HttpGet]
@@ -429,17 +346,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmRequest request)
         {
-            try
-            {
-                var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
-                return View(viewModel);
-
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { request.ProviderId, request.ApprenticeshipHashedId });
-            }
+            var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -448,17 +356,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
-            try
-            {
-                var request = await _modelMapper.Map<SentRequest>(viewModel);
-                TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-                return RedirectToRoute(RouteNames.ApprenticeSent, request);
-            }
-            catch (CacheItemNotFoundException)
-            {
-                return RedirectToRoute(RouteNames.ChangeEmployerInform,
-                    new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
-            }
+            var request = await _modelMapper.Map<SentRequest>(viewModel);
+            TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
+            return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 
         [HttpGet]

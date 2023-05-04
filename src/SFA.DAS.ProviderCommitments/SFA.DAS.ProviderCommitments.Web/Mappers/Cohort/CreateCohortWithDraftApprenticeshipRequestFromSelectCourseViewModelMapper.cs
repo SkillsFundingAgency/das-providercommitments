@@ -1,15 +1,31 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper : IMapper<SelectCourseViewModel, CreateCohortWithDraftApprenticeshipRequest>
+    public class CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper : IMapper<Models.Cohort.SelectCourseViewModel, CreateCohortWithDraftApprenticeshipRequest>
     {
-        public Task<CreateCohortWithDraftApprenticeshipRequest> Map(SelectCourseViewModel source)
+        private readonly ICacheStorageService _cacheStorage;
+
+        public CreateCohortWithDraftApprenticeshipRequestFromSelectCourseViewModelMapper(ICacheStorageService cacheStorage)
         {
-            return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
+            _cacheStorage = cacheStorage;
+        }
+
+        public async Task<CreateCohortWithDraftApprenticeshipRequest> Map(Models.Cohort.SelectCourseViewModel source)
+        {
+            var cacheItem = await
+                _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
+            cacheItem.CourseCode = source.CourseCode;
+            await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
+
+            return new CreateCohortWithDraftApprenticeshipRequest
             {
+                CacheKey = source.CacheKey,
                 ProviderId = source.ProviderId,
                 ReservationId = source.ReservationId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
@@ -18,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 StartMonthYear = source.StartMonthYear,
                 DeliveryModel = source.DeliveryModel,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentsPilot
-            });
+            };
         }
     }
 }

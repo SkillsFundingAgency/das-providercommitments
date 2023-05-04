@@ -68,63 +68,40 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
         {
-            return RedirectToAction(nameof(SelectCourse), request);
+            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
         }
 
         [HttpGet]
         [Route("add/reservation")]
         public IActionResult GetReservationId(GetReservationIdForAddAnotherApprenticeRequest request, [FromServices] ILinkGenerator urlHelper)
         {
-// This DEBUG section can be uncommented so that it can run locally without needing the reservations UI 
-//#if DEBUG
-//            var reservationDetails = new ReservationsAddDraftApprenticeshipRequest
-//            {
-//                ProviderId = request.ProviderId,
-//                CohortReference = request.CohortReference,
-//                CohortId = request.CohortId,
-//                ReservationId = Guid.NewGuid()
-//            };
-//            return RedirectToAction(nameof(AddNewDraftApprenticeship), reservationDetails);
-//#else
             var reservationUrl = $"{request.ProviderId}/reservations/{request.AccountLegalEntityHashedId}/select?cohortReference={request.CohortReference}&encodedPledgeApplicationId={request.EncodedPledgeApplicationId}";
             if (!string.IsNullOrWhiteSpace(request.TransferSenderHashedId))
             {
                 reservationUrl += $"&transferSenderId={request.TransferSenderHashedId}";
             }
             return Redirect(urlHelper.ReservationsLink(reservationUrl));
-//#endif
         }
 
         [HttpGet]
         [Route("add/select-course")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectCourse(ReservationsAddDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentsPilot == null)
             {
                 return RedirectToAction("ChoosePilotStatus", request);
             }
 
-            var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            await AddLegalEntityAndCoursesToModel(draft);
-            var model = new SelectCourseViewModel
-            {
-                CourseCode = draft.CourseCode,
-                Courses = draft.Courses,
-                IsOnFlexiPaymentsPilot = draft.IsOnFlexiPaymentPilot
-            };
-
-            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-                model.IsOnFlexiPaymentsPilot = false;
-
-            return View("SelectCourse", model);
+            var model = await _modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
         [Route("add/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
+        public async Task<ActionResult> SetCourse(Models.SelectCourseViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
@@ -160,7 +137,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(SelectCourse), request);
+            return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
         }
 
         [HttpGet]
@@ -354,7 +331,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
+                var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
                 return RedirectToAction(redirectAction, req);
             }
 

@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class DraftApprenticeshipOverlapAlertViewModel : IAuthorizationContextModel
     {
+        public Guid? CacheKey { get; set; }
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public string DraftApprenticeshipHashedId { get; set; }
