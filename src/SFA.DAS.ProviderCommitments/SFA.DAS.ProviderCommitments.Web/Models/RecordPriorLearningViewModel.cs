@@ -50,7 +50,7 @@
         public int? MinimumPriceReduction { get; set; }
         public bool? RplPriceReductionError { get; set; }
         public int? TotalCost { get; set; }
-        public string? FullName { get; set; }
+        public string FullName { get; set; }
         public bool HasStandardOptions { get; set; }
     }
 }
