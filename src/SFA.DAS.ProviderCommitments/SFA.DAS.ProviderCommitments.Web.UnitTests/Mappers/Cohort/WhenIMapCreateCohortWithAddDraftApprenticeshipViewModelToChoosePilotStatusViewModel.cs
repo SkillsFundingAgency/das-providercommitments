@@ -44,5 +44,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_request);
             Assert.AreEqual(expectedOption, result.Selection);
         }
+
+        [Test]
+        public async Task ThenCacheKeyIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.CacheKey, result.CacheKey);
+        }
+
+        [Test]
+        public async Task ThenIsEditIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.IsEdit, result.IsEdit);
+        }
+
+        [Test]
+        public async Task ThenProviderIdIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+        }
     }
 }

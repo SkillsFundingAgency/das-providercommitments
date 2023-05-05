@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
     public class WhenIMapCreateCohortRequest
     {
         private CreateCohortRequestMapper _mapper;
-        private AddDraftApprenticeshipViewModel _source;
+        private AddDraftApprenticeshipOrRoutePostRequest _source;
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
         private Mock<ICacheStorageService> _cacheStorageService;
         private long _accountLegalEntityId;
@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var employmentPrice = fixture.Create<int?>();
             var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
-            _source = fixture.Build<AddDraftApprenticeshipViewModel>()
+            _source = fixture.Build<AddDraftApprenticeshipOrRoutePostRequest>()
                 .With(x => x.EmployerAccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
                 .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.BirthDay, birthDate?.Day)

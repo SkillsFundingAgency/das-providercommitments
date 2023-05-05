@@ -10,7 +10,7 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
+    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipOrRoutePostRequest, CreateCohortRequest>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _cacheStorage = cacheStorage;
         }
 
-        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
+        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipOrRoutePostRequest source)
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
 
