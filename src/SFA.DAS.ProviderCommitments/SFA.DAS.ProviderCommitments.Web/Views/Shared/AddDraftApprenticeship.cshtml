@@ -12,6 +12,7 @@
         
         <form id="addApprenticeship" novalidate method="post">
             @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="CacheKey"/>
             @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
             @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)            
 

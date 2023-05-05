@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task AndPilotStatusIsToBeChangedThenTheUserIsRedirectedToSelectPilotStatusPage()
         {
             await _fixture.PostDraftApprenticeshipViewModel(changePilotStatus: "Edit");
-            _fixture.VerifyUserRedirectedTo("ChoosePilotStatusForDraftChange");
+            _fixture.VerifyUserRedirectedTo("ChoosePilotStatus");
         }
 
         [TestCase(true)]
