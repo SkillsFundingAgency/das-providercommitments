@@ -87,12 +87,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDataViewModel, RecognisePriorLearningResult>
     {
         private readonly IOuterApiService _outerApiService;
-        private readonly IOuterApiClient _outerApiClient;
 
-        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, IOuterApiClient outerApiClient)
+        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService)
         {
             _outerApiService = outerApiService;
-            _outerApiClient = outerApiClient;
         }
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDataViewModel source)
@@ -109,12 +107,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 }
             );
 
-            var request = new GetEditDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, string.Empty);
-            var apprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(request);
-
             return new RecognisePriorLearningResult
             {
-                HasStandardOptions = apprenticeship.HasStandardOptions
+                HasStandardOptions = update.HasStandardOptions,
+                RplPriceReductionError = update.RplPriceReductionError
             };
         }
     }

@@ -3,5 +3,6 @@
     public class CreatePriorLearningDataResponse
     {
         public bool HasStandardOptions { get; set; }
+        public bool RplPriceReductionError { get; set; }
     }
 }

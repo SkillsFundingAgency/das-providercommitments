@@ -547,20 +547,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
-            var requestTask = _modelMapper.Map<RecognisePriorLearningResult>(model);
+            var result = await _modelMapper.Map<RecognisePriorLearningResult>(model);
 
-            await Task.WhenAll(requestTask);
-            var request = requestTask.Result;
-
-            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.ProviderId, request.CohortId, request.DraftApprenticeshipId);
-
-            if (priorLearningSummary?.RplPriceReductionError == true) {
-                return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
+            if (result?.RplPriceReductionError == true)
+            {
+                return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship",
                     new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
             }
 
             return RedirectToOptionalPages(
-                    request.HasStandardOptions,
+                    result.HasStandardOptions,
                     model.ProviderId,
                     model.DraftApprenticeshipHashedId,
                     model.CohortReference);

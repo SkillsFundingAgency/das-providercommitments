@@ -2,11 +2,6 @@
 {
     public class GetPriorLearningDataQueryResult
     {
-        public long ProviderId { get; set; }
-        public string CohortReference { get; set; }
-        public string DraftApprenticeshipHashedId { get; set; }
-        public long CohortId { get; set; }
-        public long DraftApprenticeshipId { get; set; }
         public int? PriceReduced { get; set; }
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }

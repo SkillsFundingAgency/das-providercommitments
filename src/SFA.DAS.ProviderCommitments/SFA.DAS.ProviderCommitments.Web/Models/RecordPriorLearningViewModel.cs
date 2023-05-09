@@ -33,6 +33,7 @@
     public class RecognisePriorLearningResult : DraftApprenticeshipRequest
     {
         public bool HasStandardOptions { get; set; }
+        public bool RplPriceReductionError { get; set; }
     }
     public class PriorLearningSummaryRequest : DraftApprenticeshipRequest
     {
