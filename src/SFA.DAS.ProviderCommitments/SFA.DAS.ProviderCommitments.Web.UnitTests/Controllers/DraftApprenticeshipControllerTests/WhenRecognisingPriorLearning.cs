@@ -228,7 +228,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             fixture.OuterApiService.Verify(x =>
-                x.PriorLearningData(
+                x.UpdatePriorLearningData(
+                    fixture.DataViewModel.ProviderId,
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
                     It.Is<CreatePriorLearningDataApimRequest>(r =>
@@ -256,7 +257,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             fixture.OuterApiService.Verify(x =>
-                x.PriorLearningData(
+                x.UpdatePriorLearningData(
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
                     It.Is<CreatePriorLearningDataApimRequest>(r =>
@@ -416,8 +417,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDataViewModelMapper(ApiClient.Object),
                     new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object),
-                    new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object, ApiClient.Object),
-                    new PriorLearningDataViewModelToResultMapper(OuterApiService.Object, ApiClient.Object)),
+                    new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
+                    new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                     
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,

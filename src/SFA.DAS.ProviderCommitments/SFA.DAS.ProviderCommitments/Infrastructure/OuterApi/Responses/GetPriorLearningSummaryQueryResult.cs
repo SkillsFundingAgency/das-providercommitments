@@ -15,5 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 		public decimal? MinimumPercentageReduction { get; set; }
 		public int? MinimumPriceReduction {get; set;}
 		public bool RplPriceReductionError { get; set; }
+		public int? TotalCost { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool HasStandardOptions { get; set; }
     }
 }

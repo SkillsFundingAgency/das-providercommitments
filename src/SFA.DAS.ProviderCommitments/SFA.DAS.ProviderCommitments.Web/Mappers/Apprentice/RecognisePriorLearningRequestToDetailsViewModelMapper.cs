@@ -51,6 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         public async Task<PriorLearningDataViewModel> Map(RecognisePriorLearningRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+
             var reducedDuration = apprenticeship.DurationReducedBy;
             var isDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl;
 
@@ -83,36 +84,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
     public class RecognisePriorLearningSummaryRequestToSummaryViewModelMapper : IMapper<PriorLearningSummaryRequest, PriorLearningSummaryViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiService _outerApiService;
 
-        public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient)
+        public RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(IOuterApiService outerApiService)
         {
-            _commitmentsApiClient = commitmentsApiClient;
             _outerApiService = outerApiService;
         }
 
         public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
         {
-            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
-
-            //#if DEBUG
-            if (priorLearningSummary == null)
-            {
-                priorLearningSummary = new Infrastructure.OuterApi.Responses.GetPriorLearningSummaryQueryResult();
-                priorLearningSummary.PercentageOfPriorLearning = 15;
-                priorLearningSummary.TrainingTotalHours = 8;
-                priorLearningSummary.DurationReducedByHours = 5;
-                priorLearningSummary.CostBeforeRpl = 1000;
-                priorLearningSummary.PriceReducedBy = 10;
-                priorLearningSummary.FundingBandMaximum = 25;
-                priorLearningSummary.PercentageOfPriorLearning = 18;
-                priorLearningSummary.MinimumPercentageReduction = 65;
-                priorLearningSummary.MinimumPriceReduction = 55;
-                priorLearningSummary.RplPriceReductionError = true;
-            }
-            //#endif
 
             return new PriorLearningSummaryViewModel
             {
@@ -130,9 +111,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction,
                 MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction,
                 RplPriceReductionError = priorLearningSummary.RplPriceReductionError,
-                TotalCost = apprenticeship.Cost,
-                FullName = string.Format("{0} {1}", apprenticeship.FirstName, apprenticeship.LastName),
-                HasStandardOptions = apprenticeship.HasStandardOptions
+                TotalCost = priorLearningSummary.TotalCost,
+                FullName = string.Format("{0} {1}", priorLearningSummary.FirstName, priorLearningSummary.LastName),
+                HasStandardOptions = priorLearningSummary.HasStandardOptions
             };
         }
     }

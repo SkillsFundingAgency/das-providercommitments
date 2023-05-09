@@ -1,8 +1,11 @@
-﻿using SFA.DAS.Authorization.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading;
@@ -13,9 +16,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class RecognisePriorLearningViewModelToResultMapper : IMapper<RecognisePriorLearningViewModel, RecognisePriorLearningResult>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _outerApiClient;
 
-        public RecognisePriorLearningViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient)
-            => _commitmentsApiClient = commitmentsApiClient;
+        public RecognisePriorLearningViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
+        {
+            _commitmentsApiClient = commitmentsApiClient;
+            _outerApiClient = outerApiClient;
+
+        }
 
         public async Task<RecognisePriorLearningResult> Map(RecognisePriorLearningViewModel source)
         {
@@ -27,16 +35,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     RecognisePriorLearning = source.IsTherePriorLearning
                 });
 
-            var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
-                source.CohortId,
-                source.DraftApprenticeshipId,
-                CancellationToken.None);
-
-            await Task.WhenAll(update, apprenticeship);
+            var request = new GetEditDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, string.Empty);
+            var apprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(request);
 
             return new RecognisePriorLearningResult
             {
-                HasStandardOptions = apprenticeship.Result.HasStandardOptions
+                HasStandardOptions = apprenticeship.HasStandardOptions
             };
         }
     }
@@ -44,12 +48,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class PriorLearningDetailsViewModelToResultMapper : IMapper<PriorLearningDetailsViewModel, RecognisePriorLearningResult>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IAuthorizationService _authorizationService;
+        private readonly IOuterApiClient _outerApiClient;
+        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
 
-        public PriorLearningDetailsViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient, IAuthorizationService authorizationService)
+        public PriorLearningDetailsViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient, DAS.Authorization.Services.IAuthorizationService authorizationService, IOuterApiClient outerApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _authorizationService = authorizationService;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDetailsViewModel source)
@@ -68,16 +74,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     Rpl2Mode = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended)
                 });
 
-            var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
-                source.CohortId,
-                source.DraftApprenticeshipId,
-                CancellationToken.None);
-
-            await Task.WhenAll(update, apprenticeship);
+            var request = new GetEditDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, string.Empty);
+            var apprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(request);
 
             return new RecognisePriorLearningResult
             {
-                HasStandardOptions = apprenticeship.Result.HasStandardOptions
+                HasStandardOptions = apprenticeship.HasStandardOptions
             };
         }
     }
@@ -85,17 +87,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class PriorLearningDataViewModelToResultMapper : IMapper<PriorLearningDataViewModel, RecognisePriorLearningResult>
     {
         private readonly IOuterApiService _outerApiService;
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _outerApiClient;
 
-        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient)
+        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
         {
             _outerApiService = outerApiService;
-            _commitmentsApiClient = commitmentsApiClient;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDataViewModel source)
         {
-            var update = _outerApiService.PriorLearningData(source.CohortId, source.DraftApprenticeshipId,
+            var update = await _outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
                 new CreatePriorLearningDataApimRequest
                 {
                     DurationReducedBy = source.DurationReducedBy,
@@ -107,16 +109,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 }
             );
 
-            var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(
-                source.CohortId,
-                source.DraftApprenticeshipId,
-                CancellationToken.None);
-
-            await Task.WhenAll(update, apprenticeship);
+            var request = new GetEditDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId, string.Empty);
+            var apprenticeship = await _outerApiClient.Get<GetEditDraftApprenticeshipResponse>(request);
 
             return new RecognisePriorLearningResult
             {
-                HasStandardOptions = apprenticeship.Result.HasStandardOptions
+                HasStandardOptions = apprenticeship.HasStandardOptions
             };
         }
     }

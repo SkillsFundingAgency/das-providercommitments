@@ -548,28 +548,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
         {
             var requestTask = _modelMapper.Map<RecognisePriorLearningResult>(model);
-            await Task.WhenAll(requestTask);
 
+            await Task.WhenAll(requestTask);
             var request = requestTask.Result;
 
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
-
-            //#if DEBUG
-            if (priorLearningSummary == null)
-            {
-                priorLearningSummary = new GetPriorLearningSummaryQueryResult();
-                priorLearningSummary.PercentageOfPriorLearning = 15;
-                priorLearningSummary.TrainingTotalHours = 8;
-                priorLearningSummary.DurationReducedByHours = 5;
-                priorLearningSummary.CostBeforeRpl = 1000;
-                priorLearningSummary.PriceReducedBy = 10;
-                priorLearningSummary.FundingBandMaximum = 25;
-                priorLearningSummary.PercentageOfPriorLearning = 18;
-                priorLearningSummary.MinimumPercentageReduction = 65;
-                priorLearningSummary.MinimumPriceReduction = 55;
-                priorLearningSummary.RplPriceReductionError = true;
-            }
-            //#endif
 
             if (priorLearningSummary?.RplPriceReductionError == true) {
                 return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
