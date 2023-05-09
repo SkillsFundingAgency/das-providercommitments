@@ -16,7 +16,6 @@
         <partial name="_ValidationSummary" />
         <form method="post">
 
-            @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
             @Html.HiddenFor(x => x.CohortReference)
             @Html.HiddenFor(x => x.DraftApprenticeshipId)

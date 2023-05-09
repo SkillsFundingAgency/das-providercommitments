@@ -552,7 +552,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             await Task.WhenAll(requestTask);
             var request = requestTask.Result;
 
-            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.CohortId, request.DraftApprenticeshipId);
+            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(request.ProviderId, request.CohortId, request.DraftApprenticeshipId);
 
             if (priorLearningSummary?.RplPriceReductionError == true) {
                 return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship", 
@@ -572,7 +572,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryRequest request)
         {
             var model = await _modelMapper.Map<PriorLearningSummaryViewModel>(request);
-            return View("RecognisePriorLearningSummary", model);
+
+            if (model.RplPriceReductionError == true)
+            {
+                return View("RecognisePriorLearningSummary", model);
+            }
+
+            return RedirectToOptionalPages(
+                model.HasStandardOptions,
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference);
         }
 
         [HttpPost]

@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly IOuterApiService _outerApiService;
         private readonly IOuterApiClient _outerApiClient;
 
-        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
+        public PriorLearningDataViewModelToResultMapper(IOuterApiService outerApiService, IOuterApiClient outerApiClient)
         {
             _outerApiService = outerApiService;
             _outerApiClient = outerApiClient;

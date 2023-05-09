@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
@@ -41,29 +38,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
     public class RecognisePriorLearningRequestToDataViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDataViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiService _outerApiService;
 
-        public RecognisePriorLearningRequestToDataViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public RecognisePriorLearningRequestToDataViewModelMapper(IOuterApiService outerApiService)
         {
-            _commitmentsApiClient = commitmentsApiClient;
+            _outerApiService = outerApiService;
         }
 
         public async Task<PriorLearningDataViewModel> Map(RecognisePriorLearningRequest source)
         {
-            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-
-            var reducedDuration = apprenticeship.DurationReducedBy;
-            var isDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl;
-
-            if (isDurationReducedByRpl == null && reducedDuration != null)
-            {
-                isDurationReducedByRpl = true;
-            }
-
-            if (isDurationReducedByRpl == false && reducedDuration != null)
-            {
-                reducedDuration = null;
-            }
+            var priorLearningData = await _outerApiService.GetPriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
             return new PriorLearningDataViewModel
             {
@@ -72,12 +56,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 ProviderId = source.ProviderId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                TrainingTotalHours = apprenticeship.TrainingTotalHours,
-                DurationReducedByHours = apprenticeship.DurationReducedByHours,
-                IsDurationReducedByRpl = isDurationReducedByRpl,
-                DurationReducedBy = reducedDuration,
-                CostBeforeRpl = apprenticeship.CostBeforeRpl,
-                PriceReduced = apprenticeship.PriceReducedBy,
+                TrainingTotalHours = priorLearningData.TrainingTotalHours,
+                DurationReducedByHours = priorLearningData.DurationReducedByHours,
+                IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl,
+                DurationReducedBy = priorLearningData.ReducedDuration,
+                CostBeforeRpl = priorLearningData.CostBeforeRpl,
+                PriceReduced = priorLearningData.PriceReduced,
             };
         }
     }
@@ -93,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
         {
-            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.CohortId, source.DraftApprenticeshipId);
+            var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
             return new PriorLearningSummaryViewModel
             {

@@ -13,7 +13,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 		public int? FundingBandMaximum { get; set; }
 		public decimal? PercentageOfPriorLearning { get; set; }
 		public decimal? MinimumPercentageReduction { get; set; }
-		public int? MinimumPriceReduction {get; set;}
+        public bool IsDurationReducedByRpl { get; set; }
+        public int? ReducedDuration { get; set; }
+        public int? MinimumPriceReduction {get; set;}
 		public bool RplPriceReductionError { get; set; }
 		public int? TotalCost { get; set; }
         public string FirstName { get; set; }
