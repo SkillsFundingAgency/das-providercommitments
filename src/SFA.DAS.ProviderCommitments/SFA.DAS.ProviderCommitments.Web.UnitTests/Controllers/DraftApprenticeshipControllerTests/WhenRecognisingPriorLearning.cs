@@ -9,6 +9,8 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -16,6 +18,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
@@ -258,6 +261,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             fixture.OuterApiService.Verify(x =>
                 x.UpdatePriorLearningData(
+                    fixture.DataViewModel.ProviderId,
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
                     It.Is<CreatePriorLearningDataApimRequest>(r =>
@@ -383,6 +387,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public PriorLearningDataViewModel DataViewModel;
 
         public Mock<IOuterApiService> OuterApiService;
+        public Mock<IOuterApiClient> OuterApiClient;
+
+        public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
+        private GetEditApprenticeshipResponse _editApprenticeshipResponse;
+        public EditApprenticeshipRequest _request;
+
 
         public Mock<ICommitmentsApiClient> ApiClient { get; }
         public Mock<IAuthorizationService> AuthorizationService { get; }
@@ -404,7 +414,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             .ReturnsAsync(Apprenticeship);
 
             OuterApiService = new Mock<IOuterApiService>();
-            OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(RplSummary);
+            OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(RplSummary);
+
+            OuterApiClient = new Mock<IOuterApiClient>();
+            OuterApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
+                    r.ApprenticeshipId == _request.ApprenticeshipId && r.ProviderId == _request.ProviderId)))
+                .ReturnsAsync(_editApprenticeshipResponse);
 
             AuthorizationService = new Mock<IAuthorizationService>();
 
@@ -413,12 +428,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ApiClient.Object,
                 new SimpleModelMapper(
                     new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
-                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
+                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object, OuterApiClient.Object),
                     new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
-                    new RecognisePriorLearningRequestToDataViewModelMapper(ApiClient.Object),
-                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object),
+                    new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
+                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object, OuterApiClient.Object),
                     new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
-                    new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
+                    new PriorLearningDataViewModelToResultMapper(OuterApiService.Object, OuterApiClient.Object)),
                     
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
