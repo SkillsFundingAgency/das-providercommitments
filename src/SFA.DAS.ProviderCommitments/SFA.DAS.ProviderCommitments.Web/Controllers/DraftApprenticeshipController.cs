@@ -274,7 +274,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
             StoreEditDraftApprenticeshipState(draft);
 
-            return RedirectToAction("EditDraftApprenticeship", request);
+            return RedirectToAction("EditDraftApprenticeship");
         }
 
         [HttpPost]
