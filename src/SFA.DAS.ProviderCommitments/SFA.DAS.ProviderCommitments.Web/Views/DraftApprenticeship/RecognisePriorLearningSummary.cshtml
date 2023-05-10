@@ -1,6 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Features;
+@using SFA.DAS.ProviderCommitments.Web.RouteValues;
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 
 @{
@@ -39,7 +40,7 @@
                     <ol class="govuk-list govuk-list--number">
                         <li>Check the price reduction figure is correct.</li>
                         <li>Check the total off-the-job training time and the reduction due to RPL.</li>
-                        <li>Re-enter the data for the <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)"> RPL reductions</a> if the details on this page are incorrect.</li>
+                            <li>Re-enter the data for the <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)"> RPL reductions</a> if the details on this page are incorrect.</li>
                     </ol>
                 </div>
                 </div>
@@ -57,7 +58,7 @@
                         <p class="govuk-body govuk-table__cell--numeric">£@Model.PriceReducedBy</p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
                             Change<span class="govuk-visually-hidden"> contact details</span>
                         </a>
                     </dd>
@@ -71,7 +72,7 @@
                         @Model.TrainingTotalHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
                             Change<span class="govuk-visually-hidden"> contact details</span>
                         </a>
                     </dd>
@@ -84,7 +85,7 @@
                         @Model.DurationReducedByHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
                             Change<span class="govuk-visually-hidden"> name</span>
                         </a>
                     </dd>
@@ -119,7 +120,7 @@
                         Percentage figure
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        @Model.PercentageOfPriorLearning %
+                        @Decimal.Round(Model.PercentageOfPriorLearning.Value, 2) %
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -130,7 +131,7 @@
                         Minimum percentage reduction due to RPL (from funding rules P25.5.2)
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        <p class="govuk-body">@Model.MinimumPercentageReduction %</p>
+                        <p class="govuk-body">@Decimal.Round(Model.MinimumPercentageReduction.Value, 2) %</p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -176,5 +177,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearningData", "DraftApprenticeship", @Model)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">Back</a>
 }

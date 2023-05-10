@@ -481,7 +481,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (request.IsTherePriorLearning == true)
             {
-                return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship", new
+                return RedirectToAction("RecognisePriorLearningData", "DraftApprenticeship", new
                 {
                     request.ProviderId,
                     request.DraftApprenticeshipHashedId,
@@ -528,7 +528,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data")]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data", Name = RouteNames.RecognisePriorLearningData)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
         {

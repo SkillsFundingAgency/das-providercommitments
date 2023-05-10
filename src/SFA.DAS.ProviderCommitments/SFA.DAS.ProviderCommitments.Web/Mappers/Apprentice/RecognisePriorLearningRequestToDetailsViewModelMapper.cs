@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 result.TrainingTotalHours = priorLearningData.TrainingTotalHours;
                 result.DurationReducedByHours = priorLearningData.DurationReducedByHours;
                 result.IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl;
-                result.DurationReducedBy = priorLearningData.ReducedDuration;
+                result.DurationReducedBy = priorLearningData.DurationReducedBy;
                 result.CostBeforeRpl = priorLearningData.CostBeforeRpl;
                 result.PriceReduced = priorLearningData.PriceReduced;
             }
