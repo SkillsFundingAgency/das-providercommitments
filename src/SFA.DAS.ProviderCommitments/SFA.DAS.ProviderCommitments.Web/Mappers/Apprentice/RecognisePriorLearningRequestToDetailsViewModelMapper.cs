@@ -1,41 +1,10 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class RecognisePriorLearningRequestToDetailsViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDetailsViewModel>
-    {
-        private readonly ICommitmentsApiClient _commitmentsApiClient;
-
-        public RecognisePriorLearningRequestToDetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
-
-        public async Task<PriorLearningDetailsViewModel> Map(RecognisePriorLearningRequest source)
-        {
-            var apprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
-
-            return new PriorLearningDetailsViewModel
-            {
-                CohortId = source.CohortId,
-                CohortReference = source.CohortReference,
-                DraftApprenticeshipId = source.DraftApprenticeshipId,
-                ProviderId = source.ProviderId,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                WeightageReducedBy = apprenticeship.WeightageReducedBy,
-                QualificationsForRplReduction = apprenticeship.QualificationsForRplReduction,
-                ReasonForRplReduction = apprenticeship.ReasonForRplReduction,
-                DurationReducedByHours = apprenticeship.DurationReducedByHours,
-                ReducedDuration = apprenticeship.DurationReducedBy,
-                ReducedPrice = apprenticeship.PriceReducedBy,
-            };
-        }
-    }
-
     public class RecognisePriorLearningRequestToDataViewModelMapper : IMapper<RecognisePriorLearningRequest, PriorLearningDataViewModel>
     {
         private readonly IOuterApiService _outerApiService;

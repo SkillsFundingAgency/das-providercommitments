@@ -296,10 +296,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 ApiClient.Object,
                 new SimpleModelMapper(
                     new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
-                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object, OuterApiClient.Object),
-                    new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
-                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object, OuterApiClient.Object),
                     new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                     
