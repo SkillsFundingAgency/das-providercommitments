@@ -323,18 +323,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        internal WhenRecognisingPriorLearningFixture WithPreviousRplData(int? trainingTotalHours, int? durationReducedByHours, bool? isDurationReducedByRpl, int? reducedDuration,
-            int? costBeforeRpl, int? reducedPrice)
-        {
-            Apprenticeship.TrainingTotalHours = trainingTotalHours;
-            Apprenticeship.DurationReducedByHours = durationReducedByHours;
-            Apprenticeship.IsDurationReducedByRpl = isDurationReducedByRpl;
-            Apprenticeship.DurationReducedBy = reducedDuration;
-            Apprenticeship.CostBeforeRpl = costBeforeRpl;
-            Apprenticeship.PriceReducedBy = reducedPrice;
-            return this;
-        }
-
         internal WhenRecognisingPriorLearningFixture ChoosePriorLearning(bool? priorLearning)
         {
             ViewModel.IsTherePriorLearning = priorLearning;
