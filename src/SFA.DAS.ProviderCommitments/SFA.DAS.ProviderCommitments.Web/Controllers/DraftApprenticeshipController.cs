@@ -532,12 +532,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
-            {
-                return RedirectToAction("RecognisePriorLearningDetails",
-                    new {request.CohortReference, request.DraftApprenticeshipHashedId});
-            }
-
             var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
             return View("RecognisePriorLearningData", model);
         }

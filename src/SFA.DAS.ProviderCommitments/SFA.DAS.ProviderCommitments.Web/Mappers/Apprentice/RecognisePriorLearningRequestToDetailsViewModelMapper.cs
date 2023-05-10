@@ -18,6 +18,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var priorLearningData = await _outerApiService.GetPriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
+            if (priorLearningData != null)
+            {
+                return new PriorLearningDataViewModel
+                {
+                    CohortId = source.CohortId,
+                    CohortReference = source.CohortReference,
+                    DraftApprenticeshipId = source.DraftApprenticeshipId,
+                    ProviderId = source.ProviderId,
+                    DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
+                    TrainingTotalHours = priorLearningData.TrainingTotalHours,
+                    DurationReducedByHours = priorLearningData.DurationReducedByHours,
+                    IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl,
+                    DurationReducedBy = priorLearningData.ReducedDuration,
+                    CostBeforeRpl = priorLearningData.CostBeforeRpl,
+                    PriceReduced = priorLearningData.PriceReduced,
+                };
+            }
+
             return new PriorLearningDataViewModel
             {
                 CohortId = source.CohortId,
@@ -25,13 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DraftApprenticeshipId = source.DraftApprenticeshipId,
                 ProviderId = source.ProviderId,
                 DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                TrainingTotalHours = priorLearningData.TrainingTotalHours,
-                DurationReducedByHours = priorLearningData.DurationReducedByHours,
-                IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl,
-                DurationReducedBy = priorLearningData.ReducedDuration,
-                CostBeforeRpl = priorLearningData.CostBeforeRpl,
-                PriceReduced = priorLearningData.PriceReduced,
             };
+            
         }
     }
 
