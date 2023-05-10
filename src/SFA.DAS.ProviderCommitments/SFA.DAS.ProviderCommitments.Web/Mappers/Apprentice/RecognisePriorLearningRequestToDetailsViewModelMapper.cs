@@ -16,35 +16,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<PriorLearningDataViewModel> Map(RecognisePriorLearningRequest source)
         {
+            var result = new PriorLearningDataViewModel();
             var priorLearningData = await _outerApiService.GetPriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
+
+            result.CohortId = source.CohortId;
+            result.CohortReference = source.CohortReference;
+            result.DraftApprenticeshipId = source.DraftApprenticeshipId;
+            result.ProviderId = source.ProviderId;
+            result.DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId;
 
             if (priorLearningData != null)
             {
-                return new PriorLearningDataViewModel
-                {
-                    CohortId = source.CohortId,
-                    CohortReference = source.CohortReference,
-                    DraftApprenticeshipId = source.DraftApprenticeshipId,
-                    ProviderId = source.ProviderId,
-                    DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                    TrainingTotalHours = priorLearningData.TrainingTotalHours,
-                    DurationReducedByHours = priorLearningData.DurationReducedByHours,
-                    IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl,
-                    DurationReducedBy = priorLearningData.ReducedDuration,
-                    CostBeforeRpl = priorLearningData.CostBeforeRpl,
-                    PriceReduced = priorLearningData.PriceReduced,
-                };
+                result.TrainingTotalHours = priorLearningData.TrainingTotalHours;
+                result.DurationReducedByHours = priorLearningData.DurationReducedByHours;
+                result.IsDurationReducedByRpl = priorLearningData.IsDurationReducedByRpl;
+                result.DurationReducedBy = priorLearningData.ReducedDuration;
+                result.CostBeforeRpl = priorLearningData.CostBeforeRpl;
+                result.PriceReduced = priorLearningData.PriceReduced;
             }
 
-            return new PriorLearningDataViewModel
-            {
-                CohortId = source.CohortId,
-                CohortReference = source.CohortReference,
-                DraftApprenticeshipId = source.DraftApprenticeshipId,
-                ProviderId = source.ProviderId,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-            };
-            
+            return result;
         }
     }
 
@@ -59,28 +50,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<PriorLearningSummaryViewModel> Map(PriorLearningSummaryRequest source)
         {
+            var result = new PriorLearningSummaryViewModel();
             var priorLearningSummary = await _outerApiService.GetPriorLearningSummary(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
-            return new PriorLearningSummaryViewModel
+            result.CohortId = source.CohortId;
+            result.CohortReference = source.CohortReference;
+            result.DraftApprenticeshipId = source.DraftApprenticeshipId;
+            result.ProviderId = source.ProviderId;
+            result.DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId;
+
+            if (priorLearningSummary != null)
             {
-                CohortId = source.CohortId,
-                CohortReference = source.CohortReference,
-                DraftApprenticeshipId = source.DraftApprenticeshipId,
-                ProviderId = source.ProviderId,
-                DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId,
-                TrainingTotalHours = priorLearningSummary.TrainingTotalHours,
-                DurationReducedByHours = priorLearningSummary.DurationReducedByHours,
-                CostBeforeRpl = priorLearningSummary.CostBeforeRpl,
-                PriceReducedBy = priorLearningSummary.PriceReducedBy,
-                FundingBandMaximum = priorLearningSummary.FundingBandMaximum,
-                PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning,
-                MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction,
-                MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction,
-                RplPriceReductionError = priorLearningSummary.RplPriceReductionError,
-                TotalCost = priorLearningSummary.TotalCost,
-                FullName = string.Format("{0} {1}", priorLearningSummary.FirstName, priorLearningSummary.LastName),
-                HasStandardOptions = priorLearningSummary.HasStandardOptions
-            };
+                result.TrainingTotalHours = priorLearningSummary.TrainingTotalHours;
+                result.DurationReducedByHours = priorLearningSummary.DurationReducedByHours;
+                result.CostBeforeRpl = priorLearningSummary.CostBeforeRpl;
+                result.PriceReducedBy = priorLearningSummary.PriceReducedBy;
+                result.FundingBandMaximum = priorLearningSummary.FundingBandMaximum;
+                result.PercentageOfPriorLearning = priorLearningSummary.PercentageOfPriorLearning;
+                result.MinimumPercentageReduction = priorLearningSummary.MinimumPercentageReduction;
+                result.MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction;
+                result.RplPriceReductionError = priorLearningSummary.RplPriceReductionError;
+                result.TotalCost = priorLearningSummary.TotalCost;
+                result.FullName = string.Format("{0} {1}", priorLearningSummary.FirstName, priorLearningSummary.LastName);
+                result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
+            }
+ 
+            return result;
         }
     }
 }

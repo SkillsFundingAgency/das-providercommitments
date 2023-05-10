@@ -17,6 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDataViewModel source)
         {
+            var result = new RecognisePriorLearningResult();
+
             var update = await _outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
                 new CreatePriorLearningDataApimRequest
                 {
@@ -29,11 +31,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 }
             );
 
-            return new RecognisePriorLearningResult
+            if (update != null)
             {
-                HasStandardOptions = update.HasStandardOptions,
-                RplPriceReductionError = update.RplPriceReductionError
-            };
+                result.HasStandardOptions = update.HasStandardOptions;
+                result.RplPriceReductionError = update.RplPriceReductionError;
+            }
+
+            return result;
         }
     }
 }
