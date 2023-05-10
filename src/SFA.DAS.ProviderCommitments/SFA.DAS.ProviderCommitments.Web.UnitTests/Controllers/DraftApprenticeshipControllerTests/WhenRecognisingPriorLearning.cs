@@ -10,15 +10,12 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
@@ -30,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     public class WhenRecognisingPriorLearning
     {
         [Test]
-        public async Task Get_returns_view()
+        public async Task When_Get_Recognise_Prior_Learning()
         {
             var fixture = new WhenRecognisingPriorLearningFixture();
 
@@ -62,24 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .IsTherePriorLearning.Should().Be(previousSelection);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        [TestCase(null)]
-        public async Task When_declaring_RPL_then_it_is_saved(bool? priorLearning)
-        {
-            var fixture = new WhenRecognisingPriorLearningFixture().ChoosePriorLearning(priorLearning);
-
-            var result = await fixture.Sut.RecognisePriorLearning(fixture.ViewModel);
-
-            fixture.ApiClient.Verify(x =>
-                x.RecognisePriorLearning(
-                    fixture.ViewModel.CohortId,
-                    fixture.ViewModel.DraftApprenticeshipId,
-                    It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
-                        r.RecognisePriorLearning == priorLearning),
-                    It.IsAny<CancellationToken>()));
-        }
-
         [TestCase(100, 1, null, null)]
         [TestCase(2, null, null, null)]
         [TestCase(null, 3, null, null)]
@@ -87,33 +66,45 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [TestCase(null, null, 100, 10)]
         public async Task When_previously_rpl_data_exist_then_map_them(int? totalHours, int? hoursReducedBy, int? costBeforeRpl, int? priceReducedBy)
         {
+            var model = new PriorLearningDataViewModel
+            {
+                TrainingTotalHours = totalHours,
+                DurationReducedByHours = hoursReducedBy,
+                CostBeforeRpl = costBeforeRpl,
+                PriceReduced = priceReducedBy
+            };
+
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithRplSummary(false)
-                .WithPreviousRplData(totalHours, hoursReducedBy, null, null, costBeforeRpl, priceReducedBy);
+                .EnterRplData(model)
+                .WithRplDataResult(true, true);
 
-            var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
+            await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
-            model.TrainingTotalHours.Should().Be(totalHours);
-            model.DurationReducedByHours.Should().Be(hoursReducedBy);
-            model.CostBeforeRpl.Should().Be(costBeforeRpl);
-            model.PriceReduced.Should().Be(priceReducedBy);
+            fixture.OuterApiService.Verify(x =>
+                x.UpdatePriorLearningData(
+                    fixture.DataViewModel.ProviderId,
+                    fixture.DataViewModel.CohortId,
+                    fixture.DataViewModel.DraftApprenticeshipId,
+                    It.Is<CreatePriorLearningDataApimRequest>(r =>
+                        r.TrainingTotalHours == model.TrainingTotalHours &&
+                        r.DurationReducedByHours == model.DurationReducedByHours &&
+                        r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
+                        r.DurationReducedBy == model.DurationReducedBy &&
+                        r.CostBeforeRpl == model.CostBeforeRpl &&
+                        r.PriceReducedBy == model.PriceReduced
+                    )));
         }
-
-
 
         [Test]
         public async Task When_accessing_RecognisePriorLearningData_if_is_not_in_rpl_enhanced_mode()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithRplSummary(false);
+                .WithRplSummary(false, false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
 
             var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
         }
-
-
 
         [Test, MoqAutoData]
         public async Task When_submitting_RPL_data_then_it_is_saved(PriorLearningDataViewModel model)
@@ -169,8 +160,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task After_submitting_prior_learning_data_then_show_RPL_summary_page()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithoutStandardOptions()
-                .WithRplSummary(true);             
+                .WithStandardOptions()
+                .WithRplSummary(false, false);             
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
@@ -183,7 +174,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithoutStandardOptions()
-                .WithRplSummary(false)
+                .WithRplSummary(false, false)
                 .WithRplDataResult(true, true);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
@@ -196,26 +187,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [TestCase, MoqAutoData]
         public async Task After_submitting_prior_learning_data_with_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
         {
-            var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithStandardOptions()
-                .WithRplSummary(false);
+            var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
         }
 
-
-
-
         [Test]
         public async Task After_submitting_prior_learning_data_then_show_Cohort()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithoutStandardOptions()
-                .WithRplSummary(false);
+                .WithRplSummary(false, false);
 
-        var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+            var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             result.VerifyRedirectsToCohortDetailsPage(
                 fixture.DataViewModel.ProviderId,
@@ -223,13 +209,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task After_submitting_prior_learning_data_then_show_Options_when_appropriate()
+        public async Task After_submitting_prior_learning_data_then_show_details_page_when_appropriate()
         {
-            var fixture = new WhenRecognisingPriorLearningFixture().WithStandardOptions();
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithRplSummary(false, true)
+                .WithRplDataResult(true, false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+            result.VerifyRedirectsToDetailsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
         }
     }
 
@@ -312,7 +300,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-
         internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()
         {
             Apprenticeship.RecognisePriorLearning = null;
@@ -367,7 +354,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        internal WhenRecognisingPriorLearningFixture WithRplSummary(bool rplPriceReductionError)
+        internal WhenRecognisingPriorLearningFixture WithRplSummary(bool rplPriceReductionError, bool hasStandardOptions)
         { 
             RplSummary.TrainingTotalHours = 100;
             RplSummary.DurationReducedByHours = 10;
@@ -378,6 +365,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             RplSummary.MinimumPercentageReduction = 10;
             RplSummary.MinimumPriceReduction = 10;
             RplSummary.RplPriceReductionError = rplPriceReductionError;
+            RplSummary.HasStandardOptions = hasStandardOptions;
             return this;
         }
 
