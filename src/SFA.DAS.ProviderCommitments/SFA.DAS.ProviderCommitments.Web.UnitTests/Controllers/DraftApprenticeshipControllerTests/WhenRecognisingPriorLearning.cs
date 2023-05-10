@@ -1,15 +1,17 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -160,13 +162,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task After_submitting_prior_learning_bad_data_then_show_RPL_summary_page()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithRplSummary(true, false)
                 .WithRplDataResult(false, true);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             result.VerifyRedirectsToRecognisePriorLearningSummaryPage(
                 fixture.DataViewModel.DraftApprenticeshipHashedId);
+
         }
 
         [TestCase, MoqAutoData]
@@ -205,6 +207,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
+
             result.VerifyRedirectsToCohortDetailsPage(
                 fixture.DataViewModel.ProviderId,
                 fixture.DataViewModel.CohortReference);
@@ -215,7 +218,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithRplSummary(false, true)
-
                 .WithRplDataResult(true, false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
@@ -242,7 +244,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public Mock<IOuterApiClient> OuterApiClient;
 
         public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-        private GetEditApprenticeshipResponse _editApprenticeshipResponse;
         public EditApprenticeshipRequest _request;
 
         public RecognisePriorLearningResult RplDataResult;
@@ -285,11 +286,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
                     new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
-                    
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
                 OuterApiService.Object);
         }
+
 
         internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
         {

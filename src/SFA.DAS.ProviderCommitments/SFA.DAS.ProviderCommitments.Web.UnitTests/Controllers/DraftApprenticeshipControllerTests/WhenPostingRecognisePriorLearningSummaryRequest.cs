@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public void Then_redirect()
+        public void When_posting_from_Recognise_Prior_Learning_Summary()
         {
             var action = Sut.RecognisePriorLearningSummary(_viewModel);
             action.VerifyReturnsRedirectToActionResult().WithActionName("Details");
