@@ -157,11 +157,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
 
         [TestCase, MoqAutoData]
-        public async Task After_submitting_prior_learning_data_then_show_RPL_summary_page()
+        public async Task After_submitting_prior_learning_bad_data_then_show_RPL_summary_page()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithStandardOptions()
-                .WithRplSummary(false, false);             
+                .WithRplSummary(true, false)
+                .WithRplDataResult(false, true);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
@@ -187,11 +187,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [TestCase, MoqAutoData]
         public async Task After_submitting_prior_learning_data_with_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
         {
-            var fixture = new WhenRecognisingPriorLearningFixture().WithoutStandardOptions();
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithStandardOptions()
+                .WithRplDataResult(true,false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-            result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+            result.VerifyRedirectsToDetailsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
         }
 
         [Test]
@@ -213,6 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithRplSummary(false, true)
+
                 .WithRplDataResult(true, false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
@@ -271,11 +274,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(RplSummary);
             OuterApiService.Setup(x => x.UpdatePriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), CreatePriorLearningDataApimRequest)).ReturnsAsync(RplCreatePriorLearningDataResponse);
             OuterApiService.Setup(x => x.GetPriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(PriorLearningDataQueryResult);
-
-            OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
-                    r.ApprenticeshipId == _request.ApprenticeshipId && r.ProviderId == _request.ProviderId)))
-                .ReturnsAsync(_editApprenticeshipResponse);
 
             AuthorizationService = new Mock<IAuthorizationService>();
 
