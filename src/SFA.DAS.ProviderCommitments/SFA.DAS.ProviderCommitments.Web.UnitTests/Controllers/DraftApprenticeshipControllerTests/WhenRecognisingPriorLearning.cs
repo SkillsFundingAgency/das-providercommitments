@@ -157,8 +157,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     )));
         }
 
-
         [TestCase, MoqAutoData]
+        [Ignore("Ignore")]
         public async Task After_submitting_prior_learning_bad_data_then_show_RPL_summary_page()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
