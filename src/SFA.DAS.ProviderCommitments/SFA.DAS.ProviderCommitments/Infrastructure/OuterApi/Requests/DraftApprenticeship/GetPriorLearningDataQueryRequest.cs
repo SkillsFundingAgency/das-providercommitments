@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
         {
             CohortId = cohortId;
             DraftApprenticeshipId = draftApprenticeshipId;
-            ProviderId = ProviderId;
+            ProviderId = providerId;
         }
         public string GetUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/edit/prior-learning-data";
     }
