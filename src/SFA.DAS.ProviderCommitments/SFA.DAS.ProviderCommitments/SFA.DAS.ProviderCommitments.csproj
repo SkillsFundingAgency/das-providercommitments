@@ -21,8 +21,8 @@
     <PackageReference Include="MediatR" Version="11.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.97" />
-	  <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="100.0.6" />
-	  <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="100.0.6" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="100.0.6" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="100.0.6" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.542" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="4.0.19" />
