@@ -481,7 +481,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (request.IsTherePriorLearning == true)
             {
-                return RedirectToAction("RecognisePriorLearningData", "DraftApprenticeship", new
+                return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship", new
                 {
                     request.ProviderId,
                     request.DraftApprenticeshipHashedId,
