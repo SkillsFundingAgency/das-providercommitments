@@ -120,7 +120,7 @@
                         Percentage figure
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        @Decimal.Round(Model.PercentageOfPriorLearning.Value, 2) %
+                        @Decimal.Round(Model.PercentageOfPriorLearning.GetValueOrDefault(), 2) %
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -131,7 +131,7 @@
                         Minimum percentage reduction due to RPL (from funding rules P25.5.2)
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        <p class="govuk-body">@Decimal.Round(Model.MinimumPercentageReduction.Value, 2) %</p>
+                        <p class="govuk-body">@Decimal.Round(Model.MinimumPercentageReduction.GetValueOrDefault(), 2) %</p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
