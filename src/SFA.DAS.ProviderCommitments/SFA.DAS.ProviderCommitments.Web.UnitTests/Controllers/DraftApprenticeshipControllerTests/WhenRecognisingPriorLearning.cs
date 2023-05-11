@@ -61,6 +61,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .IsTherePriorLearning.Should().Be(previousSelection);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        [TestCase(null)]
+        public async Task When_declaring_RPL_then_it_is_saved(bool? priorLearning)
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture().ChoosePriorLearning(priorLearning);
+            var result = await fixture.Sut.RecognisePriorLearning(fixture.ViewModel);
+            fixture.ApiClient.Verify(x =>
+                x.RecognisePriorLearning(
+                    fixture.ViewModel.CohortId,
+                    fixture.ViewModel.DraftApprenticeshipId,
+                    It.Is<CommitmentsV2.Api.Types.Requests.RecognisePriorLearningRequest>(r =>
+                        r.RecognisePriorLearning == priorLearning),
+                    It.IsAny<CancellationToken>()));
+        }
+
+
         [TestCase(100, 1, null, null)]
         [TestCase(2, null, null, null)]
         [TestCase(null, 3, null, null)]
@@ -285,6 +302,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningRequestToViewModelMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDataViewModelMapper(OuterApiService.Object),
                     new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
+                    new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
