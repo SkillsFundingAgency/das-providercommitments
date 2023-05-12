@@ -314,17 +314,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             result.VerifyRedirectsToRecognisePriorLearningSummaryPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
         }
-
-        [Test]
-        public async Task After_submitting_prior_learning_data_then_show_details_page_when_appropriate()
-        {
-
-            var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithRplSummary(false, true)
-                .WithRplCreatePriorLearningDataResponse(true, false);
-
-            var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
-        }
     }
 
     public class WhenRecognisingPriorLearningFixture
