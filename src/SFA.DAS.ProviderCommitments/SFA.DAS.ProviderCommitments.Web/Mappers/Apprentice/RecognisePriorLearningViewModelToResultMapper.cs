@@ -14,13 +14,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class PriorLearningDetailsViewModelToResultMapper : IMapper<PriorLearningDetailsViewModel, RecognisePriorLearningResult>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IOuterApiClient _outerApiClient;
         private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
         public PriorLearningDetailsViewModelToResultMapper(ICommitmentsApiClient commitmentsApiClient, DAS.Authorization.Services.IAuthorizationService authorizationService, IOuterApiClient outerApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _authorizationService = authorizationService;
-            _outerApiClient = outerApiClient;
         }
         public async Task<RecognisePriorLearningResult> Map(PriorLearningDetailsViewModel source)
         {
@@ -96,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var result = new RecognisePriorLearningResult();
 
             var update = await _outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
-                new CreatePriorLearningDataApimRequest
+                new CreatePriorLearningDataRequest
                 {
                     DurationReducedBy = source.DurationReducedBy,
                     CostBeforeRpl = source.CostBeforeRpl,

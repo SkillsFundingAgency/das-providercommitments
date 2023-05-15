@@ -104,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     fixture.DataViewModel.ProviderId,
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CreatePriorLearningDataApimRequest>(r =>
+                    It.Is<CreatePriorLearningDataRequest>(r =>
                         r.TrainingTotalHours == model.TrainingTotalHours &&
                         r.DurationReducedByHours == model.DurationReducedByHours &&
                         r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
@@ -197,7 +197,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     fixture.DataViewModel.ProviderId,
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CreatePriorLearningDataApimRequest>(r =>
+                    It.Is<CreatePriorLearningDataRequest>(r =>
                         r.TrainingTotalHours == model.TrainingTotalHours &&
                         r.DurationReducedByHours == model.DurationReducedByHours &&
                         r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
@@ -227,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     fixture.DataViewModel.ProviderId,
                     fixture.DataViewModel.CohortId,
                     fixture.DataViewModel.DraftApprenticeshipId,
-                    It.Is<CreatePriorLearningDataApimRequest>(r =>
+                    It.Is<CreatePriorLearningDataRequest>(r =>
                         r.IsDurationReducedByRpl == false &&
                         r.DurationReducedBy == 10
                     )));
@@ -329,7 +329,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public PriorLearningDataViewModel DataViewModel;
         public CreatePriorLearningDataResponse RplCreatePriorLearningDataResponse;
         public GetPriorLearningDataQueryResult PriorLearningDataQueryResult;
-        public CreatePriorLearningDataApimRequest CreatePriorLearningDataApimRequest;
+        public CreatePriorLearningDataRequest CreatePriorLearningDataRequest;
 
         public Mock<IOuterApiService> OuterApiService;
         public Mock<IOuterApiClient> OuterApiClient;
@@ -356,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             RplDataResult = fixture.Create<RecognisePriorLearningResult>();
             PriorLearningDataQueryResult = fixture.Create<GetPriorLearningDataQueryResult>();
             RplCreatePriorLearningDataResponse = fixture.Create<CreatePriorLearningDataResponse>();
-            CreatePriorLearningDataApimRequest = fixture.Create<CreatePriorLearningDataApimRequest>();
+            CreatePriorLearningDataRequest = fixture.Create<CreatePriorLearningDataRequest>();
 
             ApiClient = new Mock<ICommitmentsApiClient>();
             ApiClient.Setup(x =>
@@ -367,7 +367,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             OuterApiService = new Mock<IOuterApiService>();
             OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(RplSummary);
-            OuterApiService.Setup(x => x.UpdatePriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CreatePriorLearningDataApimRequest>())).ReturnsAsync(RplCreatePriorLearningDataResponse);
+            OuterApiService.Setup(x => x.UpdatePriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CreatePriorLearningDataRequest>())).ReturnsAsync(RplCreatePriorLearningDataResponse);
             OuterApiService.Setup(x => x.GetPriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(PriorLearningDataQueryResult);
 
             AuthorizationService = new Mock<IAuthorizationService>();

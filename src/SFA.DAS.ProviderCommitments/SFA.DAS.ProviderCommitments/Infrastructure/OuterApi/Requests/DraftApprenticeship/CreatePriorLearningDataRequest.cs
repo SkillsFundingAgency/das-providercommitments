@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship
 {
-    public class CreatePriorLearningDataApimRequest : ApimSaveDataRequest
+    public class CreatePriorLearningDataRequest : ApimSaveDataRequest
     {
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }

@@ -17,9 +17,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<PriorLearningDataViewModel> Map(RecognisePriorLearningRequest source)
         {
-            var result = new PriorLearningDataViewModel();
             var priorLearningData = await _outerApiService.GetPriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId);
 
+            var result = new PriorLearningDataViewModel();
             result.CohortId = source.CohortId;
             result.CohortReference = source.CohortReference;
             result.DraftApprenticeshipId = source.DraftApprenticeshipId;
@@ -99,7 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 result.MinimumPriceReduction = priorLearningSummary.MinimumPriceReduction;
                 result.RplPriceReductionError = priorLearningSummary.RplPriceReductionError;
                 result.TotalCost = priorLearningSummary.TotalCost;
-                result.FullName = string.Format("{0} {1}", priorLearningSummary.FirstName, priorLearningSummary.LastName);
+                result.FullName = $"{priorLearningSummary.FirstName} {priorLearningSummary.LastName}";
                 result.HasStandardOptions = priorLearningSummary.HasStandardOptions;
             }
  
