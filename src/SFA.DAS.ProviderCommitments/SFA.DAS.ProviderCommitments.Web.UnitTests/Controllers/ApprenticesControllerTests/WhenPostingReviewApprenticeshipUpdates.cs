@@ -33,6 +33,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
+        public async Task WithNoAddThisStandard_RedirectToApprenticeDetails()
+        {
+            _fixture = _fixture.WithIsValidCourseCode(false);
+
+            _fixture = _fixture.WithAddThisStandard(null);
+
+            var result = await _fixture.Act();
+
+            result.VerifyReturnsRedirectToActionResult().WithActionName("ReviewApprenticeshipUpdates");
+        }
+
+        [Test]
         public async Task WithAddThisStandard_RedirectTo_review_your_details()
         {
             _fixture = _fixture.WithIsValidCourseCode(false);

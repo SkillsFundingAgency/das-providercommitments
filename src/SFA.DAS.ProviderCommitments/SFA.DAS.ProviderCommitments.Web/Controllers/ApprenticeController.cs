@@ -114,13 +114,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/changes/review", Name = RouteNames.ApprenticeReviewApprenticeshipUpdates)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesRequest request, bool optionNotSelected)
+        public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesRequest request)
         {
             var viewModel = await _modelMapper.Map<ReviewApprenticeshipUpdatesViewModel>(request);
 
             if (!viewModel.IsValidCourseCode)
             {
-                ModelState.Clear();
                 ModelState.AddModelError("IsValidCourseCode", "This training course has not been declared");
             }
 
@@ -137,17 +136,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 if (!viewModel.AddThisStandard.HasValue)
                 {
-                    var request = new ReviewApprenticeshipUpdatesRequest
-                    {
-                        ApprenticeshipId = viewModel.ApprenticeshipId,
-                        ProviderId = viewModel.ProviderId,
-                        ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId
-                    };
-
-                    var response = await _modelMapper.Map<ReviewApprenticeshipUpdatesViewModel>(request);
                     ModelState.AddModelError("AddThisStandard", "You need to tell us if you want to add or reject the standard");
-                    ModelState.AddModelError("IsValidCourseCode", "This training course has not been declared");
-                    return View(response);
+                    return RedirectToAction("ReviewApprenticeshipUpdates");
                 }
 
                 if (viewModel.AddThisStandard.Value)
