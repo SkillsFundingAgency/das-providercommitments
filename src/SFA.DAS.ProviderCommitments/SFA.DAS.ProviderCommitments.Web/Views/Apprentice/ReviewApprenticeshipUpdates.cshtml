@@ -12,11 +12,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary" />
-    </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-width-container">
         <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
         <form method="POST">
 
@@ -46,20 +42,20 @@
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h1 class="govuk-fieldset__heading">
+                            <h2 class="govuk-fieldset__heading">
                                 Would you like to?
-                            </h1>
+                            </h2>
                         </legend>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="AddThisStandard" name="AddThisStandard" type="radio" value="true">
-                                <label class="govuk-label govuk-radios__label" for="AcceptChanges">
+                                <label class="govuk-label govuk-radios__label" for="AddThisStandard">
                                     Add this standard to your standard training venues
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="AddThisStandard-no" name="AddThisStandard" type="radio" value="false">
-                                <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
+                                <label class="govuk-label govuk-radios__label" for="AddThisStandard-no">
                                     Reject these changes
                                 </label>
                             </div>
@@ -72,9 +68,9 @@
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h1 class="govuk-fieldset__heading">
+                            <h2 class="govuk-fieldset__heading">
                                 Are you happy to approve these changes?
-                            </h1>
+                            </h2>
                         </legend>
                         <div class="govuk-radios">
                             @Html.ValidationMessageFor(m => m.ApproveChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveChanges) })
