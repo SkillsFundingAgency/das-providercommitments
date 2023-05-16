@@ -8,6 +8,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         IApprenticeshipUpdatesViewModel, IAuthorizationContextModel
     {
         public bool? ApproveChanges { get; set; }
+        public bool? AddThisStandard { get; set; }
+        public bool IsValidCourseCode { get; set; }
         [FromRoute]
         public long ProviderId { get; set; }
         [FromRoute]

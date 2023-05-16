@@ -1,6 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.ReviewApprenticeshipUpdatesViewModel
+@inject ILinkGenerator LinkGenerator;
 
 @{
     ViewBag.Title = "Review changes";
@@ -22,35 +23,77 @@
             @Html.AntiForgeryToken()
             @Html.HiddenFor(x => x.ProviderId)
             @Html.HiddenFor(x => x.ApprenticeshipHashedId)
+            @Html.HiddenFor(x => x.IsValidCourseCode)
+
+            @if (!Model.IsValidCourseCode)
+            {
+                <div class="govuk-inset-text">
+                    You need to either add this training course to your <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'standards and training venues'</a> or reject the changes as you are not able to offer this training.
+                </div>
+            }
 
             <partial name="ApprenticeshipUpdatesPartials/_ViewOriginalApprenticeshipForApprenticeshipUpdates" for="OriginalApprenticeship" />
-            <p>@Model.EmployerName have suggested these changes:</p>
-            <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
+            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode,  "govuk-form-group--error")">
+                <p>@Model.EmployerName have suggested these changes:</p>
 
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h1 class="govuk-fieldset__heading">
-                            Are you happy to approve these changes?
-                        </h1>
-                    </legend>
-                    <div class="govuk-radios">
-                        @Html.ValidationMessageFor(m => m.ApproveChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveChanges) })
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="ApproveChanges" name="ApproveChanges" type="radio" value="true">
-                            <label class="govuk-label govuk-radios__label" for="AcceptChanges">
-                                Yes, approve these changes
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="ApproveChanges-no" name="ApproveChanges" type="radio" value="false">
-                            <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
-                                No, reject these changes
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
+                @Html.ValidationMessageFor(m => m.IsValidCourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsValidCourseCode) })
+
+                <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
             </div>
+
+            @if (!Model.IsValidCourseCode)
+            {
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode, "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h1 class="govuk-fieldset__heading">
+                                Would you like to?
+                            </h1>
+                        </legend>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="AddThisStandard" name="AddThisStandard" type="radio" value="true">
+                                <label class="govuk-label govuk-radios__label" for="AcceptChanges">
+                                    Add this standard to your standard training venues
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="AddThisStandard-no" name="AddThisStandard" type="radio" value="false">
+                                <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
+                                    Reject these changes
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h1 class="govuk-fieldset__heading">
+                                Are you happy to approve these changes?
+                            </h1>
+                        </legend>
+                        <div class="govuk-radios">
+                            @Html.ValidationMessageFor(m => m.ApproveChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveChanges) })
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="ApproveChanges" name="ApproveChanges" type="radio" value="true">
+                                <label class="govuk-label govuk-radios__label" for="AcceptChanges">
+                                    Yes, approve these changes
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="ApproveChanges-no" name="ApproveChanges" type="radio" value="false">
+                                <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
+                                    No, reject these changes
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            }
 
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">

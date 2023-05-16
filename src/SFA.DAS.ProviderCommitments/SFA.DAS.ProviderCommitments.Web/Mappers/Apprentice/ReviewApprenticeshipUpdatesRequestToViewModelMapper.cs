@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using System;
@@ -12,10 +13,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class ReviewApprenticeshipUpdatesRequestToViewModelMapper : IMapper<ReviewApprenticeshipUpdatesRequest, ReviewApprenticeshipUpdatesViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _apiClient;
 
-        public ReviewApprenticeshipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ReviewApprenticeshipUpdatesRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IOuterApiClient apiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _apiClient = apiClient;
         }
 
         public async Task<ReviewApprenticeshipUpdatesViewModel> Map(ReviewApprenticeshipUpdatesRequest source)
@@ -25,6 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var apprenticeshipTask = _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
+            bool isValidCourseCode = true;
+
             await Task.WhenAll(updatesTask, apprenticeshipTask);
 
             var updates = updatesTask.Result;
@@ -33,6 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             if (updates.ApprenticeshipUpdates.Count == 1)
             {
                 var update = updates.ApprenticeshipUpdates.First();
+
+                if (!string.IsNullOrWhiteSpace(update.TrainingName))
+                {
+                    var apiRequest = new CheckReviewApprenticeshipCourseRequest(source.ProviderId, source.ApprenticeshipId);
+                    var apiResponse = await _apiClient.Get<CheckReviewApprenticeshipCourseResponse>(apiRequest);
+                    isValidCourseCode = apiResponse?.IsValidCourseCode ?? false;
+                }
 
                 if (!string.IsNullOrWhiteSpace(update.FirstName + update.LastName))
                 {
@@ -46,6 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmployerName = apprenticeship.EmployerName,
                     ProviderId = source.ProviderId,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                    IsValidCourseCode = isValidCourseCode,
                     ApprenticeshipUpdates = new BaseEdit
                     {
                         FirstName = update.FirstName,

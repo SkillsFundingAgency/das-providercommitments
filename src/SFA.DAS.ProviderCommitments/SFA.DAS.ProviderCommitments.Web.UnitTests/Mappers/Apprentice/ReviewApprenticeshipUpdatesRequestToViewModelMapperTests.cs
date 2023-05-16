@@ -11,6 +11,8 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetApprenticeshipUpdatesResponse;
@@ -24,6 +26,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Arrange()
         {
             fixture = new ReviewApprenticeshipUpdatesRequestToViewModelMapperTestsFixture();
+        }
+
+        [Test]
+        public async Task IsValidCourseCode_IsMapped()
+        {
+
+            fixture.ApprenticeshipUpdate.TrainingCode = "ABC";
+            var viewModel = await fixture.Map();
+
+            Assert.AreEqual(fixture.CheckReviewApprenticeshipCourseResponse.IsValidCourseCode, viewModel.IsValidCourseCode);
         }
 
         [Test]
@@ -309,11 +321,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public ReviewApprenticeshipUpdatesRequestToViewModelMapper Mapper;
             public ReviewApprenticeshipUpdatesRequest Source;
             public Mock<ICommitmentsApiClient> CommitmentApiClient;
+            public Mock<IOuterApiClient> ApiClient;
             public GetApprenticeshipResponse GetApprenticeshipResponse;
             public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponses;
             public GetApprenticeshipUpdatesRequest GetApprenticeshipUpdatesRequest;
             public GetTrainingProgrammeResponse GetTrainingProgrammeResponse;
             public ApprenticeshipUpdate ApprenticeshipUpdate;
+            public CheckReviewApprenticeshipCourseResponse CheckReviewApprenticeshipCourseResponse;
 
             public long ApprenticeshipId = 1;
 
@@ -322,6 +336,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 var autoFixture = new Fixture();
                 autoFixture.Customizations.Add(new DateTimeSpecimenBuilder());
                 CommitmentApiClient = new Mock<ICommitmentsApiClient>();
+                ApiClient = new Mock<IOuterApiClient>();
 
                 Source = new ReviewApprenticeshipUpdatesRequest { ApprenticeshipId = ApprenticeshipId, ProviderId = 22, ApprenticeshipHashedId = "XXX" };
                 GetApprenticeshipResponse = autoFixture.Create<GetApprenticeshipResponse>();
@@ -329,6 +344,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 GetApprenticeshipUpdatesResponses = autoFixture.Create<GetApprenticeshipUpdatesResponse>();
                 ApprenticeshipUpdate = GetApprenticeshipUpdatesResponses.ApprenticeshipUpdates.First();
                 GetTrainingProgrammeResponse = autoFixture.Create<GetTrainingProgrammeResponse>();
+                CheckReviewApprenticeshipCourseResponse = autoFixture.Create<CheckReviewApprenticeshipCourseResponse>();
 
                 var priceEpisode = new GetPriceEpisodesResponse
                 {
@@ -345,8 +361,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 CommitmentApiClient.Setup(x => x.GetPriceEpisodes(ApprenticeshipId, It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(priceEpisode));
                 CommitmentApiClient.Setup(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(GetTrainingProgrammeResponse));
 
+                ApiClient.Setup(x =>
+                        x.Get<CheckReviewApprenticeshipCourseResponse>(
+                            It.Is<CheckReviewApprenticeshipCourseRequest>(r =>
+                                r.ApprenticeshipId == ApprenticeshipId)))
+                    .ReturnsAsync(CheckReviewApprenticeshipCourseResponse);
 
-                Mapper = new ReviewApprenticeshipUpdatesRequestToViewModelMapper(CommitmentApiClient.Object);
+                Mapper = new ReviewApprenticeshipUpdatesRequestToViewModelMapper(CommitmentApiClient.Object, ApiClient.Object);
             }
 
             internal async Task<ReviewApprenticeshipUpdatesViewModel> Map()

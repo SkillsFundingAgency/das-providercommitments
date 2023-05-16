@@ -64,6 +64,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Verify(x => x.Map<ReviewApprenticeshipUpdatesViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.ReviewApprenticeshipUpdates(_request);
+        public async Task<IActionResult> Act() => await Sut.ReviewApprenticeshipUpdates(_request,false);
     }
 }

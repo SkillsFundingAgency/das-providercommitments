@@ -19,7 +19,7 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
-using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -114,9 +114,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{apprenticeshipHashedId}/changes/review", Name = RouteNames.ApprenticeReviewApprenticeshipUpdates)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesRequest request)
+        public async Task<IActionResult> ReviewApprenticeshipUpdates(ReviewApprenticeshipUpdatesRequest request, bool optionNotSelected)
         {
             var viewModel = await _modelMapper.Map<ReviewApprenticeshipUpdatesViewModel>(request);
+
+            if (!viewModel.IsValidCourseCode)
+            {
+                ModelState.Clear();
+                ModelState.AddModelError("IsValidCourseCode", "This training course has not been declared");
+            }
 
             return View(viewModel);
         }
@@ -125,35 +131,73 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{apprenticeshipHashedId}/changes/review")]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> ReviewApprenticeshipUpdates([FromServices] IAuthenticationService authenticationService, ReviewApprenticeshipUpdatesViewModel viewModel)
+        public async Task<IActionResult> ReviewApprenticeshipUpdates([FromServices] IAuthenticationService authenticationService, ReviewApprenticeshipUpdatesViewModel viewModel, [FromServices] ILinkGenerator urlHelper)
         {
-            if (viewModel.ApproveChanges.Value)
+            if (!viewModel.IsValidCourseCode)
             {
-                var request = new AcceptApprenticeshipUpdatesRequest
+                if (!viewModel.AddThisStandard.HasValue)
                 {
-                    ApprenticeshipId = viewModel.ApprenticeshipId,
-                    ProviderId = viewModel.ProviderId,
-                    UserInfo = authenticationService.UserInfo
-                };
+                    var request = new ReviewApprenticeshipUpdatesRequest
+                    {
+                        ApprenticeshipId = viewModel.ApprenticeshipId,
+                        ProviderId = viewModel.ProviderId,
+                        ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId
+                    };
 
-                await _commitmentsApiClient.AcceptApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+                    var response = await _modelMapper.Map<ReviewApprenticeshipUpdatesViewModel>(request);
+                    ModelState.AddModelError("AddThisStandard", "You need to tell us if you want to add or reject the standard");
+                    ModelState.AddModelError("IsValidCourseCode", "This training course has not been declared");
+                    return View(response);
+                }
 
-                TempData.AddFlashMessage(ChangesApprovedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                if (viewModel.AddThisStandard.Value)
+                {
+                    var reservationUrl = $"{viewModel.ProviderId}/review-your-details";
+                    return Redirect(urlHelper.CourseManagementLink(reservationUrl));
+                }
+                if (!viewModel.AddThisStandard.Value)
+                {
+                    var request = new RejectApprenticeshipUpdatesRequest
+                    {
+                        ApprenticeshipId = viewModel.ApprenticeshipId,
+                        ProviderId = viewModel.ProviderId,
+                        UserInfo = authenticationService.UserInfo
+                    };
+
+                    await _commitmentsApiClient.RejectApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+
+                    TempData.AddFlashMessage(ChangesRejectedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                }
             }
-            else if (!viewModel.ApproveChanges.Value)
+            else
             {
-                var request = new RejectApprenticeshipUpdatesRequest
+                if (viewModel.ApproveChanges.Value)
                 {
-                    ApprenticeshipId = viewModel.ApprenticeshipId,
-                    ProviderId = viewModel.ProviderId,
-                    UserInfo = authenticationService.UserInfo
-                };
+                    var request = new AcceptApprenticeshipUpdatesRequest
+                    {
+                        ApprenticeshipId = viewModel.ApprenticeshipId,
+                        ProviderId = viewModel.ProviderId,
+                        UserInfo = authenticationService.UserInfo
+                    };
 
-                await _commitmentsApiClient.RejectApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+                    await _commitmentsApiClient.AcceptApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
 
-                TempData.AddFlashMessage(ChangesRejectedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                    TempData.AddFlashMessage(ChangesApprovedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                }
+                else if (!viewModel.ApproveChanges.Value)
+                {
+                    var request = new RejectApprenticeshipUpdatesRequest
+                    {
+                        ApprenticeshipId = viewModel.ApprenticeshipId,
+                        ProviderId = viewModel.ProviderId,
+                        UserInfo = authenticationService.UserInfo
+                    };
+
+                    await _commitmentsApiClient.RejectApprenticeshipUpdates(viewModel.ApprenticeshipId, request);
+
+                    TempData.AddFlashMessage(ChangesRejectedFlashMessage, ITempDataDictionaryExtensions.FlashMessageLevel.Success);
+                }
             }
-
             return RedirectToRoute(RouteNames.ApprenticeDetail, new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
