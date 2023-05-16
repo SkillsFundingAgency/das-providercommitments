@@ -1,12 +1,12 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
-@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Features;
 @using SFA.DAS.ProviderCommitments.Web.RouteValues;
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Check your recognised prior learning";
     ViewBag.ValidationOrder = "";
+    ViewBag.GaData.Vpv = "/unapproved/apprenticeship/add/prior-learning-summary";
+
 }
 
 <div class="govuk-grid-row">
