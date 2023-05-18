@@ -33,23 +33,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithNoAddThisStandard_RedirectToApprenticeDetails()
+        public async Task WithApproveAddStandardToTraining_RedirectTo_review_your_details()
         {
             _fixture = _fixture.WithIsValidCourseCode(false);
 
-            _fixture = _fixture.WithAddThisStandard(null);
-
-            var result = await _fixture.Act();
-
-            result.VerifyReturnsRedirectToActionResult().WithActionName("ReviewApprenticeshipUpdates");
-        }
-
-        [Test]
-        public async Task WithAddThisStandard_RedirectTo_review_your_details()
-        {
-            _fixture = _fixture.WithIsValidCourseCode(false);
-
-            _fixture = _fixture.WithAddThisStandard(true);
+            _fixture = _fixture.WithApproveAddStandardToTraining(true);
 
             var result = await _fixture.Act();
 
@@ -61,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task Without_ValidCourse_And_RejectChanges_RejectChanges_Is_Called()
         {
             _fixture = _fixture.WithIsValidCourseCode(false);
-            _fixture = _fixture.WithAddThisStandard(false);
+            _fixture = _fixture.WithApproveAddStandardToTraining(false);
 
             await _fixture.Act();
 
@@ -132,7 +120,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             private readonly ApprenticeController _sut;
             public readonly ReviewApprenticeshipUpdatesViewModel _viewModel;
-            private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
             protected Mock<ILinkGenerator> _mockLinkGenerator;
@@ -180,9 +167,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 return this;
             }
 
-            public WhenPostingReviewApprenticeshipUpdatesFixture WithAddThisStandard(bool? addThisStandard)
+            public WhenPostingReviewApprenticeshipUpdatesFixture WithApproveAddStandardToTraining(bool? approveAddStandardToTraining)
             {
-                _viewModel.AddThisStandard = addThisStandard;
+                _viewModel.ApproveAddStandardToTraining = approveAddStandardToTraining;
                 return this;
             }
             public WhenPostingReviewApprenticeshipUpdatesFixture WithAcceptChanges()

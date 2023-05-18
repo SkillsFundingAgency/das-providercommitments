@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,10 +31,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task IsValidCourseCode_IsMapped()
         {
 
-            fixture.ApprenticeshipUpdate.TrainingCode = "ABC";
+            fixture.GetReviewApprenticeshipUpdatesResponse.ApprenticeshipUpdates.CourseCode = "ABC";
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.CheckReviewApprenticeshipCourseResponse.IsValidCourseCode, viewModel.IsValidCourseCode);
+            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.IsValidCourseCode, viewModel.IsValidCourseCode);
         }
 
         [Test]
@@ -131,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.TrainingCode, viewModel.ApprenticeshipUpdates.CourseCode);
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseCode, viewModel.ApprenticeshipUpdates.CourseCode);
         }
 
         [Test]
@@ -147,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.TrainingName, viewModel.ApprenticeshipUpdates.CourseName);
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseName, viewModel.ApprenticeshipUpdates.CourseName);
         }
 
         [Test]
@@ -171,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.GetApprenticeshipResponse.ProviderName, viewModel.ProviderName);
+            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.ProviderName, viewModel.ProviderName);
         }
 
         [Test]
@@ -250,7 +249,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.TrainingCode, viewModel.ApprenticeshipUpdates.CourseCode);
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseCode, viewModel.ApprenticeshipUpdates.CourseCode);
         }
 
         [Test]
@@ -258,7 +257,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.TrainingName, viewModel.ApprenticeshipUpdates.CourseName);
+            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseName, viewModel.ApprenticeshipUpdates.CourseName);
         }
 
         [Test]
@@ -280,23 +279,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task If_FirstName_Only_Updated_Map_FirstName_From_OriginalApprenticeship()
         {
-            fixture.GetApprenticeshipUpdatesResponses.ApprenticeshipUpdates.First().LastName = null;
+            fixture.GetReviewApprenticeshipUpdatesResponse.ApprenticeshipUpdates.LastName = null;
 
             var viewModel = await fixture.Map();
 
             Assert.AreEqual(fixture.ApprenticeshipUpdate.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
-            Assert.AreEqual(fixture.GetApprenticeshipResponse.LastName, viewModel.ApprenticeshipUpdates.LastName);
+            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.LastName, viewModel.ApprenticeshipUpdates.LastName);
         }
 
         [Test]
         public async Task If_LastName_Only_Updated_Map_FirstName_From_OriginalApprenticeship()
         {
-            fixture.GetApprenticeshipUpdatesResponses.ApprenticeshipUpdates.First().FirstName = null;
+            fixture.GetReviewApprenticeshipUpdatesResponse.ApprenticeshipUpdates.FirstName = null;
 
             var viewModel = await fixture.Map();
 
             Assert.AreEqual(fixture.ApprenticeshipUpdate.LastName, viewModel.ApprenticeshipUpdates.LastName);
-            Assert.AreEqual(fixture.GetApprenticeshipResponse.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
+            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
         }
 
         [Test]
@@ -322,12 +321,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public ReviewApprenticeshipUpdatesRequest Source;
             public Mock<ICommitmentsApiClient> CommitmentApiClient;
             public Mock<IOuterApiClient> ApiClient;
-            public GetApprenticeshipResponse GetApprenticeshipResponse;
-            public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponses;
             public GetApprenticeshipUpdatesRequest GetApprenticeshipUpdatesRequest;
             public GetTrainingProgrammeResponse GetTrainingProgrammeResponse;
-            public ApprenticeshipUpdate ApprenticeshipUpdate;
-            public CheckReviewApprenticeshipCourseResponse CheckReviewApprenticeshipCourseResponse;
+            public ApprenticeshipDetails ApprenticeshipUpdate;
+
+            public GetReviewApprenticeshipUpdatesResponse GetReviewApprenticeshipUpdatesResponse;
 
             public long ApprenticeshipId = 1;
 
@@ -339,12 +337,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApiClient = new Mock<IOuterApiClient>();
 
                 Source = new ReviewApprenticeshipUpdatesRequest { ApprenticeshipId = ApprenticeshipId, ProviderId = 22, ApprenticeshipHashedId = "XXX" };
-                GetApprenticeshipResponse = autoFixture.Create<GetApprenticeshipResponse>();
+
                 autoFixture.RepeatCount = 1;
-                GetApprenticeshipUpdatesResponses = autoFixture.Create<GetApprenticeshipUpdatesResponse>();
-                ApprenticeshipUpdate = GetApprenticeshipUpdatesResponses.ApprenticeshipUpdates.First();
+              
                 GetTrainingProgrammeResponse = autoFixture.Create<GetTrainingProgrammeResponse>();
-                CheckReviewApprenticeshipCourseResponse = autoFixture.Create<CheckReviewApprenticeshipCourseResponse>();
+                GetReviewApprenticeshipUpdatesResponse = autoFixture.Create<GetReviewApprenticeshipUpdatesResponse>();
+                ApprenticeshipUpdate = GetReviewApprenticeshipUpdatesResponse.ApprenticeshipUpdates;
 
                 var priceEpisode = new GetPriceEpisodesResponse
                 {
@@ -356,16 +354,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     } }
                 };
 
-                CommitmentApiClient.Setup(x => x.GetApprenticeship(ApprenticeshipId, It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(GetApprenticeshipResponse));
-                CommitmentApiClient.Setup(x => x.GetApprenticeshipUpdates(ApprenticeshipId, It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(GetApprenticeshipUpdatesResponses));
                 CommitmentApiClient.Setup(x => x.GetPriceEpisodes(ApprenticeshipId, It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(priceEpisode));
                 CommitmentApiClient.Setup(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(GetTrainingProgrammeResponse));
 
                 ApiClient.Setup(x =>
-                        x.Get<CheckReviewApprenticeshipCourseResponse>(
-                            It.Is<CheckReviewApprenticeshipCourseRequest>(r =>
+                        x.Get<GetReviewApprenticeshipUpdatesResponse>(
+                            It.Is<GetReviewApprenticeshipUpdatesRequest>(r =>
                                 r.ApprenticeshipId == ApprenticeshipId)))
-                    .ReturnsAsync(CheckReviewApprenticeshipCourseResponse);
+                    .ReturnsAsync(GetReviewApprenticeshipUpdatesResponse);
 
                 Mapper = new ReviewApprenticeshipUpdatesRequestToViewModelMapper(CommitmentApiClient.Object, ApiClient.Object);
             }

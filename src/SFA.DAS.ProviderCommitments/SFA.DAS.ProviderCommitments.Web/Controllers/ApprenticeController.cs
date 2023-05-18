@@ -134,18 +134,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (!viewModel.IsValidCourseCode)
             {
-                if (!viewModel.AddThisStandard.HasValue)
-                {
-                    ModelState.AddModelError("AddThisStandard", "You need to tell us if you want to add or reject the standard");
-                    return RedirectToAction("ReviewApprenticeshipUpdates");
-                }
-
-                if (viewModel.AddThisStandard.Value)
+                if (viewModel.ApproveAddStandardToTraining.Value)
                 {
                     var reservationUrl = $"{viewModel.ProviderId}/review-your-details";
                     return Redirect(urlHelper.CourseManagementLink(reservationUrl));
                 }
-                if (!viewModel.AddThisStandard.Value)
+                if (!viewModel.ApproveAddStandardToTraining.Value)
                 {
                     var request = new RejectApprenticeshipUpdatesRequest
                     {
