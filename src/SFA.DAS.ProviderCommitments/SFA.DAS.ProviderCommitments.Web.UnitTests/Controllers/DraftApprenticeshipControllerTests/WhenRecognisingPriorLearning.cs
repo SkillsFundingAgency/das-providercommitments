@@ -162,18 +162,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task When_accessing_RecognisePriorLearningData_if_is_in_rpl_enhanced_mode()
+        public async Task When_accessing_RecognisePriorLearningData_if_is_not_in_rpl_enhanced_mode()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithRplSummary(false, false);
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
 
-            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
+            result.VerifyRedirectsToRecognisePriorLearningDetailsPage(fixture.Request.DraftApprenticeshipHashedId);
         }
 
         [Test]
-        public async Task When_accessing_RecognisePriorLearningData_if_is_not_in_rpl_enhanced_mode()
+        public async Task When_accessing_RecognisePriorLearningData_if_is_in_rpl_enhanced_mode()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
                 .WithRpl2Mode()
@@ -181,7 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
 
-            var model = result.VerifyRedirectsToRecognisePriorLearningDetailsPage(fixture.Request.DraftApprenticeshipHashedId);
+            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
         }
 
         [Test, MoqAutoData]
