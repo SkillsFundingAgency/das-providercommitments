@@ -33,6 +33,7 @@
                 <p>@Model.EmployerName have suggested these changes:</p>
 
                 @Html.ValidationMessageFor(m => m.IsValidCourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsValidCourseCode) })
+                @Html.ValidationMessageFor(m => m.ApproveAddStandardToTraining, " ", new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveAddStandardToTraining) })
 
                 <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
             </div>
