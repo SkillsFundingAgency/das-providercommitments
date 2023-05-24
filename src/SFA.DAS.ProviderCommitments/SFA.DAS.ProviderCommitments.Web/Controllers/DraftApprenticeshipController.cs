@@ -20,6 +20,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
@@ -502,6 +503,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
         {
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            {
+                return RedirectToAction("RecognisePriorLearningData",
+                    new { request.CohortReference, request.DraftApprenticeshipHashedId });
+            }
+
             var model = await _modelMapper.Map<PriorLearningDetailsViewModel>(request);
             return View("RecognisePriorLearningDetails", model);
         }
@@ -518,6 +525,72 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 request.ProviderId,
                 request.DraftApprenticeshipHashedId,
                 request.CohortReference);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data", Name = RouteNames.RecognisePriorLearningData)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
+        {
+            if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            {
+                return RedirectToAction("RecognisePriorLearningDetails",
+                    new { request.CohortReference, request.DraftApprenticeshipHashedId });
+            }
+
+            var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
+            return View("RecognisePriorLearningData", model);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningData(PriorLearningDataViewModel model)
+        {
+            var result = await _modelMapper.Map<RecognisePriorLearningResult>(model);
+
+            if (result?.RplPriceReductionError == true)
+            {
+                return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship",
+                    new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
+            }
+
+            return RedirectToOptionalPages(
+                    result.HasStandardOptions,
+                    model.ProviderId,
+                    model.DraftApprenticeshipHashedId,
+                    model.CohortReference);
+        }
+
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-summary")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> RecognisePriorLearningSummary(PriorLearningSummaryRequest request)
+        {
+            var model = await _modelMapper.Map<PriorLearningSummaryViewModel>(request);
+
+            if (model.RplPriceReductionError == true)
+            {
+                return View("RecognisePriorLearningSummary", model);
+            }
+
+            return RedirectToOptionalPages(
+                model.HasStandardOptions,
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference);
+        }
+
+        [HttpPost]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-summary")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult RecognisePriorLearningSummary(PriorLearningSummaryViewModel model)
+        {
+            return RedirectToOptionalPages(
+                model.HasStandardOptions,
+                model.ProviderId,
+                model.DraftApprenticeshipHashedId,
+                model.CohortReference);
         }
 
         [HttpGet]
