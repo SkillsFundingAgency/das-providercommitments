@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
@@ -14,6 +13,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 
             redirectAction.RouteValues["ProviderId"].Should().Be(providerId);
             redirectAction.RouteValues["CohortReference"].Should().Be(cohortReference);
+
+            return redirectAction;
+        }
+
+        public static RedirectToActionResult VerifyRedirectsToRecognisePriorLearningSummaryPage(this IActionResult result, string draftApprenticeshipHashedId)
+        {
+            var redirectAction = result
+                .VerifyReturnsRedirectToActionResult()
+                .WithActionName("RecognisePriorLearningSummary");
+
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
 
             return redirectAction;
         }
@@ -40,11 +50,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
             return redirectAction;
         }
 
+        public static RedirectToActionResult VerifyRedirectsToRecognisePriorLearningDataPage(this IActionResult result, string draftApprenticeshipHashedId)
+        {
+            var redirectAction = result
+                .VerifyReturnsRedirectToActionResult()
+                .WithActionName("RecognisePriorLearningData");
+
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
+
+            return redirectAction;
+        }
+
         public static RedirectToActionResult VerifyRedirectsToSelectOptionsPage(this IActionResult result, string draftApprenticeshipHashedId)
         {
             var redirectAction = result
                 .VerifyReturnsRedirectToActionResult()
                 .WithActionName("SelectOptions");
+
+            redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
+
+            return redirectAction;
+        }
+
+        public static RedirectToActionResult VerifyRedirectsToDetailsPage(this IActionResult result, string draftApprenticeshipHashedId)
+        {
+            var redirectAction = result
+                .VerifyReturnsRedirectToActionResult()
+                .WithActionName("Details");
 
             redirectAction.RouteValues["DraftApprenticeshipHashedId"].Should().Be(draftApprenticeshipHashedId);
 
