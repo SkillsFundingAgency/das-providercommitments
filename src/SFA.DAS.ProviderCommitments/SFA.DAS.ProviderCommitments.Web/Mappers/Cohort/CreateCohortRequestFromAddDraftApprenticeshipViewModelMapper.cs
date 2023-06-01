@@ -1,31 +1,34 @@
-﻿using System;
-using System.Threading;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading.Tasks;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.Mappers
+namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipOrRoutePostRequest, CreateCohortRequest>
+    public class CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
 
-        public CreateCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
+        public CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
+            ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _cacheStorage = cacheStorage;
         }
 
-        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipOrRoutePostRequest source)
+        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
 
-            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId, CancellationToken.None);
+            var accountLegalEntity =
+                await _commitmentsApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId,
+                    CancellationToken.None);
 
             if (accountLegalEntity is null)
             {

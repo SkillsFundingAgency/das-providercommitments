@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
@@ -7,9 +6,9 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
@@ -20,7 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private AddDraftApprenticeshipViewModelMapper _mapper;
         private CreateCohortWithDraftApprenticeshipRequest _source;
         private Mock<IOuterApiClient> _apiClient;
-        private Mock<ITempDataStorageService> _tempData;
         private Mock<ICacheStorageService> _cacheService;
         private CreateCohortCacheItem _cacheItem;
         private GetAddDraftApprenticeshipDetailsResponse _apiResponse;
@@ -40,10 +38,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _apiClient.Setup(x => x.Get<GetAddDraftApprenticeshipDetailsResponse>(It.IsAny<GetAddDraftApprenticeshipDetailsRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _tempData = new Mock<ITempDataStorageService>();
-            _tempData.Setup(x => x.RetrieveFromCache<AddDraftApprenticeshipViewModel>())
-                .Returns(() => null);
-
             _cacheItem = fixture.Build<CreateCohortCacheItem>()
                 .With(x => x.StartMonthYear, "042020")
                 .Create();
@@ -52,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(_cacheItem);
 
 
-            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _tempData.Object, _cacheService.Object);
+            _mapper = new AddDraftApprenticeshipViewModelMapper(_apiClient.Object, _cacheService.Object);
         }
 
         [Test]
@@ -94,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenStartMonthYearIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.StartMonthYear, result.StartDate.MonthYear);
+            Assert.AreEqual(_cacheItem.StartMonthYear, _source.StartMonthYear);
         }
 
         [Test]
@@ -124,6 +118,58 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_cacheItem.Uln, result.Uln);
         }
+
+        [Test]
+        public async Task Then_StartDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.StartDate.GetFirstDayOfMonth(), result.StartDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_EndDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EndDate.Value.Date, result.EndDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_ActualStartDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.ActualStartDate.Value.Date, result.ActualStartDate.Date);
+        }
+
+        [Test]
+        public async Task Then_EmploymentEndDate_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EmploymentEndDate.GetFirstDayOfMonth(), result.EmploymentEndDate.Date.Value.Date);
+        }
+
+        [Test]
+        public async Task Then_EmploymentPrice_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.EmploymentPrice, result.EmploymentPrice);
+        }
+
+
+        [Test]
+        public async Task Then_Cost_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.Cost, result.Cost);
+        }
+
+
+        [Test]
+        public async Task Then_Reference_IsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.Reference, result.Reference);
+        }
+
 
         [Test]
         public async Task ThenEmailIsMappedCorrectly()
