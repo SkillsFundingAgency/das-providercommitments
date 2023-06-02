@@ -32,15 +32,15 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        RPL price reduction error: @Model.FullName can't be added until this is resolved.
+                        RPL price reduction too low: @Model.FullName can't be added until this is resolved.
                     </p>
                     <p class="govuk-body">
-                        The price reduction you’ve provided is lower than the minimum reduction based on the reduction in off-the-job training time that you have entered. 
+                        Price reduction is below the minimum required based on the off-the-job reduction that you have entered.
                     </p>
                     <ol class="govuk-list govuk-list--number">
                         <li>Check the price reduction figure is correct.</li>
                         <li>Check the total off-the-job training time and the reduction due to RPL.</li>
-                            <li>Re-enter the data for the <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)"> RPL reductions</a> if the details on this page are incorrect.</li>
+                        <li>Re-enter any incorrect data</li>
                     </ol>
                 </div>
                 </div>
@@ -54,8 +54,8 @@
                     <dt class="govuk-summary-list__key half-column">
                         Price reduction due to RPL
                     </dt>
-                    <dd class="govuk-summary-list__value ">
-                        <p class="govuk-body govuk-table__cell--numeric">£@Model.PriceReducedBy</p>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        £@Model.PriceReducedBy
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
@@ -68,7 +68,7 @@
                     <dt class="govuk-summary-list__key">
                         Total off-the-job training time for this apprenticeship standard
                     </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
                         @Model.TrainingTotalHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
@@ -81,7 +81,7 @@
                     <dt class="govuk-summary-list__key">
                         Total reduction in off-the-job training time due to RPL
                     </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
                         @Model.DurationReducedByHours hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
@@ -93,72 +93,61 @@
 
             </dl>
 
-            <p class="govuk-body">
-                Based on the figures you have entered the minimum price reduction due to RPL should be <strong>£@Model.MinimumPriceReduction</strong>.
-            </p>
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    Based on the above figures that you have entered, the minimum price reduction due to RPL is <strong>£@Model.MinimumPriceReduction</strong>.
+                </p>
 
-            <p class="govuk-body">
-                Details of this funding calculation are shown below.
-            </p>
+                <p class="govuk-body">
+                    The calculation below is based on your figures.
+                </p>
+            </div>
 
             <h3 class="govuk-heading-s ">Funding calculation</h3>
 
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key half-column">
-                        Percentage of prior learning <br>(from funding rules P25.5.1)
-                    </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        @Model.DurationReducedByHours /  @Model.TrainingTotalHours
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row ">
-                    <dt class="govuk-summary-list__key">
-                        Percentage figure
-                    </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        @Decimal.Round(Model.PercentageOfPriorLearning.GetValueOrDefault(), 2) %
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                    </dd>
-                </div>
 
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Minimum percentage reduction due to RPL (from funding rules P25.5.2)
+                        Maximum funding band for this apprenticeship standard
                     </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
-                        <p class="govuk-body">@Decimal.Round(Model.MinimumPercentageReduction.GetValueOrDefault(), 2) %</p>
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                    </dd>
-                </div>
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Maximum funding band
-                    </dt>
-                    <dd class="govuk-summary-list__value govuk-table__cell--numeric">
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
                         £@Model.FundingBandMaximum
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
                 </div>
 
-
-                <div class="govuk-summary-list__row">
+                <div class="govuk-summary-list__row ">
                     <dt class="govuk-summary-list__key">
-                        Minimum price reduction due to RPL
+                        Apprentice's training reduction due to RPL
                     </dt>
-                    <dd class="govuk-summary-list__value  govuk-table__cell--numeric">
-                        £@Model.MinimumPriceReduction
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        @Decimal.Round(Model.PercentageOfPriorLearning.GetValueOrDefault(), 2)%
+                        (@Model.DurationReducedByHours of @Model.TrainingTotalHours hours)
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
                 </div>
+                
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Minimum price reduction due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        £@Model.MinimumPriceReduction
+                        (@Decimal.Round(Model.MinimumPercentageReduction.GetValueOrDefault(), 2)% of £@Model.FundingBandMaximum)
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+
+
+
+
+
 
             </dl>
 
