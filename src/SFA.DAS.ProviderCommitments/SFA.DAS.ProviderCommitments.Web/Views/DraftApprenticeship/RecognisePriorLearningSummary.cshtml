@@ -32,7 +32,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        RPL price reduction too low: @Model.FullName can't be added until this is resolved.
+                        RPL price reduction too low: @Model.FullName can't be approved until this is resolved.
                     </p>
                     <p class="govuk-body">
                         Price reduction is below the minimum required based on the off-the-job reduction that you have entered.
@@ -55,7 +55,7 @@
                         Price reduction due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
-                        £@Model.PriceReducedBy
+                        £@Model.PriceReducedBy.GetValueOrDefault().ToString("N")
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
@@ -95,7 +95,7 @@
 
             <div class="govuk-inset-text">
                 <p class="govuk-body">
-                    Based on the above figures that you have entered, the minimum price reduction due to RPL is <strong>£@Model.MinimumPriceReduction</strong>.
+                    Based on the above figures that you have entered, the minimum price reduction due to RPL is <strong>£@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N")</strong>.
                 </p>
 
                 <p class="govuk-body">
@@ -112,7 +112,7 @@
                         Maximum funding band for this apprenticeship standard
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
-                        £@Model.FundingBandMaximum
+                        £@Model.FundingBandMaximum.GetValueOrDefault().ToString("N")
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
@@ -135,8 +135,8 @@
                         Minimum price reduction due to RPL
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
-                        £@Model.MinimumPriceReduction
-                        (@Decimal.Round(Model.MinimumPercentageReduction.GetValueOrDefault(), 2)% of £@Model.FundingBandMaximum)
+                        £@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N")
+                        (@Decimal.Round(Model.MinimumPercentageReduction.GetValueOrDefault(), 2)% of £@Model.FundingBandMaximum.GetValueOrDefault().ToString("N"))
                     </dd>
                     <dd class="govuk-summary-list__actions">
                     </dd>
