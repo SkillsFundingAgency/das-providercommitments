@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
-    public class HasDeclaredStandardsViewModel : IAuthorizationContextModel
+    public class ConfirmEmployerRedirectModel : IAuthorizationContextModel
     {
         public bool HasNoDeclaredStandards { get; set; }
     }

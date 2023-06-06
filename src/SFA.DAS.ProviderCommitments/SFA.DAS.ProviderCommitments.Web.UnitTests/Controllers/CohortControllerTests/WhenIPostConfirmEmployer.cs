@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
         private readonly CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest _emptyCohortRequest;
-        private readonly HasDeclaredStandardsViewModel _hasDeclaredStandardsViewModel;
+        private readonly ConfirmEmployerRedirectModel _hasDeclaredStandardsViewModel;
         private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _emptyCohortResponse;
         private readonly ConfirmEmployerViewModel _viewModel;
         private readonly long _providerId;
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
             _emptyCohortRequest = fixture.Create<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>();
-            _hasDeclaredStandardsViewModel = fixture.Create<HasDeclaredStandardsViewModel>();
+            _hasDeclaredStandardsViewModel = fixture.Create<ConfirmEmployerRedirectModel>();
             _emptyCohortResponse = fixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
 
             _mockModelMapper = new Mock<IModelMapper>();
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .ReturnsAsync(_emptyCohortRequest);
 
             _mockModelMapper
-                .Setup(x => x.Map<HasDeclaredStandardsViewModel>(_viewModel))
+                .Setup(x => x.Map<ConfirmEmployerRedirectModel>(_viewModel))
                 .ReturnsAsync(_hasDeclaredStandardsViewModel);
 
             _commitmentApiClient

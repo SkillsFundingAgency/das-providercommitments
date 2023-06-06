@@ -281,7 +281,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                var model = await _modelMapper.Map<HasDeclaredStandardsViewModel>(viewModel);
+                var model = await _modelMapper.Map<ConfirmEmployerRedirectModel>(viewModel);
 
                 if (model.HasNoDeclaredStandards)
                 {
