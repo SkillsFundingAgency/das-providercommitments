@@ -72,6 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
+                HasNoDeclaredStandards = cohortDetails.HasNoDeclaredStandards,
                 CohortReference = source.CohortReference,
                 WithParty = cohort.WithParty,
                 AccountLegalEntityHashedId = _encodingService.Encode(cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),

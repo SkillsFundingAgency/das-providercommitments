@@ -58,6 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _request = autoFixture.Create<DetailsRequest>();
                 _viewModel = autoFixture.Create<DetailsViewModel>();
                 _viewModel.WithParty = Party.Employer;
+                _viewModel.HasNoDeclaredStandards = false;
 
                 var modelMapper = new Mock<IModelMapper>();
                 modelMapper.Setup(x => x.Map<DetailsViewModel>(It.Is<DetailsRequest>(r => r == _request)))

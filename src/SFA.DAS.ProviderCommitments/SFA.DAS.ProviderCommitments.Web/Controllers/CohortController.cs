@@ -231,7 +231,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
                 });
             }
-            
+
             return await SaveDraftApprenticeship(model);
         }
 
@@ -277,10 +277,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/confirm-employer")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
+                var model = await _modelMapper.Map<HasDeclaredStandardsViewModel>(viewModel);
+
+                if (model.HasNoDeclaredStandards)
+                {
+                    return RedirectToAction("NoDeclaredStandards");
+                }
+
                 return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
@@ -319,7 +326,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+
+            if (viewModel.HasNoDeclaredStandards)
+            {
+                return RedirectToAction("NoDeclaredStandards");
+            }
             return View(viewModel);
+        }
+
+
+        [HttpGet]
+        [Route("NoDeclaredStandards")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult NoDeclaredStandards()
+        {
+            return View();
         }
 
         [Route("{cohortReference}")]
@@ -333,15 +354,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 case CohortDetailsOptions.Send:
                 case CohortDetailsOptions.Approve:
-                {
-                    await ValidateAuthorization(authorizationService);
-                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                    return RedirectToAction(nameof(Acknowledgement), request);
-                }
+                    {
+                        await ValidateAuthorization(authorizationService);
+                        var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                        return RedirectToAction(nameof(Acknowledgement), request);
+                    }
                 case CohortDetailsOptions.ApprenticeRequest:
-                {
-                    return RedirectToAction("Review", new { viewModel.ProviderId });
-                }
+                    {
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
@@ -419,6 +440,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
+            if (viewModel.HasNoDeclaredStandards) return RedirectToAction("NoDeclaredStandards");
             return View(viewModel);
         }
 

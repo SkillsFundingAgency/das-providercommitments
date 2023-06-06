@@ -9,6 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     public class DetailsViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
         public Party WithParty { get; set; }
         public string CohortReference { get; set; }
         public long CohortId { get; set; }
