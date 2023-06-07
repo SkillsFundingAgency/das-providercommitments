@@ -11,12 +11,12 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
-    public class ConfirmEmployerDeclaredStandardsRequestToModelTests
+    public class ConfirmEmployerRequestToModelTests
     {
-        private ConfirmEmployerDeclaredStandardsRequestToModelMapper _mapper;
+        private ConfirmEmployerRequestToModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
         private ConfirmEmployerViewModel _request;
-        private GetConfirmEmployerDeclaredStandardsResponse _apiResponse;
+        private GetConfirmEmployerResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
 
         [Test]
@@ -30,14 +30,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void Setup()
         {
             _request = _fixture.Create<ConfirmEmployerViewModel>();
-            _apiResponse = _fixture.Create<GetConfirmEmployerDeclaredStandardsResponse>();
+            _apiResponse = _fixture.Create<GetConfirmEmployerResponse>();
 
             _apiClient = new Mock<IOuterApiClient>();
-            _apiClient.Setup(x => x.Get<GetConfirmEmployerDeclaredStandardsResponse>(It.Is<GetConfirmEmployerDeclaredStandardsRequest>(r =>
+            _apiClient.Setup(x => x.Get<GetConfirmEmployerResponse>(It.Is<GetConfirmEmployerRequest>(r =>
                     r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new ConfirmEmployerDeclaredStandardsRequestToModelMapper(_apiClient.Object);
+            _mapper = new ConfirmEmployerRequestToModelMapper(_apiClient.Object);
         }
     }
 }

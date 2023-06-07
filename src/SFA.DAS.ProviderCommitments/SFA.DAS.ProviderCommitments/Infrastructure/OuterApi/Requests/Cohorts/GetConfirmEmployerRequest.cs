@@ -1,10 +1,10 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
 {
-    public class GetConfirmEmployerDeclaredStandardsRequest : IGetApiRequest
+    public class GetConfirmEmployerRequest : IGetApiRequest
     {
         public long ProviderId { get; }
 
-        public GetConfirmEmployerDeclaredStandardsRequest(long providerId)
+        public GetConfirmEmployerRequest(long providerId)
         {
             ProviderId = providerId;
         }
@@ -12,7 +12,7 @@
         public string GetUrl => $"provider/{ProviderId}/unapproved/add/confirm-employer";
     }
 
-    public class GetConfirmEmployerDeclaredStandardsResponse
+    public class GetConfirmEmployerResponse
     {
         public bool HasNoDeclaredStandards { get; set; }
     }

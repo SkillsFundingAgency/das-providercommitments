@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
-    public class ConfirmEmployerDeclaredStandardsRequestToModelMapper : IMapper<ConfirmEmployerViewModel, ConfirmEmployerRedirectModel>
+    public class ConfirmEmployerRequestToModelMapper : IMapper<ConfirmEmployerViewModel, ConfirmEmployerRedirectModel>
     {
         private readonly IOuterApiClient _apiClient;
 
-        public ConfirmEmployerDeclaredStandardsRequestToModelMapper(IOuterApiClient apiClient)
+        public ConfirmEmployerRequestToModelMapper(IOuterApiClient apiClient)
         {
             _apiClient = apiClient;
         }
 
         public async Task<ConfirmEmployerRedirectModel> Map(ConfirmEmployerViewModel source)
         {
-            var apiRequest = new GetConfirmEmployerDeclaredStandardsRequest(source.ProviderId);
-            var apiResponse = await _apiClient.Get<GetConfirmEmployerDeclaredStandardsResponse>(apiRequest);
+            var apiRequest = new GetConfirmEmployerRequest(source.ProviderId);
+            var apiResponse = await _apiClient.Get<GetConfirmEmployerResponse>(apiRequest);
 
             return new ConfirmEmployerRedirectModel
             {
