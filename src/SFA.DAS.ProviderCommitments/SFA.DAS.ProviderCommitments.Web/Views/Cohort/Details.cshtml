@@ -197,15 +197,18 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             course.ErrorIsCompletedDisplayed = true;
         }
 
-        if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
+        if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
         {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">Actual price reduction due to RPL</h3>
-                <p>
-                    You must reduce the actual price due to RPL by more than the minimum amount specified in the funding rules
-                </p>
-            </div>
-            course.ErrorIsCompletedDisplayed = true;
+            if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
+            {
+                <div class="govuk-inset-text das-inset-text--highlight">
+                    <h3 class="govuk-heading-s">Actual price reduction due to RPL</h3>
+                    <p>
+                        You must reduce the actual price due to RPL by more than the minimum amount specified in the funding rules
+                    </p>
+                </div>
+                course.ErrorIsCompletedDisplayed = true;
+            }
         }
 
         if (draftApprenticeship.ExceedsFundingBandCap && !course.ErrorFundingBandExcessDisplayed)
