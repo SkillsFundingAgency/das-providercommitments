@@ -2,7 +2,7 @@
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @{
     ViewData["Title"] = "Add recognition of prior learning details";
-    ViewBag.ValidationOrder = "TrainingTotalHours,DurationReducedByHours,IsDurationReducedByRpl,ReducedDuration,CostBeforeRpl,ReducedPrice";
+    ViewBag.ValidationOrder = "TrainingTotalHours,DurationReducedByHours,IsDurationReducedByRpl,ReducedDuration,ReducedPrice";
     ViewBag.GaData.Vpv = "/unapproved/apprenticeship/prior-learning-data";
 }
 
@@ -88,18 +88,6 @@
                             </div>
                         </fieldset>
                     </div>
-
-                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.CostBeforeRpl, "govuk-form-group--error")">
-                        <label asp-for="CostBeforeRpl" class="govuk-label govuk-!-font-weight-bold">
-                            Total price for this apprenticeship standard
-                        </label>
-                        <span id="total-cost-hint" class="govuk-hint">
-                            The amount you charge before any reductions. Enter the price in whole pounds. For example, for £1,500 enter 1500
-                        </span>
-                        @Html.ValidationMessageFor(m => m.CostBeforeRpl, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.CostBeforeRpl) })
-                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="CostBeforeRpl" class="govuk-input govuk-input--width-5" />
-                    </div>
-
 
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.PriceReduced, "govuk-form-group--error")">
                         <label asp-for="PriceReduced" class="govuk-label govuk-!-font-weight-bold">

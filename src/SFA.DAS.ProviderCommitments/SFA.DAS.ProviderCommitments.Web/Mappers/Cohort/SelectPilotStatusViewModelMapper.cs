@@ -20,7 +20,12 @@ public class SelectPilotStatusViewModelMapper : IMapper<SelectPilotStatusRequest
     {
         var cacheItem = await _cacheStorageService.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
 
-        var result = new SelectPilotStatusViewModel();
+        var result = new SelectPilotStatusViewModel
+        {
+            ProviderId = source.ProviderId,
+            CacheKey = source.CacheKey,
+            IsEdit = source.IsEdit
+        };
 
         if (cacheItem.IsOnFlexiPaymentPilot.HasValue)
         {

@@ -51,6 +51,13 @@
 </div>
 
 @section breadcrumb
+{
+    @if (Model.IsEdit)
     {
-    <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId })>Back</a>
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("AddDraftApprenticeship", new { @Model.ProviderId, Model.CacheKey })>Back</a>
+    }
+    else
+    {
+        <a id="back-link" class="govuk-back-link" href=@Url.Action("SelectEmployer", new { @Model.ProviderId })>Back</a>
+    }
 }

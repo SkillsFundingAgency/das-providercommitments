@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -10,17 +9,17 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestMapperTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort.CreateCohortRequestMapperTests
 {
     [TestFixture]
     public class WhenIMapCreateCohortRequest
     {
-        private CreateCohortRequestMapper _mapper;
-        private AddDraftApprenticeshipOrRoutePostRequest _source;
+        private CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper _mapper;
+        private AddDraftApprenticeshipViewModel _source;
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
         private Mock<ICacheStorageService> _cacheStorageService;
         private long _accountLegalEntityId;
@@ -49,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var employmentPrice = fixture.Create<int?>();
             var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
-            _source = fixture.Build<AddDraftApprenticeshipOrRoutePostRequest>()
+            _source = fixture.Build<AddDraftApprenticeshipViewModel>()
                 .With(x => x.EmployerAccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
                 .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.BirthDay, birthDate?.Day)
@@ -76,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             _cacheStorageService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(_source.CacheKey))
                 .ReturnsAsync(_cacheItem);
 
-            _mapper = new CreateCohortRequestMapper(_mockCommitmentsApiClient.Object, _cacheStorageService.Object);
+            _mapper = new CreateCohortRequestFromAddDraftApprenticeshipViewModelMapper(_mockCommitmentsApiClient.Object, _cacheStorageService.Object);
 
             _act = () => _mapper.Map(TestHelper.Clone(_source));
         }
