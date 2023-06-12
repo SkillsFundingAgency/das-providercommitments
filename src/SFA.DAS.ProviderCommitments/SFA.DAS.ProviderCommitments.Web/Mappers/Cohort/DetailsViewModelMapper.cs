@@ -94,7 +94,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 IsLinkedToChangeOfPartyRequest = allCohortDetails.IsLinkedToChangeOfPartyRequest,
                 Status = GetCohortStatus(allCohortDetails, allCohortDetails.DraftApprenticeships),
                 ShowRofjaaRemovalBanner = allCohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
-                InvalidProviderCourseCodes = allCohortDetails.InvalidProviderCourseCodes.ToList()
+                InvalidProviderCourseCodes = allCohortDetails.InvalidProviderCourseCodes.ToList(),
+                RplErrorDraftApprenticeshipIds = allCohortDetails.RplErrorDraftApprenticeshipIds.ToList()
             };
         }
 

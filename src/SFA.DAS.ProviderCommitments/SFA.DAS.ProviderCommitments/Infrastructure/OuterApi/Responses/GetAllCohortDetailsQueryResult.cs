@@ -33,5 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IReadOnlyCollection<DraftApprenticeshipDto> DraftApprenticeships { get; set; }
         public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
+        public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
     }
 }

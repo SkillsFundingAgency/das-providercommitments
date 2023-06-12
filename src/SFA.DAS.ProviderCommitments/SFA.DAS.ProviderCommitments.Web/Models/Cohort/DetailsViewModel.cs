@@ -71,6 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ShowRofjaaRemovalBanner { get; set; }
         public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes == null? false : InvalidProviderCourseCodes.Any();
         public List<string> InvalidProviderCourseCodes { get; set; }
+        public List<long> RplErrorDraftApprenticeshipIds { get; set; }
     }
 
     public enum CohortDetailsOptions
