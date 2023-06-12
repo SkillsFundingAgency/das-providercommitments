@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     public class DetailsViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
-        public Party WithParty { get; set; }
+        public Infrastructure.OuterApi.Responses.Party WithParty { get; set; }
         public string CohortReference { get; set; }
         public long CohortId { get; set; }
         public string AccountLegalEntityHashedId { get; set; }
@@ -25,7 +25,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 return Courses?.SelectMany(c => c.DraftApprenticeships).Count() ?? 0;
             }
         }
-
         public IReadOnlyCollection<DetailsViewCourseGroupingModel> Courses { get; set; }
         public string PageTitle { get; set; }
         public CohortDetailsOptions? Selection { get; set; }
@@ -39,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ShowViewAgreementOption => !IsAgreementSigned;
         public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
-        public bool IsReadOnly => WithParty != Party.Provider;
+        public bool IsReadOnly => WithParty != Infrastructure.OuterApi.Responses.Party.Provider;
         public bool IsCompleteForProvider { get; set; }
         public bool HasEmailOverlaps { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }
@@ -80,5 +79,4 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         Approve,
         ApprenticeRequest
     }
-
 }
