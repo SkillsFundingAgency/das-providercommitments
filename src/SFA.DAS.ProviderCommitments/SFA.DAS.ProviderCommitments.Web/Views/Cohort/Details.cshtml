@@ -196,6 +196,18 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             </div>
             course.ErrorIsCompletedDisplayed = true;
         }
+
+        if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">Actual price reduction due to RPL</h3>
+                <p>
+                    You must reduce the actual price due to RPL by more than the minimum amount specified in the funding rules
+                </p>
+            </div>
+            course.ErrorIsCompletedDisplayed = true;
+        }
+
         if (draftApprenticeship.ExceedsFundingBandCap && !course.ErrorFundingBandExcessDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -232,7 +244,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell" data-label="Name">
-                    @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete)
+                    @if (draftApprenticeship.HasOverlappingEmail || draftApprenticeship.HasOverlappingUln || !draftApprenticeship.IsComplete || Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
                     {
                         <span class="das-table-cell--highlight das-breakable">@draftApprenticeship.DisplayName</span>
                     }
