@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.LegalEntityName, result.LegalEntityName);
+            Assert.AreEqual(fixture.Cohort.LegalEntityName, result.LegalEntityName);
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.ProviderName, result.ProviderName);
+            Assert.AreEqual(fixture.Cohort.ProviderName, result.ProviderName);
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.DraftApprenticeshipsResponse.DraftApprenticeships.Count, result.DraftApprenticeshipsCount);
+            Assert.AreEqual(fixture.Cohort.DraftApprenticeships.Count, result.DraftApprenticeshipsCount);
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             foreach (var course in result.Courses)
             {
-                var expectedCount = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
+                var expectedCount = fixture.Cohort.DraftApprenticeships
                     .Count(a => a.CourseCode == course.CourseCode && a.CourseName == course.CourseName && a.DeliveryModel == course.DeliveryModel);
 
                 Assert.AreEqual(expectedCount, course.Count);
@@ -164,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            var expectedSequence = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
+            var expectedSequence = fixture.Cohort.DraftApprenticeships
                 .Select(c => new { c.CourseName, c.CourseCode, DeliveryModel = c.DeliveryModel })
                 .Distinct()
                 .OrderBy(c => c.CourseName).ThenBy(c => c.CourseCode).ThenBy(c=>c.DeliveryModel)
@@ -186,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             foreach (var course in result.Courses)
             {
-                var expectedSequence = fixture.DraftApprenticeshipsResponse.DraftApprenticeships
+                var expectedSequence = fixture.Cohort.DraftApprenticeships
                     .Where(a => a.CourseName == course.CourseName && a.CourseCode == course.CourseCode && a.DeliveryModel == course.DeliveryModel)
                     .Select(a => $"{a.FirstName} {a.LastName}")
                     .OrderBy(a => a)
@@ -204,7 +204,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            foreach (var draftApprenticeship in fixture.DraftApprenticeshipsResponse.DraftApprenticeships)
+            foreach (var draftApprenticeship in fixture.Cohort.DraftApprenticeships)
             {
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
@@ -219,7 +219,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            foreach (var draftApprenticeship in fixture.DraftApprenticeshipsResponse.DraftApprenticeships.Where(x => x.StartDate == fixture.DefaultStartDate))
+            foreach (var draftApprenticeship in fixture.Cohort.DraftApprenticeships.Where(x => x.StartDate == fixture.DefaultStartDate))
             {
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
@@ -235,7 +235,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Map();
 
-            foreach (var draftApprenticeship in fixture.DraftApprenticeshipsResponse.DraftApprenticeships)
+            foreach (var draftApprenticeship in fixture.Cohort.DraftApprenticeships)
             {
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
@@ -251,7 +251,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Map();
 
-            foreach (var draftApprenticeship in fixture.DraftApprenticeshipsResponse.DraftApprenticeships)
+            foreach (var draftApprenticeship in fixture.Cohort.DraftApprenticeships)
             {
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
@@ -267,7 +267,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            foreach (var draftApprenticeship in fixture.DraftApprenticeshipsResponse.DraftApprenticeships.Where(x => x.StartDate == fixture.DefaultStartDate.AddMonths(2)))
+            foreach (var draftApprenticeship in fixture.Cohort.DraftApprenticeships.Where(x => x.StartDate == fixture.DefaultStartDate.AddMonths(2)))
             {
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
@@ -518,7 +518,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task EmailOverlapIsMappedCorrectlyToDraftApprenticeshipAndToSummaryLine()
         {
             var f = new DetailsViewModelMapperTestsFixture().WithOneEmailOverlapping();
-            var apprenticeshipId = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.First().Id;
+            var apprenticeshipId = f.Cohort.ApprenticeshipEmailOverlaps.First().Id;
 
             var result = await f.Map();
             var course = result.Courses.FirstOrDefault(x => x.DraftApprenticeships.Any(y => y.Id == apprenticeshipId));
@@ -534,8 +534,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task EmailOverlapIsMappedCorrectlyToDraftApprenticeshipsAndToSummaryLineWhenTwoEmailOverlapsExistOnSameCourse()
         {
             var f = new DetailsViewModelMapperTestsFixture().WithTwoEmailOverlappingOnSameCourse();
-            var apprenticeshipId1 = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.First().Id;
-            var apprenticeshipId2 = f.EmailOverlapResponse.ApprenticeshipEmailOverlaps.Last().Id;
+            var apprenticeshipId1 = f.Cohort.ApprenticeshipEmailOverlaps.First().Id;
+            var apprenticeshipId2 = f.Cohort.ApprenticeshipEmailOverlaps.Last().Id;
 
             var result = await f.Map();
             var course = result.Courses.FirstOrDefault();
@@ -788,6 +788,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IOuterApiService> OuterApiService;
         public Mock<IEncodingService> EncodingService;
         public GetAllCohortDetailsQueryResult Cohort;
+        public GetCohortResponse CohortCommitments;
         public GetCohortDetailsResponse CohortDetails;
         public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
@@ -807,6 +808,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _autoFixture = new Fixture();
 
+            CohortCommitments = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             Cohort = _autoFixture.Build<GetAllCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
@@ -821,8 +823,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            //CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-           //     .ReturnsAsync(Cohort);
+            CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(CohortCommitments);
             CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(DraftApprenticeshipsResponse);
             CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -832,11 +834,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
             OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
-                .ReturnsAsync(CohortDetails);
+            OuterApiClient.Setup(x => x.Get<GetAllCohortDetailsQueryResult>(It.IsAny<GetAllCohortDetailsRequest>()))
+                .ReturnsAsync(Cohort);
 
             OuterApiService = new Mock<IOuterApiService>();
-            OuterApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync(() => new GetCohortResult());
+            OuterApiService.Setup(x => x.GetAllCohortDetails(It.IsAny<long>(),It.IsAny<long>())).ReturnsAsync(Cohort);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
@@ -1113,13 +1115,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 		
 		public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
-            CohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
+            Cohort.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;
         }
 
         public DetailsViewModelMapperTestsFixture SetHasInvalidCourse(bool hasInvalidCourse)
         {
-            CohortDetails.InvalidProviderCourseCodes = hasInvalidCourse ? new List<string> { "test-invalid-course-code" } : Enumerable.Empty<string>();
+            Cohort.InvalidProviderCourseCodes = hasInvalidCourse ? new List<string> { "test-invalid-course-code" } : Enumerable.Empty<string>();
             return this;
         }
     }
