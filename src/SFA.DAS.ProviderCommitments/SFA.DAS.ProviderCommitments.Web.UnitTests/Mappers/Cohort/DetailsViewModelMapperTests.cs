@@ -1060,7 +1060,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public DetailsViewModelMapperTestsFixture SetCohortApprovedStatus(bool isApproved)
         {
-            Cohort.IsApprovedByEmployer = Cohort.IsApprovedByProvider = isApproved; ;
+            Cohort.IsApprovedByEmployer = Cohort.IsApprovedByProvider = isApproved;
             return this;
         }
 
@@ -1112,8 +1112,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal DetailsViewModelMapperTestsFixture SetUlnOverlap(bool hasOverlap)
         {
-            CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
-             .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = hasOverlap, HasOverlappingStartDate = hasOverlap });
+            OuterApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValidateUlnOverlapOnStartDateQueryResult { HasStartDateOverlap = hasOverlap  });
 
             return this;
         }
