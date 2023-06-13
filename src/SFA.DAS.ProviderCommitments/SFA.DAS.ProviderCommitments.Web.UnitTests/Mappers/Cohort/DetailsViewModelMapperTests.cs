@@ -27,6 +27,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.Testing.Builders;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -324,16 +326,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsNull(excessModel);
         }
 
-        [TestCase(0, "Approve apprentice details", Party.Provider)]
-        [TestCase(1, "Approve apprentice details", Party.Provider)]
-        [TestCase(2, "Approve 2 apprentices' details", Party.Provider)]
-        [TestCase(0, "View apprentice details", Party.Employer)]
-        [TestCase(1, "View apprentice details", Party.Employer)]
-        [TestCase(2, "View 2 apprentices' details", Party.Employer)]
-        [TestCase(0, "View apprentice details", Party.TransferSender)]
-        [TestCase(1, "View apprentice details", Party.TransferSender)]
-        [TestCase(2, "View 2 apprentices' details", Party.TransferSender)]
-        public async Task PageTitleIsSetCorrectlyForTheNumberOfApprenticeships(int numberOfApprenticeships, string expectedPageTitle, Party withParty)
+        [TestCase(0, "Approve apprentice details", Infrastructure.OuterApi.Responses.Party.Provider)]
+        [TestCase(1, "Approve apprentice details", Infrastructure.OuterApi.Responses.Party.Provider)]
+        [TestCase(2, "Approve 2 apprentices' details", Infrastructure.OuterApi.Responses.Party.Provider)]
+        [TestCase(0, "View apprentice details", Infrastructure.OuterApi.Responses.Party.Employer)]
+        [TestCase(1, "View apprentice details", Infrastructure.OuterApi.Responses.Party.Employer)]
+        [TestCase(2, "View 2 apprentices' details", Infrastructure.OuterApi.Responses.Party.Employer)]
+        [TestCase(0, "View apprentice details", Infrastructure.OuterApi.Responses.Party.TransferSender)]
+        [TestCase(1, "View apprentice details", Infrastructure.OuterApi.Responses.Party.TransferSender)]
+        [TestCase(2, "View 2 apprentices' details", Infrastructure.OuterApi.Responses.Party.TransferSender)]
+        public async Task PageTitleIsSetCorrectlyForTheNumberOfApprenticeships(int numberOfApprenticeships, string expectedPageTitle, Infrastructure.OuterApi.Responses.Party withParty)
         {
             var fixture = new DetailsViewModelMapperTestsFixture().CreateThisNumberOfApprenticeships(numberOfApprenticeships);
             fixture.Cohort.WithParty = withParty;
@@ -560,10 +562,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
                 .SetTransferSender()
-                .SetCohortWithParty(Party.TransferSender);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.TransferSender);
 
             fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
-            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Pending;
+            fixture.Cohort.TransferApprovalStatus = Infrastructure.OuterApi.Responses.TransferApprovalStatus.Pending;
 
             var result = await fixture.Map();
             Assert.AreEqual("Pending - with funding employer", result.Status);
@@ -575,12 +577,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
                 .SetTransferSender()
-                .SetCohortWithParty(Party.TransferSender)
-                .SetTransferApprovalStatus(TransferApprovalStatus.Rejected)
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.TransferSender)
+                .SetTransferApprovalStatus(Infrastructure.OuterApi.Responses.TransferApprovalStatus.Rejected)
                 .SetCohortApprovedStatus(true);
 
             fixture.Cohort.IsApprovedByEmployer = fixture.Cohort.IsApprovedByProvider = true;
-            fixture.Cohort.TransferApprovalStatus = TransferApprovalStatus.Rejected;
+            fixture.Cohort.TransferApprovalStatus = Infrastructure.OuterApi.Responses.TransferApprovalStatus.Rejected;
 
             var result = await fixture.Map();
             Assert.AreEqual("Rejected by transfer sending employer", result.Status);
@@ -591,9 +593,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Provider); 
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Provider); 
 
-            fixture.Cohort.LastAction = LastAction.None;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.None;
             
             var result = await fixture.Map();
             Assert.AreEqual("New request", result.Status);
@@ -604,9 +606,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Provider);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Provider);
 
-            fixture.Cohort.LastAction = LastAction.Amend;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.Amend;
 
             var result = await fixture.Map();
             Assert.AreEqual("Ready for review", result.Status);
@@ -617,9 +619,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Provider);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Provider);
 
-            fixture.Cohort.LastAction = LastAction.Approve;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.Approve;
             fixture.Cohort.IsApprovedByEmployer = true;
 
             var result = await fixture.Map();
@@ -631,9 +633,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Employer);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Employer);
 
-            fixture.Cohort.LastAction = LastAction.None;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.None;
 
             var result = await fixture.Map();
             Assert.AreEqual("New request", result.Status);
@@ -644,9 +646,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Employer);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Employer);
 
-            fixture.Cohort.LastAction = LastAction.Amend;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.Amend;
 
             var result = await fixture.Map();
             Assert.AreEqual("Under review with employer", result.Status);
@@ -657,9 +659,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture()
                 .CreateThisNumberOfApprenticeships(1)
-                .SetCohortWithParty(Party.Employer);
+                .SetCohortWithParty(Infrastructure.OuterApi.Responses.Party.Employer);
 
-            fixture.Cohort.LastAction = LastAction.Approve;
+            fixture.Cohort.LastAction = Infrastructure.OuterApi.Responses.LastAction.Approve;
             
 
             var result = await fixture.Map();
@@ -783,8 +785,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<ICommitmentsApiClient> CommitmentsApiClient;
         public Mock<IPasAccountApiClient> PasAccountApiClient;
         public Mock<IOuterApiClient> OuterApiClient;
+        public Mock<IOuterApiService> OuterApiService;
         public Mock<IEncodingService> EncodingService;
-        public GetCohortResponse Cohort;
+        public GetAllCohortDetailsQueryResult Cohort;
         public GetCohortDetailsResponse CohortDetails;
         public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
@@ -804,7 +807,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _autoFixture = new Fixture();
 
-            Cohort = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
+            Cohort = _autoFixture.Build<GetAllCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
             CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
@@ -818,8 +821,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Cohort);
+            //CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+           //     .ReturnsAsync(Cohort);
             CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(DraftApprenticeshipsResponse);
             CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -831,6 +834,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             OuterApiClient = new Mock<IOuterApiClient>();
             OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
                 .ReturnsAsync(CohortDetails);
+
+            OuterApiService = new Mock<IOuterApiService>();
+            OuterApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync(() => new GetCohortResult());
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
@@ -859,11 +865,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
 
-            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object);
+            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object, OuterApiService.Object);
             Source = _autoFixture.Create<DetailsRequest>();
         }
 
-        public DetailsViewModelMapperTestsFixture SetCohortWithParty(Party party)
+        public DetailsViewModelMapperTestsFixture SetCohortWithParty(Infrastructure.OuterApi.Responses.Party party)
         {
             Cohort.WithParty = party;
             return this;
@@ -1039,9 +1045,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
-        public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
+        public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(Infrastructure.OuterApi.Responses.TransferApprovalStatus transferApprovalStatus)
         {
-            Cohort.TransferApprovalStatus = transferApprovalStatus; ;
+            Cohort.TransferApprovalStatus = transferApprovalStatus;
             return this;
         }
 

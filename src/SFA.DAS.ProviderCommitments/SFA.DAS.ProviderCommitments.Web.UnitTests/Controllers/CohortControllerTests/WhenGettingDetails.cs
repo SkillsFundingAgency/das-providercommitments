@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         [TestCase(Party.Employer)]
         [TestCase(Party.TransferSender)]
-        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithProvider(Party withParty)
+        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithProvider(Infrastructure.OuterApi.Responses.Party withParty)
         {
             _fixture.WithParty(withParty);
             await _fixture.GetDetails();
@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _request = autoFixture.Create<DetailsRequest>();
                 _viewModel = autoFixture.Create<DetailsViewModel>();
-                _viewModel.WithParty = Party.Employer;
+                _viewModel.WithParty = Infrastructure.OuterApi.Responses.Party.Employer;
 
                 var modelMapper = new Mock<IModelMapper>();
                 modelMapper.Setup(x => x.Map<DetailsViewModel>(It.Is<DetailsRequest>(r => r == _request)))
@@ -76,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public CohortController CohortController { get; set; }
 
-            public WhenGettingDetailsTestFixture WithParty(Party withParty)
+            public WhenGettingDetailsTestFixture WithParty(Infrastructure.OuterApi.Responses.Party withParty)
             {
                 _viewModel.WithParty = withParty;
                 return this;
