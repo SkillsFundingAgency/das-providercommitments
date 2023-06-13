@@ -22,6 +22,7 @@ using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Features;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using Microsoft.Azure.Documents;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -220,7 +221,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             PopulateFundingBandExcessModels(groupedByCourse);
             PopulateEmailOverlapsModel(groupedByCourse);
-            await CheckUlnOverlap(groupedByCourse);
+            await CheckUlnOverlap(groupedByCourse, cohortResponse.ProviderId.Value);
             await CheckForPendingOverlappingTrainingDateRequest(groupedByCourse);
 
             return groupedByCourse;
@@ -277,9 +278,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return true;
         }
 
-        private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups)
+        private Task CheckUlnOverlap(List<DetailsViewCourseGroupingModel> courseGroups, long providerId)
         {
-            var results = courseGroups.Select(courseGroup => SetUlnOverlap(courseGroup.DraftApprenticeships));
+            var results = courseGroups.Select(courseGroup => SetUlnOverlap(courseGroup.DraftApprenticeships, providerId));
             return Task.WhenAll(results);
         }
 
@@ -352,21 +353,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task SetUlnOverlap(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships)
+        private async Task SetUlnOverlap(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships, long providerId)
         {
            foreach (var draftApprenticeship in draftApprenticeships)
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
                 {
-                        var result = await _commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
-                        {
-                            EndDate = draftApprenticeship.EndDate.Value,
-                            StartDate = draftApprenticeship.StartDate.Value,
-                            ULN = draftApprenticeship.ULN,
-                            ApprenticeshipId = draftApprenticeship.Id
-                        });
-
-                    draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingStartDate;
+                    var result = await _outerApiService.ValidateUlnOverlapOnStartDate(providerId, draftApprenticeship.ULN, draftApprenticeship.StartDate.HasValue.ToString(), draftApprenticeship.EndDate.HasValue.ToString());
+                    draftApprenticeship.HasOverlappingUln = result.HasStartDateOverlap || result.HasOverlapWithApprenticeshipId.HasValue;
                 }
             }
         }
