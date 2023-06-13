@@ -821,6 +821,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);
+            Cohort.DraftApprenticeships = draftApprenticeships;
             DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
             EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
@@ -917,16 +918,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DetailsViewModelMapperTestsFixture CreateThisNumberOfApprenticeships(int numberOfApprenticeships)
         {
             var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(numberOfApprenticeships).ToArray();
-            DraftApprenticeshipsResponse.DraftApprenticeships = draftApprenticeships;
+            Cohort.DraftApprenticeships = draftApprenticeships;
             return this;
         }
 
         public DetailsViewModelMapperTestsFixture WithOneEmailOverlapping()
         {
             CreateThisNumberOfApprenticeships(10);
-            var first = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            var first = Cohort.DraftApprenticeships.First();
             var emailOverlap = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, first.Id).Create();
-            EmailOverlapResponse.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap };
+            Cohort.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap };
 
             return this;
         }
@@ -940,19 +941,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 draftApprenticeship.CourseName = "ABC Name";
                 draftApprenticeship.DeliveryModel = DeliveryModel.Regular;
             }
-            DraftApprenticeshipsResponse.DraftApprenticeships = draftApprenticeships;
-            var first = DraftApprenticeshipsResponse.DraftApprenticeships.First();
-            var last = DraftApprenticeshipsResponse.DraftApprenticeships.Last();
+            Cohort.DraftApprenticeships = draftApprenticeships;
+            var first = Cohort.DraftApprenticeships.First();
+            var last = Cohort.DraftApprenticeships.Last();
             var emailOverlap1 = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, first.Id).Create();
             var emailOverlap2 = _autoFixture.Build<ApprenticeshipEmailOverlap>().With(x => x.Id, last.Id).Create();
-            EmailOverlapResponse.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap1, emailOverlap2 };
+            Cohort.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> { emailOverlap1, emailOverlap2 };
 
             return this;
         }
 
         public DetailsViewModelMapperTestsFixture SetValueOfDraftApprenticeshipProperty(string propertyName, object value)
         {
-            var draftApprenticeship = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            var draftApprenticeship = Cohort.DraftApprenticeships.First();
             if (!string.IsNullOrWhiteSpace(propertyName))
             {
                 PropertyInfo propertyInfo = draftApprenticeship.GetType().GetProperty(propertyName);
@@ -974,7 +975,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var draftApprenticeshipBuilder = _autoFixture.Build<DraftApprenticeshipDto>();
             var draftApprenticeship = build(draftApprenticeshipBuilder).Create();
 
-            DraftApprenticeshipsResponse.DraftApprenticeships = new List<DraftApprenticeshipDto>() { draftApprenticeship };
+            Cohort.DraftApprenticeships = new List<DraftApprenticeshipDto>() { draftApprenticeship };
             return this;
         }
 
@@ -1066,7 +1067,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DetailsViewModelMapperTestsFixture SetupChangeOfPartyScenario()
         {
             Cohort.ChangeOfPartyRequestId = 1;
-            var draftApprenticeship = DraftApprenticeshipsResponse.DraftApprenticeships.First();
+            var draftApprenticeship = Cohort.DraftApprenticeships.First();
             draftApprenticeship.OriginalStartDate = _fundingPeriods.First().EffectiveFrom;
             draftApprenticeship.StartDate = _fundingPeriods.Last().EffectiveFrom;
             draftApprenticeship.Cost = _fundingPeriods.First().FundingCap + 500;
@@ -1082,7 +1083,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public DetailsViewModelMapperTestsFixture SetNoCourse()
         {
-            DraftApprenticeshipsResponse.DraftApprenticeships = DraftApprenticeshipsResponse.DraftApprenticeships.Select(c =>
+            Cohort.DraftApprenticeships = Cohort.DraftApprenticeships.Select(c =>
             {
                 c.CourseCode = "no-course";
                 return c;
@@ -1092,7 +1093,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public DetailsViewModelMapperTestsFixture SetNoCourseSet()
         {
-            DraftApprenticeshipsResponse.DraftApprenticeships = DraftApprenticeshipsResponse.DraftApprenticeships.Select(c =>
+            Cohort.DraftApprenticeships = Cohort.DraftApprenticeships.Select(c =>
             {
                 c.CourseCode = "";
                 return c;
