@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             //this solution should NOT use tempdata in this way
             _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
-            var allCohortDetailsTask = _outerApiService.GetAllCohortDetails(source.ProviderId, source.CohortId);
+            var allCohortDetailsTask = _outerApiService.GetCohortDetails(source.ProviderId, source.CohortId);
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
             await Task.WhenAll(allCohortDetailsTask, agreementStatusTask);
@@ -100,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private string GetCohortStatus(GetAllCohortDetailsQueryResult cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
+        private string GetCohortStatus(GetCohortDetailsQueryResult cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
         {
             if (cohort.TransferSenderId.HasValue &&
                 cohort.TransferApprovalStatus == Infrastructure.OuterApi.Responses.TransferApprovalStatus.Pending)
@@ -139,7 +139,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return "New request";
         }
 
-        private static string GetProviderOnlyStatus(GetAllCohortDetailsQueryResult cohort)
+        private static string GetProviderOnlyStatus(GetCohortDetailsQueryResult cohort)
         {
             if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.None)
             {
@@ -162,7 +162,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private static string GetEmployerOnlyStatus(GetAllCohortDetailsQueryResult cohort)
+        private static string GetEmployerOnlyStatus(GetCohortDetailsQueryResult cohort)
         {
             if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.None)
             {
@@ -182,7 +182,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetAllCohortDetailsQueryResult cohortResponse)
+        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsQueryResult cohortResponse)
         {
             var groupedByCourse = draftApprenticeships
                 .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel })
@@ -227,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return groupedByCourse;
         }
 
-        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetAllCohortDetailsQueryResult cohortResponse)
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsQueryResult cohortResponse)
         {
             if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
