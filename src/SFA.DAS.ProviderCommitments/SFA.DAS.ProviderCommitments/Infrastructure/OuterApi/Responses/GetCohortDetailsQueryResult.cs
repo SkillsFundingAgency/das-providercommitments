@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 {
-    public class GetAllCohortDetailsQueryResult
+    public class GetCohortDetailsQueryResult
     {
         public long CohortId { get; set; }
         public long AccountId { get; set; }

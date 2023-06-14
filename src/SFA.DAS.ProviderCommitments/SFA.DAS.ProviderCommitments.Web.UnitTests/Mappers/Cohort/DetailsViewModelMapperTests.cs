@@ -787,7 +787,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IOuterApiClient> OuterApiClient;
         public Mock<IOuterApiService> OuterApiService;
         public Mock<IEncodingService> EncodingService;
-        public GetAllCohortDetailsQueryResult Cohort;
+        public GetCohortDetailsQueryResult Cohort;
         public GetCohortResponse CohortCommitments;
         public GetCohortDetailsResponse CohortDetails;
         public ValidateUlnOverlapOnStartDateQueryResult OverlapResult;
@@ -810,7 +810,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _autoFixture = new Fixture();
 
             CohortCommitments = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
-            Cohort = _autoFixture.Build<GetAllCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
+            Cohort = _autoFixture.Build<GetCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             OverlapResult = _autoFixture.Build<ValidateUlnOverlapOnStartDateQueryResult>().Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
@@ -837,11 +837,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
             OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetAllCohortDetailsQueryResult>(It.IsAny<GetAllCohortDetailsRequest>()))
+            OuterApiClient.Setup(x => x.Get<GetCohortDetailsQueryResult>(It.IsAny<GetCohortDetailsRequest>()))
                 .ReturnsAsync(Cohort);
 
             OuterApiService = new Mock<IOuterApiService>();
-            OuterApiService.Setup(x => x.GetAllCohortDetails(It.IsAny<long>(),It.IsAny<long>())).ReturnsAsync(Cohort);
+            OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(),It.IsAny<long>())).ReturnsAsync(Cohort);
             OuterApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(OverlapResult);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();

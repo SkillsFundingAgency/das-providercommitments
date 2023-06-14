@@ -28,6 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<GetPriorLearningDataQueryResult> GetPriorLearningData(long providerId, long cohortId, long draftApprenticeshipId);
         Task<CreatePriorLearningDataResponse> UpdatePriorLearningData(long providerId, long cohortId, long draftApprenticeshipId, CreatePriorLearningDataRequest request);
         Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long providerId, long cohortId, long apprenticeshipId);
-        Task<GetAllCohortDetailsQueryResult> GetAllCohortDetails(long providerId, long cohortId);
+        Task<GetCohortDetailsQueryResult> GetCohortDetails(long providerId, long cohortId);
     }
 }
