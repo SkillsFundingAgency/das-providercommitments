@@ -55,48 +55,48 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             //this solution should NOT use tempdata in this way
             _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
-            var allCohortDetailsTask = _outerApiService.GetCohortDetails(source.ProviderId, source.CohortId);
+            var cohortDetailsTask = _outerApiService.GetCohortDetails(source.ProviderId, source.CohortId);
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
-            await Task.WhenAll(allCohortDetailsTask, agreementStatusTask);
+            await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
            
             var agreementStatus = agreementStatusTask.Result;
-            var allCohortDetails = allCohortDetailsTask.Result;
+            var cohortDetails = cohortDetailsTask.Result;
 
-            var emailOverlaps = allCohortDetails.ApprenticeshipEmailOverlaps.ToList();
+            var emailOverlaps = cohortDetails.ApprenticeshipEmailOverlaps.ToList();
 
-            var courses = await GroupCourses(allCohortDetails.DraftApprenticeships, emailOverlaps, allCohortDetails);
-            var viewOrApprove = allCohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider ? "Approve" : "View";
+            var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
+            var viewOrApprove = cohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
                 CohortReference = source.CohortReference,
-                WithParty = allCohortDetails.WithParty,
-                AccountLegalEntityHashedId = _encodingService.Encode(allCohortDetails.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
-                LegalEntityName = allCohortDetails.LegalEntityName,
-                ProviderName = allCohortDetails.ProviderName,
-                TransferSenderHashedId = allCohortDetails.TransferSenderId == null ? null : _encodingService.Encode(allCohortDetails.TransferSenderId.Value, EncodingType.PublicAccountId),
-                EncodedPledgeApplicationId = allCohortDetails.PledgeApplicationId == null ? null : _encodingService.Encode(allCohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
-                Message = allCohortDetails.LatestMessageCreatedByEmployer,
+                WithParty = cohortDetails.WithParty,
+                AccountLegalEntityHashedId = _encodingService.Encode(cohortDetails.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                LegalEntityName = cohortDetails.LegalEntityName,
+                ProviderName = cohortDetails.ProviderName,
+                TransferSenderHashedId = cohortDetails.TransferSenderId == null ? null : _encodingService.Encode(cohortDetails.TransferSenderId.Value, EncodingType.PublicAccountId),
+                EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : _encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
+                Message = cohortDetails.LatestMessageCreatedByEmployer,
                 Courses = courses,
-                PageTitle = allCohortDetails.DraftApprenticeships.Count > 1
-                    ? $"{viewOrApprove} {allCohortDetails.DraftApprenticeships.Count} apprentices' details"
+                PageTitle = cohortDetails.DraftApprenticeships.Count > 1
+                    ? $"{viewOrApprove} {cohortDetails.DraftApprenticeships.Count} apprentices' details"
                     : $"{viewOrApprove} apprentice details",
-                IsApprovedByEmployer = allCohortDetails.IsApprovedByEmployer,
+                IsApprovedByEmployer = cohortDetails.IsApprovedByEmployer,
                 IsAgreementSigned = isAgreementSigned,
-                IsCompleteForProvider = allCohortDetails.IsCompleteForProvider,
+                IsCompleteForProvider = cohortDetails.IsCompleteForProvider,
                 HasEmailOverlaps = emailOverlaps.Any(),
-                ShowAddAnotherApprenticeOption = !allCohortDetails.IsLinkedToChangeOfPartyRequest,
-                AllowBulkUpload = allCohortDetails.LevyStatus == Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType.Levy
-                && allCohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider
-                && !allCohortDetails.IsLinkedToChangeOfPartyRequest,
-                IsLinkedToChangeOfPartyRequest = allCohortDetails.IsLinkedToChangeOfPartyRequest,
-                Status = GetCohortStatus(allCohortDetails, allCohortDetails.DraftApprenticeships),
-                ShowRofjaaRemovalBanner = allCohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
-                InvalidProviderCourseCodes = allCohortDetails.InvalidProviderCourseCodes.ToList(),
-                RplErrorDraftApprenticeshipIds = allCohortDetails.RplErrorDraftApprenticeshipIds.ToList()
+                ShowAddAnotherApprenticeOption = !cohortDetails.IsLinkedToChangeOfPartyRequest,
+                AllowBulkUpload = cohortDetails.LevyStatus == Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType.Levy
+                && cohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider
+                && !cohortDetails.IsLinkedToChangeOfPartyRequest,
+                IsLinkedToChangeOfPartyRequest = cohortDetails.IsLinkedToChangeOfPartyRequest,
+                Status = GetCohortStatus(cohortDetails, cohortDetails.DraftApprenticeships),
+                ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
+                InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
+                RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList()
             };
         }
 
