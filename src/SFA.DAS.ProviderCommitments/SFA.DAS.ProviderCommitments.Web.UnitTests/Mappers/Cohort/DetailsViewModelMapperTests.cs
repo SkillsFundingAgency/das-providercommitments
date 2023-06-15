@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
@@ -389,6 +390,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
+
             var result = await fixture.Map();
             Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
         }
@@ -439,6 +441,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetIsAgreementSigned(isAgreementSigned);
+
             var result = await fixture.Map();
             Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
         }
@@ -815,7 +818,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.InvalidProviderCourseCodes,Enumerable.Empty<string>())
                 .Create();
             DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
-
+            
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             Cohort.DraftApprenticeships = draftApprenticeships;
             _autoFixture.Register(() => draftApprenticeships);
