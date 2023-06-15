@@ -3,8 +3,8 @@ using AutoFixture.Dsl;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.CommitmentsV2.Types.Dtos;
@@ -12,8 +12,13 @@ using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +27,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using SFA.DAS.Testing.Builders;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -752,7 +750,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
-
         [TestCase(false, true)]
         public async Task IsCompleteMappedCorrectlyWhenExtendedRecognisingPriorLearningStillNeedsToBeConsideredIsSet(bool recognisingPriorLearningStillNeedsConsideration, bool isComplete)
         {
@@ -760,7 +757,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .CreateDraftApprenticeship(build => build.With(x => x.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, recognisingPriorLearningStillNeedsConsideration));
 
             var result = await fixture.Map();
-
+            
             result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
         }
 
@@ -788,15 +785,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IOuterApiService> OuterApiService;
         public Mock<IEncodingService> EncodingService;
         public GetCohortDetailsQueryResult Cohort;
-        public GetCohortResponse CohortCommitments;
         public GetCohortDetailsResponse CohortDetails;
         public ValidateUlnOverlapOnStartDateQueryResult OverlapResult;
         public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
+        public GetDraftApprenticeshipsResult DraftApprenticeshipsResult;
+        
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
         public GetEmailOverlapsResponse EmailOverlapResponse;
-
 
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
@@ -809,7 +806,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _autoFixture = new Fixture();
 
-            CohortCommitments = _autoFixture.Build<GetCohortResponse>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             Cohort = _autoFixture.Build<GetCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
             OverlapResult = _autoFixture.Build<ValidateUlnOverlapOnStartDateQueryResult>().Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
@@ -818,30 +814,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
                 .With(x => x.InvalidProviderCourseCodes,Enumerable.Empty<string>())
                 .Create();
+            DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
 
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
-            _autoFixture.Register(() => draftApprenticeships);
             Cohort.DraftApprenticeships = draftApprenticeships;
-            DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
-            EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
+            _autoFixture.Register(() => draftApprenticeships);
 
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(CohortCommitments);
-            CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DraftApprenticeshipsResponse);
-            CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(AccountLegalEntityResponse);
+            EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
             PasAccountApiClient = new Mock<IPasAccountApiClient>();
             PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
             OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetCohortDetailsQueryResult>(It.IsAny<GetCohortDetailsRequest>()))
-                .ReturnsAsync(Cohort);
+            OuterApiClient.Setup(x => x.Get<GetCohortDetailsQueryResult>(It.IsAny<GetCohortDetailsRequest>())).ReturnsAsync(Cohort);
 
             OuterApiService = new Mock<IOuterApiService>();
-            OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(),It.IsAny<long>())).ReturnsAsync(Cohort);
+            OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(Cohort);
             OuterApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(OverlapResult);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
@@ -854,19 +842,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             };
             _trainingProgramme = new TrainingProgramme { EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), FundingPeriods = _fundingPeriods };
 
+            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetTrainingProgramme(It.Is<string>(c => !string.IsNullOrEmpty(c)), CancellationToken.None))
                 .ReturnsAsync(new GetTrainingProgrammeResponse { TrainingProgramme = _trainingProgramme });
-
-            CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
-               .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = false, HasOverlappingStartDate = false});
             CommitmentsApiClient.Setup(x => x.GetTrainingProgramme("no-course", CancellationToken.None))
                 .ThrowsAsync(new RestHttpClientException(new HttpResponseMessage(HttpStatusCode.NotFound)
                 {
                     RequestMessage = new HttpRequestMessage(),
                     ReasonPhrase = "Url not found"
                 }, "Course not found"));
-            CommitmentsApiClient.Setup(x => x.GetEmailOverlapChecks(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(EmailOverlapResponse);
 
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
