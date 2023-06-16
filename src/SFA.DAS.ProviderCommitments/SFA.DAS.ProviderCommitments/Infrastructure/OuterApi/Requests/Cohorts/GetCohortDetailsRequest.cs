@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
     {
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
     }
