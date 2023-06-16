@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
@@ -18,5 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ErrorHasOverlappingUlnDisplayed { get; set; }
         public bool ErrorEmailOverlapsDisplayed { get; set; }
         public bool ErrorFundingBandExcessDisplayed { get; set; }
+        public int RplErrorCount { get; set; }
     }
 }

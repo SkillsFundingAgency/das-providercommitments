@@ -202,7 +202,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id))
             {
                 <div class="govuk-inset-text das-inset-text--highlight">
-                    <h3 class="govuk-heading-s">Price reduction due to RPL below the minimum</h3>
+                    <h3 class="govuk-heading-s">@course.RplErrorCount Price reduction due to RPL below the minimum</h3>
                     <p>
                         You must reduce the price by the minimum amount specified in the funding rules, or more
                     </p>

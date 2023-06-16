@@ -388,8 +388,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, "Submit to employer?")]
         public async Task OptionsTitleIsMappedCorrectlyWithATransfer(bool isAgreementSigned, string expectedOptionsTitle)
         {
-            var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                               .SetTransferSender().SetIsAgreementSigned(isAgreementSigned)
+                                .SetUlnOverlap(false)
+                                
+                                .UnavailableFlexiJobAgencyDeliveryModel(false)
+                                .WithNoEmailOverlapping();
 
             var result = await fixture.Map();
             Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
@@ -399,8 +403,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, "Submit to employer?")]
         public async Task OptionsTitleIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, string expectedOptionsTitle)
         {
-            var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetIsAgreementSigned(isAgreementSigned);
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                                .SetIsAgreementSigned(isAgreementSigned)
+                                .SetUlnOverlap(false)
+                                .UnavailableFlexiJobAgencyDeliveryModel(false)
+                                .WithNoEmailOverlapping();
+
+            fixture.SetHasInvalidCourse(false);
+
             var result = await fixture.Map();
             Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
         }
@@ -809,10 +819,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _autoFixture = new Fixture();
 
-            Cohort = _autoFixture.Build<GetCohortDetailsQueryResult>().Without(x => x.TransferSenderId).With(x => x.IsCompleteForProvider, true).Without(x => x.ChangeOfPartyRequestId).Create();
+            Cohort = _autoFixture.Build<GetCohortDetailsQueryResult>()
+                .Without(x => x.TransferSenderId)
+                .With(x => x.IsCompleteForProvider, true)
+                .Without(x => x.ChangeOfPartyRequestId)
+                .Create();
+
             OverlapResult = _autoFixture.Build<ValidateUlnOverlapOnStartDateQueryResult>().Create();
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
+
             CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
                 .With(x => x.InvalidProviderCourseCodes,Enumerable.Empty<string>())
@@ -905,6 +921,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(numberOfApprenticeships).ToArray();
             Cohort.DraftApprenticeships = draftApprenticeships;
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture WithNoEmailOverlapping()
+        {
+            CreateThisNumberOfApprenticeships(10);
+            Cohort.ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap> {  };
+
             return this;
         }
 
@@ -1100,11 +1124,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             OuterApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValidateUlnOverlapOnStartDateQueryResult { HasStartDateOverlap = hasOverlap  });
-
             return this;
         }
-		
-		public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
+
+        internal DetailsViewModelMapperTestsFixture SetEmailOverlap(bool hasOverlap)
+        {
+            OuterApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValidateUlnOverlapOnStartDateQueryResult { HasStartDateOverlap = hasOverlap });
+            return this;
+        }
+
+        public DetailsViewModelMapperTestsFixture UnavailableFlexiJobAgencyDeliveryModel(bool hasUnavailableFlexiJobAgencyDeliveryModel)
         {
             Cohort.HasUnavailableFlexiJobAgencyDeliveryModel = hasUnavailableFlexiJobAgencyDeliveryModel;
             return this;

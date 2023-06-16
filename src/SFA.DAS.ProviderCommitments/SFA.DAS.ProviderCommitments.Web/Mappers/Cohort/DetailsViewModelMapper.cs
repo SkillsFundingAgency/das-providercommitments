@@ -16,10 +16,12 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
@@ -210,7 +212,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                             EmploymentPrice = a.EmploymentPrice,
                             EmploymentEndDate = a.EmploymentEndDate,
-                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
+                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot,
                         })
                 .ToList()
                 })
@@ -218,6 +220,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 .ToList();
 
             PopulateFundingBandExcessModels(groupedByCourse);
+            SetRplErrorCount(groupedByCourse, cohortResponse);
             PopulateEmailOverlapsModel(groupedByCourse);
             await CheckUlnOverlap(groupedByCourse, cohortResponse.ProviderId.Value);
             await CheckForPendingOverlappingTrainingDateRequest(groupedByCourse);
@@ -348,6 +351,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     courseGroup.EmailOverlaps = new EmailOverlapsModel(numberOfEmailOverlaps);
                 }
 
+            }
+        }
+
+        private void SetRplErrorCount(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsQueryResult cohort)
+        {
+            foreach (var courseGroup in courseGroups)
+            {
+                courseGroup.RplErrorCount = courseGroup.DraftApprenticeships.Where(x => cohort.RplErrorDraftApprenticeshipIds.Contains(x.Id)).Count();
             }
         }
 
