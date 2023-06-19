@@ -220,7 +220,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 .ToList();
 
             PopulateFundingBandExcessModels(groupedByCourse);
-            SetRplErrorCount(groupedByCourse, cohortResponse);
+            SetRplErrors(groupedByCourse, cohortResponse);
             PopulateEmailOverlapsModel(groupedByCourse);
             await CheckUlnOverlap(groupedByCourse, cohortResponse.ProviderId.Value);
             await CheckForPendingOverlappingTrainingDateRequest(groupedByCourse);
@@ -354,11 +354,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private void SetRplErrorCount(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsQueryResult cohort)
+        private void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsQueryResult cohort)
         {
             foreach (var courseGroup in courseGroups)
             {
-                courseGroup.RplErrorCount = courseGroup.DraftApprenticeships.Where(x => cohort.RplErrorDraftApprenticeshipIds.Contains(x.Id)).Count();
+                courseGroup.RplErrors = courseGroup.DraftApprenticeships.Where(x => cohort.RplErrorDraftApprenticeshipIds.Contains(x.Id)).Count();
             }
         }
 

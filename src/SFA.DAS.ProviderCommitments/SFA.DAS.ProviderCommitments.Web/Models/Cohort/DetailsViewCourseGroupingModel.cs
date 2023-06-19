@@ -19,6 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ErrorHasOverlappingUlnDisplayed { get; set; }
         public bool ErrorEmailOverlapsDisplayed { get; set; }
         public bool ErrorFundingBandExcessDisplayed { get; set; }
-        public int RplErrorCount { get; set; }
+        public int RplErrors { get; set; }
     }
 }
