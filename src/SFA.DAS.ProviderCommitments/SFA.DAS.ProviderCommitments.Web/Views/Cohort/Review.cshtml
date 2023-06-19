@@ -9,8 +9,7 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-row">
-        <div class="govuk-width-container">
+        <div class="govuk-grid-column-full">
 
             @(await Html.PartialAsync("_ApprenticeshipRequestsHeaderPartial", Model.ApprenticeshipRequestsHeaderViewModel))
             
@@ -69,7 +68,7 @@
             {
                 <p class="govuk-body govuk-!-font-weight-bold">You currently have 0 apprentices ready for review</p>
             }
-        </div>
+        
     </div>
 </div>
 

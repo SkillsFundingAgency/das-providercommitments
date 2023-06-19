@@ -12,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Authorization.Services;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -19,23 +20,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenIPostConfirmEmployer
     {
         [Test]
-        public void PostConfirmEmployerViewModel_WithValidModel_WithConfirmFalse_ShouldRedirectToSelectEmployer()
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmFalse_ShouldRedirectToSelectEmployer()
         {
             var fixture = new PostConfirmEmployerFixture()
                 .WithConfirmFalse();
 
-            var result = fixture.Act();
+            var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("SelectEmployer");
         }
 
         [Test]
-        public void PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_ShouldCreateCohortAndRedirectToCohortDetailsPage()
         {
             var fixture = new PostConfirmEmployerFixture()
-                .WithConfirmTrue();
+                .WithConfirmTrue()
+                .WithHasNoDeclaredStandards(false);
 
-            var result = fixture.Act();
+            var result = await fixture.Act();
             fixture.VerifyReturnsRedirect(result);
+        }
+
+        [Test]
+        public async Task PostConfirmEmployerViewModel_WithValidModel_WithConfirmTrue_withNoDeclaredStandards_ShouldRedirectToNoDeclaredStandardsPage()
+        {
+            var fixture = new PostConfirmEmployerFixture()
+                .WithConfirmTrue()
+                .WithHasNoDeclaredStandards(true);
+
+            var result = await fixture.Act();
+            fixture.VerifyNoDeclaredStandardsRedirect(result);
         }
     }
 
@@ -48,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
         private readonly CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest _emptyCohortRequest;
+        private readonly ConfirmEmployerRedirectModel _hasDeclaredStandardsViewModel;
         private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _emptyCohortResponse;
         private readonly ConfirmEmployerViewModel _viewModel;
         private readonly long _providerId;
@@ -60,12 +74,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
             _emptyCohortRequest = fixture.Create<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>();
+            _hasDeclaredStandardsViewModel = fixture.Create<ConfirmEmployerRedirectModel>();
             _emptyCohortResponse = fixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper
                 .Setup(x => x.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(_viewModel))
                 .ReturnsAsync(_emptyCohortRequest);
+
+            _mockModelMapper
+                .Setup(x => x.Map<ConfirmEmployerRedirectModel>(_viewModel))
+                .ReturnsAsync(_hasDeclaredStandardsViewModel);
 
             _commitmentApiClient
                 .Setup(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()))
@@ -77,6 +96,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, 
                         Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
+        }
+
+        public PostConfirmEmployerFixture WithHasNoDeclaredStandards(bool hasDeclaredStandards)
+        {
+            _hasDeclaredStandardsViewModel.HasNoDeclaredStandards = hasDeclaredStandards;
+            return this;
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
@@ -95,8 +120,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
         }
+        public void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
+        {
+            redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
+        }
 
 
-        public IActionResult Act() => Sut.ConfirmEmployer(_viewModel);
+        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_viewModel);
     }
 }

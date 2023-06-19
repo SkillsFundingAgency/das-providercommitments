@@ -39,6 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 validationError.Uln = sourceError.Uln;
                 foreach (var sError in sourceError.Errors)
                 {
+                    if (sError.Property == "DeclaredStandards") viewModel.HasNoDeclaredStandards = true;
                     var dError = new PropertyError()
                     {
                         ErrorText = sError.ErrorText,
