@@ -204,22 +204,29 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> AddDraftApprenticeshipOrRoute(AddDraftApprenticeshipOrRoutePostRequest model)
         {
-            StoreDraftApprenticeshipState(model);
             var redirectModel = await _modelMapper.Map<AddDraftApprenticeshipRedirectModel>(model);
 
-            if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse)
             {
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatus);
-                return RedirectToAction(redirectAction, redirectModel);
+                return RedirectToAction(nameof(SelectCourse), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
             }
 
-            var overlapResult = await HasStartDateOverlap(model);
-            if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel)
+            {
+                return RedirectToAction(nameof(SelectDeliveryModel), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+            }
+
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus)
+            {
+                return RedirectToAction(nameof(ChoosePilotStatus), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+            }
+            
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.OverlapWarning)
             {
                 StoreDraftApprenticeshipState(model);
-                var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                var hashedApprenticeshipId = _encodingService.Encode(redirectModel.OverlappingApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
                     CacheKey = model.CacheKey,
@@ -231,7 +238,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
                 });
             }
-            
+
             return await SaveDraftApprenticeship(model);
         }
 
@@ -277,10 +284,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/confirm-employer")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
+                var model = await _modelMapper.Map<ConfirmEmployerRedirectModel>(viewModel);
+
+                if (model.HasNoDeclaredStandards)
+                {
+                    return RedirectToAction("NoDeclaredStandards");
+                }
+
                 return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
@@ -319,7 +333,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+
+            if (viewModel.HasNoDeclaredStandards)
+            {
+                return RedirectToAction("NoDeclaredStandards");
+            }
             return View(viewModel);
+        }
+
+
+        [HttpGet]
+        [Route("NoDeclaredStandards")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult NoDeclaredStandards()
+        {
+            return View();
         }
 
         [Route("{cohortReference}")]
@@ -333,15 +361,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 case CohortDetailsOptions.Send:
                 case CohortDetailsOptions.Approve:
-                {
-                    await ValidateAuthorization(authorizationService);
-                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                    return RedirectToAction(nameof(Acknowledgement), request);
-                }
+                    {
+                        await ValidateAuthorization(authorizationService);
+                        var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                        return RedirectToAction(nameof(Acknowledgement), request);
+                    }
                 case CohortDetailsOptions.ApprenticeRequest:
-                {
-                    return RedirectToAction("Review", new { viewModel.ProviderId });
-                }
+                    {
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
@@ -419,6 +447,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
+            if (viewModel.HasNoDeclaredStandards) return RedirectToAction("NoDeclaredStandards");
             return View(viewModel);
         }
 
@@ -620,26 +649,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
             await _mediator.Send(bulkValidate);
-        }
-
-        private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(AddDraftApprenticeshipViewModel model)
-        {
-            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
-            {
-                var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
-                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
-
-                var result = await _outerApiService.ValidateUlnOverlapOnStartDate(
-                model.ProviderId,
-                model.Uln,
-                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
-                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-                );
-
-                return result;
-            }
-
-            return null;
         }
     }
 }

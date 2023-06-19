@@ -809,6 +809,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
             CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
+                .With(x => x.HasNoDeclaredStandards, false)
                 .With(x => x.InvalidProviderCourseCodes,Enumerable.Empty<string>())
                 .Create();
 
