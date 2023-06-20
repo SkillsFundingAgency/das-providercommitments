@@ -473,7 +473,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpPost]
-        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning")]
+        [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning", Name = RouteNames.RecognisePriorLearning)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningViewModel request)
         {
