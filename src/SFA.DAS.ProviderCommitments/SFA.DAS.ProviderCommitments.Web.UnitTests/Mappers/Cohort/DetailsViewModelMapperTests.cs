@@ -788,11 +788,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IOuterApiClient> OuterApiClient;
         public Mock<IEncodingService> EncodingService;
         public GetCohortDetailsQueryResult CohortDetails;
-        //public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
-        //public GetEmailOverlapsResponse EmailOverlapResponse;
         public Mock<IOuterApiService> OuterApiService;
 
         private Fixture _autoFixture;
@@ -820,7 +818,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x=>x.DraftApprenticeships, draftApprenticeships)
                 .With(x=>x.ApprenticeshipEmailOverlaps, new List<ApprenticeshipEmailOverlap>())
                 .Create();
-
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
