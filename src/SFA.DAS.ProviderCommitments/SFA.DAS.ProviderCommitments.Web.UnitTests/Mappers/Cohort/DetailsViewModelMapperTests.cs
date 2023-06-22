@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, false, "Yes, send to employer to review or add details")]
         public async Task SendBackToEmployerOptionMessageIsMappedCorrectly(bool isAgreementSigned, bool providerComplete, string expected)
         {
-            var fixture = new DetailsViewModelMapperTestsFixture().SetIsAgreementSigned(isAgreementSigned).SetProviderComplete(providerComplete);
+            var fixture = new DetailsViewModelMapperTestsFixture().SetIsAgreementSigned(isAgreementSigned).SetProviderComplete(providerComplete).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expected, result.SendBackToEmployerOptionMessage);
         }
@@ -392,7 +392,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task OptionsTitleIsMappedCorrectlyWithATransfer(bool isAgreementSigned, string expectedOptionsTitle)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
+            fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
         }
@@ -402,7 +402,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task OptionsTitleIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, string expectedOptionsTitle)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetIsAgreementSigned(isAgreementSigned);
+            fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
         }
@@ -422,7 +422,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ShowApprovalOptionIsMappedCorrectlyWithATransfer(bool isAgreementSigned, bool expectedShowApprovalOption)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
+            fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
         }
@@ -442,7 +442,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ShowApprovalOptionIsMappedCorrectlyWithoutATransfer(bool isAgreementSigned, bool expectedShowApprovalOption)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetIsAgreementSigned(isAgreementSigned);
+            fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
         }
@@ -452,7 +452,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ShowApprovalOptionIsMappedCorrectlyWithAnInvalidCourse(bool hasInvalidCourse, bool expectedShowApprovalOption)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetHasInvalidCourse(hasInvalidCourse);
+            fixture.SetHasInvalidCourse(hasInvalidCourse).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
         }
@@ -462,7 +462,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ShowApprovalOptionIsMappedCorrectlyWhenOverlap(bool hasOverlap, bool expectedShowApprovalOption)
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.SetUlnOverlap(hasOverlap);
+            fixture.SetUlnOverlap(hasOverlap).SetRplErrorsToNone();
             var result = await fixture.Map();
 
             Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
@@ -475,7 +475,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ShowApprovalOptionMessageIsMappedCorrectlyWithATransfer(bool isAgreementSigned, bool showApprovalOption,
             bool isApprovedByEmployer, bool expectedShowApprovalOptionMessage)
         {
-            var fixture = new DetailsViewModelMapperTestsFixture();
+            var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone();
             fixture.CohortDetails.IsApprovedByEmployer = isApprovedByEmployer;
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
             var result = await fixture.Map();
@@ -491,9 +491,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.CohortDetails.IsApprovedByEmployer = isApprovedByEmployer;
-            fixture.SetIsAgreementSigned(isAgreementSigned);
+            fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
             Assert.AreEqual(expectedShowApprovalOptionMessage, result.ShowApprovalOptionMessage);
+        }
+
+        [Test]
+        public async Task ShowApprovalOfCohortAsTrueWhenNoRplErrors()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture().SetRplErrorsToNone();
+            fixture.CohortDetails.IsApprovedByEmployer = true;
+            fixture.SetTransferSender().SetIsAgreementSigned(true);
+            var result = await fixture.Map();
+            Assert.IsTrue(result.ShowApprovalOptionMessage);
+        }
+
+        [Test]
+        public async Task ShowApprovalOfCohortAsFalseWhenRplErrorsExist()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture();
+            fixture.CohortDetails.IsApprovedByEmployer = true;
+            fixture.SetTransferSender().SetIsAgreementSigned(true);
+            var result = await fixture.Map();
+            Assert.IsFalse(result.ShowApprovalOptionMessage);
         }
 
         [Test]
@@ -1036,6 +1056,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CohortDetails.TransferSenderId = _autoFixture.Create<long>();
             return this;
         }
+
+        public DetailsViewModelMapperTestsFixture SetRplErrorsToNone()
+        {
+            CohortDetails.RplErrorDraftApprenticeshipIds = new List<long>();
+            return this;
+        }
+
 
         public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
         {

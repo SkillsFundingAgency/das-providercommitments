@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsAgreementSigned { get; set; }
         public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
-        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner;
+        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner && NumberOfRplErrors == 0;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
         public bool IsReadOnly => WithParty != Infrastructure.OuterApi.Responses.Party.Provider;
         public bool IsCompleteForProvider { get; set; }
@@ -72,6 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes == null? false : InvalidProviderCourseCodes.Any();
         public List<string> InvalidProviderCourseCodes { get; set; }
         public List<long> RplErrorDraftApprenticeshipIds { get; set; }
+        public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
     }
 
     public enum CohortDetailsOptions
