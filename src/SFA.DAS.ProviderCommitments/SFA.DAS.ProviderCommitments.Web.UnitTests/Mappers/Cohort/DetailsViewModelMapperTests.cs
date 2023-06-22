@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -787,7 +788,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IPasAccountApiClient> PasAccountApiClient;
         public Mock<IOuterApiClient> OuterApiClient;
         public Mock<IEncodingService> EncodingService;
-        public GetCohortDetailsQueryResult CohortDetails;
+        public GetCohortDetailsResponse CohortDetails;
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
@@ -809,7 +810,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
-            CohortDetails = _autoFixture.Build<GetCohortDetailsQueryResult>()
+            CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
                 .Without(x => x.TransferSenderId)
                 .With(x => x.IsCompleteForProvider, true)
                 .Without(x => x.ChangeOfPartyRequestId)

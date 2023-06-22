@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
@@ -102,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private string GetCohortStatus(GetCohortDetailsQueryResult cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
+        private string GetCohortStatus(GetCohortDetailsResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
         {
             if (cohort.TransferSenderId.HasValue &&
                 cohort.TransferApprovalStatus == TransferApprovalStatus.Pending)
@@ -141,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return "New request";
         }
 
-        private static string GetProviderOnlyStatus(GetCohortDetailsQueryResult cohort)
+        private static string GetProviderOnlyStatus(GetCohortDetailsResponse cohort)
         {
             if (cohort.LastAction == LastAction.None)
             {
@@ -164,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private static string GetEmployerOnlyStatus(GetCohortDetailsQueryResult cohort)
+        private static string GetEmployerOnlyStatus(GetCohortDetailsResponse cohort)
         {
             if (cohort.LastAction == LastAction.None)
             {
@@ -184,7 +185,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsQueryResult cohortResponse)
+        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsResponse cohortResponse)
         {
             var groupedByCourse = draftApprenticeships
                 .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel })
@@ -230,7 +231,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return groupedByCourse;
         }
 
-        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsQueryResult cohortResponse)
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsResponse cohortResponse)
         {
             if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
@@ -356,7 +357,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsQueryResult cohort)
+        private void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsResponse cohort)
         {
             foreach (var courseGroup in courseGroups)
             {

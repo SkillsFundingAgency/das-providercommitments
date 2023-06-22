@@ -1,6 +1,9 @@
 ﻿using SFA.DAS.CommitmentsV2.Types.Dtos;
-using SFA.DAS.CommitmentsV2.Types;
 using System.Collections.Generic;
+using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
+using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
+using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
+using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
 {
@@ -21,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
     public class GetCohortDetailsResponse
     {
         public long CohortId { get; set; }
+        public string CohortReference { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
@@ -45,8 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IReadOnlyCollection<DraftApprenticeshipDto> DraftApprenticeships { get; set; }
-        public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
+        public IEnumerable<CommitmentsV2.Types.ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
         public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
-
     }
 }
