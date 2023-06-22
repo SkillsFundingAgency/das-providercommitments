@@ -31,6 +31,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
 using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
+using SFA.DAS.Testing.Builders;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -812,8 +813,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
-        public Mock<IOuterApiService> OuterApiService;
-
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
         private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
@@ -848,6 +847,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
             OuterApiClient = new Mock<IOuterApiClient>();
+            OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
+                .ReturnsAsync(CohortDetails);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
@@ -873,12 +874,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
+            //OuterApiService = new Mock<IOuterApiService>();
+            //OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(), It.IsAny<long>()))
+            //    .ReturnsAsync(CohortDetails);
 
-            OuterApiService = new Mock<IOuterApiService>();
-            OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(), It.IsAny<long>()))
-                .ReturnsAsync(CohortDetails);
-
-            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object, OuterApiService.Object);
+            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();
         }
 

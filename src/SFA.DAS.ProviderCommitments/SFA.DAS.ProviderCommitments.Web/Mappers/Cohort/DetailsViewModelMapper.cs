@@ -32,7 +32,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     public class DetailsViewModelMapper : IMapper<DetailsRequest, DetailsViewModel>
     {
         private readonly IOuterApiClient _outerApiClient;
-        private readonly IOuterApiService _outerApiService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
@@ -41,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
             IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
-            DAS.Authorization.Services.IAuthorizationService authorizationService, IOuterApiService outerApiService)
+            DAS.Authorization.Services.IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
@@ -49,7 +48,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _outerApiClient = outerApiClient;
             _storageService = storageService;
             _authorizationService = authorizationService;
-            _outerApiService = outerApiService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -58,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             //this solution should NOT use tempdata in this way
             _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
-            var cohortDetailsTask = _outerApiService.GetCohortDetails(source.ProviderId, source.CohortId);
+            var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, source.CohortId));
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
             await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
