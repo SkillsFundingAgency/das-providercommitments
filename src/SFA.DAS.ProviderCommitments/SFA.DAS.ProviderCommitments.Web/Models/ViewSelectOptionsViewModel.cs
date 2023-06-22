@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using SFA.DAS.Authorization.ModelBinding;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -14,6 +15,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourseName { get ; set ; }
         public string TrainingCourseVersion { get ; set ; }
         public string SelectedOption { get ; set ; }
-        public string StandardPageUrl { get ; set ; }
+        public string StandardPageUrl { get; set; }
+        public bool? HasSelectedRpl { get; set; }
+        public DateTime? ApprenticeshipStartDate { get; set; }
     }
 }

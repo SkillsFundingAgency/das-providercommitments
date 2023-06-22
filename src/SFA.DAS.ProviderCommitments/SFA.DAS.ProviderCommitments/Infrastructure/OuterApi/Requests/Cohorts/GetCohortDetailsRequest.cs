@@ -46,6 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public TransferApprovalStatus? TransferApprovalStatus { get; set; }
         public LastAction LastAction { get; set; }
         public bool ApprenticeEmailIsRequired { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IReadOnlyCollection<DraftApprenticeshipDto> DraftApprenticeships { get; set; }

@@ -4,6 +4,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class FileUploadValidateViewModel : FileUploadStartViewModel
     {
+        public bool HasNoDeclaredStandards { get; set; }
         public FileUploadValidateViewModel()
         {
             BulkUploadValidationErrors = new List<BulkUploadValidationError>();

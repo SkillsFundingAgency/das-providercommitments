@@ -834,6 +834,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.IsCompleteForProvider, true)
                 .Without(x => x.ChangeOfPartyRequestId)
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
+                .With(x => x.HasNoDeclaredStandards, false)
                 .With(x => x.InvalidProviderCourseCodes, Enumerable.Empty<string>())
                 .With(x=>x.DraftApprenticeships, draftApprenticeships)
                 .With(x=>x.ApprenticeshipEmailOverlaps, new List<ApprenticeshipEmailOverlap>())
@@ -874,9 +875,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
-            //OuterApiService = new Mock<IOuterApiService>();
-            //OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(), It.IsAny<long>()))
-            //    .ReturnsAsync(CohortDetails);
+            
 
             Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();

@@ -1,4 +1,5 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.ViewSelectOptionsViewModel
+@using SFA.DAS.ProviderCommitments.Web.RouteValues;
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 
 @{
@@ -68,5 +69,20 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Back</a>
+    @if (Model.HasSelectedRpl == true)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">Back</a>
+    }
+    else if (Model.HasSelectedRpl == false)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearning)">Back</a>
+    }
+    else if (Model.ApprenticeshipStartDate.GetValueOrDefault() < new DateTime(2022, 8, 1) || Model.ApprenticeshipStartDate == null)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
+    }
+    else if (Model.HasSelectedRpl == null)
+    {
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
+    }
 }

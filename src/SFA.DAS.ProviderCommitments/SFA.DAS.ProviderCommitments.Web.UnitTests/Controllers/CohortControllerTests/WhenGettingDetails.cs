@@ -57,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _request = autoFixture.Create<DetailsRequest>();
                 _viewModel = autoFixture.Create<DetailsViewModel>();
+                _viewModel.HasNoDeclaredStandards = false;
                 _viewModel.WithParty = Infrastructure.OuterApi.Responses.Party.Employer;
 
                 var modelMapper = new Mock<IModelMapper>();
