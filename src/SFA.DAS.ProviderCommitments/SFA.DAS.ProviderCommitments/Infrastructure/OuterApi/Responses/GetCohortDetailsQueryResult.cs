@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.CommitmentsV2.Types.Dtos;
-using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
@@ -8,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
     public class GetCohortDetailsQueryResult
     {
         public long CohortId { get; set; }
+        public string CohortReference { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
