@@ -16,13 +16,15 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
+using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
+using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
+using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -58,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var cohortDetailsTask = _outerApiService.GetCohortDetails(source.ProviderId, source.CohortId);
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
-            //await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
+            await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
            
             var agreementStatus = await agreementStatusTask;
             var cohortDetails = await cohortDetailsTask;
@@ -66,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var emailOverlaps = cohortDetails.ApprenticeshipEmailOverlaps.ToList();
 
             var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
-            var viewOrApprove = cohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider ? "Approve" : "View";
+            var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
             var isAgreementSigned = agreementStatus.Status == ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel
@@ -89,8 +91,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 IsCompleteForProvider = cohortDetails.IsCompleteForProvider,
                 HasEmailOverlaps = emailOverlaps.Any(),
                 ShowAddAnotherApprenticeOption = !cohortDetails.IsLinkedToChangeOfPartyRequest,
-                AllowBulkUpload = cohortDetails.LevyStatus == Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType.Levy
-                && cohortDetails.WithParty == Infrastructure.OuterApi.Responses.Party.Provider
+                AllowBulkUpload = cohortDetails.LevyStatus == ApprenticeshipEmployerType.Levy
+                && cohortDetails.WithParty == Party.Provider
                 && !cohortDetails.IsLinkedToChangeOfPartyRequest,
                 IsLinkedToChangeOfPartyRequest = cohortDetails.IsLinkedToChangeOfPartyRequest,
                 Status = GetCohortStatus(cohortDetails, cohortDetails.DraftApprenticeships),
@@ -103,23 +105,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private string GetCohortStatus(GetCohortDetailsQueryResult cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
         {
             if (cohort.TransferSenderId.HasValue &&
-                cohort.TransferApprovalStatus == Infrastructure.OuterApi.Responses.TransferApprovalStatus.Pending)
+                cohort.TransferApprovalStatus == TransferApprovalStatus.Pending)
             {
-                if (cohort.WithParty == Infrastructure.OuterApi.Responses.Party.TransferSender)
+                if (cohort.WithParty == Party.TransferSender)
                 {
                     return "Pending - with funding employer";
                 }
-                else if (cohort.WithParty == Infrastructure.OuterApi.Responses.Party.Employer)
+                else if (cohort.WithParty == Party.Employer)
                 {
                     return GetEmployerOnlyStatus(cohort);
                 }
-                else if (cohort.WithParty == Infrastructure.OuterApi.Responses.Party.Provider)
+                else if (cohort.WithParty == Party.Provider)
                 {
                     return GetProviderOnlyStatus(cohort);
                 }
             }
             else if (cohort.TransferSenderId.HasValue &&
-                     cohort.TransferApprovalStatus == Infrastructure.OuterApi.Responses.TransferApprovalStatus.Rejected)
+                     cohort.TransferApprovalStatus == TransferApprovalStatus.Rejected)
             {
                 return "Rejected by transfer sending employer";
             }
@@ -127,11 +129,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 return "Approved";
             }
-            else if (cohort.WithParty == Infrastructure.OuterApi.Responses.Party.Provider)
+            else if (cohort.WithParty == Party.Provider)
             {
                 return GetProviderOnlyStatus(cohort);
             }
-            else if (cohort.WithParty == Infrastructure.OuterApi.Responses.Party.Employer)
+            else if (cohort.WithParty == Party.Employer)
             {
                 return GetEmployerOnlyStatus(cohort);
             }
@@ -141,15 +143,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private static string GetProviderOnlyStatus(GetCohortDetailsQueryResult cohort)
         {
-            if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.None)
+            if (cohort.LastAction == LastAction.None)
             {
                 return "New request";
             }
-            else if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.Amend)
+            else if (cohort.LastAction == LastAction.Amend)
             {
                 return "Ready for review";
             }
-            else if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.Approve)
+            else if (cohort.LastAction == LastAction.Approve)
             {
                 if (!cohort.IsApprovedByProvider && !cohort.IsApprovedByEmployer)
                     return "Ready for review";
@@ -164,15 +166,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private static string GetEmployerOnlyStatus(GetCohortDetailsQueryResult cohort)
         {
-            if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.None)
+            if (cohort.LastAction == LastAction.None)
             {
                 return "New request";
             }
-            else if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.Amend)
+            else if (cohort.LastAction == LastAction.Amend)
             {
                 return "Under review with employer";
             }
-            else if (cohort.LastAction == Infrastructure.OuterApi.Responses.LastAction.Approve)
+            else if (cohort.LastAction == LastAction.Approve)
             {
                 return "With Employer for approval";
             }

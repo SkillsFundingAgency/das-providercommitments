@@ -817,14 +817,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .Without(x => x.ChangeOfPartyRequestId)
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
                 .With(x => x.InvalidProviderCourseCodes, Enumerable.Empty<string>())
+                .With(x=>x.DraftApprenticeships, draftApprenticeships)
+                .With(x=>x.ApprenticeshipEmailOverlaps, new List<ApprenticeshipEmailOverlap>())
                 .Create();
 
-            //DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
-            //EmailOverlapResponse = new GetEmailOverlapsResponse { ApprenticeshipEmailOverlaps = new List<ApprenticeshipEmailOverlap>() };
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            //CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(DraftApprenticeshipsResponse);
             CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(AccountLegalEntityResponse);
 
@@ -832,8 +830,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
             OuterApiClient = new Mock<IOuterApiClient>();
-            //OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
-            //    .ReturnsAsync(CohortDetails);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
@@ -856,18 +852,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     RequestMessage = new HttpRequestMessage(),
                     ReasonPhrase = "Url not found"
                 }, "Course not found"));
-            //CommitmentsApiClient.Setup(x => x.GetEmailOverlapChecks(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            //    .ReturnsAsync(EmailOverlapResponse);
 
             EncodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
 
             OuterApiService = new Mock<IOuterApiService>();
-            //CohortDetails.DraftApprenticeships = DraftApprenticeshipsResponse.DraftApprenticeships;
-            //CohortDetails.ApprenticeshipEmailOverlaps = EmailOverlapResponse.ApprenticeshipEmailOverlaps;
             OuterApiService.Setup(x => x.GetCohortDetails(It.IsAny<long>(), It.IsAny<long>()))
                 .ReturnsAsync(CohortDetails);
-
 
             Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object, OuterApiService.Object);
             Source = _autoFixture.Create<DetailsRequest>();
@@ -890,7 +881,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             return this;
         }
-
 
         public DetailsViewModelMapperTestsFixture SetPledgeApplicationIdAndItsExpectedHashedValue(int? pledgeApplicationId, string expectedEncodedId)
         {
