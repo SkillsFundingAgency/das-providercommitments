@@ -1,25 +1,30 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Features;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
     public class ViewDraftApprenticeshipViewModelMapper : IMapper<DraftApprenticeshipRequest, ViewDraftApprenticeshipViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiClient _outerApiClient;
 
-        public ViewDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
+        public ViewDraftApprenticeshipViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IOuterApiClient outerApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<ViewDraftApprenticeshipViewModel> Map(DraftApprenticeshipRequest source)
         {
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(source.CohortId, source.DraftApprenticeshipId);
+            var draftApprenticeshipTask = _outerApiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId));
+
+            await Task.WhenAll(draftApprenticeshipTask);
+
+            var draftApprenticeship = await draftApprenticeshipTask;
 
             var trainingCourse = string.IsNullOrWhiteSpace(draftApprenticeship.CourseCode) ? null
                 : await _commitmentsApiClient.GetTrainingProgramme(draftApprenticeship.CourseCode);

@@ -1,5 +1,5 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {

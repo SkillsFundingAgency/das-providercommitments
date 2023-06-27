@@ -127,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                     }
                 };
 
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, true)
                     .Create();
                 
@@ -167,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             
             public CreateCohortHandlerFixture ReturnSingleApprenticeshipNoOptions()
             {
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, false)
                     .Create();
                 _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))
