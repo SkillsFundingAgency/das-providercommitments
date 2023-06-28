@@ -48,7 +48,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Reference = draftApprenticeship.Reference,
                 TrainingCourseOption = GetCourseOption(draftApprenticeship.TrainingCourseOption),
                 TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
-                HasTrainingCourseOption = draftApprenticeship.HasStandardOptions
+                HasTrainingCourseOption = draftApprenticeship.HasStandardOptions,
+                RecognisePriorLearning = draftApprenticeship.RecognisePriorLearning,
+                RecognisingPriorLearningStillNeedsToBeConsidered = draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
+                RecognisingPriorLearningExtendedStillNeedsToBeConsidered = draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
+                DurationReducedBy = draftApprenticeship.DurationReducedBy,
+                PriceReducedBy = draftApprenticeship.PriceReducedBy,
+                DurationReducedByHours = draftApprenticeship.DurationReducedByHours,
+                IsDurationReducedByRpl = draftApprenticeship.IsDurationReducedByRpl,
+                TrainingTotalHours = draftApprenticeship.TrainingTotalHours
             };
 
             return result;

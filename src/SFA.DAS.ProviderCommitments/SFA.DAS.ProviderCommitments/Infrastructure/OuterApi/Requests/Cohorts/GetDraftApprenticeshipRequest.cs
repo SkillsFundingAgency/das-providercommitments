@@ -58,6 +58,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public int? TrainingTotalHours { get; set; }
-
     }
 }
