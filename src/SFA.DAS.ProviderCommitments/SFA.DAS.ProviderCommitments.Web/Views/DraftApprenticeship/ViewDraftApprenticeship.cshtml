@@ -167,50 +167,53 @@
             </div>
         </dl>
 
-        <h2 class="govuk-heading-m">Prior learning details</h2>
-        <dl class="govuk-summary-list">
+        @if (Model.RecognisePriorLearning != null)
+        {
+            <h2 class="govuk-heading-m">Prior learning details</h2>
+            <dl class="govuk-summary-list">
 
-            @if (Model.RecognisePriorLearning != null)
-            {
-                if (Model.DurationReducedBy != null)
+                if (Model.RecognisePriorLearning == true)
                 {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Duration reduced due to prior learning
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
-                        </dd>
-                    </div>
+                    if (Model.DurationReducedBy != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duration reduced due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
+                            </dd>
+                        </div>
+                    }
+                    if (Model.DurationReducedByHours != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Off-the-job training time reduction due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") @PluraliseString(Model.DurationReducedByHours.GetValueOrDefault(), "hour")
+                            </dd>
+                        </div>
+                    }
+                    if (Model.PriceReducedBy != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Price reduction due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
+                            </dd>
+                        </div>
+                    }
                 }
-                if (Model.DurationReducedByHours != null)
+                else
                 {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Off-the-job training time reduction due to prior learning
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") @PluraliseString(Model.DurationReducedByHours.GetValueOrDefault(), "hour")
-                        </dd>
-                    </div>
+                    <dt>The apprentice has no recognised prior learning.</dt>
                 }
-                if (Model.PriceReducedBy != null)
-                {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Price reduction due to prior learning
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
-                        </dd>
-                    </div>
-                }
-            }
-            else
-            {
-                <dt>The apprentice has no recognised prior learning.</dt>
-            }
-        </dl>
+            </dl>
+        }
 
     </div>
 </div>
