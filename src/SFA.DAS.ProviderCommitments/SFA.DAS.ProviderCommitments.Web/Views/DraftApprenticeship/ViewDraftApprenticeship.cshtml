@@ -174,14 +174,14 @@
 
                 @if (Model.RecognisePriorLearning == true)
                 {
-                    if (Model.DurationReducedBy != null)
+                    if (Model.TrainingTotalHours != null)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Duration reduced due to prior learning
+                                Total off-the-job training time for this apprenticeship standard
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
+                                £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
                             </dd>
                         </div>
                     }
@@ -196,11 +196,22 @@
                             </dd>
                         </div>
                     }
+                    if (Model.DurationReducedBy != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duration reduced due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
+                            </dd>
+                        </div>
+                    }
                     if (Model.PriceReducedBy != null)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Price reduction due to prior learning
+                                Total price reductin due to RPL
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
