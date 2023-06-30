@@ -3,13 +3,13 @@ using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
 {
-    public class GetDraftApprenticeshipRequest : IGetApiRequest
+    public class GetViewDraftApprenticeshipRequest : IGetApiRequest
     {
         public long ProviderId { get; set; }
         public long CohortId { get; set; }
         public long DraftApprenticeshipId { get; }
 
-        public GetDraftApprenticeshipRequest(long providerId, long cohortId, long draftApprenticeshipId)
+        public GetViewDraftApprenticeshipRequest(long providerId, long cohortId, long draftApprenticeshipId)
         {
             ProviderId = providerId;
             CohortId = cohortId;
@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public string GetUrl => $"provider/{ProviderId}/unapproved/{CohortId}/apprentices/{DraftApprenticeshipId}/view";
     }
 
-    public class GetDraftApprenticeshipResponse
+    public class GetViewDraftApprenticeshipResponse
     {
         public long Id { get; set; }
         public string FirstName { get; set; }

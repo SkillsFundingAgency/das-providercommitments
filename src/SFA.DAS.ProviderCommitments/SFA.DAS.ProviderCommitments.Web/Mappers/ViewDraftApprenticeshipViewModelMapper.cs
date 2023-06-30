@@ -20,11 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
 
         public async Task<ViewDraftApprenticeshipViewModel> Map(DraftApprenticeshipRequest source)
         {
-            var draftApprenticeshipTask = _outerApiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId));
-
-            await Task.WhenAll(draftApprenticeshipTask);
-
-            var draftApprenticeship = await draftApprenticeshipTask;
+            var draftApprenticeship = await _outerApiClient.Get<GetViewDraftApprenticeshipResponse>(new GetViewDraftApprenticeshipRequest(source.ProviderId, source.CohortId, source.DraftApprenticeshipId));
 
             var trainingCourse = string.IsNullOrWhiteSpace(draftApprenticeship.CourseCode) ? null
                 : await _commitmentsApiClient.GetTrainingProgramme(draftApprenticeship.CourseCode);
