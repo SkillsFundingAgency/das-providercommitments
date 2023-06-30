@@ -181,7 +181,18 @@
                                 Total off-the-job training time for this apprenticeship standard
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
+                                @Model.TrainingTotalHours.GetValueOrDefault().ToString("N0") @PluraliseString(Model.DurationReducedByHours.GetValueOrDefault(), "hour")
+                            </dd>
+                        </div>
+                    }
+                    if (Model.DurationReducedBy.HasValue)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duration reduction due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
                             </dd>
                         </div>
                     }
@@ -196,22 +207,12 @@
                             </dd>
                         </div>
                     }
-                    if (Model.DurationReducedBy.HasValue)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Duration reduced due to prior learning
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.DurationReducedBy @PluraliseString(Model.DurationReducedBy.GetValueOrDefault(), "week")
-                            </dd>
-                        </div>
-                    }
+
                     if (Model.PriceReducedBy.HasValue)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Total price reduction due to RPL
+                                Price reduction due to prior learning
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
