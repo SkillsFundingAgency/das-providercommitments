@@ -167,14 +167,14 @@
             </div>
         </dl>
 
-        @if (Model.RecognisePriorLearning != null)
+        @if (Model.RecognisePriorLearning.HasValue)
         {
             <h2 class="govuk-heading-m">Prior learning details</h2>
             <dl class="govuk-summary-list">
 
                 @if (Model.RecognisePriorLearning == true)
                 {
-                    if (Model.TrainingTotalHours != null)
+                    if (Model.TrainingTotalHours.HasValue)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -185,7 +185,7 @@
                             </dd>
                         </div>
                     }
-                    if (Model.DurationReducedByHours != null)
+                    if (Model.DurationReducedByHours.HasValue)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -196,7 +196,7 @@
                             </dd>
                         </div>
                     }
-                    if (Model.DurationReducedBy != null)
+                    if (Model.DurationReducedBy.HasValue)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -207,7 +207,7 @@
                             </dd>
                         </div>
                     }
-                    if (Model.PriceReducedBy != null)
+                    if (Model.PriceReducedBy.HasValue)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
