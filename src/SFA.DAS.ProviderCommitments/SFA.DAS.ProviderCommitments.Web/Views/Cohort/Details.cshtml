@@ -1,11 +1,10 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
-@using SFA.DAS.ProviderUrlHelper
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel

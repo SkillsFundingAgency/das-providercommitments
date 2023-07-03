@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
@@ -26,6 +24,9 @@ using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.Ou
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
 using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
+using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
+using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {

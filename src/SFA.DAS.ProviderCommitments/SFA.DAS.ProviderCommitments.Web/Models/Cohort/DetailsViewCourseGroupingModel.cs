@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
