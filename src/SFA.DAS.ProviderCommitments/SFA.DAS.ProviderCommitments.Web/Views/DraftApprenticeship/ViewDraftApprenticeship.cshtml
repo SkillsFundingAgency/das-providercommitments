@@ -185,17 +185,6 @@
                             </dd>
                         </div>
                     }
-                    if (Model.DurationReducedBy.HasValue)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Duration reduction due to prior learning
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.DurationReducedBy.Value.ToString() @PluraliseString(Model.DurationReducedBy.Value, "week")
-                            </dd>
-                        </div>
-                    }
                     if (Model.DurationReducedByHours.HasValue)
                     {
                         <div class="govuk-summary-list__row">
@@ -204,6 +193,17 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Model.DurationReducedByHours.Value.ToString("N0") @PluraliseString(Model.DurationReducedByHours.Value, "hour")
+                            </dd>
+                        </div>
+                    }
+                    if (Model.DurationReducedBy.HasValue)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duration reduction due to prior learning
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DurationReducedBy.Value.ToString() @PluraliseString(Model.DurationReducedBy.Value, "week")
                             </dd>
                         </div>
                     }
