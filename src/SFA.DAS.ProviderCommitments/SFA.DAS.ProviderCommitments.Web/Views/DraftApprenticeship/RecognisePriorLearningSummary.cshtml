@@ -110,7 +110,7 @@
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
                         @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") hours
-                        <br />10% of the total training for this apprenticeship standard
+                        <br />@((((double)Model.DurationReducedByHours.GetValueOrDefault() / (double)Model.TrainingTotalHours.GetValueOrDefault()) * 100).ToString("0.00"))% of the total training for this apprenticeship standard
                         (@Model.TrainingTotalHours.GetValueOrDefault().ToString("N0") hours)
                     </dd>
                     <dd class="govuk-summary-list__actions">
@@ -123,7 +123,7 @@
                     </dt>
                     <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
                         £@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N0")
-                        <br/>5% of the maximum funding for this apprenticeship standard
+                        <br />@(((((double)Model.DurationReducedByHours.GetValueOrDefault() / (double)Model.TrainingTotalHours.GetValueOrDefault()) * 100) / 2).ToString("0.00"))% of the maximum funding for this apprenticeship standard
                         (£@Model.FundingBandMaximum.GetValueOrDefault().ToString("N0"))
                     </dd>
                     <dd class="govuk-summary-list__actions">
