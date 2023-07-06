@@ -53,5 +53,7 @@
         public int? TotalCost { get; set; }
         public string FullName { get; set; }
         public bool HasStandardOptions { get; set; }
+        public double? PercentageTotalTraining => (double)DurationReducedByHours / (double)TrainingTotalHours * 100;
+        public double? PercentageMinimumFunding => PercentageTotalTraining / 2;
     }
 }
