@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿using System.Linq;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public static class BulkUploadFileRequirements
     {
@@ -24,6 +26,9 @@
             nameof(CsvRecord.RecognisePriorLearning),
             nameof(CsvRecord.DurationReducedBy),
             nameof(CsvRecord.PriceReducedBy),
+            nameof(CsvRecord.TrainingTotalHours),
+            nameof(CsvRecord.IsDurationReducedByRPL),
+            nameof(CsvRecord.TrainingHoursReduction)
         };
 
         public static int MinimumColumnCount = RequiredHeaders.Length;
@@ -33,6 +38,13 @@
         public static bool CheckHeaderCount(string[] headers)
         {
             return headers.Length >= MinimumColumnCount && headers.Length <= MaximumColumnCount;
+        }
+
+        public static bool IsRplV2Version(string[] headers)
+        {
+            return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) &&
+                    OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
+                    OptionalHeaders.Contains(nameof(CsvRecord.TrainingHoursReduction)));
         }
     }
 }
