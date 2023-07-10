@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -272,6 +273,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
             result.VerifyRedirectsToDetailsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+        }
+
+        [TestCase, MoqAutoData]
+        public async Task Check_PercentageTotalTraining_calculates()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithoutStandardOptions()
+                .WithRplSummary(true, false);
+
+            var result = await fixture.Sut.RecognisePriorLearningSummary(fixture.RplSummaryRequest);
+
+            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningSummaryViewModel>();
+
+            model.PercentageTotalTraining.Should().Be((double)model.DurationReducedByHours / (double)model.TrainingTotalHours * 100);
+        }
+
+        [TestCase, MoqAutoData]
+        public async Task Check_PercentageMinimumFunding_calculates()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithoutStandardOptions()
+                .WithRplSummary(true, false);
+
+            var result = await fixture.Sut.RecognisePriorLearningSummary(fixture.RplSummaryRequest);
+
+            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningSummaryViewModel>();
+
+            model.PercentageMinimumFunding.Should().Be(model.PercentageTotalTraining / 2);
         }
 
         [Test]
