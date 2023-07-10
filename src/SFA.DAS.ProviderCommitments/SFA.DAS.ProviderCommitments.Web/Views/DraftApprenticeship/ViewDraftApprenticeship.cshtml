@@ -5,9 +5,6 @@
 @{
     ViewData["Title"] = "Apprenticeships";
     ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/view";
-
-    var startDateLabel = Model.DeliveryModel == null ? "Planned training start date" : "Planned apprenticeship training start date";
-    var endDateLabel = Model.DeliveryModel == null ? "Planned training end date" : "Projected apprenticeship training finish date";
 }
 
 <h1 class="govuk-heading-xl">View apprentice details</h1>
@@ -111,7 +108,7 @@
             }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @startDateLabel
+                    Planned training start date
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @DisplayOptionalEstimatedDate(Model.StartDate)
@@ -119,14 +116,14 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @endDateLabel
+                    Planned training end date
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @DisplayOptionalEstimatedDate(Model.EndDate)
                 </dd>
             </div>
 
-            @if (Model.DeliveryModel != null)
+            @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
             {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
@@ -147,16 +144,15 @@
                         @DisplayCost(Model.EmploymentPrice)
                     </dd>
                 </div>
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Total agreed apprenticeship price
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @DisplayCost(Model.Cost)
-                    </dd>
-                </div>
             }
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Total agreed price
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @DisplayCost(Model.Cost)
+                </dd>
+            </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Reference
