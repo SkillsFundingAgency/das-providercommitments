@@ -195,7 +195,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
             return
                 (lineContents.Length == 1 && string.IsNullOrEmpty(lineContents[0]))
                 ||
-                (lineContents.Length == 13 &&
+                (lineContents.Length == 15 &&
                                                  string.IsNullOrWhiteSpace(lineContents[0]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[1]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[2]) &&
@@ -208,7 +208,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                                                  string.IsNullOrWhiteSpace(lineContents[9]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[10]) &&
                                                  string.IsNullOrWhiteSpace(lineContents[11]) &&
-                                                 string.IsNullOrWhiteSpace(lineContents[12]));
+                                                 string.IsNullOrWhiteSpace(lineContents[12]))
+                ||
+                (lineContents.Length == 18 &&
+                                                 string.IsNullOrWhiteSpace(lineContents[0]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[1]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[2]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[3]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[4]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[5]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[6]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[7]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[8]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[9]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[10]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[11]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[12]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[13]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[14]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[15]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[16]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[17]) &&
+                                                 string.IsNullOrWhiteSpace(lineContents[18]));
         }
     }
 }
