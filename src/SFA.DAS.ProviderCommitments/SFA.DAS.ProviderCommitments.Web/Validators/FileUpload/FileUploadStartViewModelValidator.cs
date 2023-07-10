@@ -7,18 +7,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators
 {
     public class FileUploadStartViewModelValidator : AbstractValidator<FileUploadStartViewModel>
     {
-        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
-
-        public FileUploadStartViewModelValidator(DAS.Authorization.Services.IAuthorizationService authorizationService)
-        {
-            _authorizationService = authorizationService;
-        }
-
         public FileUploadStartViewModelValidator(BulkUploadFileValidationConfiguration csvConfiguration)
         {
             CascadeMode = CascadeMode.Stop;
 
-            new FileUploadValidationHelper(csvConfiguration, _authorizationService).AddFileValidationRules(RuleFor(x => x.Attachment));
+            new FileUploadValidationHelper(csvConfiguration).AddFileValidationRules(RuleFor(x => x.Attachment));
         }
     }
 }
