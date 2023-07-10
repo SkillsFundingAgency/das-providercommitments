@@ -13,6 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     public class FileUploadValidationHelper
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
+        private const int ExtendedRplColumnCount = 19;
 
         public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
         {
@@ -29,7 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
                 .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
                 .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
-                .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
+                .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
+                .MustAsync(CheckIsRplExtendedWithMissingFields).WithMessage($"The selected file could not be uploaded – use the template");
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
@@ -100,6 +102,24 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
         {
             var fileData = await ReadFileAsync(file);
             return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
+        }
+
+        private async Task<bool> CheckIsRplExtendedWithMissingFields(IFormFile file, CancellationToken cancellation)
+        {
+            var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
+            using var reader = new StringReader(fileContent);
+
+            var firstLine = await reader.ReadLineAsync();
+            var firstlineData = (firstLine).Split(',');
+
+            if (firstlineData.Count() == ExtendedRplColumnCount && BulkUploadFileRequirements.HasAnyRplExtendedHeaders(firstlineData))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private async Task<bool> CheckColumnHeader(IFormFile file, CancellationToken cancellation)
