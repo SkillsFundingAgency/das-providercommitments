@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             return headers.Length >= MinimumColumnCount && headers.Length <= MaximumColumnCount;
         }
 
-        public static bool IsRplV2Version(string[] headers)
+        public static bool IsRplExtendedUpload(string[] headers)
         {
             return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) &&
                     OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
