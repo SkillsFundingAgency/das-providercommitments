@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             nameof(CsvRecord.StartDate),
             nameof(CsvRecord.EndDate),
             nameof(CsvRecord.TotalPrice),
-            nameof(CsvRecord.EPAOrgID ),
+            nameof(CsvRecord.EPAOrgID),
             nameof(CsvRecord.ProviderRef),
             nameof(CsvRecord.AgreementId),
             nameof(CsvRecord.EmailAddress),
@@ -44,6 +44,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         {
             return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) &&
                     OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
+                    OptionalHeaders.Contains(nameof(CsvRecord.TrainingHoursReduction)));
+        }
+
+        public static bool HasAnyRplExtendedHeaders(string[] headers)
+        {
+            return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) ||
+                    OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) ||
                     OptionalHeaders.Contains(nameof(CsvRecord.TrainingHoursReduction)));
         }
     }
