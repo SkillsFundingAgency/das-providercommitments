@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.IO;
@@ -13,10 +15,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     public class FileUploadValidationHelper
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
+        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
 
-        public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
+        public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config, DAS.Authorization.Services.IAuthorizationService authorizationService)
         {
             _csvConfiguration = config;
+            _authorizationService = authorizationService;
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
@@ -105,19 +109,50 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
         private async Task<bool> CheckColumnHeader(IFormFile file, CancellationToken cancellation)
         {
             var fileData = await ReadFileAsync(file);
-            return (fileData.firstlineData[0] == "CohortRef" &&
-                    fileData.firstlineData[1] == "AgreementID" &&
-                    fileData.firstlineData[2] == "ULN" &&
-                    fileData.firstlineData[3] == "FamilyName" &&
-                    fileData.firstlineData[4] == "GivenNames" &&
-                    fileData.firstlineData[5] == "DateOfBirth" &&
-                    fileData.firstlineData[6] == "EmailAddress" &&
-                    fileData.firstlineData[7] == "StdCode" &&
-                    fileData.firstlineData[8] == "StartDate" &&
-                    fileData.firstlineData[9] == "EndDate" &&
-                    fileData.firstlineData[10] == "TotalPrice" &&
-                    fileData.firstlineData[11] == "EPAOrgID" &&
-                    fileData.firstlineData[12] == "ProviderRef");
+
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            {
+                return (fileData.firstlineData[0] == "CohortRef" &&
+                        fileData.firstlineData[1] == "AgreementID" &&
+                        fileData.firstlineData[2] == "ULN" &&
+                        fileData.firstlineData[3] == "FamilyName" &&
+                        fileData.firstlineData[4] == "GivenNames" &&
+                        fileData.firstlineData[5] == "DateOfBirth" &&
+                        fileData.firstlineData[6] == "EmailAddress" &&
+                        fileData.firstlineData[7] == "StdCode" &&
+                        fileData.firstlineData[8] == "StartDate" &&
+                        fileData.firstlineData[9] == "EndDate" &&
+                        fileData.firstlineData[10] == "TotalPrice" &&
+                        fileData.firstlineData[11] == "EPAOrgID" &&
+                        fileData.firstlineData[12] == "ProviderRef" &&
+                        fileData.firstlineData[13] == "RecognisePriorLearning" &&
+                        fileData.firstlineData[14] == "DurationReducedBy" &&
+                        fileData.firstlineData[15] == "PriceReducedBy" &&
+                        fileData.firstlineData[16] == "TrainingTotalHours" &&
+                        fileData.firstlineData[17] == "IsDurationReducedByRPL" &&
+                        fileData.firstlineData[18] == "TrainingHoursReduction"
+                    );
+            }
+            else
+            {
+                return (fileData.firstlineData[0] == "CohortRef" &&
+                        fileData.firstlineData[1] == "AgreementID" &&
+                        fileData.firstlineData[2] == "ULN" &&
+                        fileData.firstlineData[3] == "FamilyName" &&
+                        fileData.firstlineData[4] == "GivenNames" &&
+                        fileData.firstlineData[5] == "DateOfBirth" &&
+                        fileData.firstlineData[6] == "EmailAddress" &&
+                        fileData.firstlineData[7] == "StdCode" &&
+                        fileData.firstlineData[8] == "StartDate" &&
+                        fileData.firstlineData[9] == "EndDate" &&
+                        fileData.firstlineData[10] == "TotalPrice" &&
+                        fileData.firstlineData[11] == "EPAOrgID" &&
+                        fileData.firstlineData[12] == "ProviderRef" &&
+                        fileData.firstlineData[13] == "RecognisePriorLearning" &&
+                        fileData.firstlineData[14] == "DurationReducedBy" &&
+                        fileData.firstlineData[15] == "PriceReducedBy"
+                    );
+            }
         }
 
         private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
