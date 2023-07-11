@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
         private const int EXTENDEDRPLCOLUMNCOUNT = 19;
+        private const int STANDARDCOLUMNCOUNT = 16;
 
         public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
         {
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
                 .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
                 .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
-                .MustAsync(CheckIsRplExtended).WithMessage($"The selected file could not be uploaded – use the template");
+                .MustAsync(CheckUploadType).WithMessage($"The selected file could not be uploaded – use the template");
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
@@ -104,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
             return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
         }
 
-        private async Task<bool> CheckIsRplExtended(IFormFile file, CancellationToken cancellation)
+        private async Task<bool> CheckUploadType(IFormFile file, CancellationToken cancellation)
         {
             var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
             using var reader = new StringReader(fileContent);
@@ -125,6 +126,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 }
 
                 return false;
+            }
+            else if (firstlineData.Count() == STANDARDCOLUMNCOUNT)
+            {
+                return true;
             }
             else
             {
