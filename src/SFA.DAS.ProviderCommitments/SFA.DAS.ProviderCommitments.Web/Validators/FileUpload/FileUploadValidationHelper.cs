@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     public class FileUploadValidationHelper
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
-        private const int ExtendedRplColumnCount = 19;
+        private const int EXTENDEDRPLCOLUMNCOUNT = 19;
 
         public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
         {
@@ -112,13 +112,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
             var firstLine = await reader.ReadLineAsync();
             var firstlineData = (firstLine).Split(',');
 
-            if (firstlineData.Count() == ExtendedRplColumnCount && BulkUploadFileRequirements.HasAnyRplExtendedHeaders(firstlineData))
+            if (firstlineData.Count() == EXTENDEDRPLCOLUMNCOUNT)
             {
+                if (BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData))
+                {
+                    return true;
+                }
+
+                if (BulkUploadFileRequirements.HasAnyRplExtendedHeaders(firstlineData))
+                {
+                    return false;
+                }
+
                 return false;
             }
             else
             {
-                return true;
+                return false;
             }
         }
 

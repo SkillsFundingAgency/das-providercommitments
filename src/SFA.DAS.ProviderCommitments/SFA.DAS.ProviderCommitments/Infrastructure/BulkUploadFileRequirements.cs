@@ -42,16 +42,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public static bool IsRplExtendedUpload(string[] headers)
         {
-            return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) &&
-                    OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
-                    OptionalHeaders.Contains(nameof(CsvRecord.TrainingHoursReduction)));
+            return (headers.Contains(nameof(CsvRecord.TrainingTotalHours)) &&
+                    headers.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
+                    headers.Contains(nameof(CsvRecord.TrainingHoursReduction)));
         }
 
         public static bool HasAnyRplExtendedHeaders(string[] headers)
         {
-            return (OptionalHeaders.Contains(nameof(CsvRecord.TrainingTotalHours)) ||
-                    OptionalHeaders.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) ||
-                    OptionalHeaders.Contains(nameof(CsvRecord.TrainingHoursReduction)));
+            return (headers.Contains(nameof(CsvRecord.TrainingTotalHours)) ||
+                    headers.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) ||
+                    headers.Contains(nameof(CsvRecord.TrainingHoursReduction)));
         }
     }
 }
