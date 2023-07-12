@@ -126,6 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             Assert.IsFalse(result.IsValid);
         }
 
+
         [Test]
         public void ShouldBeValidWhenFileIsValid()
         {
@@ -146,6 +147,51 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var result = validator.Validate(model);
 
             Assert.IsTrue(result.IsValid);
+        }
+
+
+        [Test]
+        public void ShouldCheckRplExtendedColumns()
+        {
+            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
+
+            var builder = new StringBuilder();
+            builder.AppendLine(headerLine);
+            for (int i = 1; i < 99; i++)
+            {
+                builder.AppendLine(headerLine);
+            }
+            string fileContents = builder.ToString();
+
+            var file = CreateFakeFormFile(fileContents);
+
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var result = validator.Validate(model);
+
+            Assert.IsTrue(result.IsValid);
+        }
+
+        [Test]
+        public void ShouldCheckCorruptRplExtendedColumns()
+        {
+            const string headerLine = "CohortRef,AgreementID,TESTULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
+
+            var builder = new StringBuilder();
+            builder.AppendLine(headerLine);
+            for (int i = 1; i < 99; i++)
+            {
+                builder.AppendLine(headerLine);
+            }
+            string fileContents = builder.ToString();
+
+            var file = CreateFakeFormFile(fileContents);
+
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var result = validator.Validate(model);
+
+            Assert.IsFalse(result.IsValid);
         }
 
         [TestCase("CohortReff,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
