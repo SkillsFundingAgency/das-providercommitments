@@ -14,8 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
         private const int EXTENDEDRPLCOLUMNCOUNT = 19;
-        private const int RPLV1COLUMNCOUNT = 16;
-        private const int STANDARDCOLUMNCOUNT = 14;
 
         public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
         {
@@ -33,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
                 .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
                 .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
-                .MustAsync(CheckRplUploadTypeColumns).WithMessage($"The selected file could not be uploaded – use the template");
+                .MustAsync(CheckRplExtendedColumnHeaders).WithMessage($"The selected file could not be uploaded – use the template");
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
@@ -106,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
             return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
         }
 
-        private async Task<bool> CheckRplUploadTypeColumns(IFormFile file, CancellationToken cancellation)
+        private async Task<bool> CheckRplExtendedColumnHeaders(IFormFile file, CancellationToken cancellation)
         {
             var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
             using var reader = new StringReader(fileContent);
@@ -116,30 +114,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 
             if (firstlineData.Count() == EXTENDEDRPLCOLUMNCOUNT)
             {
-                if (BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData))
+                if (!BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData))
                 {
-                    return true;
+                    return false;
                 }
-              
-                return false;
             }
-            else if (firstlineData.Count() == RPLV1COLUMNCOUNT)
-            {
-                if (BulkUploadFileRequirements.HeadersContainRequiredRplFields(firstlineData))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-            else if (firstlineData.Count() == STANDARDCOLUMNCOUNT)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
 
         private async Task<bool> CheckColumnHeader(IFormFile file, CancellationToken cancellation)

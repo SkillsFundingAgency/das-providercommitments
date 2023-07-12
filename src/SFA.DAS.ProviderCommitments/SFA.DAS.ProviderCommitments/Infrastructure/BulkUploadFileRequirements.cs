@@ -46,18 +46,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                     headers.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) &&
                     headers.Contains(nameof(CsvRecord.TrainingHoursReduction)));
         }
-
-        public static bool HasAnyRplExtendedHeaders(string[] headers)
-        {
-            return (headers.Contains(nameof(CsvRecord.TrainingTotalHours)) ||
-                    headers.Contains(nameof(CsvRecord.IsDurationReducedByRPL)) ||
-                    headers.Contains(nameof(CsvRecord.TrainingHoursReduction)));
-        }
-        public static bool HeadersContainRequiredRplFields(string[] headers)
-        {
-            return (headers.Contains(nameof(CsvRecord.DurationReducedBy)) &&
-                    headers.Contains(nameof(CsvRecord.PriceReducedBy)));
-        }
-
     }
 }
