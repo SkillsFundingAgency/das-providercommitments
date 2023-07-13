@@ -6,8 +6,6 @@
 
         public object Data { get; set; }
 
-        public bool IsRplExtended { get; set; }
-
         public PostValidateBulkUploadDataRequest(BulkUploadValidateApimRequest request)
         {
             Data = request;
