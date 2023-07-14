@@ -204,5 +204,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
         }
+
+        [Test]
+        public void VerifyTrainingTotalHours()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingTotalHours, result.TrainingTotalHoursAsString);
+            }
+        }
+
+        [Test]
+        public void VerifyTrainingHoursReduction()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
+            }
+        }
+
+        [Test]
+        public void VerifyIsDurationReducedByRPL()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
+            }
+        }
+
     }
 }
