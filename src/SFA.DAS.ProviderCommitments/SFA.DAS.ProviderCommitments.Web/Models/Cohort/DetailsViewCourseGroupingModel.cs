@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
@@ -15,8 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public EmailOverlapsModel EmailOverlaps { get; set; }
         public IReadOnlyCollection<CohortDraftApprenticeshipViewModel> DraftApprenticeships { get; set; }
         public bool ErrorIsCompletedDisplayed { get; set; }
+        public bool RplErrorHasBeenDisplayed { get; set; }
         public bool ErrorHasOverlappingUlnDisplayed { get; set; }
         public bool ErrorEmailOverlapsDisplayed { get; set; }
         public bool ErrorFundingBandExcessDisplayed { get; set; }
+        public int RplErrors { get; set; }
     }
 }
