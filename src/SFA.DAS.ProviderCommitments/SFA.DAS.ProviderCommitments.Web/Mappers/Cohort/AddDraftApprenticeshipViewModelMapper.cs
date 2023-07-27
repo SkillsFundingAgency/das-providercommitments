@@ -47,6 +47,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Email = cacheItem.Email,
                 Uln = cacheItem.Uln,
                 Cost = cacheItem.Cost,
+                TrainingPrice = cacheItem.TrainingPrice,
+                EndPointAssessmentPrice = cacheItem.EndPointAssessmentPrice,
                 Reference = cacheItem.Reference,
                 EmploymentPrice = cacheItem.EmploymentPrice
             };

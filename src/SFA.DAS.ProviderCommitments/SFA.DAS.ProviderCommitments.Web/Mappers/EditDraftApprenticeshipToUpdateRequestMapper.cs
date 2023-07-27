@@ -18,6 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = source.Uln,
                 CourseCode = source.CourseCode,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 StartDate = source.StartDate?.Date,
                 ActualStartDate = source.ActualStartDate?.Date,
                 EndDate = source.EndDate.Date,

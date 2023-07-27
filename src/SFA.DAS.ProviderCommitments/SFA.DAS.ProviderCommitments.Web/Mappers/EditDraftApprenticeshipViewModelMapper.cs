@@ -50,6 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     CourseCode = apiResponse.CourseCode,
                     HasStandardOptions = apiResponse.HasStandardOptions,
                     Cost = apiResponse.Cost,
+                    TrainingPrice = apiResponse.TrainingPrice,
+                    EndPointAssessmentPrice = apiResponse.EndPointAssessmentPrice,
                     Reference = apiResponse.ProviderReference,
                     IsContinuation = apiResponse.IsContinuation,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,

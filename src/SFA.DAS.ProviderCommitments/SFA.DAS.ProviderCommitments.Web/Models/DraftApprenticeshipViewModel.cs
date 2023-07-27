@@ -161,6 +161,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(Cost), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public int? Cost { get; set; }
 
+        [Display(Name = "Training Price")]
+        public int? TrainingPrice { get; set; }
+
+        [Display(Name = "End-point assessment price")]
+        public int? EndPointAssessmentPrice { get; set; }
+
         [Display(Name = "Agreed price for this employment (excluding VAT)")]
         [SuppressArgumentException(nameof(EmploymentPrice), "Agreed employment price must be 7 numbers or fewer")]
         public int? EmploymentPrice { get; set; }

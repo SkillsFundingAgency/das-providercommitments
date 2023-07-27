@@ -134,6 +134,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         }
 
         [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingPrice, result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
