@@ -162,9 +162,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? Cost { get; set; }
 
         [Display(Name = "Training Price")]
+        [SuppressArgumentException(nameof(TrainingPrice), "Training price must be a whole number")]
         public int? TrainingPrice { get; set; }
 
         [Display(Name = "End-point assessment price")]
+        [SuppressArgumentException(nameof(EndPointAssessmentPrice), "End-point assessment price must be a whole number")]
         public int? EndPointAssessmentPrice { get; set; }
 
         [Display(Name = "Agreed price for this employment (excluding VAT)")]
