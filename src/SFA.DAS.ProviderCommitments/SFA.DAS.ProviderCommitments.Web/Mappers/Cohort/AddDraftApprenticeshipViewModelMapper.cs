@@ -86,6 +86,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 result.EmploymentEndYear = cacheItem.EmploymentEndDate.Value.Year;
             }
 
+            if (cacheItem.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                result.Cost = cacheItem.TrainingPrice + cacheItem.EndPointAssessmentPrice;
+            }
+
             return result;
         }
     }
