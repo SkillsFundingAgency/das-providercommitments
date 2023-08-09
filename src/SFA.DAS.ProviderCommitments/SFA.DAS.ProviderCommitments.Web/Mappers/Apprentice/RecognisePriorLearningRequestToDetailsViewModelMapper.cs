@@ -2,6 +2,8 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using StackExchange.Redis;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
@@ -34,6 +36,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 result.DurationReducedBy = priorLearningData.DurationReducedBy;
                 result.CostBeforeRpl = priorLearningData.CostBeforeRpl;
                 result.PriceReduced = priorLearningData.PriceReduced;
+            }
+
+            if (result?.DurationReducedBy == 0 && result.PriceReduced.HasValue)
+            {
+                result.IsDurationReducedByRpl = false;
+                result.DurationReducedBy = null;
             }
 
             return result;
