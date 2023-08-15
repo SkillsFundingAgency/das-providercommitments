@@ -21,7 +21,11 @@
 ||
 Model.HasOverlappingUln
 ||
-Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
+(Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
+||
+Model.HasMissingTrainingPrices
+||
+Model.HasMissingEndPointAssessmentPrices)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -51,6 +55,14 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
                         @if (!Model.IsCompleteForProvider && !Model.IsReadOnly)
                         {
                             <li>all apprentice records are complete</li>
+                        }
+                        @if (Model.HasMissingTrainingPrices)
+                        {
+                            <li>The Training price is complete.</li>
+                        }
+                        @if (Model.HasMissingEndPointAssessmentPrices)
+                        {
+                            <li>The End-point assessment price is complete.</li>
                         }
                     </ul>
                 </div>
@@ -144,6 +156,10 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
         {
             <span class="govuk-tag">Flexi-Job Agency</span>
         }
+        @if (@course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+        {
+            <span class="govuk-tag">Simplified Payments Pilot</span>
+        }
     </h3>
     @if (Model.InvalidProviderCourseCodes.Contains(course.CourseCode))
     {
@@ -195,6 +211,24 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             </div>
             course.ErrorIsCompletedDisplayed = true;
         }
+        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.TrainingPrice == null)
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">The Training price are incomplete</h3>
+                <p>
+                    Please add the Training price.
+                </p>
+            </div>
+        }
+        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.EndPointAssessmentPrice == null)
+        {
+            <div class="govuk-inset-text das-inset-text--highlight">
+                <h3 class="govuk-heading-s">The End-point assessment price are incomplete</h3>
+                <p>
+                    Please add the End-point assessment price.
+                </p>
+            </div>
+        }
 
         if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
         {
@@ -228,13 +262,22 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
                 <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
-                <th scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+                <th asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
                 <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
                 <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
-                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
-                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                {
+                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Training price</th>
+                    <th scope="col" class="govuk-table__header das-table-cell-width-20">End-point assessment price</th>
+                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Total price</th>
+                }
+                else
+                {
+                    <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
+                }
+                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
                 }
@@ -256,7 +299,7 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
                     }
                 </td>
                 <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                <td class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
+                    <td asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                 <td class="govuk-table__cell" data-label="Training dates">
                     @if (draftApprenticeship.HasOverlappingUln)
                     {
@@ -275,19 +318,46 @@ Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidP
                 <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
                     @draftApprenticeship.DisplayEmploymentPrice
                 </td>
-                <td class="govuk-table__cell" data-label="Price">
-                    @if (@draftApprenticeship.ExceedsFundingBandCap)
-                    {
-                        <span class="das-table-cell--highlight">
+                @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                {
+                    <td class="govuk-table__cell" data-label="Training price">
+                        @if (@draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && @draftApprenticeship.TrainingPrice == null)
+                        {
+                                <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
+                        }
+                        else
+                        {
+                            @draftApprenticeship.TrainingPrice
+                        }
+                    </td>
+                    <td class="govuk-table__cell" data-label="End-point assessment price">
+                        @if (@draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && @draftApprenticeship.EndPointAssessmentPrice == null)
+                        {
+                                <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
+                        }
+                        else
+                        {
+                            @draftApprenticeship.EndPointAssessmentPrice
+                        }
+                    </td>
+                    <td class="govuk-table__cell" data-label="Total price">@draftApprenticeship.Cost</td>
+                }
+                else
+                {
+                    <td class="govuk-table__cell" data-label="Price">
+                        @if (@draftApprenticeship.ExceedsFundingBandCap)
+                        {
+                            <span class="das-table-cell--highlight">
+                                @draftApprenticeship.DisplayCost
+                            </span>
+                        }
+                        else
+                        {
                             @draftApprenticeship.DisplayCost
-                        </span>
-                    }
-                    else
-                    {
-                        @draftApprenticeship.DisplayCost
-                    }
-                </td>
-                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                        }
+                    </td>
+                }
+                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
                         @draftApprenticeship.DislayIsPilot
