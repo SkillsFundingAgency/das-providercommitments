@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DateOfBirth = source.DateOfBirth.Date,
                 Uln = source.Uln,
                 CourseCode = source.CourseCode,
-                Cost = source.Cost,
+                Cost = source.IsOnFlexiPaymentPilot.GetValueOrDefault() ? source.TrainingPrice + source.EndPointAssessmentPrice : source.Cost,
                 TrainingPrice = source.TrainingPrice,
                 EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 StartDate = source.StartDate?.Date,
