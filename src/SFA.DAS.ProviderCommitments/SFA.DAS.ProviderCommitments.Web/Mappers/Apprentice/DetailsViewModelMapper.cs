@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -35,15 +36,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             try
             {                
-                var data = await GetApprenticeshipData(source.ApprenticeshipId);
-                var dataLockSummaryStatus = data.DataLocks.DataLocks.GetDataLockSummaryStatus();
+                var data = await GetApprenticeshipData(source.ApprenticeshipId, source.ProviderId);
+                var hasProviderUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider);
+                var hasEmployerUpdates = data.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer);
+
+                var dataLockSummaryStatus = data.DataLocks.GetDataLockSummaryStatus();
 
                 var allowEditApprentice = 
                     (data.Apprenticeship.Status == ApprenticeshipStatus.Live ||
                      data.Apprenticeship.Status == ApprenticeshipStatus.WaitingToStart ||
                      data.Apprenticeship.Status == ApprenticeshipStatus.Paused) &&
-                    !data.HasProviderUpdates && 
-                    !data.HasEmployerUpdates &&
+                    !hasProviderUpdates && 
+                    !hasEmployerUpdates &&
                     dataLockSummaryStatus == DetailsViewModel.DataLockSummaryStatus.None &&
                     !data.Apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault();
 
@@ -54,10 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
                 var showOptions = hasOptions && !preDateStandardVersioning;
 
-                var apiRequest = new GetApprenticeshipDetailsRequest(source.ProviderId, source.ApprenticeshipId);
-                var apprenticeshipDetails = await _apiClient.Get<GetApprenticeshipDetailsResponse>(apiRequest);
-
-                var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.ChangeOfPartyRequests.SingleOrDefault(x =>
+                var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
                 return new DetailsViewModel
@@ -81,12 +82,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ActualStartDate = data.Apprenticeship.ActualStartDate,
                     EndDate = data.Apprenticeship.EndDate,
                     ProviderRef = data.Apprenticeship.ProviderReference,
-                    Cost = data.PriceEpisodes.PriceEpisodes.GetPrice(),
+                    Cost = data.PriceEpisodes.GetPrice(),
                     AllowEditApprentice = allowEditApprentice,
-                    HasProviderPendingUpdate = data.HasProviderUpdates,
-                    HasEmployerPendingUpdate = data.HasEmployerUpdates,
+                    HasProviderPendingUpdate = hasProviderUpdates,
+                    HasEmployerPendingUpdate = hasEmployerUpdates,
                     DataLockStatus = dataLockSummaryStatus,
-                    AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks.DataLocks),
+                    AvailableTriageOption = CalcTriageStatus(data.Apprenticeship.HasHadDataLockSuccess, data.DataLocks),
                     PauseDate = data.Apprenticeship.PauseDate,
                     CompletionDate = data.Apprenticeship.CompletionDate,
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
@@ -95,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),
                     HasOptions = showOptions,
                     SingleOption = singleOption,
-                    EmployerHistory = data.ChangeofEmployerChain?.ChangeOfEmployerChain
+                    EmployerHistory = data.ChangeOfEmployerChain?
                         .Select(coe => new EmployerHistory
                         {
                             EmployerName = coe.EmployerName,
@@ -109,10 +110,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DeliveryModel = data.Apprenticeship.DeliveryModel,
                     EmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
                     EmploymentPrice = data.Apprenticeship.EmploymentPrice,
-                    RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning.GetValueOrDefault(),
-                    DurationReducedBy = data.Apprenticeship.DurationReducedBy.HasValue ? data.Apprenticeship.DurationReducedBy.Value : 0,
-                    PriceReducedBy = data.Apprenticeship.PriceReducedBy.HasValue ? data.Apprenticeship.PriceReducedBy.Value : 0,
-                    HasMultipleDeliveryModelOptions = apprenticeshipDetails.HasMultipleDeliveryModelOptions,
+                    RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning,
+                    DurationReducedByHours = data.Apprenticeship.DurationReducedByHours,
+                    DurationReducedBy = data.Apprenticeship.DurationReducedBy,
+                    PriceReducedBy = data.Apprenticeship.PriceReducedBy,
+                    HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot
                 };
             }
@@ -123,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<DataLock> dataLocks)
+        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
         {
             if (!hasHadDataLockSuccess)
             {
@@ -147,34 +149,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return DetailsViewModel.TriageOption.Update;
         }
 
-        private async Task<(GetApprenticeshipResponse Apprenticeship, 
-            GetPriceEpisodesResponse PriceEpisodes, 
-            bool HasProviderUpdates, 
-            bool HasEmployerUpdates,
-            GetDataLocksResponse DataLocks,
-            GetChangeOfPartyRequestsResponse ChangeOfPartyRequests,
-            GetChangeOfEmployerChainResponse ChangeofEmployerChain)> 
-            GetApprenticeshipData(long apprenticeshipId)
+        private async Task<GetManageApprenticeshipDetailsResponse> GetApprenticeshipData(long apprenticeshipId, long providerId)
         {
-            var detailsResponseTask = _commitmentApiClient.GetApprenticeship(apprenticeshipId);
-            var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var pendingUpdatesTask = _commitmentApiClient.GetApprenticeshipUpdates(apprenticeshipId, new CommitmentsV2.Api.Types.Requests.GetApprenticeshipUpdatesRequest { Status = ApprenticeshipUpdateStatus.Pending });
-            var dataLocksTask = _commitmentApiClient.GetApprenticeshipDatalocksStatus(apprenticeshipId);
-            var changeOfPartyRequestsTask = _commitmentApiClient.GetChangeOfPartyRequests(apprenticeshipId);
-            var changeOfEmployerChainTask = _commitmentApiClient.GetChangeOfEmployerChain(apprenticeshipId);
+            var apiRequest = new GetManageApprenticeshipDetailsRequest(providerId, apprenticeshipId);
+            var apprenticeshipDetails = await _apiClient.Get<GetManageApprenticeshipDetailsResponse>(apiRequest);
 
-            await Task.WhenAll(detailsResponseTask, priceEpisodesTask, pendingUpdatesTask, dataLocksTask, changeOfEmployerChainTask, changeOfPartyRequestsTask);
-            
-            return (detailsResponseTask.Result,
-                priceEpisodesTask.Result,
-                pendingUpdatesTask.Result.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Provider),
-                pendingUpdatesTask.Result.ApprenticeshipUpdates.Any(x => x.OriginatingParty == Party.Employer),
-                dataLocksTask.Result,
-                changeOfPartyRequestsTask.Result,
-                changeOfEmployerChainTask.Result);
+            return apprenticeshipDetails;
         }
 
-        private async Task<bool> HasNewerVersions(GetApprenticeshipResponse apprenticeship)
+        private async Task<bool> HasNewerVersions(GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails apprenticeship)
         {
             if (apprenticeship.StandardUId != null)
             {

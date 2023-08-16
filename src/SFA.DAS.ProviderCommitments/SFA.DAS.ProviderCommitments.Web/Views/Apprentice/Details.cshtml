@@ -359,7 +359,7 @@
             </tbody>
         </table>
 
-        @if (Model.RecognisePriorLearning)
+        @if (Model.RecognisePriorLearning != null)
         {
             <div class="govuk-grid-row govuk-!-margin-bottom-2">
                 <div class="govuk-grid-column-two-thirds">
@@ -372,24 +372,31 @@
                 <table class="govuk-table">
                     <tbody class="govuk-table__body">
 
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Off-the-job training time reduction due to prior learning</th>
-                            <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.RecognisePriorLearning</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
+                        @if (Model.DurationReducedByHours != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Off-the-job training time reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.DurationReducedByHoursDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }                        
+                        @if (Model.DurationReducedBy != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">@Model.DurationReducedByDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
 
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
-                            <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">@Model.RecognisePriorLearning</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
-                            <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.RecognisePriorLearning</td>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-
+                        @if (Model.PriceReducedBy != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             }
