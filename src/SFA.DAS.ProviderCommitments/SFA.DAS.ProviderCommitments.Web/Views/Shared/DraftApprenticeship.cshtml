@@ -382,6 +382,15 @@ else
         @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice) })
         <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EndPointAssessmentPrice" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
     </div>
+
+    if (Model.EmployerHasEditedPrice)
+    {
+        <div class="govuk-inset-text">
+            <div id="price-hint" class="govuk-hint">
+                The employer has changed the total price to @Model.Cost.Value.ToGdsCostFormat()
+            </div>Total price: £<br>
+        </div>
+    }
 }
 else
 {

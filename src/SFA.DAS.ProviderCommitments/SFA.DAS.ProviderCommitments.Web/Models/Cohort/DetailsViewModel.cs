@@ -79,6 +79,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             Courses.Any(c => c.DraftApprenticeships.Any(da => da.TrainingPrice == null));
         public bool HasMissingEndPointAssessmentPrices =>
             Courses.Any(c => c.DraftApprenticeships.Any(da => da.EndPointAssessmentPrice == null));
+
+        public bool EmployerHasEditedPrice =>
+            Courses.Any(c =>
+                c.DraftApprenticeships.Any(da => da.TrainingPrice == null && da.EndPointAssessmentPrice == null && da.Cost != null && da.IsOnFlexiPaymentPilot.GetValueOrDefault()));
     }
 
     public enum CohortDetailsOptions
