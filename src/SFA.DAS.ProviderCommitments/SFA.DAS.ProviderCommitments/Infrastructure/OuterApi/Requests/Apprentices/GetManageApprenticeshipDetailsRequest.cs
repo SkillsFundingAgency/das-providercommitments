@@ -41,7 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public string LastName { get; set; }
             public string Email { get; set; }
             public string Uln { get; set; }
-            public string NINumber { get; set; }
             public string CourseCode { get; set; }
             public string StandardUId { get; set; }
             public string Version { get; set; }
@@ -63,8 +62,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public long? ContinuationOfId { get; set; }
             public long? ContinuedById { get; set; }
             public DateTime? OriginalStartDate { get; set; }
-            public bool IsContinuation { get; set; }
-            public bool HasContinuation { get; set; }
+            public bool IsContinuation => this.ContinuationOfId.HasValue;
+            public bool HasContinuation => this.ContinuedById.HasValue;
             public long? PreviousProviderId { get; set; }
             public long? PreviousEmployerAccountId { get; set; }
             public ApprenticeshipEmployerType? ApprenticeshipEmployerTypeOnApproval { get; set; }

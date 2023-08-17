@@ -65,6 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string EmploymentEndDateDisplay => EmploymentEndDate?.ToGdsFormatWithoutDay() ?? string.Empty;
         public bool? RecognisePriorLearning { get; set; }
         public int? TrainingTotalHours { get; set; }
+        public string TrainingTotalHoursDisplay => $"{TrainingTotalHours} hours";
         public int? DurationReducedBy { get; set; }
         public string DurationReducedByDisplay => $"{DurationReducedBy} weeks";
         public int? DurationReducedByHours { get; set; }
