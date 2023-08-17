@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class DataLockStatusExtensions2
     {
-        public static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(this IReadOnlyCollection<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
+        public static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(this IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
         {
             DetailsViewModel.DataLockSummaryStatus dataLockStatus = DetailsViewModel.DataLockSummaryStatus.None;
             if (dataLocks.Any(x => x.TriageStatus != TriageStatus.Unknown && IsUnresolvedDataLock(x)))

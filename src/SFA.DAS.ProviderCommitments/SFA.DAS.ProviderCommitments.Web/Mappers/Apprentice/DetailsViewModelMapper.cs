@@ -111,6 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
                     EmploymentPrice = data.Apprenticeship.EmploymentPrice,
                     RecognisePriorLearning = data.Apprenticeship.RecognisePriorLearning,
+                    TrainingTotalHours = data.Apprenticeship.TrainingTotalHours,
                     DurationReducedByHours = data.Apprenticeship.DurationReducedByHours,
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy,
@@ -125,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IReadOnlyCollection<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
+        private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
         {
             if (!hasHadDataLockSuccess)
             {

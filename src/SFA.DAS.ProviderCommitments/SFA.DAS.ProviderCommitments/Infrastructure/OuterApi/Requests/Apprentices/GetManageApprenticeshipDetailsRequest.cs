@@ -21,50 +21,64 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
     public class GetManageApprenticeshipDetailsResponse
     {
         public ApprenticeshipDetails Apprenticeship { get; set; }
-        public IReadOnlyCollection<PriceEpisode> PriceEpisodes { get; set; }
-        public IReadOnlyCollection<ApprenticeshipUpdate> ApprenticeshipUpdates { get; set; }
-        public IReadOnlyCollection<DataLock> DataLocks { get; set; }
-        public IReadOnlyCollection<ChangeOfPartyRequest> ChangeOfPartyRequests { get; set; }
-        public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
+        public IEnumerable<PriceEpisode> PriceEpisodes { get; set; }
+        public IEnumerable<ApprenticeshipUpdate> ApprenticeshipUpdates { get; set; }
+        public IEnumerable<DataLock> DataLocks { get; set; }
+        public IEnumerable<ChangeOfPartyRequest> ChangeOfPartyRequests { get; set; }
+        public IEnumerable<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
 
         public class ApprenticeshipDetails
         {
             public long Id { get; set; }
+            public long CohortId { get; set; }
             public long ProviderId { get; set; }
             public string ProviderName { get; set; }
             public long EmployerAccountId { get; set; }
             public long AccountLegalEntityId { get; set; }
             public string EmployerName { get; set; }
-            public DeliveryModel DeliveryModel { get; set; }
-            public string CourseCode { get; set; }
-            public string CourseName { get; set; }
-            public long? ContinuationOfId { get; set; }
-            public long? TransferSenderId { get; set; }
-            public bool HasHadDataLockSuccess { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Email { get; set; }
             public string Uln { get; set; }
-            public DateTime DateOfBirth { get; set; }
-            public DateTime? StartDate { get; set; }
-            public DateTime EndDate { get; set; }
+            public string NINumber { get; set; }
+            public string CourseCode { get; set; }
+            public string StandardUId { get; set; }
             public string Version { get; set; }
             public string Option { get; set; }
-            public DateTime? EmploymentEndDate { get; set; }
-            public int? EmploymentPrice { get; set; }
-            public long CohortId { get; set; }
+            public string CourseName { get; set; }
+            public DeliveryModel DeliveryModel { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? ActualStartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public DateTime DateOfBirth { get; set; }
+            public string EmployerReference { get; set; }
+            public string ProviderReference { get; set; }
             public ApprenticeshipStatus Status { get; set; }
-            public ConfirmationStatus ConfirmationStatus { get; set; }
             public DateTime? StopDate { get; set; }
             public DateTime? PauseDate { get; set; }
             public DateTime? CompletionDate { get; set; }
-            public DateTime? ActualStartDate { get; set; }
-            public string ProviderReference { get; set; }
-            public bool HasContinuation { get; set; }
-            public string StandardUId { get; set; }
-            public bool EmailShouldBePresent { get; set; }
+            public string EndpointAssessorName { get; set; }
+            public bool HasHadDataLockSuccess { get; set; }
+            public long? ContinuationOfId { get; set; }
+            public long? ContinuedById { get; set; }
+            public DateTime? OriginalStartDate { get; set; }
+            public bool IsContinuation => this.ContinuationOfId.HasValue;
+            public bool HasContinuation => this.ContinuedById.HasValue;
+            public long? PreviousProviderId { get; set; }
+            public long? PreviousEmployerAccountId { get; set; }
+            public ApprenticeshipEmployerType? ApprenticeshipEmployerTypeOnApproval { get; set; }
+            public bool? MadeRedundant { get; set; }
+            public SFA.DAS.CommitmentsV2.Types.ConfirmationStatus? ConfirmationStatus { get; set; }
             public bool EmailAddressConfirmedByApprentice { get; set; }
+            public bool EmailShouldBePresent { get; set; }
+            public int? PledgeApplicationId { get; set; }
+            public int? EmploymentPrice { get; set; }
+            public DateTime? EmploymentEndDate { get; set; }
+            public long? TransferSenderId { get; set; }
+            public int? WeightageReducedBy { get; set; }
+            public string QualificationsForRplReduction { get; set; }
+            public string ReasonForRplReduction { get; set; }
             public bool? RecognisePriorLearning { get; set; }
             public int? TrainingTotalHours { get; set; }
             public int? DurationReducedByHours { get; set; }
@@ -72,6 +86,51 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public int? DurationReducedBy { get; set; }
             public int? PriceReducedBy { get; set; }
             public bool? IsOnFlexiPaymentPilot { get; set; }
+
+            /*
+
+                        public long Id { get; set; }
+                        public long ProviderId { get; set; }
+                        public string ProviderName { get; set; }
+                        public long EmployerAccountId { get; set; }
+                        public long AccountLegalEntityId { get; set; }
+                        public string EmployerName { get; set; }
+                        public DeliveryModel DeliveryModel { get; set; }
+                        public string CourseCode { get; set; }
+                        public string CourseName { get; set; }
+                        public long? ContinuationOfId { get; set; }
+                        public long? TransferSenderId { get; set; }
+                        public bool HasHadDataLockSuccess { get; set; }
+                        public string FirstName { get; set; }
+                        public string LastName { get; set; }
+                        public string Email { get; set; }
+                        public string Uln { get; set; }
+                        public DateTime DateOfBirth { get; set; }
+                        public DateTime? StartDate { get; set; }
+                        public DateTime EndDate { get; set; }
+                        public string Version { get; set; }
+                        public string Option { get; set; }
+                        public DateTime? EmploymentEndDate { get; set; }
+                        public int? EmploymentPrice { get; set; }
+                        public long CohortId { get; set; }
+                        public ApprenticeshipStatus Status { get; set; }
+                        public ConfirmationStatus? ConfirmationStatus { get; set; }
+                        public DateTime? StopDate { get; set; }
+                        public DateTime? PauseDate { get; set; }
+                        public DateTime? CompletionDate { get; set; }
+                        public DateTime? ActualStartDate { get; set; }
+                        public string ProviderReference { get; set; }
+                        //public bool HasContinuation { get; set; }
+
+                        public bool IsContinuation => this.ContinuationOfId.HasValue;
+
+                        public bool HasContinuation => this.ContinuedById.HasValue;
+
+                        public string StandardUId { get; set; }
+                        public bool EmailShouldBePresent { get; set; }
+
+                        public bool EmailAddressConfirmedByApprentice { get; set; }
+                    */
         }
 
         public class PriceEpisode
