@@ -10,12 +10,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {
+        private const string ClientName = "ProviderRoATP";
+        private const string CookieAuthName = "SFA.DAS.ProviderApprenticeshipService";
+
         public static IServiceCollection AddProviderAuthentication(this IServiceCollection services, IConfiguration config)
         {
             if (config["UseStubProviderAuth"] != null && bool.Parse(config["UseStubProviderAuth"]))
@@ -24,7 +28,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             }
             else
             {
-                services.AddProviderIdamsAuthentication(config);
+                var useDfeSignIn = config.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
+                if (useDfeSignIn)
+                {
+                    services.AddAndConfigureDfESignInAuthentication(
+                        config,
+                        CookieAuthName,
+                        typeof(CustomServiceRole),
+                        ClientName,
+                        "/signout");
+                }
+                else
+                {
+                    services.AddProviderIdamsAuthentication(config);
+                }
             }
 
             return services;
