@@ -335,7 +335,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(pendingUpdate, _fixture.Result.HasProviderPendingUpdate);
         }
 
-        //[TestCase(true)]
+        [TestCase(true)]
         [TestCase(false)]
         public async Task ThenEmployerPendingUpdateIsMappedCorrectly(bool pendingUpdate)
         {
@@ -692,7 +692,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public string EncodedNewApprenticeshipId { get; }
             public string EncodedPreviousApprenticeshipId { get; }
             public string EncodedNextApprenticeshipId { get; }
-            
 
             public DetailsViewModelMapperFixture()
             {
@@ -724,8 +723,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 };
 
                 GetTrainingProgrammeByStandardUIdResponse = new GetTrainingProgrammeResponse();
-
-                //GetApprenticeshipDetailsResponse = Fixture.Build<GetApprenticeshipDetailsResponse>().Create();
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
