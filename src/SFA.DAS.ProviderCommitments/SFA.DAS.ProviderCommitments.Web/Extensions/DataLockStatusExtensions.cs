@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
-    public static class DataLockStatusExtensions2
+    public static class DataLockStatusExtensions
     {
         public static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(this IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
         {
