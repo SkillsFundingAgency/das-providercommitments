@@ -681,7 +681,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink> ChangeOfEmployerChain { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
-            //public ApprenticeshipDetails ApprenticeshipDetails{ get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
