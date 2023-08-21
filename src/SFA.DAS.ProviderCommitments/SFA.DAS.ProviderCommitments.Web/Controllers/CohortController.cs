@@ -59,7 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
-            
         }
 
         [HttpGet]
