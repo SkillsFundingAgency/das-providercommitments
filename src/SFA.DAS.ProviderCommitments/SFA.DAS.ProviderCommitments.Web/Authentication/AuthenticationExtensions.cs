@@ -36,7 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                         CookieAuthName,
                         typeof(CustomServiceRole),
                         ClientName,
-                        "/signout");
+                        "/signout",
+                        "/dashboard");
                 }
                 else
                 {
