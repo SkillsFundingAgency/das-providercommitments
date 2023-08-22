@@ -76,9 +76,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
 
         public bool HasMissingTrainingPrices =>
-            Courses.Any(c => c.DraftApprenticeships.Any(da => da.TrainingPrice == null));
+            Courses?.Any(c => c.DraftApprenticeships?.Any(da => da.IsOnFlexiPaymentPilot.GetValueOrDefault() && da.TrainingPrice == null) ?? false) ?? false;
         public bool HasMissingEndPointAssessmentPrices =>
-            Courses.Any(c => c.DraftApprenticeships.Any(da => da.EndPointAssessmentPrice == null));
+            Courses?.Any(c => c.DraftApprenticeships?.Any(da => da.IsOnFlexiPaymentPilot.GetValueOrDefault() && da.EndPointAssessmentPrice == null) ?? false) ?? false;
     }
 
     public enum CohortDetailsOptions
