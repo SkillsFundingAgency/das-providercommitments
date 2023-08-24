@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.IO;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -123,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
                 Filename = attachment.FileName,
                 RplCount = rplCount,
                 RowCount = csvRecords.Count,
-                FileContent = attachment.ContentDisposition
+                FileContent = await ReadFormFileAsync(attachment)
             };
 
             //var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
@@ -133,6 +134,17 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             await Task.Delay(1);
             var r = new Random(DateTime.Now.Millisecond);
             return r.Next(0, 1000);
+        }
+
+        public static async Task<string> ReadFormFileAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
+            using var reader = new StreamReader(file.OpenReadStream());
+            return await reader.ReadToEndAsync();
         }
     }
 }
