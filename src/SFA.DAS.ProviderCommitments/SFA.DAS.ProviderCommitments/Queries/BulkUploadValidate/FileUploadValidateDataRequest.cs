@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 {
-    public class FileUploadValidateDataRequest : IRequest
+    public class FileUploadValidateDataRequest : IRequest<FileUploadValidateDataResponse>
     {
         public long ProviderId { get; set; }
         public bool RplDataExtended { get; set; }

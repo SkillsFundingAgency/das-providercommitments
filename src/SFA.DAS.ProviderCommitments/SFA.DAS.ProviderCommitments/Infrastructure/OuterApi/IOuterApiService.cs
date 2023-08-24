@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Interfaces
 {
@@ -29,5 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<CreatePriorLearningDataResponse> UpdatePriorLearningData(long providerId, long cohortId, long draftApprenticeshipId, CreatePriorLearningDataRequest request);
         Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long providerId, long cohortId, long apprenticeshipId);
         Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId);
+        Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
     }
 }
+ 

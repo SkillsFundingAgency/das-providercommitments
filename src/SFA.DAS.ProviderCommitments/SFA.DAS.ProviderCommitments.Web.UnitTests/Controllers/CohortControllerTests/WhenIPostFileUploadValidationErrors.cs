@@ -16,6 +16,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -52,20 +53,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly FileUploadValidateViewModel _viewModel;
         private readonly FileUploadReviewRequest _request;
         private readonly Mock<IMediator> _mediator;
-
+        private FileUploadValidateDataResponse _response;
         public PostFileUploadValidationErrorsixture()
         {
             var fixture = new Fixture();
             _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
             _request = fixture.Create<FileUploadReviewRequest>();
+            _response = fixture.Create<FileUploadValidateDataResponse>();
             _outerApiService = new Mock<IOuterApiService>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
+            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(_response);
 
             Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
@@ -75,7 +77,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public PostFileUploadValidationErrorsixture VerifyCsvRecordCached()
         {
-            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(_viewModel), Times.Once);
+            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(It.Is<FileUploadStartViewModel>(p =>
+                p.ProviderId == _viewModel.ProviderId && p.Attachment == _viewModel.Attachment &&
+                p.FileUploadLogId == _response.FileUploadLogId)), Times.Once);
             return this;
         }
 

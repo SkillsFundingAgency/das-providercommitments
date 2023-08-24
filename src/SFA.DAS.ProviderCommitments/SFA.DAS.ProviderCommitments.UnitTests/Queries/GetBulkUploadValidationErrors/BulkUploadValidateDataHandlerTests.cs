@@ -10,6 +10,8 @@ using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationErrors
 {
@@ -34,6 +36,17 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             fixture.VerifyBulkUploadDataValidated();
         }
 
+        [Test]
+        public async Task Response_Contains_The_Expected_FileUploadLogId()
+        {
+            var fixture = new BulkUploadValidateDataHandlerTestsFixture();
+            var response = await fixture.Handle();
+
+            response.Should().BeOfType<FileUploadValidateDataResponse>();
+            response.Should().NotBeNull();
+            response.FileUploadLogId.Should().Be(fixture.BulkUploadValidateApiRequest.FileUploadLogId);
+        }
+
         public class BulkUploadValidateDataHandlerTestsFixture
         {
             private FileUploadValidateDataHandler BulkUploadValidateDataHandler { get; set; }
@@ -41,19 +54,19 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             private Mock<IModelMapper> _modelMapper { get; set; }
             private Mock<IBulkUploadFileParser> _bulkUploadParser { get; set; }
             private FileUploadValidateDataRequest _bulkUploadValidateDataRequest { get; set; }
-            private BulkUploadValidateApimRequest _bulkUploadValidateApiRequest { get; set; }
+            public BulkUploadValidateApimRequest BulkUploadValidateApiRequest { get; set; }
             private Mock<IAuthorizationService> _authorizationService;
             public BulkUploadValidateDataHandlerTestsFixture()
             {
                 var fixture = new Fixture();
                 _bulkUploadValidateDataRequest = new FileUploadValidateDataRequest() ;
-                _bulkUploadValidateApiRequest = fixture.Create<BulkUploadValidateApimRequest>();
+                BulkUploadValidateApiRequest = fixture.Create<BulkUploadValidateApimRequest>();
                 _authorizationService = new Mock<IAuthorizationService>();
 
                 _outerApiService = new Mock<IOuterApiService>();
 
                 _modelMapper = new Mock<IModelMapper>();
-                _modelMapper.Setup(x => x.Map<BulkUploadValidateApimRequest>(_bulkUploadValidateDataRequest)).ReturnsAsync(() => _bulkUploadValidateApiRequest);
+                _modelMapper.Setup(x => x.Map<BulkUploadValidateApimRequest>(_bulkUploadValidateDataRequest)).ReturnsAsync(() => BulkUploadValidateApiRequest);
                 
                 _bulkUploadParser = new Mock<IBulkUploadFileParser>();
                 _bulkUploadParser.Setup(x => x.GetCsvRecords(It.IsAny<long>(), It.IsAny<IFormFile>()))
@@ -61,9 +74,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
                 BulkUploadValidateDataHandler = new FileUploadValidateDataHandler(_outerApiService.Object, _modelMapper.Object, _bulkUploadParser.Object, _authorizationService.Object);
             }
 
-            public async Task Handle()
+            public Task<FileUploadValidateDataResponse> Handle()
             {
-                await BulkUploadValidateDataHandler.Handle(_bulkUploadValidateDataRequest, CancellationToken.None);
+                return BulkUploadValidateDataHandler.Handle(_bulkUploadValidateDataRequest, CancellationToken.None);
             }
 
             internal void VerifyApiMapperCalled()

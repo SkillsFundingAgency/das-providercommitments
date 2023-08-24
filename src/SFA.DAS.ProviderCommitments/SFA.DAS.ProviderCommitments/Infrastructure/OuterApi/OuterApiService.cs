@@ -3,9 +3,13 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -105,6 +109,30 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId)
         {
             return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
+        }
+
+        public async Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords)
+        {
+            var rplCount = csvRecords.Count(x => x.RecognisePriorLearning != null && (x.RecognisePriorLearning == "1" ||
+                x.RecognisePriorLearning.Equals("True", StringComparison.InvariantCultureIgnoreCase) ||
+                x.RecognisePriorLearning.Equals("Yes", StringComparison.InvariantCultureIgnoreCase)));
+
+            var request = new FileUploadLogRequest
+            {
+                ProviderId = providerId,
+                Filename = attachment.FileName,
+                RplCount = rplCount,
+                RowCount = csvRecords.Count,
+                FileContent = attachment.ContentDisposition
+            };
+
+            //var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
+            //return response.FileUploadLogId
+            //;
+
+            await Task.Delay(1);
+            var r = new Random(DateTime.Now.Millisecond);
+            return r.Next(0, 1000);
         }
     }
 }
