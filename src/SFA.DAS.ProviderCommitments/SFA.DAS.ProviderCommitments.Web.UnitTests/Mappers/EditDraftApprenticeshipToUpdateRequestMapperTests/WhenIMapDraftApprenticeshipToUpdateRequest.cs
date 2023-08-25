@@ -88,6 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
+            _source.IsOnFlexiPaymentPilot = false;
             var result = await _act();
             Assert.AreEqual(_source.Cost, result.Cost);
         }
@@ -104,6 +105,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         {
             var result = await _act();
             Assert.AreEqual(_source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProviders()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice + _source.EndPointAssessmentPrice, result.Cost);
         }
 
         [Test]

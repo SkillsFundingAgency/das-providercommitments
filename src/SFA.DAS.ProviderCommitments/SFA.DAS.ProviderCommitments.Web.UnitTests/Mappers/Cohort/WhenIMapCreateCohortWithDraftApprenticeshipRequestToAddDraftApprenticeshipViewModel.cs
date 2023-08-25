@@ -158,6 +158,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cost_IsMappedCorrectly()
         {
+            _cacheItem.IsOnFlexiPaymentPilot = false;
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_cacheItem.Cost, result.Cost);
         }
@@ -174,6 +175,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_cacheItem.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
+        public async Task Then_Calculated_Cost_IsMappedCorrectly_ForPilotProviders()
+        {
+            _cacheItem.IsOnFlexiPaymentPilot = true;
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_cacheItem.TrainingPrice + _cacheItem.EndPointAssessmentPrice, result.Cost);
         }
 
         [Test]

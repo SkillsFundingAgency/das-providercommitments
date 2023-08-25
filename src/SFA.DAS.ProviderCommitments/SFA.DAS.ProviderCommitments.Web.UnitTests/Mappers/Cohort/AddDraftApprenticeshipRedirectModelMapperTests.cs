@@ -171,6 +171,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cost_Is_Saved_To_Cache()
         {
+            _source.IsOnFlexiPaymentPilot = false;
             var result = await _act();
             _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
                 It.Is<CreateCohortCacheItem>(y => y.Cost == _source.Cost),
@@ -192,6 +193,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _act();
             _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
                 It.Is<CreateCohortCacheItem>(y => y.EndPointAssessmentPrice == _source.EndPointAssessmentPrice),
+                It.IsAny<int>()));
+        }
+
+        [Test]
+        public async Task Then_Calculated_Cost_Is_Saved_To_Cache_For_Pilot_Providers()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            var result = await _act();
+            _cacheStorageService.Verify(x => x.SaveToCache(It.IsAny<Guid>(),
+                It.Is<CreateCohortCacheItem>(y => y.Cost == _source.TrainingPrice + _source.EndPointAssessmentPrice),
                 It.IsAny<int>()));
         }
 
