@@ -362,16 +362,41 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                    <td class="govuk-table__cell"></td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Your reference</th>
-                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
-                    <td class="govuk-table__cell"></td>
-                </tr>
+                @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Your reference</th>
+                        <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+
+                    <h2 class="govuk-heading-m">Price</h2>
+
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Training Price</th>
+                        <td id="apprentice-training-price" class="govuk-table__cell">@Model.TrainingPrice.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Assessment price</th>
+                        <td id="apprentice-assessment-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Your reference</th>
+                        <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+                        <td class="govuk-table__cell"></td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
