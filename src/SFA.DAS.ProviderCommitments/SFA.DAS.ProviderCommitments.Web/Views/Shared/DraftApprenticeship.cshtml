@@ -371,7 +371,7 @@ else
             Do not include VAT. Enter price in whole pounds. For example, for £6,500 enter 6500.
         </span>
         @Html.ValidationMessageFor(m => m.TrainingPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="TrainingPrice" maxlength="7" class="govuk-input govuk-input--width-5 length-limit"/>
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="TrainingPrice" maxlength="7" onkeyup="calculateEditedTotalPrice()" class="govuk-input govuk-input--width-5 length-limit" />
     </div>
 
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndPointAssessmentPrice, "govuk-form-group--error")">
@@ -380,8 +380,19 @@ else
             Do not include VAT. Enter price in whole pounds. For example, for £1,500 enter 1500.
         </span>
         @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EndPointAssessmentPrice" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EndPointAssessmentPrice" onkeyup="calculateEditedTotalPrice()" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
     </div>
+
+    if (Model.EmployerHasEditedPrice)
+    {
+        <div class="govuk-inset-text">
+            <div id="price-hint" class="govuk-hint">
+                The employer has changed the total price to @Model.Cost.Value.ToGdsCostFormat()
+            </div>
+            <!--display:none set by default, overridden in javascript such that this element does not display when the user has js disabled-->
+            <span id="dynamic-total-price" style="display:none">Total price: £<span id="edited-total-price"></span><br></span>
+        </div>
+    }
 }
 else
 {
@@ -424,3 +435,17 @@ else
     <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
 </div>
 
+<script>
+    function calculateEditedTotalPrice() {
+        var trainingPrice = parseInt(document.getElementById("TrainingPrice").value === "" ? 0 : document.getElementById("TrainingPrice").value);
+        var epaPrice = parseInt(document.getElementById("EndPointAssessmentPrice").value === "" ? 0 : document.getElementById("EndPointAssessmentPrice").value);
+        document.getElementById("edited-total-price").innerText = trainingPrice + epaPrice;
+    }
+
+    function showEditedTotalPrice() {
+        document.getElementById("dynamic-total-price").style.display = 'inline';
+    }
+
+    window.onload = showEditedTotalPrice();
+
+</script>

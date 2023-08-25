@@ -25,7 +25,9 @@ Model.HasOverlappingUln
 ||
 Model.HasMissingTrainingPrices
 ||
-Model.HasMissingEndPointAssessmentPrices)
+Model.HasMissingEndPointAssessmentPrices
+||
+Model.EmployerHasEditedPrice)
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -63,6 +65,10 @@ Model.HasMissingEndPointAssessmentPrices)
                         @if (Model.HasMissingEndPointAssessmentPrices)
                         {
                             <li>The End-point assessment price is complete.</li>
+                        }
+                        @if (Model.EmployerHasEditedPrice)
+                        {
+                            <li>The employer has changed the total price. Please edit and allocate the total price between Training price and End-point assessment price.</li>
                         }
                     </ul>
                 </div>
