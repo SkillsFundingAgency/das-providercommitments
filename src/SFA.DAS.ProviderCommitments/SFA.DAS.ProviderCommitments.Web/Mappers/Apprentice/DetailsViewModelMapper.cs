@@ -82,6 +82,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     EndDate = data.Apprenticeship.EndDate,
                     ProviderRef = data.Apprenticeship.ProviderReference,
                     Cost = data.PriceEpisodes.PriceEpisodes.GetPrice(),
+                    TrainingPrice = data.PriceEpisodes.PriceEpisodes.GetTrainingPrice(),
+                    EndPointAssessmentPrice = data.PriceEpisodes.PriceEpisodes.GetEndPointAssessmentPrice(),
                     AllowEditApprentice = allowEditApprentice,
                     HasProviderPendingUpdate = data.HasProviderUpdates,
                     HasEmployerPendingUpdate = data.HasEmployerUpdates,
