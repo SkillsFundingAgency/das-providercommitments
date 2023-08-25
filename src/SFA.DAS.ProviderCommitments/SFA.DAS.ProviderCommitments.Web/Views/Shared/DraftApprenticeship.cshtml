@@ -388,7 +388,9 @@ else
         <div class="govuk-inset-text">
             <div id="price-hint" class="govuk-hint">
                 The employer has changed the total price to @Model.Cost.Value.ToGdsCostFormat()
-            </div>Total price: £ <span id="edited-total-price"></span><br>
+            </div>
+            <!--display:none set by default, overridden in javascript such that this element does not display when the user has js disabled-->
+            <span id="dynamic-total-price" style="display:none">Total price: £<span id="edited-total-price"></span><br></span>
         </div>
     }
 }
@@ -439,4 +441,11 @@ else
         var epaPrice = parseInt(document.getElementById("EndPointAssessmentPrice").value === "" ? 0 : document.getElementById("EndPointAssessmentPrice").value);
         document.getElementById("edited-total-price").innerText = trainingPrice + epaPrice;
     }
+
+    function showEditedTotalPrice() {
+        document.getElementById("dynamic-total-price").style.display = 'inline';
+    }
+
+    window.onload = showEditedTotalPrice();
+
 </script>
