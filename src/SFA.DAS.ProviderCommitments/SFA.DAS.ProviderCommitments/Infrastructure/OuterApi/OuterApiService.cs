@@ -127,13 +127,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
                 FileContent = await ReadFormFileAsync(attachment)
             };
 
-            //var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
-            //return response.FileUploadLogId
-            //;
-
-            await Task.Delay(1);
-            var r = new Random(DateTime.Now.Millisecond);
-            return r.Next(0, 1000);
+            var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
+            return response.FileUploadLogId;
         }
 
         public static async Task<string> ReadFormFileAsync(IFormFile file)
