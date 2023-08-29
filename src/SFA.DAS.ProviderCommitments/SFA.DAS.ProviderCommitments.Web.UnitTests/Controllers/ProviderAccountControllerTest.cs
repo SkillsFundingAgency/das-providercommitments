@@ -1,12 +1,10 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
-using SFA.DAS.Testing.AutoFixture;
-using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
