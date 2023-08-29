@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             await _client.ValidateBulkUploadRequest(apiRequest);
             return new FileUploadValidateDataResponse
             {
-                FileUploadLogId = apiRequest.FileUploadLogId
+                LogId = apiRequest.FileUploadLogId
             };
         }
     }

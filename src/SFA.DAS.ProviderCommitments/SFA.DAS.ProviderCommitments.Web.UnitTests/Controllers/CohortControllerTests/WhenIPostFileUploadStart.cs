@@ -80,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mockModelMapper.Verify(
                 x => x.Map<FileUploadReviewRequest>(It.Is<FileUploadStartViewModel>(p =>
                     p.ProviderId == _viewModel.ProviderId && p.Attachment == _viewModel.Attachment &&
-                    p.FileUploadLogId == _response.FileUploadLogId)), Times.Once);
+                    p.FileUploadLogId == _response.LogId)), Times.Once);
             return this;
         }
 

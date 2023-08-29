@@ -651,7 +651,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
             var response = await _mediator.Send(bulkValidate);
-            return response.FileUploadLogId;
+            return response.LogId;
         }
     }
 }

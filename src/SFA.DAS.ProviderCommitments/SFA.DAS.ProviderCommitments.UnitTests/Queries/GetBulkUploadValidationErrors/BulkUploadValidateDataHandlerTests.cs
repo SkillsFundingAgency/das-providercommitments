@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
 
             response.Should().BeOfType<FileUploadValidateDataResponse>();
             response.Should().NotBeNull();
-            response.FileUploadLogId.Should().Be(fixture.BulkUploadValidateApiRequest.FileUploadLogId);
+            response.LogId.Should().Be(fixture.BulkUploadValidateApiRequest.FileUploadLogId);
         }
 
         public class BulkUploadValidateDataHandlerTestsFixture

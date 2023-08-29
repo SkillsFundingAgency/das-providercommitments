@@ -2,6 +2,6 @@
 {
     public class FileUploadValidateDataResponse
     {
-        public long FileUploadLogId { get; set; }
+        public long LogId { get; set; }
     }
 }
