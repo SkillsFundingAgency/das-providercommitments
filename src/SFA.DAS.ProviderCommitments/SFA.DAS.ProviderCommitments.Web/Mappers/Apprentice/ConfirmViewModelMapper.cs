@@ -11,6 +11,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
@@ -65,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewPrice = cacheItem.Price.Value,
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
-                    FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
+                    FundingBandCap = data.TrainingProgramme.GetFundingBandCap(newStartDate.Date),
                     ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
                                         (cacheItem.SkippedDeliveryModelSelection && (int) cacheItem.DeliveryModel != (int) data.Apprenticeship.DeliveryModel),
                     ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
@@ -102,21 +103,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 course.TrainingProgramme);
         }
 
-        private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
-        {
-            if (course == null)
-            {
-                return null;
-            }
-
-            var cap = course.FundingCapOn(startDate.Value);
-
-            if (cap > 0)
-            {
-                return cap;
-            }
-
-            return null;
-        }
     }
 }

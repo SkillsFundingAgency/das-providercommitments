@@ -13,6 +13,7 @@
         public const string ChangeEmployerDetails = "apprentice-change-employer-details";
         public const string ChangeVersion = "change-version";
         public const string ChangeOption = "change-option";
+        public const string ChangePrice = "change-price";
         public const string EditApprenticeship = "edit-apprenticeship";
         public const string ApprenticeSelectEmployer = "apprentice-select-employer";
         public const string ApprenticeConfirmEmployer = "apprentice-confirm-employer";

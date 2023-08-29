@@ -5,7 +5,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Extensions
 {
-    
     public static class FundingCapExtension
     {
         public static int FundingCapOn(this TrainingProgramme course, DateTime date)

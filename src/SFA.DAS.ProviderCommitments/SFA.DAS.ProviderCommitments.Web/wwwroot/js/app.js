@@ -87,4 +87,11 @@ $(function () {
             $(this).val(text.substring(0, maxlength));
         }
     });
+
+    $("form #apprentice-price-change-form").ready(function () {
+        $('#apprenticeship-training-price, #apprenticeship-epa-price').focusout(function () {
+            const sum = Number($('#apprenticeship-training-price').val().replace(',', '')) + Number($('#apprenticeship-epa-price').val().replace(',', ''));
+            $('#apprenticeship-total-price').text('£' + sum.toLocaleString('en-GB'));
+        });
+    });
 });

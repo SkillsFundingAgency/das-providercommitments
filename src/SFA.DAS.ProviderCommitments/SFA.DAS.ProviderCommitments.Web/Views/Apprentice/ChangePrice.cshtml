@@ -1,0 +1,100 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangePriceViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
+
+@{
+    ViewBag.Title = "Change the training or end-point assessment price";
+    ViewBag.GaData.Vpv = "/apprentices/apprentice/change-price";
+    ViewBag.GaData.Org = Model.Employer;
+}
+
+<form id="apprentice-price-change-form" novalidate method="post">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.ProviderId)
+    @Html.HiddenFor(x => x.ApprenticeshipHashedId)
+    @Html.HiddenFor(x => x.OriginalEndpointAssessmentPrice)
+    @Html.HiddenFor(x => x.OriginalTrainingPrice)
+
+    <div class="govuk-grid-row">
+        <div class="govuk-width-container">
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <partial name="_ValidationSummary" />
+                    <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+                    <div class="govuk-hint">
+                        The funding band maximum for this apprenticeship is @Model.FundingBandCap.GetValueOrDefault().ToGdsCostFormat(). This is the highest amount the apprenticeship service
+                        will pay towards the training and end-point assessment.
+                        <br><br>
+                        If you raise the training price above the funding band maximum, this will need to be paid by the employer.
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                Training price
+                            </legend>
+                            <div class="govuk-hint">
+                                Do not include VAT. Enter price in whole pounds. For example, for £6,500 enter 6500.
+                            </div>
+                            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
+                                <span id="employment-price-hint" class="govuk-hint">
+                                    Enter the price in whole pounds. For example, for £1,500 enter 1500
+                                </span>
+                                @Html.ValidationMessageFor(m => m.TrainingPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice) })
+                                <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                                <input id="apprenticeship-training-price" asp-for="TrainingPrice" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="5" min="1" max="99999" type="number" />
+                            </div>
+                        </fieldset>
+                    </div>
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            End-point assessment price
+                        </legend>
+                        <div class="govuk-hint">
+                            Do not include VAT. Enter price in whole pounds. For example, for £2,500 enter 2500.
+                        </div>
+                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndpointAssessmentPrice, "govuk-form-group--error")">
+                            @Html.ValidationMessageFor(m => m.EndpointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndpointAssessmentPrice) })
+                            <span class="govuk-body govuk-!-font-weight-bold">£ </span>
+                            <input id="apprenticeship-epa-price" asp-for="EndpointAssessmentPrice" class="govuk-input govuk-input--width-5 length-limit" inputmode="numeric" pattern="[0-9]*" maxlength="5" min="1" max="99999" type="number" />
+                        </div>
+                    </fieldset>
+                    <div class="govuk-inset-text">
+                        The total price the employer will see is <span id="apprenticeship-total-price">@Model.TotalPrice.ToGdsCostFormat()</span>.
+                    </div>
+                    @*                    
+                        <div class="govuk-form-group">
+                        <br>
+                        <fieldset class="govuk-fieldset" role="group" aria-describedby="apprenticeship-price-valid-from-hint">
+                            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                                <div class="govuk-form-group">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" for="reason-for-update">
+                                        What was the reason for changing the price?
+                                    </legend>
+                                    <div id="reason-for-update-hint" class="govuk-hint">
+                                        If the total price changes, this reason will be shared with @Model.Employer. They will need to approve the change.
+                                    </div>
+                                    <textarea class="govuk-textarea" id="reason-for-update" name="reason-for-update" rows="5" aria-describedby="reason-for-update-hint"></textarea>
+                                </div>
+                                <div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+                                    200 characters remaining
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>*@
+
+                </div>
+
+            </div>
+            <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
+                Continue
+            </button>
+
+        </div>
+    </div>
+</form>
+
+@section breadcrumb {
+    <a id="back-link" class="govuk-back-link" asp-route="@RouteNames.ApprenticeDetail">Back</a>
+}

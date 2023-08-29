@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -553,6 +554,49 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+        }
+
+
+        [HttpGet]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/change-price", Name = RouteNames.ChangePrice)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangePrice(EditApprenticeshipRequest request)
+        {
+            var apprenticeship = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId);
+            var course = await _commitmentsApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
+
+            var vm = new ChangePriceViewModel
+            {
+               Employer = apprenticeship.EmployerName,
+               FundingBandCap = course.TrainingProgramme.GetFundingBandCap(apprenticeship.ActualStartDate ?? apprenticeship.StartDate),
+               OriginalTrainingPrice = 1234,
+               TrainingPrice = 1234,
+               OriginalEndpointAssessmentPrice = 9635,
+               EndpointAssessmentPrice = 9635,
+               ApprenticeshipHashedId = request.ApprenticeshipHashedId
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Route("{apprenticeshipHashedId}/change-price", Name = RouteNames.ChangePrice)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangePrice(ChangePriceViewModel viewModel)
+        {
+            if (!viewModel.PricesChanged)
+            {
+                ModelState.AddModelError("PricesChanged", "You must change the training price and/or the end-point assessment price");
+            }
+            if (viewModel.TotalPrice > 100000)
+            {
+                ModelState.AddModelError("PricesChanged", "The total price must not be greater than 100,000");
+            }
+
+            return View(viewModel);
+            // return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
