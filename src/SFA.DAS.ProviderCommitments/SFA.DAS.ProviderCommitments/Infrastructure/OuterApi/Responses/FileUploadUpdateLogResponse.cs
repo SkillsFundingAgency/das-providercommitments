@@ -2,6 +2,6 @@
 {
     public class FileUploadUpdateLogResponse
     {
-        public long FileUploadLogId { get; set; }
+        public long LogId { get; set; }
     }
 }

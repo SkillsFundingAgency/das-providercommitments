@@ -128,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             };
 
             var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
-            return response.FileUploadLogId;
+            return response.LogId;
         }
 
         public async Task<long> UpdateFileUploadLog(long providerId, long logId)
@@ -140,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             };
 
             var response = await _outerApiClient.Post<FileUploadUpdateLogResponse>(new PostFileUploadUpdateLogRequest(request));
-            return response.FileUploadLogId;
+            return response.LogId;
         }
 
         public static async Task<string> ReadFormFileAsync(IFormFile file)
