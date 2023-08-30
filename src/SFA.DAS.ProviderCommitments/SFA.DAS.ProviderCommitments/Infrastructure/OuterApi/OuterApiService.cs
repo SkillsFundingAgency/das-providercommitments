@@ -131,6 +131,18 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return response.FileUploadLogId;
         }
 
+        public async Task<long> UpdateFileUploadLog(long providerId, long logId)
+        {
+            var request = new FileUploadUpdateLogRequest
+            {
+                ProviderId = providerId,
+                LogId = logId,
+            };
+
+            var response = await _outerApiClient.Post<FileUploadUpdateLogResponse>(new PostFileUploadUpdateLogRequest(request));
+            return response.FileUploadLogId;
+        }
+
         public static async Task<string> ReadFormFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
