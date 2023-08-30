@@ -14,7 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
     {
         private BulkUploadFileValidationConfiguration _csvConfiguration;
         private const int EXTENDEDRPLCOLUMNCOUNT = 19;
-        private const int COLUMNCOUNT = 16;
 
         public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
         {
