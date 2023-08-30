@@ -28,10 +28,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 .Must(CheckFileType).WithMessage("The selected file must be a CSV")
                 .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
                 .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
-                .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
+                .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
                 .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
                 .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
-                .MustAsync(CheckRplExtendedColumnHeaders).WithMessage($"The selected file could not be uploaded – use the template");
+                .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this");
         }
 
         public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 .Must(CheckFileType).WithMessage("The selected file must be a CSV")
                 .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
                 .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
-                .MustAsync(CheckColumnHeader).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
+                .MustAsync(CheckColumnHeaders).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
                 .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
                 .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
         }
@@ -104,13 +104,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
             return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
         }
 
-        private async Task<bool> CheckRplExtendedColumnHeaders(IFormFile file, CancellationToken cancellation)
+        private async Task<bool> CheckColumnHeaders(IFormFile file, CancellationToken cancellation)
         {
             var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
             using var reader = new StringReader(fileContent);
 
             var firstLine = await reader.ReadLineAsync();
             var firstlineData = (firstLine).Split(',');
+
+            if (!BulkUploadFileRequirements.HasMinimumRequiredColumns(firstlineData))
+            {
+                return false;
+            }
 
             if (firstlineData.Count() == EXTENDEDRPLCOLUMNCOUNT)
             {
@@ -120,24 +125,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
                 }
             }
             return true;
-        }
-
-        private async Task<bool> CheckColumnHeader(IFormFile file, CancellationToken cancellation)
-        {
-            var fileData = await ReadFileAsync(file);
-            return (fileData.firstlineData[0] == "CohortRef" &&
-                    fileData.firstlineData[1] == "AgreementID" &&
-                    fileData.firstlineData[2] == "ULN" &&
-                    fileData.firstlineData[3] == "FamilyName" &&
-                    fileData.firstlineData[4] == "GivenNames" &&
-                    fileData.firstlineData[5] == "DateOfBirth" &&
-                    fileData.firstlineData[6] == "EmailAddress" &&
-                    fileData.firstlineData[7] == "StdCode" &&
-                    fileData.firstlineData[8] == "StartDate" &&
-                    fileData.firstlineData[9] == "EndDate" &&
-                    fileData.firstlineData[10] == "TotalPrice" &&
-                    fileData.firstlineData[11] == "EPAOrgID" &&
-                    fileData.firstlineData[12] == "ProviderRef");
         }
 
         private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
