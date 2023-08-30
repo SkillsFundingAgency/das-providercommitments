@@ -87,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
-        public string DislayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
+        public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
         public DateTime? OriginalStartDate { get; set; }
 
