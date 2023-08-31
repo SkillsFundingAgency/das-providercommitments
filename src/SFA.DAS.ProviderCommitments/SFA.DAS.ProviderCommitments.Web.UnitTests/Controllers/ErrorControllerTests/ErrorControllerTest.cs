@@ -18,10 +18,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerT
         public ErrorController Sut { get; set; }
 
         [Test]
-        [TestCase("test", "https://test-services.signin.education.gov.uk/organisations")]
-        [TestCase("pp", "https://test-services.signin.education.gov.uk/organisations")]
-        [TestCase("local", "https://test-services.signin.education.gov.uk/organisations")]
-        [TestCase("prd", "https://services.signin.education.gov.uk/organisations")]
+        [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+        [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+        [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
+        [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
         public void Then_The_Page_Returns_HelpLink(string env, string helpLink)
         {
             var fixture = new Fixture();
