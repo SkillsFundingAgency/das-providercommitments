@@ -199,25 +199,15 @@ Model.HasOverlappingUln
             </div>
             course.ErrorIsCompletedDisplayed = true;
         }
-        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.TrainingPrice == null)
+        if (draftApprenticeship.EmployerHasEditedPrice)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">The Training price are incomplete</h3>
+                <h3 class="govuk-heading-s">The Training price and End-point assessment price are incomplete</h3>
                 <p>
-                    Please add the Training price.
+                    Please edit and allocate the Total price between Training price and End-point assessment price.
                 </p>
             </div>
         }
-        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.EndPointAssessmentPrice == null)
-        {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">The End-point assessment price are incomplete</h3>
-                <p>
-                    Please add the End-point assessment price.
-                </p>
-            </div>
-        }
-
         if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
         {
             if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id) && !course.RplErrorHasBeenDisplayed)

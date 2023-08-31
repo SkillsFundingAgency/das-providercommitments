@@ -91,6 +91,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 
         public DateTime? OriginalStartDate { get; set; }
 
+        public bool EmployerHasEditedPrice =>
+            TrainingPrice == null && EndPointAssessmentPrice == null && Cost != null && IsOnFlexiPaymentPilot.GetValueOrDefault();
+
         public class OverlappingTrainingDateRequestViewModel
         {
             public DateTime? CreatedOn { get; set; }
