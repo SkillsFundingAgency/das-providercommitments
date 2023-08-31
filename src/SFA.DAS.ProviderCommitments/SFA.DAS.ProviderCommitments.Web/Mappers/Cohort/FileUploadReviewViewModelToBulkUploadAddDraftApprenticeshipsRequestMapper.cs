@@ -6,6 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
+using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -26,10 +27,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
             var csVRecords = cacheModel.CsvRecords;
+            var fileUploadLogId = cacheModel.FileUploadLogId;
+
             await _cacheService.ClearCache(source.CacheRequestId.ToString(),nameof(FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper));
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
+                FileUploadLogId = fileUploadLogId,
                 RplDataExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended),
                 BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId)
             };

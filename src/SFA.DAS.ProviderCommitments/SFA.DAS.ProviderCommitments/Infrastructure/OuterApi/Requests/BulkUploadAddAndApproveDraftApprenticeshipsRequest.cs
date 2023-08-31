@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
 {
-    public class BulkUploadAddAndApproveDraftApprenticeshipsRequest :ApimSaveDataRequest
+    public class BulkUploadAddAndApproveDraftApprenticeshipsRequest : ApimSaveDataRequest
     {
         public BulkUploadAddAndApproveDraftApprenticeshipsRequest() 
         { 
@@ -10,6 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
         }
 
         public long ProviderId { get; set; }
+        public long? FileUploadLogId { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> BulkUploadAddAndApproveDraftApprenticeships { get; set; }
     }
 }
