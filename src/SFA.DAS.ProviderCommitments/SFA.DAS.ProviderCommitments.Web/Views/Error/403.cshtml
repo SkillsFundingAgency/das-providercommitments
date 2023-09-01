@@ -1,13 +1,39 @@
 ﻿@inject ILinkGenerator LinkGenerator
+@model SFA.DAS.ProviderCommitments.Web.Models.Error.Error403ViewModel
 @{
-    ViewData["Title"] = "You do not have permission to access this page";
+    ViewData["Title"] = Model.UseDfESignIn ? "Different service role needed - Apprenticeships" : "You do not have permission to access this page";
     ViewBag.GaData.Vpv = "/error/403";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">You do not have permission to access this page</h1>
-        <p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an IdAMS super user.</p>
-        <a id="back-link" class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Go back to home page</a>
+        @if (Model.UseDfESignIn)
+        {
+            <div class="hgroup">
+                <h1 class="govuk-heading-xl">
+                    You need a different service role to view this page
+                </h1>
+            </div>
+            <div class="inner">
+                <p>
+                    To continue, you'll need to get your role for this service changed.
+                </p>
+                <p>
+                    You can ask for a higher role by <a href="@Model.HelpPageLink" target="_blank" rel="noopener noreferrer">requesting access to a service in your DfE Sign-in account</a>. Select Apprenticeship service for training providers, and then request a higher role at the next step.
+                </p>
+                <p>
+                    The DfE Sign-in approver inside your organisation will need to approve your request.
+                </p>
+                <p>
+                    If you came here by mistake, go back to the <a id="back-link" class="govuk-link govuk-link--no-visited-state" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">homepage of this service.</a>
+                </p>
+            </div>
+        }
+        else
+        {
+            <h1 class="govuk-heading-xl">You do not have permission to access this page</h1>
+            <p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an IdAMS super user.</p>
+            <a id="back-link" class="govuk-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("/account")">Go back to home page</a>
+        }
     </div>
 </div>
