@@ -1,0 +1,148 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
+@using SFA.DAS.ProviderCommitments.Web.RouteValues;
+@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Check your recognised prior learning";
+    ViewBag.ValidationOrder = "";
+    ViewBag.GaData.Vpv = "/unapproved/apprenticeship/prior-learning-summary";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">Check price reduction due to RPL</h1>
+
+        <partial name="_ValidationSummary" />
+        <form method="post">
+
+            @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.CohortReference)
+            @Html.HiddenFor(x => x.DraftApprenticeshipId)
+            @Html.HiddenFor(x => x.HasStandardOptions)
+
+            @if (Model.RplPriceReductionError.Equals(true))
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Action required
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        RPL price reduction too low: @Model.FullName can't be approved until this is resolved.
+                    </p>
+                    <p class="govuk-body">
+                        Price reduction is below the minimum required based on the off-the-job reduction that you have entered.
+                    </p>
+                    <ol class="govuk-list govuk-list--number">
+                        <li>Check the price reduction.</li>
+                        <li>Check the total off-the-job training time and the reduction due to RPL.</li>
+                        <li>Re-enter any incorrect data</li>
+                    </ol>
+                </div>
+                </div>
+            }
+
+            <h2 class="govuk-heading-m govuk-!-margin-top-9">Check the RPL details for this apprentice</h2>
+
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Total off-the-job training time for this apprenticeship standard
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        @Model.TrainingTotalHours.GetValueOrDefault().ToString("N0") hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                            Change
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row ">
+                    <dt class="govuk-summary-list__key">
+                        Total reduction in off-the-job training time due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") hours
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                            Change
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key half-column">
+                        Price reduction due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                            Change
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="govuk-inset-text">
+                <p class="govuk-body">
+                    Based on the reduction in training time that you have entered, the minimum price reduction is <strong>£@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N0")</strong>.
+                </p>
+
+                <p class="govuk-body">
+                    The calculation below use your figures and <a class="govuk-link" href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1155957/Apprenticeship_funding_rules_2324_Version_1.pdf">the apprenticeship
+                        funding rules</a>.
+                </p>
+            </div>
+
+            <h3 class="govuk-heading-s ">Funding calculation</h3>
+
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                <div class="govuk-summary-list__row ">
+                    <dt class="govuk-summary-list__key">
+                        Your proposed off-the-job training reduction due to RPL
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") hours
+                        <br />@Model.PercentageTotalTraining.GetValueOrDefault().ToString("0.00")% of the total training for this apprenticeship standard
+                        (@Model.TrainingTotalHours.GetValueOrDefault().ToString("N0") hours)
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+                
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Minimum price reduction you must give
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-table__cell--numeric govuk-!-text-align-left">
+                        £@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N0")
+                        <br />@Model.PercentageMinimumFunding.GetValueOrDefault().ToString("0.00")% of the maximum funding for this apprenticeship standard
+                        (£@Model.FundingBandMaximum.GetValueOrDefault().ToString("N0"))
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+
+            </dl>
+
+            <input type="hidden" name="answers-checked" value="true">
+            <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+                Save and Continue
+            </button>
+            <br>
+        </form>
+
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">Back</a>
+}

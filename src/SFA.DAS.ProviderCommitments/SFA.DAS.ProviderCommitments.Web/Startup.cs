@@ -31,6 +31,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.Validation.Mvc.Filters;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web
 {
@@ -98,6 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
+            services.AddHttpClient();
             services.AddProviderUiServiceRegistration(Configuration);
             services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
             services.AddSingleton<ICacheService, CacheService>();
@@ -133,6 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .UseCookiePolicy()
                 .UseAuthentication()
                 .UseAuthorization()
+                .ConfigureCustomExceptionMiddleware()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(

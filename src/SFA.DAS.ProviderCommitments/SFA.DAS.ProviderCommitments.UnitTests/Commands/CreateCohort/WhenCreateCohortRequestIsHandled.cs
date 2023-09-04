@@ -9,9 +9,11 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
+using DraftApprenticeshipDto = SFA.DAS.CommitmentsV2.Types.Dtos.DraftApprenticeshipDto;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
 {
@@ -95,14 +97,15 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
         {
             private readonly CreateCohortHandler _handler;
             private readonly CreateCohortRequest _request;
-            private readonly CommitmentsV2.Api.Types.Requests.CreateCohortRequest _apiRequest;
+            private readonly CreateCohortApimRequest _apiRequest;
             private readonly CreateCohortRequest _requestClone;
             private CreateCohortResponse _result;
-            private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _apiResponse;
+            private readonly ProviderCommitments.Infrastructure.OuterApi.Responses.CreateCohortResponse _apiResponse;
             private readonly Mock<IValidator<CreateCohortRequest>> _validator;
             private readonly ValidationResult _validationResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
-            private readonly Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>> _mapper;
+            private readonly Mock<IMapper<CreateCohortRequest, CreateCohortApimRequest>> _mapper;
+            private readonly Mock<IOuterApiService> _outerApi;
             private readonly DraftApprenticeshipDto _draftResponse;
             private Fixture _autoFixture;
 
@@ -124,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                     }
                 };
 
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, true)
                     .Create();
                 
@@ -134,21 +137,23 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                 _validator.Setup(x => x.Validate(It.IsAny<CreateCohortRequest>()))
                     .Returns(_validationResult);
 
-                _apiResponse = _autoFixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
+                _apiResponse = _autoFixture.Create<ProviderCommitments.Infrastructure.OuterApi.Responses.CreateCohortResponse>();
                 _apiClient = new Mock<ICommitmentsApiClient>();
-                _apiClient.Setup(x => x.CreateCohort(It.IsAny<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(_apiResponse);
                 _apiClient.Setup(x => x.GetDraftApprenticeships(_apiResponse.CohortId, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(getDraftApprenticeshipsResponse);
                 _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(getDraftApprenticeshipResponse);
                 
-                _mapper = new Mock<IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest>>();
+                _mapper = new Mock<IMapper<CreateCohortRequest, CreateCohortApimRequest>>();
 
-                _apiRequest = _autoFixture.Create<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>();
+                _apiRequest = _autoFixture.Create<CreateCohortApimRequest>();
                 _mapper.Setup(m => m.Map(_requestClone))
                     .ReturnsAsync(_apiRequest);
-                _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object, _mapper.Object);
+
+                _outerApi = new Mock<IOuterApiService>();
+                _outerApi.Setup(x => x.CreateCohort(It.IsAny<CreateCohortApimRequest>())).ReturnsAsync(_apiResponse);
+
+                _handler = new CreateCohortHandler(_validator.Object, _apiClient.Object, _outerApi.Object, _mapper.Object);
             }
 
             public CreateCohortHandlerFixture ReturnMultipleApprenticeships()
@@ -162,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             
             public CreateCohortHandlerFixture ReturnSingleApprenticeshipNoOptions()
             {
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, false)
                     .Create();
                 _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))
@@ -189,8 +194,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
 
             public CreateCohortHandlerFixture VerifyCohortWasCreated()
             {
-                _apiClient.Verify(x =>
-                    x.CreateCohort(It.Is<CommitmentsV2.Api.Types.Requests.CreateCohortRequest>(r =>
+                _outerApi.Verify(x =>
+                    x.CreateCohort(It.Is<CreateCohortApimRequest>(r =>
                         r.ProviderId == _apiRequest.ProviderId
                         && r.AccountLegalEntityId == _apiRequest.AccountLegalEntityId
                         && r.ReservationId == _apiRequest.ReservationId
@@ -204,7 +209,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                         && r.ActualStartDate == _apiRequest.ActualStartDate
                         && r.EndDate == _apiRequest.EndDate
                         && r.OriginatorReference == _apiRequest.OriginatorReference
-                    ), It.IsAny<CancellationToken>()));
+                    )));
                 return this;
             }
 

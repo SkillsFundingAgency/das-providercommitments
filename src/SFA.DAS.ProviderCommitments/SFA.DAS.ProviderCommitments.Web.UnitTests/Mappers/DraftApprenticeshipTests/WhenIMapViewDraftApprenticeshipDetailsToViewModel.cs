@@ -1,16 +1,15 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests
 {
@@ -19,8 +18,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
     {
         private ViewDraftApprenticeshipViewModelMapper _mapper;
         private DraftApprenticeshipRequest _source;
+        public Mock<IOuterApiClient> OuterApiClient;
         private Func<Task<ViewDraftApprenticeshipViewModel>> _act;
-        private GetDraftApprenticeshipResponse _apiResponse;
+        private GetViewDraftApprenticeshipResponse _apiResponse;
         private GetTrainingProgrammeResponse _apiTrainingProgrammeResponse;
 
         [SetUp]
@@ -28,18 +28,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             var fixture = new Fixture();
 
-            _apiResponse = fixture.Build<GetDraftApprenticeshipResponse>().Create();
+            _apiResponse = fixture.Build<GetViewDraftApprenticeshipResponse>().Create();
             _apiTrainingProgrammeResponse = fixture.Build<GetTrainingProgrammeResponse>().Create();
 
             var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            commitmentsApiClient.Setup(x =>
-                    x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_apiResponse);
 
             commitmentsApiClient.Setup(x => x.GetTrainingProgramme(_apiResponse.CourseCode, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_apiTrainingProgrammeResponse);
 
-            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object);
+            OuterApiClient = new Mock<IOuterApiClient>();
+            OuterApiClient.Setup(x => x.Get<GetViewDraftApprenticeshipResponse>(It.IsAny<GetViewDraftApprenticeshipRequest>()))
+                .ReturnsAsync(_apiResponse);
+
+            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, OuterApiClient.Object);
             _source = fixture.Build<DraftApprenticeshipRequest>().Create();
 
             _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as ViewDraftApprenticeshipViewModel;
@@ -94,9 +95,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_apiResponse.DateOfBirth, result.DateOfBirth);
         }
 
-        [TestCase(DeliveryModel.Regular)]
-        [TestCase(DeliveryModel.PortableFlexiJob)]
-        public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
+        [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.Regular)]
+        [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob)]
+        public async Task ThenDeliveryModelIsMappedCorrectly(Infrastructure.OuterApi.Types.DeliveryModel dm)
         {
             _apiResponse.DeliveryModel = dm;
             var result = await _act();
@@ -190,5 +191,62 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(hasOptions, result.HasTrainingCourseOption);
         }
+
+        [Test]
+        public async Task ThenRecognisePriorLearningIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.RecognisePriorLearning, result.RecognisePriorLearning);
+        }
+
+        [Test]
+        public async Task ThenRecognisingPriorLearningStillNeedsToBeConsideredIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+        }
+
+        [Test]
+        public async Task ThenRecognisingPriorLearningExtendedStillNeedsToBeConsideredIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, result.RecognisingPriorLearningExtendedStillNeedsToBeConsidered);
+        }
+
+        [Test]
+        public async Task ThenDurationReducedByIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.DurationReducedBy, result.DurationReducedBy);
+        }
+
+        [Test]
+        public async Task ThenPriceReducedByIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.PriceReducedBy, result.PriceReducedBy);
+        }
+
+        [Test]
+        public async Task ThenDurationReducedByHoursIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.DurationReducedByHours, result.DurationReducedByHours);
+        }
+
+        [Test]
+        public async Task ThenIsDurationReducedByRplIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.IsDurationReducedByRpl, result.IsDurationReducedByRpl);
+        }
+
+        [Test]
+        public async Task ThenTrainingTotalHoursIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.TrainingTotalHours, result.TrainingTotalHours);
+        }
+
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class EditDraftApprenticeshipToUpdateRequestMapper : IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipRequest>
+    public class EditDraftApprenticeshipToUpdateRequestMapper : IMapper<EditDraftApprenticeshipViewModel, UpdateDraftApprenticeshipApimRequest>
     {
-        public Task<UpdateDraftApprenticeshipRequest> Map(EditDraftApprenticeshipViewModel source) =>
-            Task.FromResult(new UpdateDraftApprenticeshipRequest
+        public Task<UpdateDraftApprenticeshipApimRequest> Map(EditDraftApprenticeshipViewModel source) =>
+            Task.FromResult(new UpdateDraftApprenticeshipApimRequest
             {
                 ReservationId = source.ReservationId,
                 FirstName = source.FirstName,

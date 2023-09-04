@@ -1,5 +1,5 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models
 {
@@ -25,5 +25,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string TrainingCourseOption { get ; set ; }
         public bool HasTrainingCourseOption { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmailAddressConfirmed { get; set; }
+        public bool? RecognisePriorLearning { get; set; }
+        public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
+        public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
+        public int? DurationReducedBy { get; set; }
+        public int? PriceReducedBy { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public bool? IsDurationReducedByRpl { get; set; }
+        public int? TrainingTotalHours { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -69,6 +71,40 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId)
         {
             return await _outerApiClient.Get<GetOverlapRequestQueryResult>(new GetOverlapRequestQueryRequest(apprenticeshipId));
+        }
+
+        public async Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request)
+        {
+            await _outerApiClient.Put<object>(new PutUpdateDraftApprenticeshipRequest(cohortId, apprenticeshipId) { Data = request });
+        }
+
+        public async Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request)
+        {
+            return await _outerApiClient.Post<AddDraftApprenticeshipResponse>(new PostAddDraftApprenticeshipRequest(cohortId) { Data = request });
+        }
+
+        public async Task<CreateCohortResponse> CreateCohort(CreateCohortApimRequest request)
+        {
+            return await _outerApiClient.Post<CreateCohortResponse>(new PostCreateCohortRequest { Data = request });
+        }
+        public async Task<GetPriorLearningDataQueryResult> GetPriorLearningData(long providerId, long cohortId, long draftApprenticeshipId)
+        {
+            return await _outerApiClient.Get<GetPriorLearningDataQueryResult>(new GetPriorLearningDataQueryRequest(providerId, cohortId, draftApprenticeshipId));
+        }
+
+        public async Task<CreatePriorLearningDataResponse> UpdatePriorLearningData(long providerId, long cohortId, long draftApprenticeshipId, CreatePriorLearningDataRequest request)
+        {
+            return await _outerApiClient.Post<CreatePriorLearningDataResponse>(new PostPriorLearningDataRequest(providerId, cohortId, draftApprenticeshipId) { Data = request });
+        }
+
+        public async Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long providerId, long cohortId, long draftApprenticeshipId)
+        {
+            return await _outerApiClient.Get<GetPriorLearningSummaryQueryResult>(new GetPriorLearningSummaryQueryRequest(providerId, cohortId, draftApprenticeshipId));
+        }
+
+        public async Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId)
+        {
+            return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
         }
     }
 }

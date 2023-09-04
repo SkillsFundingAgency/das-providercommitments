@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services
@@ -8,7 +9,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Services
     public interface ITempDataStorageService
     {
         T RetrieveFromCache<T>() where T : class;
+        T RetrieveFromCache<T>(string key) where T : class;
         void RemoveFromCache<T>() where T: class;
+        void AddToCache(object value);
+        void AddToCache(object value, string key);
     }
 
     public class TempDataStorageService : ITempDataStorageService
@@ -29,6 +33,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Services
             return tempData.GetButDontRemove<T>(typeof(T).Name);
         }
 
+        public T RetrieveFromCache<T>(string key) where T : class
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var tempData = _tempDataDictionaryFactory.GetTempData(httpContext);
+            return tempData.GetButDontRemove<T>(key);
+        }
+
         public void RemoveFromCache<T>() where T: class
         {
             var httpContext = _httpContextAccessor.HttpContext;
@@ -41,6 +52,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Services
             {
                 tempData.Remove(new KeyValuePair<string, object>(key, o));
             }
+        }
+
+        public void AddToCache(object value)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var tempData = _tempDataDictionaryFactory.GetTempData(httpContext);
+            var key = value.GetType().Name;
+            tempData[key] = JsonConvert.SerializeObject(value);
+        }
+
+        public void AddToCache(object value, string key)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var tempData = _tempDataDictionaryFactory.GetTempData(httpContext);
+            tempData[key] = JsonConvert.SerializeObject(value);
         }
     }
 }

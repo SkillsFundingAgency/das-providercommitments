@@ -1,25 +1,32 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
+using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Services;
-
+using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
+using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
+using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
+using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
+using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
+using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -30,15 +37,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
         private readonly ITempDataStorageService _storageService;
+        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
-            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService)
+            IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
+            DAS.Authorization.Services.IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
             _pasAccountsApiClient = pasAccountApiClient;
             _outerApiClient = outerApiClient;
             _storageService = storageService;
+            _authorizationService = authorizationService;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -48,72 +58,71 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
 
             var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, source.CohortId));
-            var cohortTask = _commitmentsApiClient.GetCohort(source.CohortId);
-            var draftApprenticeshipsTask = _commitmentsApiClient.GetDraftApprenticeships(source.CohortId);
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
-            var emailOverlapsTask = _commitmentsApiClient.GetEmailOverlapChecks(source.CohortId);
 
-            await Task.WhenAll(cohortDetailsTask, cohortTask, draftApprenticeshipsTask, agreementStatusTask, emailOverlapsTask);
+            await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
            
-            var cohort = cohortTask.Result;
-            var cohortDetails = cohortDetailsTask.Result;
-            var draftApprenticeships = (await draftApprenticeshipsTask).DraftApprenticeships;
-            var agreementStatus = agreementStatusTask.Result;
-            var emailOverlaps = (await emailOverlapsTask).ApprenticeshipEmailOverlaps.ToList();
+            var agreementStatus = await agreementStatusTask;
+            var cohortDetails = await cohortDetailsTask;
 
-            var courses = await GroupCourses(draftApprenticeships, emailOverlaps, cohort);
-            var viewOrApprove = cohort.WithParty == CommitmentsV2.Types.Party.Provider ? "Approve" : "View";
-            var isAgreementSigned = agreementStatus.Status == PAS.Account.Api.Types.ProviderAgreementStatus.Agreed;
+            var emailOverlaps = cohortDetails.ApprenticeshipEmailOverlaps.ToList();
+
+            var courses = await GroupCourses(cohortDetails.DraftApprenticeships, emailOverlaps, cohortDetails);
+            var viewOrApprove = cohortDetails.WithParty == Party.Provider ? "Approve" : "View";
+            var isAgreementSigned = agreementStatus.Status == ProviderAgreementStatus.Agreed;
 
             return new DetailsViewModel
             {
                 ProviderId = source.ProviderId,
+                HasNoDeclaredStandards = cohortDetails.HasNoDeclaredStandards,
                 CohortReference = source.CohortReference,
-                WithParty = cohort.WithParty,
-                AccountLegalEntityHashedId = _encodingService.Encode(cohort.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                WithParty = cohortDetails.WithParty,
+                AccountLegalEntityHashedId = _encodingService.Encode(cohortDetails.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                 LegalEntityName = cohortDetails.LegalEntityName,
                 ProviderName = cohortDetails.ProviderName,
-                TransferSenderHashedId = cohort.TransferSenderId == null ? null : _encodingService.Encode(cohort.TransferSenderId.Value, EncodingType.PublicAccountId),
-                EncodedPledgeApplicationId = cohort.PledgeApplicationId == null ? null : _encodingService.Encode(cohort.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
-                Message = cohort.LatestMessageCreatedByEmployer,
+                TransferSenderHashedId = cohortDetails.TransferSenderId == null ? null : _encodingService.Encode(cohortDetails.TransferSenderId.Value, EncodingType.PublicAccountId),
+                EncodedPledgeApplicationId = cohortDetails.PledgeApplicationId == null ? null : _encodingService.Encode(cohortDetails.PledgeApplicationId.Value, EncodingType.PledgeApplicationId),
+                Message = cohortDetails.LatestMessageCreatedByEmployer,
                 Courses = courses,
-                PageTitle = draftApprenticeships.Count > 1
-                    ? $"{viewOrApprove} {draftApprenticeships.Count} apprentices' details"
+                PageTitle = cohortDetails.DraftApprenticeships.Count > 1
+                    ? $"{viewOrApprove} {cohortDetails.DraftApprenticeships.Count} apprentices' details"
                     : $"{viewOrApprove} apprentice details",
-                IsApprovedByEmployer = cohort.IsApprovedByEmployer,
+                IsApprovedByEmployer = cohortDetails.IsApprovedByEmployer,
                 IsAgreementSigned = isAgreementSigned,
-                IsCompleteForProvider = cohort.IsCompleteForProvider,
+                IsCompleteForProvider = cohortDetails.IsCompleteForProvider,
                 HasEmailOverlaps = emailOverlaps.Any(),
-                ShowAddAnotherApprenticeOption = !cohort.IsLinkedToChangeOfPartyRequest,
-                AllowBulkUpload = cohort.LevyStatus == CommitmentsV2.Types.ApprenticeshipEmployerType.Levy 
-                && cohort.WithParty == CommitmentsV2.Types.Party.Provider 
-                && !cohort.IsLinkedToChangeOfPartyRequest,
-                IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
-                Status = GetCohortStatus(cohort, draftApprenticeships),
-                ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel
+                ShowAddAnotherApprenticeOption = !cohortDetails.IsLinkedToChangeOfPartyRequest,
+                AllowBulkUpload = cohortDetails.LevyStatus == ApprenticeshipEmployerType.Levy
+                && cohortDetails.WithParty == Party.Provider
+                && !cohortDetails.IsLinkedToChangeOfPartyRequest,
+                IsLinkedToChangeOfPartyRequest = cohortDetails.IsLinkedToChangeOfPartyRequest,
+                Status = GetCohortStatus(cohortDetails, cohortDetails.DraftApprenticeships),
+                ShowRofjaaRemovalBanner = cohortDetails.HasUnavailableFlexiJobAgencyDeliveryModel,
+                InvalidProviderCourseCodes = cohortDetails.InvalidProviderCourseCodes.ToList(),
+                RplErrorDraftApprenticeshipIds = cohortDetails.RplErrorDraftApprenticeshipIds.ToList()
             };
         }
 
-        private string GetCohortStatus(GetCohortResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
+        private string GetCohortStatus(GetCohortDetailsResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
         {
             if (cohort.TransferSenderId.HasValue &&
-                cohort.TransferApprovalStatus == CommitmentsV2.Types.TransferApprovalStatus.Pending)
+                cohort.TransferApprovalStatus == TransferApprovalStatus.Pending)
             {
-                if (cohort.WithParty == CommitmentsV2.Types.Party.TransferSender)
+                if (cohort.WithParty == Party.TransferSender)
                 {
                     return "Pending - with funding employer";
                 }
-                else if (cohort.WithParty == CommitmentsV2.Types.Party.Employer)
+                else if (cohort.WithParty == Party.Employer)
                 {
                     return GetEmployerOnlyStatus(cohort);
                 }
-                else if (cohort.WithParty == CommitmentsV2.Types.Party.Provider)
+                else if (cohort.WithParty == Party.Provider)
                 {
                     return GetProviderOnlyStatus(cohort);
                 }
             }
             else if (cohort.TransferSenderId.HasValue &&
-                     cohort.TransferApprovalStatus == CommitmentsV2.Types.TransferApprovalStatus.Rejected)
+                     cohort.TransferApprovalStatus == TransferApprovalStatus.Rejected)
             {
                 return "Rejected by transfer sending employer";
             }
@@ -121,11 +130,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 return "Approved";
             }
-            else if (cohort.WithParty == CommitmentsV2.Types.Party.Provider)
+            else if (cohort.WithParty == Party.Provider)
             {
                 return GetProviderOnlyStatus(cohort);
             }
-            else if (cohort.WithParty == CommitmentsV2.Types.Party.Employer)
+            else if (cohort.WithParty == Party.Employer)
             {
                 return GetEmployerOnlyStatus(cohort);
             }
@@ -133,17 +142,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return "New request";
         }
 
-        private static string GetProviderOnlyStatus(GetCohortResponse cohort)
+        private static string GetProviderOnlyStatus(GetCohortDetailsResponse cohort)
         {
-            if (cohort.LastAction == CommitmentsV2.Types.LastAction.None)
+            if (cohort.LastAction == LastAction.None)
             {
                 return "New request";
             }
-            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Amend)
+            else if (cohort.LastAction == LastAction.Amend)
             {
                 return "Ready for review";
             }
-            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Approve)
+            else if (cohort.LastAction == LastAction.Approve)
             {
                 if (!cohort.IsApprovedByProvider && !cohort.IsApprovedByEmployer)
                     return "Ready for review";
@@ -156,17 +165,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private static string GetEmployerOnlyStatus(GetCohortResponse cohort)
+        private static string GetEmployerOnlyStatus(GetCohortDetailsResponse cohort)
         {
-            if (cohort.LastAction == CommitmentsV2.Types.LastAction.None)
+            if (cohort.LastAction == LastAction.None)
             {
                 return "New request";
             }
-            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Amend)
+            else if (cohort.LastAction == LastAction.Amend)
             {
                 return "Under review with employer";
             }
-            else if (cohort.LastAction == CommitmentsV2.Types.LastAction.Approve)
+            else if (cohort.LastAction == LastAction.Approve)
             {
                 return "With Employer for approval";
             }
@@ -176,7 +185,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortResponse cohortResponse)
+        private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsResponse cohortResponse)
         {
             var groupedByCourse = draftApprenticeships
                 .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel })
@@ -206,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             IsComplete = IsDraftApprenticeshipComplete(a, cohortResponse),
                             EmploymentPrice = a.EmploymentPrice,
                             EmploymentEndDate = a.EmploymentEndDate,
-                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot
+                            IsOnFlexiPaymentPilot = a.IsOnFlexiPaymentPilot,
                         })
                 .ToList()
                 })
@@ -214,6 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 .ToList();
 
             PopulateFundingBandExcessModels(groupedByCourse);
+            SetRplErrors(groupedByCourse, cohortResponse);
             PopulateEmailOverlapsModel(groupedByCourse);
             await CheckUlnOverlap(groupedByCourse);
             await CheckForPendingOverlappingTrainingDateRequest(groupedByCourse);
@@ -221,7 +231,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return groupedByCourse;
         }
 
-        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortResponse cohortResponse)
+        private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsResponse cohortResponse)
         {
             if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
@@ -254,9 +264,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
-            if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
+            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
             {
-                return false;
+                if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -337,19 +357,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
+        private void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsResponse cohort)
+        {
+            foreach (var courseGroup in courseGroups)
+            {
+                courseGroup.RplErrors = courseGroup.DraftApprenticeships.Where(x => cohort.RplErrorDraftApprenticeshipIds.Contains(x.Id)).Count();
+            }
+        }
+
         private async Task SetUlnOverlap(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships)
         {
-           foreach (var draftApprenticeship in draftApprenticeships)
+            foreach (var draftApprenticeship in draftApprenticeships)
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
                 {
-                        var result = await _commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
-                        {
-                            EndDate = draftApprenticeship.EndDate.Value,
-                            StartDate = draftApprenticeship.StartDate.Value,
-                            ULN = draftApprenticeship.ULN,
-                            ApprenticeshipId = draftApprenticeship.Id
-                        });
+                    var result = await _commitmentsApiClient.ValidateUlnOverlap(new CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest
+                    {
+                        EndDate = draftApprenticeship.EndDate.Value,
+                        StartDate = draftApprenticeship.StartDate.Value,
+                        ULN = draftApprenticeship.ULN,
+                        ApprenticeshipId = draftApprenticeship.Id
+                    });
 
                     draftApprenticeship.HasOverlappingUln = result.HasOverlappingEndDate || result.HasOverlappingStartDate;
                 }

@@ -5,6 +5,8 @@ using FluentValidation;
 using MediatR;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
 {
@@ -12,15 +14,18 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
     {
         private readonly IValidator<CreateCohortRequest> _validator;
         private readonly ICommitmentsApiClient _apiClient;
-        private readonly IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest> _mapper;
+        private readonly IOuterApiService _outerApi;
+        private readonly IMapper<CreateCohortRequest, CreateCohortApimRequest> _mapper;
 
         public CreateCohortHandler(
             IValidator<CreateCohortRequest> validator, 
             ICommitmentsApiClient apiClient,
-            IMapper<CreateCohortRequest, CommitmentsV2.Api.Types.Requests.CreateCohortRequest> mapper)
+            IOuterApiService outerApi,
+            IMapper<CreateCohortRequest, CreateCohortApimRequest> mapper)
         {
             _validator = validator;
             _apiClient = apiClient;
+            _outerApi = outerApi;
             _mapper = mapper;
         }
 
@@ -29,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort
             ValidateAndThrow(request);
 
             var apiRequest = await _mapper.Map(request).ConfigureAwait(false);
-            var apiResult = await _apiClient.CreateCohort(apiRequest, cancellationToken).ConfigureAwait(false);
+            var apiResult = await _outerApi.CreateCohort(apiRequest).ConfigureAwait(false);
 
             var apprenticeships = await _apiClient.GetDraftApprenticeships(apiResult.CohortId, cancellationToken);
 

@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.ReviewViewModel
 
 @{
@@ -8,8 +9,7 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-row">
-        <div class="govuk-width-container">
+        <div class="govuk-grid-column-full">
 
             @(await Html.PartialAsync("_ApprenticeshipRequestsHeaderPartial", Model.ApprenticeshipRequestsHeaderViewModel))
             
@@ -68,11 +68,11 @@
             {
                 <p class="govuk-body govuk-!-font-weight-bold">You currently have 0 apprentices ready for review</p>
             }
-        </div>
+        
     </div>
 </div>
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")">Back</a>
 }

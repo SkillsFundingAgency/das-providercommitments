@@ -5,6 +5,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.IndexViewModel
 
 @{
@@ -379,7 +380,7 @@ else
                         }
                     </td>
                     <td class="govuk-table__cell" data-label="Planned end date">
-                        @apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay()
+                        @(apprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() ? apprenticeship.PlannedEndDate.ToGdsFormat() : apprenticeship.PlannedEndDate.ToGdsFormatWithoutDay())
                     </td>
                     <td class="govuk-table__cell" data-label="Apprentice confirmation">
                         @apprenticeship.ConfirmationStatus.ToDisplayString()
@@ -443,5 +444,5 @@ else
 }
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")">Back</a>
 }

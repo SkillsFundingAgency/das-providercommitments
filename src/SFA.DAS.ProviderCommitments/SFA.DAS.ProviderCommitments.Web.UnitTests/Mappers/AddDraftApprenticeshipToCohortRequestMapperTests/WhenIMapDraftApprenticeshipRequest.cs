@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
     {
         private Web.Mappers.AddDraftApprenticeshipRequestMapper _mapper;
         private AddDraftApprenticeshipViewModel _source;
-        private Func<Task<AddDraftApprenticeshipRequest>> _act;
+        private Func<Task<AddDraftApprenticeshipApimRequest>> _act;
         private long _cohortId;
 
         [SetUp]

@@ -1,0 +1,116 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDataViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@{
+    ViewData["Title"] = "Add recognition of prior learning details";
+    ViewBag.ValidationOrder = "TrainingTotalHours,DurationReducedByHours,IsDurationReducedByRpl,ReducedDuration,ReducedPrice";
+    ViewBag.GaData.Vpv = "/unapproved/apprenticeship/prior-learning-data";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary" />
+
+        <form method="post">
+            @Html.HiddenFor(x => x.ProviderId)
+            @Html.HiddenFor(x => x.CohortReference)
+            @Html.HiddenFor(x => x.DraftApprenticeshipId)
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Add recognition of prior learning details
+                    </h1>
+                </legend>
+                <div class="govuk-form-group">
+
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.TrainingTotalHours, "govuk-form-group--error")">
+                        <label asp-for="TrainingTotalHours" class="govuk-label govuk-!-font-weight-bold">
+                            Total off-the-job training time for this apprenticeship standard
+                        </label>
+                        <span id="total-hours-hint" class="govuk-hint">
+                            The training an apprentice on this standard receives away from their job role, before any reductions. Enter the total in hours
+                        </span>
+                        @Html.ValidationMessageFor(m => m.TrainingTotalHours, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingTotalHours) })
+                        <div class="govuk-input__wrapper">
+                            <input asp-for="TrainingTotalHours" class="govuk-input govuk-input--width-5" />
+                            <div class="govuk-input__suffix" aria-hidden="true"> hours</div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DurationReducedByHours, "govuk-form-group--error")">
+                        <label asp-for="DurationReducedByHours" class="govuk-label govuk-!-font-weight-bold">
+                            Total reduction in off-the-job training time due to RPL
+                        </label>
+                        <span id="hours-reduction-hint" class="govuk-hint">
+                            All reductions based on the apprentice's prior learning. Enter the reduction in hours
+                        </span>
+                        @Html.ValidationMessageFor(m => m.DurationReducedByHours, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DurationReducedByHours) })
+                        <div class="govuk-input__wrapper">
+                            <input asp-for="DurationReducedByHours" class="govuk-input govuk-input--width-5" />
+                            <div class="govuk-input__suffix" aria-hidden="true"> hours</div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.IsDurationReducedByRpl, "govuk-form-group--error")">
+                        <label asp-for="IsDurationReducedByRpl" class="govuk-label govuk-!-font-weight-bold">
+                            Have you reduced the actual apprenticeship duration due to RPL?
+                        </label>
+                        @Html.ValidationMessageFor(m => m.IsDurationReducedByRpl, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
+                        <fieldset class="govuk-fieldset">
+                            <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="radio-reduced" asp-for="IsDurationReducedByRpl" type="radio" value="true" data-aria-controls="conditional-yes">
+                                    <label class="govuk-label govuk-radios__label" for="radio-reduced">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-yes">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label" for="send-details">
+                                            How many weeks was the apprenticeship reduced by?
+                                        </label>
+                                        @Html.ValidationMessageFor(m => m.DurationReducedBy, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsDurationReducedByRpl) })
+                                        <div class="govuk-input__wrapper">
+                                            <input asp-for="DurationReducedBy" class="govuk-input govuk-input--width-5" />
+                                            <div class="govuk-input__suffix" aria-hidden="true"> weeks</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="radio-notreduced" asp-for="IsDurationReducedByRpl" type="radio" value="false">
+                                    <label class="govuk-label govuk-radios__label" for="radio-notreduced">
+                                        No
+                                    </label>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.PriceReduced, "govuk-form-group--error")">
+                        <label asp-for="PriceReduced" class="govuk-label govuk-!-font-weight-bold">
+                            Total price reduction due to RPL
+                        </label>
+                        <span id="price-reduction--hint" class="govuk-hint">
+                            All reductions based on the apprentice's prior learning. Enter the price in whole pounds. For example, for £1,500 enter 1500
+                        </span>
+                        @Html.ValidationMessageFor(m => m.PriceReduced, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.PriceReduced) })
+                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="PriceReduced" class="govuk-input govuk-input--width-5" />
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <button class="govuk-button" type="submit">
+                Save and continue
+            </button>
+        </form>
+    </div>
+</div>
+
+@section breadcrumb
+{
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("RecognisePriorLearning", "DraftApprenticeship", @Model)">Back</a>
+}
