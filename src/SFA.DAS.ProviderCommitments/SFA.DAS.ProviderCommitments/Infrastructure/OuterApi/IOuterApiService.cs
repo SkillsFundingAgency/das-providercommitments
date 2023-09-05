@@ -33,7 +33,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long providerId, long cohortId, long apprenticeshipId);
         Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId);
         Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
-        Task<long> UpdateFileUploadLog(long providerId, long logId);
     }
 }
  
