@@ -253,5 +253,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        [Test]
+        public void VerifyFileUploadIdIsMappedFromCache()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+        }
     }
 }
