@@ -11,6 +11,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.IO;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -129,6 +131,28 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
             var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
             return response.LogId;
+        }
+
+        public async Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<BulkUploadValidationError> errors)
+        {
+            var content = new FileUploadUpdateLogWithErrorContentRequest
+            {
+                ProviderId = providerId,
+                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors)
+            };
+
+            await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
+        }
+
+        public async Task AddUnhandledValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage)
+        {
+            var content = new FileUploadUpdateLogWithErrorContentRequest
+            {
+                ProviderId = providerId,
+                ErrorContent = "Unhandled exception \r\n" + errorMessage
+            };
+
+            await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
         }
 
         public static async Task<string> ReadFormFileAsync(IFormFile file)

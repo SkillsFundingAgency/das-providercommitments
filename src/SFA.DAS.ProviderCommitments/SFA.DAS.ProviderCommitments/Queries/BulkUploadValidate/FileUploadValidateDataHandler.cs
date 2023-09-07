@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Features;
@@ -7,7 +8,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 
 namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 {
@@ -32,11 +33,24 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
             apiRequest.RplDataExtended = _authorizationService.IsAuthorized(ProviderFeature.RplExtended);
-            await _client.ValidateBulkUploadRequest(apiRequest);
-            return new FileUploadValidateDataResponse
+            try
             {
-                LogId = apiRequest.FileUploadLogId
-            };
+                await _client.ValidateBulkUploadRequest(apiRequest);
+                return new FileUploadValidateDataResponse
+                {
+                    LogId = apiRequest.FileUploadLogId
+                };
+            }
+            catch (CommitmentsApiBulkUploadModelException ex)
+            {
+                await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                await _client.AddUnhandledValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Message);
+                throw;
+            }
         }
     }
 }
