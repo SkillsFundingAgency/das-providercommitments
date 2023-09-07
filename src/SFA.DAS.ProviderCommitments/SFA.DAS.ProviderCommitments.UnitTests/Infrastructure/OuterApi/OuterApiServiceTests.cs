@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -29,7 +32,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         private Fixture _fixture;
         private List<CsvRecord> _csvList;
         private string _fileName = "test.csv";
-
+        private List<BulkUploadValidationError> _errors;
+        
         [SetUp]
         public void Setup()
         {
@@ -48,6 +52,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             _outerApiClientMock.Setup(x => x.Post<FileUploadLogResponse>(It.IsAny<PostFileUploadLogRequest>()))
                 .ReturnsAsync(_reponse);
             _outerApiService = new OuterApiService(_outerApiClientMock.Object);
+            _errors = _fixture.CreateMany<BulkUploadValidationError>().ToList();
         }
 
         [Test]
@@ -90,6 +95,24 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         {
             var id = await _outerApiService.CreateFileUploadLog(_providerId, _file, _csvList);
             id.Should().Be(_reponse.LogId);
+        }
+
+        [Test]
+        public async Task VerifyAddValidationMessagesToFileUploadLogIsCalledAsExpected()
+        {
+            await _outerApiService.AddValidationMessagesToFileUploadLog(_providerId, 1234, _errors);
+            
+            var expectedErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(_errors);
+            _outerApiClientMock.Verify(x=>x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p=>p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
+        }
+
+        [Test]
+        public async Task VerifyAddUnhandledExceptionToFileUploadLogIsCalledAsExpected()
+        {
+            await _outerApiService.AddUnhandledExceptionToFileUploadLog(_providerId, 1234, "Bang");
+
+            var expectedErrorContent = "Unhandled exception \r\n" + "Bang";
+            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
         }
 
         private void PopulateCsvList()
