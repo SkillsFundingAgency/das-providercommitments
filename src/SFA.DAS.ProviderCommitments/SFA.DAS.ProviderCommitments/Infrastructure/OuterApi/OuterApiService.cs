@@ -144,7 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
         }
 
-        public async Task AddUnhandledValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage)
+        public async Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage)
         {
             var content = new FileUploadUpdateLogWithErrorContentRequest
             {

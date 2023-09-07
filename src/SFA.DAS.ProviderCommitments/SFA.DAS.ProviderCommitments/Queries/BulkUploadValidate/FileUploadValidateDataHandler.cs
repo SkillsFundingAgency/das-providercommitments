@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             }
             catch (Exception ex)
             {
-                await _client.AddUnhandledValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Message);
+                await _client.AddUnhandledExceptionToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Message);
                 throw;
             }
         }

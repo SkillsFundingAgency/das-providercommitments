@@ -1,4 +1,6 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using AutoFixture;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
@@ -11,7 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationErrors
 {
@@ -47,6 +49,26 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             response.LogId.Should().Be(fixture.BulkUploadValidateApiRequest.FileUploadLogId);
         }
 
+        [Test]
+        public async Task HandleValidationException()
+        {
+            var fixture = new BulkUploadValidateDataHandlerTestsFixture();
+            fixture.ThrowsCommitmentsApiBulkUploadModelException();
+            await fixture.Handle();
+
+            fixture.VerifyFileUploadUpdatedWithErrorContent();
+        }
+
+        [Test]
+        public async Task HandleUnexpectedException()
+        {
+            var fixture = new BulkUploadValidateDataHandlerTestsFixture();
+            fixture.ThrowsApplicationException();
+            await fixture.Handle();
+
+            fixture.VerifyFileUploadUpdatedWithUnhandledExceptionDetails();
+        }
+    
         public class BulkUploadValidateDataHandlerTestsFixture
         {
             private FileUploadValidateDataHandler BulkUploadValidateDataHandler { get; set; }
@@ -55,6 +77,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             private Mock<IBulkUploadFileParser> _bulkUploadParser { get; set; }
             private FileUploadValidateDataRequest _bulkUploadValidateDataRequest { get; set; }
             public BulkUploadValidateApimRequest BulkUploadValidateApiRequest { get; set; }
+            public Exception ThrownException { get; set; }
             private Mock<IAuthorizationService> _authorizationService;
             public BulkUploadValidateDataHandlerTestsFixture()
             {
@@ -74,9 +97,18 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
                 BulkUploadValidateDataHandler = new FileUploadValidateDataHandler(_outerApiService.Object, _modelMapper.Object, _bulkUploadParser.Object, _authorizationService.Object);
             }
 
-            public Task<FileUploadValidateDataResponse> Handle()
+            public async Task<FileUploadValidateDataResponse> Handle()
             {
-                return BulkUploadValidateDataHandler.Handle(_bulkUploadValidateDataRequest, CancellationToken.None);
+                try
+                {
+                    return await BulkUploadValidateDataHandler.Handle(_bulkUploadValidateDataRequest, CancellationToken.None);
+                }
+                catch (Exception e)
+                {
+                    ThrownException = e;
+                }
+
+                return null;
             }
 
             internal void VerifyApiMapperCalled()
@@ -88,6 +120,26 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             {
                 _outerApiService.Verify(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>()), Times.Once);
             }
+
+            internal void VerifyFileUploadUpdatedWithErrorContent()
+            {
+                _outerApiService.Verify(x => x.AddValidationMessagesToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<List<BulkUploadValidationError>>()), Times.Once);
+            }
+
+            internal void ThrowsCommitmentsApiBulkUploadModelException()
+            {
+                _outerApiService.Setup(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>())).Throws(new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>()));
+            }
+            internal void ThrowsApplicationException()
+            {
+                _outerApiService.Setup(x => x.ValidateBulkUploadRequest(It.IsAny<BulkUploadValidateApimRequest>())).Throws(new ApplicationException("Bang"));
+            }
+
+            internal void VerifyFileUploadUpdatedWithUnhandledExceptionDetails()
+            {
+                _outerApiService.Verify(x => x.AddUnhandledExceptionToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), "Bang"), Times.Once);
+            }
+
         }
     }
 }
