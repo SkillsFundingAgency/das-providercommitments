@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         public async Task ReturnedIdIsCorrect()
         {
             var id = await _outerApiService.CreateFileUploadLog(_providerId, _file, _csvList);
-            id.Should().Be(_reponse.FileUploadLogId);
+            id.Should().Be(_reponse.LogId);
         }
 
         private void PopulateCsvList()

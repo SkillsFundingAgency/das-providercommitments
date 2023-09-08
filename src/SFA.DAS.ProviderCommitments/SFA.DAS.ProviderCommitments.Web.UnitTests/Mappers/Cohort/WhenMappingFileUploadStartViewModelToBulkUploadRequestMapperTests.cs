@@ -73,6 +73,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(_viewModel.ProviderId, _apiRequest.ProviderId);
         }
 
+
+        [Test]
+        public void CommandIsReturnedFromCacheWithLogIdAsExpected()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+        }
+
         [Test]
         public void VerifyUlnIsMapped()
         {
@@ -253,5 +260,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        [Test]
+        public void VerifyFileUploadIdIsMappedFromCache()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+        }
     }
 }

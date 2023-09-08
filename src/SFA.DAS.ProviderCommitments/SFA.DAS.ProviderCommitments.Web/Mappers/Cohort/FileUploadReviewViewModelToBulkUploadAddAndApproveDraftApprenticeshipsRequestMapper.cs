@@ -22,10 +22,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
             var csvRecords = cacheModel.CsvRecords;
+            var fileUploadLogId = cacheModel.FileUploadLogId;
+
             await _cacheService.ClearCache(source.CacheRequestId.ToString(), nameof(FileUploadReviewViewModelToBulkUploadAddAndApproveDraftApprenticeshipsRequestMapper));
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
+                FileUploadLogId = fileUploadLogId,
                 BulkUploadAddAndApproveDraftApprenticeships = ConvertToBulkUploadApiRequest(csvRecords, source.ProviderId)
             };
         }
