@@ -115,6 +115,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     )));
         }
 
+        [Test]
+        public async Task When_user_selects_Yes_for_IsReducedByRpl_and_enters_a_value_then_decides_No_ensure_we_blank_the_hidden_value()
+        {
+            var model = new PriorLearningDataViewModel
+            {
+                TrainingTotalHours = 1000,
+                DurationReducedByHours = 100,
+                IsDurationReducedByRpl = false,
+                DurationReducedBy = 8,
+                PriceReduced = 1000
+            };
+
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .EnterRplData(model);
+
+            await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+
+            fixture.OuterApiService.Verify(x =>
+                x.UpdatePriorLearningData(
+                    fixture.DataViewModel.ProviderId,
+                    fixture.DataViewModel.CohortId,
+                    fixture.DataViewModel.DraftApprenticeshipId,
+                    It.Is<CreatePriorLearningDataRequest>(r =>
+                        r.TrainingTotalHours == model.TrainingTotalHours &&
+                        r.DurationReducedByHours == model.DurationReducedByHours &&
+                        r.IsDurationReducedByRpl == model.IsDurationReducedByRpl &&
+                        r.DurationReducedBy == null &&
+                        r.PriceReducedBy == model.PriceReduced
+                    )));
+        }
+
         [TestCase(1, 1, null, null, null, null)]
         [TestCase(2, null, null, null, null, null)]
         [TestCase(null, 3, null, null, null, null)]
@@ -177,12 +208,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task When_accessing_RecognisePriorLearningData_if_is_in_rpl_enhanced_mode()
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithRpl2Mode()
-                .WithRplSummary(false, false);
+                .WithRpl2Mode();
 
             var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
 
             var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
+        }
+
+        [Test]
+        public async Task When_accessing_RecognisePriorLearningData_and_old_rpl_data_rpl_duration_is_0_then_change_to_null_and_False()
+        {
+            var fixture = new WhenRecognisingPriorLearningFixture()
+                .WithRpl2Mode() 
+                .WithRpl1Data(0, 1000);
+
+            var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
+
+            var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDataViewModel>();
+            model.IsDurationReducedByRpl.Should().BeFalse();
+            model.DurationReducedBy.Should().BeNull();
         }
 
         [Test, MoqAutoData]
@@ -230,7 +274,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     fixture.DataViewModel.DraftApprenticeshipId,
                     It.Is<CreatePriorLearningDataRequest>(r =>
                         r.IsDurationReducedByRpl == false &&
-                        r.DurationReducedBy == 10
+                        r.DurationReducedBy == null
                     )));
         }
 
@@ -452,6 +496,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         internal WhenRecognisingPriorLearningFixture ChoosePriorLearning(bool? priorLearning)
         {
             ViewModel.IsTherePriorLearning = priorLearning;
+            return this;
+        }
+
+        internal WhenRecognisingPriorLearningFixture WithRpl1Data(int durationReducedBy, int priceReducedBy)
+        {
+            PriorLearningDataQueryResult.TrainingTotalHours = null;
+            PriorLearningDataQueryResult.DurationReducedByHours = null;
+            PriorLearningDataQueryResult.IsDurationReducedByRpl = null;
+            PriorLearningDataQueryResult.DurationReducedBy = durationReducedBy;
+            PriorLearningDataQueryResult.PriceReduced = priceReducedBy;
             return this;
         }
 
