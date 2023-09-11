@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -113,6 +114,116 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
 
             var expectedErrorContent = "Unhandled exception \r\n" + "Bang";
             _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddAndApproveIsCalledAsExpected()
+        {
+            var request = _fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            var response = _fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsResult>();
+            _outerApiClientMock
+                .Setup(x => x.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddAndApproveDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .ReturnsAsync(response);
+
+            var result = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(request);
+
+            result.Should().Be(response);
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddAndApproveRecordsCommitmentsApiBulkUploadModelException()
+        {
+            var request = _fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            var exception = new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>());
+            _outerApiClientMock
+                .Setup(x => x.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddAndApproveDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            try
+            {
+                await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(request);
+            }
+            catch (CommitmentsApiBulkUploadModelException)
+            {
+                _outerApiClientMock.Verify(x=>x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
+            }
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddAndApproveRecordsUnhandledException()
+        {
+            var request = _fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            var exception = new InvalidCastException();
+            _outerApiClientMock
+                .Setup(x => x.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddAndApproveDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            try
+            {
+                await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(request);
+            }
+            catch (Exception)
+            {
+                _outerApiClientMock.Verify(x => x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
+            }
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddIsCalledAsExpected()
+        {
+            var request = _fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
+            var response = _fixture.Create<GetBulkUploadAddDraftApprenticeshipsResult>();
+            _outerApiClientMock
+                .Setup(x => x.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .ReturnsAsync(response);
+
+            var result = await _outerApiService.BulkUploadDraftApprenticeships(request);
+
+            result.Should().Be(response);
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddRecordsCommitmentsApiBulkUploadModelException()
+        {
+            var request = _fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
+            var exception = new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>());
+            _outerApiClientMock
+                .Setup(x => x.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            try
+            {
+                await _outerApiService.BulkUploadDraftApprenticeships(request);
+            }
+            catch (CommitmentsApiBulkUploadModelException)
+            {
+                _outerApiClientMock.Verify(x => x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
+            }
+        }
+
+        [Test]
+        public async Task VerifyBulkUploadAddRecordsUnhandledException()
+        {
+            var request = _fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
+            var exception = new DivideByZeroException();
+            _outerApiClientMock
+                .Setup(x => x.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    It.Is<PostBulkUploadAddDraftApprenticeshipsRequest>(p => p.Data == request)))
+                .Throws(exception);
+
+            try
+            {
+                await _outerApiService.BulkUploadDraftApprenticeships(request);
+            }
+            catch (Exception)
+            {
+                _outerApiClientMock.Verify(x => x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
+            }
         }
 
         private void PopulateCsvList()

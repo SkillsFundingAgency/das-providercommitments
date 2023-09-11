@@ -27,12 +27,43 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
         {
-           return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+           try
+           {
+               return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+           }
+           catch (CommitmentsApiBulkUploadModelException ex)
+           {
+               if (data.FileUploadLogId != null)
+                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+               throw;
+           }
+           catch (Exception ex)
+           {
+               if (data.FileUploadLogId != null)
+                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+               throw;
+           }
         }
 
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest data)
         {
-            return await _outerApiClient.Post<GetBulkUploadAddDraftApprenticeshipsResult>(new PostBulkUploadAddDraftApprenticeshipsRequest(data));
+            try
+            {
+                return await _outerApiClient.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    new PostBulkUploadAddDraftApprenticeshipsRequest(data));
+            }
+            catch (CommitmentsApiBulkUploadModelException ex)
+            {
+                if(data.FileUploadLogId != null)
+                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                throw;
+            }
         }
 
         public async Task<GetAccountLegalEntityQueryResult> GetAccountLegalEntity(long publicAccountLegalEntityId)
