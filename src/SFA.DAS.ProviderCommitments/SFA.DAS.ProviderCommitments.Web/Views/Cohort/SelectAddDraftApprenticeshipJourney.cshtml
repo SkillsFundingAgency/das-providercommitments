@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectAddDraftApprenticeshipJourneyViewModel
+﻿@inject ILinkGenerator LinkGenerator
+@model SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectAddDraftApprenticeshipJourneyViewModel
 
 @{
     ViewBag.Title = "Add Apprentice";
@@ -13,7 +14,7 @@
                 You will need to ask the employer to create a cohort or give you permission to do this on their behalf.
             </p>
             <p class="gov-body govuk-!-margin-bottom-8">
-                <a href="@Url.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a>
+                <a href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")" class="govuk-link">Go to homepage</a>
             </p>
         }
         else

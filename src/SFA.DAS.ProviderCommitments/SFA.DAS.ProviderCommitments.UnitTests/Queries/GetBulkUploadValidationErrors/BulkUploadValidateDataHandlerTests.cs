@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -41,11 +42,13 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             private Mock<IBulkUploadFileParser> _bulkUploadParser { get; set; }
             private FileUploadValidateDataRequest _bulkUploadValidateDataRequest { get; set; }
             private BulkUploadValidateApimRequest _bulkUploadValidateApiRequest { get; set; }
+            private Mock<IAuthorizationService> _authorizationService;
             public BulkUploadValidateDataHandlerTestsFixture()
             {
                 var fixture = new Fixture();
                 _bulkUploadValidateDataRequest = new FileUploadValidateDataRequest() ;
                 _bulkUploadValidateApiRequest = fixture.Create<BulkUploadValidateApimRequest>();
+                _authorizationService = new Mock<IAuthorizationService>();
 
                 _outerApiService = new Mock<IOuterApiService>();
 
@@ -55,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
                 _bulkUploadParser = new Mock<IBulkUploadFileParser>();
                 _bulkUploadParser.Setup(x => x.GetCsvRecords(It.IsAny<long>(), It.IsAny<IFormFile>()))
                     .Returns(new System.Collections.Generic.List<Web.Models.Cohort.CsvRecord>());
-                BulkUploadValidateDataHandler = new FileUploadValidateDataHandler(_outerApiService.Object, _modelMapper.Object, _bulkUploadParser.Object);
+                BulkUploadValidateDataHandler = new FileUploadValidateDataHandler(_outerApiService.Object, _modelMapper.Object, _bulkUploadParser.Object, _authorizationService.Object);
             }
 
             public async Task Handle()

@@ -1,11 +1,13 @@
 ﻿using System;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
 {
-    public class ChangeEmployerCacheItem
+    public class ChangeEmployerCacheItem : ICacheModel
     {
         public Guid Key { get; }
+        public Guid CacheKey => Key;
 
         public ChangeEmployerCacheItem(Guid key)
         {

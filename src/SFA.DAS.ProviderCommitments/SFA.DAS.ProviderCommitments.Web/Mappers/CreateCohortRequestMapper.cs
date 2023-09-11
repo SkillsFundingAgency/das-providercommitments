@@ -5,21 +5,27 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipViewModel, CreateCohortRequest>
+    public class CreateCohortRequestMapper : IMapper<AddDraftApprenticeshipOrRoutePostRequest, CreateCohortRequest>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly ICacheStorageService _cacheStorage;
 
-        public CreateCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient)
+        public CreateCohortRequestMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
+            _cacheStorage = cacheStorage;
         }
 
-        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipViewModel source)
+        public async Task<CreateCohortRequest> Map(AddDraftApprenticeshipOrRoutePostRequest source)
         {
-            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(source.AccountLegalEntityId, CancellationToken.None);
+            var cacheItem = await _cacheStorage.RetrieveFromCache<CreateCohortCacheItem>(source.CacheKey);
+
+            var accountLegalEntity = await _commitmentsApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId, CancellationToken.None);
 
             if (accountLegalEntity is null)
             {
@@ -29,9 +35,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             return new CreateCohortRequest
             {
                 AccountId = accountLegalEntity.AccountId,
-                AccountLegalEntityId = source.AccountLegalEntityId,
+                AccountLegalEntityId = cacheItem.AccountLegalEntityId,
                 ProviderId = source.ProviderId,
-                ReservationId = source.ReservationId.Value,
+                ReservationId = cacheItem.ReservationId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 Email = source.Email,

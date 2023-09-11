@@ -147,7 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             await _fixture.PostToAddDraftApprenticeship(changeCourse: "Edit");
-            _fixture.VerifyUserRedirectedTo("SelectCourse");
+            _fixture.VerifyUserRedirectedTo("AddDraftApprenticeshipCourse");
         }
 
         [Test]

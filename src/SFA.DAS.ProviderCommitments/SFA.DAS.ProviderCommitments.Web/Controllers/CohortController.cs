@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -11,11 +10,10 @@ using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -29,6 +27,8 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -108,9 +108,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("apprentices/add")]
         [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> AddNewDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            return RedirectToAction(nameof(SelectCourse), request.CloneBaseValues());
+            var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
+
+            var action = redirectModel.RedirectTo == CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
+                ? nameof(ChoosePilotStatus)
+                : nameof(SelectCourse);
+
+            request.CacheKey = redirectModel.CacheKey;
+            return RedirectToAction(action, request.CloneBaseValues());
         }
 
         [HttpGet]
@@ -123,175 +130,115 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("add/select-course")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectCourse(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> SelectCourse(SelectCourseRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentPilot == null)
-            {
-                return RedirectToAction("ChoosePilotStatus", request);
-            }
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
-
-            if (!_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
-                model.IsOnFlexiPaymentsPilot = false;
-
-            return View("SelectCourse", model);
+            return View(model);
         }
 
         [HttpPost]
         [Route("add/select-course")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(SelectCourseViewModel model)
         {
-            if (string.IsNullOrEmpty(model.CourseCode))
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.CourseCode), "You must select a training course")});
-            }
-
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(SelectDeliveryModel), request.CloneBaseValues());
         }
 
         [HttpGet]
-        [Route("add/choose-pilot-status-draft-change")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(CreateCohortWithDraftApprenticeshipRequest request)
-        {
-            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
-            return View("ChoosePilotStatus", model);
-        }
-
-        [HttpPost]
-        [Route("add/choose-pilot-status-draft-change")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatusForDraftChange(ChoosePilotStatusViewModel model)
-        {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction(nameof(AddDraftApprenticeship), request);
-        }
-
-        [HttpGet]
         [Route("add/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(CreateCohortWithDraftApprenticeshipRequest request)
+        public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusRequest request)
         {
-            var model = await _modelMapper.Map<ChoosePilotStatusViewModel>(request);
-            return View("ChoosePilotStatus", model);
+            var model = await _modelMapper.Map<SelectPilotStatusViewModel>(request);
+            return View("SelectPilotStatus", model);
         }
 
         [HttpPost]
         [Route("add/choose-pilot-status")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ChoosePilotStatus(ChoosePilotStatusViewModel model)
+        public async Task<IActionResult> ChoosePilotStatus(SelectPilotStatusViewModel model)
         {
-            if (model.Selection == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail(nameof(model.Selection), "You must select a pilot status")});
-            }
-
-            var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-            return RedirectToAction("SelectCourse", request);
+            var redirectModel = await _modelMapper.Map<SelectPilotStatusRedirectModel>(model);
+            var redirectAction = model.IsEdit ? nameof(AddDraftApprenticeship) : nameof(SelectCourse);
+            return RedirectToAction(redirectAction, redirectModel);
         }
 
         [HttpGet]
         [Route("add/select-delivery-model")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(CreateCohortWithDraftApprenticeshipRequest request)
         {
             var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
-            if (model.DeliveryModels.Length > 1)
+            if (model.DeliveryModels.Count > 1)
             {
-                return View("SelectDeliveryModel", model);
+                return View(model);
             }
 
-            request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
+            request.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
             return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 
         [HttpPost]
         [Route("add/select-delivery-model")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
-            if (model.DeliveryModel == null)
-            {
-                throw new CommitmentsApiModelException(new List<ErrorDetail>
-                    {new ErrorDetail("DeliveryModel", "You must select the apprenticeship delivery model")});
-            }
-
             var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
             return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 
         [HttpGet]
         [Route("add/apprenticeship")]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(CreateCohortWithDraftApprenticeshipRequest request)
         {
-            var model = GetStoredDraftApprenticeshipState();
-            if (model == null)
-            {
-                model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
-            }
-            else
-            {
-                model.CourseCode = request.CourseCode;
-                model.DeliveryModel = request.DeliveryModel;
-                model.IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot;
-            }
-            return View("AddDraftApprenticeship", model);
+            var model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
+            return View(model);
         }
 
         [HttpPost]
         [Route("add/apprenticeship", Name = RouteNames.CohortAddApprenticeship)]
-        [DasAuthorize(ProviderOperation.CreateCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-        public async Task<IActionResult> AddDraftApprenticeshipOrRoute(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
+        public async Task<IActionResult> AddDraftApprenticeshipOrRoute(AddDraftApprenticeshipOrRoutePostRequest model)
         {
-            if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
+            var redirectModel = await _modelMapper.Map<AddDraftApprenticeshipRedirectModel>(model);
+
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse)
             {
-                StoreDraftApprenticeshipState(model);
-                var request = await _modelMapper.Map<CreateCohortWithDraftApprenticeshipRequest>(model);
-                var redirectAction = changeCourse == "Edit" ? nameof(SelectCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
-                return RedirectToAction(redirectAction, request.CloneBaseValues());
+                return RedirectToAction(nameof(SelectCourse), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
             }
 
-            var overlapResult = await HasStartDateOverlap(model);
-            if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel)
+            {
+                return RedirectToAction(nameof(SelectDeliveryModel), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+            }
+
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus)
+            {
+                return RedirectToAction(nameof(ChoosePilotStatus), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+            }
+            
+            if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.OverlapWarning)
             {
                 StoreDraftApprenticeshipState(model);
-                var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                var hashedApprenticeshipId = _encodingService.Encode(redirectModel.OverlappingApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
+                    CacheKey = model.CacheKey,
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     ReservationId = model.ReservationId,
                     StartMonthYear = model.StartDate.MonthYear,
                     CourseCode = model.CourseCode,
                     DeliveryModel = model.DeliveryModel,
-                    EmployerAccountLegalEntityPublicHashedId = model.EmployerAccountLegalEntityPublicHashedId
+                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
                 });
             }
-            
+
             return await SaveDraftApprenticeship(model);
         }
 
@@ -337,25 +284,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/confirm-employer")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult ConfirmEmployer(ConfirmEmployerViewModel viewModel)
+        public async Task<IActionResult> ConfirmEmployer(ConfirmEmployerViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
-// This section can be uncommented to run locally if you need to add a new apprenticeship
-//#if DEBUG
-//                var reservationId = Guid.NewGuid();
-//                return RedirectToAction("AddNewDraftApprenticeship",
-//                    new CreateCohortWithDraftApprenticeshipRequest
-//                    {
-//                        ProviderId = viewModel.ProviderId,
-//                        ReservationId = reservationId,
-//                        EmployerAccountLegalEntityPublicHashedId = viewModel.EmployerAccountLegalEntityPublicHashedId,
-//                        ShowTrainingDetails = false
-//                    });
-//#else
-                //return Redirect($"https://at-permissions-api.apprenticeships.education.gov.uk/{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select");
+                var model = await _modelMapper.Map<ConfirmEmployerRedirectModel>(viewModel);
+
+                if (model.HasNoDeclaredStandards)
+                {
+                    return RedirectToAction("NoDeclaredStandards");
+                }
+
                 return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
-//#endif
             }
 
             return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
@@ -393,7 +333,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> Details(DetailsRequest request)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+
+            if (viewModel.HasNoDeclaredStandards)
+            {
+                return RedirectToAction("NoDeclaredStandards");
+            }
             return View(viewModel);
+        }
+
+
+        [HttpGet]
+        [Route("NoDeclaredStandards")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult NoDeclaredStandards()
+        {
+            return View();
         }
 
         [Route("{cohortReference}")]
@@ -407,15 +361,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 case CohortDetailsOptions.Send:
                 case CohortDetailsOptions.Approve:
-                {
-                    await ValidateAuthorization(authorizationService);
-                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                    return RedirectToAction(nameof(Acknowledgement), request);
-                }
+                    {
+                        await ValidateAuthorization(authorizationService);
+                        var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                        return RedirectToAction(nameof(Acknowledgement), request);
+                    }
                 case CohortDetailsOptions.ApprenticeRequest:
-                {
-                    return RedirectToAction("Review", new { viewModel.ProviderId });
-                }
+                    {
+                        return RedirectToAction("Review", new { viewModel.ProviderId });
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
@@ -493,6 +447,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
+            if (viewModel.HasNoDeclaredStandards) return RedirectToAction("NoDeclaredStandards");
             return View(viewModel);
         }
 
@@ -690,35 +645,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
         }
 
-        private AddDraftApprenticeshipViewModel GetStoredDraftApprenticeshipState()
-        {
-            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
-        }
-
         private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)
         {
             var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
             await _mediator.Send(bulkValidate);
-        }
-
-        private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(AddDraftApprenticeshipViewModel model)
-        {
-            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
-            {
-                var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
-                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
-
-                var result = await _outerApiService.ValidateUlnOverlapOnStartDate(
-                model.ProviderId,
-                model.Uln,
-                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
-                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-                );
-
-                return result;
-            }
-
-            return null;
         }
     }
 }

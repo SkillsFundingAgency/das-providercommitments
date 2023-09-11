@@ -1,4 +1,5 @@
-﻿@model string
+﻿@inject ILinkGenerator LinkGenerator
+@model string
 
 @{
     ViewData["Title"] = "Change of employer requested";
@@ -16,4 +17,4 @@
     </div>
 </div>
 
-<a id="home-link" href="@Url.ProviderApprenticeshipServiceLink($"account")" class="govuk-link">Return to homepage</a>
+<a id="home-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"account")" class="govuk-link">Return to homepage</a>

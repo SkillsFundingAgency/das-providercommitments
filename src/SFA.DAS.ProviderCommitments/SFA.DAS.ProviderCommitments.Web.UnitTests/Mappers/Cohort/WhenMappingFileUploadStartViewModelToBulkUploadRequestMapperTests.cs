@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -24,6 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private FileUploadReviewViewModel _viewModel;
         private List<Web.Models.Cohort.CsvRecord> _csvRecords;
         private Mock<IOuterApiService> _outerApiService;
+        private Mock<IAuthorizationService> _authorizationService;
         private GetCohortResult _cohortResult;
 
         [SetUp]
@@ -50,9 +52,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
-            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object);
+            _authorizationService = new Mock<IAuthorizationService>();
+            _authorizationService.Setup(x => x.IsAuthorizedAsync(Features.ProviderFeature.RplExtended)).ReturnsAsync(true);
+
+            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object, _authorizationService.Object);
 
             _apiRequest = await _mapper.Map(_viewModel);
+        }
+
+        [Test]
+        public void CommandIsReturnedWithProviderIdAndRplDataExtended()
+        {
+            Assert.IsTrue(_apiRequest.RplDataExtended);
+            Assert.AreEqual(_viewModel.ProviderId, _apiRequest.ProviderId);
         }
 
         [Test]
@@ -204,5 +216,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
         }
+
+        [Test]
+        public void VerifyTrainingTotalHours()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingTotalHours, result.TrainingTotalHoursAsString);
+            }
+        }
+
+        [Test]
+        public void VerifyTrainingHoursReduction()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
+            }
+        }
+
+        [Test]
+        public void VerifyIsDurationReducedByRPL()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
+            }
+        }
+
     }
 }

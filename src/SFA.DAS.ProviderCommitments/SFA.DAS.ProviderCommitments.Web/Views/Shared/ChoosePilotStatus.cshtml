@@ -9,6 +9,7 @@
         <partial name="_ValidationSummary" />
             <form method="post">
                 @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="CacheKey" />
                 @Html.HiddenFor(x => x.ProviderId)
                 <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">

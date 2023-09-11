@@ -9,7 +9,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     public class DetailsViewModel : IAuthorizationContextModel
     {
         public long ProviderId { get; set; }
-        public Party WithParty { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
+        public Infrastructure.OuterApi.Responses.Party WithParty { get; set; }
         public string CohortReference { get; set; }
         public long CohortId { get; set; }
         public string AccountLegalEntityHashedId { get; set; }
@@ -25,7 +26,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
                 return Courses?.SelectMany(c => c.DraftApprenticeships).Count() ?? 0;
             }
         }
-
         public IReadOnlyCollection<DetailsViewCourseGroupingModel> Courses { get; set; }
         public string PageTitle { get; set; }
         public CohortDetailsOptions? Selection { get; set; }
@@ -37,9 +37,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsAgreementSigned { get; set; }
         public string OptionsTitle => ProviderCanApprove ? "Approve these details?" : "Submit to employer?";
         public bool ShowViewAgreementOption => !IsAgreementSigned;
-        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner;
+        public bool ProviderCanApprove => IsAgreementSigned && IsCompleteForProvider && !HasOverlappingUln && !HasEmailOverlaps && !ShowRofjaaRemovalBanner && !ShowInvalidProviderCoursesBanner && NumberOfRplErrors == 0;
         public bool ShowApprovalOptionMessage => ProviderCanApprove && IsApprovedByEmployer;
-        public bool IsReadOnly => WithParty != Party.Provider;
+        public bool IsReadOnly => WithParty != Infrastructure.OuterApi.Responses.Party.Provider;
         public bool IsCompleteForProvider { get; set; }
         public bool HasEmailOverlaps { get; set; }
         public bool ShowAddAnotherApprenticeOption { get; set; }
@@ -70,6 +70,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool IsLinkedToChangeOfPartyRequest { get; set; }
         public string Status { get; set; }
         public bool ShowRofjaaRemovalBanner { get; set; }
+        public bool ShowInvalidProviderCoursesBanner => InvalidProviderCourseCodes == null? false : InvalidProviderCourseCodes.Any();
+        public List<string> InvalidProviderCourseCodes { get; set; }
+        public List<long> RplErrorDraftApprenticeshipIds { get; set; }
+        public int NumberOfRplErrors => RplErrorDraftApprenticeshipIds?.Count ?? 0;
     }
 
     public enum CohortDetailsOptions
@@ -78,5 +82,4 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         Approve,
         ApprenticeRequest
     }
-
 }

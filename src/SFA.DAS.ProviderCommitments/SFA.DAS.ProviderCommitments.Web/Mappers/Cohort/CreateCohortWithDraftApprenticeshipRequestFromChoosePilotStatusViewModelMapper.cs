@@ -10,6 +10,7 @@ public class CreateCohortWithDraftApprenticeshipRequestFromChoosePilotStatusView
     {
         return Task.FromResult(new CreateCohortWithDraftApprenticeshipRequest
         {
+            CacheKey = source.CacheKey,
             ProviderId = source.ProviderId,
             ReservationId = source.ReservationId,
             EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,

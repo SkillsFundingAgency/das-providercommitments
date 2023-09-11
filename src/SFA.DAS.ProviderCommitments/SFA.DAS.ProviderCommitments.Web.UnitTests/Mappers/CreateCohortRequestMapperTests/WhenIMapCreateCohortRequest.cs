@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -8,8 +9,10 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestMapperTests
 {
@@ -17,11 +20,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
     public class WhenIMapCreateCohortRequest
     {
         private CreateCohortRequestMapper _mapper;
-        private AddDraftApprenticeshipViewModel _source;
+        private AddDraftApprenticeshipOrRoutePostRequest _source;
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        private Mock<ICacheStorageService> _cacheStorageService;
         private long _accountLegalEntityId;
         private Func<Task<CreateCohortRequest>> _act;
         private AccountLegalEntityResponse _accountLegalEntityResponse;
+        private CreateCohortCacheItem _cacheItem;
 
 
         [SetUp]
@@ -44,9 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
             var employmentPrice = fixture.Create<int?>();
             var accountLegalEntityPublicHashedId = fixture.Create<string>();
 
-            _mapper = new CreateCohortRequestMapper(_mockCommitmentsApiClient.Object);
-
-            _source = fixture.Build<AddDraftApprenticeshipViewModel>()
+            _source = fixture.Build<AddDraftApprenticeshipOrRoutePostRequest>()
                 .With(x => x.EmployerAccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId)
                 .With(x => x.AccountLegalEntityId, _accountLegalEntityId)
                 .With(x => x.BirthDay, birthDate?.Day)
@@ -65,6 +68,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
                 .Without(x => x.Courses)
                 .Create();
 
+            _cacheItem = fixture.Build<CreateCohortCacheItem>()
+                .With(x => x.AccountLegalEntityId,
+                    _accountLegalEntityId)
+                .Create();
+            _cacheStorageService = new Mock<ICacheStorageService>();
+            _cacheStorageService.Setup(x => x.RetrieveFromCache<CreateCohortCacheItem>(_source.CacheKey))
+                .ReturnsAsync(_cacheItem);
+
+            _mapper = new CreateCohortRequestMapper(_mockCommitmentsApiClient.Object, _cacheStorageService.Object);
+
             _act = () => _mapper.Map(TestHelper.Clone(_source));
         }
 
@@ -72,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestM
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ReservationId, result.ReservationId);
+            Assert.AreEqual(_cacheItem.ReservationId, result.ReservationId);
         }
 
         [Test]

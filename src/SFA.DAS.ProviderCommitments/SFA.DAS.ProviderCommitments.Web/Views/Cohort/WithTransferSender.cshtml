@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
+@inject ILinkGenerator LinkGenerator
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.WithTransferSenderViewModel
 
 @{
@@ -73,5 +74,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.ProviderApprenticeshipServiceLink("account")">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink("account")">Back</a>
 }

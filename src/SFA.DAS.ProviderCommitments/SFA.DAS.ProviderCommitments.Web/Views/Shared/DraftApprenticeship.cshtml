@@ -137,7 +137,7 @@ else
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Uln, "govuk-form-group--error")">
         <label asp-for="Uln" class="govuk-label govuk-!-font-weight-bold">Unique learner number</label>
         @Html.ValidationMessageFor(m => m.Uln, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Uln)})
-        <input asp-for="Uln" class="govuk-input govuk-!-width-three-quarters" />
+        <input asp-for="Uln" maxlength="10" class="govuk-input govuk-!-width-three-quarters" />
     </div>
 }
 
@@ -202,19 +202,19 @@ else
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="BirthDay" class="govuk-label govuk-date-input__label">Day</label>
-                    <input asp-for="BirthDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    <input asp-for="BirthDay" maxlength="2" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                 </div>
             </div>
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="BirthMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="BirthMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    <input asp-for="BirthMonth" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                 </div>
             </div>
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="BirthYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="BirthYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    <input asp-for="BirthYear" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" type="number">
                 </div>
             </div>
         </div>
@@ -249,19 +249,19 @@ else
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="ActualStartDay" class="govuk-label govuk-date-input__label">Day</label>
-                        <input asp-for="ActualStartDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <input asp-for="ActualStartDay" maxlength="2" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                     </div>
                 </div>
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="ActualStartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                        <input asp-for="ActualStartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <input asp-for="ActualStartMonth" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                     </div>
                 </div>
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="ActualStartYear" class="govuk-label govuk-date-input__label">Year</label>
-                        <input asp-for="ActualStartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        <input asp-for="ActualStartYear" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" type="number">
                     </div>
                 </div>
             </div>
@@ -284,13 +284,13 @@ else
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="StartMonth" class="govuk-label govuk-date-input__label">Month</label>
-                        <input asp-for="StartMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <input asp-for="StartMonth" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                     </div>
                 </div>
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="StartYear" class="govuk-label govuk-date-input__label">Year</label>
-                        <input asp-for="StartYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        <input asp-for="StartYear" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" type="number">
                     </div>
                 </div>
             </div>
@@ -313,20 +313,20 @@ else
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="EndDay" class="govuk-label govuk-date-input__label">Day</label>
-                        <input asp-for="EndDay" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <input asp-for="EndDay" maxlength="2" min="1" max="31" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                     </div>
                 </div>
             }
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="EndMonth" class="govuk-label govuk-date-input__label">Month</label>
-                    <input asp-for="EndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                    <input asp-for="EndMonth" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                 </div>
             </div>
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label asp-for="EndYear" class="govuk-label govuk-date-input__label">Year</label>
-                    <input asp-for="EndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                    <input asp-for="EndYear" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" type="number">
                 </div>
             </div>
         </div>
@@ -348,13 +348,13 @@ else
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="EmploymentEndMonth" class="govuk-label govuk-date-input__label">Month</label>
-                        <input asp-for="EmploymentEndMonth" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2" type="number">
+                        <input asp-for="EmploymentEndMonth" maxlength="2" min="1" max="12" class="govuk-input govuk-date-input__input govuk-input--width-2 length-limit" type="number">
                     </div>
                 </div>
                 <div class="govuk-date-input__item">
                     <div class="govuk-form-group">
                         <label asp-for="EmploymentEndYear" class="govuk-label govuk-date-input__label">Year</label>
-                        <input asp-for="EmploymentEndYear" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4" type="number">
+                        <input asp-for="EmploymentEndYear" maxlength="4" min="1900" max="9999" class="govuk-input govuk-date-input__input govuk-input--width-4 length-limit" type="number">
                     </div>
                 </div>
             </div>
@@ -368,7 +368,7 @@ else
         Enter the price, including any end-point assessment costs, in whole pounds. For example, for £1,500 enter 1500
     </span>
     @Html.ValidationMessageFor(m => m.Cost, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost)})
-    <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" class="govuk-input govuk-input--width-5" />
+    <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="Cost" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
 </div>
 
 @if (Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
@@ -379,7 +379,7 @@ else
             Enter the price in whole pounds. For example, for £1,500 enter 1500
         </span>
         @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice)})
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" class="govuk-input govuk-input--width-5" />
+        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EmploymentPrice" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
     </div>
 }
 
@@ -399,3 +399,4 @@ else
     <p class="govuk-body govuk-!-font-weight-bold">End-point assessments</p>
     <p class="govuk-body">We'll ask the employer to confirm the <a class="govuk-link" href="https://www.gov.uk/government/publications/using-the-register-of-apprentice-assessment-organisations" target="_blank" title="Opens in a new window">apprentice assessment organisation</a> for this apprentice. We'll do this before the end of the apprenticeship.</p>
 </div>
+

@@ -42,6 +42,8 @@
         public const string DraftApprenticeshipEdit = "draft-apprenticeship-edit";
         public const string DraftApprenticeshipAddAnother = "draft-apprenticeship-add-another";
         public const string CohortAddApprenticeship = "cohort-add-apprenticeship";
+        public const string RecognisePriorLearningData = "recognise-prior-learning-data";
+        public const string RecognisePriorLearning = "recognise-prior-learning";
     }
 }
 

@@ -17,6 +17,7 @@
         public const string RecognitionOfPriorLearningConfiguration = "RecognitionOfPriorLearningConfiguration";
         public const string ProviderAccountApiConfiguration = "ProviderAccountApiConfiguration";
         public const string UseDfeSignIn = "UseDfeSignIn";
+        public const string DfEOidcConfiguration = "SFA.DAS.Provider.DfeSignIn";
         public const string RplOpenAiConfiguration = "OpenAiConfiguration";
     }
 }

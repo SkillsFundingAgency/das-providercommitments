@@ -9,11 +9,11 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
+using DraftApprenticeshipDto = SFA.DAS.CommitmentsV2.Types.Dtos.DraftApprenticeshipDto;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
 {
@@ -127,7 +127,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
                     }
                 };
 
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, true)
                     .Create();
                 
@@ -167,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.CreateCohort
             
             public CreateCohortHandlerFixture ReturnSingleApprenticeshipNoOptions()
             {
-                var getDraftApprenticeshipResponse = _autoFixture.Build<GetDraftApprenticeshipResponse>()
+                var getDraftApprenticeshipResponse = _autoFixture.Build<SFA.DAS.CommitmentsV2.Api.Types.Responses.GetDraftApprenticeshipResponse>()
                     .With(c=>c.HasStandardOptions, false)
                     .Create();
                 _apiClient.Setup(x => x.GetDraftApprenticeship(_apiResponse.CohortId, _draftResponse.Id, It.IsAny<CancellationToken>()))

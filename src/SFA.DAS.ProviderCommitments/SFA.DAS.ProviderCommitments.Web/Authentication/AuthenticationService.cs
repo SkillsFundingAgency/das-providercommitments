@@ -15,9 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string UserId => GetUserClaimAsString(ProviderClaims.Upn);
-        public string UserName => GetUserClaimAsString(ProviderClaims.Name);
-        public string UserEmail => GetUserClaimAsString(ProviderClaims.Email);
+        public string UserId => GetUserClaimAsString(ProviderClaims.Upn) ?? GetUserClaimAsString("sub");
+        public string UserName => GetUserClaimAsString(ProviderClaims.Name) ?? GetUserClaimAsString(ProviderClaims.DisplayName);
+        public string UserEmail => GetUserClaimAsString(ProviderClaims.Email) ?? GetUserClaimAsString("email");
 
         public bool IsUserAuthenticated()
         {

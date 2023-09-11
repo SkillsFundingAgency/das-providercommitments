@@ -26,7 +26,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task Then_Returns_View()
         {
-            var fixture = new WhenGettingFileUploadValidationErrorFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture()
+                .WithHasNoDeclaredStandards(false);
 
             var result = await fixture.Act();
 
@@ -34,9 +35,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         [Test]
+        public async Task Then_RedirectToNoDeclaredStandardsPage()
+        {
+            var fixture = new WhenGettingFileUploadValidationErrorFixture()
+                .WithHasNoDeclaredStandards(true); ;
+
+            var result = await fixture.Act();
+
+            result.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
+        }
+
+        [Test]
         public async Task Then_ProviderId_Is_Mapped()
         {
-            var fixture = new WhenGettingFileUploadValidationErrorFixture();
+            var fixture = new WhenGettingFileUploadValidationErrorFixture()
+                .WithHasNoDeclaredStandards(false);
 
             var viewResult = await fixture.Act();
 
@@ -80,6 +93,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         }
 
         public async Task<IActionResult> Act() => await Sut.FileUploadValidationErrors(_request);
+
+        public WhenGettingFileUploadValidationErrorFixture WithHasNoDeclaredStandards(bool hasDeclaredStandards)
+        {
+            _viewModel.HasNoDeclaredStandards = hasDeclaredStandards;
+            return this;
+        }
 
         internal void VerifyErrorsAreMapped()
         {

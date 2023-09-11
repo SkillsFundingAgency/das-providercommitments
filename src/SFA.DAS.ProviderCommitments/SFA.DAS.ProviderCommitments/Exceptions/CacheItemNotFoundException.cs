@@ -1,8 +1,9 @@
 ﻿using System;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Exceptions
 {
-    public class CacheItemNotFoundException : Exception
+    public class CacheItemNotFoundException<T> : Exception
     {
         public CacheItemNotFoundException()
         {

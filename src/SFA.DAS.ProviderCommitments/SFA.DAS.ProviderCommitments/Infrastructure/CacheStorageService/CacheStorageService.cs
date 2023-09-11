@@ -31,13 +31,18 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService
             return SaveToCache(key.ToString(), item, expirationInHours);
         }
 
+        public Task SaveToCache<T>(T item, int expirationInHours) where T: ICacheModel
+        {
+            return SaveToCache(item.CacheKey.ToString(), item, expirationInHours);
+        }
+
         public async Task<T> RetrieveFromCache<T>(string key)
         {
             var json = await _distributedCache.GetStringAsync(key);
             
             if (json == null)
             {
-                throw new CacheItemNotFoundException($"Cache item {key} of type {typeof(T).Name} not found");
+                throw new CacheItemNotFoundException<T>($"Cache item {key} of type {typeof(T).Name} not found");
             }
             
             return JsonConvert.DeserializeObject<T>(json);

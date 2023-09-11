@@ -165,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             var result = await _fixture.EditChangingCourse(_viewModel);
-            _fixture.VerifyRedirectedTo(result,"SelectCourseForEdit");
+            _fixture.VerifyRedirectedTo(result, "EditApprenticeshipCourse");
         }
 
         [Test]

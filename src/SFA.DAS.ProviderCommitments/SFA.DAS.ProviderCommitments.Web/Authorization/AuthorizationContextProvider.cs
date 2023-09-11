@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Authorization.CommitmentPermissions.Context;
@@ -152,7 +153,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
 
             if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
             {
-                throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Email}'");
+                if (!_authenticationService.TryGetUserClaimValue("email", out userEmail))
+                {
+                    throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Email}'");    
+                }
             }
 
             return userEmail;

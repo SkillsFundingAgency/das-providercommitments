@@ -124,6 +124,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         }
         
         [Test]
+        public void GetAuthorizationContext_WhenUserIsAuthenticatedAndValidUkprnExistsAndDfEUserEmailExists_ThenShouldReturnAuthorizationContextWithUkprnAndUserEmail()
+        {
+            var authorizationContext = _fixture.SetAuthenticatedUser()
+                .SetServices()
+                .SetDfEUserEmail()
+                .SetValidUkprn()
+                .GetAuthorizationContext();
+            
+            Assert.IsNotNull(authorizationContext);
+            Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
+            Assert.AreEqual(_fixture.DfEUserEmail, authorizationContext.Get<string>("UserEmail"));
+        }
+        
+        [Test]
         public void GetAuthorizationContext_WhenUserIsAuthenticatedAndUkprnDoesNotExist_ThenShouldThrowUnauthorizedAccessException()
         {
             _fixture.SetAuthenticatedUser();
@@ -219,6 +233,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         public long Ukprn { get; set; }
         public string UkprnClaimValue { get; set; }
         public string UserEmail { get; set; }
+        public string DfEUserEmail { get; set; }
 
         public AuthorizationContextProviderTestsFixture()
         {
@@ -393,6 +408,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             var userEmailClaimValue = UserEmail;
             
             AuthenticationService.Setup(a => a.TryGetUserClaimValue(ProviderClaims.Email, out userEmailClaimValue)).Returns(true);
+            
+            return this;
+        }
+        public AuthorizationContextProviderTestsFixture SetDfEUserEmail()
+        {
+            DfEUserEmail = "dfe-foo@bar.com";
+            
+            var userEmailClaimValue = DfEUserEmail;
+            
+            AuthenticationService.Setup(a => a.TryGetUserClaimValue("email", out userEmailClaimValue)).Returns(true);
             
             return this;
         }

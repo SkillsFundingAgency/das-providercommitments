@@ -13,7 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
                 {
                     options.ConfigurationKeys = new[]
                     {
-                        ProviderCommitmentsConfigurationKeys.ProviderCommitments
+                        ProviderCommitmentsConfigurationKeys.ProviderCommitments,
+                        ProviderCommitmentsConfigurationKeys.DfEOidcConfiguration
                     };
                     options.PreFixConfigurationKeys = false;
                 })

@@ -10,6 +10,7 @@ public class ChoosePilotStatusViewModelFromBaseDraftApprenticeshipRequestMapper 
     {
         return Task.FromResult(new ChoosePilotStatusViewModel
         {
+            CacheKey = source.CacheKey,
             ProviderId = source.ProviderId,
             CohortReference = source.CohortReference,
             DraftApprenticeshipHashedId = source.DraftApprenticeshipHashedId

@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
     [TestFixture]
     public class BulkUploadFileParserTests
     {
-        const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
+        const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy,TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction";
 
         BulkUploadFileParser _bulkUploadFileParser;
         string _fileContent;
@@ -26,8 +26,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             _proivderId = 1;
             _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
             _fileContent = Headers + Environment.NewLine +
-                           "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine +
-                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,";
+                           "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,1000,TRUE,100" + Environment.NewLine +
+                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,,,,";
 
             var fileName = "test.pdf";
             var stream = new MemoryStream();
@@ -161,6 +161,30 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         }
 
         [Test]
+        public void TrainingTotalHoursIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("1000", result.First().TrainingTotalHours);
+            Assert.AreEqual("", result.Last().TrainingTotalHours);
+        }
+
+        [Test]
+        public void IsDurationReducedByRPLIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("TRUE", result.First().IsDurationReducedByRPL);
+            Assert.AreEqual("", result.Last().IsDurationReducedByRPL);
+        }
+
+        [Test]
+        public void TrainingHoursReductionIsParsedCorrectly()
+        {
+            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+            Assert.AreEqual("100", result.First().TrainingHoursReduction);
+            Assert.AreEqual("", result.Last().TrainingHoursReduction);
+        }
+
+        [Test]
         public void CorrectNumberOfApprenticeshipMapped()
         {
             var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
@@ -172,10 +196,10 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         {
             //Arrange          
             _fileContent = Headers + Environment.NewLine +
-                ",,,,,,,,,,,,,,," + Environment.NewLine +
-                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,,," + Environment.NewLine +
-                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,,," + Environment.NewLine +
-                 ",,,,,,,,,,,,,,,";
+                ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
+                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,,,,,," + Environment.NewLine +
+                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,,,,,," + Environment.NewLine +
+                 ",,,,,,,,,,,,,,,,,,";
 
             CreateFile();
 
@@ -188,8 +212,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         {
             //Arrange          
             _fileContent = Headers + Environment.NewLine +
-                ",,,,,,,,,,,,,,," + Environment.NewLine +
-                ",,,,,,,,,,,,,,,";
+                ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
+                ",,,,,,,,,,,,,,,,,,";
 
             CreateFile();
 
@@ -201,7 +225,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         public void OptionalFieldsMayBeOmitted()
         {
             //Arrange          
-            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", "") + Environment.NewLine +
+            _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", "") + Environment.NewLine +
                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
 
             CreateFile();
@@ -210,9 +234,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             result.Should().ContainEquivalentOf(new
             {
                 CohortRef = "P9DD4P",
-                RecognisePriorLearning = (bool?)null,
-                DurationReducedBy = (string)null,
-                PriceReducedBy = (string)null,
+                TrainingTotalHours = (string)null,
+                IsDurationReducedByRPL = (bool?)null,
+                TrainingHoursReduction = (string)null,
             });
         }
 
@@ -220,8 +244,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
         public void OptionalFieldsWithoutHeaderName()
         {
             //Arrange          
-            _fileContent = Headers.Replace(",RecognisePriorLearning,DurationReducedBy,PriceReducedBy", ",,,") + Environment.NewLine +
-                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+            _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", ",,,") + Environment.NewLine +
+                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,9000,TRUE,90" + Environment.NewLine;
 
             CreateFile();
 
@@ -229,9 +253,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
             result.Should().ContainEquivalentOf(new
             {
                 CohortRef = "P9DD4P",
-                RecognisePriorLearning = (bool?)null,
-                DurationReducedBy = (string)null,
-                PriceReducedBy = (string)null,
+                TrainingTotalHours = (string)null,
+                IsDurationReducedByRPL = (bool?)null,
+                TrainingHoursReduction = (string)null,
             });
         }
 

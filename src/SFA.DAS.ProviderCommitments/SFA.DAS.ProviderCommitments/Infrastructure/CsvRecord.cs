@@ -31,7 +31,13 @@
         public string RecognisePriorLearning { get; set; }
         
         public string DurationReducedBy { get; set; }
-        
+
         public string PriceReducedBy { get; set; }
+
+        public string TrainingTotalHours { get; set; }
+
+        public string IsDurationReducedByRPL { get; set; }
+
+        public string TrainingHoursReduction { get; set; }
     }
 }

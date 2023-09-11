@@ -2,29 +2,27 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.BaseEdit
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key"> Name </dt>
-                <dd class="govuk-summary-list__value"> @Model.Name</dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key"> Unique learner number </dt>
-                <dd class="govuk-summary-list__value"> @Model.ULN</dd>
-            </div>
-            @if (@Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key"> Apprenticeship delivery model</dt>
-                    <dd class="govuk-summary-list__value"> @Model.DeliveryModel.Value.ToIrregularDescription()</dd>
-                </div>
-            }
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key"> Apprenticeship training course </dt>
-                <dd class="govuk-summary-list__value"> @Model.CourseName</dd>
-            </div>
-        </dl>
+
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key"> Name </dt>
+        <dd class="govuk-summary-list__value"> @Model.Name</dd>
     </div>
-</div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key"> Unique learner number </dt>
+        <dd class="govuk-summary-list__value"> @Model.ULN</dd>
+    </div>
+    @if (@Model.DeliveryModel == DeliveryModel.PortableFlexiJob)
+    {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key"> Apprenticeship delivery model</dt>
+            <dd class="govuk-summary-list__value"> @Model.DeliveryModel.Value.ToIrregularDescription()</dd>
+        </div>
+    }
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key"> Apprenticeship training course </dt>
+        <dd class="govuk-summary-list__value"> @Model.CourseName</dd>
+    </div>
+</dl>
+ 
 

@@ -14,8 +14,10 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -28,6 +30,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public void Arrange()
         {
             _fixture = new WhenPostingReviewApprenticeshipUpdatesFixture();
+        }
+
+        [Test]
+        public async Task WithApproveAddStandardToTraining_RedirectTo_review_your_details()
+        {
+            _fixture = _fixture.WithIsValidCourseCode(false);
+
+            _fixture = _fixture.WithApproveAddStandardToTraining(true);
+
+            var result = await _fixture.Act();
+
+            var redirect = result.VerifyReturnsRedirect();
+            redirect.Url.Should().Contain($"/{_fixture._viewModel.ProviderId}/review-your-details");
+        }
+
+        [Test]
+        public async Task Without_ValidCourse_And_RejectChanges_RejectChanges_Is_Called()
+        {
+            _fixture = _fixture.WithIsValidCourseCode(false);
+            _fixture = _fixture.WithApproveAddStandardToTraining(false);
+
+            await _fixture.Act();
+
+            _fixture.VerifyRejectChangesCalled();
         }
 
         [Test]
@@ -93,10 +119,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         internal class WhenPostingReviewApprenticeshipUpdatesFixture
         {
             private readonly ApprenticeController _sut;
-            private readonly ReviewApprenticeshipUpdatesViewModel _viewModel;
-            private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
+            public readonly ReviewApprenticeshipUpdatesViewModel _viewModel;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
+            protected Mock<ILinkGenerator> _mockLinkGenerator;
             public UserInfo UserInfo;
             public Mock<IAuthenticationService> AuthenticationService { get; }
 
@@ -108,11 +134,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
                 _modelMapper = new Mock<IModelMapper>();
 
+                _mockLinkGenerator = new Mock<ILinkGenerator>();
+
+                _mockLinkGenerator.Setup(x => x.CourseManagementLink(It.IsAny<string>()))
+                         .Returns((string url) => "http://coursemanagement/" + url);
+
                 _viewModel = new ReviewApprenticeshipUpdatesViewModel
                 {
                     ApprenticeshipId = 123,
                     ApprenticeshipHashedId = "DF34WG2",
-                    ProviderId = 2342
+                    ProviderId = 2342,
+                    IsValidCourseCode = true
                 };
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
@@ -127,8 +159,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _sut.TempData = tempData;
             }
 
-            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);
+            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, _viewModel, _mockLinkGenerator.Object);
 
+            public WhenPostingReviewApprenticeshipUpdatesFixture WithIsValidCourseCode(bool isValidCourseCode)
+            {
+                _viewModel.IsValidCourseCode = isValidCourseCode;
+                return this;
+            }
+
+            public WhenPostingReviewApprenticeshipUpdatesFixture WithApproveAddStandardToTraining(bool? approveAddStandardToTraining)
+            {
+                _viewModel.ApproveAddStandardToTraining = approveAddStandardToTraining;
+                return this;
+            }
             public WhenPostingReviewApprenticeshipUpdatesFixture WithAcceptChanges()
             {
                 _viewModel.ApproveChanges = true;
