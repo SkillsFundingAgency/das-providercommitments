@@ -6,7 +6,6 @@ using System.Text;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
 using Moq;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using SFA.DAS.ProviderCommitments.Configuration;
@@ -16,6 +15,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
     [TestFixture]
     public class FileUploadStartViewModelValidatorTests
     {
+        const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
+        const string RplExtendedHeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
+
         private Mock<IFormFile> _file;
         private BulkUploadFileValidationConfiguration _csvConfiguration;
 
@@ -107,13 +109,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [Test]
         public void ShouldReturnInvalidMessageWhenFileRowCountIsInvalid()
         {
-            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef";
-
             var builder = new StringBuilder();
-            builder.AppendLine(headerLine);
+            builder.AppendLine(HeaderLine);
             for (int i = 1; i < 101; i++)
             {
-                builder.AppendLine(headerLine);
+                builder.AppendLine(HeaderLine);
             }
             string fileContents = builder.ToString();
 
@@ -126,11 +126,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             Assert.IsFalse(result.IsValid);
         }
 
+
         [Test]
         public void ShouldBeValidWhenFileIsValid()
         {
-            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef";
+            var builder = new StringBuilder();
+            builder.AppendLine(HeaderLine);
+            for (int i = 1; i < 99; i++)
+            {
+                builder.AppendLine(HeaderLine);
+            }
+            string fileContents = builder.ToString();
 
+            var file = CreateFakeFormFile(fileContents);
+
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var result = validator.Validate(model);
+
+            Assert.IsTrue(result.IsValid);
+        }
+
+
+        [Test]
+        public void ShouldCheckRplExtendedColumns()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine(RplExtendedHeaderLine);
+            for (int i = 1; i < 99; i++)
+            {
+                builder.AppendLine(RplExtendedHeaderLine);
+            }
+            string fileContents = builder.ToString();
+
+            var file = CreateFakeFormFile(fileContents);
+
+            var model = new FileUploadStartViewModel { Attachment = file };
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+            var result = validator.Validate(model);
+
+            Assert.IsTrue(result.IsValid);
+        }
+
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,XRecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,XTrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,XTrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,XIsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,XDurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,XPriceReducedBy")]
+        public void ShouldCheckCorruptRplColumns(string headerLine)
+        {
             var builder = new StringBuilder();
             builder.AppendLine(headerLine);
             for (int i = 1; i < 99; i++)
@@ -145,22 +190,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = validator.Validate(model);
 
-            Assert.IsTrue(result.IsValid);
+            Assert.IsFalse(result.IsValid);
         }
 
-        [TestCase("CohortReff,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgrementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,VLN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyNam,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,BirthDate,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,Email,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,Std,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,TotalPrice,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,Price,EPAOrgID,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider")]
-        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,,,")]
+        [TestCase("CohortReff,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgrementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,VLN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyNam,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenName,BirthDate,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,Email,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,Std,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,Start,End,Price,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
+        [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,,,,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
         public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
         {
             //Arrange            
@@ -181,8 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         public void ShouldReturnInvalidMessageWhenFileContainsOnlyColumnHeader()
         {
             //Arrange
-            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef";
-            var fileContents = new StringBuilder().AppendLine(headerLine).ToString();
+            var fileContents = new StringBuilder().AppendLine(HeaderLine).ToString();
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
