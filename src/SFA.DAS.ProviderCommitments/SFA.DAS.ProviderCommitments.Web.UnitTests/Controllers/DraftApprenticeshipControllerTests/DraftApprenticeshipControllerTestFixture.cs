@@ -22,6 +22,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderUrlHelper;
@@ -209,7 +210,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _commitmentsApiClient.Object,
                 _modelMapper.Object,
                 encodingService.Object,
-                _providerFeatureToggle.Object, _outerApiService.Object);
+                _providerFeatureToggle.Object, _outerApiService.Object, Mock.Of<IAuthenticationService>());
             _controller.TempData = _tempData.Object;
 
             _linkGenerator = new Mock<ILinkGenerator>();
