@@ -366,24 +366,24 @@ else
 {
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
         @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
-    </div>
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
-        <label asp-for="TrainingPrice" class="govuk-label govuk-!-font-weight-bold">Training Price</label>
-        <span id="price-hint" class="govuk-hint">
-            Do not include VAT. Enter price in whole pounds. For example, for £6,500 enter 6500.
-        </span>
-        @Html.ValidationMessageFor(m => m.TrainingPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="TrainingPrice" maxlength="7" onkeyup="calculateEditedTotalPrice()" class="govuk-input govuk-input--width-5 length-limit" />
-    </div>
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
+            <label asp-for="TrainingPrice" class="govuk-label govuk-!-font-weight-bold">Training Price</label>
+            <span id="price-hint" class="govuk-hint">
+                Do not include VAT. Enter price in whole pounds. For example, for £6,500 enter 6500.
+            </span>
+            @Html.ValidationMessageFor(m => m.TrainingPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.TrainingPrice) })
+            <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="TrainingPrice" maxlength="7" onkeyup="calculateEditedTotalPrice()" class="govuk-input govuk-input--width-5 length-limit" />
+        </div>
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndPointAssessmentPrice, "govuk-form-group--error")">
-        <label asp-for="EndPointAssessmentPrice" class="govuk-label govuk-!-font-weight-bold">End-point assessment price</label>
-        <span id="price-hint" class="govuk-hint">
-            Do not include VAT. Enter price in whole pounds. For example, for £1,500 enter 1500.
-        </span>
-        @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice) })
-        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EndPointAssessmentPrice" onkeyup="calculateEditedTotalPrice()" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
+        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndPointAssessmentPrice, "govuk-form-group--error")">
+            <label asp-for="EndPointAssessmentPrice" class="govuk-label govuk-!-font-weight-bold">End-point assessment price</label>
+            <span id="price-hint" class="govuk-hint">
+                Do not include VAT. Enter price in whole pounds. For example, for £1,500 enter 1500.
+            </span>
+            @Html.ValidationMessageFor(m => m.EndPointAssessmentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EndPointAssessmentPrice) })
+            <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="EndPointAssessmentPrice" onkeyup="calculateEditedTotalPrice()" maxlength="7" class="govuk-input govuk-input--width-5 length-limit" />
+        </div>
     </div>
 
     if (Model.EmployerHasEditedPrice)
