@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using Microsoft.Azure.Documents;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
@@ -113,6 +114,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             _source.IsOnFlexiPaymentPilot = true;
             var result = await _act();
             Assert.AreEqual(_source.TrainingPrice + _source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProvidersWhenTrainingPriceMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProvidersWhenEPAMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.EndPointAssessmentPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice, result.Cost);
         }
 
         [Test]
