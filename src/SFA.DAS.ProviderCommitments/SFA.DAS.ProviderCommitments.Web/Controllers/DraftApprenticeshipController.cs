@@ -384,7 +384,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit")]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
         {
@@ -631,7 +631,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/Delete", Name = RouteNames.ApprenticeDelete)]
-        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<ActionResult> DeleteConfirmation(DeleteConfirmationRequest deleteConfirmationRequest)
         {
             try
