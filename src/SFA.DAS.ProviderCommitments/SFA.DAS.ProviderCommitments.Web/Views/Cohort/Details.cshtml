@@ -299,26 +299,35 @@ Model.HasOverlappingUln
                 @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="Training price">
-                        @if (@draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && @draftApprenticeship.TrainingPrice == null)
+                        @if (@draftApprenticeship.DisplayTrainingPrice == null)
                         {
-                                <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
+                            <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
                         }
                         else
                         {
-                            @draftApprenticeship.TrainingPrice
+                            @draftApprenticeship.DisplayTrainingPrice
                         }
                     </td>
                     <td class="govuk-table__cell" data-label="End-point assessment price">
-                        @if (@draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && @draftApprenticeship.EndPointAssessmentPrice == null)
+                            @if (@draftApprenticeship.DisplayEndPointAssessmentPrice == null)
                         {
-                                <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
+                            <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
                         }
                         else
                         {
-                            @draftApprenticeship.EndPointAssessmentPrice
+                            @draftApprenticeship.DisplayEndPointAssessmentPrice
                         }
                     </td>
-                    <td class="govuk-table__cell" data-label="Total price">@draftApprenticeship.Cost</td>
+                        <td class="govuk-table__cell" data-label="Total price">
+                        @if (@draftApprenticeship.DisplayCost == null)
+                        {
+                            <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
+                        }
+                        else
+                        {
+                            @draftApprenticeship.DisplayCost
+                        }
+                    </td> 
                 }
                 else
                 {
