@@ -15,20 +15,14 @@
     ViewBag.GaData.Org = Model.LegalEntityName;
 }
 
-@if (((!Model.IsAgreementSigned)
+@if ((!Model.IsAgreementSigned)
 ||
 (!Model.IsCompleteForProvider && !Model.IsReadOnly)
 ||
 Model.HasOverlappingUln
 ||
 (Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
-||
-Model.HasMissingTrainingPrices
-||
-Model.HasMissingEndPointAssessmentPrices
-||
-Model.EmployerHasEditedPrice)
-{
+    {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-notification-banner">
@@ -57,18 +51,6 @@ Model.EmployerHasEditedPrice)
                         @if (!Model.IsCompleteForProvider && !Model.IsReadOnly)
                         {
                             <li>all apprentice records are complete</li>
-                        }
-                        @if (Model.HasMissingTrainingPrices)
-                        {
-                            <li>The Training price is complete.</li>
-                        }
-                        @if (Model.HasMissingEndPointAssessmentPrices)
-                        {
-                            <li>The End-point assessment price is complete.</li>
-                        }
-                        @if (Model.EmployerHasEditedPrice)
-                        {
-                            <li>The employer has changed the total price. Please edit and allocate the total price between Training price and End-point assessment price.</li>
                         }
                     </ul>
                 </div>
@@ -217,25 +199,15 @@ Model.EmployerHasEditedPrice)
             </div>
             course.ErrorIsCompletedDisplayed = true;
         }
-        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.TrainingPrice == null)
+        if (draftApprenticeship.EmployerHasEditedPrice)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">The Training price are incomplete</h3>
+                <h3 class="govuk-heading-s">The Training price and End-point assessment price are incomplete</h3>
                 <p>
-                    Please add the Training price.
+                    Please edit and allocate the Total price between Training price and End-point assessment price.
                 </p>
             </div>
         }
-        if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault() && draftApprenticeship.EndPointAssessmentPrice == null)
-        {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 class="govuk-heading-s">The End-point assessment price are incomplete</h3>
-                <p>
-                    Please add the End-point assessment price.
-                </p>
-            </div>
-        }
-
         if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
         {
             if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id) && !course.RplErrorHasBeenDisplayed)
@@ -366,7 +338,7 @@ Model.EmployerHasEditedPrice)
                 @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
-                        @draftApprenticeship.DislayIsPilot
+                        @draftApprenticeship.DisplayIsPilot
                     </td>
                 }
                 <td class="govuk-table__cell govuk-table__cell--numeric">

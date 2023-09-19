@@ -194,5 +194,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
         }
+
+        [TestCase(" Test ", "Test")]
+        [TestCase(" Test Me ", "Test Me")]
+        [TestCase(" Test\tMe ", "Test Me")]
+        [TestCase(" \tTest\tMe\t", "Test Me")]
+        public void VerifyTabsAndSpacesAreTrimmedFromFirstName(string inputValue, string expectedResult)
+        {
+            var source = _csvRecords.First();
+            source.GivenNames = inputValue;
+
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+
+            var result = _result.First(x => x.Uln == source.ULN);
+
+            Assert.AreEqual(expectedResult, result.FirstName);
+        }
+
+        [TestCase(" Test ", "Test")]
+        [TestCase(" Test Me ", "Test Me")]
+        [TestCase(" Test\tMe ", "Test Me")]
+        [TestCase(" \tTest\tMe\t", "Test Me")]
+        public void VerifyTabsAndSpacesAreTrimmedFromLastName(string inputValue, string expectedResult)
+        {
+            var source = _csvRecords.First();
+            source.FamilyName = inputValue;
+
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+
+            var result = _result.First(x => x.Uln == source.ULN);
+
+            Assert.AreEqual(expectedResult, result.LastName);
+        }
     }
 }
