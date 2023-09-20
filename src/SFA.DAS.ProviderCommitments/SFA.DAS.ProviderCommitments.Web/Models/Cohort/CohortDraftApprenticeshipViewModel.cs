@@ -83,8 +83,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
+        public string DisplayEndPointAssessmentPrice => EndPointAssessmentPrice?.ToGdsCostFormat();
+        public string DisplayTrainingPrice => TrainingPrice?.ToGdsCostFormat();
         public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
-            
+
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
         public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
