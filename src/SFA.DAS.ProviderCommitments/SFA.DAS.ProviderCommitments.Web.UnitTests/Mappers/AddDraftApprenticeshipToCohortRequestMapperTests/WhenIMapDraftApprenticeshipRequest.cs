@@ -148,6 +148,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         }
 
         [Test]
+        public async Task ThenCostIsNullWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            _source.EndPointAssessmentPrice = null;
+            var result = await _act();
+            Assert.AreEqual(null, result.Cost);
+        }
+
+        [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
