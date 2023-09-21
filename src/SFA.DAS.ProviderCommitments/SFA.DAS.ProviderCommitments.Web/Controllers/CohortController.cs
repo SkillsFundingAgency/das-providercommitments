@@ -14,7 +14,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -134,6 +133,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SelectCourse(SelectCourseRequest request)
         {
             var model = await _modelMapper.Map<SelectCourseViewModel>(request);
+            string courseCode = HttpContext.Request.Query["CourseCode"];
+            if (!string.IsNullOrWhiteSpace(courseCode))
+            {
+                model.CourseCode = courseCode;
+            }
+
             return View(model);
         }
 
