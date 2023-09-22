@@ -298,8 +298,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             var result = await _act();
             Assert.AreEqual(_apiResponse.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
-		
-		[Test]
+
+        [Test]
+        public async Task ThenEmployerHasEditedCostIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_apiResponse.EmployerHasEditedCost, result.EmployerHasEditedCost);
+        }
+
+        [Test]
         public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
         {
             var result = await _act();

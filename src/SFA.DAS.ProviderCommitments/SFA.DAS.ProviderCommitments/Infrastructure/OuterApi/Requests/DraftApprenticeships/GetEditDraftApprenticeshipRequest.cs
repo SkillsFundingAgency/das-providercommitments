@@ -67,6 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
 
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
     }
 }

@@ -386,7 +386,7 @@ else
         </div>
     </div>
 
-    if (Model.EmployerHasEditedPrice)
+    if (Model.EmployerHasEditedCost.GetValueOrDefault())
     {
         <div class="govuk-inset-text">
             <div id="price-hint" class="govuk-hint">
