@@ -307,7 +307,7 @@ Model.HasOverlappingUln
                             }
                             else
                             {
-                                <span class="govuk-!-width-one-quarter das-table-cell"> - </span>
+                                <span> - </span>
                             }
                         }
                         else
@@ -332,15 +332,8 @@ Model.HasOverlappingUln
                             @draftApprenticeship.DisplayEndPointAssessmentPrice
                         }
                     </td>
-                        <td class="govuk-table__cell" data-label="Total price">
-                        @if (@draftApprenticeship.DisplayCost == null)
-                        {
-                            <span class="govuk-!-width-one-quarter das-table-cell"> - </span>
-                        }
-                        else
-                        {
-                            @draftApprenticeship.DisplayCost
-                        }
+                    <td class="govuk-table__cell" data-label="Total price">
+                        <span class="govuk-!-width-one-quarter das-table-cell">@draftApprenticeship.DisplayCost</span>
                     </td> 
                 }
                 else
