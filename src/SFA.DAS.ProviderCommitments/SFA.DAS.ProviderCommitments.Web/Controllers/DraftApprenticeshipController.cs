@@ -48,12 +48,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IEncodingService _encodingService;
         private readonly IAuthorizationService _authorizationService;
         private readonly IOuterApiService _outerApiService;
+        private readonly IAuthenticationService _authenticationService;
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
         public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
             IModelMapper modelMapper, IEncodingService encodingService,
             IAuthorizationService authorizationService,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService, IAuthenticationService authenticationService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
@@ -61,6 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _encodingService = encodingService;
             _authorizationService = authorizationService;
             _outerApiService = outerApiService;
+            _authenticationService = authenticationService;
         }
 
         [HttpGet]
@@ -354,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             SetStartDatesBasedOnFlexiPaymentPilotRules(model);
 
             var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
-            request.UserId = User.Upn();
+            request.UserId = _authenticationService.UserId;
 
             var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
 
