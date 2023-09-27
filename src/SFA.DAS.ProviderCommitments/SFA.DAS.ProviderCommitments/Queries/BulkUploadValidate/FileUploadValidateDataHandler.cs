@@ -9,6 +9,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using Microsoft.AspNetCore.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 {
@@ -33,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
             apiRequest.RplDataExtended = _authorizationService.IsAuthorized(ProviderFeature.RplExtended);
+
             try
             {
                 await _client.ValidateBulkUploadRequest(apiRequest);
@@ -43,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             }
             catch (CommitmentsApiBulkUploadModelException ex)
             {
-                await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors);
+                await _client.AddValidationMessagesToFileUploadLog(request.ProviderId, apiRequest.FileUploadLogId, ex.Errors, apiRequest.UserInfo);
                 throw;
             }
             catch (Exception ex)

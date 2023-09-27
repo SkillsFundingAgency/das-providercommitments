@@ -9,12 +9,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class FileUploadValidateDataRequestToApiRequest : FileUploadMapperBase, IMapper<FileUploadValidateDataRequest, BulkUploadValidateApimRequest>
     {
-        private readonly Authentication.IAuthenticationService _authenticationService;
-
-        public FileUploadValidateDataRequestToApiRequest(IEncodingService encodingService, IOuterApiService outerApiService, Authentication.IAuthenticationService authenticationService) 
+        public FileUploadValidateDataRequestToApiRequest(IEncodingService encodingService, IOuterApiService outerApiService) 
             :base(encodingService, outerApiService)
         {
-            _authenticationService = authenticationService;
         }
 
         public Task<BulkUploadValidateApimRequest> Map(FileUploadValidateDataRequest source)
@@ -24,15 +21,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             apiRequest.RplDataExtended = source.RplDataExtended;
             apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId);
 
-            var userinfo = new ApimUserInfo()
-            {
-                UserDisplayName = _authenticationService.UserName,
-                UserEmail = _authenticationService.UserEmail,
-                UserId = _authenticationService.UserId,
-            };
-
-            apiRequest.UserInfo = userinfo;
-            
             return Task.FromResult(apiRequest);
         }
     }

@@ -13,6 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.IO;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using Newtonsoft.Json;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -34,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
            catch (CommitmentsApiBulkUploadModelException ex)
            {
                if (data.FileUploadLogId != null)
-                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors, data.UserInfo);
                throw;
            }
            catch (Exception ex)
@@ -55,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             catch (CommitmentsApiBulkUploadModelException ex)
             {
                 if(data.FileUploadLogId != null)
-                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors, data.UserInfo);
                 throw;
             }
             catch (Exception ex)
@@ -164,12 +165,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return response.LogId;
         }
 
-        public async Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<BulkUploadValidationError> errors)
+        public async Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<BulkUploadValidationError> errors, ApimUserInfo userInfo)
         {
             var content = new FileUploadUpdateLogWithErrorContentRequest
             {
                 ProviderId = providerId,
-                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors)
+                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors),
+                UserInfo = userInfo
             };
 
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));

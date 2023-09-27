@@ -42,6 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        private readonly IAuthenticationService _authenticationService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
@@ -49,7 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             ICommitmentsApiClient commitmentsApiClient,
             SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
-            IOuterApiService outerApiService
+            IOuterApiService outerApiService,
+            IAuthenticationService authenticationService
             )
         {
             _mediator = mediator;
@@ -59,6 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
+            _authenticationService = authenticationService;
         }
 
         [HttpGet]
@@ -477,7 +480,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/review")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
-        public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
+        public async Task<IActionResult> FileUploadReview([FromServices] IAuthenticationService authenticationService, FileUploadReviewViewModel viewModel)
         {
             if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend)
             {
@@ -649,7 +652,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
         {
-            var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
+            CommitmentsV2.Types.UserInfo userInfo = _authenticationService.UserInfo;
+            var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId, UserInfo = userInfo };
             var response = await _mediator.Send(bulkValidate);
             return response.LogId;
         }
