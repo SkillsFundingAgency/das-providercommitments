@@ -12,10 +12,12 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -131,6 +133,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
             private readonly AddDraftApprenticeshipRedirectModel _addDraftApprenticeshipRedirectModel;
 
+            private readonly UserInfo _userInfo;
+            private readonly Mock<IAuthenticationService> _authenticationService;
+
+
             private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
             private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
@@ -146,6 +152,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _encodingService = new Mock<IEncodingService>();
                 _createCohortWithDraftApprenticeshipRequest =
                     _autoFixture.Create<CreateCohortWithDraftApprenticeshipRequest>();
+
+                _authenticationService = new Mock<IAuthenticationService>();
+                _authenticationService.Setup(x => x.UserInfo).Returns(_userInfo);
 
                 _model = new AddDraftApprenticeshipOrRoutePostRequest
                 {
@@ -217,7 +226,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     _commitmentsApiClient.Object,
                     authorizationService,
                     _encodingService.Object,
-                    _outerApiService.Object);
+                    _outerApiService.Object,
+                    _authenticationService.Object
+                    );
                 _controller.TempData = _tempData.Object;
             }
 

@@ -16,6 +16,7 @@ using System;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -158,7 +159,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     _commitmentsApiClient.Object, 
                     Mock.Of<IAuthorizationService>(), 
                     Mock.Of<IEncodingService>(),
-                    Mock.Of<IOuterApiService>());
+                    Mock.Of<IOuterApiService>(),
+                    Mock.Of<IAuthenticationService>());
             }
 
             public async Task Post(CohortDetailsOptions option)

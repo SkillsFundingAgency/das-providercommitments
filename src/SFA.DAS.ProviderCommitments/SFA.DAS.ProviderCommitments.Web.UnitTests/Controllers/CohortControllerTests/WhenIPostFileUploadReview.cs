@@ -16,6 +16,8 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -115,6 +117,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private readonly BulkUploadAddAndApproveDraftApprenticeshipsRequest _addAndApproveApiRequest;
         private readonly BulkUploadAddAndApproveDraftApprenticeshipsResult _bulkUploadAddAndApproveDraftApprenticeshipsResult;
+        private readonly UserInfo _userInfo;
+        private readonly Mock<IAuthenticationService> _authenticationService;
+
 
         public WhenIPostFileUploadReviewFixture()
         {
@@ -122,7 +127,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             _viewModel = fixture.Create<FileUploadReviewViewModel>();
             _outerApiService = new Mock<IOuterApiService>();
-            
+
+            _authenticationService = new Mock<IAuthenticationService>();
+            _authenticationService.Setup(x => x.UserInfo).Returns(_userInfo);
 
             _apiRequest = fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
             _addAndApproveApiRequest = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
@@ -136,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
+                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object, _authenticationService.Object);
             Sut.TempData = tempData;
         }
 

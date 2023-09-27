@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId);
         Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
         Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> errors, ApimUserInfo UserInfo);
-        Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage);
+        Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage, ApimUserInfo UserInfo);
     }
 }
  

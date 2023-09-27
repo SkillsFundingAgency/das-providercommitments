@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationErrors
 {
@@ -79,6 +80,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
             public BulkUploadValidateApimRequest BulkUploadValidateApiRequest { get; set; }
             public Exception ThrownException { get; set; }
             private Mock<IAuthorizationService> _authorizationService;
+#
+
             public BulkUploadValidateDataHandlerTestsFixture()
             {
                 var fixture = new Fixture();
@@ -123,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
 
             internal void VerifyFileUploadUpdatedWithErrorContent()
             {
-                _outerApiService.Verify(x => x.AddValidationMessagesToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<List<BulkUploadValidationError>>()), Times.Once);
+                _outerApiService.Verify(x => x.AddValidationMessagesToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<List<BulkUploadValidationError>>(), new ApimUserInfo() { UserDisplayName = "test-username", UserEmail = "test@test.com", UserId = "1" }), Times.Once);
             }
 
             internal void ThrowsCommitmentsApiBulkUploadModelException()
@@ -137,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
 
             internal void VerifyFileUploadUpdatedWithUnhandledExceptionDetails()
             {
-                _outerApiService.Verify(x => x.AddUnhandledExceptionToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), "Bang"), Times.Once);
+                _outerApiService.Verify(x => x.AddUnhandledExceptionToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), "Bang", new ApimUserInfo() { UserDisplayName = "test-username", UserEmail = "test@test.com", UserId = "1" }), Times.Once);
             }
 
         }

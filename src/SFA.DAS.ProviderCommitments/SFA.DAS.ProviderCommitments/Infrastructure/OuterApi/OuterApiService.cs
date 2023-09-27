@@ -14,6 +14,7 @@ using System.IO;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -41,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
            catch (Exception ex)
            {
                if (data.FileUploadLogId != null)
-                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message, data.UserInfo);
                throw;
            }
         }
@@ -62,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             catch (Exception ex)
             {
                 if (data.FileUploadLogId != null)
-                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message, data.UserInfo);
                 throw;
             }
         }
@@ -177,12 +178,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
         }
 
-        public async Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage)
+        public async Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage, ApimUserInfo userInfo)
         {
             var content = new FileUploadUpdateLogWithErrorContentRequest
             {
                 ProviderId = providerId,
-                ErrorContent = "Unhandled exception \r\n" + errorMessage
+                ErrorContent = "Unhandled exception \r\n" + errorMessage,
+                UserInfo = userInfo
             };
 
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));

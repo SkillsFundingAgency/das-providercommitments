@@ -101,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         [Test]
         public async Task VerifyAddValidationMessagesToFileUploadLogIsCalledAsExpected()
         {
-            await _outerApiService.AddValidationMessagesToFileUploadLog(_providerId, 1234, _errors);
+            await _outerApiService.AddValidationMessagesToFileUploadLog(_providerId, 1234, _errors, new ApimUserInfo() { UserDisplayName = "test-username", UserEmail="test@test.com", UserId = "1" });
             
             var expectedErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(_errors);
             _outerApiClientMock.Verify(x=>x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p=>p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         [Test]
         public async Task VerifyAddUnhandledExceptionToFileUploadLogIsCalledAsExpected()
         {
-            await _outerApiService.AddUnhandledExceptionToFileUploadLog(_providerId, 1234, "Bang");
+            await _outerApiService.AddUnhandledExceptionToFileUploadLog(_providerId, 1234, "Bang", new ApimUserInfo() { UserDisplayName = "test-username", UserEmail = "test@test.com", UserId = "1" });
 
             var expectedErrorContent = "Unhandled exception \r\n" + "Bang";
             _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));

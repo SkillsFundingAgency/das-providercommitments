@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -23,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private List<CsvRecord> _csvRecords;
         private FileUploadValidateDataRequest _request;
         private Mock<IAuthenticationService> _authenticationService;
+        private readonly UserInfo _userInfo;
 
         [SetUp]
         public async Task Setup()
@@ -69,9 +71,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             encodingService.Setup(x => x.Decode(It.IsAny<string>(), It.IsAny<EncodingType>())).Returns(2);
             var outerApiService = new Mock<IOuterApiService>();
             outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync(() => new GetCohortResult());
-            
 
-            _mapper = new FileUploadValidateDataRequestToApiRequest(encodingService.Object, outerApiService.Object, authenticationService.Object);
+            _authenticationService = new Mock<IAuthenticationService>();
+            _authenticationService.Setup(x => x.UserInfo).Returns(_userInfo);
+
+            _mapper = new FileUploadValidateDataRequestToApiRequest(encodingService.Object, outerApiService.Object);
             _result = await _mapper.Map(_request);
         }
 
