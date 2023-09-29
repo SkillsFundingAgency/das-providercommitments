@@ -19,10 +19,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
     public class OuterApiService : IOuterApiService
     {
         private IOuterApiClient _outerApiClient;
+        private readonly IAuthenticationServiceForApim _authenticationService;
 
-        public OuterApiService(IOuterApiClient outerApiClient)
+        public OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServiceForApim authenticationService)
         {
             _outerApiClient = outerApiClient;
+            _authenticationService = authenticationService;
         }
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
@@ -157,7 +159,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
                 Filename = attachment.FileName,
                 RplCount = rplCount,
                 RowCount = csvRecords.Count,
-                FileContent = await ReadFormFileAsync(attachment)
+                FileContent = await ReadFormFileAsync(attachment),
+                UserInfo = GetUserInfo()
             };
 
             var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
@@ -169,7 +172,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             var content = new FileUploadUpdateLogWithErrorContentRequest
             {
                 ProviderId = providerId,
-                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors)
+                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors),
+                UserInfo = GetUserInfo()
             };
 
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
@@ -180,7 +184,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             var content = new FileUploadUpdateLogWithErrorContentRequest
             {
                 ProviderId = providerId,
-                ErrorContent = "Unhandled exception \r\n" + errorMessage
+                ErrorContent = "Unhandled exception \r\n" + errorMessage,
+                UserInfo = GetUserInfo()
             };
 
             await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
@@ -196,5 +201,28 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             using var reader = new StreamReader(file.OpenReadStream());
             return await reader.ReadToEndAsync();
         }
+
+        protected ApimUserInfo GetUserInfo()
+        {
+            if (_authenticationService.IsUserAuthenticated())
+            {
+                return new ApimUserInfo
+                {
+                    UserId = _authenticationService.UserId,
+                    UserDisplayName = _authenticationService.UserName,
+                    UserEmail = _authenticationService.UserEmail
+                };
+            }
+
+            return null;
+        }
+    }
+
+    public interface IAuthenticationServiceForApim
+    {
+        bool IsUserAuthenticated();
+        string UserName { get; }
+        string UserId { get; }
+        string UserEmail { get; }
     }
 }

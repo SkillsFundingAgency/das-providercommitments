@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
 
         private OuterApiService _outerApiService;
         private Mock<IOuterApiClient> _outerApiClientMock;
+        private Mock<IAuthenticationServiceForApim> _authenticationServiceForApimMock;
         private string _fileContent;
         private long _providerId;
         private FileUploadLogResponse _reponse;
@@ -34,7 +35,10 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         private List<CsvRecord> _csvList;
         private string _fileName = "test.csv";
         private List<BulkUploadValidationError> _errors;
-        
+        private string _userEmail;
+        private string _userId;
+        private string _userName;
+
         [SetUp]
         public void Setup()
         {
@@ -43,6 +47,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             PopulateCsvList();
             _providerId = _fixture.Create<long>();
             _reponse = _fixture.Create<FileUploadLogResponse>();
+            _userEmail = _fixture.Create<string>();
+            _userId = _fixture.Create<string>();
+            _userName = _fixture.Create<string>();
 
             _fileContent = Headers + Environment.NewLine +
                            "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine +
@@ -52,7 +59,13 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             _outerApiClientMock = new Mock<IOuterApiClient>();
             _outerApiClientMock.Setup(x => x.Post<FileUploadLogResponse>(It.IsAny<PostFileUploadLogRequest>()))
                 .ReturnsAsync(_reponse);
-            _outerApiService = new OuterApiService(_outerApiClientMock.Object);
+
+            _authenticationServiceForApimMock = new Mock<IAuthenticationServiceForApim>();
+            _authenticationServiceForApimMock.Setup(x=>x.IsUserAuthenticated()).Returns(true);
+            _authenticationServiceForApimMock.Setup(x=>x.UserEmail).Returns(_userEmail);
+            _authenticationServiceForApimMock.Setup(x=>x.UserId).Returns(_userId);
+            _authenticationServiceForApimMock.Setup(x=>x.UserName).Returns(_userName);
+            _outerApiService = new OuterApiService(_outerApiClientMock.Object, _authenticationServiceForApimMock.Object);
             _errors = _fixture.CreateMany<BulkUploadValidationError>().ToList();
         }
 
@@ -60,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         public async Task RplCountIsCorrect()
         {
             await _outerApiService.CreateFileUploadLog(_providerId, _file, _csvList);
-            _outerApiClientMock.Verify(x=>x.Post<FileUploadLogResponse>(It.Is<PostFileUploadLogRequest>(p=> ((FileUploadLogRequest)p.Data).RplCount == 6)));
+            _outerApiClientMock.Verify(x => x.Post<FileUploadLogResponse>(It.Is<PostFileUploadLogRequest>(p => ((FileUploadLogRequest)p.Data).RplCount == 6)));
         }
 
         [Test]
@@ -92,6 +105,16 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         }
 
         [Test]
+        public async Task UserInfoIsCorrect()
+        {
+            await _outerApiService.CreateFileUploadLog(_providerId, _file, _csvList);
+            _outerApiClientMock.Verify(x => x.Post<FileUploadLogResponse>(It.Is<PostFileUploadLogRequest>(p =>
+                ((FileUploadLogRequest) p.Data).UserInfo.UserId == _userId &&
+                ((FileUploadLogRequest) p.Data).UserInfo.UserDisplayName == _userName &&
+                ((FileUploadLogRequest) p.Data).UserInfo.UserEmail == _userEmail)));
+        }
+
+        [Test]
         public async Task ReturnedIdIsCorrect()
         {
             var id = await _outerApiService.CreateFileUploadLog(_providerId, _file, _csvList);
@@ -102,9 +125,13 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
         public async Task VerifyAddValidationMessagesToFileUploadLogIsCalledAsExpected()
         {
             await _outerApiService.AddValidationMessagesToFileUploadLog(_providerId, 1234, _errors);
-            
+
             var expectedErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(_errors);
-            _outerApiClientMock.Verify(x=>x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p=>p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
+            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).ErrorContent == expectedErrorContent &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).UserInfo.UserDisplayName == _userName &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).UserInfo.UserId == _userId &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).UserInfo.UserEmail == _userEmail)));
         }
 
         [Test]
@@ -113,7 +140,9 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             await _outerApiService.AddUnhandledExceptionToFileUploadLog(_providerId, 1234, "Bang");
 
             var expectedErrorContent = "Unhandled exception \r\n" + "Bang";
-            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 && ((FileUploadUpdateLogWithErrorContentRequest)p.Data).ErrorContent == expectedErrorContent)));
+            _outerApiClientMock.Verify(x => x.Put<object>(It.Is<PutFileUploadUpdateLogRequest>(p => p.LogId == 1234 &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).ErrorContent == expectedErrorContent &&
+                ((FileUploadUpdateLogWithErrorContentRequest) p.Data).UserInfo != null)));
         }
 
         [Test]
@@ -147,7 +176,7 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
             }
             catch (CommitmentsApiBulkUploadModelException)
             {
-                _outerApiClientMock.Verify(x=>x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
+                _outerApiClientMock.Verify(x => x.Put<object>(It.IsAny<PutFileUploadUpdateLogRequest>()));
             }
         }
 
