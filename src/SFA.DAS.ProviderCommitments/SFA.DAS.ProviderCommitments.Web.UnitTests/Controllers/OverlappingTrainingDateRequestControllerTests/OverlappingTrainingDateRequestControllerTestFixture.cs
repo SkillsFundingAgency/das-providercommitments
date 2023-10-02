@@ -18,6 +18,7 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
@@ -110,7 +111,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 .Returns(_linkGeneratorRedirectUrl)
                 .Callback((string value) => _linkGeneratorParameter = value);
 
-            var authorizationService = Mock.Of<IAuthorizationService>();
 
             _outerApiService = new Mock<IOuterApiService>();
             _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -138,7 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 _mockModelMapper.Object,
                 _linkGenerator.Object,
                 _commitmentsApiClient.Object,
-                authorizationService,
+                Mock.Of<IAuthenticationService>(),
                 _outerApiService.Object
                 );
             _controller.TempData = _tempData.Object;
