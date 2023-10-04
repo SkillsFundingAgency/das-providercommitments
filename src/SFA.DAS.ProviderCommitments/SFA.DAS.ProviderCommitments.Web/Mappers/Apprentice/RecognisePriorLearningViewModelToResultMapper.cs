@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading;
@@ -30,9 +29,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = source.ReducedDuration,
                     PriceReducedBy = source.ReducedPrice,
                     DurationReducedByHours = source.DurationReducedByHours,
-                    WeightageReducedBy = source.WeightageReducedBy,
-                    QualificationsForRplReduction = source.QualificationsForRplReduction,
-                    ReasonForRplReduction = source.ReasonForRplReduction,
                     Rpl2Mode = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended)
                 });
 

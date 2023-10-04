@@ -14,10 +14,6 @@
         public int? ReducedPrice { get; set; }
         public int? ReducedDuration { get; set; } 
         public int? DurationReducedByHours { get; set; }
-        public int? WeightageReducedBy { get; set; }
-        public string QualificationsForRplReduction { get; set; }
-        public string ReasonForRplReduction { get; set; }
-       
     }
 
     public class PriorLearningDataViewModel : DraftApprenticeshipRequest
