@@ -24,6 +24,7 @@ using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -458,7 +459,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
-                OuterApiService.Object);
+                OuterApiService.Object,Mock.Of<IAuthenticationService>());
         }
 
 
