@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 
             //Assert
             context.HasSucceeded.Should().BeTrue();
-            httpResponse.Verify(x => x.Redirect(It.Is<string>(c => c.Contains("/error/401"))));
+            httpResponse.Verify(x => x.Redirect(It.Is<string>(c => c.Contains("/error/403/invalid-status"))));
         }
 
         [Test, MoqAutoData]
