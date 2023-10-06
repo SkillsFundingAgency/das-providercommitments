@@ -12,7 +12,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             int? GetCost()
             {
                 if (source.IsOnFlexiPaymentPilot is not true) return source.Cost;
-                if (source.TrainingPrice is null && source.EndPointAssessmentPrice is null) return null;
+                if (source.TrainingPrice is null && source.EndPointAssessmentPrice is null) return source.Cost ?? null;
+                
                 return source.TrainingPrice.GetValueOrDefault() + source.EndPointAssessmentPrice.GetValueOrDefault();
             }
 

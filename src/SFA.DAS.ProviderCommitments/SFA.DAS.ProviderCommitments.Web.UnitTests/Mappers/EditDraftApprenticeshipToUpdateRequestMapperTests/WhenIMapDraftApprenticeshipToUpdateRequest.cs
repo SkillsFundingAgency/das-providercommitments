@@ -115,14 +115,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
             Assert.AreEqual(_source.TrainingPrice + _source.EndPointAssessmentPrice, result.Cost);
         }
 
-        [Test]
-        public async Task ThenCostIsNullWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders()
+        [TestCase(null)]
+        [TestCase(1700)]
+        public async Task ThenCostIsUnchangedWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders(int? cost)
         {
             _source.IsOnFlexiPaymentPilot = true;
             _source.TrainingPrice = null;
             _source.EndPointAssessmentPrice = null;
+            _source.Cost = cost;
             var result = await _act();
-            Assert.AreEqual(null, result.Cost);
+            Assert.AreEqual(cost, result.Cost);
         }
 
         [Test]
