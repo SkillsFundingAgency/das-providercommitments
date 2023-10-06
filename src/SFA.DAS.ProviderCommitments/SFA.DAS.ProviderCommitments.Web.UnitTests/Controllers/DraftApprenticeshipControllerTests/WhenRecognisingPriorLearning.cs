@@ -143,11 +143,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     )));
         }
 
-        [TestCase(1, 1, null, null, null, null)]
-        [TestCase(2, null, null, null, null, null)]
-        [TestCase(null, 3, null, null, null, null)]
-        [TestCase(null, null, 10, 20, "1 ALevel", "Because of his qual")]
-        [TestCase(null, null, 30, 2, null, "Because I like him/her")]
+        [TestCase(1, 1, null)]
+        [TestCase(2, null, null)]
+        [TestCase(null, 3, null)]
+        [TestCase(null, null, 10)]
+        [TestCase(null, null, 30)]
         public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours)
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
