@@ -17,6 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                     policy.RequireClaim(ProviderClaims.Service);
                     policy.RequireClaim(ProviderClaims.Ukprn);
                     policy.Requirements.Add(new ProviderRequirement());
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasViewerOrAbovePermission, policy =>
@@ -25,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                     policy.RequireClaim(ProviderClaims.Service);
                     policy.RequireClaim(ProviderClaims.Ukprn);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAV));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
@@ -33,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                     policy.RequireClaim(ProviderClaims.Service);
                     policy.RequireClaim(ProviderClaims.Ukprn);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
@@ -41,6 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                     policy.RequireClaim(ProviderClaims.Service);
                     policy.RequireClaim(ProviderClaims.Ukprn);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
@@ -49,12 +53,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
                     policy.RequireClaim(ProviderClaims.Service);
                     policy.RequireClaim(ProviderClaims.Ukprn);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
             });
 
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IAuthorizationHandler, ProviderHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
+            services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
 
             return services;
         }
