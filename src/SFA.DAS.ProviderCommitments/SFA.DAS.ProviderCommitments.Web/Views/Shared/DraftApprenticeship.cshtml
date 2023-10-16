@@ -386,6 +386,8 @@ else
         </div>
     </div>
 
+    @Html.HiddenFor(x => x.Cost);
+
     if (Model.EmployerHasEditedCost.GetValueOrDefault())
     {
         <div class="govuk-inset-text">
@@ -393,7 +395,17 @@ else
                 The employer has changed the total price to @Model.Cost.Value.ToGdsCostFormat()
             </div>
             <!--display:none set by default, overridden in javascript such that this element does not display when the user has js disabled-->
-            <span id="dynamic-total-price" style="display:none">Total price: £<span id="edited-total-price"></span><br></span>
+            <span id="dynamic-total-price" class="govuk-hint" style="display:none">Total price: £<span id="edited-total-price"></span><br></span>
+        </div>
+    } 
+    else if (Model.Cost.HasValue && !Model.TrainingPrice.HasValue && !Model.EndPointAssessmentPrice.HasValue)
+    {
+        <div class="govuk-inset-text">
+            <div id="price-hint" class="govuk-hint">
+                Total price set by the employer is  @Model.Cost.Value.ToGdsCostFormat()
+            </div>
+            <!--display:none set by default, overridden in javascript such that this element does not display when the user has js disabled-->
+            <span id="dynamic-total-price" class="govuk-hint" style="display:none">The total price set by you is: £<span id="edited-total-price"></span><br></span>
         </div>
     }
 }
@@ -442,7 +454,8 @@ else
     function calculateEditedTotalPrice() {
         var trainingPrice = parseInt(document.getElementById("TrainingPrice").value === "" ? 0 : document.getElementById("TrainingPrice").value);
         var epaPrice = parseInt(document.getElementById("EndPointAssessmentPrice").value === "" ? 0 : document.getElementById("EndPointAssessmentPrice").value);
-        document.getElementById("edited-total-price").innerText = trainingPrice + epaPrice;
+        var formattedValue = `${(trainingPrice + epaPrice).toLocaleString('en-GB')}`;
+        document.getElementById("edited-total-price").innerText = formattedValue;
     }
 
     function showEditedTotalPrice() {
