@@ -11,13 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
     public static class AuthenticationExtensions
     {
-        private const string ClientName = "ProviderRoATP";
         private const string CookieAuthName = "SFA.DAS.ProviderApprenticeshipService";
 
         public static IServiceCollection AddProviderAuthentication(this IServiceCollection services, IConfiguration config)
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
                         config,
                         CookieAuthName,
                         typeof(CustomServiceRole),
-                        ClientName,
+                        ClientName.ProviderRoatp,
                         "/signout",
                         "");
                 }
