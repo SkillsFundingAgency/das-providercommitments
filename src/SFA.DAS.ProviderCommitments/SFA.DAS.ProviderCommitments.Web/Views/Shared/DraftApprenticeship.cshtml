@@ -368,7 +368,7 @@ else
         @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
 
         <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.TrainingPrice, "govuk-form-group--error")">
-            <label asp-for="TrainingPrice" class="govuk-label govuk-!-font-weight-bold">Training Price</label>
+            <label asp-for="TrainingPrice" class="govuk-label govuk-!-font-weight-bold">Training price</label>
             <span id="price-hint" class="govuk-hint">
                 Do not include VAT. Enter price in whole pounds. For example, for £6,500 enter 6500.
             </span>
