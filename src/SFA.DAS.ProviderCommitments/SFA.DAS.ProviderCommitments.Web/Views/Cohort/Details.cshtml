@@ -15,6 +15,7 @@
     ViewBag.GaData.Org = Model.LegalEntityName;
 }
 
+@* This ensures that only one banner is visible at any given time *@
 @if (((!Model.IsAgreementSigned)
       ||
       (!Model.IsCompleteForProvider && !Model.IsReadOnly)
