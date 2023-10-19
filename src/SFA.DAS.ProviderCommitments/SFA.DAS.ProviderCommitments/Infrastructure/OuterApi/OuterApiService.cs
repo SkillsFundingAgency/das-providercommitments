@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.IO;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -147,6 +148,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
         }
 
+        // <inherit-doc />
+        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        {
+            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
+        }
+
         public async Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords)
         {
             var rplCount = csvRecords.Count(x => x.RecognisePriorLearning != null && (x.RecognisePriorLearning == "1" ||
@@ -224,5 +231,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         string UserName { get; }
         string UserId { get; }
         string UserEmail { get; }
+
     }
 }
