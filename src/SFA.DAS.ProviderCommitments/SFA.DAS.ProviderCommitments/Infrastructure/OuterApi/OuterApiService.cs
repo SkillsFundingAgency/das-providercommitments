@@ -148,6 +148,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
         }
 
+        // <inherit-doc />
+        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        {
+            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
+        }
+
         public async Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords)
         {
             var rplCount = csvRecords.Count(x => x.RecognisePriorLearning != null && (x.RecognisePriorLearning == "1" ||
@@ -226,10 +232,5 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         string UserId { get; }
         string UserEmail { get; }
 
-        // <inherit-doc />
-        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
-        {
-            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
-        }
     }
 }
