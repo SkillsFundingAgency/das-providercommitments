@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.IO;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -224,5 +225,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         string UserName { get; }
         string UserId { get; }
         string UserEmail { get; }
+
+        // <inherit-doc />
+        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        {
+            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
+        }
     }
 }
