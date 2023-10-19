@@ -15,14 +15,14 @@
     ViewBag.GaData.Org = Model.LegalEntityName;
 }
 
-@if ((!Model.IsAgreementSigned)
-||
-(!Model.IsCompleteForProvider && !Model.IsReadOnly)
-||
-Model.HasOverlappingUln
-||
-(Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
-    {
+@if (((!Model.IsAgreementSigned)
+      ||
+      (!Model.IsCompleteForProvider && !Model.IsReadOnly)
+      ||
+      Model.HasOverlappingUln
+      ||
+      Model.HasEmailOverlaps) && !Model.ShowRofjaaRemovalBanner && !Model.ShowInvalidProviderCoursesBanner)
+{
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-notification-banner">
