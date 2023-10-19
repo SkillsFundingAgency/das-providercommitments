@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -55,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
                 _providerFeatureToggle.Object,
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),Mock.Of<IAuthenticationService>());
             Sut.TempData = tempData;
         }
 

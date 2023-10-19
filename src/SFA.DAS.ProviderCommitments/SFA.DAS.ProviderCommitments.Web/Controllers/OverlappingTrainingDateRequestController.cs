@@ -7,6 +7,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
@@ -22,14 +23,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IOuterApiService _outerApiService;
 
         public OverlappingTrainingDateRequestController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
-            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
+            IAuthenticationService authenticationService,
             IOuterApiService outerApiService
             )
         {
@@ -37,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentsApiClient = commitmentsApiClient;
-            _authorizationService = authorizationService;
+            _authenticationService = authenticationService;
             _outerApiService = outerApiService;
         }
 
@@ -244,7 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var request = await _modelMapper.Map<AddDraftApprenticeshipApimRequest>(model);
             request.IgnoreStartDateOverlap = true;
-            request.UserId = User.Upn();
+            request.UserId = _authenticationService.UserId;
 
             var response = await _outerApiService.AddDraftApprenticeship(model.CohortId.Value, request);
             viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;
