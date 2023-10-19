@@ -29,5 +29,11 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<CreatePriorLearningDataResponse> UpdatePriorLearningData(long providerId, long cohortId, long draftApprenticeshipId, CreatePriorLearningDataRequest request);
         Task<GetPriorLearningSummaryQueryResult> GetPriorLearningSummary(long providerId, long cohortId, long apprenticeshipId);
         Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId);
+        /// <summary>
+        /// CONTRACT TO GET THE PROVIDER STATUS FROM THE OUTER API.
+        /// </summary>
+        /// <param name="ukprn">provider id or ukprn.</param>
+        /// <returns>ProviderAccountResponse</returns>
+        Task<ProviderAccountResponse> GetProviderStatus(long ukprn);
     }
 }
