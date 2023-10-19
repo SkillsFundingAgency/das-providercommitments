@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -105,6 +106,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<GetCohortDetailsResponse> GetCohortDetails(long providerId, long cohortId)
         {
             return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
+        }
+
+        // <inherit-doc />
+        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        {
+            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
         }
     }
 }
