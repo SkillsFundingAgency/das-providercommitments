@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.Validation.Mvc.Filters;
@@ -154,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null);
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),
@@ -201,7 +202,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null);
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),
