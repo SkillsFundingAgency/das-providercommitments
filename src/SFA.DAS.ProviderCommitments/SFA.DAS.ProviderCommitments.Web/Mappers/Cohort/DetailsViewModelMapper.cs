@@ -188,12 +188,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsResponse cohortResponse)
         {
             var groupedByCourse = draftApprenticeships
-                .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel })
+                .GroupBy(a => new { a.CourseCode, a.CourseName, a.DeliveryModel, a.IsOnFlexiPaymentPilot })
                 .Select(course => new DetailsViewCourseGroupingModel
                 {
                     CourseCode = course.Key.CourseCode,
                     CourseName = course.Key.CourseName,
                     DeliveryModel = course.Key.DeliveryModel,
+                    IsOnFlexiPaymentsPilot = course.Key.IsOnFlexiPaymentPilot,
                     DraftApprenticeships = course
                         // Sort before on raw properties rather than use displayName property post select for performance reasons
                         .OrderBy(a => a.FirstName)
@@ -205,6 +206,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                             FirstName = a.FirstName,
                             LastName = a.LastName,
                             Cost = a.Cost,
+                            TrainingPrice = a.TrainingPrice,
+                            EndPointAssessmentPrice = a.EndPointAssessmentPrice,
                             DateOfBirth = a.DateOfBirth,
                             EndDate = a.EndDate,
                             StartDate = a.StartDate,
@@ -277,6 +280,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 {
                     return false;
                 }
+            }
+
+            if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()
+                && (draftApprenticeship.TrainingPrice == null || draftApprenticeship.EndPointAssessmentPrice == null))
+            {
+                return false;
             }
 
             return true;

@@ -161,6 +161,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         [SuppressArgumentException(nameof(Cost), "Total agreed apprenticeship price must be 7 numbers or fewer")]
         public int? Cost { get; set; }
 
+        [Display(Name = "Training Price")]
+        [SuppressArgumentException(nameof(TrainingPrice), "Training price must be a whole number")]
+        public int? TrainingPrice { get; set; }
+
+        [Display(Name = "End-point assessment price")]
+        [SuppressArgumentException(nameof(EndPointAssessmentPrice), "End-point assessment price must be a whole number")]
+        public int? EndPointAssessmentPrice { get; set; }
+
         [Display(Name = "Agreed price for this employment (excluding VAT)")]
         [SuppressArgumentException(nameof(EmploymentPrice), "Agreed employment price must be 7 numbers or fewer")]
         public int? EmploymentPrice { get; set; }
@@ -183,5 +191,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public bool HasChangedDeliveryModel { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
     }
 }
