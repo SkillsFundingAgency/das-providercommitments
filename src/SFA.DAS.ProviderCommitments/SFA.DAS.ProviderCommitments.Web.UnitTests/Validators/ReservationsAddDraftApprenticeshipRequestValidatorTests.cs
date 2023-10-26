@@ -47,14 +47,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
         private static void AssertValidationResult<T>(Expression<Func<ReservationsAddDraftApprenticeshipRequest, T>> property, ReservationsAddDraftApprenticeshipRequest instance, bool expectedValid)
         {
             var validator = new ReservationsAddDraftApprenticeshipRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

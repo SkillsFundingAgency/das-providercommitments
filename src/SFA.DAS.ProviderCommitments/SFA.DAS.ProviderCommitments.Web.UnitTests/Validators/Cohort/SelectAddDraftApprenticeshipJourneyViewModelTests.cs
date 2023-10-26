@@ -19,17 +19,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.Selection, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<SelectAddDraftApprenticeshipJourneyViewModel, T>> property, SelectAddDraftApprenticeshipJourneyViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<SelectAddDraftApprenticeshipJourneyViewModel, T>> property, SelectAddDraftApprenticeshipJourneyViewModel instance, bool expectedValid)
         {
             var validator = new SelectAddDraftApprenticeshipJourneyViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }
