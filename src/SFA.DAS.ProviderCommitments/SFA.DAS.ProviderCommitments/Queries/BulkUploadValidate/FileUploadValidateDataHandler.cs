@@ -12,12 +12,12 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 {
     public class FileUploadValidateDataHandler : IRequestHandler<FileUploadValidateDataRequest>
     {
-        private IOuterApiService _client;
-        private IModelMapper _modelMapper;
-        private IBulkUploadFileParser _bulkUploadFileParser;
+        private readonly IOuterApiService _client;
+        private readonly IModelMapper _modelMapper;
+        private readonly IBulkUploadFileParser _bulkUploadFileParser;
         private readonly IAuthorizationService _authorizationService;
 
-        public FileUploadValidateDataHandler(IOuterApiService client, IModelMapper modelMapper, IBulkUploadFileParser bulkUploadFileParser, SFA.DAS.Authorization.Services.IAuthorizationService authorizationService)
+        public FileUploadValidateDataHandler(IOuterApiService client, IModelMapper modelMapper, IBulkUploadFileParser bulkUploadFileParser, IAuthorizationService authorizationService)
         {
             _client = client;
             _modelMapper = modelMapper;
@@ -25,13 +25,14 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
             _authorizationService = authorizationService;
         }
 
-        public async Task<Unit> Handle(FileUploadValidateDataRequest request, CancellationToken cancellationToken)
+        public async Task Handle(FileUploadValidateDataRequest request, CancellationToken cancellationToken)
         {
             request.CsvRecords = _bulkUploadFileParser.GetCsvRecords(request.ProviderId, request.Attachment);
+           
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             apiRequest.RplDataExtended = _authorizationService.IsAuthorized(ProviderFeature.RplExtended);
+            
             await _client.ValidateBulkUploadRequest(apiRequest);
-            return Unit.Value;
         }
     }
 }

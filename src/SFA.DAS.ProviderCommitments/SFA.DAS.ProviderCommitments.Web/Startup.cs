@@ -23,6 +23,7 @@ using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure;
@@ -79,12 +80,14 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .EnableCookieBanner()
                 .SetDfESignInConfiguration(useDfeSignIn)
                 .AddZenDeskSettings(Configuration)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddControllersAsServices()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+            
             services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
             services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
             services.AddScoped<ValidateModelStateFilter>();
+            
+            services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
             services
                 .AddAuthorizationService()

@@ -77,9 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper.Setup(x => x.Map<FileUploadReviewViewModel>(_request)).ReturnsAsync(_viewModel);
             
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<DeleteCachedFileCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => Unit.Value);
-
-
+            
            _linkGenerator = new Mock<ILinkGenerator>();
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink("/account")).Returns("pasurl/account");
         
