@@ -58,15 +58,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
+        public void WhenSettingDeliveryModel_AndOptionSet_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            fixture.ViewModel.DeliveryModel = Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob;
+            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
 
-            var result = await fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
+            var result = fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditDraftApprenticeship");
         }
     }

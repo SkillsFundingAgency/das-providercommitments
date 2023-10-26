@@ -73,19 +73,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void Then_ProviderId_IsMapped()
+        public async Task Then_ProviderId_IsMapped()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
-            fixture.Map();
+            await fixture.Map();
 
             fixture.Verify_ProviderId_IsMapped();
         }
 
         [Test]
-        public void Then_AccountLegalEntityPublicHashedId_IsMapped()
+        public async Task Then_AccountLegalEntityPublicHashedId_IsMapped()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
-            fixture.Map();
+            await fixture.Map();
 
             fixture.Verify_AccountLegalEntityPublicHashedId_IsMapped();
         }
@@ -102,10 +102,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_EmployerNameDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.EmployerName);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.EmployerName),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 
@@ -115,10 +119,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_CohortReferenceDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.CohortReference);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.CohortReference),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 
@@ -128,10 +136,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_StatusDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.Status);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.Status),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 

@@ -44,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             AssertValidationResult(request => request.StartMonthYear, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ReservationsAddDraftApprenticeshipRequest, T>> property, ReservationsAddDraftApprenticeshipRequest instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<ReservationsAddDraftApprenticeshipRequest, T>> property, ReservationsAddDraftApprenticeshipRequest instance, bool expectedValid)
         {
             var validator = new ReservationsAddDraftApprenticeshipRequestValidator();
 
