@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             catch (Exception exc)
             {
                 _logger.LogError(exc, $"Failed to process bulk upload file - ProviderId {providerId}");
-                throw exc;
+                throw;
             }
         }
 
