@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort

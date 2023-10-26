@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Linq;

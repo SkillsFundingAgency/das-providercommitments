@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using SFA.DAS.Authorization.CommitmentPermissions.Configuration;
+﻿using SFA.DAS.Authorization.CommitmentPermissions.Configuration;
 using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.Encoding;

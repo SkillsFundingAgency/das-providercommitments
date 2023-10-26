@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.StructureMap;
+﻿using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.StructureMap;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.StructureMap;

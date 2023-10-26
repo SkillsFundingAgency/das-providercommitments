@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;

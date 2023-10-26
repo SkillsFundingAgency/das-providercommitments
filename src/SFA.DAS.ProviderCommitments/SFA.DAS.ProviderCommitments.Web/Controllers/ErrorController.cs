@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using System;
 using SFA.DAS.ProviderCommitments.Web.Models.Error;

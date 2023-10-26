@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;

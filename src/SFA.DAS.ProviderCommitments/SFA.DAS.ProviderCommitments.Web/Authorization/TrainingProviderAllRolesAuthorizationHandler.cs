@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Authentication;

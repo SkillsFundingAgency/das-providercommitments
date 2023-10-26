@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using SFA.DAS.Authorization.Context;
+﻿using SFA.DAS.Authorization.Context;
 using SFA.DAS.Authorization.Features.Services;
 using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.Authorization.ProviderFeatures.Models;

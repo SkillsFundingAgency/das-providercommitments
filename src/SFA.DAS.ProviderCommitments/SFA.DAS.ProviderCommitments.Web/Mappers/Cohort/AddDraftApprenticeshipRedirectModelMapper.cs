@@ -5,7 +5,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort

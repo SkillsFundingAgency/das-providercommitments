@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;

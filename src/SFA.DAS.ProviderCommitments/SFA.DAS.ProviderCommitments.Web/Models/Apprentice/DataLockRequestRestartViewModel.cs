@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SFA.DAS.Authorization.ModelBinding;
 using System;
 

@@ -1,7 +1,5 @@
 using System.Linq;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.HealthChecks

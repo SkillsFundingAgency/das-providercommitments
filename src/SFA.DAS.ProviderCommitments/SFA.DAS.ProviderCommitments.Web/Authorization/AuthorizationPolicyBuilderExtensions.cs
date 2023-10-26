@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization

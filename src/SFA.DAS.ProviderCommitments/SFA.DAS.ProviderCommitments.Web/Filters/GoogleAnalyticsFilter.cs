@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;

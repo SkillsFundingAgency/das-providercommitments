@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using StructureMap;

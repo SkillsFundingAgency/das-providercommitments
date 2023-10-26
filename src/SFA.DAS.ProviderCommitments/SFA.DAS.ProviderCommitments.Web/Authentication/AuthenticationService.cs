@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication

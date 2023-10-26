@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;

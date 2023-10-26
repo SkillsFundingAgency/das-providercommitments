@@ -3,8 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;

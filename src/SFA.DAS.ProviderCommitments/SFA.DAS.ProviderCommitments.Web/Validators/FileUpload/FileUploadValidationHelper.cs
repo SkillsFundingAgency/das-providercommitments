@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

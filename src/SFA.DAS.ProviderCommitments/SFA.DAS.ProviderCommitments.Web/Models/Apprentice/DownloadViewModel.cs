@@ -1,5 +1,4 @@
-﻿using System.IO;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+﻿using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
