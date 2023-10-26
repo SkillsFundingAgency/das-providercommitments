@@ -30,12 +30,16 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddSingleton(_configuration);
+        
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             options.CheckConsentNeeded = _ => true;
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
+
+        services.AddConfigurationOptions(_configuration);
 
         services.AddHttpContextAccessor();
         services.AddDasHealthChecks();
