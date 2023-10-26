@@ -1,5 +1,7 @@
 ﻿using System;
+using Microsoft.AspNetCore;
 using NLog.Web;
+using StructureMap.AspNetCore;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -13,12 +15,10 @@ public class Program
 
         CreateWebHostBuilder(args).Build().Run();
     }
-
-    private static IHostBuilder CreateWebHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
+    
+    private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
             .UseNLog()
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+            .UseStructureMap()
+            .UseStartup<Startup>();
 }

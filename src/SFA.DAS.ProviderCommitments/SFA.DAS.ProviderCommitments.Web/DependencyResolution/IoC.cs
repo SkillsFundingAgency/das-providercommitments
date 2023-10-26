@@ -20,25 +20,25 @@ namespace SFA.DAS.ProviderCommitments.Web.DependencyResolution
         {
             registry.IncludeRegistry<AuthorizationRegistry>();
             registry.IncludeRegistry<AutoConfigurationRegistry>();
-            registry.IncludeRegistry<CommitmentsApiClientRegistry>();
-            registry.IncludeRegistry<ProviderRelationshipsApiClientRegistry>();
-            registry.IncludeRegistry<CommitmentPermissionsAuthorizationRegistry>();
+            //registry.IncludeRegistry<CommitmentsApiClientRegistry>();
+            //registry.IncludeRegistry<ProviderRelationshipsApiClientRegistry>();
+            //registry.IncludeRegistry<CommitmentPermissionsAuthorizationRegistry>();
             registry.IncludeRegistry<ConfigurationRegistry>();
-            registry.IncludeRegistry<CommitmentsSharedRegistry>();
-            registry.IncludeRegistry<ProviderFeaturesAuthorizationRegistry>();
-            registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
-            registry.IncludeRegistry<DefaultRegistry>();
+            //registry.IncludeRegistry<CommitmentsSharedRegistry>();
+            //registry.IncludeRegistry<ProviderFeaturesAuthorizationRegistry>();
+            //registry.IncludeRegistry<ProviderPermissionsAuthorizationRegistry>();
+            //registry.IncludeRegistry<DefaultRegistry>();
 
-            registry.IncludeRegistry(new PasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
+            //registry.IncludeRegistry(new PasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
 
             // Enable if you want to bypass MI locally - the 'Provider' role will
             // be added into a custom Authorization header which will be intercepted
             // by the Commitments API when running in Development and used to create a claim
-            if (config["UseLocalRegistry"] != null && bool.Parse(config["UseLocalRegistry"]))
-            {
-                registry.IncludeRegistry<LocalRegistry>();
-                registry.IncludeRegistry(new LocalDevPasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
-            }
+            // if (config["UseLocalRegistry"] != null && bool.Parse(config["UseLocalRegistry"]))
+            // {
+            //     registry.IncludeRegistry<LocalRegistry>();
+            //     registry.IncludeRegistry(new LocalDevPasAccountApiClientRegistry(c => config.GetSection(ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration).Get<PasAccountApiConfiguration>()));
+            // }
         }
     }
 }
