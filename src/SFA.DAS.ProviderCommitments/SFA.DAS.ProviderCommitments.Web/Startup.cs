@@ -1,39 +1,18 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
-using FluentValidation.AspNetCore;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.Context;
 using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.Authorization.Mvc.Filters;
-using SFA.DAS.Authorization.Mvc.ModelBinding;
-using SFA.DAS.CommitmentsV2.Services.Shared;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Shared.Services;
-using SFA.DAS.Encoding;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Infrastructure;
-using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
-using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
-using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using SFA.DAS.ProviderCommitments.Web.Validators;
-using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.Validation.Mvc.Filters;
 using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web;
@@ -52,43 +31,19 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            })
-            .AddHttpContextAccessor()
-            .AddDasHealthChecks()
-            .AddProviderAuthentication(_configuration)
-            .AddMemoryCache()
-            .AddCache(_environment, _configuration);
+        {
+            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            options.CheckConsentNeeded = _ => true;
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
 
-        var useDfeSignIn = _configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
+        services.AddHttpContextAccessor();
+        services.AddDasHealthChecks();
+        services.AddProviderAuthentication(_configuration);
+        services.AddMemoryCache();
+        services.AddCache(_environment, _configuration);
 
-        services.AddMvc(options =>
-            {
-                options.EnableEndpointRouting = false;
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.Filters.Add(new GoogleAnalyticsFilter());
-                options.AddProviderCommitmentsValidation();
-                options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
-                options.Filters.Add<AuthorizationFilter>(int.MaxValue);
-                options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
-                options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
-                options.AddStringModelBinderProvider();
-            })
-            .AddNavigationBarSettings(_configuration)
-            .EnableGoogleAnalytics()
-            .EnableCookieBanner()
-            .SetDfESignInConfiguration(useDfeSignIn)
-            .AddZenDeskSettings(_configuration)
-            .AddControllersAsServices()
-            .AddFluentValidation(fv =>
-                fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
-
-        services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
-        services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
-        services.AddScoped<ValidateModelStateFilter>();
+        services.AddDasMvc(_configuration);
 
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
@@ -98,12 +53,13 @@ public class Startup
             .AddUrlHelper()
             .AddHealthChecks();
 
-        services.AddCommitmentsApiClient(_configuration);
-        services.AddProviderRelationshipsApiClient(_configuration);
-        services.AddProviderFeaturesAuthorization();
-        services.AddApprovalsOuterApiClient();
-        services.AddProviderApprenticeshipsApiClient(_configuration);
-        
+        services
+            .AddCommitmentsApiClient(_configuration)
+            .AddProviderRelationshipsApiClient(_configuration)
+            .AddProviderFeaturesAuthorization()
+            .AddApprovalsOuterApiClient()
+            .AddProviderApprenticeshipsApiClient(_configuration);
+
         if (_configuration.UseLocalRegistry())
         {
             services.AddTransient<ICommitmentPermissionsApiClientFactory, LocalDevApiClientFactory>();
@@ -113,16 +69,7 @@ public class Startup
             services.AddCommitmentPermissionsAuthorization();
         }
 
-        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
-        services.AddSingleton<IAcademicYearDateProvider, AcademicYearDateProvider>();
-        services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
-        services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();
-        services.AddTransient<IModelMapper, ModelMapper>();
-        services.AddSingleton<ILinkGenerator, LinkGenerator>();
-        services.AddSingleton<IAuthenticationService, AuthenticationService>();
-        services.AddSingleton<ICurrentDateTime, CurrentDateTime>();
-        services.AddSingleton<ICreateCsvService, CreateCsvService>();
-        services.AddSingleton<IEncodingService, EncodingService>();
+        services.AddApplicationServices();
 
         services.Configure<CookieTempDataProviderOptions>(options =>
         {
@@ -133,12 +80,6 @@ public class Startup
 
         services.AddHttpClient();
         services.AddProviderUiServiceRegistration(_configuration);
-        services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
-        services.AddSingleton<ICacheService, CacheService>();
-        services.AddTransient<ICacheStorageService, CacheStorageService>();
-        services.AddTransient<ITempDataStorageService, TempDataStorageService>();
-        services.AddTransient<IOuterApiClient, OuterApiClient>();
-        services.AddTransient<IOuterApiService, OuterApiService>();
 
         services.AddApplicationInsightsTelemetry();
     }
@@ -169,14 +110,10 @@ public class Startup
             .UseDasHealthChecks()
             .UseCookiePolicy()
             .UseAuthentication()
+            .UseRouting()
             .UseAuthorization()
             .ConfigureCustomExceptionMiddleware()
-            .UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            })
+            .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
             .UseHealthChecks("/health-check");
 
         var logger = loggerFactory.CreateLogger(nameof(Startup));
