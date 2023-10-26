@@ -128,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             result.CourseCode.Should().Be(_getApprenticeshipResponse.CourseCode);
             result.ProviderReference.Should().Be(_getApprenticeshipResponse.ProviderReference);
 
-            result.Cost.Should().Be(_getPriceEpisodesResponse.PriceEpisodes.GetPrice());
+            result.Cost.Should().Be(_getPriceEpisodesResponse.PriceEpisodes.GetCost());
         }
     }
 }

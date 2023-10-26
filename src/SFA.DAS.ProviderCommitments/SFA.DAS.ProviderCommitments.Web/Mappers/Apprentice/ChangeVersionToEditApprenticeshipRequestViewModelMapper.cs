@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = apprenticeshipTask.Result;
             var priceEpisodes = priceEpisodesTask.Result;
 
-            var currentPrice = priceEpisodes.PriceEpisodes.GetPrice();
+            var currentPrice = priceEpisodes.PriceEpisodes.GetCost();
 
             var versionResponse = await _commitmentsApiClient.GetTrainingProgrammeVersionByCourseCodeAndVersion(apprenticeship.CourseCode, source.SelectedVersion);
 

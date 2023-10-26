@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 CourseCode = apprenticeship.CourseCode,
                 Version = apprenticeship.Version,
                 Option = apprenticeship.Option == string.Empty ? "TBC" : apprenticeship.Option,
-                Cost = priceEpisodes.PriceEpisodes.GetPrice(),
+                Cost = priceEpisodes.PriceEpisodes.GetCost(),
                 ProviderReference = apprenticeship.ProviderReference,
                 Courses = courses,
                 IsContinuation = apprenticeship.IsContinuation,

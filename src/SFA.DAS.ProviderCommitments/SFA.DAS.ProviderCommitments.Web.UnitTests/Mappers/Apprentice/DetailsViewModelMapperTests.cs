@@ -187,6 +187,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.PriceEpisodesApiResponse.PriceEpisodes.First().TrainingPrice, _fixture.Result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.PriceEpisodesApiResponse.PriceEpisodes.First().EndPointAssessmentPrice, _fixture.Result.EndPointAssessmentPrice);
+        }
+
+        [Test]
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             await _fixture.Map();

@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     StopDate = data.Apprenticeship.StopDate.Value, 
                     OldStartDate = data.Apprenticeship.StartDate.Value,
                     OldEndDate = data.Apprenticeship.EndDate,
-                    OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
+                    OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetCost()), 
                     OldEmploymentPrice = data.Apprenticeship.EmploymentPrice, 
                     OldEmploymentEndDate = data.Apprenticeship.EmploymentEndDate,
                     NewEmployerName = data.AccountLegalEntity.LegalEntityName, 
