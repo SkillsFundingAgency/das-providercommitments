@@ -19,7 +19,7 @@ public static class MvcServiceRegistratiosn
     public static IServiceCollection AddDasMvc(this IServiceCollection services, IConfiguration configuration)
     {
         var useDfeSignIn = configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-        
+
         services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
@@ -38,13 +38,14 @@ public static class MvcServiceRegistratiosn
             .SetDfESignInConfiguration(useDfeSignIn)
             .AddZenDeskSettings(configuration)
             .AddControllersAsServices()
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
-        
-        services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
-        services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
-        services.AddScoped<ValidateModelStateFilter>();
+            .AddFluentValidation(fv =>
+                fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+
+        services
+            .AddScoped<HandleBulkUploadValidationErrorsAttribute>()
+            .AddScoped<DomainExceptionRedirectGetFilterAttribute>()
+            .AddScoped<ValidateModelStateFilter>();
 
         return services;
     }
-    
 }

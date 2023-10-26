@@ -86,6 +86,7 @@ public class Startup
 
     public void ConfigureContainer(Registry registry)
     {
+        // Be nice to get rid of this so we can remove StructureMap altogether.
         registry.For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachUserInfoToSaveRequests<,>));
         registry.For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachApimUserInfoToSaveRequests<,>));
     }
