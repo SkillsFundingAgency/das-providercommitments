@@ -69,6 +69,7 @@ public class Startup
             services.AddCommitmentPermissionsAuthorization();
         }
 
+        services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
 
         services.Configure<CookieTempDataProviderOptions>(options =>

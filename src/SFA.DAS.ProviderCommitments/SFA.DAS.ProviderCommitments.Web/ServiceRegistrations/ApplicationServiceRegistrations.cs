@@ -27,7 +27,6 @@ public static class ApplicationServiceRegistrations
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ICurrentDateTime, CurrentDateTime>();
         services.AddSingleton<ICreateCsvService, CreateCsvService>();
-        services.AddSingleton<IEncodingService, EncodingService>();
         
         services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
         services.AddSingleton<ICacheService, CacheService>();
