@@ -27,6 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Services.Cache
         public DateTime? EndDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public int? EmploymentPrice { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
         public string Reference { get; set; }

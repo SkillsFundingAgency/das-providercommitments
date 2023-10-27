@@ -85,6 +85,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             cacheItem.EmploymentPrice = source.EmploymentPrice;
             cacheItem.Cost = source.Cost;
             cacheItem.Reference = source.Reference;
+            cacheItem.TrainingPrice = source.TrainingPrice;
+            cacheItem.EndPointAssessmentPrice = source.EndPointAssessmentPrice;
+
+            if (source.IsOnFlexiPaymentPilot.GetValueOrDefault()) cacheItem.Cost = source.TrainingPrice + source.EndPointAssessmentPrice;
+
             await _cacheStorage.SaveToCache(cacheItem.CacheKey, cacheItem, 1);
         }
 

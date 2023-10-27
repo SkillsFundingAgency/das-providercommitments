@@ -94,6 +94,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestT
         }
 
         [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.TrainingPrice, result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            var result = await _mapper.Map(_source);
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
