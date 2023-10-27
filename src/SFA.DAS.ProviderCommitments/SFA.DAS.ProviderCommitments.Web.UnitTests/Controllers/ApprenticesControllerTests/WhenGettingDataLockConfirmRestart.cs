@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new Fixture();
             _request = fixture.Create<DatalockConfirmRestartRequest>();                    
-            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }   
 
         [Test]

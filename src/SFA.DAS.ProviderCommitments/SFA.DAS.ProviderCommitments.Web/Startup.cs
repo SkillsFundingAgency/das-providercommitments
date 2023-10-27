@@ -1,33 +1,29 @@
-﻿using System.Linq;
-using System.Reflection;
-using AspNetCore.IServiceCollection.AddIUrlHelper;
+﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Services;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
-using StructureMap;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
 public class Startup
 {
     private readonly IConfiguration _configuration;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IHostEnvironment _environment;
 
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    public Startup(IConfiguration configuration, IHostEnvironment environment, bool buildConfig = true)
     {
-        _configuration = configuration.BuildDasConfiguration();
+        _configuration = buildConfig ? configuration.BuildDasConfiguration() : configuration;
         _environment = environment;
     }
 
@@ -67,6 +63,9 @@ public class Startup
             .AddProviderFeaturesAuthorization()
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
+        
+        services.AddScoped(typeof(ICookieService<>), typeof(HttpCookieService<>));
+        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
 
         if (_configuration.UseLocalRegistry())
         {

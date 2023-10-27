@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
                 .ReturnsAsync(_viewModel);
             
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public GetConfirmEmployerFixture WithModelStateErrors()

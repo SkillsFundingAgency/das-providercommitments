@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             TempDataMock = new Mock<ITempDataDictionary>();
             AuthorizationServiceMock = new Mock<IAuthorizationService>();
 
-            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
             Sut.TempData = TempDataMock.Object;
         }
 

@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class PostStartDateFixture
     {
-        private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
+        private readonly Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly EndDateRequest _request;
         private readonly ApprenticeController _sut;
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ProviderId = _viewModel.ProviderId
             };
 
-            _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
+            _cookieStorageServiceMock = new Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
                 .Setup(x => x.Map<EndDateRequest>(_viewModel))

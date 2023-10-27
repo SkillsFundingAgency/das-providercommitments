@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Provider.Shared.UI;
@@ -15,11 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System.Linq;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.ProviderCommitments.Exceptions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -27,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [SetNavigationSection(NavigationSection.ManageApprentices)]
     public class ApprenticeController : Controller
     {
-        private readonly ICookieStorageService<IndexRequest> _cookieStorage;
+        private readonly SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
@@ -38,7 +34,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
+        public ApprenticeController(IModelMapper modelMapper, 
+            SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest> cookieStorage, 
+            ICommitmentsApiClient commitmentsApiClient)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
@@ -224,7 +222,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelRequest request)
         {
-            var viewModel = await _modelMapper.Map<Models.Apprentice.SelectDeliveryModelViewModel>(request);
+            var viewModel = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
             if (viewModel.DeliveryModels.Count > 1)
             {
                 return View(viewModel);
@@ -237,7 +235,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("{apprenticeshipHashedId}/change-employer/select-delivery-model", Name = RouteNames.ApprenticeSelectDeliveryModel)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> SelectDeliveryModel(Models.Apprentice.SelectDeliveryModelViewModel viewModel)
+        public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelViewModel viewModel)
         {
             if (viewModel.IsEdit)
             {

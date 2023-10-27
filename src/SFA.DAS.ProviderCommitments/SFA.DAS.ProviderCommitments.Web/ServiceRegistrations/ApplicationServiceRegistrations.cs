@@ -2,7 +2,6 @@
 using SFA.DAS.CommitmentsV2.Services.Shared;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -18,7 +17,6 @@ public static class ApplicationServiceRegistrations
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
         services.AddSingleton<IAcademicYearDateProvider, AcademicYearDateProvider>();
         services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
         services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();

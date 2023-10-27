@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class GetStartDateFixture
     {
-        private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
+        private readonly Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly StartDateRequest _request;
         private readonly ApprenticeController _sut;
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = "KG34DF989"
             };
             _viewModel = new StartDateViewModel();
-            _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
+            _cookieStorageServiceMock = new Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
                 .Setup(x => x.Map<StartDateViewModel>(_request))

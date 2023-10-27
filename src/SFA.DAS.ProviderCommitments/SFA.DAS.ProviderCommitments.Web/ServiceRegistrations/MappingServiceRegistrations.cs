@@ -19,8 +19,8 @@ public static class MappingServiceRegistrations
             var mapperInterface = mapperType.GetInterfaces().Single(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapper<,>));
            
             services.AddTransient(mapperInterface, mapperType);
-            services.Decorate(mapperType, _ => typeof(AttachUserInfoToSaveRequests<,>));
-            services.Decorate(mapperType, _ => typeof(AttachApimUserInfoToSaveRequests<,>));
+            services.Decorate(mapperInterface, _ => typeof(AttachUserInfoToSaveRequests<,>));
+            services.Decorate(mapperInterface, _ => typeof(AttachApimUserInfoToSaveRequests<,>));
         }
 
         return services;

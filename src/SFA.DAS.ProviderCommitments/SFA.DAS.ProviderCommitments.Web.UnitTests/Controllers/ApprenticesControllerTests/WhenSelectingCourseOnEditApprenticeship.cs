@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             
-            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), CommitmentsApiClientMock.Object);
+            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), CommitmentsApiClientMock.Object);
             Sut.TempData = TempDataMock.Object;
             ;
         }

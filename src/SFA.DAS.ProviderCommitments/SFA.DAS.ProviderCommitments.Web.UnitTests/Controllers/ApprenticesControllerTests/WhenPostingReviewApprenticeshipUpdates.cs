@@ -154,7 +154,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 AuthenticationService = new Mock<IAuthenticationService>();
                 AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
+                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object);
 
                 _sut.TempData = tempData;
             }
