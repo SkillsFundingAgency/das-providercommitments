@@ -1,19 +1,15 @@
 ﻿using SFA.DAS.Encoding;
-using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class FileUploadMapperBase
     {
-        private IEncodingService _encodingService;
-        private IOuterApiService _outerApiService;
-        private Dictionary<long, long?> _transferSenderIds = new Dictionary<long, long?>();
+        private readonly IEncodingService _encodingService;
+        private readonly IOuterApiService _outerApiService;
+        private readonly Dictionary<long, long?> _transferSenderIds = new ();
 
         public FileUploadMapperBase(IEncodingService encodingService, IOuterApiService outerApiService)
         {

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 

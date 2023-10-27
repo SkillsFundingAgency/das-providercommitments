@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -69,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
             else
             {
-                PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(ChooseCohortSummaryViewModel))
+                var prop = TypeDescriptor.GetProperties(typeof(ChooseCohortSummaryViewModel))
                     .Find(filterModel.SortField, true);
 
                 sortedCohorts = filterModel.ReverseSort

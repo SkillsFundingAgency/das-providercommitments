@@ -168,7 +168,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public AcknowledgementRequest Source;
         public AcknowledgementViewModel Result;
         public Mock<ICommitmentsApiClient> CommitmentsApiClient;
-        public Mock<IEncodingService> EncodingService;
         public GetCohortResponse Cohort;
         public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
         private Fixture _autoFixture;
@@ -188,9 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(DraftApprenticeshipsResponse);
 
-            EncodingService = new Mock<IEncodingService>();
-
-            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
+            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object);
             Source = _autoFixture.Create<AcknowledgementRequest>();
         }
 

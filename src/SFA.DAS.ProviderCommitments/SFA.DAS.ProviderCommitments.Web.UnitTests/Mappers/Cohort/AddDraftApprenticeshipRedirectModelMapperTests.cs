@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     It.IsAny<string>()))
                 .ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
 
-            _mapper = new AddDraftApprenticeshipRedirectModelMapper(_cacheStorageService.Object, _apiService.Object, _modelMapper.Object);
+            _mapper = new AddDraftApprenticeshipRedirectModelMapper(_cacheStorageService.Object, _apiService.Object);
 
             _act = async () => await _mapper.Map(_source);
         }

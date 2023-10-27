@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
 namespace SFA.DAS.ProviderCommitments.Web;

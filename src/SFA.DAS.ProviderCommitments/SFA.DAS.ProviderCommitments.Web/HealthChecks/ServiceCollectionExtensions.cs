@@ -1,4 +1,3 @@
-using System.Linq;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 

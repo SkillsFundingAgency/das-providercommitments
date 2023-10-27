@@ -1,7 +1,5 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -13,13 +11,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly ICacheStorageService _cacheStorage;
         private readonly IOuterApiService _apiService;
-        private readonly IModelMapper _modelMapper;
 
-        public AddDraftApprenticeshipRedirectModelMapper(ICacheStorageService cacheStorage, IOuterApiService apiService, IModelMapper modelMapper)
+        public AddDraftApprenticeshipRedirectModelMapper(ICacheStorageService cacheStorage, IOuterApiService apiService)
         {
             _cacheStorage = cacheStorage;
             _apiService = apiService;
-            _modelMapper = modelMapper;
         }
 
         public async Task<AddDraftApprenticeshipRedirectModel> Map(AddDraftApprenticeshipOrRoutePostRequest source)
@@ -52,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private AddDraftApprenticeshipRedirectModel CreateRedirectModelForEdit(AddDraftApprenticeshipOrRoutePostRequest source)
+        private static AddDraftApprenticeshipRedirectModel CreateRedirectModelForEdit(AddDraftApprenticeshipOrRoutePostRequest source)
         {
             var result = new AddDraftApprenticeshipRedirectModel
             {
@@ -94,26 +90,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(AddDraftApprenticeshipViewModel model)
         {
-            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
+            if (!model.StartDate.Date.HasValue || !model.EndDate.Date.HasValue || string.IsNullOrWhiteSpace(model.Uln))
             {
-                //this request should be moved to a GET request on the outer api following the BFF pattern
-                //start date, end date and ULN would be qs parameters that can be used to determine if there is an overlap
-                //and if so, provide the ID of the overlapping apprenticeship
-
-                var apimRequest = model.MapDraftApprenticeship();
-                await _apiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
-
-                var result = await _apiService.ValidateUlnOverlapOnStartDate(
-                    model.ProviderId,
-                    model.Uln,
-                    model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
-                    model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-                );
-
-                return result;
+                return null;
             }
+            
+            //this request should be moved to a GET request on the outer api following the BFF pattern
+            //start date, end date and ULN would be qs parameters that can be used to determine if there is an overlap
+            //and if so, provide the ID of the overlapping apprenticeship
 
-            return null;
+            var apimRequest = model.MapDraftApprenticeship();
+            await _apiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
+
+            var result = await _apiService.ValidateUlnOverlapOnStartDate(
+                model.ProviderId,
+                model.Uln,
+                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
+                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
+            );
+
+            return result;
+
         }
     }
 }

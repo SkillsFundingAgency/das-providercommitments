@@ -17,7 +17,7 @@ public static class ProviderApprenticeshipsApiClientServiceRegistrations
 
             if (configuration.UseLocalRegistry())
             {
-                var factory = new LocalDevPasAccountApiClientFactory(config, loggerFactory);
+                var factory = new LocalDevPasAccountApiClientFactory(config);
                 return factory.CreateClient();
             }
             else
