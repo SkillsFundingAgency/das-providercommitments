@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
 {
     public class HandleBulkUploadValidationErrorsAttribute : ExceptionFilterAttribute
     {
-        private ICacheService _cacheService;
+        private readonly ICacheService _cacheService;
 
         public HandleBulkUploadValidationErrorsAttribute(ICacheService cacheService) 
         {
@@ -19,7 +19,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
         {
             // This was using TempData before. Reading from TempData failed as size of the response increased.
             // Now instead of using TempData using BlobStorage.
-            if (!(context.Exception is CommitmentsApiBulkUploadModelException exception)) return;
+            if (!(context.Exception is CommitmentsApiBulkUploadModelException exception))
+            {
+                return;
+            }
+            
             var cachedData = _cacheService.SetCache(exception.Errors, nameof(HandleBulkUploadValidationErrorsAttribute)).Result;
             context.RouteData.Values["action"] = nameof(CohortController.FileUploadValidationErrors);
             context.RouteData.Values["CachedErrorGuid"] = cachedData.ToString();

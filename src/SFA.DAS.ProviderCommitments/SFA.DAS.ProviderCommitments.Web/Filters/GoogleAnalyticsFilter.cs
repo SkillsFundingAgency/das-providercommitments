@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
@@ -19,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Filters
             base.OnActionExecuting(context);
         }
 
-        private GaData PopulateGaData(ActionExecutingContext context)
+        private static GaData PopulateGaData(ActionExecutingContext context)
         {
             var ukPrn = context.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ProviderClaims.Ukprn))?.Value;
 
