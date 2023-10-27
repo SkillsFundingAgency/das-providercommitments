@@ -1,5 +1,4 @@
 ﻿using System;
-using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Exceptions
 {

@@ -10,6 +10,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
+using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
@@ -28,6 +30,8 @@ public class WhenAddingServicesToTheContainer
     
     [TestCase(typeof(IRequestHandler<DeleteCachedFileCommand>))]
     [TestCase(typeof(IRequestHandler<CreateCohortRequest, CreateCohortResponse>))]
+    [TestCase(typeof(IRequestHandler<FileUploadValidateDataRequest>))]
+    [TestCase(typeof(IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Mediator_Handlers(Type toResolve)
     {
         RunTestForType(toResolve);

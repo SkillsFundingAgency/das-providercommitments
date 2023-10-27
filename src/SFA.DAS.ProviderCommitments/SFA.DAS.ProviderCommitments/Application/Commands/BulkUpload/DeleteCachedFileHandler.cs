@@ -1,7 +1,4 @@
-﻿using MediatR;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload
 {

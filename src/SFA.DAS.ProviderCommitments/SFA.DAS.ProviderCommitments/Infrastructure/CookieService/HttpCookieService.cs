@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Services;
+namespace SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
 
 public class HttpCookieService<T> : ICookieService<T>
 {

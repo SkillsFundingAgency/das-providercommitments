@@ -2,7 +2,6 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {

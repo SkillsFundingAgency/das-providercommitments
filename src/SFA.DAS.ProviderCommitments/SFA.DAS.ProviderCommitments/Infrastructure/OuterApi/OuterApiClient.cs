@@ -5,10 +5,8 @@ using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {

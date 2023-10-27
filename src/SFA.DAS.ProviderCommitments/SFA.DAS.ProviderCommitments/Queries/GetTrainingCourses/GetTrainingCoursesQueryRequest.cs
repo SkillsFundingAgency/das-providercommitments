@@ -1,5 +1,4 @@
 ﻿using System;
-using MediatR;
 
 namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 {

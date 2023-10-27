@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Services;
+namespace SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
 
 public class CookieStorageService<T> : ICookieStorageService<T>
 {
