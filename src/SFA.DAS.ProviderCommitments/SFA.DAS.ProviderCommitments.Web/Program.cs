@@ -1,5 +1,4 @@
-﻿using System;
-using NLog.Web;
+﻿using NLog.Web;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 

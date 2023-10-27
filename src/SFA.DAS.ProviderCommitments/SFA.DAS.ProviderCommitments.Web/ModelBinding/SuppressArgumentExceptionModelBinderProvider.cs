@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
 {

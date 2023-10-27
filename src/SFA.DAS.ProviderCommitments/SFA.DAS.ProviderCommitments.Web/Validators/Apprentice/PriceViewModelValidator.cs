@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 

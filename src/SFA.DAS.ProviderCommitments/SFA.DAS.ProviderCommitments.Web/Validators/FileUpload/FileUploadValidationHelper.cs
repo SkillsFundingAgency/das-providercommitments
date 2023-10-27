@@ -1,10 +1,6 @@
 ﻿using FluentValidation;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload
 {

@@ -1,20 +1,14 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Types;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
 {
     public class BaseEdit : IAuthorizationContextModel
     {
         [JsonIgnore]
-        public string Name
-        {
-            get
-            {
-                return FirstName + " " + LastName;
-            }
-        }
+        public string Name => FirstName + " " + LastName;
+
         [FromRoute]
         public long ProviderId { get; set; }
         [FromRoute]

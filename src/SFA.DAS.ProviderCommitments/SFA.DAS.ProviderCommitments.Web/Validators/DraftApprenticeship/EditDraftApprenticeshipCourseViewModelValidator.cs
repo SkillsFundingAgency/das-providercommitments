@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.DraftApprenticeship

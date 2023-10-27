@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Error
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Error
 {
     public class Error403ViewModel
     {

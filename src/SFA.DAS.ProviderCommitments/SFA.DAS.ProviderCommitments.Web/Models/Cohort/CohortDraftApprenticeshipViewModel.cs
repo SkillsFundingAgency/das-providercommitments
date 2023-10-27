@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {

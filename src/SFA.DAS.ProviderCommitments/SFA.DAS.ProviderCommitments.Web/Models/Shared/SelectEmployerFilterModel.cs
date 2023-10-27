@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
 {
     public class SelectEmployerFilterModel
     {

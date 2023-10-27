@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;

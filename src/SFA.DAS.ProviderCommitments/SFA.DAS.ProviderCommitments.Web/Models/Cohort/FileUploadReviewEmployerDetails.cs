@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class FileUploadReviewEmployerDetails
     {

@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
