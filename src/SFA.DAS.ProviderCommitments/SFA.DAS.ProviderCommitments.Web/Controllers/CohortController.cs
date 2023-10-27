@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
@@ -12,7 +8,8 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -24,7 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
-using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
@@ -39,13 +36,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        private readonly IAuthorizationService _authorizationService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
             IEncodingService encodingService,
-            IOuterApiService outerApiService
+            IOuterApiService outerApiService,
+            IAuthorizationService authorizationService
             )
         {
             _mediator = mediator;
@@ -54,6 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _commitmentApiClient = commitmentsApiClient;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
@@ -313,7 +313,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.Confirm.Value)
             {
-                CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
+                UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
                 return RedirectToAction("Review", new { viewModel.ProviderId });
             }
@@ -474,7 +474,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend)
             {
-                var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                var approveApiRequest = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
                 var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
                 TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
                 return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
@@ -490,7 +490,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 //    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
 
                 case FileUploadReviewOption.SaveButDontSend:
-                    var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
                     return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);

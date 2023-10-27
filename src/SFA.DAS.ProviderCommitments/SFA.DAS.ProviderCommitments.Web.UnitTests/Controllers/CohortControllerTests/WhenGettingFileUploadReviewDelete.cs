@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink("/account")).Returns("pasurl/account");
         
             _sut = new CohortController(_mediator.Object, _modelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public Task<IActionResult> Act() => _sut.FileUploadReviewDelete(_request);

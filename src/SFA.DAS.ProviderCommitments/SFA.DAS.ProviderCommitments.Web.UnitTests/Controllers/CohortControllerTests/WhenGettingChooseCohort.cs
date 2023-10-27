@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ModelMapperMock.Setup(x => x.Map<ChooseCohortViewModel>(Request)).ReturnsAsync(ChooseCohortViewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                    Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+                    Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public async Task<IActionResult> Act() => await Sut.ChooseCohort(Request);

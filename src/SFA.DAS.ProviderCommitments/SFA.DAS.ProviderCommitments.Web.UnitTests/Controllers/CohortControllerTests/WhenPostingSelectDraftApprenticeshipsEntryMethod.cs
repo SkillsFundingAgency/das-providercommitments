@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = new SelectDraftApprenticeshipsEntryMethodViewModel { ProviderId = ProviderId };
 
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                        Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture Manual()

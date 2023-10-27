@@ -85,7 +85,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ILinkGenerator>(), 
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<IAuthorizationService>()
+                );
 
             _tempData = new Mock<ITempDataDictionary>();
             Sut.TempData = _tempData.Object;

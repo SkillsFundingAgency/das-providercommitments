@@ -157,7 +157,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     linkGenerator.Object,
                     _commitmentsApiClient.Object, 
                     Mock.Of<IEncodingService>(),
-                    Mock.Of<IOuterApiService>());
+                    Mock.Of<IOuterApiService>(),
+                    Mock.Of<IAuthorizationService>());
             }
 
             public async Task Post(CohortDetailsOptions option)

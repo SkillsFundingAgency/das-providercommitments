@@ -57,7 +57,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ILinkGenerator>(), 
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<IAuthorizationService>()
+                );
         }
 
         public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);

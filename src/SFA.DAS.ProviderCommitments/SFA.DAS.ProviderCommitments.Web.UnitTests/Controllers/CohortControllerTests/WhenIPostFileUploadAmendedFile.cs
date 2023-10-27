@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mockMediator = new Mock<IMediator>();
 
             Sut = new CohortController(_mockMediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, 
-                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public WhenIPostFileUploadAmendedFileFixture WithSelectedOption(bool selectedOption)
