@@ -12,7 +12,7 @@
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="Moq" Version="4.18.2" />
     <PackageReference Include="nunit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
@@ -22,6 +22,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments.Web\SFA.DAS.ProviderCommitments.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SFA.DAS.ProviderCommitments.Web">
+      <HintPath>..\SFA.DAS.ProviderCommitments.Web\bin\Debug\net6.0\SFA.DAS.ProviderCommitments.Web.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
