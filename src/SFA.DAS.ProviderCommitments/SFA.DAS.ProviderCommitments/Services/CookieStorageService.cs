@@ -29,8 +29,9 @@ public class CookieStorageService<T> : ICookieStorageService<T>
         _cookieService.Delete(_httpContextAccessor, cookieName);
     }
 
-    public void Update(string cookieName, T item)
+    public void Update(string cookieName, T item, int expiryDays = 1)
     {
-        _cookieService.Update(_httpContextAccessor, cookieName, item);
+        Delete(cookieName);
+        Create(item, cookieName, expiryDays);
     }
 }

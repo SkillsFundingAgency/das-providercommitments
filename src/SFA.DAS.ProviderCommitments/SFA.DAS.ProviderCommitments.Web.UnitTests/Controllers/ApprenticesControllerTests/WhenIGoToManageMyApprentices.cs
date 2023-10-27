@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -87,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest savedRequest,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -114,7 +114,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest savedRequest,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -168,7 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
