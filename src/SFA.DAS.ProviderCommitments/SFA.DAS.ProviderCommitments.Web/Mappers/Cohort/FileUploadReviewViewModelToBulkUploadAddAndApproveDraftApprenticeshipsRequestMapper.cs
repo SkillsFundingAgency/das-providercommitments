@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return new BulkUploadAddAndApproveDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                BulkUploadAddAndApproveDraftApprenticeships = ConvertToBulkUploadApiRequest(csvRecords, source.ProviderId)
+                BulkUploadAddAndApproveDraftApprenticeships = ConvertToBulkUploadApiRequest(csvRecords, source.ProviderId, false)
             };
         }
     }
