@@ -1,4 +1,6 @@
-﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
+﻿using System.Linq;
+using System.Reflection;
+using AspNetCore.IServiceCollection.AddIUrlHelper;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
@@ -12,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 using StructureMap;
 
@@ -46,6 +49,7 @@ public class Startup
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
         services.AddCache(_environment, _configuration);
+        services.AddMapping();
 
         services.AddDasMvc(_configuration);
 
@@ -88,14 +92,7 @@ public class Startup
 
         services.AddApplicationInsightsTelemetry();
     }
-
-    public void ConfigureContainer(Registry registry)
-    {
-        // Be nice to get rid of this so we can remove StructureMap altogether.
-        registry.For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachUserInfoToSaveRequests<,>));
-        registry.For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachApimUserInfoToSaveRequests<,>));
-    }
-
+    
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
         if (_environment.IsDevelopment())
