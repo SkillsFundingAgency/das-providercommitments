@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.IServiceCollection.AddIUrlHelper" Version="1.1.0"/>
+        <PackageReference Include="Azure.Identity" Version="1.10.3" />
         <PackageReference Include="CsvHelper" Version="30.0.1"/>
         <PackageReference Include="FluentAssertions" Version="6.12.0"/>
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
@@ -26,6 +27,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.13"/>
+        <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.5" />
         <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.97"/>
