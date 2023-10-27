@@ -36,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        // You can remove this unused service. But the CI build will fail ¯\_(ツ)_/¯
         private readonly IAuthorizationService _authorizationService;
 
         public CohortController(IMediator mediator,
