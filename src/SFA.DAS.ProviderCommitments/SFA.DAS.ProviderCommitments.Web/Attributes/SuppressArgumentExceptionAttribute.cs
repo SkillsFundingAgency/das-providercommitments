@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Attributes
+﻿namespace SFA.DAS.ProviderCommitments.Web.Attributes
 {
     public class SuppressArgumentExceptionAttribute : Attribute
     {

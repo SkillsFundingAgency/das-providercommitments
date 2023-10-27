@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
@@ -44,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             return services;
         }
 
-        public static IServiceCollection AddProviderStubAuthentication(this IServiceCollection services)
+        private static IServiceCollection AddProviderStubAuthentication(this IServiceCollection services)
         {
             services.AddAuthentication("Provider-stub").AddScheme<AuthenticationSchemeOptions, ProviderStubAuthHandler>(
                 "Provider-stub",
@@ -57,8 +55,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             });
             return services;
         }
-        
-        public static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services, IConfiguration config)
+
+        private static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
 

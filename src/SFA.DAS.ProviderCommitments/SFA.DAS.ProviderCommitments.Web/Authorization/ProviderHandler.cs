@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -54,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization
             return Task.CompletedTask;
         }
 
-        private bool HasServiceAuthorization(AuthorizationHandlerContext context)
+        private static bool HasServiceAuthorization(AuthorizationHandlerContext context)
         {
             var serviceClaims = context.User.FindAll(c => c.Type.Equals(ProviderClaims.Service));
             return serviceClaims.Any(claim => claim.Value.IsServiceClaim());

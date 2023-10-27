@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Authorization.CommitmentPermissions.Context;
 using SFA.DAS.Authorization.Context;

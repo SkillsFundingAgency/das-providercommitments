@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization
 {
     public class PolicyAuthorizationWrapper : IPolicyAuthorizationWrapper
     {
-        private IAuthorizationService _authorizationService;
+        private readonly IAuthorizationService _authorizationService;
 
         public PolicyAuthorizationWrapper(IAuthorizationService authorizationService)
         {
