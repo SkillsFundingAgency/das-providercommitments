@@ -37,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
-        private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
 
@@ -45,7 +44,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
-            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
             IOuterApiService outerApiService
             )
@@ -54,7 +52,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
-            _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
         }

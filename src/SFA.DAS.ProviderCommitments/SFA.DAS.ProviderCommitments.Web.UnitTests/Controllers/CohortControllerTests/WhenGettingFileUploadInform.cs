@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
         }
 
         public IActionResult Act() => Sut.FileUploadInform(_request);

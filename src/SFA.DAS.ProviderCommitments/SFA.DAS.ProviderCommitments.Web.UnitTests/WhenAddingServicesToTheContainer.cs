@@ -15,6 +15,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
 public class WhenAddingServicesToTheContainer
 {
     [TestCase(typeof(ApprenticeController))]
+    [TestCase(typeof(CohortController))]
+    [TestCase(typeof(DraftApprenticeshipController))]
+    [TestCase(typeof(OverlappingTrainingDateRequestController))]
+    [TestCase(typeof(ProviderAccountController))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Controllers(Type toResolve)
     {
         RunTestForType(toResolve);
@@ -32,6 +36,10 @@ public class WhenAddingServicesToTheContainer
         serviceCollection.AddSingleton(_ => Mock.Of<IHostingEnvironment>());
         
         serviceCollection.AddTransient<ApprenticeController>();
+        serviceCollection.AddTransient<CohortController>();
+        serviceCollection.AddTransient<DraftApprenticeshipController>();
+        serviceCollection.AddTransient<OverlappingTrainingDateRequestController>();
+        serviceCollection.AddTransient<ProviderAccountController>();
         
         var provider = serviceCollection.BuildServiceProvider();
 

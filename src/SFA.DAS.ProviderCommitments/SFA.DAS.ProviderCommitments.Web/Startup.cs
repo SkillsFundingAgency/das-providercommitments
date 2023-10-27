@@ -2,6 +2,7 @@
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
+using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -50,6 +51,8 @@ public class Startup
         services.AddDasMvc(_configuration);
 
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
+
+        services.AddTransient<IAuthorizationService, AuthorizationService>();
 
         services
             .AddAuthorizationService()

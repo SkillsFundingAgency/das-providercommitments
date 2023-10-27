@@ -54,8 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             Sut = new CohortController(Mock.Of<IMediator>(),
                 _modelMapperMock.Object, 
-                Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                Mock.Of<IAuthorizationService>(),
+                Mock.Of<ILinkGenerator>(), 
+                Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>());
         }

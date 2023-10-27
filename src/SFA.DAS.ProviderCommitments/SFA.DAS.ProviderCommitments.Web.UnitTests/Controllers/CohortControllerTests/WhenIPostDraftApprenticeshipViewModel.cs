@@ -200,8 +200,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     .Returns(_linkGeneratorRedirectUrl)
                     .Callback((string value) => _linkGeneratorParameter = value);
 
-                var authorizationService = Mock.Of<IAuthorizationService>();
-
                 _outerApiService = new Mock<IOuterApiService>();
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
                 _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
@@ -215,7 +213,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     _mockModelMapper.Object,
                     _linkGenerator.Object,
                     _commitmentsApiClient.Object,
-                    authorizationService,
                     _encodingService.Object,
                     _outerApiService.Object);
                 _controller.TempData = _tempData.Object;

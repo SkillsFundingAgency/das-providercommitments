@@ -156,7 +156,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     _modelMapper.Object,
                     linkGenerator.Object,
                     _commitmentsApiClient.Object, 
-                    Mock.Of<IAuthorizationService>(), 
                     Mock.Of<IEncodingService>(),
                     Mock.Of<IOuterApiService>());
             }

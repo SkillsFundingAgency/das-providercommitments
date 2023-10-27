@@ -58,7 +58,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     {
         public CohortController Sut { get; set; }
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly Mock<IAuthorizationService> _providerFeatureToggle;
         private readonly AddDraftApprenticeshipViewModel _viewModel;
         private readonly CreateCohortRedirectModel _redirectModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
@@ -79,15 +78,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
             _modelMapper.Setup(x => x.Map<CreateCohortRedirectModel>(_request)).ReturnsAsync(_redirectModel);
-            _providerFeatureToggle = new Mock<IAuthorizationService>();
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
             Sut = new CohortController(
                 Mock.Of<IMediator>(),
                 _modelMapper.Object, 
                 Mock.Of<ILinkGenerator>(), 
                 Mock.Of<ICommitmentsApiClient>(),
-                _providerFeatureToggle.Object,
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>());
 

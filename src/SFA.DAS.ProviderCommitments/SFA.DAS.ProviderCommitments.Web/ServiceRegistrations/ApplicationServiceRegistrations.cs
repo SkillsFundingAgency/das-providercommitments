@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Authorization.Context;
+using SFA.DAS.AutoConfiguration;
 using SFA.DAS.CommitmentsV2.Services.Shared;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
@@ -21,19 +22,23 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
         services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();
         services.AddTransient<IModelMapper, ModelMapper>();
+        
+        services.AddTransient<IAzureTableStorageConnectionAdapter, AzureTableStorageConnectionAdapter>();
+        services.AddTransient<IEnvironmentService, EnvironmentService>();
+        services.AddTransient<IAutoConfigurationService, TableStorageConfigurationService>();
         services.AddSingleton<ILinkGenerator, LinkGenerator>();
+        
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ICurrentDateTime, CurrentDateTime>();
         services.AddSingleton<ICreateCsvService, CreateCsvService>();
-        
+
         services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
         services.AddSingleton<ICacheService, CacheService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ITempDataStorageService, TempDataStorageService>();
         services.AddTransient<IOuterApiClient, OuterApiClient>();
         services.AddTransient<IOuterApiService, OuterApiService>();
-        
+
         return services;
     }
-    
 }
