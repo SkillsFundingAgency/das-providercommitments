@@ -11,15 +11,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IOuterApiService _outerApiService;
         private readonly Dictionary<long, long?> _transferSenderIds = new ();
 
-        protected FileUploadMapperBase(IEncodingService encodingService, IOuterApiService outerApiService)
+        public FileUploadMapperBase(IEncodingService encodingService, IOuterApiService outerApiService)
         {
             _encodingService = encodingService;
             _outerApiService = outerApiService;
         }
 
-        protected List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId, bool extendedRpl)
+        public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId, bool extendedRpl)
         {
-            return csvRecords.Select((csvRecord, index) => new BulkUploadAddDraftApprenticeshipRequest()
+            return csvRecords.Select((csvRecord, index) => new BulkUploadAddDraftApprenticeshipRequest
             {
                 AgreementId = csvRecord.AgreementId,
                 CohortRef = csvRecord.CohortRef,
