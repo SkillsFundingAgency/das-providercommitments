@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Azure.Core;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -33,7 +26,12 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
+using RecognisePriorLearningRequest = SFA.DAS.ProviderCommitments.Web.Models.RecognisePriorLearningRequest;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -103,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/select-course")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<ActionResult> SetCourse(Models.SelectCourseViewModel model)
+        public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
         {
             if (string.IsNullOrEmpty(model.CourseCode))
             {
@@ -175,7 +173,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
         {
-            var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(request);
+            var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
             if (model.DeliveryModels.Length > 1)
             {
@@ -190,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/select-delivery-model")]
         [RequireQueryParameter("ReservationId")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModel(Models.SelectDeliveryModelViewModel model)
+        public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
         {
             if (model.DeliveryModel == null)
             {
@@ -267,13 +265,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
-            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
+            model.DeliveryModel = (DeliveryModel?) draft.DeliveryModel;
 
             if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 return View(model);
             }
-            draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
+            draft.DeliveryModel = (CommitmentsV2.Types.DeliveryModel) model.DeliveryModels.FirstOrDefault();
             StoreEditDraftApprenticeshipState(draft);
 
             return RedirectToAction("EditDraftApprenticeship");
@@ -285,7 +283,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public IActionResult SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
+            draft.DeliveryModel = (CommitmentsV2.Types.DeliveryModel) model.DeliveryModel;
             draft.CourseCode = model.CourseCode;
             StoreEditDraftApprenticeshipState(draft);
 
@@ -467,7 +465,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearning(Models.RecognisePriorLearningRequest request)
+        public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
         {
             var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
             return View("RecognisePriorLearning", model);
@@ -502,7 +500,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
+        public async Task<IActionResult> RecognisePriorLearningDetails(RecognisePriorLearningRequest request)
         {
             if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
             {
@@ -531,7 +529,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpGet]
         [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data", Name = RouteNames.RecognisePriorLearningData)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
+        public async Task<IActionResult> RecognisePriorLearningData(RecognisePriorLearningRequest request)
         {
             if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
             {
@@ -670,7 +668,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.Courses = courses;
         }
 
-        private void PrePopulateDates(EditDraftApprenticeshipViewModel model)
+        private static void PrePopulateDates(EditDraftApprenticeshipViewModel model)
         {
             if (model.IsOnFlexiPaymentPilot.GetValueOrDefault())
             {
@@ -682,7 +680,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        private static void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
         {
             if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
                 return;
@@ -692,7 +690,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.ActualStartMonth = model.StartMonth;
         }
 
-        private void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        private static void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
         {
             if (model.StartDate.HasValue)
                 return;
@@ -706,7 +704,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
             {
                 IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
-                                     cohortDetails.LevyStatus != CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy)
+                                     cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
                                     || cohortDetails.IsLinkedToChangeOfPartyRequest
             });
 
@@ -757,7 +755,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
+        private async Task<ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
         {
             if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
             {

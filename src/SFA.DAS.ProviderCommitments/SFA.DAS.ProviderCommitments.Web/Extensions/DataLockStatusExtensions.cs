@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
@@ -42,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             return dataLock.ErrorCode == DataLockErrorCode.Dlock07;
         }
 
-        public static bool HasPrice(this DataLock dataLock)
+        private static bool HasPrice(this DataLock dataLock)
         {
             return dataLock.ErrorCode.HasFlag(DataLockErrorCode.Dlock07);
         }
@@ -65,6 +63,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         {
             return dataLock.IsCourse() || dataLock.IsPrice();
         }
-        
     }
 }

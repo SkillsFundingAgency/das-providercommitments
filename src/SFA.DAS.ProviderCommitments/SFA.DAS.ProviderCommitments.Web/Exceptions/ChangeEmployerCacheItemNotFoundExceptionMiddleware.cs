@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
@@ -11,7 +10,6 @@ public class ChangeEmployerCacheItemNotFoundExceptionMiddleware
 
     public ChangeEmployerCacheItemNotFoundExceptionMiddleware(RequestDelegate next)
     {
-
         _next = next;
     }
 

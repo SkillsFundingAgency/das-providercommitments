@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using MediatR;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -82,11 +81,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,
                         Status = apprenticeshipDetails.Status,
-                        EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
+                        EnableStopRequestEmail = (apprenticeshipDetails.Status == ApprenticeshipStatus.Live
+                        || apprenticeshipDetails.Status == ApprenticeshipStatus.WaitingToStart
+                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Paused
+                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Completed
+                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Stopped)
                     });
                 }
             }
@@ -95,11 +94,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
+                EnableStopRequestEmail = (apprenticeshipDetails.Status == ApprenticeshipStatus.Live
+                || apprenticeshipDetails.Status == ApprenticeshipStatus.WaitingToStart
+                || apprenticeshipDetails.Status == ApprenticeshipStatus.Paused
+                || apprenticeshipDetails.Status == ApprenticeshipStatus.Completed
+                || apprenticeshipDetails.Status == ApprenticeshipStatus.Stopped)
             };
 
             return View(vm);
@@ -252,7 +251,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task CreateCohortAndDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
         {
-            var request = await _modelMapper.Map<Application.Commands.CreateCohort.CreateCohortRequest>(model);
+            var request = await _modelMapper.Map<CreateCohortRequest>(model);
             request.IgnoreStartDateOverlap = true;
             var response = await _mediator.Send(request);
             viewModel.CohortReference = response.CohortReference;
@@ -271,14 +270,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private void RemoveStoredDraftApprenticeshipState(string draftApprenticeshipHashedId)
         {
-            if (string.IsNullOrEmpty(draftApprenticeshipHashedId))
-            {
-                TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
-            }
-            else
-            {
-                TempData.Remove(nameof(EditDraftApprenticeshipViewModel));
-            }
+            TempData.Remove(string.IsNullOrEmpty(draftApprenticeshipHashedId)
+                ? nameof(AddDraftApprenticeshipViewModel)
+                : nameof(EditDraftApprenticeshipViewModel));
         }
 
         private AddDraftApprenticeshipViewModel PeekStoredAddDraftApprenticeshipState()
