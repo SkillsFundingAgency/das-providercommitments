@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -7,8 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
 
@@ -23,17 +25,27 @@ public class WhenAddingServicesToTheContainer
     {
         RunTestForType(toResolve);
     }
+    
+    [TestCase(typeof(IRequestHandler<DeleteCachedFileCommand>))]
+    [TestCase(typeof(IRequestHandler<CreateCohortRequest, CreateCohortResponse>))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved_For_Mediator_Handlers(Type toResolve)
+    {
+        RunTestForType(toResolve);
+    }
 
     private static void RunTestForType(Type toResolve)
     {
-        var mockHostingEnvironment = new Mock<IHostEnvironment>();
-        mockHostingEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
+        var mockHostEnvironment = new Mock<IHostEnvironment>();
+        mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
 
-        var startup = new Startup(GenerateStubConfiguration(), mockHostingEnvironment.Object, false);
+        var startup = new Startup(GenerateStubConfiguration(), mockHostEnvironment.Object, false);
         var serviceCollection = new ServiceCollection();
         startup.ConfigureServices(serviceCollection);
 
-        serviceCollection.AddSingleton(_ => Mock.Of<IHostingEnvironment>());
+        var mockHostingEnvironment = new Mock<IWebHostEnvironment>();
+        mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
+
+        serviceCollection.AddSingleton(_ => mockHostingEnvironment.Object);
         
         serviceCollection.AddTransient<ApprenticeController>();
         serviceCollection.AddTransient<CohortController>();
@@ -42,8 +54,8 @@ public class WhenAddingServicesToTheContainer
         serviceCollection.AddTransient<ProviderAccountController>();
         
         var provider = serviceCollection.BuildServiceProvider();
-
         var type = provider.GetService(toResolve);
+        
         Assert.IsNotNull(type);
     }
 
@@ -55,6 +67,8 @@ public class WhenAddingServicesToTheContainer
             {
                 new("SFA.DAS.Encoding", "{\"Encodings\": [{\"EncodingType\": \"AccountId\",\"Salt\": \"and vinegar\",\"MinHashLength\": 32,\"Alphabet\": \"46789BCDFGHJKLMNPRSTVWXY\"}]}"),
 
+                new("APPINSIGHTS_INSTRUMENTATIONKEY", "test"),
+                
                 new("AuthenticationSettings:MetadataAddress", "https://test.com/"),
                 new("AuthenticationSettings:Wtrealm", "https://test.com/"),
                 new("AuthenticationSettings:UseStub", "true/"),

@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
         IBlobFileTransferClient _blobFile;
         private readonly ILogger<CacheService> _logger;
 
-        public CacheService( IBlobFileTransferClient blobFile, ILogger<CacheService> logger)
+        public CacheService(IBlobFileTransferClient blobFile, ILogger<CacheService> logger)
         {
             _blobFile = blobFile;
             _logger = logger;
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
             try
             {
                 await _blobFile.DeleteFile(key);
-            _logger.LogInformation($"Cached record removed by {memberName} - key : {key}");
+                _logger.LogInformation($"Cached record removed by {memberName} - key : {key}");
             }
             catch
             {

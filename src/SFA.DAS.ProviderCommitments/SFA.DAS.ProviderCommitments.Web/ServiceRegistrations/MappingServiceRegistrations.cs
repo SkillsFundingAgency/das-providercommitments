@@ -1,4 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 
@@ -17,12 +19,22 @@ public static class MappingServiceRegistrations
         foreach (var mapperType in mappingTypes)
         {
             var mapperInterface = mapperType.GetInterfaces().Single(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapper<,>));
-           
+
             services.AddTransient(mapperInterface, mapperType);
-            services.Decorate(mapperInterface, _ => typeof(AttachUserInfoToSaveRequests<,>));
-            services.Decorate(mapperInterface, _ => typeof(AttachApimUserInfoToSaveRequests<,>));
+            
+            // This one is not like the others ....
+            if (mapperInterface != typeof(IMapper<CreateCohortRequest, CreateCohortApimRequest>))
+            {
+                DecorateImplementation(services, mapperInterface);;
+            }
         }
 
         return services;
+    }
+
+    private static void DecorateImplementation(IServiceCollection services, Type mapperInterface)
+    {
+        services.Decorate(mapperInterface, _ => typeof(AttachUserInfoToSaveRequests<,>));
+        services.Decorate(mapperInterface, _ => typeof(AttachApimUserInfoToSaveRequests<,>));
     }
 }

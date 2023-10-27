@@ -1,4 +1,5 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
+using FluentValidation;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
@@ -66,6 +67,8 @@ public class Startup
             .AddProviderFeaturesAuthorization()
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
+
+        services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         
         services.AddScoped(typeof(ICookieService<>), typeof(HttpCookieService<>));
         services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
@@ -92,7 +95,7 @@ public class Startup
         services.AddHttpClient();
         services.AddProviderUiServiceRegistration(_configuration);
 
-        services.AddApplicationInsightsTelemetry();
+        services.AddApplicationInsightsTelemetryWorkerService();
     }
     
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
