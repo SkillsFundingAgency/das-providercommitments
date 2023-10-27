@@ -87,6 +87,9 @@ public class WhenAddingServicesToTheContainer
                 new("ProviderRelationshipsApi:IdentifierUri", "https://test.com/"),
                 new("ProviderRelationshipsApi:ApiBaseUrl", "https://test.com/"),
                 
+                new("ProviderAccountApiConfiguration:IdentifierUri", "https://test.com/"),
+                new("ProviderAccountApiConfiguration:ApiBaseUrl", "https://test.com/"),
+                
                 new("Features:FeatureToggles", "test"),
                 
                 new("ZenDesk:SectionId", "ABC123"),
