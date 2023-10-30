@@ -1,4 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
+using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
@@ -32,6 +33,7 @@ public static class MvcServiceRegistrations
                 options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
                 options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
                 options.AddStringModelBinderProvider();
+                options.AddAuthorization();
             })
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()

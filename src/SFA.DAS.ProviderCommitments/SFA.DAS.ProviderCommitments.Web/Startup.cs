@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
+using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
@@ -61,6 +62,7 @@ public class Startup
         services.AddDasMvc(_configuration);
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
+        services.AddAuthorization<AuthorizationContextProvider>();
 
         services
             .AddAuthorizationService()
@@ -87,7 +89,7 @@ public class Startup
         {
             services.AddCommitmentPermissionsAuthorization();
         }
-
+        
         services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
 
