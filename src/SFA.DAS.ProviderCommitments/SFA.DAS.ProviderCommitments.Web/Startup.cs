@@ -33,6 +33,9 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton(_configuration);
+        services.AddLogging();
+        services.AddHttpContextAccessor();
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
         
         services.Configure<CookiePolicyOptions>(options =>
         {
@@ -43,8 +46,7 @@ public class Startup
 
         services.AddConfigurationOptions(_configuration);
         services.AddProviderUiServiceRegistration(_configuration);
-
-        services.AddHttpContextAccessor();
+       
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
@@ -52,8 +54,6 @@ public class Startup
         services.AddMapping();
 
         services.AddDasMvc(_configuration);
-
-        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 
@@ -123,8 +123,5 @@ public class Startup
             .ConfigureCustomExceptionMiddleware()
             .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
             .UseHealthChecks("/health-check");
-
-        var logger = loggerFactory.CreateLogger(nameof(Startup));
-        logger.Log(LogLevel.Information, "Application start up configure is complete");
     }
 }
