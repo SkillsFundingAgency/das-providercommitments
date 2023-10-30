@@ -119,8 +119,8 @@ public class Startup
             .UseCookiePolicy()
             .UseAuthentication()
             .UseRouting()
-            .UseAuthorization()
-           // .ConfigureCustomExceptionMiddleware()
+            .UseAuthorization() 
+            .ConfigureCustomExceptionMiddleware()
             .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
             .UseHealthChecks("/health-check");
     }
