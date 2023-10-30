@@ -42,6 +42,7 @@ public class Startup
         });
 
         services.AddConfigurationOptions(_configuration);
+        services.AddProviderUiServiceRegistration(_configuration);
 
         services.AddHttpContextAccessor();
         services.AddDasHealthChecks();
@@ -94,8 +95,6 @@ public class Startup
         });
 
         services.AddHttpClient();
-        services.AddProviderUiServiceRegistration(_configuration);
-
         services.AddApplicationInsightsTelemetryWorkerService();
     }
     
