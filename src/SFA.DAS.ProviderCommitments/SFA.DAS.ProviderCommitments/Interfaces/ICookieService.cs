@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace SFA.DAS.ProviderCommitments.Interfaces;
+﻿namespace SFA.DAS.ProviderCommitments.Interfaces;
 
 public interface ICookieService<T>
 {
-    void Create(IHttpContextAccessor contextAccessor, string name, T content, int expireDays);
+    void Create(string name, T content, int expireDays);
 
-    void Update(IHttpContextAccessor contextAccessor, string name, T content);
+    void Update(string name, T content);
 
-    void Delete(IHttpContextAccessor contextAccessor, string name);
+    void Delete(string name);
 
-    T Get(IHttpContextAccessor contextAccessor, string name);
+    T Get(string name);
 }

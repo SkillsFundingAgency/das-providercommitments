@@ -1,32 +1,25 @@
-﻿using Microsoft.AspNetCore.Http;
-using SFA.DAS.ProviderCommitments.Interfaces;
+﻿using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
 
 public class CookieStorageService<T> : ICookieStorageService<T>
 {
     private readonly ICookieService<T> _cookieService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public CookieStorageService(ICookieService<T> cookieService, IHttpContextAccessor httpContextAccessor)
-    {
-        _cookieService = cookieService;
-        _httpContextAccessor = httpContextAccessor;
-    }
+    public CookieStorageService(ICookieService<T> cookieService) => _cookieService = cookieService;
 
     public void Create(T item, string cookieName, int expiryDays = 1)
     {
-        _cookieService.Create(_httpContextAccessor, cookieName, item, expiryDays);
+        _cookieService.Create(cookieName, item, expiryDays);
     }
 
     public T Get(string cookieName)
     {
-        return _cookieService.Get(_httpContextAccessor, cookieName);
+        return _cookieService.Get(cookieName);
     }
 
     public void Delete(string cookieName)
     {
-        _cookieService.Delete(_httpContextAccessor, cookieName);
+        _cookieService.Delete(cookieName);
     }
 
     public void Update(string cookieName, T item, int expiryDays = 1)

@@ -10,20 +10,22 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
 
 public class HttpCookieService<T> : ICookieService<T>
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDataProtector _protector;
 
-    public HttpCookieService(IDataProtectionProvider provider)
+    public HttpCookieService(IDataProtectionProvider provider, IHttpContextAccessor httpContextAccessor)
     {
+        _httpContextAccessor = httpContextAccessor;
         _protector = provider.CreateProtector("SFA.DAS.ProviderCommitments.Services.HttpCookieService");
     }
 
-    public void Create(IHttpContextAccessor contextAccessor, string name, T content, int expireDays)
+    public void Create(string name, T content, int expireDays)
     {
         var cookieContent = JsonConvert.SerializeObject(content);
 
         var encodedContent = Convert.ToBase64String(_protector.Protect(new UTF8Encoding().GetBytes(cookieContent)));
 
-        contextAccessor.HttpContext.Response.Cookies.Append(name, encodedContent, new CookieOptions
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(name, encodedContent, new CookieOptions
         {
             Expires = DateTime.Now.AddDays(expireDays),
             Secure = true,
@@ -31,33 +33,33 @@ public class HttpCookieService<T> : ICookieService<T>
         });
     }
 
-    public void Update(IHttpContextAccessor contextAccessor, string name, T content)
+    public void Update(string name, T content)
     {
-        var cookie = contextAccessor.HttpContext.Request.Cookies[name];
+        var cookie = _httpContextAccessor.HttpContext.Request.Cookies[name];
 
         if (cookie != null)
         {
             var cookieContent = JsonConvert.SerializeObject(content);
 
             var encodedContent = Convert.ToBase64String(_protector.Protect(new UTF8Encoding().GetBytes(cookieContent)));
-            contextAccessor.HttpContext.Response.Cookies.Append(name, encodedContent);
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(name, encodedContent);
         }
     }
 
-    public void Delete(IHttpContextAccessor contextAccessor, string name)
+    public void Delete(string name)
     {
-        if (contextAccessor.HttpContext.Request.Cookies[name] != null)
+        if (_httpContextAccessor.HttpContext.Request.Cookies[name] != null)
         {
-            contextAccessor.HttpContext.Response.Cookies.Delete(name);
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete(name);
         }
     }
 
-    public T Get(IHttpContextAccessor contextAccessor, string name)
+    public T Get(string name)
     {
-        if (contextAccessor.HttpContext.Request.Cookies[name] == null)
+        if (_httpContextAccessor.HttpContext.Request.Cookies[name] == null)
             return default(T);
 
-        var base64EncodedBytes = Convert.FromBase64String(contextAccessor.HttpContext.Request.Cookies[name]);
+        var base64EncodedBytes = Convert.FromBase64String(_httpContextAccessor.HttpContext.Request.Cookies[name]);
         byte[] unprotect;
         try
         {
@@ -65,7 +67,7 @@ public class HttpCookieService<T> : ICookieService<T>
         }
         catch (CryptographicException)
         {
-            Delete(contextAccessor, name);
+            Delete(name);
             return default(T);
         }
         
