@@ -1,10 +1,12 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
+using SFA.DAS.Authorization.ProviderFeatures.Handlers;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -18,6 +20,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
+using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
