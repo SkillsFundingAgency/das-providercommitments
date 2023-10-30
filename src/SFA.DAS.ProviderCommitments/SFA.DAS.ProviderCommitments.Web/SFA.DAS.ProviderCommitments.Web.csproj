@@ -52,10 +52,7 @@
 
 
     <ItemGroup>
-        <Folder Include="AppStart\"/>
-        <Folder Include="Assets\"/>
         <Folder Include="LocalDevRegistry\ToRemove\"/>
-        <Folder Include="Views\Unapproved\"/>
     </ItemGroup>
 
 
