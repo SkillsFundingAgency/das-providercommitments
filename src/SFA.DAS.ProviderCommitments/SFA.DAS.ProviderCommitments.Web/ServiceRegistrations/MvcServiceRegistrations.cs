@@ -3,6 +3,7 @@ using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
+using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -14,12 +15,12 @@ using SFA.DAS.Validation.Mvc.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
-public static class MvcServiceRegistratiosn
+public static class MvcServiceRegistrations
 {
     public static IServiceCollection AddDasMvc(this IServiceCollection services, IConfiguration configuration)
     {
         var useDfeSignIn = configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-
+        
         services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
@@ -32,7 +33,7 @@ public static class MvcServiceRegistratiosn
                 options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
                 options.AddStringModelBinderProvider();
             })
-            .AddNavigationBarSettings(configuration)
+            .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()
             .EnableCookieBanner()
             .SetDfESignInConfiguration(useDfeSignIn)
