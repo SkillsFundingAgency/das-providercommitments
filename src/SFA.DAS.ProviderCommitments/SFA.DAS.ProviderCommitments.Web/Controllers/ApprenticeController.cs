@@ -43,7 +43,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        [AllowAnonymous]
         [Route("", Name = RouteNames.ApprenticesIndex)]
         public async Task<IActionResult> Index(IndexRequest request)
         {
