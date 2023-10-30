@@ -77,7 +77,6 @@ public class Startup
 
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         
-        services.AddSingleton(typeof(ICookieService<>), typeof(HttpCookieService<>));
         services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
 
         if (_configuration.UseLocalRegistry())

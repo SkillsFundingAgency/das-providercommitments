@@ -47,7 +47,7 @@ public class WhenAddingServicesToTheContainer
         mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
 
         serviceCollection.AddSingleton(_ => mockHostingEnvironment.Object);
-        
+
         serviceCollection.AddTransient<ApprenticeController>();
         serviceCollection.AddTransient<CohortController>();
         serviceCollection.AddTransient<DraftApprenticeshipController>();
