@@ -1,11 +1,14 @@
-﻿using SFA.DAS.CommitmentsV2.Types;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class DataLockStatusExtensions
     {
-        public static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(this IReadOnlyCollection<DataLock> dataLocks)
+        public static DetailsViewModel.DataLockSummaryStatus GetDataLockSummaryStatus(this IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
         {
             DetailsViewModel.DataLockSummaryStatus dataLockStatus = DetailsViewModel.DataLockSummaryStatus.None;
             if (dataLocks.Any(x => x.TriageStatus != TriageStatus.Unknown && IsUnresolvedDataLock(x)))
@@ -20,37 +23,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             return dataLockStatus;
         }
 
-        private static bool IsUnresolvedDataLock(DataLock dataLock)
+        private static bool IsUnresolvedDataLock(GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.DataLockStatus != Status.Pass && !dataLock.IsResolved;
         }
 
-        public static bool IsUnresolvedError(this DataLock dataLock)
+        public static bool IsUnresolvedError(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.DataLockStatus != Status.Pass && !dataLock.IsResolved;
         }
 
-        public static bool IsCourse(this DataLock dataLock)
+        public static bool IsCourse(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.HasCourseDataLock() && !dataLock.HasPrice();
         }
 
-        public static bool IsPrice(this DataLock dataLock)
+        public static bool IsPrice(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.ErrorCode == DataLockErrorCode.Dlock07;
         }
 
-        private static bool HasPrice(this DataLock dataLock)
+        public static bool HasPrice(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.ErrorCode.HasFlag(DataLockErrorCode.Dlock07);
         }
 
-        public static bool IsCourseAndPrice(this DataLock dataLock)
+        public static bool IsCourseAndPrice(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.HasCourseDataLock() && dataLock.HasPrice();
         }
 
-        public static bool HasCourseDataLock(this DataLock dataLock)
+        public static bool HasCourseDataLock(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             var result = dataLock.ErrorCode.HasFlag(DataLockErrorCode.Dlock03) ||
                          dataLock.ErrorCode.HasFlag(DataLockErrorCode.Dlock04) ||
@@ -59,9 +62,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
             return result;
         }
 
-        public static bool IsCourseOrPrice(this DataLock dataLock)
+        public static bool IsCourseOrPrice(this GetManageApprenticeshipDetailsResponse.DataLock dataLock)
         {
             return dataLock.IsCourse() || dataLock.IsPrice();
         }
+        
     }
 }

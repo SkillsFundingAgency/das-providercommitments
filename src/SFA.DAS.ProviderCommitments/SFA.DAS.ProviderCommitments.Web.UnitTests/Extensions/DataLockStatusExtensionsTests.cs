@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
@@ -7,12 +8,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
     [TestFixture]
     public class DataLockStatusExtensionsTests
     {
-        private DataLock _dataLock;
+        private GetManageApprenticeshipDetailsResponse.DataLock _dataLock;
 
         [SetUp]
         public void Arrange()
         {
-            _dataLock = new DataLock();
+            _dataLock = new GetManageApprenticeshipDetailsResponse.DataLock();
         }
 
         [TestCase(DataLockErrorCode.Dlock03, true)]
