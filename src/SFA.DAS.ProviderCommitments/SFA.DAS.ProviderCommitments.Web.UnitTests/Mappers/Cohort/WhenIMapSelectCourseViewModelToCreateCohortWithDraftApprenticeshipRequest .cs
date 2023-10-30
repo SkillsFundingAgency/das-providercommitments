@@ -1,10 +1,6 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using System;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using Moq;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 

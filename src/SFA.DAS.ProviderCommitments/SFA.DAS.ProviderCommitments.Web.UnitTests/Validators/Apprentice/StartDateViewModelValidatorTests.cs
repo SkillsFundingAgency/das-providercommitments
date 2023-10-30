@@ -1,6 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;

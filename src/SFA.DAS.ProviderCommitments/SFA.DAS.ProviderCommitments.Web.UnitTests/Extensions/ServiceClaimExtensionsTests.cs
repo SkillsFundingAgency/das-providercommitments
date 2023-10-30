@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 

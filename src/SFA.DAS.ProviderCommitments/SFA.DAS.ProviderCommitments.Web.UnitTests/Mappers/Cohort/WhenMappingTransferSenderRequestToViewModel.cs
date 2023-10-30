@@ -1,6 +1,4 @@
-﻿using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -10,8 +8,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;

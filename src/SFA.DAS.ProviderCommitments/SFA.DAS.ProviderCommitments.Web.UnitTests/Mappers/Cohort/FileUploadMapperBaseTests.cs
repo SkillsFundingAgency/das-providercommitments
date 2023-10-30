@@ -1,7 +1,4 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;

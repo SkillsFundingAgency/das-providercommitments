@@ -1,8 +1,4 @@
 ﻿using System;
-using AutoFixture;
-using Moq;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;

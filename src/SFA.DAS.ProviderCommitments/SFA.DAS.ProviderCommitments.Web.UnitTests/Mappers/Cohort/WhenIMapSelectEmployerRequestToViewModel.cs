@@ -1,6 +1,4 @@
-﻿using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderRelationships.Api.Client;
@@ -8,8 +6,6 @@ using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {

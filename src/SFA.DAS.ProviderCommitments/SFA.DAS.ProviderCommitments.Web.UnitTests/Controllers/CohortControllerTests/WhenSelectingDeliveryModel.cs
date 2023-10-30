@@ -1,13 +1,7 @@
 ﻿using System.Collections.Generic;
-using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.Encoding;
@@ -73,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ModelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel)).ReturnsAsync(Request);
 
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(),Mock.Of<ILogger<CohortController>>());
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)

@@ -1,20 +1,13 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
-using System.Threading.Tasks;
-using System.Threading;
+﻿using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -86,7 +79,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
 
             Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, 
-                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>()
+                        , Mock.Of<ILogger<CohortController>>());
         }
 
         public PostDeleteCohortFixture WithConfirmFalse()

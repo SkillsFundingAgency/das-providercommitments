@@ -2,8 +2,6 @@
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort

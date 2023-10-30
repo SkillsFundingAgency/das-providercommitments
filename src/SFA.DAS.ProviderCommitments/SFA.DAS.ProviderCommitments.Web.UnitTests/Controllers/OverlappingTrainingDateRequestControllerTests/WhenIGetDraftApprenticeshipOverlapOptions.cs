@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
-using System.Threading.Tasks;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {

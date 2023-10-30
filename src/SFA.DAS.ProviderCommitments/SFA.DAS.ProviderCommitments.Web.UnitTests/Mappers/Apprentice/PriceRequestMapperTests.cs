@@ -1,10 +1,6 @@
 ﻿using System;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 

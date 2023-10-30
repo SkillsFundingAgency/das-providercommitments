@@ -1,11 +1,6 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -14,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 

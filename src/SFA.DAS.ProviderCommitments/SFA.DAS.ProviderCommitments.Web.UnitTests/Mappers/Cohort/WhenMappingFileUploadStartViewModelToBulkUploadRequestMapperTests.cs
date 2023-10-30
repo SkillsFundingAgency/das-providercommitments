@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -10,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort

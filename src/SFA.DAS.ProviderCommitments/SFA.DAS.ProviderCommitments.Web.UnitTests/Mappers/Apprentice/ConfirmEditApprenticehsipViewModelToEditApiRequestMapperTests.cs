@@ -1,10 +1,7 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {

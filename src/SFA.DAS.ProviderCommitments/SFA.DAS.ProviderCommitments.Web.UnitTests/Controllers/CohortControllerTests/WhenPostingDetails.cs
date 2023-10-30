@@ -1,16 +1,9 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using System;
 using SFA.DAS.Encoding;
@@ -158,7 +151,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     _commitmentsApiClient.Object, 
                     Mock.Of<IEncodingService>(),
                     Mock.Of<IOuterApiService>(),
-                    Mock.Of<IAuthorizationService>());
+                    Mock.Of<IAuthorizationService>(),
+                    Mock.Of<ILogger<CohortController>>());
             }
 
             public async Task Post(CohortDetailsOptions option)

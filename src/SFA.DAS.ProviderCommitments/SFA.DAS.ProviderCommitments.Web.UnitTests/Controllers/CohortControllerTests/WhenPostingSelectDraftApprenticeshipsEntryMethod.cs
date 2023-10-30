@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
@@ -49,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = new SelectDraftApprenticeshipsEntryMethodViewModel { ProviderId = ProviderId };
 
             Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                        Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
+                        Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
         }
 
         public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture Manual()

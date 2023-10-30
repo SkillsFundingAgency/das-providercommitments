@@ -1,15 +1,10 @@
-﻿using AutoFixture;
-using MediatR;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
+﻿using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests

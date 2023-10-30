@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.Azure.Documents;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.Azure.Documents;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Authentication;

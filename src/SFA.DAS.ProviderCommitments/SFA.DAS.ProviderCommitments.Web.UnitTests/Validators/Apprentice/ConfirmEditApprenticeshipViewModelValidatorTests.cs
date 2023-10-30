@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
 using System;

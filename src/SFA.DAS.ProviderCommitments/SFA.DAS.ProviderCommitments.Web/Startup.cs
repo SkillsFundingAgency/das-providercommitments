@@ -1,5 +1,6 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
@@ -33,7 +34,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton(_configuration);
-        services.AddLogging();
+        services.AddLogging(builder =>
+        {
+            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+        });
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
         

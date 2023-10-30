@@ -1,8 +1,5 @@
-﻿using AutoFixture;
-using AutoFixture.Dsl;
+﻿using AutoFixture.Dsl;
 using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -19,8 +16,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;

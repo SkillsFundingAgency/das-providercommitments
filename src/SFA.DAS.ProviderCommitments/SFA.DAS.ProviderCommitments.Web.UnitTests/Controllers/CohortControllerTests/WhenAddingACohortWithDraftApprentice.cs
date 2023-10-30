@@ -1,12 +1,7 @@
-﻿using MediatR;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -86,7 +81,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthorizationService>()
+                Mock.Of<IAuthorizationService>(), 
+                Mock.Of<ILogger<CohortController>>()
                 );
 
             _tempData = new Mock<ITempDataDictionary>();

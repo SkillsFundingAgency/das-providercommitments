@@ -1,13 +1,9 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using System;
-using System.Threading.Tasks;
 using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship

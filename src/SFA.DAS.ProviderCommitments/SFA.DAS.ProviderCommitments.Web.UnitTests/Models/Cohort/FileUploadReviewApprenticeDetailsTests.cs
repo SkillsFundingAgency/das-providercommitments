@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
 {

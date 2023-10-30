@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 

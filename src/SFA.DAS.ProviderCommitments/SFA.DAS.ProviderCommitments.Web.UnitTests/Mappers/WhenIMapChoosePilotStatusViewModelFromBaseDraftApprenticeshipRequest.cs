@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+﻿using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 

@@ -1,10 +1,6 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Filters;

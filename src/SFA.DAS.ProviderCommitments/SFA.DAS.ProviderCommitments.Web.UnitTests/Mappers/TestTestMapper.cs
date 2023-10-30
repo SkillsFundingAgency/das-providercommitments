@@ -1,9 +1,7 @@
 ﻿using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {

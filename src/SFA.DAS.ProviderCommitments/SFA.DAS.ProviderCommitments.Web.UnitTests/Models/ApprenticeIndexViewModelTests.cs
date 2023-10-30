@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models;
+﻿using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 

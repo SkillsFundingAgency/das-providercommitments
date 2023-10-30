@@ -1,8 +1,5 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {

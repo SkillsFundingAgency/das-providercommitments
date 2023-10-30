@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers;
 using WebApp = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.CreateCohortRequestToApiCreateCohortRequestMapperTests

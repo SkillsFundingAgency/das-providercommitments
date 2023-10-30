@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;

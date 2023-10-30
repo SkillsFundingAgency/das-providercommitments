@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
