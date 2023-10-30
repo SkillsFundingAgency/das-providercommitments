@@ -17,6 +17,8 @@
         CacheKey = Model.CacheKey,
         IsEdit = true
     };
+    
+    string DisplayDate(DateTime value) => $"{value:MMMM yyyy}";
 }
 
 <div class="govuk-grid-row">
@@ -156,15 +158,6 @@
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 
 </form>
-
-
-@functions
-{
-    private string DisplayDate(DateTime value)
-    {
-        return $"{value:MMMM yyyy}";
-    }
-}
 
 @section breadcrumb
 {

@@ -1,10 +1,20 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
+﻿@using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.ViewDraftApprenticeshipViewModel
 
 @{
     ViewData["Title"] = "Apprenticeships";
     ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/view";
+
+    string DisplayOptionalField(string value) => !string.IsNullOrWhiteSpace(value) ? value : "--";
+
+    string DisplayOptionalFieldForDate(DateTime? value) => value.HasValue ? value.Value.ToGdsFormat() : "--";
+
+    string DisplayOptionalEstimatedDate(DateTime? value) => value.HasValue ? $"{value:MMMM yyyy}" : "--";
+
+    string DisplayCost(int? value) => value.HasValue ? value.Value.ToGdsCostFormat() : "--";
+
+    string PluraliseString(int count, string str) => count > 1 ? $"{str}s" : str;
 }
 
 <h1 class="govuk-heading-xl">View apprentice details</h1>
@@ -41,7 +51,7 @@
                     @Model.LastName
                 </dd>
             </div>
-        
+
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Email address
@@ -50,13 +60,13 @@
                     @DisplayOptionalField(Model.Email)
                 </dd>
             </div>
-        
+
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Date of birth
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @DisplayOptionalField(Model.DateOfBirth)
+                    @DisplayOptionalFieldForDate(Model.DateOfBirth)
                 </dd>
             </div>
         </dl>
@@ -227,34 +237,6 @@
 
 @*<a class="govuk-body govuk-link" href="@Url.ProviderApprenticeshipServiceLink($"{Model.ProviderId}/apprentices/{Model.CohortReference}/details")">Return to cohort view</a>*@
 <a class="govuk-body govuk-link" href="@Url.Action("Details", "Cohort", new { Model.ProviderId, Model.CohortReference })">Return to cohort view</a>
-
-@functions
-{
-    private string DisplayOptionalField(string value)
-    {
-        return !string.IsNullOrWhiteSpace(value) ? value : "--";
-    }
-
-    private string DisplayOptionalField(DateTime? value)
-    {
-        return value.HasValue ? value.Value.ToGdsFormat() : "--";
-    }
-
-    private string DisplayOptionalEstimatedDate(DateTime? value)
-    {
-        return value.HasValue ? $"{value:MMMM yyyy}" : "--";
-    }
-
-    private string DisplayCost(int? value)
-    {
-        return value.HasValue ? value.Value.ToGdsCostFormat() : "--";
-    }
-
-    string PluraliseString(int count, string str)
-    {
-        return count > 1 ? $"{str}s" : str;
-    }
-}
 
 @section breadcrumb
 {
