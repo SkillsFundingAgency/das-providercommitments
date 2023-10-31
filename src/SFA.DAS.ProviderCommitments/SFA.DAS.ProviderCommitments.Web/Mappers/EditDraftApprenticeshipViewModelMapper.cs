@@ -50,6 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     CourseCode = apiResponse.CourseCode,
                     HasStandardOptions = apiResponse.HasStandardOptions,
                     Cost = apiResponse.Cost,
+                    TrainingPrice = apiResponse.TrainingPrice,
+                    EndPointAssessmentPrice = apiResponse.EndPointAssessmentPrice,
                     Reference = apiResponse.ProviderReference,
                     IsContinuation = apiResponse.IsContinuation,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
@@ -62,6 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     RecognisingPriorLearningExtendedStillNeedsToBeConsidered = apiResponse.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                     HasMultipleDeliveryModelOptions = apiResponse.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = apiResponse.IsOnFlexiPaymentPilot,
+                    EmployerHasEditedCost = apiResponse.EmployerHasEditedCost,
                     HasUnavailableFlexiJobAgencyDeliveryModel = apiResponse.HasUnavailableDeliveryModel && apiResponse.DeliveryModel == Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency,
                     EmailAddressConfirmed = apiResponse.EmailAddressConfirmed
                 };

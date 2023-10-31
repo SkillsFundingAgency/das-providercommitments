@@ -650,6 +650,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
         {
             var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
+            bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
             var response = await _mediator.Send(bulkValidate);
             return response.LogId;
         }
