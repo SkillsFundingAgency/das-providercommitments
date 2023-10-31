@@ -4,12 +4,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
 {
     public class FileUploadReviewApprenticeDetailsTests
     {
-        public ReviewApprenticeDetailsForFileUploadCohort FileUploadReviewApprenticeDetails;
+        private ReviewApprenticeDetailsForFileUploadCohort _fileUploadReviewApprenticeDetails;
 
         [SetUp]
         public void Arrange()
         {
-            FileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
+            _fileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
         }
 
         [TestCase(1000, 900, true)]
@@ -18,11 +18,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
         public void TestExceedsFundingBandCap(int price, int fundingCap, bool fundingCapExceeded)
         {
             //Act
-            FileUploadReviewApprenticeDetails.Price = price;
-            FileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
+            _fileUploadReviewApprenticeDetails.Price = price;
+            _fileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
 
             //Assert
-            var result = FileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
+            var result = _fileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
             Assert.AreEqual(result, fundingCapExceeded);
         }
     }

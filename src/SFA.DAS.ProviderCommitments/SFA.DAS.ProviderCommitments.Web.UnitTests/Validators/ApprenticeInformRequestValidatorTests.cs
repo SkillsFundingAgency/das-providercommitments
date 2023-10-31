@@ -1,8 +1,8 @@
-﻿using FluentValidation.TestHelper;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators;
-using System;
-using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
 {

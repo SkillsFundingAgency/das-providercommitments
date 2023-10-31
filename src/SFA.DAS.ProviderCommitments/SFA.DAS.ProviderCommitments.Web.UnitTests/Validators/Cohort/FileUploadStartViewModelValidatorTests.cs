@@ -1,12 +1,12 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Validators;
-using System;
+﻿using System;
+using System.IO;
 using System.Linq.Expressions;
 using System.Text;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Http;
-using System.IO;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Validators;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {

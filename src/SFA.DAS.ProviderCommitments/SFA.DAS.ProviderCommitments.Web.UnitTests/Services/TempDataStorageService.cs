@@ -43,9 +43,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Services
             Assert.AreEqual(_cacheObject.TestProperty, result.TestProperty);
         }
 
-        public class TestCacheObject
+        private class TestCacheObject
         {
-            public string TestProperty { get; set; }
+            public string TestProperty { get; init; }
         }
     }
 }
