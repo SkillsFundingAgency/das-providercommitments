@@ -1,9 +1,7 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -24,7 +22,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task GetThenReturnsView()
         {
             var fixture = new WhenConfirmRequestFixture();
-
             var result = await fixture.Sut.Confirm(fixture.ChangeOfEmployerRequest) as ViewResult;
 
             Assert.NotNull(result);
@@ -34,18 +31,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenConfirmRequestFixture
     {
-        public ApprenticeController Sut { get; set; }
-        public ConfirmRequest ChangeOfEmployerRequest { get; set; }
-        public ConfirmViewModel ChangeOfEmployerViewModel { get; set; }
+        public ApprenticeController Sut { get; }
+        public ConfirmRequest ChangeOfEmployerRequest { get; }
+        private ConfirmViewModel ChangeOfEmployerViewModel { get; }
 
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly Fixture _fixture;
 
         public WhenConfirmRequestFixture()
         {
-            _fixture = new Fixture();
-            ChangeOfEmployerRequest = _fixture.Build<ConfirmRequest>().Create();
-            ChangeOfEmployerViewModel = _fixture.Build<ConfirmViewModel>()
+            var fixture = new Fixture();
+            ChangeOfEmployerRequest = fixture.Build<ConfirmRequest>().Create();
+            ChangeOfEmployerViewModel = fixture.Build<ConfirmViewModel>()
                 .With(x => x.NewStartDate, "042020")
                 .Without(x => x.NewEmploymentEndDate)
                 .Create();
@@ -54,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Setup(x => x.Map<ConfirmViewModel>(It.IsAny<ConfirmRequest>()))
                 .ReturnsAsync(ChangeOfEmployerViewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public void VerifyConfirmViewModelMapperWasCalled()

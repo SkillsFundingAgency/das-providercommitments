@@ -32,26 +32,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetViewApprenticeshipUpdatesFixture
     {
-        public ApprenticeController Sut { get; set; }
+        private readonly ApprenticeController _sut;
 
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
         private readonly ViewApprenticeshipUpdatesRequest _request;
-        private readonly long _providerId;
 
         public GetViewApprenticeshipUpdatesFixture()
         {
             var fixture = new Fixture();
-            _providerId = 123;
-            _request = new ViewApprenticeshipUpdatesRequest { ProviderId = _providerId, ApprenticeshipHashedId = "XYZ" };
+            const long providerId = 123;
+            _request = new ViewApprenticeshipUpdatesRequest { ProviderId = providerId, ApprenticeshipHashedId = "XYZ" };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<ViewApprenticeshipUpdatesViewModel>();
+            var viewModel = fixture.Create<ViewApprenticeshipUpdatesViewModel>();
 
             _modelMapperMock
                 .Setup(x => x.Map<ViewApprenticeshipUpdatesViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public void VerifyMapperWasCalled()
@@ -59,6 +57,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Verify(x => x.Map<ViewApprenticeshipUpdatesViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.ViewApprenticeshipUpdates(_request);
+        public async Task<IActionResult> Act() => await _sut.ViewApprenticeshipUpdates(_request);
     }
 }

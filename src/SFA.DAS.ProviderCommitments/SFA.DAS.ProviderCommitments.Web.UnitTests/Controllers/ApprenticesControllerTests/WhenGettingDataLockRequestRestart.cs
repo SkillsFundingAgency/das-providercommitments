@@ -44,6 +44,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             Assert.NotNull(result);
             Assert.AreEqual(typeof(DataLockRequestRestartViewModel), result.Model.GetType());
         }
-
     }
 }

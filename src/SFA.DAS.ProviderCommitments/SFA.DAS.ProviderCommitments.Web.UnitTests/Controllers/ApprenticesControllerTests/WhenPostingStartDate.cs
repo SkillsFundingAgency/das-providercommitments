@@ -1,10 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -47,9 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class PostStartDateFixture
     {
-        private readonly Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly EndDateRequest _request;
         private readonly ApprenticeController _sut;
         private readonly StartDateViewModel _viewModel;
 
@@ -63,18 +60,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 StopDate = DateTime.UtcNow.AddDays(-5)
             };
 
-            _request = new EndDateRequest
+            var request = new EndDateRequest
             {
                 ApprenticeshipHashedId = _viewModel.ApprenticeshipHashedId,
                 ProviderId = _viewModel.ProviderId
             };
 
-            _cookieStorageServiceMock = new Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>();
+            var cookieStorageServiceMock = new Mock<Interfaces.ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
                 .Setup(x => x.Map<EndDateRequest>(_viewModel))
-                .ReturnsAsync(_request);
-            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
+                .ReturnsAsync(request);
+            _sut = new ApprenticeController(_modelMapperMock.Object, cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
 
         public Task<IActionResult> Act() => _sut.StartDate(_viewModel);

@@ -35,8 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetChangeOptionFixture
     {
-        public ApprenticeController Controller { get; set; }
-
+        private readonly ApprenticeController _controller;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ChangeOptionRequest _request;
         private readonly ChangeOptionViewModel _viewModel;
@@ -51,12 +50,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(m => m.Map<ChangeOptionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            Controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public async Task<IActionResult> ChangeOption()
         {
-            var result = await Controller.ChangeOption(_request);
+            var result = await _controller.ChangeOption(_request);
 
             return result as ViewResult;
         }

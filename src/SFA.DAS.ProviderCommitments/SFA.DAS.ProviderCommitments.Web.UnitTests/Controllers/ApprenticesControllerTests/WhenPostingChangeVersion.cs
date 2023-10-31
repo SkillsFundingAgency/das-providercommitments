@@ -11,7 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private ChangeVersionViewModel _viewModel;
         private EditApprenticeshipRequestViewModel _editRequestViewModel;
-
         private WhenPostingChangeVersionFixture _fixture;
 
         [SetUp]
@@ -62,36 +61,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await _fixture.ChangeVersion(_viewModel);
 
-            _fixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
+            WhenPostingChangeVersionFixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
         }
     }
 
     public class WhenPostingChangeVersionFixture : ApprenticeControllerTestFixtureBase
     {
-        public WhenPostingChangeVersionFixture() : base()
+        public WhenPostingChangeVersionFixture()
         {
-            _controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
+            Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> ChangeVersion(ChangeVersionViewModel viewModel)
         {
-            return await _controller.ChangeVersion(viewModel);
+            return await Controller.ChangeVersion(viewModel);
         }
 
         public void SetUpMockMapper(EditApprenticeshipRequestViewModel editApprenticeshipViewModel)
         {
-            _mockMapper.Setup(m => m.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeVersionViewModel>()))
+            MockMapper.Setup(m => m.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeVersionViewModel>()))
                 .ReturnsAsync(editApprenticeshipViewModel);
         }
 
-        public void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
+        public static void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
         {
             redirectResult.ActionName.Should().Be("ConfirmEditApprenticeship");
         }
 
         public void VerifyMapperIsCalled()
         {
-            _mockMapper.Verify(x => x.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeVersionViewModel>()), Times.Once());
+            MockMapper.Verify(x => x.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeVersionViewModel>()), Times.Once());
         }
     }
 }

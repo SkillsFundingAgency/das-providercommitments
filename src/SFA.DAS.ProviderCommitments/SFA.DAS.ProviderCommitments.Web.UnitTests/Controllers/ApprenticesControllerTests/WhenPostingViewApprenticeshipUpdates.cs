@@ -70,9 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
             private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
-            private readonly Mock<IModelMapper> _modelMapper;
-            public UserInfo UserInfo;
-            public Mock<IAuthenticationService> AuthenticationService { get; }
+            private Mock<IAuthenticationService> AuthenticationService { get; }
 
             public WhenPostingViewApprenticeshipUpdatesFixture()
             {
@@ -80,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _apiClient.Setup(x => x.UndoApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<UndoApprenticeshipUpdatesRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _modelMapper = new Mock<IModelMapper>();
+                var modelMapper = new Mock<IModelMapper>();
 
                 _viewModel = new ViewApprenticeshipUpdatesViewModel
                 {
@@ -91,11 +89,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
                 var autoFixture = new Fixture();
-                UserInfo = autoFixture.Create<UserInfo>();
+                var userInfo = autoFixture.Create<UserInfo>();
                 AuthenticationService = new Mock<IAuthenticationService>();
-                AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
+                AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object);
+                _sut = new ApprenticeController(modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object);
 
                 _sut.TempData = tempData;
             }

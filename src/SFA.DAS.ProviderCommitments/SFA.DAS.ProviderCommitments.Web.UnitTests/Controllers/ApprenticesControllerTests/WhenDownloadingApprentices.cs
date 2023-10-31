@@ -10,7 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 {
     public class WhenDownloadingApprentices
     {
-
         [Test, MoqAutoData]
         public async Task ThenTheFileContentIsSetCorrectly(
             DownloadRequest request,

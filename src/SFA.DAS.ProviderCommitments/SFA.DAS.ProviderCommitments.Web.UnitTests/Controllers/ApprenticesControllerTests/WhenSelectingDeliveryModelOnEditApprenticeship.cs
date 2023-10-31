@@ -41,9 +41,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public void WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
         {
-            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture();
-
-            fixture.ViewModel.DeliveryModel = null;
+            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture
+            {
+                ViewModel =
+                {
+                    DeliveryModel = null
+                }
+            };
 
             try
             {
@@ -64,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithTempViewModel()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            fixture.ViewModel.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) DeliveryModel.PortableFlexiJob;
+            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
 
             var result = fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditApprenticeship");
@@ -73,45 +77,44 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenSelectingDeliveryModelOnEditApprenticeshipFixture
     {
-        public ApprenticeController Sut { get; set; }
-
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public Mock<ITempDataDictionary> TempDataMock;
-        public EditApprenticeshipDeliveryModelViewModel ViewModel;
-        public EditApprenticeshipRequest Request;
-        public EditApprenticeshipRequestViewModel Apprenticeship;
+        private readonly EditApprenticeshipRequestViewModel _apprenticeship;
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        private readonly Mock<ITempDataDictionary> _tempDataMock;
+        
+        public EditApprenticeshipDeliveryModelViewModel ViewModel { get; }
+        public EditApprenticeshipRequest Request { get; }
+        public string RedirectUrl { get; }
+        public ApprenticeController Sut { get; }
+        
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
             ViewModel = fixture.Create<EditApprenticeshipDeliveryModelViewModel>();
             Request = fixture.Create<EditApprenticeshipRequest>();
-            Apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            _apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x=>x.EndDate).Without(x => x.EndMonth).Without(x => x.EndYear)
                 .Create();
 
-            ModelMapperMock = new Mock<IModelMapper>();
-            TempDataMock = new Mock<ITempDataDictionary>();
-            AuthorizationServiceMock = new Mock<IAuthorizationService>();
+            _modelMapperMock = new Mock<IModelMapper>();
+            _tempDataMock = new Mock<ITempDataDictionary>();
 
-            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
-            Sut.TempData = TempDataMock.Object;
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            Sut.TempData = _tempDataMock.Object;
         }
 
-        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<Infrastructure.OuterApi.Types.DeliveryModel> list)
+        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<EditApprenticeshipDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
+            _modelMapperMock.Setup(x => x.Map<EditApprenticeshipDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
                 .ReturnsAsync(new EditApprenticeshipDeliveryModelViewModel { DeliveryModels = list });
             return this;
         }
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithTempViewModel()
         {
-            object asString = JsonConvert.SerializeObject(Apprenticeship);
-            TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            object asString = JsonConvert.SerializeObject(_apprenticeship);
+            _tempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
             return this;
         }
 

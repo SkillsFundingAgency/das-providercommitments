@@ -1,10 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderUrlHelper;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     [TestFixture]
     public class WhenGettingConfirmEmployer
@@ -32,10 +31,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
 
     public class GetConfirmEmployerFixture
     {
-        public ApprenticeController Sut { get; set; }
-
+        private readonly ApprenticeController _sut;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ConfirmEmployerViewModel _viewModel;
         private readonly ConfirmEmployerRequest _request;
         private readonly long _providerId;
 
@@ -44,27 +41,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticeContro
             var fixture = new Fixture();
             _request = new ConfirmEmployerRequest { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<ConfirmEmployerViewModel>();
+            var viewModel = fixture.Create<ConfirmEmployerViewModel>();
             _providerId = 123;
 
             _modelMapperMock
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
             
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
-
-        public GetConfirmEmployerFixture WithModelStateErrors()
-        {
-            Sut.ControllerContext.ModelState.AddModelError("TestError", "Test Error");
-            return this;
-        }
-
+        
         public void VerifyMapperWasCalled()
         {
             _modelMapperMock.Verify(x => x.Map<ConfirmEmployerViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_request);
+        public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_request);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -48,12 +47,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             _mockTempData = new Mock<ITempDataDictionary>();
 
-            _controller.TempData = _mockTempData.Object;
+            Controller.TempData = _mockTempData.Object;
         }
 
         public IActionResult CancelChangeOfCircumstance(CancelChangeOfCircumstanceRequest request)
         {
-            return _controller.CancelChangeOfCircumstance(request);
+            return Controller.CancelChangeOfCircumstance(request);
         }
 
         public void VerifyTempDataRemoved()

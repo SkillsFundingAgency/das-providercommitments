@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _viewModel.SendRequestToEmployer = true;
 
             //Act
-            var result = _sut.ConfirmRestart(_viewModel);
+            _sut.ConfirmRestart(_viewModel);
 
             //Assert                
             _mockCommitmentsApiClient.Verify(x => x.TriageDataLocks(It.IsAny<long>(), It.IsAny<TriageDataLocksRequest>(), It.IsAny<CancellationToken>()), Times.Once);

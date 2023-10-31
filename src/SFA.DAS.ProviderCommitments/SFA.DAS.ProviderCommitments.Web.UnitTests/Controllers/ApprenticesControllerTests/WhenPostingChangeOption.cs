@@ -42,34 +42,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = await _fixture.ChangeOption(_viewModel);
 
-            _fixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
+            WhenPostingChangeOptionFixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
         }
     }
 
     public class WhenPostingChangeOptionFixture : ApprenticeControllerTestFixtureBase
     {
-
-        public WhenPostingChangeOptionFixture() : base()
+        public WhenPostingChangeOptionFixture()
         {
-            _controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
+            Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> ChangeOption(ChangeOptionViewModel viewModel)
         {
-            return await _controller.ChangeOption(viewModel);
+            return await Controller.ChangeOption(viewModel);
         }
 
         public void VerifyMapperIsCalled()
         {
-            _mockMapper.Verify(x => x.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeOptionViewModel>()), Times.Once());
+            MockMapper.Verify(x => x.Map<EditApprenticeshipRequestViewModel>(It.IsAny<ChangeOptionViewModel>()), Times.Once());
         }
 
         public void VerifyTempDataStored()
         {
-            _controller.TempData.ContainsKey("EditApprenticeshipRequestViewModel").Should().BeTrue();
+            Controller.TempData.ContainsKey("EditApprenticeshipRequestViewModel").Should().BeTrue();
         }
 
-        public void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
+        public static void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
         {
             redirectResult.ActionName.Should().Be("ConfirmEditApprenticeship");
         }

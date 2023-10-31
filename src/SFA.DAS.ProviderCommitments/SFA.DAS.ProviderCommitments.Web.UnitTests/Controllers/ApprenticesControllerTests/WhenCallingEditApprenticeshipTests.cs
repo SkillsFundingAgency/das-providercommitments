@@ -1,13 +1,13 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     public class WhenCallingEditApprenticeshipTests
     {
-        WhenCallingEditApprenticeshipTestsFixture _fixture;
+        private WhenCallingEditApprenticeshipTestsFixture _fixture;
 
         [SetUp]
         public void Arrange()
@@ -38,33 +38,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         private readonly EditApprenticeshipRequestViewModel _tempViewModel;
         private object _tempViewModelAsString;
 
-
-        public WhenCallingEditApprenticeshipTestsFixture() : base()
+        public WhenCallingEditApprenticeshipTestsFixture()
         {
-            _request = _autoFixture.Create<EditApprenticeshipRequest>();
-            _viewModel = _autoFixture.Create<EditApprenticeshipRequestViewModel>();
-            _tempViewModel = _autoFixture.Create<EditApprenticeshipRequestViewModel>();
+            _request = AutoFixture.Create<EditApprenticeshipRequest>();
+            _viewModel = AutoFixture.Create<EditApprenticeshipRequestViewModel>();
+            _tempViewModel = AutoFixture.Create<EditApprenticeshipRequestViewModel>();
 
             _tempViewModelAsString = JsonConvert.SerializeObject(_tempViewModel);
 
-            _mockMapper.Setup(m => m.Map<EditApprenticeshipRequestViewModel>(_request))
+            MockMapper.Setup(m => m.Map<EditApprenticeshipRequestViewModel>(_request))
                 .ReturnsAsync(_viewModel);
         }
 
         public async Task<IActionResult> EditApprenticeship()
         {
-            return await _controller.EditApprenticeship(_request);
+            return await Controller.EditApprenticeship(_request);
         }
-
-        public WhenCallingEditApprenticeshipTestsFixture SetFlexibleDeliveryModel()
-        {
-            _viewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
-            return this;
-        }
-
+        
         public WhenCallingEditApprenticeshipTestsFixture WithTempModel()
         {
-            _mockTempData.Setup(x => x.TryGetValue("ViewModelForEdit", out _tempViewModelAsString));
+            MockTempData.Setup(x => x.TryGetValue("ViewModelForEdit", out _tempViewModelAsString));
             _viewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
             return this;
         }

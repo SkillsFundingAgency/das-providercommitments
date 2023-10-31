@@ -119,7 +119,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _fixture.VerifyGetTrainingProgrameIsNotCalled();
         }
 
-
         [Test]
         public async Task VerifyValidationApiIsCalled()
         {
@@ -139,7 +138,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             _viewModel.HasOptions = false;
             var result = await _fixture.EditApprenticeship(_viewModel);
-            _fixture.VerifyRedirectedToConfirmEditApprenticeship(result);
+            WhenPostingEditApprenticeshipDetailsFixture.VerifyRedirectedToConfirmEditApprenticeship(result);
         }
 
         [Test]
@@ -152,109 +151,108 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await _fixture.EditApprenticeship(_viewModel);
 
-            _fixture.VerifyRedirectedToChangeOption(result);
+            WhenPostingEditApprenticeshipDetailsFixture.VerifyRedirectedToChangeOption(result);
         }
 
         [Test]
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             var result = await _fixture.EditChangingCourse(_viewModel);
-            _fixture.VerifyRedirectedTo(result, "EditApprenticeshipCourse");
+            WhenPostingEditApprenticeshipDetailsFixture.VerifyRedirectedTo(result, "EditApprenticeshipCourse");
         }
 
         [Test]
         public async Task AndSelectDeliveryModelIsToBeChangedThenTheUserIsRedirectedToSelectDeliveryModelPage()
         {
             var result = await _fixture.EditChangingDeliveryModel(_viewModel);
-            _fixture.VerifyRedirectedTo(result, "SelectDeliveryModelForEdit");
+            WhenPostingEditApprenticeshipDetailsFixture.VerifyRedirectedTo(result, "SelectDeliveryModelForEdit");
         }
     }
 
     public class WhenPostingEditApprenticeshipDetailsFixture : ApprenticeControllerTestFixtureBase
     {
-        public WhenPostingEditApprenticeshipDetailsFixture() : base()
+        public WhenPostingEditApprenticeshipDetailsFixture()
         {
-            _controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
+            Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> EditApprenticeship(EditApprenticeshipRequestViewModel viewModel)
         {
-            return await _controller.EditApprenticeship(null, null, viewModel);
+            return await Controller.EditApprenticeship(null, null, viewModel);
         }
 
         public async Task<IActionResult> EditChangingCourse(EditApprenticeshipRequestViewModel viewModel)
         {
-            return await _controller.EditApprenticeship("Edit", null, viewModel);
+            return await Controller.EditApprenticeship("Edit", null, viewModel);
         }
 
         public async Task<IActionResult> EditChangingDeliveryModel(EditApprenticeshipRequestViewModel viewModel)
         {
-            return await _controller.EditApprenticeship(null, "Edit", viewModel);
+            return await Controller.EditApprenticeship(null, "Edit", viewModel);
         }
 
         public void SetUpGetApprenticeship(GetApprenticeshipResponse response)
         {
-            _mockCommitmentsApiClient.Setup(c => c.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            MockCommitmentsApiClient.Setup(c => c.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
         }
 
         public void SetUpGetCalculatedTrainingProgrammeVersion(EditApprenticeshipRequestViewModel viewModel, GetTrainingProgrammeResponse response)
         {
-            _mockCommitmentsApiClient.Setup(c => c.GetCalculatedTrainingProgrammeVersion(int.Parse(viewModel.CourseCode), viewModel.StartDate.Date.Value, It.IsAny<CancellationToken>()))
+            MockCommitmentsApiClient.Setup(c => c.GetCalculatedTrainingProgrammeVersion(int.Parse(viewModel.CourseCode), viewModel.StartDate.Date.Value, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
         }
 
         public void SetUpGetTrainingProgramme(EditApprenticeshipRequestViewModel viewModel, GetTrainingProgrammeResponse response)
         {
-            _mockCommitmentsApiClient.Setup(c => c.GetTrainingProgramme(viewModel.CourseCode, It.IsAny<CancellationToken>()))
+            MockCommitmentsApiClient.Setup(c => c.GetTrainingProgramme(viewModel.CourseCode, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
         }
 
         public void VerifyGetCalculatedTrainingProgrameVersionIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.GetCalculatedTrainingProgrammeVersion(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Once());
+            MockCommitmentsApiClient.Verify(x => x.GetCalculatedTrainingProgrammeVersion(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         public void VerifyGetTrainingProgrameIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+            MockCommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         public void VerifyGetCalculatedTrainingProgrameVersionIsNotCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.GetCalculatedTrainingProgrammeVersion(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Never());
+            MockCommitmentsApiClient.Verify(x => x.GetCalculatedTrainingProgrammeVersion(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Never());
         }
 
         public void VerifyGetTrainingProgrameIsNotCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
+            MockCommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         }
 
 
         public void VerifyValidationApiIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.ValidateApprenticeshipForEdit(It.IsAny<ValidateApprenticeshipForEditRequest>(), CancellationToken.None), Times.Once());
+            MockCommitmentsApiClient.Verify(x => x.ValidateApprenticeshipForEdit(It.IsAny<ValidateApprenticeshipForEditRequest>(), CancellationToken.None), Times.Once());
         }
 
         public void VerifyMapperIsCalled()
         {
-            _mockMapper.Verify(x => x.Map<ValidateApprenticeshipForEditRequest>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
+            MockMapper.Verify(x => x.Map<ValidateApprenticeshipForEditRequest>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
         }
 
-        public void VerifyRedirectedToConfirmEditApprenticeship(IActionResult actionResult)
+        public static void VerifyRedirectedToConfirmEditApprenticeship(IActionResult actionResult)
         {
             actionResult.VerifyReturnsRedirectToActionResult().WithActionName("ConfirmEditApprenticeship");
         }
 
-        public void VerifyRedirectedToChangeOption(IActionResult actionResult)
+        public static void VerifyRedirectedToChangeOption(IActionResult actionResult)
         {
             actionResult.VerifyReturnsRedirectToActionResult().WithActionName("ChangeOption");
         }
 
-        public void VerifyRedirectedTo(IActionResult actionResult, string actionName)
+        public static void VerifyRedirectedTo(IActionResult actionResult, string actionName)
         {
             actionResult.VerifyReturnsRedirectToActionResult().WithActionName(actionName);
         }
-
     }
 }

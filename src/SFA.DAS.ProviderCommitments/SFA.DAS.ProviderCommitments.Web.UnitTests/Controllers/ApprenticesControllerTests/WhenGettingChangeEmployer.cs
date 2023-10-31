@@ -1,12 +1,11 @@
 ﻿using System;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -34,31 +33,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class GetChangeEmployerPageFixture
     {
-        private string _apprenticeshipHashedId;
-        private long _apprenticeshipId;
-        private Mock<IModelMapper> _modelMapper;
-        private long _providerId;
-        private ChangeEmployerRequest _request;
-        private InformViewModel _informViewModel;
-        private ChangeEmployerRequestDetailsViewModel _changeEmployerRequestDetailsViewModel;
-        private ApprenticeController _sut;
+        private readonly Mock<IModelMapper> _modelMapper;
+        private readonly ChangeEmployerRequest _request;
+        private readonly InformViewModel _informViewModel;
+        private readonly ChangeEmployerRequestDetailsViewModel _changeEmployerRequestDetailsViewModel;
+        private readonly ApprenticeController _sut;
 
         public GetChangeEmployerPageFixture()
         {
-            _providerId = 123;
-            _apprenticeshipId = 345;
-            _apprenticeshipHashedId = "DS23JF3";
+            const long providerId = 123;
+            const long apprenticeshipId = 345;
+            const string apprenticeshipHashedId = "DS23JF3";
             _request = new ChangeEmployerRequest
             {
-                ProviderId = _providerId,
-                ApprenticeshipHashedId = _apprenticeshipHashedId,
-                ApprenticeshipId = _apprenticeshipId
+                ProviderId = providerId,
+                ApprenticeshipHashedId = apprenticeshipHashedId,
+                ApprenticeshipId = apprenticeshipId
             };
             _informViewModel = new InformViewModel
             {
-                ProviderId = _providerId,
-                ApprenticeshipHashedId = _apprenticeshipHashedId,
-                ApprenticeshipId = _apprenticeshipId
+                ProviderId = providerId,
+                ApprenticeshipHashedId = apprenticeshipHashedId,
+                ApprenticeshipId = apprenticeshipId
             };
             _changeEmployerRequestDetailsViewModel = new ChangeEmployerRequestDetailsViewModel();
             
@@ -67,11 +63,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .Setup(x => x.Map<IChangeEmployerViewModel>(_request))
                 .ReturnsAsync(_informViewModel);
 
-            ITempDataProvider tempDataProvider = Mock.Of<ITempDataProvider>();
-            TempDataDictionaryFactory tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
-            ITempDataDictionary tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
+            var tempDataProvider = Mock.Of<ITempDataProvider>();
+            var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            var tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
 
-            _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>())
+            _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>())
             {
                 TempData = tempData
             };

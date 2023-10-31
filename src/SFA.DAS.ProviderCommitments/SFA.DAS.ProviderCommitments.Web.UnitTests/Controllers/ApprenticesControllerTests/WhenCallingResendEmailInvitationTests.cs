@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 {
     public class WhenCallingResendEmailInvitationTests
     {
-        WhenCallingResendEmailInvitationTestsFixture _fixture;
+        private WhenCallingResendEmailInvitationTestsFixture _fixture;
 
         [SetUp]
         public void Arrange()
@@ -29,29 +29,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenCallingResendEmailInvitationTestsFixture : ApprenticeControllerTestFixtureBase
     {
-        private ResendEmailInvitationRequest _request;
-        public UserInfo UserInfo;
-        public Mock<IAuthenticationService> AuthenticationService { get; }
+        private readonly ResendEmailInvitationRequest _request;
+        private Mock<IAuthenticationService> AuthenticationService { get; }
 
-        public WhenCallingResendEmailInvitationTestsFixture() : base()
+        public WhenCallingResendEmailInvitationTestsFixture()
         {
-            _request = _autoFixture.Create<ResendEmailInvitationRequest>();
+            _request = AutoFixture.Create<ResendEmailInvitationRequest>();
 
-            UserInfo = new Fixture().Create<UserInfo>();
+            var userInfo = new Fixture().Create<UserInfo>();
             AuthenticationService = new Mock<IAuthenticationService>();
-            AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
+            AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
 
-            _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            Controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> ResendEmailInvitation()
         {
-            return await _controller.ResendEmailInvitation(AuthenticationService.Object, _request);
+            return await Controller.ResendEmailInvitation(AuthenticationService.Object, _request);
         }
 
         public void VerifyResendApprenticeshipInvitationApiIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.ResendApprenticeshipInvitation(
+            MockCommitmentsApiClient.Verify(x => x.ResendApprenticeshipInvitation(
                 _request.ApprenticeshipId, It.Is<SaveDataRequest>(o => o.UserInfo != null), It.IsAny<CancellationToken>()), Times.Once());
         }
 

@@ -41,56 +41,52 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenSelectingCourseOnEditApprenticeshipFixture
     {
-        public ApprenticeController Sut { get; set; }
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        private readonly Mock<ITempDataDictionary> _tempDataMock;
+        private readonly EditApprenticeshipRequestViewModel _apprenticeship;
+        public readonly EditApprenticeshipCourseViewModel CourseViewModel;
+        private readonly BaseApprenticeshipRequest _apprenticeshipRequestViewModel;
 
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public Mock<ITempDataDictionary> TempDataMock;
-        public EditApprenticeshipRequest Request;
-        public EditApprenticeshipRequestViewModel Apprenticeship;
-        public GetApprenticeshipResponse ApprenticeshipResponse;
-        public EditApprenticeshipCourseViewModel CourseViewModel;
-        public BaseApprenticeshipRequest ApprenticeshipRequestViewModel;
-        public Mock<ICommitmentsApiClient> CommitmentsApiClientMock;
+        public EditApprenticeshipRequest Request { get; }
+        public ApprenticeController Sut { get; }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Create<EditApprenticeshipRequest>();
-            Apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            _apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x => x.EndMonth).Without(x => x.EndYear).Without(x => x.EndDate)
                 .Create();
-            ApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
             CourseViewModel = fixture.Create<EditApprenticeshipCourseViewModel>();
-            ApprenticeshipRequestViewModel = fixture.Create<BaseApprenticeshipRequest>();
+            _apprenticeshipRequestViewModel = fixture.Create<BaseApprenticeshipRequest>();
 
-            ModelMapperMock = new Mock<IModelMapper>();
-            TempDataMock = new Mock<ITempDataDictionary>();
+            _modelMapperMock = new Mock<IModelMapper>();
+            _tempDataMock = new Mock<ITempDataDictionary>();
 
-            CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+            var commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             
-            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), CommitmentsApiClientMock.Object);
-            Sut.TempData = TempDataMock.Object;
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), commitmentsApiClientMock.Object);
+            Sut.TempData = _tempDataMock.Object;
             ;
         }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture WithApprenticeship()
         {
-            object asString = JsonConvert.SerializeObject(Apprenticeship);
-            TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            object asString = JsonConvert.SerializeObject(_apprenticeship);
+            _tempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
             return this;
         }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture SetApprenticeshipRequestViewModel()
         {
-            ModelMapperMock.Setup(x => x.Map<BaseApprenticeshipRequest>(It.IsAny<EditApprenticeshipCourseViewModel>())).ReturnsAsync(ApprenticeshipRequestViewModel);
+            _modelMapperMock.Setup(x => x.Map<BaseApprenticeshipRequest>(It.IsAny<EditApprenticeshipCourseViewModel>())).ReturnsAsync(_apprenticeshipRequestViewModel);
             return this;
         }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture SetCourseViewModel()
         {
-            ModelMapperMock.Setup(x => x.Map<EditApprenticeshipCourseViewModel>(It.IsAny<EditApprenticeshipRequest>())).ReturnsAsync(CourseViewModel);
+            _modelMapperMock.Setup(x => x.Map<EditApprenticeshipCourseViewModel>(It.IsAny<EditApprenticeshipRequest>())).ReturnsAsync(CourseViewModel);
             return this;
         }
     }

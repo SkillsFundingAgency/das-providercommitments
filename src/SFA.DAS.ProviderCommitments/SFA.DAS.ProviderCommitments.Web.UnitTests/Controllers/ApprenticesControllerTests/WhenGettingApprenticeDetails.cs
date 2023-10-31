@@ -1,8 +1,7 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -13,9 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task ThenCallsModelMapper()
         {
             var fixture = new GetApprenticeDetailsFixture();
-
             await fixture.Act();
-
             fixture.VerifyMapperWasCalled();
         }
 
@@ -23,35 +20,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task ThenReturnsView()
         {
             var fixture = new GetApprenticeDetailsFixture();
-
             var result = await fixture.Act();
-
             result.VerifyReturnsViewModel().WithModel<DetailsViewModel>();
         }
     }
 
     public class GetApprenticeDetailsFixture
     {
-        public ApprenticeController Sut { get; set; }
+        private readonly ApprenticeController _sut;
 
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly DetailsViewModel _viewModel;
         private readonly DetailsRequest _request;
-        private readonly long _providerId;
 
         public GetApprenticeDetailsFixture()
         {
             var fixture = new Fixture();
-            _providerId = 123;
-            _request = new DetailsRequest { ProviderId = _providerId, ApprenticeshipHashedId = "XYZ" };
+            const long providerId = 123;
+            _request = new DetailsRequest { ProviderId = providerId, ApprenticeshipHashedId = "XYZ" };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<DetailsViewModel>();
+            var viewModel = fixture.Create<DetailsViewModel>();
 
             _modelMapperMock
                 .Setup(x => x.Map<DetailsViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public void VerifyMapperWasCalled()
@@ -59,6 +52,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Verify(x => x.Map<DetailsViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.Details(_request);
+        public async Task<IActionResult> Act() => await _sut.Details(_request);
     }
 }

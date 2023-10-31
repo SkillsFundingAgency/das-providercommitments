@@ -3,39 +3,35 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderUrlHelper;
 using static SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
     public class ApprenticeControllerTestFixtureBase
     {
-        protected Fixture _autoFixture;
+        protected readonly Fixture AutoFixture;
+        protected readonly Mock<IModelMapper> MockMapper;
+        protected readonly Mock<ICommitmentsApiClient> MockCommitmentsApiClient;
+        protected readonly Mock<ITempDataDictionary> MockTempData;
+        protected readonly ApprenticeController Controller;
 
-        protected Mock<IModelMapper> _mockMapper;
-        protected Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        protected Mock<ILinkGenerator> _mockLinkGenerator;
-        protected Mock<IUrlHelper> _mockUrlHelper;
-        protected Mock<ITempDataDictionary> _mockTempData;
+        private readonly Mock<IUrlHelper> _mockUrlHelper;
 
-        protected readonly ApprenticeController _controller;
-
-        public ApprenticeControllerTestFixtureBase()
+        protected ApprenticeControllerTestFixtureBase()
         {
-            _autoFixture = new Fixture();
-            _autoFixture.Customize(new DateCustomisation());
-            _mockMapper = new Mock<IModelMapper>();
-            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _mockLinkGenerator = new Mock<ILinkGenerator>();
+            AutoFixture = new Fixture();
+            AutoFixture.Customize(new DateCustomisation());
+            MockMapper = new Mock<IModelMapper>();
+            MockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockUrlHelper = new Mock<IUrlHelper>();
-            _mockTempData = new Mock<ITempDataDictionary>();
+            MockTempData = new Mock<ITempDataDictionary>();
 
-            _controller = new ApprenticeController(_mockMapper.Object,
-                Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(),
-                _mockCommitmentsApiClient.Object);
+            Controller = new ApprenticeController(MockMapper.Object,
+                Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+                MockCommitmentsApiClient.Object);
 
-            _controller.Url = _mockUrlHelper.Object;
-            _controller.TempData = _mockTempData.Object;
+            Controller.Url = _mockUrlHelper.Object;
+            Controller.TempData = MockTempData.Object;
         }
     }
 }

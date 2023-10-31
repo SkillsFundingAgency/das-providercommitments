@@ -1,9 +1,7 @@
-﻿using NUnit.Framework.Internal;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -37,11 +35,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     internal class GetStartDateFixture
     {
-        private readonly Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly StartDateRequest _request;
         private readonly ApprenticeController _sut;
-        private readonly StartDateViewModel _viewModel;
 
         public GetStartDateFixture()
         {
@@ -50,14 +46,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ProviderId = 2342,
                 ApprenticeshipHashedId = "KG34DF989"
             };
-            _viewModel = new StartDateViewModel();
-            _cookieStorageServiceMock = new Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>();
+            var viewModel = new StartDateViewModel();
+            var cookieStorageServiceMock = new Mock<Interfaces.ICookieStorageService<IndexRequest>>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock
                 .Setup(x => x.Map<StartDateViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
-            _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, cookieStorageServiceMock.Object, Mock.Of<ICommitmentsApiClient>());
         }
 
         public Task<IActionResult> Act() => _sut.StartDate(_request);

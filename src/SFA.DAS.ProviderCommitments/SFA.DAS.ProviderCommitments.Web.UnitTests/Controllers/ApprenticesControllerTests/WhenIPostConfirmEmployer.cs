@@ -31,17 +31,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class PostConfirmEmployerFixture
     {
-        public ApprenticeController Sut { get; set; }
-
-        public string RedirectUrl;
+        private readonly ApprenticeController _sut;
         private readonly ConfirmEmployerViewModel _viewModel;
-        private readonly long _providerId;
 
         public PostConfirmEmployerFixture()
         {
-            _providerId = 123;
-            _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" , ApprenticeshipHashedId = "ABC"};
-            Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            const long providerId = 123;
+            _viewModel = new ConfirmEmployerViewModel { ProviderId = providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" , ApprenticeshipHashedId = "ABC"};
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
@@ -56,6 +53,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             return this;
         }
 
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_viewModel);
+        public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);
     }
 }

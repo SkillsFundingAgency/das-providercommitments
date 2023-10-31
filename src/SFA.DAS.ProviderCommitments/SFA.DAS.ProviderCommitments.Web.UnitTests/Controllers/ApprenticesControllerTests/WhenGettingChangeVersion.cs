@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public async Task ThenVerifyMapperWasCalled()
         {
-            var result = await _fixture.ChangeVersion();
+            await _fixture.ChangeVersion();
 
             _fixture.VerifyMapperWasCalled();
         }
@@ -37,8 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetChangeVersionFixture
     {
-        public ApprenticeController Controller { get; set; }
-
+        private readonly ApprenticeController _controller;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ChangeVersionRequest _request;
         private readonly ChangeVersionViewModel _viewModel;
@@ -53,13 +52,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(m => m.Map<ChangeVersionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            Controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
-            Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
+            _controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>());
+            _controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> ChangeVersion()
         {
-            var result = await Controller.ChangeVersion(_request);
+            var result = await _controller.ChangeVersion(_request);
 
             return result as ViewResult;
         }
