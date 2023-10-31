@@ -1,13 +1,11 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -17,31 +15,23 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
     public class OverlappingTrainingDateRequestControllerTestFixture
     {
         private readonly OverlappingTrainingDateRequestController _controller;
-        private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly DraftApprenticeshipViewModel _model;
-        private readonly CreateCohortRequest _createCohortRequest;
-        private readonly CreateCohortResponse _createCohortResponse;
         private IActionResult _actionResult;
         private readonly string _linkGeneratorRedirectUrl;
-        private string _linkGeneratorParameter;
-        private Fixture _autoFixture;
-        private readonly Mock<IEncodingService> _encodingService;
+        private readonly Fixture _autoFixture;
         private readonly Mock<ITempDataDictionary> _tempData;
-        private readonly string _draftApprenticeshipHashedId;
         private readonly DraftApprenticeshipOverlapOptionViewModel _draftApprenticeshipOverlapOptionViewModel;
         private readonly Mock<IOuterApiService> _outerApiService;
-        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
-        private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
-        private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
+        private readonly GetApprenticeshipResponse _apprenticeshipDetails;
 
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequest _overlapRequest;
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequestViewModel _overlapViewModel;
@@ -51,16 +41,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
         private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
+        private ValidateUlnOverlapResult _validateUlnOverlapResult;
 
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
             _autoFixture = new Fixture();
-
-            _draftApprenticeshipHashedId = _autoFixture.Create<string>();
-            _mediator = new Mock<IMediator>();
             _mockModelMapper = new Mock<IModelMapper>();
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _encodingService = new Mock<IEncodingService>();
+            
+            var linkGenerator = new Mock<ILinkGenerator>();
 
             _draftApprenticeshipOverlapAlertRequest = _autoFixture.Create<DraftApprenticeshipOverlapAlertRequest>();
             _updateDraftApprenticeshipRequest = _autoFixture.Create<UpdateDraftApprenticeshipApimRequest>();
@@ -77,12 +65,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _tempData = new Mock<ITempDataDictionary>();
 
-            _createCohortRequest = new CreateCohortRequest();
+            var createCohortRequest = new CreateCohortRequest();
             _mockModelMapper
                 .Setup(x => x.Map<CreateCohortRequest>(It.IsAny<AddDraftApprenticeshipViewModel>()))
-                .ReturnsAsync(_createCohortRequest);
+                .ReturnsAsync(createCohortRequest);
 
-            _createCohortResponse = new CreateCohortResponse
+            var createCohortResponse = new CreateCohortResponse
             {
                 CohortId = _autoFixture.Create<long>(),
                 CohortReference = _autoFixture.Create<string>(),
@@ -96,29 +84,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 ProviderId = 2,
             };
 
-            _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_createCohortResponse);
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(createCohortResponse);
 
             _linkGeneratorRedirectUrl = _autoFixture.Create<string>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
+            linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                 .Returns(_linkGeneratorRedirectUrl)
-                .Callback((string value) => _linkGeneratorParameter = value);
+                .Callback((string value) => _ = value);
 
 
             _outerApiService = new Mock<IOuterApiService>();
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
 
             _mockModelMapper.Setup(x => x.Map<CreateOverlappingTrainingDateApimRequest>(It.IsAny<CreateCohortResponse>())).ReturnsAsync(() => new CreateOverlappingTrainingDateApimRequest());
             _mockModelMapper.Setup(x => x.Map<CreateCohortRequest>(It.IsAny<DraftApprenticeshipOverlapOptionViewModel>())).ReturnsAsync(() => new CreateCohortRequest());
             _mockModelMapper.Setup(x => x.Map<DraftApprenticeshipOverlapOptionViewModel>(It.IsAny<DraftApprenticeshipOverlapOptionRequest>())).ReturnsAsync(() => new DraftApprenticeshipOverlapOptionViewModel());
 
-            _apprenticeshipDetails = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse()
+            _apprenticeshipDetails = new GetApprenticeshipResponse()
             {
                 Id = 1,
-                Status = CommitmentsV2.Types.ApprenticeshipStatus.Live
+                Status = ApprenticeshipStatus.Live
             };
-            _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+            commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
 
             _overlapRequest = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequest>();
             _overlapViewModel = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequestViewModel>();
@@ -127,17 +116,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _employerNotifiedViewModel = _autoFixture.Create<EmployerNotifiedViewModel>();
 
             _controller = new OverlappingTrainingDateRequestController(
-                _mediator.Object,
+                mediator.Object,
                 _mockModelMapper.Object,
-                _linkGenerator.Object,
-                _commitmentsApiClient.Object,
+                linkGenerator.Object,
+                commitmentsApiClient.Object,
                 Mock.Of<IAuthenticationService>(),
                 _outerApiService.Object
                 );
             _controller.TempData = _tempData.Object;
         }
 
-        public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(CommitmentsV2.Types.ApprenticeshipStatus status)
+        public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(ApprenticeshipStatus status)
         {
             _apprenticeshipDetails.Status = status;
             return this;
@@ -282,13 +271,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             Assert.AreEqual(model.DraftApprenticeshipId, _overlapRequest.DraftApprenticeshipId);
             return this;
         }
-
-        public OverlappingTrainingDateRequestControllerTestFixture SetupOLTDWithPendingRequestsOverlapOptions(OverlapOptions overlapOption)
-        {
-            _overlapViewModel.OverlapOptions = overlapOption;
-            return this;
-        }
-
+        
         public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapAlert()
         {
             _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);

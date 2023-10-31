@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
     internal static class IActionResultTestExtensions
     {
@@ -36,36 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
             return result;
         }
 
-        public static IActionResult VerifyReturnsBadRequest(this IActionResult result)
-        {
-            var badRequest = result.VerifyResponseObjectType<BadRequestResult>();
-
-            result.VerifyReturnsSpecifiedStatusCode(HttpStatusCode.BadRequest);
-
-            return badRequest;
-        }
-
-        public static IActionResult VerifyReturnsBadRequestObject(this IActionResult result)
-        {
-            var badRequest = result.VerifyResponseObjectType<BadRequestObjectResult>();
-
-            result.VerifyReturnsSpecifiedStatusCode(HttpStatusCode.BadRequest);
-
-            return badRequest;
-        }
-
-
-        public static ObjectResult VerifyReturnsSpecifiedStatusCode(this IActionResult result, HttpStatusCode expectedStatusCode)
-        {
-            var objectResult = result
-                .VerifyResponseObjectType<ObjectResult>();
-
-            Assert.AreEqual((int?)expectedStatusCode, objectResult.StatusCode);
-
-            return objectResult;
-        }
-
-        public static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
+        private static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
         {
             Assert.IsTrue(result is TExpectedResponseType, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
             return (TExpectedResponseType)result;
