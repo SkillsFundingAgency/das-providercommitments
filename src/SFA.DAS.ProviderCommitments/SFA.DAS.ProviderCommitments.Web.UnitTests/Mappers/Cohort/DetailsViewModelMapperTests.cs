@@ -717,6 +717,30 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
         }
 
+        [TestCase(nameof(DraftApprenticeshipDto.TrainingPrice))]
+        [TestCase(nameof(DraftApprenticeshipDto.EndPointAssessmentPrice))]
+        public async Task IsCompleteIsFalseWhenPilotApprenticeshipMissingEitherPriceComponent(string propertyName)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship()
+                .SetIsOnFlexiPaymentPilotFlag(true)
+                .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            var result = await fixture.Map();
+            Assert.IsFalse(result.Courses.First().DraftApprenticeships.First().IsComplete);
+        }
+
+        [TestCase(nameof(DraftApprenticeshipDto.TrainingPrice))]
+        [TestCase(nameof(DraftApprenticeshipDto.EndPointAssessmentPrice))]
+        public async Task IsCompleteIsTrueWhenNonPilotApprenticeshipMissingEitherPriceComponent(string propertyName)
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture()
+                .CreateDraftApprenticeship()
+                .SetIsOnFlexiPaymentPilotFlag(false)
+                .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            var result = await fixture.Map();
+            Assert.IsTrue(result.Courses.First().DraftApprenticeships.First().IsComplete);
+        }
+
         [Test]
         public async Task IsCompleteIsFalseWhenStartDatesAreBothNull()
         {
@@ -929,6 +953,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return this;
         }
 
+        public DetailsViewModelMapperTestsFixture SetIsOnFlexiPaymentPilotFlag(bool? flag)
+        {
+            var draftApprenticeship = CohortDetails.DraftApprenticeships.First();
+            draftApprenticeship.IsOnFlexiPaymentPilot = flag;
+            return this;
+        }
+
         public DetailsViewModelMapperTestsFixture CreateThisNumberOfApprenticeships(int numberOfApprenticeships)
         {
             var draftApprenticeships = _autoFixture.CreateMany<DraftApprenticeshipDto>(numberOfApprenticeships).ToArray();
@@ -1005,6 +1036,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(source.LastName, result.LastName);
             Assert.AreEqual(source.DateOfBirth, result.DateOfBirth);
             Assert.AreEqual(source.Cost, result.Cost);
+            Assert.AreEqual(source.TrainingPrice, result.TrainingPrice);
+            Assert.AreEqual(source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
             Assert.AreEqual(source.EmploymentPrice, result.EmploymentPrice);
             Assert.AreEqual(source.EmploymentEndDate, result.EmploymentEndDate);
             Assert.AreEqual(source.StartDate, result.StartDate);
@@ -1052,6 +1085,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             draftApprenticeship.StartDate = startDate;
             draftApprenticeship.OriginalStartDate = originalStartDate;
             draftApprenticeship.DeliveryModel = dm;
+            draftApprenticeship.IsOnFlexiPaymentPilot = false;
         }
 
         public DetailsViewModelMapperTestsFixture SetProviderComplete(bool providerComplete)
