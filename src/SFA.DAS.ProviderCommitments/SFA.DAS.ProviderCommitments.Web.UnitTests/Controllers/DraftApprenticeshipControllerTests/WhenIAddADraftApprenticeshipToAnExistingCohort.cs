@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenReturningToPageAfterChnagingTheCourseOrDeliveryModel()
+        public async Task AndWhenReturningToPageAfterChangingTheCourseOrDeliveryModel()
         {
             _fixture.SetupTempDraftApprenticeship();
 

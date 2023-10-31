@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     [TestFixture]
     public class WhenGettingDeleteConfirmationRequest
     {
-        public DraftApprenticeshipController Sut { get; set; }
+        private DraftApprenticeshipController _sut;
         private Mock<IModelMapper> _modelMapperMock;
         private Mock<IAuthorizationService> _providerFeatureToggle;
         private DeleteConfirmationViewModel _viewModel;
@@ -21,10 +21,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
-            _request = _autoFixture.Create<DeleteConfirmationRequest>();
+            var autoFixture = new Fixture();
+            _request = autoFixture.Create<DeleteConfirmationRequest>();
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = _autoFixture.Create<DeleteConfirmationViewModel>();
+            _viewModel = autoFixture.Create<DeleteConfirmationViewModel>();
 
             _modelMapperMock
               .Setup(x => x.Map<DeleteConfirmationViewModel>(_request))
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            Sut = new DraftApprenticeshipController(
+            _sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 Mock.Of<ICommitmentsApiClient>(),
                 _modelMapperMock.Object,
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task Then_Call_ModelMapper()
         {
             //Act
-            await Sut.DeleteConfirmation(_request);
+            await _sut.DeleteConfirmation(_request);
 
             //Assert
             _modelMapperMock.Verify(x => x.Map<DeleteConfirmationViewModel>(_request));
@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public async Task Then_Returns_View()
         {
             //Act
-            var result = await Sut.DeleteConfirmation(_request);
+            var result = await _sut.DeleteConfirmation(_request);
 
             //Assert
             result.VerifyReturnsViewModel().WithModel<DeleteConfirmationViewModel>();

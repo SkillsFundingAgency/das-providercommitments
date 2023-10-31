@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     [TestFixture]
     public class WhenPostingRecognisePriorLearningSummaryRequest
     {
-        public DraftApprenticeshipController Sut { get; set; }
+        private DraftApprenticeshipController _sut;
         private Mock<IModelMapper> _modelMapperMock;
         private Mock<IAuthorizationService> _providerFeatureToggle;
         private PriorLearningSummaryViewModel _viewModel;
@@ -20,14 +20,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = _autoFixture.Create<PriorLearningSummaryViewModel>();
+            _viewModel = autoFixture.Create<PriorLearningSummaryViewModel>();
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
             _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            Sut = new DraftApprenticeshipController(
+            _sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 Mock.Of<ICommitmentsApiClient>(),
                 _modelMapperMock.Object,
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [Test]
         public void When_posting_from_Recognise_Prior_Learning_Summary()
         {
-            var action = Sut.RecognisePriorLearningSummary(_viewModel);
+            var action = _sut.RecognisePriorLearningSummary(_viewModel);
             action.VerifyReturnsRedirectToActionResult().WithActionName("Details");
         }
     }

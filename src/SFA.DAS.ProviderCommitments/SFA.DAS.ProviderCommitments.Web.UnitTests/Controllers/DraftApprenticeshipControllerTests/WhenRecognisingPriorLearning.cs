@@ -1,23 +1,20 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Execution;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -385,30 +382,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
     public class WhenRecognisingPriorLearningFixture
     {
-        public DraftApprenticeshipController Sut { get; set; }
-
-        private readonly GetDraftApprenticeshipResponse Apprenticeship;
-        public GetPriorLearningSummaryQueryResult RplSummary;
-        public RecognisePriorLearningRequest Request;
-        public PriorLearningSummaryRequest RplSummaryRequest;
-        public RecognisePriorLearningViewModel ViewModel;
-        public PriorLearningDetailsViewModel DetailsViewModel;
-        public PriorLearningDataViewModel DataViewModel;
-        public CreatePriorLearningDataResponse RplCreatePriorLearningDataResponse;
-        public GetPriorLearningDataQueryResult PriorLearningDataQueryResult;
-        public CreatePriorLearningDataRequest CreatePriorLearningDataRequest;
-
-        public Mock<IOuterApiService> OuterApiService;
-        public Mock<IOuterApiClient> OuterApiClient;
-
-        public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-        public EditApprenticeshipRequest _request;
-
-        public RecognisePriorLearningResult RplDataResult;
-
+        private readonly Mock<IAuthorizationService> _authorizationService;
+        private readonly GetDraftApprenticeshipResponse _apprenticeship;
+        private readonly CreatePriorLearningDataResponse _rplCreatePriorLearningDataResponse;
+        private readonly GetPriorLearningDataQueryResult _priorLearningDataQueryResult;
+        private readonly RecognisePriorLearningResult _rplDataResult;
+        
+        public Mock<IOuterApiService> OuterApiService { get; }
+        public DraftApprenticeshipController Sut { get; }
+        public GetPriorLearningSummaryQueryResult RplSummary{ get; }
+        public RecognisePriorLearningRequest Request{ get; }
+        public PriorLearningSummaryRequest RplSummaryRequest{ get; }
+        public RecognisePriorLearningViewModel ViewModel{ get; }
+        public PriorLearningDetailsViewModel DetailsViewModel{ get; }
+        public PriorLearningDataViewModel DataViewModel{ get; }
         public Mock<ICommitmentsApiClient> ApiClient { get; }
-        public Mock<IAuthorizationService> AuthorizationService { get; }
-
+        
         public WhenRecognisingPriorLearningFixture()
         {
             var fixture = new Fixture();
@@ -418,26 +407,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             ViewModel.IsTherePriorLearning = true;
             DetailsViewModel = fixture.Build<PriorLearningDetailsViewModel>().Create();
             DataViewModel = fixture.Build<PriorLearningDataViewModel>().Create();
-            Apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
+            _apprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
             RplSummary = fixture.Create<GetPriorLearningSummaryQueryResult>();
-            RplDataResult = fixture.Create<RecognisePriorLearningResult>();
-            PriorLearningDataQueryResult = fixture.Create<GetPriorLearningDataQueryResult>();
-            RplCreatePriorLearningDataResponse = fixture.Create<CreatePriorLearningDataResponse>();
-            CreatePriorLearningDataRequest = fixture.Create<CreatePriorLearningDataRequest>();
-
+            _rplDataResult = fixture.Create<RecognisePriorLearningResult>();
+            _priorLearningDataQueryResult = fixture.Create<GetPriorLearningDataQueryResult>();
+            _rplCreatePriorLearningDataResponse = fixture.Create<CreatePriorLearningDataResponse>();
+           
             ApiClient = new Mock<ICommitmentsApiClient>();
             ApiClient.Setup(x =>
                 x.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Apprenticeship);
+            .ReturnsAsync(_apprenticeship);
 
-            OuterApiClient = new Mock<IOuterApiClient>();
+            var outerApiClient = new Mock<IOuterApiClient>();
 
             OuterApiService = new Mock<IOuterApiService>();
             OuterApiService.Setup(x => x.GetPriorLearningSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(RplSummary);
-            OuterApiService.Setup(x => x.UpdatePriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CreatePriorLearningDataRequest>())).ReturnsAsync(RplCreatePriorLearningDataResponse);
-            OuterApiService.Setup(x => x.GetPriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(PriorLearningDataQueryResult);
+            OuterApiService.Setup(x => x.UpdatePriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CreatePriorLearningDataRequest>())).ReturnsAsync(_rplCreatePriorLearningDataResponse);
+            OuterApiService.Setup(x => x.GetPriorLearningData(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync(_priorLearningDataQueryResult);
 
-            AuthorizationService = new Mock<IAuthorizationService>();
+            _authorizationService = new Mock<IAuthorizationService>();
 
             Sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
@@ -448,42 +436,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new RecognisePriorLearningSummaryRequestToSummaryViewModelMapper(OuterApiService.Object),
                     new RecognisePriorLearningViewModelToResultMapper(ApiClient.Object),
                     new RecognisePriorLearningRequestToDetailsViewModelMapper(ApiClient.Object),
-                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, AuthorizationService.Object, OuterApiClient.Object),
+                    new PriorLearningDetailsViewModelToResultMapper(ApiClient.Object, _authorizationService.Object, outerApiClient.Object),
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                 Mock.Of<IEncodingService>(),
-                    AuthorizationService.Object,
+                    _authorizationService.Object,
                 OuterApiService.Object,Mock.Of<IAuthenticationService>());
         }
 
 
         internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
         {
-            AuthorizationService.Setup(x => x.IsAuthorized(ProviderFeature.RplExtended)).Returns(true);
-            AuthorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
+            _authorizationService.Setup(x => x.IsAuthorized(ProviderFeature.RplExtended)).Returns(true);
+            _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()
         {
-            Apprenticeship.RecognisePriorLearning = null;
+            _apprenticeship.RecognisePriorLearning = null;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithPreviousSelection(bool previousSelection)
         {
-            Apprenticeship.RecognisePriorLearning = previousSelection;
+            _apprenticeship.RecognisePriorLearning = previousSelection;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours,
             int? weightageReducedBy, string qualificationsForRplReduction, string reasonForRplReduction)
         {
-            Apprenticeship.DurationReducedBy = durationReducedBy;
-            Apprenticeship.PriceReducedBy = priceReducedBy;
-            Apprenticeship.DurationReducedByHours = durationReducedByHours;
-            Apprenticeship.WeightageReducedBy = weightageReducedBy;
-            Apprenticeship.QualificationsForRplReduction = qualificationsForRplReduction;
-            Apprenticeship.ReasonForRplReduction = reasonForRplReduction;
+            _apprenticeship.DurationReducedBy = durationReducedBy;
+            _apprenticeship.PriceReducedBy = priceReducedBy;
+            _apprenticeship.DurationReducedByHours = durationReducedByHours;
+            _apprenticeship.WeightageReducedBy = weightageReducedBy;
+            _apprenticeship.QualificationsForRplReduction = qualificationsForRplReduction;
+            _apprenticeship.ReasonForRplReduction = reasonForRplReduction;
             return this;
         }
 
@@ -495,25 +483,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal WhenRecognisingPriorLearningFixture WithRpl1Data(int durationReducedBy, int priceReducedBy)
         {
-            PriorLearningDataQueryResult.TrainingTotalHours = null;
-            PriorLearningDataQueryResult.DurationReducedByHours = null;
-            PriorLearningDataQueryResult.IsDurationReducedByRpl = null;
-            PriorLearningDataQueryResult.DurationReducedBy = durationReducedBy;
-            PriorLearningDataQueryResult.PriceReduced = priceReducedBy;
+            _priorLearningDataQueryResult.TrainingTotalHours = null;
+            _priorLearningDataQueryResult.DurationReducedByHours = null;
+            _priorLearningDataQueryResult.IsDurationReducedByRpl = null;
+            _priorLearningDataQueryResult.DurationReducedBy = durationReducedBy;
+            _priorLearningDataQueryResult.PriceReduced = priceReducedBy;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithoutStandardOptions()
         {
-            RplCreatePriorLearningDataResponse.HasStandardOptions = false;
-            Apprenticeship.HasStandardOptions = false;
+            _rplCreatePriorLearningDataResponse.HasStandardOptions = false;
+            _apprenticeship.HasStandardOptions = false;
             return this;
         }
 
         internal WhenRecognisingPriorLearningFixture WithStandardOptions()
         {
-            RplCreatePriorLearningDataResponse.HasStandardOptions = true;
-            Apprenticeship.HasStandardOptions = true;
+            _rplCreatePriorLearningDataResponse.HasStandardOptions = true;
+            _apprenticeship.HasStandardOptions = true;
             return this;
         }
 
@@ -534,36 +522,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         internal WhenRecognisingPriorLearningFixture WithRplDataResult(bool hasStandardOptions, bool rplPriceReductionError)
         {
-            RplDataResult.HasStandardOptions = hasStandardOptions;
-            RplDataResult.RplPriceReductionError = rplPriceReductionError;
+            _rplDataResult.HasStandardOptions = hasStandardOptions;
+            _rplDataResult.RplPriceReductionError = rplPriceReductionError;
             return this;
         }
         
         internal WhenRecognisingPriorLearningFixture WithRplCreatePriorLearningDataResponse(bool hasStandardOptions, bool rplPriceReductionError)
         {
-            RplCreatePriorLearningDataResponse.HasStandardOptions = hasStandardOptions;
-            RplCreatePriorLearningDataResponse.RplPriceReductionError = rplPriceReductionError;
+            _rplCreatePriorLearningDataResponse.HasStandardOptions = hasStandardOptions;
+            _rplCreatePriorLearningDataResponse.RplPriceReductionError = rplPriceReductionError;
             return this;
         }
-
-        internal WhenRecognisingPriorLearningFixture EnterRplDetails(int reducedDuration, int reducedPrice)
-        {
-            DetailsViewModel.ReducedDuration = reducedDuration;
-            DetailsViewModel.ReducedPrice = reducedPrice;
-            return this;
-        }
-
-        internal WhenRecognisingPriorLearningFixture EnterRplDetails(PriorLearningDetailsViewModel model)
-        {
-            DetailsViewModel.ReducedDuration = model.ReducedDuration;
-            DetailsViewModel.ReducedPrice = model.ReducedPrice;
-            DetailsViewModel.DurationReducedByHours = model.DurationReducedByHours;
-            DetailsViewModel.WeightageReducedBy = model.WeightageReducedBy;
-            DetailsViewModel.QualificationsForRplReduction = model.QualificationsForRplReduction;
-            DetailsViewModel.ReasonForRplReduction = model.ReasonForRplReduction;
-            return this;
-        }
-
+       
         internal WhenRecognisingPriorLearningFixture EnterRplData(PriorLearningDataViewModel model)
         {
             DataViewModel.TrainingTotalHours = model.TrainingTotalHours;

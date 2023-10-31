@@ -9,9 +9,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerT
     [TestFixture]
     public class ErrorControllerTest
     {
-        public Mock<IConfiguration> Configuration;
-        public bool UseDfESignIn;
-        public ErrorController Sut { get; set; }
+        private Mock<IConfiguration> _configuration;
+        private bool _useDfESignIn;
+        private ErrorController _sut;
 
         [Test]
         [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
@@ -22,22 +22,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerT
         {
             var fixture = new Fixture();
 
-            UseDfESignIn = fixture.Create<bool>();
+            _useDfESignIn = fixture.Create<bool>();
 
-            Configuration = new Mock<IConfiguration>();
-            Sut = new ErrorController(Configuration.Object);
+            _configuration = new Mock<IConfiguration>();
+            _sut = new ErrorController(_configuration.Object);
             
-            Configuration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
-            Configuration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(UseDfESignIn));
+            _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
+            _configuration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(_useDfESignIn));
 
 
-            var result = (ViewResult)Sut.Error(403);
+            var result = (ViewResult)_sut.Error(403);
             result.ViewName.Should().Be("403");
 
             Assert.That(result, Is.Not.Null);
             var actualModel = result?.Model as Error403ViewModel;
             Assert.That(actualModel?.HelpPageLink, Is.EqualTo(helpLink));
-            Assert.AreEqual(actualModel?.UseDfESignIn, UseDfESignIn);
+            Assert.AreEqual(actualModel?.UseDfESignIn, _useDfESignIn);
         }
     }
 }

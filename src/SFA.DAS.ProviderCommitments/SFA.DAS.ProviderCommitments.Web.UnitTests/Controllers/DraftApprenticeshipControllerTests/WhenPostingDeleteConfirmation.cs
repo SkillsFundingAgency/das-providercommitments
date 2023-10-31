@@ -16,8 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
     [TestFixture]
     public class WhenPostingDeleteConfirmation
     {
-        public DraftApprenticeshipController Sut { get; set; }
-        private string RedirectUrl;
+        private DraftApprenticeshipController _sut;
         private Mock<ICommitmentsApiClient> _apiClient;
         private Mock<IModelMapper> _modelMapperMock;
         private Mock<IAuthorizationService> _providerFeatureToggle;
@@ -27,9 +26,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = _autoFixture.Create<DeleteConfirmationViewModel>();
+            _viewModel = autoFixture.Create<DeleteConfirmationViewModel>();
             _apiClient = new Mock<ICommitmentsApiClient>();
             _apiClient.Setup(x => x.DeleteDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<DeleteDraftApprenticeshipRequest>(),
                 It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
@@ -40,18 +39,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
               .ReturnsAsync(_mapperResult);
 
             _providerFeatureToggle = new Mock<IAuthorizationService>();
-
-            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
-         
+            
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new DraftApprenticeshipController(
+            _sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 _apiClient.Object,
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
                 _providerFeatureToggle.Object,
                 Mock.Of<IOuterApiService>(),Mock.Of<IAuthenticationService>());
-            Sut.TempData = tempData;
+            _sut.TempData = tempData;
         }
 
         [Test]
@@ -61,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = true;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
             _apiClient.Verify(x => x.DeleteDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(),
@@ -75,10 +72,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = true;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
-            var flashMessage = Sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
+            var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
             Assert.NotNull(flashMessage);
             Assert.AreEqual(flashMessage, DraftApprenticeshipController.DraftApprenticeDeleted);
         }
@@ -90,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = false;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
             _apiClient.Verify(x => x.DeleteDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(),
@@ -104,10 +101,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = false;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
-            var flashMessage = Sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
+            var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
             Assert.IsNull(flashMessage);
         }
 
@@ -118,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = false;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            var result = await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
             var redirect = result.VerifyReturnsRedirectToActionResult();
@@ -133,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             _viewModel.DeleteConfirmed = true;
 
             //Act
-            var result = await Sut.DeleteConfirmation(_viewModel);
+            var result = await _sut.DeleteConfirmation(_viewModel);
 
             //Assert           
             result.VerifyReturnsRedirectToActionResult().WithActionName("Details");

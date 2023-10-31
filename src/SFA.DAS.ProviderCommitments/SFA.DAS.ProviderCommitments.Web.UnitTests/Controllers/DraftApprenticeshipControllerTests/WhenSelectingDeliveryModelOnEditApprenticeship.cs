@@ -67,66 +67,58 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
     public class WhenSelectingDeliveryModelOnEditApprenticeshipFixture
     {
-        public DraftApprenticeshipController Sut { get; set; }
-
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public Mock<ITempDataDictionary> TempDataMock;
-        public SelectDeliveryModelForEditViewModel ViewModel;
-        public DraftApprenticeshipRequest Request;
-        public EditDraftApprenticeshipViewModel DraftApprenticeship;
-        public SelectDeliveryModelForEditViewModel MapperResult;
-
+        private readonly Mock<ITempDataDictionary> _tempDataMock;
+        private readonly EditDraftApprenticeshipViewModel _draftApprenticeship;
+        private readonly SelectDeliveryModelForEditViewModel _mapperResult;
+        
+        public DraftApprenticeshipController Sut { get; }
+        public SelectDeliveryModelForEditViewModel ViewModel { get; }
+        public DraftApprenticeshipRequest Request { get; }
+        
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
             ViewModel = fixture.Create<SelectDeliveryModelForEditViewModel>();
             Request = fixture.Create<DraftApprenticeshipRequest>();
-            DraftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            _draftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x => x.EndMonth).Without(x => x.EndYear)
                 .Create();
 
-            ModelMapperMock = new Mock<IModelMapper>();
-            TempDataMock = new Mock<ITempDataDictionary>();
-            AuthorizationServiceMock = new Mock<IAuthorizationService>();
+            var modelMapperMock = new Mock<IModelMapper>();
+            _tempDataMock = new Mock<ITempDataDictionary>();
+            var authorizationServiceMock = new Mock<IAuthorizationService>();
 
-            MapperResult = new SelectDeliveryModelForEditViewModel();
-            ModelMapperMock.Setup(x => x.Map<SelectDeliveryModelForEditViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
-                .ReturnsAsync(MapperResult);
+            _mapperResult = new SelectDeliveryModelForEditViewModel();
+            modelMapperMock.Setup(x => x.Map<SelectDeliveryModelForEditViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+                .ReturnsAsync(_mapperResult);
 
             Sut = new DraftApprenticeshipController(
                 Mock.Of<IMediator>(),
                 Mock.Of<ICommitmentsApiClient>(),
-                ModelMapperMock.Object,
+                modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                AuthorizationServiceMock.Object, Mock.Of<IOuterApiService>(),Mock.Of<IAuthenticationService>());
-            Sut.TempData = TempDataMock.Object;
+                authorizationServiceMock.Object, Mock.Of<IOuterApiService>(),Mock.Of<IAuthenticationService>());
+            Sut.TempData = _tempDataMock.Object;
         }
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            MapperResult.DeliveryModels = list;
+            _mapperResult.DeliveryModels = list;
             return this;
         }
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDraftApprenticeship()
         {
-            object asString = JsonConvert.SerializeObject(DraftApprenticeship);
-            TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            object asString = JsonConvert.SerializeObject(_draftApprenticeship);
+            _tempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
             return this;
         }
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithUnavailableDeliveryModel()
         {
-            MapperResult.HasUnavailableFlexiJobAgencyDeliveryModel = true;
+            _mapperResult.HasUnavailableFlexiJobAgencyDeliveryModel = true;
             return this;
-        }
-
-        public void VerifyReturnsRedirect(IActionResult redirectResult)
-        {
-            redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
         }
     }
 }
