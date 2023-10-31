@@ -1,5 +1,4 @@
 ﻿using System;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -14,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         private Mock<ICacheStorageService> _cacheStorage;
         private ChangeEmployerCacheItem _cacheItem;
         private SelectDeliveryModelViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()

@@ -366,23 +366,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     public class EditApprenticeshipRequestToViewModelMapperTestsFixture
     {
-        public EditApprenticeshipRequest _request;
-        public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-        private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        private Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
-        private Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
-        private Mock<IEncodingService> _mockEncodingService;
-        private Mock<IOuterApiClient> _outerApiClient;
-
-        private GetPriceEpisodesResponse _priceEpisodesResponse;
-        private AccountResponse _accountResponse;
-        private GetAllTrainingProgrammeStandardsResponse _allTrainingProgrammeStandardsResponse;
-        private GetAllTrainingProgrammesResponse _allTrainingProgrammeResponse;
-        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
-        private EditApprenticeshipRequestToViewModelMapper _mapper;
+        private readonly EditApprenticeshipRequest _request;
+        public GetApprenticeshipResponse ApprenticeshipResponse { get; }
+        private readonly Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        private readonly Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
+        private readonly Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
+        private readonly AccountResponse _accountResponse;
+        private readonly EditApprenticeshipRequestToViewModelMapper _mapper;
         private EditApprenticeshipRequestViewModel _viewModel;
         private IEnumerable<TrainingProgramme> _courses;
-        private GetEditApprenticeshipResponse _editApprenticeshipResponse;
+        private readonly GetEditApprenticeshipResponse _editApprenticeshipResponse;
 
         public async Task<EditApprenticeshipRequestViewModel> Map()
         {
@@ -605,56 +598,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .With(x => x.CourseCode, "ABC")
                 .With(x => x.DateOfBirth, autoFixture.Create<DateTime>())
                 .Create();
-            _priceEpisodesResponse = autoFixture.Build<GetPriceEpisodesResponse>()
-                 .With(x => x.PriceEpisodes, new List<PriceEpisode> {
-                    new PriceEpisode { Cost = 1000, ToDate = DateTime.Now.AddMonths(-1)}})
+            var priceEpisodesResponse = autoFixture.Build<GetPriceEpisodesResponse>()
+                .With(x => x.PriceEpisodes, new List<PriceEpisode> {
+                    new() { Cost = 1000, ToDate = DateTime.Now.AddMonths(-1)}})
                 .Create();
 
             _accountResponse = autoFixture.Create<AccountResponse>();
-            _allTrainingProgrammeStandardsResponse = autoFixture.Create<GetAllTrainingProgrammeStandardsResponse>();
-            _allTrainingProgrammeResponse = autoFixture.Create<GetAllTrainingProgrammesResponse>();
+            var allTrainingProgrammeStandardsResponse = autoFixture.Create<GetAllTrainingProgrammeStandardsResponse>();
+            var allTrainingProgrammeResponse = autoFixture.Create<GetAllTrainingProgrammesResponse>();
 
-            _trainingProgrammeResponse = autoFixture.Build<GetTrainingProgrammeResponse>().Create();
+            var trainingProgrammeResponse = autoFixture.Build<GetTrainingProgrammeResponse>().Create();
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockCommitmentsApiClient.Setup(r => r.GetApprenticeship(It.IsAny<long>(), CancellationToken.None))
                 .ReturnsAsync(ApprenticeshipResponse);
             _mockCommitmentsApiClient.Setup(c => c.GetPriceEpisodes(It.IsAny<long>(), CancellationToken.None))
-                .ReturnsAsync(_priceEpisodesResponse);
+                .ReturnsAsync(priceEpisodesResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetTrainingProgramme(ApprenticeshipResponse.CourseCode, It.IsAny<CancellationToken>()))
-               .ReturnsAsync(_trainingProgrammeResponse);
+               .ReturnsAsync(trainingProgrammeResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetAccount(ApprenticeshipResponse.EmployerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => _accountResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetAllTrainingProgrammeStandards(It.IsAny<CancellationToken>()))
               .ReturnsAsync(() => {
-                  _courses = _allTrainingProgrammeStandardsResponse.TrainingProgrammes;
-                  return _allTrainingProgrammeStandardsResponse;
+                  _courses = allTrainingProgrammeStandardsResponse.TrainingProgrammes;
+                  return allTrainingProgrammeStandardsResponse;
               });
 
             _mockCommitmentsApiClient.Setup(t => t.GetAllTrainingProgrammes(It.IsAny<CancellationToken>()))
               .ReturnsAsync(() => {
-                  _courses = _allTrainingProgrammeResponse.TrainingProgrammes;
-                  return _allTrainingProgrammeResponse;
+                  _courses = allTrainingProgrammeResponse.TrainingProgrammes;
+                  return allTrainingProgrammeResponse;
               });
 
             _mockAcademicYearDateProvider = new Mock<IAcademicYearDateProvider>();
 
             _mockCurrentDateTimeProvider = new Mock<ICurrentDateTime>();
 
-            _mockEncodingService = new Mock<IEncodingService>();
-            _mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
+            var mockEncodingService = new Mock<IEncodingService>();
+            mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
                 .Returns("PALEID");
 
             _editApprenticeshipResponse = autoFixture.Create<GetEditApprenticeshipResponse>();
-            _outerApiClient = new Mock<IOuterApiClient>();
-            _outerApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
+            var outerApiClient = new Mock<IOuterApiClient>();
+            outerApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
                     r.ApprenticeshipId == _request.ApprenticeshipId && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_editApprenticeshipResponse);
 
-            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, _mockEncodingService.Object, _outerApiClient.Object);
+            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, mockEncodingService.Object, outerApiClient.Object);
         }
     }
 }

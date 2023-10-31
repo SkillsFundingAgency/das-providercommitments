@@ -1,10 +1,10 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using System;
+﻿using System;
 using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Mock<ITempDataStorageService> _tempDataStorageService;
         private EditApprenticeshipRequest _request;
         private GetEditApprenticeshipCourseResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private EditApprenticeshipRequestViewModel _cacheModel;
         private const string ViewModelForEdit = "ViewModelForEdit";
 

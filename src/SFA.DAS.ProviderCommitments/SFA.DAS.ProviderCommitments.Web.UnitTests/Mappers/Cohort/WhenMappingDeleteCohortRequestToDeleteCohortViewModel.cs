@@ -88,17 +88,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 DraftApprenticeships = new List<DraftApprenticeshipDto>
                 {
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 1,
                         CourseName = "Course1"
                     },
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 2,
                         CourseName = "Course1"
                     },
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 3,
                         CourseName = "Course2"

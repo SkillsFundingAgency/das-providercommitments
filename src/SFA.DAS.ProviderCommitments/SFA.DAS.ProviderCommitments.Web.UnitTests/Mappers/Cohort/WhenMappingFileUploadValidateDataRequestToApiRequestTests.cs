@@ -23,8 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
              _csvRecords = new List<CsvRecord>
             {
-                new CsvRecord
-                 {
+                new()
+                {
                     AgreementId = "XEGE5X",
                     CohortRef = "P97BKL",
                     ULN = "6591690157",
@@ -39,8 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ProviderRef = "ZB88",
                     EmailAddress = "abc34628125987@abc.com"
                 },
-                new CsvRecord
-                 {
+                new()
+                {
                     AgreementId = "XEGE5X2",
                     CohortRef = "P97BKL2",
                     ULN = "65916901572",

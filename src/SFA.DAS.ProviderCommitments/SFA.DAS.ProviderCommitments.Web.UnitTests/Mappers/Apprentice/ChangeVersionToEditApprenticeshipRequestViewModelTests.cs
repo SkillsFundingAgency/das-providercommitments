@@ -1,13 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -84,7 +82,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task Then_HasOptionsIsMappedCorrectly(bool hasOptions)
         {
             if (hasOptions == false)
+            {
                 _getVersionResponse.TrainingProgramme.Options = new List<string>();
+            }
 
             var result = await _mapper.Map(_viewModel);
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task VerifyGetApprenticeship()
         {
-            var result = await _mapper.Map(_viewModel);
+            await _mapper.Map(_viewModel);
 
             _mockCommitmentsApiClient.Verify(c => c.GetApprenticeship(_viewModel.ApprenticeshipId, It.IsAny<CancellationToken>()), Times.Once());
         }
@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task VerifyGetPriceEpisodes()
         {
-            var result = await _mapper.Map(_viewModel);
+            await _mapper.Map(_viewModel);
 
             _mockCommitmentsApiClient.Verify(c => c.GetPriceEpisodes(_viewModel.ApprenticeshipId, It.IsAny<CancellationToken>()), Times.Once());
         }

@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -19,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
         private Mock<ICacheStorageService> _cacheService;
         private CreateCohortCacheItem _cacheItem;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()

@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<IOuterApiClient> _apiClient;
         private ConfirmEmployerViewModel _request;
         private GetConfirmEmployerResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [Test]
         public async Task HasNoDeclaredStandards_Is_Mapped_Correctly()

@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper _mapper;
         private Mock<ITempDataStorageService> _tempDataStorageService;
         private EditApprenticeshipCourseViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private EditApprenticeshipRequestViewModel _cacheModel;
         private const string ViewModelForEdit = "ViewModelForEdit";
 

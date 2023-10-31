@@ -1,18 +1,17 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     public class ChangeVersionViewModelMapperTests
     {
         private Fixture _fixture;
-
         private ChangeVersionRequest _request;
         private GetApprenticeshipResponse _getApprenticeshipResponse;
         private GetTrainingProgrammeResponse _getCurrentVersionResponse;

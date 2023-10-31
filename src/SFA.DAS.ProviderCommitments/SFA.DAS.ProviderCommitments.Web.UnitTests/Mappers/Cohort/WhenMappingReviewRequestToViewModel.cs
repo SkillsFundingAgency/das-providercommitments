@@ -219,7 +219,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
             {
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -230,7 +230,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Provider,
                     CreatedOn = Now.AddMinutes(-10)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 2,
                     AccountId = 2,
@@ -242,7 +242,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     CreatedOn = Now.AddMinutes(-5),
                     LatestMessageFromEmployer = new Message("This is latestMessage from employer", Now.AddMinutes(-2))
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 3,
                     AccountId = 3,
@@ -253,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Employer,
                     CreatedOn = Now.AddMinutes(-1)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 4,
                     AccountId = 4,
@@ -264,7 +264,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Employer,
                     CreatedOn = Now
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 5,
                     AccountId = 5,

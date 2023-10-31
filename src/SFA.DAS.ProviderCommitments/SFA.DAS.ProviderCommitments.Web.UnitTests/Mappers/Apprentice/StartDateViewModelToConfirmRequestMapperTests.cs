@@ -1,8 +1,8 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
+﻿using System;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -15,7 +15,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Func<Task<ConfirmRequest>> _act;
         private Mock<ICacheStorageService> _cacheStorage;
         private ChangeEmployerCacheItem _cacheItem;
-
 
         [SetUp]
         public void Arrange()
@@ -57,7 +56,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(k => k == _cacheItem.Key),
                 It.Is<ChangeEmployerCacheItem>(c => c.StartDate == _source.StartDate.MonthYear),
                 It.IsAny<int>()));
-            
         }
     }
 }

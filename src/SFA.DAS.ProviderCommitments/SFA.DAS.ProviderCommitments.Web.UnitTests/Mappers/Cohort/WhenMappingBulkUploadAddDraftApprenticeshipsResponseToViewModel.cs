@@ -88,19 +88,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 BulkUploadAddDraftApprenticeshipsResponse = new List<BulkUploadAddDraftApprenticeshipsResponse>()
                     {  
-                        new BulkUploadAddDraftApprenticeshipsResponse()
+                        new()
                         {                            
                             CohortReference = "MKRK7V", 
                             EmployerName = "Tesco", 
                             NumberOfApprenticeships = 1
                         },
-                       new BulkUploadAddDraftApprenticeshipsResponse()
+                       new()
                        {
                             CohortReference = "MKRK7V",
                             EmployerName = "Tesco",
                             NumberOfApprenticeships = 1
                        },
-                       new BulkUploadAddDraftApprenticeshipsResponse()
+                       new()
                        {
                             CohortReference = "MKRK7N",
                             EmployerName = "Nasdaq",

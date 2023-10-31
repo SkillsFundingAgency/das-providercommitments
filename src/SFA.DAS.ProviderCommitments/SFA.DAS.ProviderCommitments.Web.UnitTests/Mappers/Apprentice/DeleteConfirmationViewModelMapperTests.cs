@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
@@ -10,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class DeleteConfirmationViewModelMapperTests
     {
         private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        private Mock<IEncodingService> _mockencodingService;
+        private Mock<IEncodingService> _mockEncodingService;
         private DeleteConfirmationRequest  _deleteConfirmationRequest;        
         private GetDraftApprenticeshipResponse _getDraftApprenticeshipResponse;
         private DeleteConfirmationViewModelMapper _mapper;
@@ -18,21 +17,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
 
-            _deleteConfirmationRequest = _autoFixture.Create<DeleteConfirmationRequest>();            
+            _deleteConfirmationRequest = autoFixture.Create<DeleteConfirmationRequest>();            
 
-            _getDraftApprenticeshipResponse = _autoFixture.Create<GetDraftApprenticeshipResponse>();
+            _getDraftApprenticeshipResponse = autoFixture.Create<GetDraftApprenticeshipResponse>();
 
-            _mockencodingService = new Mock<IEncodingService>();
-            _mockencodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(It.IsAny<long>);
-            _mockencodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.ApprenticeshipId)).Returns(It.IsAny<long>);
+            _mockEncodingService = new Mock<IEncodingService>();
+            _mockEncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(It.IsAny<long>);
+            _mockEncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.ApprenticeshipId)).Returns(It.IsAny<long>);
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockCommitmentsApiClient.Setup(m => m.GetDraftApprenticeship(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_getDraftApprenticeshipResponse);
 
-            _mapper = new DeleteConfirmationViewModelMapper(_mockCommitmentsApiClient.Object, _mockencodingService.Object, Mock.Of<ILogger<DeleteConfirmationViewModelMapper>>());
+            _mapper = new DeleteConfirmationViewModelMapper(_mockCommitmentsApiClient.Object, _mockEncodingService.Object, Mock.Of<ILogger<DeleteConfirmationViewModelMapper>>());
         }
 
 

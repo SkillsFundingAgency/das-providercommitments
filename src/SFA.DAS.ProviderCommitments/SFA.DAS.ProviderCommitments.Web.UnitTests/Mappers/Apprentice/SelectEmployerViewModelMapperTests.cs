@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Act();
 
-            fixture.Assert_ListOfEmployersIsEmpty(result);
+            SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
         }
     }
 
@@ -70,7 +70,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClientMock;
         private readonly SelectEmployerRequest _request;
-        private readonly long _providerId;
         private readonly long _accountLegalEntityId;
         private readonly long _apprenticeshipId;
         private readonly GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
@@ -79,15 +78,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public SelectEmployerViewModelMapperFixture()
         {
-            _providerId = 123;
+            const long providerId = 123;
             _accountLegalEntityId = 457;
             _apprenticeshipId = 1;
-            _request = new SelectEmployerRequest { ProviderId = _providerId, ApprenticeshipId = _apprenticeshipId };
+            _request = new SelectEmployerRequest { ProviderId = providerId, ApprenticeshipId = _apprenticeshipId };
             _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "DSFF23",
@@ -97,8 +96,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         AccountLegalEntityId = 456,
                         AccountProviderId = 234
                     },
-                     new AccountProviderLegalEntityDto
-                    {
+                     new()
+                     {
                         AccountId = 124,
                         AccountLegalEntityPublicHashedId = "DSFF24",
                         AccountLegalEntityName = "TestAccountLegalEntityName2",
@@ -110,7 +109,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 }
             };
 
-            GetApprenticeshipApiResponse = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse
+            GetApprenticeshipApiResponse = new GetApprenticeshipResponse
             {
                 AccountLegalEntityId = _accountLegalEntityId,
                 EmployerName = "TestName"
@@ -158,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentApiClientMock.Verify(x => x.GetApprenticeship(_apprenticeshipId, CancellationToken.None), Times.Once);
         }
 
-        public void Assert_SelectEmployerViewModelCorrectlyMapped(Web.Models.Apprentice.SelectEmployerViewModel result)
+        public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
             Assert.AreEqual(GetApprenticeshipApiResponse.EmployerName, result.LegalEntityName);
@@ -174,9 +173,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             }
         }
 
-        public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+        public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
         {
-            Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+            Assert.AreEqual(0, result.AccountProviderLegalEntities.Count);
         }
     }
 }

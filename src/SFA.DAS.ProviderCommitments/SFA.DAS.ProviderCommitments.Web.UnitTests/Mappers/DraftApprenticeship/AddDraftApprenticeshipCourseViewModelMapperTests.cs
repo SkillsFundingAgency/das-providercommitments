@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         private Mock<IAuthorizationService> _authorizationService;
         private ReservationsAddDraftApprenticeshipRequest _request;
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()

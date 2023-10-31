@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Routing;
-using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Encoding;
-using SFA.DAS.PAS.Account.Api.ClientV2;
-using SFA.DAS.PAS.Account.Api.Types;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -129,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None))
                 .ReturnsAsync(new GetCohortsResponse(new List<CohortSummary>
             {
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -140,7 +131,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.TransferSender,
                     CreatedOn = Now.AddMinutes(-10)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -165,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
             {
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -176,7 +167,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Provider,
                     CreatedOn = Now.AddMinutes(-10)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 2,
                     AccountId = 1,
@@ -187,8 +178,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Provider,
                     CreatedOn = Now.AddMinutes(-10)
                 },
-                 new CohortSummary
-                {
+                 new()
+                 {
                     CohortId = 3,
                     AccountId = 1,
                     ProviderId = 1,

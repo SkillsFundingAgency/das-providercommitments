@@ -1,9 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -71,9 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class StartDateViewModelMapperFixture
     {
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-        private readonly Mock<ICacheStorageService> _cacheStorage;
         private readonly StartDateViewModelMapper _sut;
-        private readonly ChangeEmployerCacheItem _cacheItem;
 
         public StartDateRequest Request { get; }
         public GetApprenticeshipResponse Response { get; }
@@ -98,15 +96,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, CancellationToken.None))
                 .ReturnsAsync(Response);
 
-            _cacheItem = fixture.Build<ChangeEmployerCacheItem>()
+            var cacheItem = fixture.Build<ChangeEmployerCacheItem>()
                 .With(x => x.StartDate, "042022")
                 .Create();
-            _cacheStorage = new Mock<ICacheStorageService>();
-            _cacheStorage.Setup(x =>
+            var cacheStorage = new Mock<ICacheStorageService>();
+            cacheStorage.Setup(x =>
                     x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == Request.CacheKey)))
-                .ReturnsAsync(_cacheItem);
+                .ReturnsAsync(cacheItem);
 
-            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorage.Object);
+            _sut = new StartDateViewModelMapper(_commitmentsApiClientMock.Object, cacheStorage.Object);
         }
 
         public Task<StartDateViewModel> Act() => _sut.Map(Request);

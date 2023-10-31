@@ -36,16 +36,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     public class PriceRequestMapperFixture
     {
-        private readonly Fixture _fixture;
         private readonly PriceRequestMapper _sut;
-        private Mock<ICacheStorageService> _cacheStorage;
-        private ChangeEmployerCacheItem _cacheItem;
-        
+
         public EndDateViewModel ViewModel { get; }
 
         public PriceRequestMapperFixture()
         {
-            _fixture = new Fixture();
+            var fixture = new Fixture();
 
             ViewModel = new EndDateViewModel
             {
@@ -57,15 +54,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 EndYear = 2020,
             };
 
-            _cacheItem = _fixture.Build<ChangeEmployerCacheItem>()
+            var cacheItem = fixture.Build<ChangeEmployerCacheItem>()
                 .Create();
 
-            _cacheStorage = new Mock<ICacheStorageService>();
-            _cacheStorage.Setup(x =>
+            var cacheStorage = new Mock<ICacheStorageService>();
+            cacheStorage.Setup(x =>
                     x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == ViewModel.CacheKey)))
-                .ReturnsAsync(_cacheItem);
+                .ReturnsAsync(cacheItem);
 
-            _sut = new PriceRequestMapper(_cacheStorage.Object);
+            _sut = new PriceRequestMapper(cacheStorage.Object);
         }
 
         public Task<PriceRequest> Act() => _sut.Map(ViewModel);

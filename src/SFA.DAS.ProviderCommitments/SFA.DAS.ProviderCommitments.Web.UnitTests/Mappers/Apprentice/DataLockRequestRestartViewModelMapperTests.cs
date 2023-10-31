@@ -1,11 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Types;
-using System.Linq;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -18,19 +18,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private GetDataLockSummariesResponse _getDataLockSummariesResponse;
         private GetApprenticeshipResponse _getApprenticeshipResponse;
         private GetAllTrainingProgrammesResponse _getAllTrainingProgrammesResponse;
-        private List<DataLock> DataLocksWithCourseMismatch;
-        private List<TrainingProgramme> TrainingProgrammes;
+        private List<DataLock> _dataLocksWithCourseMismatch;
+        private List<TrainingProgramme> _trainingProgrammes;
 
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
 
-            _dataLockRequestRestartRequest = _autoFixture.Create<DataLockRequestRestartRequest>();
+            _dataLockRequestRestartRequest = autoFixture.Create<DataLockRequestRestartRequest>();
 
-            DataLocksWithCourseMismatch = new List<DataLock>
+            _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock
+                new()
                 {
                     IsResolved = false,
                     DataLockStatus = Status.Fail,
@@ -39,20 +39,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     IlrEffectiveFromDate = DateTime.Now.Date.AddDays(15)
                 }
             };
-            _getDataLockSummariesResponse = _autoFixture.Build<GetDataLockSummariesResponse>().With(x => x.DataLocksWithCourseMismatch, DataLocksWithCourseMismatch).Create();
+            _getDataLockSummariesResponse = autoFixture.Build<GetDataLockSummariesResponse>().With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch).Create();
             
-            _getApprenticeshipResponse = _autoFixture.Build<GetApprenticeshipResponse>()
+            _getApprenticeshipResponse = autoFixture.Build<GetApprenticeshipResponse>()
                 .With(p => p.CourseCode, "111")
                 .With(p => p.CourseName, "Training 111")
                 .With(p => p.EndDate, DateTime.Now.Date.AddDays(100))
                 .Create();
 
 
-            TrainingProgrammes = new List<TrainingProgramme>
+            _trainingProgrammes = new List<TrainingProgramme>
             {
-                new TrainingProgramme { CourseCode = "454-3-1", ProgrammeType = ProgrammeType.Standard, Name = "Training 111" }
+                new() { CourseCode = "454-3-1", ProgrammeType = ProgrammeType.Standard, Name = "Training 111" }
             };
-            _getAllTrainingProgrammesResponse = _autoFixture.Build<GetAllTrainingProgrammesResponse>().With(x => x.TrainingProgrammes, TrainingProgrammes).Create();
+            _getAllTrainingProgrammesResponse = autoFixture.Build<GetAllTrainingProgrammesResponse>().With(x => x.TrainingProgrammes, _trainingProgrammes).Create();
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockCommitmentsApiClient.Setup(m => m.GetApprenticeshipDatalockSummariesStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -196,7 +196,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [Test]
-        public async Task GetApprenticeshipDatalockSummariesStatusIsCalled()
+        public async Task GetApprenticeshipDataLockSummariesStatusIsCalled()
         {
             //Act
             var result = await _mapper.Map(_dataLockRequestRestartRequest);

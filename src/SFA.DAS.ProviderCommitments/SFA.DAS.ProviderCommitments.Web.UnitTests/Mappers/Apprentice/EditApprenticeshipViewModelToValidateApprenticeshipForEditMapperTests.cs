@@ -6,158 +6,155 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     public class EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests
     {
-        EditApprenticeshipRequestViewModel request;
+        private EditApprenticeshipRequestViewModel _request;
 
         [SetUp]
         public void SetUp()
         {
             var fixture = new Fixture();
             fixture.Customize(new DateCustomisation());
-            request = fixture.Create<EditApprenticeshipRequestViewModel>();
+            _request = fixture.Create<EditApprenticeshipRequestViewModel>();
         }
 
         [Test, MoqAutoData]
         public async Task ApprenticeshipId_IsMapped(
           EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.AreEqual(_request.ApprenticeshipId, result.ApprenticeshipId);
         }
 
         [Test, MoqAutoData]
-        public async Task FirstName_IsMapped(
-            EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        public async Task FirstName_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.FirstName, result.FirstName);
+            Assert.AreEqual(_request.FirstName, result.FirstName);
         }
 
         [Test, MoqAutoData]
-        public async Task LastName_IsMapped(
-            EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        public async Task LastName_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.LastName, result.LastName);
+            Assert.AreEqual(_request.LastName, result.LastName);
         }
 
         [Test, MoqAutoData]
-        public async Task Email_IsMapped(
-            EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
+        public async Task Email_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.Email, result.Email);
+            Assert.AreEqual(_request.Email, result.Email);
         }
 
         [Test, MoqAutoData]
         public async Task DateOfBirth_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.DateOfBirth.Date, result.DateOfBirth);
+            Assert.AreEqual(_request.DateOfBirth.Date, result.DateOfBirth);
         }
 
         [Test, MoqAutoData]
         public async Task ULN_IsMapped(
               EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.ULN, result.ULN);
+            Assert.AreEqual(_request.ULN, result.ULN);
         }
 
         [Test, MoqAutoData]
         public async Task ProviderId_IsMapped(
               EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.ProviderId, result.ProviderId);
+            Assert.AreEqual(_request.ProviderId, result.ProviderId);
         }
 
         [Test, MoqAutoData]
         public async Task Cost_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.Cost, result.Cost);
+            Assert.AreEqual(_request.Cost, result.Cost);
         }
 
         [Test, MoqAutoData]
         public async Task ProviderReference_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.ProviderReference, result.ProviderReference);
+            Assert.AreEqual(_request.ProviderReference, result.ProviderReference);
         }
 
         [Test, MoqAutoData]
         public async Task StartDate_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.StartDate.Date, result.StartDate);
+            Assert.AreEqual(_request.StartDate.Date, result.StartDate);
         }
 
         [Test, MoqAutoData]
         public async Task EndDate_IsMapped(
              EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.EndDate.Date, result.EndDate);
+            Assert.AreEqual(_request.EndDate.Date, result.EndDate);
         }
 
         [Test, MoqAutoData]
         public async Task DeliveryModel_IsMapped(
             EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.DeliveryModel, result.DeliveryModel);
+            Assert.AreEqual(_request.DeliveryModel, result.DeliveryModel);
         }
 
         [Test, MoqAutoData]
         public async Task CourseCode_IsMapped(
         EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.CourseCode, result.TrainingCode);
+            Assert.AreEqual(_request.CourseCode, result.TrainingCode);
         }
 
         [Test, MoqAutoData]
         public async Task Version_IsMapped(
         EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.Version, result.Version);
+            Assert.AreEqual(_request.Version, result.Version);
         }
 
         [Test, MoqAutoData]
         public async Task Option_IsMapped(
         EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.Option, result.Option);
+            Assert.AreEqual(_request.Option, result.Option);
         }
 
         [Test, MoqAutoData]
         public async Task WhenOptionIsTBC_OptionIsMappedToEmptyString(
         EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            request.Option = "TBC";
+            _request.Option = "TBC";
 
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
             Assert.AreEqual(string.Empty, result.Option);
         }
@@ -165,17 +162,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test, MoqAutoData]
         public async Task EmploymentEndDate_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.EmploymentEndDate.Date, result.EmploymentEndDate);
+            Assert.AreEqual(_request.EmploymentEndDate.Date, result.EmploymentEndDate);
         }
 
         [Test, MoqAutoData]
         public async Task EmploymentPrice_IsMapped(EditApprenticeshipViewModelToValidateApprenticeshipForEditMapper mapper)
         {
-            var result = await mapper.Map(request);
+            var result = await mapper.Map(_request);
 
-            Assert.AreEqual(request.EmploymentPrice, result.EmploymentPrice);
+            Assert.AreEqual(_request.EmploymentPrice, result.EmploymentPrice);
         }
 
         public class DateCustomisation : ICustomization

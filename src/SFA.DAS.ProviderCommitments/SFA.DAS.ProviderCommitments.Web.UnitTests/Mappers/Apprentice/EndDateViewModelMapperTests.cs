@@ -1,9 +1,9 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(startDate, result.StartDate);
         }
-        
+
 
         [TestCase("")]
         [TestCase("042019")]
@@ -74,21 +74,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    class EndDateViewModelMapperFixture
+    internal class EndDateViewModelMapperFixture
     {
-        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-        private readonly Mock<ICacheStorageService> _cacheStorageService;
         private readonly EndDateViewModelMapper _sut;
         public readonly ChangeEmployerCacheItem CacheItem;
-        private readonly Fixture _fixture;
         public EndDateRequest Request { get; }
 
         public GetApprenticeshipResponse ApprenticeshipResponse { get; }
 
         public EndDateViewModelMapperFixture()
         {
-            _fixture = new Fixture();
-
+            var fixture = new Fixture();
 
             Request = new EndDateRequest
             {
@@ -97,23 +93,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ProviderId = 645621
             };
 
-            ApprenticeshipResponse = new GetApprenticeshipResponse { EmployerName = "TestName"};
-            _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+            ApprenticeshipResponse = new GetApprenticeshipResponse { EmployerName = "TestName" };
+            var commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
 
-            _commitmentsApiClientMock
+            commitmentsApiClientMock
                 .Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, default(CancellationToken)))
                 .ReturnsAsync(ApprenticeshipResponse);
 
-            CacheItem = _fixture.Build<ChangeEmployerCacheItem>()
+            CacheItem = fixture.Build<ChangeEmployerCacheItem>()
                 .With(x => x.StartDate, "022022")
                 .With(x => x.EndDate, "022022")
                 .With(x => x.EmploymentEndDate, "022022")
                 .Create();
-            _cacheStorageService = new Mock<ICacheStorageService>();
-            _cacheStorageService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
+            var cacheStorageService = new Mock<ICacheStorageService>();
+            cacheStorageService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
                 .ReturnsAsync(CacheItem);
 
-            _sut = new EndDateViewModelMapper(_commitmentsApiClientMock.Object, _cacheStorageService.Object);
+            _sut = new EndDateViewModelMapper(commitmentsApiClientMock.Object, cacheStorageService.Object);
         }
 
         public Task<EndDateViewModel> Act() => _sut.Map(Request);

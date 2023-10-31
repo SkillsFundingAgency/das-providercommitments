@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         private Mock<ITempDataStorageService> _tempDataStorageService;
         private DraftApprenticeshipRequest _request;
         private GetEditDraftApprenticeshipCourseResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private EditDraftApprenticeshipViewModel _cacheModel;
 
         [SetUp]

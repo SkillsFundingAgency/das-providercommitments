@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<ICacheStorageService> _cacheStorageService;
         private CreateCohortWithDraftApprenticeshipRequest _request;
         private GetAddDraftApprenticeshipDeliveryModelResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private CreateCohortCacheItem _cacheItem;
 
         [SetUp]

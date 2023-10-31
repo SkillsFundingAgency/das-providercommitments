@@ -234,9 +234,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private FileUploadReviewApprenticeViewModel _result;
         private List<GetStandardFundingResponse> _fundingPeriods;
         private GetStandardResponse _trainingProgramme;
-        private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
-        private DateTime _endFundingPeriod = new DateTime(2020, 10, 30);
-        public DateTime DefaultStartDate = new DateTime(2020, 10, 1);
+        private DateTime _startFundingPeriod = new(2020, 10, 1);
+        private DateTime _endFundingPeriod = new(2020, 10, 30);
+        public DateTime DefaultStartDate = new(2020, 10, 1);
         private const string cohortRef = "Cohort4";
         private const string dateOfBirth = "2001-09-05";
         private GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
@@ -263,8 +263,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _fundingPeriods = new List<GetStandardFundingResponse>
             {
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
+                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
+                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
             };
             _trainingProgramme = new GetStandardResponse { Title = "CourseName", EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), ApprenticeshipFunding = _fundingPeriods };
 

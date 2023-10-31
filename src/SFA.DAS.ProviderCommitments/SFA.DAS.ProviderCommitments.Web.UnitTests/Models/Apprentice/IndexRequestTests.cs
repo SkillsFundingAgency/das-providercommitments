@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice
 {

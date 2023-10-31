@@ -44,7 +44,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     public class EndDateRequestMapperFixture
     {
-        private readonly Fixture _fixture;
         private readonly EndDateRequestMapper _sut;
         private readonly Mock<ICacheStorageService> _cacheStorage;
         private readonly ChangeEmployerCacheItem _cacheItem;
@@ -53,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public EndDateRequestMapperFixture()
         {
-            _fixture = new Fixture();
+            var fixture = new Fixture();
 
             ViewModel = new StartDateViewModel
             {
@@ -63,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 StartYear = 2020,
             };
 
-            _cacheItem = _fixture.Create<ChangeEmployerCacheItem>();
+            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
             _cacheStorage = new Mock<ICacheStorageService>();
             _cacheStorage.Setup(x =>
                     x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == ViewModel.CacheKey)))

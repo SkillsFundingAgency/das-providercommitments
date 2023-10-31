@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         private ChangeEmployerCacheItem _cacheItem;
         private SelectDeliveryModelRequest _request;
         private GetSelectDeliveryModelResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()

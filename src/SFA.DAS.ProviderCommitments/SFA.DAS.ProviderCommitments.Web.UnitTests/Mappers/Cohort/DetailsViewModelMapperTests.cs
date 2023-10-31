@@ -828,14 +828,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public Mock<IOuterApiClient> OuterApiClient;
         public Mock<IEncodingService> EncodingService;
         public GetCohortDetailsResponse CohortDetails;
-        public DateTime DefaultStartDate = new DateTime(2019, 10, 1);
+        public DateTime DefaultStartDate = new(2019, 10, 1);
         public AccountLegalEntityResponse AccountLegalEntityResponse;
         public ProviderAgreement ProviderAgreement;
         private Fixture _autoFixture;
         private TrainingProgramme _trainingProgramme;
         private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
-        private DateTime _startFundingPeriod = new DateTime(2019, 10, 1);
-        private DateTime _endFundingPeriod = new DateTime(2019, 10, 30);
+        private DateTime _startFundingPeriod = new(2019, 10, 1);
+        private DateTime _endFundingPeriod = new(2019, 10, 30);
         private Mock<IAuthorizationService> _providerFeatureToggle;
 
         public DetailsViewModelMapperTestsFixture()
@@ -874,8 +874,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new TrainingProgrammeFundingPeriod{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000},
-                new TrainingProgrammeFundingPeriod{ EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), FundingCap = 500}
+                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000},
+                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), FundingCap = 500}
             };
             _trainingProgramme = new TrainingProgramme { EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), FundingPeriods = _fundingPeriods };
 

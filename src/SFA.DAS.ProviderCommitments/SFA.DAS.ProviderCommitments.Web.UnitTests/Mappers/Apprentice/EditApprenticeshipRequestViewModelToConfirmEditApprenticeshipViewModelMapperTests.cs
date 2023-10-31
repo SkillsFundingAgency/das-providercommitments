@@ -2,7 +2,6 @@
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.CommitmentsV2.Types.Dtos;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
@@ -318,7 +317,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             _priceEpisodeResponse = autoFixture.Build<GetPriceEpisodesResponse>()
                 .With(x => x.PriceEpisodes, new List<PriceEpisode> {
-                    new PriceEpisode { Cost = 1000, FromDate = DateTime.Now.AddMonths(-1), ToDate = null}})
+                    new() { Cost = 1000, FromDate = DateTime.Now.AddMonths(-1), ToDate = null}})
                 .Create();
 
             _standardSummary = autoFixture.Create<TrainingProgramme>();
@@ -357,7 +356,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             return new List<TrainingProgrammeFundingPeriod>
             {
-                new TrainingProgrammeFundingPeriod
+                new()
                 {
                         EffectiveFrom = new DateTime(2019, 1, 1),
                         EffectiveTo = DateTime.Now.AddMonths(1),

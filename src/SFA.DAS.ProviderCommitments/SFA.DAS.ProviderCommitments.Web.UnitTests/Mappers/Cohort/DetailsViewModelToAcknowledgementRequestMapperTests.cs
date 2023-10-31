@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Documents;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;

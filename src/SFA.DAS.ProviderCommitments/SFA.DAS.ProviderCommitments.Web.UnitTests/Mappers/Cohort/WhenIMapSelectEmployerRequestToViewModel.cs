@@ -128,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "DSFF23",
@@ -157,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "ADSFF23",
@@ -167,8 +167,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountLegalEntityId = 456,
                         AccountProviderId = 234
                     },
-                     new AccountProviderLegalEntityDto
-                    {
+                     new()
+                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "BDSFF23",
                         AccountLegalEntityName = "BTestAccountLegalEntityName",
@@ -177,8 +177,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountLegalEntityId = 456,
                         AccountProviderId = 234
                     },
-                      new AccountProviderLegalEntityDto
-                    {
+                      new()
+                      {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "CDSFF23",
                         AccountLegalEntityName = "CTestAccountLegalEntityName",

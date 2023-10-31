@@ -11,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
     {
         private SelectDeliveryModelRequestMapper _mapper;
         private ConfirmEmployerViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private Mock<ICacheStorageService> _cacheStorage;
         private Mock<IEncodingService> _encodingService;
         private long _accountLegalEntityId;

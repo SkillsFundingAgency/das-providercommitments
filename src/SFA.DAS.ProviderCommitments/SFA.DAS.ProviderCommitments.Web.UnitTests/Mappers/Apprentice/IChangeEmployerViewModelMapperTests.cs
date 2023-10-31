@@ -13,14 +13,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
     [Parallelizable(ParallelScope.None)]
     [TestFixture]
-    public class IChangeEmployerViewModelMapperTests
+    public class ChangeEmployerViewModelMapperTests
     {
-        private IChangeEmployerViewModelMapperTestsFixture _fixture;
+        private ChangeEmployerViewModelMapperTestsFixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _fixture = new IChangeEmployerViewModelMapperTestsFixture();
+            _fixture = new ChangeEmployerViewModelMapperTestsFixture();
         }
 
         [Test]
@@ -227,41 +227,41 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
     }
 
-    internal class IChangeEmployerViewModelMapperTestsFixture : Fixture
+    internal class ChangeEmployerViewModelMapperTestsFixture : Fixture
     {
         private readonly ChangeEmployerRequest _changeEmployerRequest;
         private readonly IChangeEmployerViewModelMapper _sut;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private readonly Mock<IEncodingService> _encodingService;
+        private IChangeEmployerViewModel _result;
+        private readonly Fixture _autoFixture;
 
-        public long ApprenticeshipId { get; set; }
-        public long ProviderId { get; set; }
-        public string ApprenticeshipHashedId { get; set; }
-        public string EmployerName { get; private set; }
-        public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }
-        public int Price { get; private set; }
-        public GetApprenticeshipResponse Apprenticeship { get; private set; }
-        public GetPriceEpisodesResponse PriceEpisodes { get; private set; }
+        public long ApprenticeshipId { get; }
+        public long ProviderId { get; }
+        public string ApprenticeshipHashedId { get; }
+        public string EmployerName { get; }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
+        public int Price { get; }
+        public GetApprenticeshipResponse Apprenticeship { get; }
+        public GetPriceEpisodesResponse PriceEpisodes { get; }
         public GetChangeOfPartyRequestsResponse ChangeOfPartyRequests { get; private set; }
-        public IChangeEmployerViewModel Result { get; private set; }
-        public Fixture AutoFixture { get; }
+        
         public string CohortReference { get; }
         public string EncodedNewApprenticeshipId { get; }
 
-        public IChangeEmployerViewModelMapperTestsFixture()
+        public ChangeEmployerViewModelMapperTestsFixture()
         {
-            AutoFixture = new Fixture();
+            _autoFixture = new Fixture();
 
             ProviderId = 123;
             ApprenticeshipId = 234;
             ApprenticeshipHashedId = "SD23DS24";
-            EmployerName = AutoFixture.Create<string>();
-            StartDate = AutoFixture.Create<DateTime>();
-            EndDate = AutoFixture.Create<DateTime>();
-            Price = AutoFixture.Create<int>();
-            CohortReference = AutoFixture.Create<string>();
-            EncodedNewApprenticeshipId = AutoFixture.Create<string>();
+            EmployerName = _autoFixture.Create<string>();
+            StartDate = _autoFixture.Create<DateTime>();
+            EndDate = _autoFixture.Create<DateTime>();
+            Price = _autoFixture.Create<int>();
+            CohortReference = _autoFixture.Create<string>();
+            EncodedNewApprenticeshipId = _autoFixture.Create<string>();
 
             _changeEmployerRequest = new ChangeEmployerRequest
             {
@@ -272,18 +272,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Apprenticeship = new GetApprenticeshipResponse
             {
-                EmployerName = AutoFixture.Create<string>(),
-                StartDate = AutoFixture.Create<DateTime>()
+                EmployerName = _autoFixture.Create<string>(),
+                StartDate = _autoFixture.Create<DateTime>()
             };
 
             PriceEpisodes = new GetPriceEpisodesResponse
             {
                 PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
                 {
-                    new GetPriceEpisodesResponse.PriceEpisode
+                    new()
                     {
                         FromDate = DateTime.MinValue,
-                        Cost = AutoFixture.Create<int>()
+                        Cost = _autoFixture.Create<int>()
                     }
                 }
             };
@@ -302,24 +302,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentsApiClient.Setup(x => x.GetPriceEpisodes(It.Is<long>(a => a == ApprenticeshipId),
                 It.IsAny<CancellationToken>())).ReturnsAsync(PriceEpisodes);
 
-            _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
+            var encodingService = new Mock<IEncodingService>();
+            encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference))
                 .Returns(CohortReference);
 
-            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
+            encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
                 .Returns(EncodedNewApprenticeshipId);
 
-            _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object, _encodingService.Object);
+            _sut = new IChangeEmployerViewModelMapper(_commitmentsApiClient.Object, encodingService.Object);
         }
 
-        public IChangeEmployerViewModelMapperTestsFixture WithChangeOfPartyRequest(ChangeOfPartyRequestStatus? requestStatus)
+        public ChangeEmployerViewModelMapperTestsFixture WithChangeOfPartyRequest(ChangeOfPartyRequestStatus? requestStatus)
         {
             if (requestStatus.HasValue)
             {
                 ChangeOfPartyRequests = new GetChangeOfPartyRequestsResponse
                     {ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>
                     {
-                        new GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest
+                        new()
                         {
                             ChangeOfPartyType = ChangeOfPartyRequestType.ChangeEmployer,
                             OriginatingParty = Party.Provider,
@@ -328,10 +328,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             Price = Price,
                             StartDate = StartDate,
                             EndDate = EndDate,
-                            CohortId = AutoFixture.Create<long>(),
-                            WithParty = AutoFixture.Create<Party>(),
+                            CohortId = _autoFixture.Create<long>(),
+                            WithParty = _autoFixture.Create<Party>(),
                             NewApprenticeshipId = requestStatus == ChangeOfPartyRequestStatus.Approved
-                                ? AutoFixture.Create<long>()
+                                ? _autoFixture.Create<long>()
                                 : default(long?)
                         }
                     }};
@@ -351,14 +351,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public async Task<IChangeEmployerViewModel> Act()
         {
-            Result = await _sut.Map(_changeEmployerRequest);
-            return Result;
+            _result = await _sut.Map(_changeEmployerRequest);
+            return _result;
         }
 
         public T VerifyResult<T>()
         {
-            Assert.IsInstanceOf<T>(Result);
-            return (T) Result;
+            Assert.IsInstanceOf<T>(_result);
+            return (T) _result;
         }
     }
 }

@@ -6,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
-
 {
     [TestFixture]
     public class WhenIMapSelectCourseViewModelFromEditApprenticeshipRequestViewModel
