@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             _fixture = new Fixture();
             _priceEpisodes = new List<PriceEpisode>
             {
-                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M }
+                new() { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M }
             };
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                  .With(x => x.PriceEpisodes, _priceEpisodes)
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             List<TrainingProgramme> TrainingProgrammes = new List<TrainingProgramme>
             {
-                new TrainingProgramme { Name = "Software engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
+                new() { Name = "Software engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
             };
             _allTrainingProgrammeResponse = _fixture.Build<GetAllTrainingProgrammesResponse>()
                 .With(x => x.TrainingProgrammes, TrainingProgrammes)
@@ -54,7 +54,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Act
             _dataLocksWithPriceMismatch = new List<DataLock>
             {
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock07, 
@@ -85,8 +86,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Arrange
             _dataLocksWithPriceMismatch = new List<DataLock>
             {
-                new DataLock 
-                    { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock07, 
@@ -94,7 +95,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                     ApprenticeshipId = 123, 
                     IlrTotalCost = 1500.00M 
                 },
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock07, 
@@ -109,8 +111,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             _priceEpisodes = new List<PriceEpisode>
             {
-                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M },
-                new PriceEpisode { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1200.0M }
+                new() { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M },
+                new() { ApprenticeshipId = 123, FromDate = DateTime.Now.Date, ToDate = null, Cost = 1200.0M }
             };
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                  .With(x => x.PriceEpisodes, _priceEpisodes)
@@ -129,7 +131,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Arrange
             _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock04, 
@@ -145,9 +148,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var result = _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse);
 
             //Assert
-            Assert.AreEqual(1, result.DataLockWithCourseMismatch.Count());
+            Assert.AreEqual(1, result.DataLockWithCourseMismatch.Count);
         }
-
 
         [Test]
         public void DataLockSummary_Throws_Exception_If_DataLock_CourseCode_Not_Exists()
@@ -155,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Arrange
             _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04 }
+                new() { IsResolved = false, DataLockStatus = Status.Fail, ErrorCode = DataLockErrorCode.Dlock04 }
             };
 
             _dataLockSummariesResponse = _fixture.Build<GetDataLockSummariesResponse>()
@@ -170,16 +172,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Assert
             Assert.AreEqual(expectedMessage, exception.Message);
         }
-
-
-
+        
         [Test]
         public void CourseDataLock_IsMapped()
         {
             //Arrange
             _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock04, 
@@ -213,7 +214,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             //Arrange
             _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock04, 
@@ -221,7 +223,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                     ApprenticeshipId = 123, 
                     IlrTrainingCourseCode = "548" 
                 },
-                new DataLock { 
+                new()
+                { 
                     IsResolved = false, 
                     DataLockStatus = Status.Fail, 
                     ErrorCode = DataLockErrorCode.Dlock05, 
@@ -250,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             _dataLocksWithPriceMismatch = new List<DataLock>
             {
-                new DataLock
+                new()
                 {
                     IsResolved = false,
                     DataLockStatus = Status.Fail,
@@ -266,7 +269,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             _priceEpisodes = new List<PriceEpisode>
             {
-                new PriceEpisode { ApprenticeshipId = 123, FromDate = ilrEffectiveFromDate.AddDays(1), ToDate = null, Cost = 1000.0M }
+                new() { ApprenticeshipId = 123, FromDate = ilrEffectiveFromDate.AddDays(1), ToDate = null, Cost = 1000.0M }
             };
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                 .With(x => x.PriceEpisodes, _priceEpisodes)

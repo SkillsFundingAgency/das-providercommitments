@@ -126,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var f = new GetCohortCardLinkViewModelTestsFixture();
             var result = f.GetCohortCardLinkViewModel(CohortStatus.Unknown, true, providerAgreementStatus);
 
-            f.VerifyIsSignedAgreementIsCorrect(result, expectedIsAgreementSigned);
+            GetCohortCardLinkViewModelTestsFixture.VerifyIsSignedAgreementIsCorrect(result, expectedIsAgreementSigned);
         }
 
         [TestCase(true, true)]
@@ -136,25 +136,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var f = new GetCohortCardLinkViewModelTestsFixture();
             var result = f.GetCohortCardLinkViewModel(CohortStatus.Unknown, hasRelationship);
 
-            f.VerifyShowDraftsIsCorrect(result, expectedShowDrafts);
+            GetCohortCardLinkViewModelTestsFixture.VerifyShowDraftsIsCorrect(result, expectedShowDrafts);
         }
 
-        public class GetCohortCardLinkViewModelTestsFixture
+        private class GetCohortCardLinkViewModelTestsFixture
         {
-            private Fixture _fixture;
-            public Mock<IUrlHelper> UrlHelper { get; }
-
-            public CohortSummary[] CohortSummaries { get; set; }
-
-            private long providerId => 10005654;
+            private readonly Fixture _fixture;
+            private readonly Mock<IUrlHelper> _urlHelper;
+            private readonly CohortSummary[] _cohortSummaries;
+            private static long ProviderId => 10005654;
 
             public GetCohortCardLinkViewModelTestsFixture()
             {
-                UrlHelper = new Mock<IUrlHelper>();
-                UrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
+                _urlHelper = new Mock<IUrlHelper>();
+                _urlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
                 _fixture = new Fixture();
 
-                CohortSummaries = CreateGetCohortsResponse();
+                _cohortSummaries = CreateGetCohortsResponse();
             }
 
             public void VerifyCohortsInDraftIsCorrect(ApprenticeshipRequestsHeaderViewModel result)
@@ -162,7 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 Assert.IsNotNull(result.CohortsInDraft);
                 Assert.AreEqual(5, result.CohortsInDraft.Count);
                 Assert.AreEqual("Drafts", result.CohortsInDraft.Description);
-                UrlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "Draft")));
+                _urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "Draft")));
             }
 
             public void VerifyCohortsInReviewIsCorrect(ApprenticeshipRequestsHeaderViewModel result)
@@ -170,7 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 Assert.IsNotNull(result.CohortsInReview);
                 Assert.AreEqual(4, result.CohortsInReview.Count);
                 Assert.AreEqual("Ready for review", result.CohortsInReview.Description);
-                UrlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "Review")));
+                _urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "Review")));
             }
 
             public void VerifyCohortsWithEmployerIsCorrect(ApprenticeshipRequestsHeaderViewModel result)
@@ -178,7 +176,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 Assert.IsNotNull(result.CohortsWithEmployer);
                 Assert.AreEqual(3, result.CohortsWithEmployer.Count);
                 Assert.AreEqual("With employers", result.CohortsWithEmployer.Description);
-                UrlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "WithEmployer")));
+                _urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "WithEmployer")));
             }
 
             public void VerifyCohortsWithTransferSenderIsCorrect(ApprenticeshipRequestsHeaderViewModel result)
@@ -186,7 +184,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 Assert.IsNotNull(result.CohortsWithTransferSender);
                 Assert.AreEqual(2, result.CohortsWithTransferSender.Count);
                 Assert.AreEqual("With transfer sending employers", result.CohortsWithTransferSender.Description);
-                UrlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "WithTransferSender")));
+                _urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "WithTransferSender")));
             }
 
             public void VerifySelectedCohortStatusIsCorrect(ApprenticeshipRequestsHeaderViewModel result, CohortStatus expectedCohortStatus)
@@ -197,19 +195,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 Assert.AreEqual(expectedCohortStatus == CohortStatus.WithEmployer, result.CohortsWithEmployer.IsSelected);
             }
 
-            public void VerifyIsSignedAgreementIsCorrect(ApprenticeshipRequestsHeaderViewModel result, bool expectedIsAgreementSigned)
+            public static void VerifyIsSignedAgreementIsCorrect(ApprenticeshipRequestsHeaderViewModel result, bool expectedIsAgreementSigned)
             {
                 Assert.AreEqual(expectedIsAgreementSigned, result.IsAgreementSigned);
             }
 
-            public void VerifyShowDraftsIsCorrect(ApprenticeshipRequestsHeaderViewModel result, bool expectedShowDrafts)
+            public static void VerifyShowDraftsIsCorrect(ApprenticeshipRequestsHeaderViewModel result, bool expectedShowDrafts)
             {
                 Assert.AreEqual(expectedShowDrafts, result.ShowDrafts);
             }
 
             public ApprenticeshipRequestsHeaderViewModel GetCohortCardLinkViewModel(CohortStatus selectedCohortStatus = CohortStatus.Draft, bool hasRelationship = true, ProviderAgreementStatus providerAgreementStatus = ProviderAgreementStatus.Agreed)
             {
-                return CohortSummaries.GetCohortCardLinkViewModel(UrlHelper.Object, providerId, selectedCohortStatus, hasRelationship, providerAgreementStatus);
+                return _cohortSummaries.GetCohortCardLinkViewModel(_urlHelper.Object, ProviderId, selectedCohortStatus, hasRelationship, providerAgreementStatus);
             }
 
             private static void PopulateWith(IEnumerable<CohortSummary> list, bool draft, Party withParty)

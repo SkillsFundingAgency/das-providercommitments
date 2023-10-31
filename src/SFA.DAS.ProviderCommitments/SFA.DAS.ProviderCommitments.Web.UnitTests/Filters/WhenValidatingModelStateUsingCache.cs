@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -146,9 +146,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedErrorGuidKey,
+                    new(CacheKeyConstants.CachedErrorGuidKey,
                         new StringValues(cachedErrorGuid.ToString())),
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -169,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
 
             _cacheStorageServiceMock
@@ -193,9 +193,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedErrorGuidKey,
+                    new(CacheKeyConstants.CachedErrorGuidKey,
                         new StringValues(cachedErrorGuid.ToString())),
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -216,7 +216,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
 
             _cacheStorageServiceMock

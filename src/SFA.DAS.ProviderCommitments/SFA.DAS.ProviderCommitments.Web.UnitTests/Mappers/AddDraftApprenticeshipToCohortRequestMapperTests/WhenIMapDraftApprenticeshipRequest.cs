@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
     [TestFixture]
     public class WhenIMapDraftApprenticeshipRequest
     {
-        private Web.Mappers.AddDraftApprenticeshipRequestMapper _mapper;
+        private AddDraftApprenticeshipRequestMapper _mapper;
         private AddDraftApprenticeshipViewModel _source;
         private Func<Task<AddDraftApprenticeshipApimRequest>> _act;
         private long _cohortId;

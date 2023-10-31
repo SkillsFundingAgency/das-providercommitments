@@ -5,7 +5,6 @@ using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 {

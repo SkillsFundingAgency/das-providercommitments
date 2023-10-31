@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,9 +11,7 @@ using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.Validation.Mvc.Extensions;
-using FluentAssertions;
 using SFA.DAS.Validation.Mvc.ModelBinding;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 {
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             var exceptionContext = new ExceptionContext(new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()), _filters);
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
             exceptionContext.Exception = new CommitmentsApiModelException(errors);
 
@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             var exceptionContext = new ExceptionContext(new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()), _filters);
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
             exceptionContext.Exception = new CommitmentsApiModelException(errors);
 
@@ -90,10 +90,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             {
                 Exception = new CommitmentsApiModelException(It.IsAny<List<ErrorDetail>>())
             };
-            var key = "key1";
-            var errorMessage = "error1";
+            const string key = "key1";
+            const string errorMessage = "error1";
             exceptionContext.ModelState.AddModelError(key, errorMessage);
-            var serializableModelStateData = exceptionContext.ModelState.ToSerializable().Data;
+            _ = exceptionContext.ModelState.ToSerializable().Data;
 
             //Act
             _cacheFriendlyCommitmentsValidationFilter.OnException(exceptionContext);

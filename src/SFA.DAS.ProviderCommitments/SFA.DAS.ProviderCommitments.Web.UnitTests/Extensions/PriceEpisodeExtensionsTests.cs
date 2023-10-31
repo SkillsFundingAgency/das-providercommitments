@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             Assert.AreEqual(expectedCost, _priceEpisodes.GetPrice(effectiveDate));
         }
 
-        private GetPriceEpisodesResponse.PriceEpisode CreatePriceEpisode(decimal cost, DateTime from, DateTime? to)
+        private static GetPriceEpisodesResponse.PriceEpisode CreatePriceEpisode(decimal cost, DateTime from, DateTime? to)
         {
             return new GetPriceEpisodesResponse.PriceEpisode {Cost = cost, FromDate = from, ToDate = to};
         }

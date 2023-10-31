@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             var exceptionContext = new ExceptionContext(new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()), _filters);
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
             exceptionContext.Exception = new CommitmentsApiModelException(errors);
 

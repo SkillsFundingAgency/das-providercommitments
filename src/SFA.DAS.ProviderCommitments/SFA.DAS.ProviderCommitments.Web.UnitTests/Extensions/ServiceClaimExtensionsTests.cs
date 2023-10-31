@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 {
     [TestFixture]
-    class ServiceClaimExtensionsTests
+    internal class ServiceClaimExtensionsTests
     {
         [TestCase("DAA", true)]
         [TestCase("DAB", true)]
@@ -16,38 +16,38 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [TestCase("FAKE", false)]
         public void ValidateServiceClaimsTest(string claim, bool expected)
         {
-            bool result = claim.IsServiceClaim();
+            var result = claim.IsServiceClaim();
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAC, ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAC, ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAC, ServiceClaim.DAV }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAA }, true)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAA }, true)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAA }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAA }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAB }, false)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAB }, true)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAB }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAB }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAC }, false)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAC }, false)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAC }, true)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAC }, true)]
-        [TestCase(ServiceClaim.DAA, new ServiceClaim[] { ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAB, new ServiceClaim[] { ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAC, new ServiceClaim[] { ServiceClaim.DAV }, false)]
-        [TestCase(ServiceClaim.DAV, new ServiceClaim[] { ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAC, ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAC, ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAC, ServiceClaim.DAV }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAA }, true)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAA }, true)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAA }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAA }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAB }, false)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAB }, true)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAB }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAB }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAC }, false)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAC }, false)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAC }, true)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAC }, true)]
+        [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAB, new[] { ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAC, new[] { ServiceClaim.DAV }, false)]
+        [TestCase(ServiceClaim.DAV, new[] { ServiceClaim.DAV }, true)]
         [TestCase(ServiceClaim.DAA, new ServiceClaim[] { }, false)]
         [TestCase(ServiceClaim.DAB, new ServiceClaim[] { }, false)]
         [TestCase(ServiceClaim.DAC, new ServiceClaim[] { }, false)]
@@ -59,14 +59,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            bool result = claimsPrincipal.HasPermission(minimumServiceClaim);
+            var result = claimsPrincipal.HasPermission(minimumServiceClaim);
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase(ServiceClaim.DAA, new string[] {"DCS", "DCFT"}, false)]
-        [TestCase(ServiceClaim.DAB, new string[] {"DCS", "DCFT"}, false)]
-        [TestCase(ServiceClaim.DAC, new string[] {"DCS", "DCFT"}, false)]
-        [TestCase(ServiceClaim.DAV, new string[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAA, new[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAB, new[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAC, new[] {"DCS", "DCFT"}, false)]
+        [TestCase(ServiceClaim.DAV, new[] {"DCS", "DCFT"}, false)]
         public void ShouldHandleNonDasClaimPermissions(ServiceClaim minimumServiceClaim, string[] actualServiceClaims, bool expected)
         {
             var claims = actualServiceClaims.Select(a => new Claim(ProviderClaims.Service, a));
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            bool result = claimsPrincipal.HasPermission(minimumServiceClaim);
+            var result = claimsPrincipal.HasPermission(minimumServiceClaim);
             Assert.AreEqual(expected, result);
         }
     }
