@@ -3,7 +3,6 @@ using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
-
 {
     [TestFixture]
     public class WhenIMapCreateCohortWithAddDraftApprenticeshipViewModelToSelectCourseViewModel

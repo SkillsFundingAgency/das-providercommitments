@@ -11,11 +11,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     [TestFixture]
     public class FileUploadMapperBaseTests
     {
-        public List<Web.Models.Cohort.CsvRecord> _csvRecords { get; set; }
-        public List<BulkUploadAddDraftApprenticeshipRequest> _result { get; set; }
-        public FileUploadMapperBase Sut { get; set; }
-        public Fixture _fixture { get; set; }
-        public Mock<IEncodingService> _encodingService { get; set; }
+        private List<Web.Models.Cohort.CsvRecord> _csvRecords;
+        private List<BulkUploadAddDraftApprenticeshipRequest> _result;
+        private FileUploadMapperBase _sut;
+        private Fixture _fixture;
+        private Mock<IEncodingService> _encodingService;
         private Mock<IOuterApiService> _outerApiService;
         private GetCohortResult _cohortResult;
 
@@ -38,8 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _outerApiService = new Mock<IOuterApiService>();
             _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
 
-            Sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            _sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
+            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
         }
 
         [Test]
@@ -201,7 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var source = _csvRecords.First();
             source.GivenNames = inputValue;
 
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
 
             var result = _result.First(x => x.Uln == source.ULN);
 
@@ -217,7 +217,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var source = _csvRecords.First();
             source.FamilyName = inputValue;
 
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
 
             var result = _result.First(x => x.Uln == source.ULN);
 
@@ -251,7 +251,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x=>x.DurationReducedBy, durationReducedBy)
                 .CreateMany(2).ToList();
 
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, true);
+            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, true);
 
             foreach (var record in _csvRecords)
             {
@@ -279,9 +279,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
             }
         }
-
-
-
-
     }
 }

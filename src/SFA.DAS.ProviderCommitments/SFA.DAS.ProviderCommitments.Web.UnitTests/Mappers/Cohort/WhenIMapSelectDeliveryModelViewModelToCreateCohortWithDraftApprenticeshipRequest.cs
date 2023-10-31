@@ -1,12 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System;
+﻿using System;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
-
 {
     [TestFixture]
     public class WhenIMapSelectDeliveryModelViewModelToCreateCohortWithDraftApprenticeshipRequest

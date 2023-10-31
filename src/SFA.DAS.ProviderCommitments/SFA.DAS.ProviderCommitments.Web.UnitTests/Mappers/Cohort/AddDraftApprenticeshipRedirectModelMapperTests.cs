@@ -1,12 +1,12 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System;
+﻿using System;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -19,7 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<ICacheStorageService> _cacheStorageService;
         private CreateCohortCacheItem _cacheItem;
         private Mock<IOuterApiService> _apiService;
-        private Mock<IModelMapper> _modelMapper;
         private ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
         [SetUp]
@@ -42,7 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(_cacheItem);
 
             _apiService = new Mock<IOuterApiService>();
-            _modelMapper = new Mock<IModelMapper>();
 
             _validateUlnOverlapOnStartDateResult = new ValidateUlnOverlapOnStartDateQueryResult
             {

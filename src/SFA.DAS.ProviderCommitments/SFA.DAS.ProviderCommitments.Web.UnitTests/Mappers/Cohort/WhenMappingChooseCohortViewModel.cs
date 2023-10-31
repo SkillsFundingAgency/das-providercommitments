@@ -149,38 +149,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingChooseCohortViewModelFixture
     {
-        public Mock<IEncodingService> EncodingService { get; set; }
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public ChooseCohortByProviderRequest ChooseCohortByProviderRequest { get; set; }
-        public GetCohortsResponse GetCohortsResponse { get; set; }
-        public ChooseCohortViewModelMapper Mapper { get; set; }
-        public ChooseCohortViewModel ChooseCohortViewModel { get; set; }
+        private readonly Mock<IEncodingService> _encodingService;
+        private readonly ChooseCohortViewModelMapper _mapper;
+        private ChooseCohortViewModel _chooseCohortViewModel ;
+        private const long ProviderId = 1;
 
-        public long ProviderId => 1;
+        public ChooseCohortByProviderRequest ChooseCohortByProviderRequest { get; }
 
         public WhenMappingChooseCohortViewModelFixture()
         {
-            EncodingService = new Mock<IEncodingService>();
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _encodingService = new Mock<IEncodingService>();
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
             ChooseCohortByProviderRequest = new ChooseCohortByProviderRequest() { ProviderId = ProviderId };
-            GetCohortsResponse = CreateGetCohortsResponse();
+            var getCohortsResponse = CreateGetCohortsResponse();
 
-            CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
-            EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
+            commitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(getCohortsResponse);
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
 
-            Mapper = new ChooseCohortViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
+            _mapper = new ChooseCohortViewModelMapper(commitmentsApiClient.Object, _encodingService.Object);
         }
 
         public async Task<WhenMappingChooseCohortViewModelFixture> Map()
         {
-            ChooseCohortViewModel = await Mapper.Map(ChooseCohortByProviderRequest);
+            _chooseCohortViewModel = await _mapper.Map(ChooseCohortByProviderRequest);
             return this;
         }
 
         public void Verify_Cohorts_InDraftWithProvider_Are_Mapped()
         {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
+            Assert.AreEqual(4, _chooseCohortViewModel.Cohorts.Count());
 
             Assert.IsNotNull(GetCohortInReviewViewModel(5));
             Assert.IsNotNull(GetCohortInReviewViewModel(6));
@@ -188,21 +186,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_OnlyCohortsNotRelatedToChangeOfPartyAreMapped()
         {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
+            Assert.AreEqual(4, _chooseCohortViewModel.Cohorts.Count());
             Assert.IsNull(GetCohortInReviewViewModel(7));
         }
-
-        public void Verify_CohortsInReviewWithProviderAreMapped()
-        {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
-
-            Assert.IsNotNull(GetCohortInReviewViewModel(1));
-            Assert.IsNotNull(GetCohortInReviewViewModel(2));
-        }
-
+        
         public void Verify_CohortReference_Is_Mapped()
         {
-            EncodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(4));
+            _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(4));
 
 
             Assert.AreEqual("1_Encoded", GetCohortInReviewViewModel(1).CohortReference);
@@ -232,31 +222,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, ChooseCohortViewModel.ProviderId);
+            Assert.AreEqual(ProviderId, _chooseCohortViewModel.ProviderId);
         }
 
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+            Assert.AreEqual("Employer6", _chooseCohortViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer1", _chooseCohortViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_Ordered_By_EmployerNameDescending()
         {
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+            Assert.AreEqual("Employer6", _chooseCohortViewModel.Cohorts.First().EmployerName);
+            Assert.AreEqual("Employer1", _chooseCohortViewModel.Cohorts.Last().EmployerName);
         }
 
         public void Verify_Ordered_By_CohortReferenceDescending()
         {
-            Assert.AreEqual("6_Encoded", ChooseCohortViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", ChooseCohortViewModel.Cohorts.Last().CohortReference);
+            Assert.AreEqual("6_Encoded", _chooseCohortViewModel.Cohorts.First().CohortReference);
+            Assert.AreEqual("1_Encoded", _chooseCohortViewModel.Cohorts.Last().CohortReference);
         }
 
         public void Verify_Ordered_By_StatusDescending()
         {
-            Assert.AreEqual("Ready to review", ChooseCohortViewModel.Cohorts.First().Status);
-            Assert.AreEqual("Draft", ChooseCohortViewModel.Cohorts.Last().Status);
+            Assert.AreEqual("Ready to review", _chooseCohortViewModel.Cohorts.First().Status);
+            Assert.AreEqual("Draft", _chooseCohortViewModel.Cohorts.Last().Status);
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()
@@ -354,14 +344,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return new GetCohortsResponse(cohorts);
         }
 
-        private long GetCohortId(string cohortReference)
+        private static long GetCohortId(string cohortReference)
         {
             return long.Parse(cohortReference.Replace("_Encoded", ""));
         }
 
         private ChooseCohortSummaryViewModel GetCohortInReviewViewModel(long id)
         {
-            return ChooseCohortViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
+            return _chooseCohortViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
         }
     }
 }

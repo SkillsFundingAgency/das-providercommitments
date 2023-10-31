@@ -63,42 +63,38 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture
     {
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
+        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
+        private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClient;
+        private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
+        private SelectAddDraftApprenticeshipJourneyViewModel _viewModel;
+        private SelectAddDraftApprenticeshipJourneyRequestViewModelMapper _mapper;
+        private readonly bool _hasCreateCohortPermission;
 
-        public SelectAddDraftApprenticeshipJourneyRequest Request { get; set; }
-        public SelectAddDraftApprenticeshipJourneyViewModel ViewModel { get; set; }
-
-        public SelectAddDraftApprenticeshipJourneyRequestViewModelMapper Mapper { get; set; }
-
-        public GetCohortsResponse GetCohortsResponse { get; set; }
-
-        public long ProviderId => 1;
-        public DateTime Now = DateTime.Now;
-        public bool HasCreateCohortPermission { get; set; }
-
+        private const long ProviderId = 1;
+        private readonly DateTime _now = DateTime.Now;
+        
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture()
         {
-            HasCreateCohortPermission = true;
+            _hasCreateCohortPermission = true;
 
-            Request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
+            _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
 
-            ProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
-            ProviderRelationshipsApiClient
+            _providerRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
+            _providerRelationshipsApiClient
                 .Setup(p => p.HasRelationshipWithPermission(It.IsAny<HasRelationshipWithPermissionRequest>(), CancellationToken.None))
-                .ReturnsAsync(HasCreateCohortPermission);
+                .ReturnsAsync(_hasCreateCohortPermission);
         }
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture SetUp()
         {
-            Mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object);
+            _mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(_commitmentsApiClient.Object, _providerRelationshipsApiClient.Object);
             return this;
         }
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture WithCohort()
         {
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClient
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient
                 .Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None))
                 .ReturnsAsync(new GetCohortsResponse(CreateGetCohortsResponse()));
             return this;
@@ -106,8 +102,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture WithNoCohort()
         {
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClient
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient
                 .Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None))
                 .ReturnsAsync(new GetCohortsResponse(new List<CohortSummary>()));
             return this;
@@ -115,8 +111,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture WithNoDraftOrReviewCohort()
         {
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClient
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient
                 .Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None))
                 .ReturnsAsync(new GetCohortsResponse(new List<CohortSummary>
             {
@@ -129,7 +125,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.TransferSender,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 },
                 new()
                 {
@@ -140,7 +136,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Employer,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 }
             }));
             return this;
@@ -148,13 +144,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task<WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture> Map()
         {
-            ViewModel = await Mapper.Map(Request);
+            _viewModel = await _mapper.Map(_request);
             return this;
         }
 
         private IEnumerable<CohortSummary> CreateGetCohortsResponse()
         {
-            IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
+            IEnumerable<CohortSummary> cohorts = new List<CohortSummary>
             {
                 new()
                 {
@@ -165,7 +161,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = true,
                     WithParty = Party.Provider,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 },
                 new()
                 {
@@ -176,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 },
                  new()
                  {
@@ -187,7 +183,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Employer,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 }
             };
 
@@ -196,23 +192,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, ViewModel.ProviderId);
+            Assert.AreEqual(ProviderId, _viewModel.ProviderId);
         }
 
         public void Verify_HasCreateCohortPermission_IsMapped()
         {
-            Assert.AreEqual(HasCreateCohortPermission, ViewModel.HasCreateCohortPermission);
+            Assert.AreEqual(_hasCreateCohortPermission, _viewModel.HasCreateCohortPermission);
         }
 
         public void Verify_HasExistingCohort_IsMapped()
         {
-            Assert.AreEqual(true, ViewModel.HasExistingCohort);
+            Assert.AreEqual(true, _viewModel.HasExistingCohort);
         }
 
         public void Verify_WhenNoCohortExist_HasExistingCohort_IsMapped()
         {
-            Assert.AreEqual(false, ViewModel.HasExistingCohort);
+            Assert.AreEqual(false, _viewModel.HasExistingCohort);
         }
-
     }
 }

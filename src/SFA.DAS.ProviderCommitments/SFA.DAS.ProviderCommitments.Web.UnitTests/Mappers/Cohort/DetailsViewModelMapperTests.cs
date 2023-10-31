@@ -172,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .OrderBy(c => c.CourseName).ThenBy(c => c.CourseCode).ThenBy(c => c.DeliveryModel)
                 .ToList();
 
-            fixture.AssertSequenceOrder(expectedSequence, actualSequence, (e, a) => e.CourseName == a.CourseName && e.CourseCode == a.CourseCode && e.DeliveryModel == a.DeliveryModel);
+            DetailsViewModelMapperTestsFixture.AssertSequenceOrder(expectedSequence, actualSequence, (e, a) => e.CourseName == a.CourseName && e.CourseCode == a.CourseCode && e.DeliveryModel == a.DeliveryModel);
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 var actualSequence = course.DraftApprenticeships.Select(a => a.DisplayName).ToList();
 
-                fixture.AssertSequenceOrder(expectedSequence, actualSequence, (e, a) => e == a);
+                DetailsViewModelMapperTestsFixture.AssertSequenceOrder(expectedSequence, actualSequence, (e, a) => e == a);
             }
         }
 
@@ -206,7 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
 
-                fixture.AssertEquality(draftApprenticeship, draftApprenticeshipResult);
+                DetailsViewModelMapperTestsFixture.AssertEquality(draftApprenticeship, draftApprenticeshipResult);
             }
         }
 
@@ -504,8 +504,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task ShowApprovalOfCohortAsFalseWhenRplErrorsExist()
         {
-            var fixture = new DetailsViewModelMapperTestsFixture();
-            fixture.CohortDetails.IsApprovedByEmployer = true;
+            var fixture = new DetailsViewModelMapperTestsFixture
+            {
+                CohortDetails =
+                {
+                    IsApprovedByEmployer = true
+                }
+            };
             fixture.SetTransferSender().SetIsAgreementSigned(true);
             var result = await fixture.Map();
             Assert.IsFalse(result.ShowApprovalOptionMessage);
@@ -820,23 +825,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class DetailsViewModelMapperTestsFixture
     {
-        public DetailsViewModelMapper Mapper;
-        public DetailsRequest Source;
-        public DetailsViewModel Result;
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient;
-        public Mock<IPasAccountApiClient> PasAccountApiClient;
-        public Mock<IOuterApiClient> OuterApiClient;
-        public Mock<IEncodingService> EncodingService;
-        public GetCohortDetailsResponse CohortDetails;
-        public DateTime DefaultStartDate = new(2019, 10, 1);
-        public AccountLegalEntityResponse AccountLegalEntityResponse;
+        private readonly Mock<IPasAccountApiClient> _pasAccountApiClient;
+        private readonly DetailsViewModelMapper _mapper;
+        private readonly Mock<IEncodingService> _encodingService;
         public ProviderAgreement ProviderAgreement;
-        private Fixture _autoFixture;
-        private TrainingProgramme _trainingProgramme;
-        private List<TrainingProgrammeFundingPeriod> _fundingPeriods;
-        private DateTime _startFundingPeriod = new(2019, 10, 1);
-        private DateTime _endFundingPeriod = new(2019, 10, 30);
-        private Mock<IAuthorizationService> _providerFeatureToggle;
+        private readonly Fixture _autoFixture;
+        private readonly List<TrainingProgrammeFundingPeriod> _fundingPeriods;
+        private readonly DateTime _startFundingPeriod = new(2019, 10, 1);
+        private readonly DateTime _endFundingPeriod = new(2019, 10, 30);
+
+        public DetailsRequest Source { get; }
+        public Mock<ICommitmentsApiClient> CommitmentsApiClient{ get; }
+        public GetCohortDetailsResponse CohortDetails { get; }
+        public DateTime DefaultStartDate = new(2019, 10, 1);
 
         public DetailsViewModelMapperTestsFixture()
         {
@@ -845,7 +846,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var draftApprenticeships = CreateDraftApprenticeshipDtos(_autoFixture);
             _autoFixture.Register(() => draftApprenticeships);
 
-            AccountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
+            var accountLegalEntityResponse = _autoFixture.Create<AccountLegalEntityResponse>();
             ProviderAgreement = new ProviderAgreement { Status = ProviderAgreementStatus.Agreed };
             CohortDetails = _autoFixture.Build<GetCohortDetailsResponse>()
                 .Without(x => x.TransferSenderId)
@@ -860,27 +861,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(AccountLegalEntityResponse);
+                .ReturnsAsync(accountLegalEntityResponse);
 
-            PasAccountApiClient = new Mock<IPasAccountApiClient>();
-            PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
+            _pasAccountApiClient = new Mock<IPasAccountApiClient>();
+            _pasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), CancellationToken.None)).ReturnsAsync(ProviderAgreement);
 
-            OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
+            var outerApiClient = new Mock<IOuterApiClient>();
+            outerApiClient.Setup(x => x.Get<GetCohortDetailsResponse>(It.IsAny<GetCohortDetailsRequest>()))
                 .ReturnsAsync(CohortDetails);
 
-            _providerFeatureToggle = new Mock<IAuthorizationService>();
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+            var providerFeatureToggle = new Mock<IAuthorizationService>();
+            providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
                 new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000},
                 new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), FundingCap = 500}
             };
-            _trainingProgramme = new TrainingProgramme { EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), FundingPeriods = _fundingPeriods };
+            var trainingProgramme = new TrainingProgramme { EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), FundingPeriods = _fundingPeriods };
 
             CommitmentsApiClient.Setup(x => x.GetTrainingProgramme(It.Is<string>(c => !string.IsNullOrEmpty(c)), CancellationToken.None))
-                .ReturnsAsync(new GetTrainingProgrammeResponse { TrainingProgramme = _trainingProgramme });
+                .ReturnsAsync(new GetTrainingProgrammeResponse { TrainingProgramme = trainingProgramme });
 
             CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
                .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = false, HasOverlappingStartDate = false });
@@ -891,11 +892,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     ReasonPhrase = "Url not found"
                 }, "Course not found"));
 
-            EncodingService = new Mock<IEncodingService>();
+            _encodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
             
 
-            Mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object, PasAccountApiClient.Object, OuterApiClient.Object, Mock.Of<ITempDataStorageService>(), _providerFeatureToggle.Object);
+            _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object, _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(), providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();
         }
 
@@ -910,7 +911,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CohortDetails.TransferSenderId = transferSenderId;
             if (transferSenderId.HasValue)
             {
-                EncodingService.Setup(x => x.Encode(transferSenderId.Value, EncodingType.PublicAccountId))
+                _encodingService.Setup(x => x.Encode(transferSenderId.Value, EncodingType.PublicAccountId))
                     .Returns(expectedHashedId);
             }
 
@@ -922,16 +923,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             CohortDetails.PledgeApplicationId = pledgeApplicationId;
             if (pledgeApplicationId.HasValue)
             {
-                EncodingService.Setup(x => x.Encode(pledgeApplicationId.Value, EncodingType.PledgeApplicationId))
+                _encodingService.Setup(x => x.Encode(pledgeApplicationId.Value, EncodingType.PledgeApplicationId))
                     .Returns(expectedEncodedId);
             }
 
             return this;
         }
 
-        public DetailsViewModelMapperTestsFixture SetEncodingOfApprenticeIds()
+        private DetailsViewModelMapperTestsFixture SetEncodingOfApprenticeIds()
         {
-            EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.ApprenticeshipId))
                 .Returns((long p, EncodingType t) => $"X{p}X");
 
             return this;
@@ -983,14 +984,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public DetailsViewModelMapperTestsFixture SetValueOfDraftApprenticeshipProperty(string propertyName, object value)
         {
             var draftApprenticeship = CohortDetails.DraftApprenticeships.First();
-            if (!string.IsNullOrWhiteSpace(propertyName))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                PropertyInfo propertyInfo = draftApprenticeship.GetType().GetProperty(propertyName);
-                // make sure object has the property we are after
-                if (propertyInfo != null)
-                {
-                    propertyInfo.SetValue(draftApprenticeship, value, null);
-                }
+                return this;
+            }
+            
+            var propertyInfo = draftApprenticeship.GetType().GetProperty(propertyName);
+            // make sure object has the property we are after
+            if (propertyInfo != null)
+            {
+                propertyInfo.SetValue(draftApprenticeship, value, null);
             }
 
             return this;
@@ -1010,10 +1013,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public Task<DetailsViewModel> Map()
         {
-            return Mapper.Map(TestHelper.Clone(Source));
+            return _mapper.Map(TestHelper.Clone(Source));
         }
 
-        public void AssertEquality(DraftApprenticeshipDto source, CohortDraftApprenticeshipViewModel result)
+        public static void AssertEquality(DraftApprenticeshipDto source, CohortDraftApprenticeshipViewModel result)
         {
             Assert.AreEqual(source.Id, result.Id);
             Assert.AreEqual(source.FirstName, result.FirstName);
@@ -1031,11 +1034,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.AreEqual(source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
 
-        public void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)
+        public static void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)
         {
             Assert.AreEqual(expected.Count, actual.Count, "Expected and actual sequences are different lengths");
 
-            for (int i = 0; i < actual.Count; i++)
+            for (var i = 0; i < actual.Count; i++)
             {
                 Assert.IsTrue(evaluator(expected[i], actual[i]), "Actual sequence are not in same order as expected");
             }
@@ -1061,7 +1064,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         private void SetCourseDetails(DraftApprenticeshipDto draftApprenticeship, string courseName, string courseCode, int? cost, DateTime? startDate = null, DateTime? originalStartDate = null, DeliveryModel dm = DeliveryModel.Regular)
         {
-            startDate = startDate ?? DefaultStartDate;
+            startDate ??= DefaultStartDate;
 
             draftApprenticeship.CourseName = courseName;
             draftApprenticeship.CourseCode = courseCode;
@@ -1143,7 +1146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         internal DetailsViewModelMapperTestsFixture SetIsAgreementSigned(bool isAgreementSigned)
         {
             var agreementStatus = isAgreementSigned ? ProviderAgreementStatus.Agreed : ProviderAgreementStatus.NotAgreed;
-            PasAccountApiClient
+            _pasAccountApiClient
                .Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(new ProviderAgreement { Status = agreementStatus });
             return this;

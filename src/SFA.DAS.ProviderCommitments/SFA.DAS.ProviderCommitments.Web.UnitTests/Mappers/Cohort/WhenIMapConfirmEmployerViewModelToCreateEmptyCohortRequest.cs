@@ -13,17 +13,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private ConfirmEmployerViewModel _source;
         private Func<Task<CreateEmptyCohortRequest>> _act;
         private Mock<ICommitmentsApiClient> _commitmentApiClient;
-        private AccountLegalEntityResponse _accountlegalEntityResponse;
+        private AccountLegalEntityResponse _accountLegalEntityResponse;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
-             _accountlegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
+             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
             _source = fixture.Create<ConfirmEmployerViewModel>();
-            _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountlegalEntityResponse);
+            _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
             _mapper = new ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper(_commitmentApiClient.Object);
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenAccountIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountlegalEntityResponse.AccountId, result.AccountId);
+            Assert.AreEqual(_accountLegalEntityResponse.AccountId, result.AccountId);
         }
     }
 }

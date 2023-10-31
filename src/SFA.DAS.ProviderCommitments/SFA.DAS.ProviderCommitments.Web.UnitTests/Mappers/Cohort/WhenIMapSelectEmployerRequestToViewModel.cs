@@ -1,11 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result);
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result);
         }
 
 
@@ -98,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result);
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result);
         }
 
         [Test]
@@ -117,13 +117,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private readonly SelectEmployerViewModelMapper _sut;
             private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
             private SelectEmployerRequest _request;
-            private readonly long _providerId;
             private GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
 
             public SelectEmployerViewModelMapperFixture()
             {
-                _providerId = 123;
-                _request = new SelectEmployerRequest { ProviderId = _providerId };
+                const long providerId = 123;
+                _request = new SelectEmployerRequest { ProviderId = providerId };
                 _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
@@ -272,13 +271,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 }
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
             {
                 Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
                 Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
             {
                 Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
                 Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);

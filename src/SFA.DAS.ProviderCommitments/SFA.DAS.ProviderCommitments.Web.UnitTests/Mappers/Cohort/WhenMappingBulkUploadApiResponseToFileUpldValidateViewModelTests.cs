@@ -1,9 +1,11 @@
-﻿using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using BulkUploadValidationError = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -15,35 +17,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private FileUploadValidateErrorRequest _source;
         private Mock<ICacheService> _cacheService;
         private string _guidCacheError;
-        private List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> _errors;
+        private List<BulkUploadValidationError> _errors;
 
         [SetUp]
         public async Task Setup()
         {
             _guidCacheError = Guid.NewGuid().ToString();
-            _source = new FileUploadValidateErrorRequest();
-            _source.CachedErrorGuid = _guidCacheError;
-            
-            var errorsFirstRow = new List<Infrastructure.OuterApi.ErrorHandling.Error>
+            _source = new FileUploadValidateErrorRequest
+            {
+                CachedErrorGuid = _guidCacheError
+            };
+
+            var errorsFirstRow = new List<Error>
             {
                 new("Property1", "First Error Text"),
                 new("Property2", "Second Error Text")
             };
 
-            var errorsSecondRow = new List<Infrastructure.OuterApi.ErrorHandling.Error>
+            var errorsSecondRow = new List<Error>
             {
                 new("Property12", "First Error Text2"),
                 new("Property22", "Second Error Text2")
             };
 
-            _errors = new List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>
+            _errors = new List<BulkUploadValidationError>
                  {
                       new(1, "EmployerName","ULN", "apprentice name", errorsFirstRow),
                       new(2, "EmployerName2","ULN2", "apprentice name2", errorsSecondRow),
                 };
 
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.GetFromCache<List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>>(_guidCacheError)).ReturnsAsync(_errors);
+            _cacheService.Setup(x => x.GetFromCache<List<BulkUploadValidationError>>(_guidCacheError)).ReturnsAsync(_errors);
 
             _mapper = new BulkUploadValidateApiResponseToFileUpldValidateViewModel(_cacheService.Object);
             _result = await _mapper.Map(_source);

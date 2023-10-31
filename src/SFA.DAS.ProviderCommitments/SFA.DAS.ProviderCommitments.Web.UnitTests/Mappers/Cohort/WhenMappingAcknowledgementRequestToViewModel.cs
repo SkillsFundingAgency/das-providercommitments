@@ -82,10 +82,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, SaveStatus.Approve, ExpectedWhatHappensNextType.UpdatedCohort)]
         public async Task ThenWhatHappensNextIsPopulatedCorrectly(bool isTransfer, SaveStatus saveStatus, ExpectedWhatHappensNextType expectedWhatHappensNextType)
         {
-            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
-
-            fixture.Cohort.TransferSenderId = isTransfer ? 100 : default(long?);
-            fixture.Cohort.ChangeOfPartyRequestId = isTransfer ? default(long?) : 100;
+            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture
+            {
+                Cohort =
+                {
+                    TransferSenderId = isTransfer ? 100 : default(long?),
+                    ChangeOfPartyRequestId = isTransfer ? default(long?) : 100
+                }
+            };
 
             fixture.CommitmentsApiClient
                 .Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -125,10 +129,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, false, SaveStatus.AmendAndSend, "Cohort sent to employer for review")]
         public async Task ThenPageTitleMappedCorrectly(bool isApprovedByProvider, bool isApprovedByEmployer, SaveStatus saveStatus, string expectedText)
         {
-            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
-
-            fixture.Cohort.IsApprovedByProvider = isApprovedByProvider;
-            fixture.Cohort.IsApprovedByEmployer = isApprovedByEmployer;
+            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture
+            {
+                Cohort =
+                {
+                    IsApprovedByProvider = isApprovedByProvider,
+                    IsApprovedByEmployer = isApprovedByEmployer
+                }
+            };
 
             fixture.CommitmentsApiClient
                 .Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -145,42 +153,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingAcknowledgementRequestToViewModelTestsFixture
     {
-        public AcknowledgementRequestViewModelMapper Mapper;
-        public AcknowledgementRequest Source;
-        public AcknowledgementViewModel Result;
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient;
-        public GetCohortResponse Cohort;
-        public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
-        private Fixture _autoFixture;
+        private readonly AcknowledgementRequestViewModelMapper _mapper;
 
+        public AcknowledgementRequest Source { get; }
+        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
+        public GetCohortResponse Cohort { get; }
+        
         public WhenMappingAcknowledgementRequestToViewModelTestsFixture()
         {
-            _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
 
-            Cohort = _autoFixture.Create<GetCohortResponse>();
+            Cohort = autoFixture.Create<GetCohortResponse>();
 
-            DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
+            var draftApprenticeshipsResponse = autoFixture.Create<GetDraftApprenticeshipsResponse>();
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Cohort);
 
             CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DraftApprenticeshipsResponse);
+                .ReturnsAsync(draftApprenticeshipsResponse);
 
-            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object);
-            Source = _autoFixture.Create<AcknowledgementRequest>();
+            _mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object);
+            Source = autoFixture.Create<AcknowledgementRequest>();
         }
-
-        public WhenMappingAcknowledgementRequestToViewModelTestsFixture SetCohortWithParty(Party party)
-        {
-            Cohort.WithParty = party;
-            return this;
-        }
-
+        
         public Task<AcknowledgementViewModel> Map()
         {
-            return Mapper.Map(TestHelper.Clone(Source));
+            return _mapper.Map(TestHelper.Clone(Source));
         }
     }
 }
