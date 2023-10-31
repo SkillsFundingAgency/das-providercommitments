@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
@@ -43,7 +43,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
     }
 
     public class A
-    { public int Id { get; set; } }
+    {
+        public int Id { get; set; }
+    }
 
     public class B
     { public int Id { get; set; } }

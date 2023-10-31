@@ -17,14 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private Func<Task<EditDraftApprenticeshipViewModel>> _act;
         private GetEditDraftApprenticeshipResponse _apiResponse;
         private Mock<ITempDataStorageService> _tempDataStorageService;
-        private string _cohortReference;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-
-            _cohortReference = fixture.Create<string>();
 
             _apiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
             var commitmentsApiClient = new Mock<IOuterApiClient>();

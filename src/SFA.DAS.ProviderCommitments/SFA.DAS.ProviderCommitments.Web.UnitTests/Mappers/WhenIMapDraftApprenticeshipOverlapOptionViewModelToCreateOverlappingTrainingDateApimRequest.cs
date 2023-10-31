@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         }
 
         [Test]
-        public async Task ThenDraftAppretniceshipIdIsMappedCorrectly()
+        public async Task ThenDraftApprenticeshipIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
             Assert.AreEqual(_source.DraftApprenticeshipId, result.DraftApprenticeshipId);

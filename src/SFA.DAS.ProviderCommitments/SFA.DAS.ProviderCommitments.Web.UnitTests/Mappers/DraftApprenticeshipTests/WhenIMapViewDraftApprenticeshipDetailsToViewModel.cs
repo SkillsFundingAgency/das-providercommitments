@@ -1,10 +1,11 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipTests
 {
@@ -13,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
     {
         private ViewDraftApprenticeshipViewModelMapper _mapper;
         private DraftApprenticeshipRequest _source;
-        public Mock<IOuterApiClient> OuterApiClient;
+        private Mock<IOuterApiClient> _outerApiClient;
         private Func<Task<ViewDraftApprenticeshipViewModel>> _act;
         private GetViewDraftApprenticeshipResponse _apiResponse;
         private GetTrainingProgrammeResponse _apiTrainingProgrammeResponse;
@@ -31,14 +32,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             commitmentsApiClient.Setup(x => x.GetTrainingProgramme(_apiResponse.CourseCode, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_apiTrainingProgrammeResponse);
 
-            OuterApiClient = new Mock<IOuterApiClient>();
-            OuterApiClient.Setup(x => x.Get<GetViewDraftApprenticeshipResponse>(It.IsAny<GetViewDraftApprenticeshipRequest>()))
+            _outerApiClient = new Mock<IOuterApiClient>();
+            _outerApiClient.Setup(x => x.Get<GetViewDraftApprenticeshipResponse>(It.IsAny<GetViewDraftApprenticeshipRequest>()))
                 .ReturnsAsync(_apiResponse);
 
-            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, OuterApiClient.Object);
+            _mapper = new ViewDraftApprenticeshipViewModelMapper(commitmentsApiClient.Object, _outerApiClient.Object);
             _source = fixture.Build<DraftApprenticeshipRequest>().Create();
 
-            _act = async () => (await _mapper.Map(TestHelper.Clone(_source))) as ViewDraftApprenticeshipViewModel;
+            _act = async () => await _mapper.Map(TestHelper.Clone(_source));
         }
 
         [Test]
@@ -90,9 +91,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             Assert.AreEqual(_apiResponse.DateOfBirth, result.DateOfBirth);
         }
 
-        [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.Regular)]
-        [TestCase(Infrastructure.OuterApi.Types.DeliveryModel.PortableFlexiJob)]
-        public async Task ThenDeliveryModelIsMappedCorrectly(Infrastructure.OuterApi.Types.DeliveryModel dm)
+        [TestCase(DeliveryModel.Regular)]
+        [TestCase(DeliveryModel.PortableFlexiJob)]
+        public async Task ThenDeliveryModelIsMappedCorrectly(DeliveryModel dm)
         {
             _apiResponse.DeliveryModel = dm;
             var result = await _act();
