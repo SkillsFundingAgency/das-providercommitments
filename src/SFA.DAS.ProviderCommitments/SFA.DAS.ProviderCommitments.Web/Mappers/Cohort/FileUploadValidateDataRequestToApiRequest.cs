@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var apiRequest = new BulkUploadValidateApimRequest();
             apiRequest.ProviderId = source.ProviderId;
             apiRequest.RplDataExtended = source.RplDataExtended;
-            apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId);
+            apiRequest.CsvRecords = ConvertToBulkUploadApiRequest(source.CsvRecords, source.ProviderId, source.RplDataExtended);
             return Task.FromResult(apiRequest);
         }
     }

@@ -18,6 +18,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public int? FundingBandCap { get; set; }
         public string ULN { get; set; }
         public bool HasOverlappingUln { get; set; }
@@ -81,13 +83,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
+        public string DisplayEndPointAssessmentPrice => EndPointAssessmentPrice?.ToGdsCostFormat();
+        public string DisplayTrainingPrice => TrainingPrice?.ToGdsCostFormat();
         public string DisplayCost => Cost?.ToGdsCostFormat() ?? "-";
-            
+
         public string DisplayEmploymentPrice => EmploymentPrice?.ToGdsCostFormat() ?? "-";
 
-        public string DislayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
+        public string DisplayIsPilot => !IsOnFlexiPaymentPilot.HasValue ? "-" : IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
         public DateTime? OriginalStartDate { get; set; }
+
+        public bool EmployerHasEditedPrice =>
+            TrainingPrice == null && EndPointAssessmentPrice == null && Cost != null && IsOnFlexiPaymentPilot.GetValueOrDefault();
 
         public class OverlappingTrainingDateRequestViewModel
         {
