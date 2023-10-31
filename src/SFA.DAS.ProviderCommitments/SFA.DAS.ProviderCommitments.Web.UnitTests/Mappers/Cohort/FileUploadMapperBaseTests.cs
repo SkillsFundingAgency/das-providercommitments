@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
 
             Sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void VerifyDurationReducedBy()
+        public void VerifyDurationReducedByIsMapped()
         {
             foreach (var record in _csvRecords)
             {
@@ -186,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void VerifyPriceReducedBy()
+        public void VerifyPriceReducedByIsMapped()
         {
             foreach (var record in _csvRecords)
             {
@@ -204,7 +204,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var source = _csvRecords.First();
             source.GivenNames = inputValue;
 
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
 
             var result = _result.First(x => x.Uln == source.ULN);
 
@@ -220,11 +220,71 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var source = _csvRecords.First();
             source.FamilyName = inputValue;
 
-            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1);
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
 
             var result = _result.First(x => x.Uln == source.ULN);
 
             Assert.AreEqual(expectedResult, result.LastName);
         }
+
+        [Test]
+        public void VerifyIsDurationReducedByRplIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
+            }
+        }
+
+        [TestCase(null, null, null)]
+        [TestCase(null, "200", "TRUE")]
+        [TestCase("TRUE", "200", "TRUE")]
+        [TestCase("FALSE", "200", "FALSE")]
+        [TestCase("FALSE", null, "FALSE")]
+        [TestCase("XXX", null, "XXX")]
+        public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+        {
+            _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()
+                .With(x => x.DateOfBirth, "2000-02-02")
+                .With(x => x.StartDate, "2021-03-04")
+                .With(x => x.EndDate, "2022-04")
+                .With(x => x.TotalPrice, "1000")
+                .With(x=>x.IsDurationReducedByRPL, isDurationReducedByRpl)
+                .With(x=>x.DurationReducedBy, durationReducedBy)
+                .CreateMany(2).ToList();
+
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, true);
+
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(result.IsDurationReducedByRPLAsString, expectedValue);
+            }
+        }
+
+        [Test]
+        public void VerifyTrainingTotalHoursIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingTotalHours, result.TrainingTotalHoursAsString);
+            }
+        }
+
+        [Test]
+        public void VerifyTrainingHoursReductionIsMapped()
+        {
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
+            }
+        }
+
+
+
+
     }
 }
