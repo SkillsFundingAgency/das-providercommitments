@@ -48,16 +48,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public WhenGettingFileUploadAmendedFileFixture()
         {
-            var fixture = new AutoFixture.Fixture();
+            var fixture = new Fixture();
             
-
             _viewModel = fixture.Create<FileUploadAmendedFileViewModel>();
             _request = new FileUploadAmendedFileRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
 
             _modelMapper = new Mock<IModelMapper>();
             _modelMapper.Setup(x => x.Map<FileUploadAmendedFileViewModel>(_request)).ReturnsAsync(_viewModel);
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(), Mock.Of<ILogger<CohortController>>());
+                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public Task<IActionResult> Act() => _sut.FileUploadAmendedFile(_request);

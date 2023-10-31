@@ -37,7 +37,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly ILogger<CohortController> _logger;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
@@ -45,8 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             ICommitmentsApiClient commitmentsApiClient,
             IEncodingService encodingService,
             IOuterApiService outerApiService,
-            IAuthorizationService authorizationService,
-            ILogger<CohortController> logger)
+            IAuthorizationService authorizationService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
@@ -55,7 +53,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _encodingService = encodingService;
             _outerApiService = outerApiService;
             _authorizationService = authorizationService;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -63,8 +60,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("", Name = RouteNames.Cohort)]
         public async Task<IActionResult> Review(CohortsByProviderRequest request)
         {
-            _logger.LogInformation("Review Model Mapper {Status}.", _modelMapper is null ? "is null" : "is not null");
-
             var reviewViewModel = await _modelMapper.Map<ReviewViewModel>(request);
             reviewViewModel.SortedByHeader();
 

@@ -17,17 +17,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenSelectingDeliveryModel
     {
         [Test]
-        public async Task GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
+        public async Task
+            GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
-                .WithDeliveryModels(new List<DeliveryModel> {DeliveryModel.Regular});
+                .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
 
             var result = await fixture.Sut.SelectDeliveryModel(fixture.Request) as RedirectToActionResult;
             result.ActionName.Should().Be("AddDraftApprenticeship");
         }
 
         [Test]
-        public async Task GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectTo_SelectDeliveryModel()
+        public async Task
+            GettingDeliveryModel_ForProviderAndCourse_WithMultipleOptions_ShouldRedirectTo_SelectDeliveryModel()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
@@ -64,10 +66,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ModelMapperMock = new Mock<IModelMapper>();
             ViewModel = fixture.Create<Web.Models.Cohort.SelectDeliveryModelViewModel>();
 
-            ModelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel)).ReturnsAsync(Request);
+            ModelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel))
+                .ReturnsAsync(Request);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>(),Mock.Of<ILogger<CohortController>>());
+            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(),
+                Mock.Of<ICommitmentsApiClient>(),
+                Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(), Mock.Of<IAuthorizationService>());
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)

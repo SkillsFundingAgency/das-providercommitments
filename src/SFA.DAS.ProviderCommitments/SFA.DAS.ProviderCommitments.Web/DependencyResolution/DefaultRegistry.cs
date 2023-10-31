@@ -10,8 +10,7 @@ public class DefaultRegistry : Registry
 
     public DefaultRegistry()
     {
-        Scan(
-            scan =>
+        Scan(scan =>
             {
                 scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith(ServiceName));
                 scan.RegisterConcreteTypesAgainstTheFirstInterface();

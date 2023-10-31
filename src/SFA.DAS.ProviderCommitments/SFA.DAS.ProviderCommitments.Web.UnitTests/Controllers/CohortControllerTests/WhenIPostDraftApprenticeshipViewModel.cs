@@ -208,8 +208,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     _commitmentsApiClient.Object,
                     _encodingService.Object,
                     _outerApiService.Object,
-                    Mock.Of<IAuthorizationService>(), 
-                    Mock.Of<ILogger<CohortController>>()
+                    Mock.Of<IAuthorizationService>()
                     );
                 _controller.TempData = _tempData.Object;
             }

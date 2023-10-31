@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
 public static class MappingServiceRegistrations
 {
+    // Getting this working should allow for the complete removal of StructureMap from the solution.
     public static IServiceCollection AddMapping(this IServiceCollection services)
     {
         var mappingAssembly = typeof(ChangeVersionViewModelMapper).Assembly;
