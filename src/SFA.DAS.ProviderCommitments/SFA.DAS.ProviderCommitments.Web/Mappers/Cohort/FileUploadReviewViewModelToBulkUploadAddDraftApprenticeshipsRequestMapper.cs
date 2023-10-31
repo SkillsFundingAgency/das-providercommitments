@@ -26,11 +26,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         {
             var csVRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
             await _cacheService.ClearCache(source.CacheRequestId.ToString(),nameof(FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper));
+            var rplExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                RplDataExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended),
-                BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId)
+                RplDataExtended = rplExtended,
+                BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId, rplExtended)
             };
         }
     }

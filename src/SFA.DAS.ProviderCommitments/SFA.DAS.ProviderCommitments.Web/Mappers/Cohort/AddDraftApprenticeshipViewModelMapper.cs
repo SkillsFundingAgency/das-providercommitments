@@ -47,6 +47,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 Email = cacheItem.Email,
                 Uln = cacheItem.Uln,
                 Cost = cacheItem.Cost,
+                TrainingPrice = cacheItem.TrainingPrice,
+                EndPointAssessmentPrice = cacheItem.EndPointAssessmentPrice,
                 Reference = cacheItem.Reference,
                 EmploymentPrice = cacheItem.EmploymentPrice
             };
@@ -82,6 +84,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 result.EmploymentEndMonth = cacheItem.EmploymentEndDate.Value.Month;
                 result.EmploymentEndYear = cacheItem.EmploymentEndDate.Value.Year;
+            }
+
+            if (cacheItem.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                result.Cost = cacheItem.TrainingPrice + cacheItem.EndPointAssessmentPrice;
             }
 
             return result;
