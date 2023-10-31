@@ -1,12 +1,11 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System;
-using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -45,8 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenPostingFileToDiscardFixture
     {
-        private CohortController _sut { get; set; }
-        private readonly Mock<IModelMapper> _modelMapper;
+        private readonly CohortController _sut;
         private readonly FileDiscardViewModel _viewModel;
 
         public WhenPostingFileToDiscardFixture(bool fileDiscardConfirmed)
@@ -55,9 +53,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _viewModel = fixture.Create<FileDiscardViewModel>();
             _viewModel.FileDiscardConfirmed = fileDiscardConfirmed;
 
-            _modelMapper = new Mock<IModelMapper>();
+            var modelMapper = new Mock<IModelMapper>();
 
-            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+            _sut = new CohortController(Mock.Of<IMediator>(), modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 

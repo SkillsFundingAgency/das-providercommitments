@@ -15,19 +15,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task ThenCallsModelMapper()
         {
-            var f = new WhenGettingChooseCohortFixture();
+            var fixture = new WhenGettingChooseCohortFixture();
 
-            await f.Sut.ChooseCohort(f.Request);
+            await fixture.Sut.ChooseCohort(fixture.Request);
 
-            f.ModelMapperMock.Verify(x => x.Map<ChooseCohortViewModel>(f.Request));
+            fixture.ModelMapperMock.Verify(x => x.Map<ChooseCohortViewModel>(fixture.Request));
         }
 
         [Test]
         public async Task ThenReturnsChooseCohortsViewModel()
         {
-            var f = new WhenGettingChooseCohortFixture();
+            var fixture = new WhenGettingChooseCohortFixture();
 
-            var result = await f.Sut.ChooseCohort(f.Request) as ViewResult;
+            var result = await fixture.Sut.ChooseCohort(fixture.Request) as ViewResult;
 
             Assert.NotNull(result);
             Assert.AreEqual(typeof(ChooseCohortViewModel), result.Model.GetType());
@@ -36,18 +36,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenGettingChooseCohortFixture
     {
-        public CohortController Sut { get; set; }
+        public CohortController Sut { get; }
         public ChooseCohortByProviderRequest Request { get; }
         public Mock<IModelMapper> ModelMapperMock { get; }
-        public ChooseCohortViewModel ChooseCohortViewModel { get; }
-        
+
         public WhenGettingChooseCohortFixture()
         {
             Request = new ChooseCohortByProviderRequest();
             ModelMapperMock = new Mock<IModelMapper>();
-            ChooseCohortViewModel = new ChooseCohortViewModel();
+            var chooseCohortViewModel = new ChooseCohortViewModel();
 
-            ModelMapperMock.Setup(x => x.Map<ChooseCohortViewModel>(Request)).ReturnsAsync(ChooseCohortViewModel);
+            ModelMapperMock.Setup(x => x.Map<ChooseCohortViewModel>(Request)).ReturnsAsync(chooseCohortViewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                     Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());

@@ -60,24 +60,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture
     {
-        private CohortController _sut { get; set; }
-
-        private readonly BulkUploadAddAndApproveDraftApprenticeshipsViewModel draftApprenticeshipViewModel;
-        private readonly long providerId = 123;
-        private Mock<IModelMapper> _modelMapper;
-        private readonly TempDataDictionary _tempData;
+        private readonly CohortController _sut;
+        private const long ProviderId = 123;
+        private readonly Mock<IModelMapper> _modelMapper;
 
         public WhenGettingBulkUploadAddAndApproveDraftApprenticeshipsFixture()
         {
             var fixture = new Fixture();
-            draftApprenticeshipViewModel = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>();
+            var draftApprenticeshipViewModel = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>();
             draftApprenticeshipViewModel.ProviderId = 123;
 
             _modelMapper = new Mock<IModelMapper>();
             BulkUploadAddAndApproveDraftApprenticeshipsResponse response = DraftApprenticeshipsResponse();
 
-            _tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _tempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, response);
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            tempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, response);
 
             _modelMapper.Setup(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(It.IsAny<BulkUploadAddAndApproveDraftApprenticeshipsResponse>()))
                 .ReturnsAsync(draftApprenticeshipViewModel);
@@ -85,10 +82,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
 
-            _sut.TempData = _tempData;
+            _sut.TempData = tempData;
         }
 
-        public Task<IActionResult> Act() => _sut.FileUploadSuccess(providerId);
+        public Task<IActionResult> Act() => _sut.FileUploadSuccess(ProviderId);
 
         public void VerifyMapperIsCalled()
         {
@@ -101,19 +98,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 BulkUploadAddAndApproveDraftApprenticeshipResponse = new List<BulkUploadAddDraftApprenticeshipsResponse>()
                    {
-                       new BulkUploadAddDraftApprenticeshipsResponse()
+                       new()
                        {
                            CohortReference = "MKRK7V",
                            EmployerName = "Tesco",
                            NumberOfApprenticeships = 1
                        },
-                      new BulkUploadAddDraftApprenticeshipsResponse()
+                      new()
                       {
                            CohortReference = "MKRK7V",
                            EmployerName = "Tesco",
                            NumberOfApprenticeships = 1
                       },
-                      new BulkUploadAddDraftApprenticeshipsResponse()
+                      new()
                       {
                            CohortReference = "MKRK7N",
                            EmployerName = "Nasdaq",
@@ -122,6 +119,5 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                    }
             };
         }
-
     }
 }

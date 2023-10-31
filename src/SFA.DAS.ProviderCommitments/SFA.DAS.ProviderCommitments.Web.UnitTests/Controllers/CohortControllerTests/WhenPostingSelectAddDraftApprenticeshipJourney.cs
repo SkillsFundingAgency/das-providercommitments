@@ -35,16 +35,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenPostingSelectAddDraftApprenticeshipJourneyFixture
     {
-        public CohortController Sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly SelectAddDraftApprenticeshipJourneyViewModel _viewModel;
-        public readonly long ProviderId = 123;
+        private const long ProviderId = 123;
 
         public WhenPostingSelectAddDraftApprenticeshipJourneyFixture()
         {
             _viewModel = new SelectAddDraftApprenticeshipJourneyViewModel { ProviderId = ProviderId };
 
-            Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+            _sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
@@ -60,6 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public IActionResult Act() => Sut.SelectAddDraftApprenticeshipJourney(_viewModel);
+        public IActionResult Act() => _sut.SelectAddDraftApprenticeshipJourney(_viewModel);
     }
 }

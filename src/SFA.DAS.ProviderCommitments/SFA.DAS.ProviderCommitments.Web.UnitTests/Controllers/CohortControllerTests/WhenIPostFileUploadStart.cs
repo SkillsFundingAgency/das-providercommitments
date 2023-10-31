@@ -1,14 +1,13 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.Encoding;
-using Microsoft.AspNetCore.Http;
-using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -36,33 +35,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class PostFileUploadStartFixture
     {
-        public CohortController Sut { get; set; }
-
-        public string RedirectUrl;
+        private readonly CohortController _sut;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<IOuterApiService> _outerApiService;
         private readonly FileUploadStartViewModel _viewModel;
-        private readonly FileUploadReviewRequest _request;
-        private readonly Mock<IMediator> _mediator;
 
         public PostFileUploadStartFixture()
         {
             var fixture = new Fixture();
             _viewModel = fixture.Build<FileUploadStartViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
-            _request = fixture.Create<FileUploadReviewRequest>();
-            _outerApiService = new Mock<IOuterApiService>();
+            var request = fixture.Create<FileUploadReviewRequest>();
+            var outerApiService = new Mock<IOuterApiService>();
 
             _mockModelMapper = new Mock<IModelMapper>();
-            _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
+            _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => request);
 
-            _mediator = new Mock<IMediator>();
+            var mediator = new Mock<IMediator>();
 
-            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                         Mock.Of<IEncodingService>(), _outerApiService.Object,Mock.Of<IAuthorizationService>());
+            _sut = new CohortController(mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+                         Mock.Of<IEncodingService>(), outerApiService.Object,Mock.Of<IAuthorizationService>());
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut.TempData = tempData;
+            _sut.TempData = tempData;
         }
 
         public PostFileUploadStartFixture VerifyCsvRecordCached()
@@ -71,6 +65,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public async Task<IActionResult> Act() => await Sut.FileUploadStart(_viewModel);
+        public async Task<IActionResult> Act() => await _sut.FileUploadStart(_viewModel);
     }
 }

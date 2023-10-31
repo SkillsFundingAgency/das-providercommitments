@@ -35,10 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class GetConfirmEmployerFixture
     {
-        public CohortController Sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ConfirmEmployerViewModel _viewModel;
         private readonly ConfirmEmployerRequest _request;
         private readonly long _providerId;
 
@@ -47,21 +45,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new Fixture();
             _request = new ConfirmEmployerRequest { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<ConfirmEmployerViewModel>();
+            var viewModel = fixture.Create<ConfirmEmployerViewModel>();
             _providerId = 123;
 
             _modelMapperMock
                 .Setup(x => x.Map<ConfirmEmployerViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
             
-            Sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+            _sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                          Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
-        }
-
-        public GetConfirmEmployerFixture WithModelStateErrors()
-        {
-            Sut.ControllerContext.ModelState.AddModelError("TestError", "Test Error");
-            return this;
         }
 
         public void VerifyMapperWasCalled()
@@ -69,6 +61,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapperMock.Verify(x => x.Map<ConfirmEmployerViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_request);
+        public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_request);
     }
 }

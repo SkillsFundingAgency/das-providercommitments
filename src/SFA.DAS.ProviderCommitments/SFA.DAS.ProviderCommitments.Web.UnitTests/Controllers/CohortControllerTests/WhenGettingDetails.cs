@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly DetailsRequest _request;
             private readonly DetailsViewModel _viewModel;
             private IActionResult _result;
-            private readonly string _linkGeneratorResult;
+            private readonly CohortController _cohortController;
 
             public WhenGettingDetailsTestFixture()
             {
@@ -58,12 +58,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 modelMapper.Setup(x => x.Map<DetailsViewModel>(It.Is<DetailsRequest>(r => r == _request)))
                     .ReturnsAsync(_viewModel);
 
-                _linkGeneratorResult = autoFixture.Create<string>();
+                var linkGeneratorResult = autoFixture.Create<string>();
                 var linkGenerator = new Mock<ILinkGenerator>();
                 linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
-                    .Returns(_linkGeneratorResult);
+                    .Returns(linkGeneratorResult);
 
-                CohortController = new CohortController(Mock.Of<IMediator>(),
+                _cohortController = new CohortController(Mock.Of<IMediator>(),
                      modelMapper.Object,
                      linkGenerator.Object,
                     Mock.Of<ICommitmentsApiClient>(), 
@@ -73,8 +73,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                      );
             }
 
-            public CohortController CohortController { get; set; }
-
             public WhenGettingDetailsTestFixture WithParty(Infrastructure.OuterApi.Responses.Party withParty)
             {
                 _viewModel.WithParty = withParty;
@@ -83,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public async Task GetDetails()
             {
-                _result = await CohortController.Details(_request);
+                _result = await _cohortController.Details(_request);
             }
 
             public void VerifyViewModelIsMappedFromRequest()
@@ -104,7 +102,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 return _viewModel.IsReadOnly;
             }
-
         }
     }
 }

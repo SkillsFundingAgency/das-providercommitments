@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
 using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.Encoding;
 using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderUrlHelper;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -17,8 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     public class WhenSelectingDeliveryModel
     {
         [Test]
-        public async Task
-            GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
+        public async Task GettingDeliveryModel_ForProviderAndCourse_WithOnlyOneOption_ShouldRedirectToAddDraftApprenticeship()
         {
             var fixture = new WhenSelectingDeliveryModelFixture()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
@@ -52,38 +51,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenSelectingDeliveryModelFixture
     {
-        public CohortController Sut { get; set; }
-
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public CreateCohortWithDraftApprenticeshipRequest Request;
-        public Web.Models.Cohort.SelectDeliveryModelViewModel ViewModel;
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        public CreateCohortWithDraftApprenticeshipRequest Request { get; }
+        public SelectDeliveryModelViewModel ViewModel { get; }
+        public CohortController Sut { get; }
 
         public WhenSelectingDeliveryModelFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Build<CreateCohortWithDraftApprenticeshipRequest>().Create();
-            ModelMapperMock = new Mock<IModelMapper>();
-            ViewModel = fixture.Create<Web.Models.Cohort.SelectDeliveryModelViewModel>();
+            _modelMapperMock = new Mock<IModelMapper>();
+            ViewModel = fixture.Create<SelectDeliveryModelViewModel>();
 
-            ModelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel))
+            _modelMapperMock.Setup(x => x.Map<CreateCohortWithDraftApprenticeshipRequest>(ViewModel))
                 .ReturnsAsync(Request);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), ModelMapperMock.Object, Mock.Of<ILinkGenerator>(),
+            Sut = new CohortController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>(),
                 Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(), Mock.Of<IAuthorizationService>());
         }
 
         public WhenSelectingDeliveryModelFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<Web.Models.Cohort.SelectDeliveryModelViewModel>(Request))
-                .ReturnsAsync(new Web.Models.Cohort.SelectDeliveryModelViewModel { DeliveryModels = list });
+            _modelMapperMock.Setup(x => x.Map<SelectDeliveryModelViewModel>(Request))
+                .ReturnsAsync(new SelectDeliveryModelViewModel { DeliveryModels = list });
             return this;
-        }
-
-        public void VerifyReturnsRedirect(IActionResult redirectResult)
-        {
-            redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
         }
     }
 }

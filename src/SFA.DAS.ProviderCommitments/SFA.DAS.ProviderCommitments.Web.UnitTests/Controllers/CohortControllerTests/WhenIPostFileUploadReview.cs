@@ -16,20 +16,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
     [TestFixture]
     public class WhenIPostFileUploadReview
     {
-        WhenIPostFileUploadReviewFixture fixture;
+        private  WhenIPostFileUploadReviewFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            fixture = new WhenIPostFileUploadReviewFixture();
+            _fixture = new WhenIPostFileUploadReviewFixture();
         }
-
 
         [Test]
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_RedirectToReview()
         {
             //Act
-            var result = await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
+            var result = await _fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             
             //Assert
             result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadSuccessSaveDraft"); ;
@@ -39,10 +38,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_CohortsAreCreated()
         {
             //Act
-            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
+            await _fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             
             //Assert
-            fixture.VerifyCohortsAreCreated();
+            _fixture.VerifyCohortsAreCreated();
         }
 
 
@@ -50,10 +49,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task When_SelectedOption_Is_SaveButDontSendToEmployer_MapperIsCalled()
         {
             //Act
-            await fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
+            await _fixture.WithSelectedOption(FileUploadReviewOption.SaveButDontSend).Act();
             
             //Assert
-            fixture.VerifyMapperIsCalled();
+            _fixture.VerifyMapperIsCalled();
         }
 
         // TODO re-add these tests when the Add/Approve feature is turned back on
@@ -91,7 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task When_SelectedOption_Is_UploadAnAmendedFile_RedirectTo_FileUploadStart()
         {
             //Act
-            var result = await fixture.WithSelectedOption(FileUploadReviewOption.UploadAmendedFile).Act();
+            var result = await _fixture.WithSelectedOption(FileUploadReviewOption.UploadAmendedFile).Act();
             
             //Assert
             result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadAmendedFile");
@@ -100,15 +99,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenIPostFileUploadReviewFixture
     {
-        public CohortController Sut { get; set; }
-
-        public string RedirectUrl;
+        private readonly CohortController _sut;
         private readonly Mock<IModelMapper> _mockModelMapper;
         private readonly Mock<IOuterApiService> _outerApiService;
         private readonly FileUploadReviewViewModel _viewModel;        
         private readonly BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
-        private readonly BulkUploadAddAndApproveDraftApprenticeshipsRequest _addAndApproveApiRequest;
-        private readonly BulkUploadAddAndApproveDraftApprenticeshipsResult _bulkUploadAddAndApproveDraftApprenticeshipsResult;
 
         public WhenIPostFileUploadReviewFixture()
         {
@@ -119,19 +114,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             
 
             _apiRequest = fixture.Create<BulkUploadAddDraftApprenticeshipsRequest>();
-            _addAndApproveApiRequest = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
-            _bulkUploadAddAndApproveDraftApprenticeshipsResult = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsResult>();
+            var addAndApproveApiRequest = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsRequest>();
+            var bulkUploadAddAndApproveDraftApprenticeshipsResult = fixture.Create<BulkUploadAddAndApproveDraftApprenticeshipsResult>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel)).ReturnsAsync(() => _apiRequest);
-            _mockModelMapper.Setup(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(_viewModel)).ReturnsAsync(() => _addAndApproveApiRequest);
+            _mockModelMapper.Setup(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(_viewModel)).ReturnsAsync(() => addAndApproveApiRequest);
 
-            _outerApiService.Setup(x => x.BulkUploadAddAndApproveDraftApprenticeships(_addAndApproveApiRequest)).ReturnsAsync(_bulkUploadAddAndApproveDraftApprenticeshipsResult);
+            _outerApiService.Setup(x => x.BulkUploadAddAndApproveDraftApprenticeships(addAndApproveApiRequest)).ReturnsAsync(bulkUploadAddAndApproveDraftApprenticeshipsResult);
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(), 
+            _sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, Mock.Of<ILinkGenerator>(),Mock.Of<ICommitmentsApiClient>(), 
                          Mock.Of<IEncodingService>(), _outerApiService.Object,Mock.Of<IAuthorizationService>());
-            Sut.TempData = tempData;
+            _sut.TempData = tempData;
         }
 
         public WhenIPostFileUploadReviewFixture WithSelectedOption(FileUploadReviewOption selectedOption)
@@ -149,17 +144,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _mockModelMapper.Verify(x => x.Map<BulkUploadAddDraftApprenticeshipsRequest>(_viewModel), Times.Once);
         }
-
-        public void VerifyCohortsAreCreatedAndSendToEmployer()
-        {
-            _outerApiService.Verify(x => x.BulkUploadAddAndApproveDraftApprenticeships(_addAndApproveApiRequest), Times.Once);
-        }
-
-        public void VerifyApproveAndSendToEmployerMapperIsCalled()
-        {
-            _mockModelMapper.Verify(x => x.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(_viewModel), Times.Once);
-        }
-
-        public async Task<IActionResult> Act() => await Sut.FileUploadReview(_viewModel);
+      
+        public async Task<IActionResult> Act() => await _sut.FileUploadReview(_viewModel);
     }
 }

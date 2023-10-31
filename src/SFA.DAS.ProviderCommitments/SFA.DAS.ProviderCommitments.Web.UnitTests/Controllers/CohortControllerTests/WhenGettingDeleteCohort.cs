@@ -35,10 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenGettingDeleteCohortFixture
     {
-        public CohortController Sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly DeleteCohortViewModel _viewModel;
         private readonly DeleteCohortRequest _request;
 
         public WhenGettingDeleteCohortFixture()
@@ -46,13 +44,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new Fixture();
             _request = fixture.Create<DeleteCohortRequest>();
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<DeleteCohortViewModel>();
+            var viewModel = fixture.Create<DeleteCohortViewModel>();
 
             _modelMapperMock
                 .Setup(x => x.Map<DeleteCohortViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
             
-            Sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+            _sut = new CohortController(Mock.Of<IMediator>(),_modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
@@ -61,6 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapperMock.Verify(x => x.Map<DeleteCohortViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.Delete(_request);
+        public async Task<IActionResult> Act() => await _sut.Delete(_request);
     }
 }

@@ -49,11 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class PostDeleteCohortFixture
     {
-        public CohortController Sut { get; set; }
-
-        public string RedirectUrl;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
-        private readonly Mock<IModelMapper> _mockModelMapper;
+        private readonly CohortController _sut;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
         private readonly DeleteCohortViewModel _viewModel;
         private readonly UserInfo _userInfo;
@@ -66,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _userInfo = fixture.Create<UserInfo>();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
-            _mockModelMapper = new Mock<IModelMapper>();
+            var mockModelMapper = new Mock<IModelMapper>();
             _authenticationService = new Mock<IAuthenticationService>();
 
             _authenticationService.Setup(x => x.UserInfo).Returns(_userInfo);
@@ -74,11 +70,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _commitmentApiClient
                 .Setup(x => x.DeleteCohort(_viewModel.CohortId, _userInfo , It.IsAny<CancellationToken>())).Returns(Task.FromResult(0));
 
-            RedirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(RedirectUrl)).Returns(RedirectUrl);
+            var redirectUrl = $"{_viewModel.ProviderId}/apprentices/{_viewModel.CohortReference}/Details";
+            var linkGenerator = new Mock<ILinkGenerator>();
+            linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(redirectUrl)).Returns(redirectUrl);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, 
+            _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, _commitmentApiClient.Object, 
                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
@@ -101,6 +97,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public async Task<IActionResult> Act() => await Sut.Delete(_authenticationService.Object, _viewModel);
+        public async Task<IActionResult> Act() => await _sut.Delete(_authenticationService.Object, _viewModel);
     }
 }

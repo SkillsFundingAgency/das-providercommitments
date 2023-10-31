@@ -1,17 +1,16 @@
-﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -43,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             var fixture = new WhenAddingACohortWithDraftApprenticeFixture();
 
-            var result = await fixture.ActOnAddApprenticeship();
+            await fixture.ActOnAddApprenticeship();
 
             fixture.VerifyMapperWasCalled();
         }
@@ -51,30 +50,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenAddingACohortWithDraftApprenticeFixture
     {
-        public CohortController Sut { get; set; }
+        private readonly CohortController _sut;
         private readonly Mock<IModelMapper> _modelMapper;
-        private readonly AddDraftApprenticeshipViewModel _viewModel;
-        private readonly CreateCohortRedirectModel _redirectModel;
         private readonly CreateCohortWithDraftApprenticeshipRequest _request;
         private readonly Mock<ITempDataDictionary> _tempData;
         private object _viewModelAsString;
 
         public WhenAddingACohortWithDraftApprenticeFixture()
         {
-            _request = new CreateCohortWithDraftApprenticeshipRequest();
-            _request.DeliveryModel = DeliveryModel.PortableFlexiJob;
-            _request.CourseCode = "ABC123";
+            _request = new CreateCohortWithDraftApprenticeshipRequest
+            {
+                DeliveryModel = DeliveryModel.PortableFlexiJob,
+                CourseCode = "ABC123"
+            };
 
-            _redirectModel = new CreateCohortRedirectModel { RedirectTo = CreateCohortRedirectModel.RedirectTarget.SelectCourse };
-            _viewModel = new AddDraftApprenticeshipViewModel();
-            _viewModel.DeliveryModel = DeliveryModel.Regular;
-            _viewModel.CourseCode = "DIFF123";
-            _viewModelAsString = JsonConvert.SerializeObject(_viewModel);
+            var redirectModel = new CreateCohortRedirectModel { RedirectTo = CreateCohortRedirectModel.RedirectTarget.SelectCourse };
+            var viewModel = new AddDraftApprenticeshipViewModel
+            {
+                DeliveryModel = DeliveryModel.Regular,
+                CourseCode = "DIFF123"
+            };
+            _viewModelAsString = JsonConvert.SerializeObject(viewModel);
             _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(_viewModel);
-            _modelMapper.Setup(x => x.Map<CreateCohortRedirectModel>(_request)).ReturnsAsync(_redirectModel);
+            _modelMapper.Setup(x => x.Map<AddDraftApprenticeshipViewModel>(_request)).ReturnsAsync(viewModel);
+            _modelMapper.Setup(x => x.Map<CreateCohortRedirectModel>(_request)).ReturnsAsync(redirectModel);
 
-            Sut = new CohortController(
+            _sut = new CohortController(
                 Mock.Of<IMediator>(),
                 _modelMapper.Object, 
                 Mock.Of<ILinkGenerator>(), 
@@ -85,14 +86,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 );
 
             _tempData = new Mock<ITempDataDictionary>();
-            Sut.TempData = _tempData.Object;
+            _sut.TempData = _tempData.Object;
 
-        }
-
-        public WhenAddingACohortWithDraftApprenticeFixture WithTempDataSet()
-        {
-            _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out _viewModelAsString));
-            return this;
         }
 
         public void VerifyDraftApprenticeshipWasRestoredAndValuesSet(AddDraftApprenticeshipViewModel viewModel)
@@ -113,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _modelMapper.Verify(x => x.Map<AddDraftApprenticeshipViewModel>(_request));
         }
 
-        public IActionResult Act() => Sut.AddNewDraftApprenticeship(_request).Result;
-        public async Task<IActionResult> ActOnAddApprenticeship() => await Sut.AddDraftApprenticeship(_request);
+        public IActionResult Act() => _sut.AddNewDraftApprenticeship(_request).Result;
+        public async Task<IActionResult> ActOnAddApprenticeship() => await _sut.AddDraftApprenticeship(_request);
     }
 }

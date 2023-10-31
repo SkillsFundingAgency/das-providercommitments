@@ -43,24 +43,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenGettingFileToDiscardFixture
     {
-        private CohortController _sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly FileDiscardRequest _request;
-        private readonly long _providerId = 123;
+        private const long ProviderId = 123;
         private readonly Guid _cacheRequestId = Guid.NewGuid();
-        private readonly Mock<IModelMapper> _modelMapper;
-        private readonly FileDiscardViewModel _viewModel;
 
         public WhenGettingFileToDiscardFixture()
         {
-            var fixture = new AutoFixture.Fixture();
+            var fixture = new Fixture();
 
-            _viewModel = fixture.Create<FileDiscardViewModel>();
-            _request = new FileDiscardRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
+            var viewModel = fixture.Create<FileDiscardViewModel>();
+            _request = new FileDiscardRequest { ProviderId = ProviderId, CacheRequestId = _cacheRequestId };
 
-            _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<FileDiscardViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+            var modelMapper = new Mock<IModelMapper>();
+            modelMapper.Setup(x => x.Map<FileDiscardViewModel>(_request)).ReturnsAsync(viewModel);
+            _sut = new CohortController(Mock.Of<IMediator>(), modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 

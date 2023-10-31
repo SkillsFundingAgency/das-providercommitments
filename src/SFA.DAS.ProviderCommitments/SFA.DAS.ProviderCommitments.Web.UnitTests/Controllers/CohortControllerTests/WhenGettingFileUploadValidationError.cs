@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public CohortController Sut { get; set; }
 
         private readonly FileUploadValidateErrorRequest _request;
-        public readonly List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> _errors;
+        public  List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> Errors { get; set; }
         private readonly FileUploadValidateViewModel _viewModel;
         public readonly long ProviderId = 123;
         private readonly Mock<IModelMapper> _mapper;
@@ -67,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenGettingFileUploadValidationErrorFixture()
         {
             var fixture = new Fixture();
-            _errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
+            Errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
             _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>())
                 .With(x => x.ProviderId, ProviderId)
@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
 
             _tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _tempData.Put(Constants.BulkUpload.BulkUploadErrors, _errors);
+            _tempData.Put(Constants.BulkUpload.BulkUploadErrors, Errors);
             Sut.TempData = _tempData;
         }
 
