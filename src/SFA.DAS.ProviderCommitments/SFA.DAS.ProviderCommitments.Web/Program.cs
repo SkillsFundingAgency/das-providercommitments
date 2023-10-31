@@ -1,4 +1,6 @@
-﻿using NLog.Web;
+﻿using Microsoft.AspNetCore;
+using NLog.Web;
+using StructureMap.AspNetCore;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -10,11 +12,12 @@ public class Program
         var logger = NLogBuilder.ConfigureNLog(environment == "Development" ? "nlog.Development.config" :"nlog.config").GetCurrentClassLogger();
         logger.Info("Starting up host");
 
-        CreateHostBuilder(args).Build().Run();
+        CreateWebHostBuilder(args).Build().Run();
     }
-    
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
+
+    private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
             .UseNLog()
-            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+            .UseStructureMap()
+            .UseStartup<Startup>();
 }

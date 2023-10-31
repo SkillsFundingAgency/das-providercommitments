@@ -15,11 +15,13 @@ using SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
+using StructureMap;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web;
@@ -60,7 +62,6 @@ public class Startup
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
         services.AddCache(_environment, _configuration);
-        services.AddMapping();
 
         services.AddDasMvc(_configuration);
 
@@ -105,6 +106,11 @@ public class Startup
 
         services.AddHttpClient();
         services.AddApplicationInsightsTelemetryWorkerService();
+    }
+    
+    public void ConfigureContainer(Registry registry)
+    {
+        IoC.Initialize(registry);
     }
     
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

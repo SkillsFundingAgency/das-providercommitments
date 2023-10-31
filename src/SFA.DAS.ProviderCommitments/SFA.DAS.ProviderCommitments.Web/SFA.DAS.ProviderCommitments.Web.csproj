@@ -13,8 +13,8 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
         <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0"/>
         <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.21.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0"/>
+<!--        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>-->
+<!--        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0"/>-->
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.24"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="6.0.24"/>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.13"/>
@@ -41,6 +41,7 @@
         <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.27" />
         <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.559"/>
         <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7"/>
+        <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1"/>
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21"/>
     </ItemGroup>
