@@ -102,8 +102,59 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.AddDraftApprenticesh
         [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
+            _source.IsOnFlexiPaymentPilot = false;
             var result = await _act();
             Assert.AreEqual(_source.Cost, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice, result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
+        public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProviders()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice + _source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProvidersWhenTrainingPriceMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCalculatedCostIsMappedCorrectlyForPilotProvidersWhenEPAMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.EndPointAssessmentPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCostIsNullWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            _source.EndPointAssessmentPrice = null;
+            var result = await _act();
+            Assert.AreEqual(null, result.Cost);
         }
 
         [Test]
