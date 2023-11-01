@@ -412,19 +412,20 @@
                             </tr>
                         }          
                         
-                        @if (Model.PriceReducedBy != null)
-                        {
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
-                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
-                                <td class="govuk-table__cell"></td>
-                            </tr>
-                        }
                         @if (Model.DurationReducedBy != null)
                         {
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
                                 <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">@Model.DurationReducedByDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
+
+                        @if (Model.PriceReducedBy != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
