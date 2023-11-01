@@ -54,7 +54,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _outerApiService = outerApiService;
             _authorizationService = authorizationService;
         }
-
+        
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("test")]
+        public IActionResult Test()
+        {
+            return View();
+        }
+        
         [HttpGet]
         [Route("review", Name = RouteNames.CohortReview)]
         [Route("", Name = RouteNames.Cohort)]
