@@ -53,6 +53,7 @@ public class Startup
         });
 
         services.AddConfigurationOptions(_configuration);
+        services.AddFeatureToggleService();
         services.AddProviderUiServiceRegistration(_configuration);
        
         services.AddDasHealthChecks();
