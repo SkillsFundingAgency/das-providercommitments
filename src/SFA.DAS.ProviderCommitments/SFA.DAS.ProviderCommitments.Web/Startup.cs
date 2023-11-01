@@ -106,10 +106,11 @@ public class Startup
         services.AddApplicationInsightsTelemetryWorkerService();
     }
 
-    // public void ConfigureContainer(Registry registry)
-    // {
-    //     IoC.Initialize(registry);
-    // }
+    public void ConfigureContainer(Registry registry)
+    {
+        // Still using StructureMap due to _Layout.cshtml not being found exception when removing it ...
+        IoC.Initialize(registry);
+    }
     
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {

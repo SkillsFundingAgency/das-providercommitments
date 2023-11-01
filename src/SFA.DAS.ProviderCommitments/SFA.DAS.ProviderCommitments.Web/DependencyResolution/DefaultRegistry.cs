@@ -15,8 +15,5 @@ public class DefaultRegistry : Registry
                 scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith(ServiceName));
                 scan.RegisterConcreteTypesAgainstTheFirstInterface();
             });
-
-        For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachUserInfoToSaveRequests<,>));
-        For(typeof(IMapper<,>)).DecorateAllWith(typeof(AttachApimUserInfoToSaveRequests<,>));
     }
 }
