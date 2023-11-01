@@ -1,19 +1,16 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.Authorization.ProviderFeatures.Handlers;
 using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
@@ -23,7 +20,6 @@ using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 using StructureMap;
-using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -63,7 +59,7 @@ public class Startup
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
         services.AddCache(_environment, _configuration);
-        services.AddMapping();
+        services.AddModelMappings();
 
         services.AddDasMvc(_configuration);
 
@@ -85,7 +81,7 @@ public class Startup
 
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         
-        services.AddSingleton(typeof(Interfaces.ICookieStorageService<>), typeof(CookieStorageService<>));
+        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
 
         if (_configuration.UseLocalRegistry())
         {
@@ -113,7 +109,6 @@ public class Startup
     // public void ConfigureContainer(Registry registry)
     // {
     //     IoC.Initialize(registry);
-    //     registry.For<IModelMapper>().Use<ModelMapper>();
     // }
     
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

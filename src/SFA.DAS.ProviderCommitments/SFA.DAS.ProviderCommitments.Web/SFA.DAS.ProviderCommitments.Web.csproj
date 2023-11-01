@@ -13,8 +13,6 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
         <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0"/>
         <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.21.0" />
-<!--        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0"/>-->
-<!--        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0"/>-->
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.24"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="6.0.24"/>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.13"/>
@@ -31,7 +29,6 @@
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.13"/>
         <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.5" />
-        <PackageReference Include="Scrutor" Version="4.2.2" />
         <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Authorization.CommitmentPermissions" Version="6.0.97"/>
@@ -39,7 +36,6 @@
         <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.63"/>
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1"/>
         <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559"/>
-        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.27" />
         <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.559"/>
         <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7"/>
         <PackageReference Include="StructureMap.AspNetCore" Version="2.0.0" />
