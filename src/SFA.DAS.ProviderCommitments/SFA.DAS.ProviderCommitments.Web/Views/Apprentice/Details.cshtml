@@ -7,6 +7,8 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Mappers
 @using SFA.DAS.Authorization.Services
+@using SFA.DAS.ProviderUrlHelper
+@inject ILinkGenerator LinkGenerator;
 
 @inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
 
@@ -349,7 +351,10 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
                     <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                    <td class="govuk-table__cell"></td>
+                    <td class="govuk-table__cell">
+                        <!--todo formatting this link following a design in a later story-->
+                        <a id="change-price-link" href="@LinkGenerator.ProviderApprenticeshipServiceLink($"/{Model.ProviderId}/agreements")" class="govuk-link">Change Price</a>
+                    </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Your reference</th>
