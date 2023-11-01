@@ -5,10 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Authorization.CommitmentPermissions.Configuration;
+using SFA.DAS.Authorization.ProviderFeatures.Configuration;
+using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
+using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
+using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
 
@@ -20,6 +27,23 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(OverlappingTrainingDateRequestController))]
     [TestCase(typeof(ProviderAccountController))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Controllers(Type toResolve)
+    {
+        RunTestForType(toResolve);
+    }
+    
+    [TestCase(typeof(AuthenticationSettings))]
+    [TestCase(typeof(CommitmentsClientApiConfiguration))]
+    [TestCase(typeof(ApprovalsOuterApiConfiguration))]
+    [TestCase(typeof(CommitmentPermissionsApiClientConfiguration))]
+    [TestCase(typeof(ProviderRelationshipsApiConfiguration))]
+    [TestCase(typeof(ProviderFeaturesConfiguration))]
+    [TestCase(typeof(ZenDeskConfiguration))]
+    [TestCase(typeof(DataProtectionConnectionStrings))]
+    [TestCase(typeof(BulkUploadFileValidationConfiguration))]
+    [TestCase(typeof(ProviderSharedUIConfiguration))]
+    [TestCase(typeof(BlobStorageSettings))]
+    [TestCase(typeof(PasAccountApiConfiguration))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved_For_Configuration(Type toResolve)
     {
         RunTestForType(toResolve);
     }
