@@ -22,7 +22,6 @@ public static class ApplicationServiceRegistrations
         services.AddSingleton<IAcademicYearDateProvider, AcademicYearDateProvider>();
         services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
         services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();
-        services.AddTransient<IModelMapper, ModelMapper>();
         
         services.AddTransient<IAzureTableStorageConnectionAdapter, AzureTableStorageConnectionAdapter>();
         services.AddTransient<IEnvironmentService, EnvironmentService>();
