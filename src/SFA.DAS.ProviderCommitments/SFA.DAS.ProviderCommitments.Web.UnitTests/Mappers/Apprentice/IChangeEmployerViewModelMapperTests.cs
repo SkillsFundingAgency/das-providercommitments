@@ -165,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.PriceEpisodes.PriceEpisodes.GetCost(), result.CurrentPrice);
+            Assert.AreEqual(_fixture.PriceEpisodes.PriceEpisodes.GetPrice(), result.CurrentPrice);
         }
 
         [Test]

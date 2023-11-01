@@ -7,12 +7,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
     public static class InnerApiPriceEpisodeExtensions
     {
-        public static decimal GetCost(this IEnumerable<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes)
+        public static decimal GetPrice(this IEnumerable<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes)
         {
-            return priceEpisodes.GetCost(DateTime.UtcNow);
+            return priceEpisodes.GetPrice(DateTime.UtcNow);
         }
 
-        public static decimal GetCost(this IEnumerable<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes,
+        public static decimal GetPrice(this IEnumerable<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes,
             DateTime effectiveDate)
         {
             return GetEffectivePriceEpisode(priceEpisodes, effectiveDate).Cost;

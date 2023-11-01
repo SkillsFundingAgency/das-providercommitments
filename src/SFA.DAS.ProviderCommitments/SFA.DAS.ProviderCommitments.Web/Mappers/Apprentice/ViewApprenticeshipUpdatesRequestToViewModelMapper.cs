@@ -84,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 if (update.Cost.HasValue)
                 {
                     var priceEpisodes = await _commitmentsApiClient.GetPriceEpisodes(source.ApprenticeshipId);
-                    vm.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetCost();
+                    vm.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
                 }
 
                 return vm;

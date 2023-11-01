@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var apprenticeship = apprenticeshipTask.Result;
             var priceEpisodes = priceEpisodesTask.Result;
 
-            var currentPrice = priceEpisodes.PriceEpisodes.GetCost();
+            var currentPrice = priceEpisodes.PriceEpisodes.GetPrice();
 
             var vm = new ConfirmEditApprenticeshipViewModel
             {
