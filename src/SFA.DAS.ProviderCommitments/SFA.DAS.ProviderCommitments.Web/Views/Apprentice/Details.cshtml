@@ -338,14 +338,6 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                @if (Model.RecognisePriorLearning)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
-                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DurationReducedByDisplay</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                }
                 @if (Model.DeliveryModel.Equals(DeliveryModel.PortableFlexiJob))
                 {
                     <tr class="govuk-table__row">
@@ -354,14 +346,48 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                @if (Model.RecognisePriorLearning)
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
-                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                    <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Your reference</th>
+                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (Model.RecognisePriorLearning != null)
+        {
+            <div class="govuk-grid-row govuk-!-margin-bottom-2">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">Prior learning details</h2>
+                </div>
+            </div>
+
+            @if (Model.RecognisePriorLearning == true)
+            {
+                <table class="govuk-table">
+                    <tbody class="govuk-table__body">
+
+                        @if (Model.TrainingTotalHours != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Total off-the-job training time for this apprenticeship standard</th>
+                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.TrainingTotalHoursDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }                        
+                        @if (Model.DurationReducedByHours != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Off-the-job training time reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.DurationReducedByHoursDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }                        
                 @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
                 {
                     <tr class="govuk-table__row">
@@ -388,13 +414,24 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Your reference</th>
-                    <td id="apprentice-reference" class="govuk-table__cell">@Model.ProviderRef</td>
-                    <td class="govuk-table__cell"></td>
-                </tr>
-            </tbody>
-        </table>
+
+                        @if (Model.PriceReducedBy != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="govuk-body">This apprentice has no recognised prior learning.</p>
+            }
+        }
+
     </div>
 </div>
 

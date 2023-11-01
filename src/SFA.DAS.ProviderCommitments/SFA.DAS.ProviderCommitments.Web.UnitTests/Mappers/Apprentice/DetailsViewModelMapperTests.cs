@@ -2,7 +2,6 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -17,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -42,14 +42,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenFullNameIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.FirstName + " " + _fixture.ApiResponse.LastName, _fixture.Result.ApprenticeName);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.FirstName + " " + _fixture.ApiResponse.Apprenticeship.LastName, _fixture.Result.ApprenticeName);
         }
 
         [Test]
         public async Task ThenEmployerIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.EmployerName, _fixture.Result.Employer);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmployerName, _fixture.Result.Employer);
         }
 
         [Test]
@@ -63,20 +63,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenStatusIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Status, _fixture.Result.Status);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Status, _fixture.Result.Status);
         }
 
         [Test]
         public async Task ThenStopDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.StopDate, _fixture.Result.StopDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.StopDate, _fixture.Result.StopDate);
         }
 
         [Test]
         public async Task ThenCanResendInvitationIsFalse()
         {
-            _fixture.ApiResponse.Status = ApprenticeshipStatus.Stopped;
+            _fixture.ApiResponse.Apprenticeship.Status = ApprenticeshipStatus.Stopped;
             await _fixture.Map();
             Assert.IsFalse(_fixture.Result.CanResendInvitation);
         }
@@ -85,14 +85,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenPauseDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PauseDate, _fixture.Result.PauseDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PauseDate, _fixture.Result.PauseDate);
         }
 
         [Test]
         public async Task ThenCompletionDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.CompletionDate, _fixture.Result.CompletionDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.CompletionDate, _fixture.Result.CompletionDate);
         }
 
         [Test]
@@ -106,84 +106,96 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.DateOfBirth, _fixture.Result.DateOfBirth);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DateOfBirth, _fixture.Result.DateOfBirth);
         }
 
         [Test]
         public async Task ThenUlnIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Uln, _fixture.Result.Uln);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Uln, _fixture.Result.Uln);
         }
 
         [Test]
         public async Task ThenCourseNameIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.CourseName, _fixture.Result.CourseName);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.CourseName, _fixture.Result.CourseName);
         }
 
         [Test]
         public async Task ThenOptionIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Option, _fixture.Result.Option);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Option, _fixture.Result.Option);
         }
 
         [Test]
         public async Task ThenVersionIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Version, _fixture.Result.Version);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Version, _fixture.Result.Version);
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.StartDate, _fixture.Result.StartDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.StartDate, _fixture.Result.StartDate);
         }
 
         [Test]
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.ActualStartDate, _fixture.Result.ActualStartDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.ActualStartDate, _fixture.Result.ActualStartDate);
         }
 
         [Test]
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.EmploymentEndDate, _fixture.Result.EmploymentEndDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmploymentEndDate, _fixture.Result.EmploymentEndDate);
         }
 
         [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.EndDate, _fixture.Result.EndDate);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EndDate, _fixture.Result.EndDate);
         }
 
         [Test]
         public async Task ThenProviderRefIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.ProviderReference, _fixture.Result.ProviderRef);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.ProviderReference, _fixture.Result.ProviderRef);
         }
+
+        [Test]
+        public async Task ThenRplDataIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.TrainingTotalHours, _fixture.Result.TrainingTotalHours);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedByHours, _fixture.Result.DurationReducedByHours);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedBy, _fixture.Result.DurationReducedBy);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PriceReducedBy, _fixture.Result.PriceReducedBy);
+        }
+
 
         [Test]
         public async Task ThenEmploymentPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.EmploymentPrice, _fixture.Result.EmploymentPrice);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmploymentPrice, _fixture.Result.EmploymentPrice);
         }
 
         [Test]
         public async Task ThenPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.PriceEpisodesApiResponse.PriceEpisodes.First().Cost, _fixture.Result.Cost);
+            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.GetPrice(), _fixture.Result.Cost);
         }
 
         [Test]
@@ -204,28 +216,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.DeliveryModel, _fixture.Result.DeliveryModel);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DeliveryModel, _fixture.Result.DeliveryModel);
         }
 
         [Test]
         public async Task ThenRecognisePriorLearningIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
         }
 
         [Test]
         public async Task ThenDurationReducedByIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.DurationReducedBy, _fixture.Result.DurationReducedBy);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedBy, _fixture.Result.DurationReducedBy);
         }
 
         [Test]
         public async Task ThenPriceReducedByIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PriceReducedBy, _fixture.Result.PriceReducedBy);
+            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PriceReducedBy, _fixture.Result.PriceReducedBy);
         }
 
         [TestCase(ApprenticeshipStatus.Live, true)]
@@ -453,7 +465,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
-        }   
+        }
 
         [TestCase(null, false)]
         [TestCase(ChangeOfPartyRequestStatus.Approved, false)]
@@ -506,7 +518,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
         }
-        
+
         public async Task WhenNoNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
         {
             //Arrange 
@@ -673,15 +685,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             private DetailsViewModelMapper _sut;
             public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
-            public GetApprenticeshipResponse ApiResponse { get; }
-            public GetPriceEpisodesResponse PriceEpisodesApiResponse { get; }
-            public GetApprenticeshipUpdatesResponse GetApprenticeshipUpdatesResponse { get; private set; }
-            public GetDataLocksResponse GetDataLocksResponse { get; private set; }
-            public GetChangeOfPartyRequestsResponse GetChangeOfPartyRequestsResponse { get; private set; }
-            public GetChangeOfEmployerChainResponse GetChangeOfEmployerChainResponse { get; private set; }
+            public GetManageApprenticeshipDetailsResponse ApiResponse { get; }
+            public GetApprenticeshipResponse ApiResponseOld { get; }
+            public GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails ApprenticeshipDetails { get; }
+            public IEnumerable<GetManageApprenticeshipDetailsResponse.PriceEpisode> PriceEpisodes { get; }
+            public IEnumerable<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate> ApprenticeshipUpdates { get; private set; }
+            public IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> DataLocks { get; private set; }
+            public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest> ChangeOfPartyRequests { get; private set; }
+            public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink> ChangeOfEmployerChain { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
-            public GetApprenticeshipDetailsResponse GetApprenticeshipDetailsResponse { get; private set; }
 
             private readonly Mock<IEncodingService> _encodingService;            
             private readonly Mock<IAuthorizationService> _authorizationService;            
@@ -692,53 +705,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public string EncodedNewApprenticeshipId { get; }
             public string EncodedPreviousApprenticeshipId { get; }
             public string EncodedNextApprenticeshipId { get; }
-            
 
             public DetailsViewModelMapperFixture()
             {
                 Fixture = new Fixture();
                 Source = Fixture.Create<DetailsRequest>();
-                ApiResponse = Fixture.Create<GetApprenticeshipResponse>();
-                ApiResponse.ProviderId = Source.ProviderId;
+                ApiResponse = Fixture.Create<GetManageApprenticeshipDetailsResponse>();
+                ApiResponse.Apprenticeship.ProviderId = Source.ProviderId;
                 CohortReference = Fixture.Create<string>();
                 AgreementId = Fixture.Create<string>();
                 URL = Fixture.Create<string>();
-                PriceEpisodesApiResponse = new GetPriceEpisodesResponse
+                PriceEpisodes = new List<GetManageApprenticeshipDetailsResponse.PriceEpisode>
                 {
-                    PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
-                    {
-                        new GetPriceEpisodesResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
-                    }
+                    new GetManageApprenticeshipDetailsResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
                 };
 
-                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
-                {
-                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
-                };
+                ApprenticeshipUpdates = new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>();
+                DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock>();
+                ChangeOfPartyRequests = new List<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest>();
+                ChangeOfEmployerChain = new List<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink>();
 
-                GetDataLocksResponse = new GetDataLocksResponse
-                {
-                    DataLocks = new List<DataLock>()
-                };
+                ApiResponse.ApprenticeshipUpdates = ApprenticeshipUpdates;
+                ApiResponse.DataLocks = DataLocks;
+                ApiResponse.ChangeOfPartyRequests = ChangeOfPartyRequests;
+                ApiResponse.ChangeOfEmployerChain = ChangeOfEmployerChain;
 
-                GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
-                {
-                    ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>()
-                };
-
-                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
-                {
-                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>()
-                };
-                
                 GetNewerTrainingProgrammeVersionsResponse = new GetNewerTrainingProgrammeVersionsResponse()
                 {
                     NewerVersions = new List<TrainingProgramme>()
                 };
 
                 GetTrainingProgrammeByStandardUIdResponse = new GetTrainingProgrammeResponse();
-
-                GetApprenticeshipDetailsResponse = Fixture.Build<GetApprenticeshipDetailsResponse>().Create();
 
                 _encodingService = new Mock<IEncodingService>();
                 _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns(CohortReference);
@@ -755,33 +752,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 var apiClient = new Mock<ICommitmentsApiClient>();
                 var commitmentsApiClient = new Mock<IOuterApiClient>();
 
-                apiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                commitmentsApiClient.Setup(x =>
+                        x.Get<GetManageApprenticeshipDetailsResponse>(It.IsAny<GetManageApprenticeshipDetailsRequest>()))
                     .ReturnsAsync(ApiResponse);
-
-                apiClient.Setup(x => x.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(PriceEpisodesApiResponse);
-
-                apiClient.Setup(x => x.GetApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<GetApprenticeshipUpdatesRequest>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(() => GetApprenticeshipUpdatesResponse);
-
-                apiClient.Setup(x => x.GetApprenticeshipDatalocksStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(GetDataLocksResponse);
-
-                apiClient.Setup(x => x.GetChangeOfPartyRequests(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(GetChangeOfPartyRequestsResponse);
-
-                apiClient.Setup(x => x.GetChangeOfEmployerChain(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(GetChangeOfEmployerChainResponse);
 
                 apiClient.Setup(x => x.GetNewerTrainingProgrammeVersions(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetNewerTrainingProgrammeVersionsResponse);
 
                 apiClient.Setup(x => x.GetTrainingProgrammeVersionByStandardUId(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(GetTrainingProgrammeByStandardUIdResponse);
-
-                commitmentsApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipDetailsResponse>(It.IsAny<GetApprenticeshipDetailsRequest>()))
-                    .ReturnsAsync(GetApprenticeshipDetailsResponse);
 
                 _sut = new DetailsViewModelMapper(apiClient.Object, _encodingService.Object, commitmentsApiClient.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
 
@@ -791,13 +770,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithFramework()
             {
-                ApiResponse.CourseCode = "123-1-2";
+                ApiResponse.Apprenticeship.CourseCode = "123-1-2";
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithNewerVersions()
             {
-                ApiResponse.StandardUId = "ST0001_1.0";
+                ApiResponse.Apprenticeship.StandardUId = "ST0001_1.0";
 
                 var newerTrainingProgramme = Fixture.Build<TrainingProgramme>()
                     .With(x => x.CourseCode, "1")
@@ -810,7 +789,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithOptions()
             {
-                ApiResponse.StandardUId = "ST0001_1.0";
+                ApiResponse.Apprenticeship.StandardUId = "ST0001_1.0";
 
                 var trainingProgramme = Fixture.Build<TrainingProgramme>()
                     .With(x => x.Options, Fixture.Create<List<string>>())
@@ -824,72 +803,69 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithApprenticeshipStatus(
                 ApprenticeshipStatus status)
             {
-                ApiResponse.Status = status;
+                ApiResponse.Apprenticeship.Status = status;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithApprenticeshipDeliveryModel(DeliveryModel dm)
             {
-                ApiResponse.DeliveryModel = dm;
+                ApiResponse.Apprenticeship.DeliveryModel = dm;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithApprenticeshipConfirmationStatus(
                 ConfirmationStatus? status)
             {
-                ApiResponse.ConfirmationStatus = status;
+                ApiResponse.Apprenticeship.ConfirmationStatus = status;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithApprenticeshipFlexiPilotStatus(
                 bool? pilotStatus)
             {
-                ApiResponse.IsOnFlexiPaymentPilot = pilotStatus;
+                ApiResponse.Apprenticeship.IsOnFlexiPaymentPilot = pilotStatus;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithPendingUpdatesForProvider()
             {
-                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
-                {
-                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                ApiResponse.ApprenticeshipUpdates =
+                    new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>()
                     {
-                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        new GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate
                         {
                             Id = 1,
                             OriginatingParty = Party.Provider
                         }
-                    }
-                };
+                    };
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithPendingUpdatesForEmployer()
             {
-                GetApprenticeshipUpdatesResponse = new GetApprenticeshipUpdatesResponse
-                {
-                    ApprenticeshipUpdates = new List<GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate>()
+                ApiResponse.ApprenticeshipUpdates =
+                    new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>()
                     {
-                        new GetApprenticeshipUpdatesResponse.ApprenticeshipUpdate
+                        new GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate
                         {
                             Id = 1,
-                            OriginatingParty = Party.Employer                        }
-                    }
-                };
+                            OriginatingParty = Party.Employer
+                        }
+                    };
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<DataLock> { 
-                    new DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { 
+                    new GetManageApprenticeshipDetailsResponse.DataLock
                     {
                         Id = 1,
                         TriageStatus = TriageStatus.Unknown,
                         DataLockStatus = Status.Fail,
                         IsResolved = true
                     },
-                    new DataLock
+                    new GetManageApprenticeshipDetailsResponse.DataLock
                     {
                         Id = 2,
                         TriageStatus = TriageStatus.Unknown,
@@ -902,7 +878,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
             {
-                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -915,8 +891,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithAnotherDataLock(DataLockErrorCode errorCode)
             {
-                var dataLocks = GetDataLocksResponse.DataLocks.ToList();
-                dataLocks.Add(new DataLock
+                var dataLocks = ApiResponse.DataLocks.ToList();
+                dataLocks.Add(new GetManageApprenticeshipDetailsResponse.DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -925,13 +901,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ErrorCode = errorCode
                 });
 
-                GetDataLocksResponse.DataLocks = dataLocks.AsReadOnly();
+                ApiResponse.DataLocks = dataLocks.AsReadOnly();
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithUnResolvedAndPassingDataLocks()
             {
-                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -943,7 +919,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
             {
-                GetDataLocksResponse.DataLocks = new List<DataLock> { new DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
                 {
                     Id = 1,
                     TriageStatus = triageStatus,
@@ -955,19 +931,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithHasHadDataLockSuccess(bool hasHadDataLockSuccess)
             {
-                ApiResponse.HasHadDataLockSuccess = hasHadDataLockSuccess;
+                ApiResponse.Apprenticeship.HasHadDataLockSuccess = hasHadDataLockSuccess;
                 return this;
-            }           
+            }
 
             public DetailsViewModelMapperFixture WithChangeOfPartyRequest(ChangeOfPartyRequestType requestType, ChangeOfPartyRequestStatus status, Party? withParty = null)
             {
                 var newApprenticeshipId = Fixture.Create<long>();
 
-                GetChangeOfPartyRequestsResponse = new GetChangeOfPartyRequestsResponse
-                {
-                    ChangeOfPartyRequests = new List<GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest>
+                ApiResponse.ChangeOfPartyRequests = new List<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest>
                     {
-                        new GetChangeOfPartyRequestsResponse.ChangeOfPartyRequest
+                        new GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest
                         {
                             Id = 1,
                             ChangeOfPartyType = requestType,
@@ -976,8 +950,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             WithParty = withParty,
                             NewApprenticeshipId = newApprenticeshipId
                         }
-                    }
-                };
+                    };
 
                 _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
                     .Returns(EncodedNewApprenticeshipId);
@@ -989,11 +962,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             {
                 var newApprenticeshipId = Fixture.Create<long>();
 
-                GetChangeOfEmployerChainResponse = new GetChangeOfEmployerChainResponse
-                {
-                    ChangeOfEmployerChain = new List<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink>
+                ApiResponse.ChangeOfEmployerChain = new List<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink>
                     {
-                        new GetChangeOfEmployerChainResponse.ChangeOfEmployerLink
+                        new GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink
                         {
                             ApprenticeshipId = newApprenticeshipId,
                             EmployerName = Fixture.Create<string>(),
@@ -1002,8 +973,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                             StopDate = Fixture.Create<DateTime>(),
                             CreatedOn = Fixture.Create<DateTime>()
                         }
-                    }
-                };
+                    };
 
                 _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
                     .Returns(EncodedNewApprenticeshipId);
@@ -1013,10 +983,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithPreviousApprenticeship(bool sameProvider)
             {
-                ApiResponse.ContinuationOfId = Fixture.Create<long>();
-                ApiResponse.PreviousProviderId = sameProvider ? ApiResponse.ProviderId : ApiResponse.ProviderId + 1;
+                ApiResponse.Apprenticeship.ContinuationOfId = Fixture.Create<long>();
+                ApiResponse.Apprenticeship.PreviousProviderId = sameProvider ? ApiResponse.Apprenticeship.ProviderId : ApiResponse.Apprenticeship.ProviderId + 1;
 
-                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.ContinuationOfId), EncodingType.ApprenticeshipId))
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.Apprenticeship.ContinuationOfId), EncodingType.ApprenticeshipId))
                     .Returns(EncodedPreviousApprenticeshipId);
 
                 return this;
@@ -1024,16 +994,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithoutPreviousApprenticeship()
             {
-                ApiResponse.ContinuationOfId = null;
-                ApiResponse.PreviousProviderId = null;
+                ApiResponse.Apprenticeship.ContinuationOfId = null;
+                ApiResponse.Apprenticeship.PreviousProviderId = null;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithNextApprenticeship()
             {
-                ApiResponse.ContinuedById = Fixture.Create<long>();
+                ApiResponse.Apprenticeship.ContinuedById = Fixture.Create<long>();
 
-                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.ContinuedById), EncodingType.ApprenticeshipId))
+                _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == ApiResponse.Apprenticeship.ContinuedById), EncodingType.ApprenticeshipId))
                     .Returns(EncodedNextApprenticeshipId);
 
                 return this;
@@ -1041,25 +1011,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithoutNextApprenticeship()
             {
-                ApiResponse.ContinuedById = null;
+                ApiResponse.Apprenticeship.ContinuedById = null;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithEmailPopulated(string email)
             {
-                ApiResponse.Email = email;
+                ApiResponse.Apprenticeship.Email = email;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
             {
-                ApiResponse.EmailShouldBePresent =present;
+                ApiResponse.Apprenticeship.EmailShouldBePresent =present;
                 return this;
             }
 
             public DetailsViewModelMapperFixture WithIsOnFlexiPaymentPilotPopulated(bool isOnPilot)
             {
-                ApiResponse.IsOnFlexiPaymentPilot = isOnPilot;
+                ApiResponse.Apprenticeship.IsOnFlexiPaymentPilot = isOnPilot;
                 return this;
             }
         }
