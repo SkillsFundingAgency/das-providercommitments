@@ -420,7 +420,14 @@
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
-
+                        @if (Model.DurationReducedBy != null)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
+                                <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">@Model.DurationReducedByDisplay</td>
+                                <td class="govuk-table__cell"></td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             }
