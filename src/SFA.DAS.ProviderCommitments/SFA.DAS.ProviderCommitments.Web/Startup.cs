@@ -52,8 +52,7 @@ public class Startup
 
         services.AddConfigurationOptions(_configuration);
         services.AddFeatureToggleService();
-        services.AddProviderUiServiceRegistration(_configuration);
-       
+        
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
@@ -61,6 +60,7 @@ public class Startup
         services.AddModelMappings();
 
         services.AddDasMvc(_configuration);
+        services.AddProviderUiServiceRegistration(_configuration);
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
         services.AddAuthorization<AuthorizationContextProvider>();
