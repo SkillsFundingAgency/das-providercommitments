@@ -127,7 +127,7 @@ public class Startup
             .UseAuthentication()
             .UseRouting()
             .UseAuthorization() 
-            .ConfigureCustomExceptionMiddleware()
+            //.ConfigureCustomExceptionMiddleware()
             .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute(
