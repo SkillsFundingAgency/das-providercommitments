@@ -128,7 +128,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> SelectCourse(SelectCourseRequest request)
         {
-            var model = await _modelMapper.Map<SelectCourseViewModel>(request);
+            var model = await _modelMapper.Map<SelectCourseViewModel>(request);           
             return View(model);
         }
 
