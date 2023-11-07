@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FluentAssertions;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -62,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         public async Task Standards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsTrue(TestHelper.EnumerablesAreEqual(_apiResponse.Standards.ToList(), result.Standards.ToList()));
+            _apiResponse.Standards.ToList().Should().BeEquivalentTo(result.Standards.ToList());
         }
 
         [Test]
