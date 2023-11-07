@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Hosting;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Authorization.CommitmentPermissions.Configuration;
+using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
+using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
@@ -30,7 +36,7 @@ public class WhenAddingServicesToTheContainer
     {
         RunTestForType(toResolve);
     }
-    
+
     [TestCase(typeof(AuthenticationSettings))]
     [TestCase(typeof(CommitmentsClientApiConfiguration))]
     [TestCase(typeof(ApprovalsOuterApiConfiguration))]
@@ -49,7 +55,7 @@ public class WhenAddingServicesToTheContainer
     }
 
     [TestCase(typeof(IRequestHandler<DeleteCachedFileCommand>))]
-    //[TestCase(typeof(IRequestHandler<CreateCohortRequest, CreateCohortResponse>))]
+    [TestCase(typeof(IRequestHandler<CreateCohortRequest, CreateCohortResponse>))]
     [TestCase(typeof(IRequestHandler<FileUploadValidateDataRequest>))]
     [TestCase(typeof(IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Mediator_Handlers(Type toResolve)
@@ -62,22 +68,36 @@ public class WhenAddingServicesToTheContainer
         var mockHostEnvironment = new Mock<IHostEnvironment>();
         mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
 
-        var startup = new Startup(GenerateStubConfiguration(), mockHostEnvironment.Object, false);
-        var serviceCollection = new ServiceCollection();
-        startup.ConfigureServices(serviceCollection);
+        var stubConfiguration = GenerateStubConfiguration();
+        var services = new ServiceCollection();
 
-        var mockHostingEnvironment = new Mock<IWebHostEnvironment>();
-        mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
+        services.AddHttpClient();
+        services.AddSingleton<IConfiguration>(stubConfiguration);
+        services.AddHttpContextAccessor();
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
+        
+        services.AddConfigurationOptions(stubConfiguration);
+        services.AddProviderAuthentication(stubConfiguration);
+        services.AddMemoryCache();
+        services.AddCache(mockHostEnvironment.Object, stubConfiguration);
+        services.AddModelMappings();
+        services.AddAuthorization<AuthorizationContextProvider>();
+        services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
+        
+        services
+            .AddCommitmentsApiClient(stubConfiguration)
+            .AddProviderApprenticeshipsApiClient(stubConfiguration);
 
-        serviceCollection.AddSingleton(_ => mockHostingEnvironment.Object);
+        services.AddEncodingServices(stubConfiguration);
+        services.AddApplicationServices();
 
-        serviceCollection.AddTransient<ApprenticeController>();
-        serviceCollection.AddTransient<CohortController>();
-        serviceCollection.AddTransient<DraftApprenticeshipController>();
-        serviceCollection.AddTransient<OverlappingTrainingDateRequestController>();
-        serviceCollection.AddTransient<ProviderAccountController>();
+        services.AddTransient<ApprenticeController>();
+        services.AddTransient<CohortController>();
+        services.AddTransient<DraftApprenticeshipController>();
+        services.AddTransient<OverlappingTrainingDateRequestController>();
+        services.AddTransient<ProviderAccountController>();
 
-        var provider = serviceCollection.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
         var type = provider.GetService(toResolve);
 
         Assert.IsNotNull(type);

@@ -9,8 +9,6 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Infrastructure.CookieService;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
@@ -26,9 +24,9 @@ public class Startup
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _environment;
 
-    public Startup(IConfiguration configuration, IHostEnvironment environment, bool buildConfig = true)
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
-        _configuration = buildConfig ? configuration.BuildDasConfiguration() : configuration;
+        _configuration = configuration.BuildDasConfiguration();
         _environment = environment;
     }
 
@@ -42,7 +40,7 @@ public class Startup
         });
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
-        
+
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -52,7 +50,7 @@ public class Startup
 
         services.AddConfigurationOptions(_configuration);
         services.AddFeatureToggleService();
-        
+
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
         services.AddMemoryCache();
@@ -79,8 +77,6 @@ public class Startup
             .AddProviderApprenticeshipsApiClient(_configuration);
 
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
-        
-        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
 
         if (_configuration.UseLocalRegistry())
         {
@@ -90,7 +86,7 @@ public class Startup
         {
             services.AddCommitmentPermissionsAuthorization();
         }
-        
+
         services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
 
@@ -102,9 +98,9 @@ public class Startup
         });
 
         services.AddHttpClient();
-        services.AddApplicationInsightsTelemetryWorkerService();
+        services.AddApplicationInsightsTelemetry();
     }
-    
+
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
     {
         if (_environment.IsDevelopment())
@@ -126,14 +122,14 @@ public class Startup
             .UseCookiePolicy()
             .UseAuthentication()
             .UseRouting()
-            .UseAuthorization() 
+            .UseAuthorization()
             .ConfigureCustomExceptionMiddleware()
             .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}");
-                })
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            })
             .UseHealthChecks("/health-check");
     }
 }

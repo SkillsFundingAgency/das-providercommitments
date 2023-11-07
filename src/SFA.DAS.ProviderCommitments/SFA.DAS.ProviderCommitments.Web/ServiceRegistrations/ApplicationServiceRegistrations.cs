@@ -42,6 +42,8 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<IOuterApiService, OuterApiService>();
         
         services.AddTransient<IBulkUploadFileParser, BulkUploadFileParser>();
+        
+        services.AddSingleton(typeof(Interfaces.ICookieStorageService<>), typeof(Infrastructure.CookieService.CookieStorageService<>));
 
         return services;
     }
