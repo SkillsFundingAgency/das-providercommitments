@@ -1,11 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using AutoFixture;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -224,54 +229,64 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture
     {
-        private readonly Fixture _fixture;
-        private readonly ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
-        private readonly FileUploadReviewApprenticeRequest _request;
-        private readonly Mock<IOuterApiService> _commitmentApiClient;
-        private readonly List<CsvRecord> _csvRecords;
+        private Fixture fixture;
+        private ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
+        private FileUploadReviewApprenticeRequest _request;
+        private Mock<IEncodingService> _encodingService;
+        private Mock<IOuterApiService> _commitmentApiClient;
+        private Mock<ICacheService> _cacheService;
+        private List<CsvRecord> _csvRecords;
+        private FileUploadCacheModel _fileUploadCacheModel;
         private FileUploadReviewApprenticeViewModel _result;
-        private readonly GetStandardResponse _trainingProgramme;
-        private readonly DateTime _startFundingPeriod = new(2020, 10, 1);
-        private readonly DateTime _endFundingPeriod = new(2020, 10, 30);
-        private readonly DateTime _defaultStartDate = new(2020, 10, 1);
-        private const string CohortRef = "Cohort4";
-        private const string DateOfBirth = "2001-09-05";
+        private List<GetStandardFundingResponse> _fundingPeriods;
+        private GetStandardResponse _trainingProgramme;
+        private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
+        private DateTime _endFundingPeriod = new DateTime(2020, 10, 30);
+        public DateTime DefaultStartDate = new DateTime(2020, 10, 1);
+        private const string cohortRef = "Cohort4";
+        private const string dateOfBirth = "2001-09-05";
         private GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
 
         public WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture()
         {
-            _fixture = new Fixture();
+            fixture = new Fixture();
             _csvRecords = new List<CsvRecord>();
 
-            _request = _fixture.Create<FileUploadReviewApprenticeRequest>();
-            _request.CohortRef = CohortRef;
-            var accountLegalEntityEmployer = _fixture.Build<GetAccountLegalEntityQueryResult>()
+            _request = fixture.Create<FileUploadReviewApprenticeRequest>();
+            _fileUploadCacheModel = new FileUploadCacheModel
+            {
+                CsvRecords = _csvRecords,
+                FileUploadLogId = 1235
+            };
+
+            _request.CohortRef = cohortRef;
+            var accountLegalEntityEmployer = fixture.Build<GetAccountLegalEntityQueryResult>()
                 .With(x => x.LegalEntityName, "EmployerName").Create();
 
-            var cohort = _fixture.Build<GetCohortResult>()
+            var cohort = fixture.Build<GetCohortResult>()
                 .With(x => x.LatestMessageCreatedByEmployer, "A message").Create();
 
-            var encodingService = new Mock<IEncodingService>();
-            encodingService.Setup(x => x.Decode("Employer", EncodingType.PublicAccountLegalEntityId)).Returns(1);
+            _encodingService = new Mock<IEncodingService>();
+            _encodingService.Setup(x => x.Decode("Employer", EncodingType.PublicAccountLegalEntityId)).Returns(1);
             
             _commitmentApiClient = new Mock<IOuterApiService>();
             _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(1)).ReturnsAsync(accountLegalEntityEmployer);
             _commitmentApiClient.Setup(x => x.GetCohort(0)).ReturnsAsync(cohort);
 
-            var fundingPeriods = new List<GetStandardFundingResponse>
+            _fundingPeriods = new List<GetStandardFundingResponse>
             {
-                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
-                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
+                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
+                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
             };
-            _trainingProgramme = new GetStandardResponse { Title = "CourseName", EffectiveFrom = _defaultStartDate, EffectiveTo = _defaultStartDate.AddYears(1), ApprenticeshipFunding = fundingPeriods };
+            _trainingProgramme = new GetStandardResponse { Title = "CourseName", EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), ApprenticeshipFunding = _fundingPeriods };
 
             _commitmentApiClient.Setup(x => x.GetStandardDetails(It.Is<string>(c => !string.IsNullOrEmpty(c))))
                 .ReturnsAsync(_trainingProgramme);
 
-            var cacheService = new Mock<ICacheService>();
-            cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
+            _cacheService = new Mock<ICacheService>();
+            _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_request.CacheRequestId.ToString())).ReturnsAsync(_fileUploadCacheModel);
 
-            _sut = new ReviewApprenticeRequestToReviewApprenticeViewModelMapper(Mock.Of<ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper>>(), _commitmentApiClient.Object, cacheService.Object, encodingService.Object);
+            _sut = new ReviewApprenticeRequestToReviewApprenticeViewModelMapper(Mock.Of<ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper>>(), _commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
         }
 
         public async Task Action() => _result = await _sut.Map(_request);
@@ -283,12 +298,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyCohortReferenceIsMappedCorrectly()
         {
-            Assert.AreEqual(CohortRef, _result.CohortRef);
+            Assert.AreEqual(cohortRef, _result.CohortRef);
         }
         
         internal void VerifyNumberOfApprenticesAreMappedCorrectly()
         {
-            var groupedByCohort = _csvRecords.Where(x => x.CohortRef == CohortRef);
+            var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
             
             Assert.AreEqual(2, groupedByCohort.Count());
         }
@@ -300,14 +315,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyTotalCostForFileUploadedApprenticesAreMappedCorrectly()
         {
-            var groupedByCohort = _csvRecords.Where(x => x.CohortRef == CohortRef);
+            var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
 
             Assert.AreEqual(1000, groupedByCohort.Sum(x => int.Parse(x.TotalPrice)));
         }
 
         internal void TotalCostForExistingApprenticesAreMappedCorrectly()
         {
-            var costfromfileUploadedCohort = _csvRecords.Where(x => x.CohortRef == CohortRef).Sum(x => int.Parse(x.TotalPrice));
+            var costfromfileUploadedCohort = _csvRecords.Where(x => x.CohortRef == cohortRef).Sum(x => int.Parse(x.TotalPrice));
             var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);            
 
             Assert.AreEqual(1300, (costfromfileUploadedCohort + costfromExistingCohort));
@@ -325,13 +340,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyFileUploadedCohortDetailsMappedCorrectly()
         {
-            var csvRecord = _csvRecords.FirstOrDefault(x => x.CohortRef == CohortRef);
+            var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
             var cohortDetails = _result.FileUploadCohortDetails[0];
 
             Assert.AreEqual(cohortDetails.Name, $"{csvRecord.GivenNames} {csvRecord.FamilyName}");
             Assert.AreEqual(cohortDetails.Email, csvRecord.EmailAddress);
             Assert.AreEqual(cohortDetails.ULN, csvRecord.ULN);
-            Assert.AreEqual(DateOfBirth, csvRecord.DateOfBirth);
+            Assert.AreEqual(dateOfBirth, csvRecord.DateOfBirth);
             Assert.AreEqual(cohortDetails.Price, int.Parse(csvRecord.TotalPrice));
             Assert.AreEqual(cohortDetails.TrainingCourse, _trainingProgramme.Title);
             Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap);
@@ -369,19 +384,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
         {           
             // This will create three csv records, with total cost of 1000 (2 * 500)
-            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", CohortRef, DateOfBirth, "2020-10-01", "2022-11", 500, 2));
+            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
 
             return this;
         }
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithPriceDefaultData(int numberOfApprentices)
         {
-            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", CohortRef, DateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
+            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
 
             return this;
         }   
 
-        private static IEnumerable<CsvRecord> CreateCsvRecords(IFixture fixture, string employerAgreementId, string cohortRef, string dateOfBirth, 
+        private static List<CsvRecord> CreateCsvRecords(Fixture fixture, string employerAgreementId, string cohortRef, string dateOfBirth, 
             string apprenticeStartDate, string apprenticeEndDate, int price,  int numberOfApprentices)
         {
             var list = fixture.Build<CsvRecord>()
@@ -400,10 +415,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                 .With(x => x.Cost, 100)
                 .With(x => x.CourseName, "CourseName")
-                .With(x => x.StartDate, _defaultStartDate)
+                .With(x => x.StartDate, DefaultStartDate)
                 .CreateMany(3)
                 .ToList()
             };
@@ -417,10 +432,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                .With(x => x.Cost, 3000)
                .With(x => x.CourseName, "CourseName")
-               .With(x => x.StartDate, _defaultStartDate)
+               .With(x => x.StartDate, DefaultStartDate)
                .CreateMany(numberOfApprentices)
                .ToList()
             };

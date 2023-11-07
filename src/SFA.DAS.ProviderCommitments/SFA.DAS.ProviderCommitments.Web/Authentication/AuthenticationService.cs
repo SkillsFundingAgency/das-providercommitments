@@ -1,9 +1,10 @@
 using System.Security.Claims;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService, IAuthenticationServiceForApim
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 

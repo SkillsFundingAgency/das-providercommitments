@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
@@ -17,54 +18,63 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         [Test]
         public async Task PostFileUploadStartViewModel_ShouldRedirectToCohorts()
         {
-            var fixture = new PostFileUploadValidationErrorsFixture();
+            var fixture = new PostFileUploadValidationErrorsixture();
 
             var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName("FileUploadReview"); ;
+         
         }
 
         [Test]
         public async Task PostFileUploadStartViewModel_CreateCsvRecordsInCache()
         {
-            var fixture = new PostFileUploadValidationErrorsFixture();
+            var fixture = new PostFileUploadValidationErrorsixture();
 
             await fixture.Act();
             fixture.VerifyCsvRecordCached();
         }
     }
 
-    public class PostFileUploadValidationErrorsFixture
+    public class PostFileUploadValidationErrorsixture
     {
-        private readonly CohortController _sut;
-        private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly FileUploadValidateViewModel _viewModel;
+        public CohortController Sut { get; set; }
 
-        public PostFileUploadValidationErrorsFixture()
+        public string RedirectUrl;
+        private readonly Mock<IModelMapper> _mockModelMapper;
+        private readonly Mock<IOuterApiService> _outerApiService;
+        private readonly FileUploadValidateViewModel _viewModel;
+        private readonly FileUploadReviewRequest _request;
+        private readonly Mock<IMediator> _mediator;
+        private FileUploadValidateDataResponse _response;
+        public PostFileUploadValidationErrorsixture()
         {
             var fixture = new Fixture();
             _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
-            var request = fixture.Create<FileUploadReviewRequest>();
-            var outerApiService = new Mock<IOuterApiService>();
+            _request = fixture.Create<FileUploadReviewRequest>();
+            _response = fixture.Create<FileUploadValidateDataResponse>();
+            _outerApiService = new Mock<IOuterApiService>();
 
             _mockModelMapper = new Mock<IModelMapper>();
-            _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => request);
+            _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
 
-            var mediator = new Mock<IMediator>();
+            _mediator = new Mock<IMediator>();
+            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(_response);
 
-            _sut = new CohortController(mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                         Mock.Of<IEncodingService>(), outerApiService.Object,Mock.Of<IAuthorizationService>());
-            
+            Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+                        Mock.Of<IEncodingService>(), _outerApiService.Object, Mock.Of<IAuthorizationService>());
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _sut.TempData = tempData;
+            Sut.TempData = tempData;
         }
 
-        public PostFileUploadValidationErrorsFixture VerifyCsvRecordCached()
+        public PostFileUploadValidationErrorsixture VerifyCsvRecordCached()
         {
-            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(_viewModel), Times.Once);
+            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(It.Is<FileUploadStartViewModel>(p =>
+                p.ProviderId == _viewModel.ProviderId && p.Attachment == _viewModel.Attachment &&
+                p.FileUploadLogId == _response.LogId)), Times.Once);
             return this;
         }
 
-        public async Task<IActionResult> Act() => await _sut.FileUploadValidationErrors(_viewModel);
+        public async Task<IActionResult> Act() => await Sut.FileUploadValidationErrors(_viewModel);
     }
 }

@@ -4,5 +4,6 @@
     {
         public IFormFile Attachment { get; set; }
         public long ProviderId { get; set; }
+        public long? FileUploadLogId { get; set; }
     }
 }

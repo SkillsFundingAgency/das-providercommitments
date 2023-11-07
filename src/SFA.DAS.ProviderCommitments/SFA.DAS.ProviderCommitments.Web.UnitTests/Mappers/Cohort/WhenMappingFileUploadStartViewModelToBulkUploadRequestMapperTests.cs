@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private FileUploadReviewViewModel _viewModel;
         private List<CsvRecord> _csvRecords;
+        private FileUploadCacheModel _fileUploadCacheModel;
         private Mock<IOuterApiService> _outerApiService;
         private Mock<IAuthorizationService> _authorizationService;
         private GetCohortResult _cohortResult;
@@ -35,30 +36,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.EndDate, "2022-04")
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
-            _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
 
+            _fileUploadCacheModel = new FileUploadCacheModel
+            {
+                CsvRecords = _csvRecords,
+                FileUploadLogId = 1235
+            };
+            _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
+               
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_viewModel.CacheRequestId.ToString()))
-                .ReturnsAsync(() => _csvRecords);
+            _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _fileUploadCacheModel);
 
             _cohortResult = fixture.Create<GetCohortResult>();
             _outerApiService = new Mock<IOuterApiService>();
-            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) =>
-            {
-                _cohortResult.TransferSenderId = cohortId + 1;
-                return _cohortResult;
-            });
+            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
 
             _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId))
-                .Returns(1);
+            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
             _authorizationService = new Mock<IAuthorizationService>();
             _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
 
-            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(
-                _cacheService.Object, _encodingService.Object, _outerApiService.Object, _authorizationService.Object);
+            _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object, _authorizationService.Object);
 
             _apiRequest = await _mapper.Map(_viewModel);
         }
@@ -68,6 +68,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.IsTrue(_apiRequest.RplDataExtended);
             Assert.AreEqual(_viewModel.ProviderId, _apiRequest.ProviderId);
+        }
+
+
+        [Test]
+        public void CommandIsReturnedFromCacheWithLogIdAsExpected()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
         }
 
         [Test]
@@ -115,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             foreach (var record in _csvRecords)
             {
-                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);                
                 Assert.AreEqual(record.StartDate, result.StartDateAsString);
             }
         }
@@ -186,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual((result.CohortId + 1), result.TransferSenderId);
+                Assert.AreEqual((result.CohortId +1), result.TransferSenderId);
             }
         }
 
@@ -194,7 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyRecognisePriorLearningIsMapped()
         {
             foreach (var record in _csvRecords)
-            {
+        {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearningAsString);
             }
@@ -204,7 +211,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyDurationReducedBy()
         {
             foreach (var record in _csvRecords)
-            {
+{
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.DurationReducedBy, result.DurationReducedByAsString);
             }
@@ -214,7 +221,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyPriceReducedBy()
         {
             foreach (var record in _csvRecords)
-            {
+{
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
@@ -248,6 +255,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
             }
+        }
+
+        [Test]
+        public void VerifyFileUploadIdIsMappedFromCache()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
         }
     }
 }
