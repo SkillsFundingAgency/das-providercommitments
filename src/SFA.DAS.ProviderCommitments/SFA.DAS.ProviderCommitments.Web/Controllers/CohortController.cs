@@ -435,7 +435,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadStart(FileUploadStartViewModel viewModel)
         {
-            await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            var fileUploadLogId = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            viewModel.FileUploadLogId = fileUploadLogId;
             var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
             return RedirectToAction(nameof(FileUploadReview), request);
         }
@@ -456,7 +457,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateViewModel viewModel)
         {
-            await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            var fileUploadLogId = await ValidateBulkUploadData(viewModel.ProviderId, viewModel.Attachment);
+            viewModel.FileUploadLogId = fileUploadLogId;
             var request = await _modelMapper.Map<FileUploadReviewRequest>(viewModel);
             return RedirectToAction(nameof(FileUploadReview), request);
         }
@@ -644,11 +646,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
         }
 
-        private async Task ValidateBulkUploadData(long providerId, IFormFile attachment)
+        private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
         {
             var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
             bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
-            await _mediator.Send(bulkValidate);
+            var response = await _mediator.Send(bulkValidate);
+            return response.LogId;
         }
     }
 }

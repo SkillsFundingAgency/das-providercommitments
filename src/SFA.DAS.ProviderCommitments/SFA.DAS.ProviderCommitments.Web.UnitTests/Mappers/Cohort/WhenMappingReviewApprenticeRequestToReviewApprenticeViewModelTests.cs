@@ -236,6 +236,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<IOuterApiService> _commitmentApiClient;
         private Mock<ICacheService> _cacheService;
         private List<CsvRecord> _csvRecords;
+        private FileUploadCacheModel _fileUploadCacheModel;
         private FileUploadReviewApprenticeViewModel _result;
         private List<GetStandardFundingResponse> _fundingPeriods;
         private GetStandardResponse _trainingProgramme;
@@ -252,6 +253,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _csvRecords = new List<CsvRecord>();
 
             _request = fixture.Create<FileUploadReviewApprenticeRequest>();
+            _fileUploadCacheModel = new FileUploadCacheModel
+            {
+                CsvRecords = _csvRecords,
+                FileUploadLogId = 1235
+            };
+
             _request.CohortRef = cohortRef;
             var accountLegalEntityEmployer = fixture.Build<GetAccountLegalEntityQueryResult>()
                 .With(x => x.LegalEntityName, "EmployerName").Create();
@@ -277,7 +284,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(_trainingProgramme);
 
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
+            _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_request.CacheRequestId.ToString())).ReturnsAsync(_fileUploadCacheModel);
 
             _sut = new ReviewApprenticeRequestToReviewApprenticeViewModelMapper(Mock.Of<ILogger<ReviewApprenticeRequestToReviewApprenticeViewModelMapper>>(), _commitmentApiClient.Object, _cacheService.Object, _encodingService.Object);
         }
