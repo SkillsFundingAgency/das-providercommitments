@@ -88,8 +88,61 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
+            _source.IsOnFlexiPaymentPilot = false;
             var result = await _act();
             Assert.AreEqual(_source.Cost, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice, result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProviders()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice + _source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [TestCase(null)]
+        [TestCase(1700)]
+        public async Task ThenCostIsUnchangedWhenBothTrainingPriceAndEndPointAssessmentPriceAreMissingForPilotProviders(int? cost)
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            _source.EndPointAssessmentPrice = null;
+            _source.Cost = cost;
+            var result = await _act();
+            Assert.AreEqual(cost, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProvidersWhenTrainingPriceMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.TrainingPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.EndPointAssessmentPrice, result.Cost);
+        }
+
+        [Test]
+        public async Task ThenCostIsMappedCorrectlyForPilotProvidersWhenEPAMissing()
+        {
+            _source.IsOnFlexiPaymentPilot = true;
+            _source.EndPointAssessmentPrice = null;
+            var result = await _act();
+            Assert.AreEqual(_source.TrainingPrice, result.Cost);
         }
 
         [Test]

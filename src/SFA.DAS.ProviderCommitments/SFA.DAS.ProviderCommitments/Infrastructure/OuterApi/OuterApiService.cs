@@ -3,29 +3,70 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using System.IO;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
     public class OuterApiService : IOuterApiService
     {
         private IOuterApiClient _outerApiClient;
+        private readonly IAuthenticationServiceForApim _authenticationService;
 
-        public OuterApiService(IOuterApiClient outerApiClient)
+        public OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServiceForApim authenticationService)
         {
             _outerApiClient = outerApiClient;
+            _authenticationService = authenticationService;
         }
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
         {
-           return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+           try
+           {
+               return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+           }
+           catch (CommitmentsApiBulkUploadModelException ex)
+           {
+               if (data.FileUploadLogId != null)
+                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+               throw;
+           }
+           catch (Exception ex)
+           {
+               if (data.FileUploadLogId != null)
+                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+               throw;
+           }
         }
 
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest data)
         {
-            return await _outerApiClient.Post<GetBulkUploadAddDraftApprenticeshipsResult>(new PostBulkUploadAddDraftApprenticeshipsRequest(data));
+            try
+            {
+                return await _outerApiClient.Post<GetBulkUploadAddDraftApprenticeshipsResult>(
+                    new PostBulkUploadAddDraftApprenticeshipsRequest(data));
+            }
+            catch (CommitmentsApiBulkUploadModelException ex)
+            {
+                if(data.FileUploadLogId != null)
+                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                throw;
+            }
         }
 
         public async Task<GetAccountLegalEntityQueryResult> GetAccountLegalEntity(long publicAccountLegalEntityId)
@@ -106,5 +147,90 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
         }
+
+        // <inherit-doc />
+        public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
+        {
+            return await _outerApiClient.Get<ProviderAccountResponse>(new GetProviderStatusDetails(ukprn));
+        }
+
+        public async Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords)
+        {
+            var rplCount = csvRecords.Count(x => x.RecognisePriorLearning != null && (x.RecognisePriorLearning == "1" ||
+                x.RecognisePriorLearning.Equals("True", StringComparison.InvariantCultureIgnoreCase) ||
+                x.RecognisePriorLearning.Equals("Yes", StringComparison.InvariantCultureIgnoreCase)));
+
+            var request = new FileUploadLogRequest
+            {
+                ProviderId = providerId,
+                Filename = attachment.FileName,
+                RplCount = rplCount,
+                RowCount = csvRecords.Count,
+                FileContent = await ReadFormFileAsync(attachment),
+                UserInfo = GetUserInfo()
+            };
+
+            var response = await _outerApiClient.Post<FileUploadLogResponse>(new PostFileUploadLogRequest(request));
+            return response.LogId;
+        }
+
+        public async Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<BulkUploadValidationError> errors)
+        {
+            var content = new FileUploadUpdateLogWithErrorContentRequest
+            {
+                ProviderId = providerId,
+                ErrorContent = "Validation failure \r\n" + JsonConvert.SerializeObject(errors),
+                UserInfo = GetUserInfo()
+            };
+
+            await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
+        }
+
+        public async Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage)
+        {
+            var content = new FileUploadUpdateLogWithErrorContentRequest
+            {
+                ProviderId = providerId,
+                ErrorContent = "Unhandled exception \r\n" + errorMessage,
+                UserInfo = GetUserInfo()
+            };
+
+            await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
+        }
+
+        public static async Task<string> ReadFormFileAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
+            using var reader = new StreamReader(file.OpenReadStream());
+            return await reader.ReadToEndAsync();
+        }
+
+        protected ApimUserInfo GetUserInfo()
+        {
+            if (_authenticationService.IsUserAuthenticated())
+            {
+                return new ApimUserInfo
+                {
+                    UserId = _authenticationService.UserId,
+                    UserDisplayName = _authenticationService.UserName,
+                    UserEmail = _authenticationService.UserEmail
+                };
+            }
+
+            return null;
+        }
+    }
+
+    public interface IAuthenticationServiceForApim
+    {
+        bool IsUserAuthenticated();
+        string UserName { get; }
+        string UserId { get; }
+        string UserEmail { get; }
+
     }
 }

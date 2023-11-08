@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.Encoding;
 using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -21,33 +20,53 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _outerApiService = outerApiService;
         }
 
-        public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
+        public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId, bool extendedRpl)
         {
-            return csvRecords.Select((csvRecord, index) => 
-             new BulkUploadAddDraftApprenticeshipRequest()
-             {
-                 AgreementId = csvRecord.AgreementId,
-                 CohortRef = csvRecord.CohortRef,
-                 DateOfBirthAsString = csvRecord.DateOfBirth,
-                 Email = csvRecord.EmailAddress,
-                 EndDateAsString = csvRecord.EndDate,
-                 LastName = csvRecord.FamilyName,
-                 FirstName = csvRecord.GivenNames,
-                 StartDateAsString = csvRecord.StartDate,
-                 CourseCode = csvRecord.StdCode,
-                 CostAsString = csvRecord.TotalPrice,
-                 Uln = csvRecord.ULN,
-                 ProviderRef = csvRecord.ProviderRef,
-                 RowNumber = (index + 1),
-                 ProviderId = providerId,
-                 EPAOrgId = csvRecord.EPAOrgID,
-                 CohortId = GetValueOrDefault(csvRecord.CohortRef, EncodingType.CohortReference),
-                 LegalEntityId = GetValueOrDefault(csvRecord.AgreementId, EncodingType.PublicAccountLegalEntityId),
-                 TransferSenderId = GetTransferSenderId(csvRecord.CohortRef).Result,
-                 RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
-                 DurationReducedByAsString = csvRecord.DurationReducedBy,
-                 PriceReducedByAsString = csvRecord.PriceReducedBy,
-             }).ToList();
+            return csvRecords.Select((csvRecord, index) =>
+            {
+                return new BulkUploadAddDraftApprenticeshipRequest()
+                {
+                    AgreementId = csvRecord.AgreementId,
+                    CohortRef = csvRecord.CohortRef,
+                    DateOfBirthAsString = csvRecord.DateOfBirth,
+                    Email = csvRecord.EmailAddress,
+                    EndDateAsString = csvRecord.EndDate,
+                    LastName = csvRecord.FamilyName.Replace("\t", " ").Trim(),
+                    FirstName = csvRecord.GivenNames.Replace("\t", " ").Trim(),
+                    StartDateAsString = csvRecord.StartDate,
+                    CourseCode = csvRecord.StdCode,
+                    CostAsString = csvRecord.TotalPrice,
+                    Uln = csvRecord.ULN,
+                    ProviderRef = csvRecord.ProviderRef,
+                    RowNumber = (index + 1),
+                    ProviderId = providerId,
+                    EPAOrgId = csvRecord.EPAOrgID,
+                    CohortId = GetValueOrDefault(csvRecord.CohortRef, EncodingType.CohortReference),
+                    LegalEntityId = GetValueOrDefault(csvRecord.AgreementId, EncodingType.PublicAccountLegalEntityId),
+                    TransferSenderId = GetTransferSenderId(csvRecord.CohortRef).Result,
+                    RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
+                    TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
+                    TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
+                    IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToTrueIfDurationReducedByHoldsAValueForExtendedRpl(csvRecord, extendedRpl),
+                    DurationReducedByAsString = csvRecord.DurationReducedBy,
+                    PriceReducedByAsString = csvRecord.PriceReducedBy,
+                };
+
+            }).ToList();
+        }
+
+        private string DefaultIsDurationReducedByRplToTrueIfDurationReducedByHoldsAValueForExtendedRpl(CsvRecord csvRecord, bool extendedRpl)
+        {
+            if (!extendedRpl)
+            {
+                return csvRecord.IsDurationReducedByRPL;
+            }
+            if (!string.IsNullOrWhiteSpace(csvRecord.DurationReducedBy) &&
+                string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
+            {
+                return "TRUE";
+            }
+            return csvRecord.IsDurationReducedByRPL;
         }
 
         private async Task<long?> GetTransferSenderId(string cohortRef)

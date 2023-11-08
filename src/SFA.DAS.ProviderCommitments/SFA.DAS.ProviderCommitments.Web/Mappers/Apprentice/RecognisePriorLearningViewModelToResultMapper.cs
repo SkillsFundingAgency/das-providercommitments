@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var update = await _outerApiService.UpdatePriorLearningData(source.ProviderId, source.CohortId, source.DraftApprenticeshipId,
                 new CreatePriorLearningDataRequest
                 {
-                    DurationReducedBy = source.DurationReducedBy,
+                    DurationReducedBy = source.IsDurationReducedByRpl == false ? null : source.DurationReducedBy,
                     CostBeforeRpl = source.CostBeforeRpl,
                     DurationReducedByHours = source.DurationReducedByHours,
                     IsDurationReducedByRpl = source.IsDurationReducedByRpl,

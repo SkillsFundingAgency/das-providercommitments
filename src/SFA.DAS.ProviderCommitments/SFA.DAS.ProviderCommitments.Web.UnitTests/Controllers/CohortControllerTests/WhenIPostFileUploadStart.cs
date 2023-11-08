@@ -51,20 +51,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         private readonly FileUploadStartViewModel _viewModel;
         private readonly FileUploadReviewRequest _request;
         private readonly Mock<IMediator> _mediator;
+        private FileUploadValidateDataResponse _response;
 
         public PostFileUploadStartFixture()
         {
             var fixture = new Fixture();
             _viewModel = fixture.Build<FileUploadStartViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
-            _request = fixture.Create<FileUploadReviewRequest>();
+            _request = fixture.Create<FileUploadReviewRequest>(); 
+            _response = fixture.Create<FileUploadValidateDataResponse>();
             _outerApiService = new Mock<IOuterApiService>();
 
             _mockModelMapper = new Mock<IModelMapper>();
             _mockModelMapper.Setup(x => x.Map<FileUploadReviewRequest>(_viewModel)).ReturnsAsync(() => _request);
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
+            _mediator.Setup(x => x.Send(It.IsAny<FileUploadValidateDataRequest>(), CancellationToken.None)).ReturnsAsync(_response);
 
             Sut = new CohortController(_mediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
                         Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), _outerApiService.Object);
@@ -75,7 +77,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public PostFileUploadStartFixture VerifyCsvRecordCached()
         {
-            _mockModelMapper.Verify(x => x.Map<FileUploadReviewRequest>(_viewModel), Times.Once);
+            _mockModelMapper.Verify(
+                x => x.Map<FileUploadReviewRequest>(It.Is<FileUploadStartViewModel>(p =>
+                    p.ProviderId == _viewModel.ProviderId && p.Attachment == _viewModel.Attachment &&
+                    p.FileUploadLogId == _response.LogId)), Times.Once);
             return this;
         }
 

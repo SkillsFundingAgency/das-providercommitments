@@ -43,6 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public int? EmploymentPrice { get; set; }
 
@@ -65,6 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftAppr
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
 
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
     }
 }
