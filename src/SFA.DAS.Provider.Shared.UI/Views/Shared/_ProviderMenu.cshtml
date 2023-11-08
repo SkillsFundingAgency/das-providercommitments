@@ -1,0 +1,104 @@
+@using SFA.DAS.Provider.Shared.UI
+@using SFA.DAS.Provider.Shared.UI.Extensions
+
+
+
+@if (Context.User.Identity.IsAuthenticated)
+{
+    var providerId = User.Identity.GetProviderId();
+    var selected = ViewData.SelectedNavigationSection();
+    var suppressed = ViewData.SuppressedNavigationSections();
+    var isDfeSignInEnabled = ViewData.GetDfESignInStatus();
+
+    if (!ViewData.HiddenAccountHeader())
+    {
+        <div class="das-account-header das-account-header--provider">
+            <div class="govuk-width-container">
+                <p class="das-account-header__title">Your training provider account</p>
+                <nav class="das-user-navigation" id="das-user-navigation">
+                    <ul class="das-user-navigation__list">
+                        <li class="das-user-navigation__list-item">
+                            <a asp-external-controller="" class="das-user-navigation__link">@Context.User.Identity.Name</a>
+                        </li>
+                        @if (isDfeSignInEnabled)
+                        {
+                            <li class="das-user-navigation__list-item das-user-navigation__list-item--has-sub-menu">
+                                <a href="/" class="das-user-navigation__link">Settings</a>
+                                <ul class="das-user-navigation__sub-menu js-hidden">
+                                    <li class="das-user-navigation__sub-menu-list-item">
+                                        <a asp-external-controller="change-signin-details" class="das-user-navigation__sub-menu-link">Change your sign-in details</a>
+                                    </li>
+                                    <li class="das-user-navigation__sub-menu-list-item">
+                                        <a asp-external-controller="notification-settings" class="das-user-navigation__sub-menu-link">Notification settings</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="das-user-navigation__list-item">
+                                <a asp-external-controller="notification-settings" class="das-user-navigation__link">Notification settings</a>
+                            </li>
+                        }
+                        <li class="das-user-navigation__list-item">
+                            <a asp-Route="provider-signout" class="das-user-navigation__link">Sign out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+
+    if (!ViewData.HiddenNavigationLinks())
+    {
+        <nav class="das-navigation">
+            <div class="govuk-width-container">
+                <ul class="das-navigation__list" id="navigation">
+                    @if (!suppressed.Contains(NavigationSection.Home))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="Account" class="das-navigation__link @(selected == NavigationSection.Home ? "das-navigation__link--current" : "")">Home</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.YourCohorts))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-subdomain="approvals" asp-external-controller="unapproved" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.YourCohorts ? "das-navigation__link--current" : "")">Apprentice requests</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.Reservations))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Reservations ? "das-navigation__link--current" : "")">Manage funding</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.ManageApprentices))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-subdomain="approvals" asp-external-controller="apprentices" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.ManageApprentices ? "das-navigation__link--current" : "")">Manage your apprentices</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.Recruit))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="" asp-external-subdomain="recruit" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Recruit ? "das-navigation__link--current" : "")">Recruit apprentices</a>
+                        </li>
+                    }
+                    @if(!suppressed.Contains(NavigationSection.EmployerDemand))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="" asp-external-action="find-apprenticeship-opportunities" asp-external-subdomain="find-employers" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.EmployerDemand ? "das-navigation__link--current" : "")">Find employers that need a training provider</a>
+                        </li>
+                    }
+                    @if (!suppressed.Contains(NavigationSection.Agreements))
+                    {
+                        <li class="das-navigation__list-item">
+                            <a asp-external-controller="Agreements" asp-external-id="@providerId" class="das-navigation__link @(selected == NavigationSection.Agreements ? "das-navigation__link--current" : "")">Organisations and agreements</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    }
+}
+
