@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Encoding;
@@ -24,6 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private BulkUploadAddDraftApprenticeshipsRequest _apiRequest;
         private FileUploadReviewViewModel _viewModel;
         private List<Web.Models.Cohort.CsvRecord> _csvRecords;
+        private FileUploadCacheModel _fileUploadCacheModel;
         private Mock<IOuterApiService> _outerApiService;
         private Mock<IAuthorizationService> _authorizationService;
         private GetCohortResult _cohortResult;
@@ -39,10 +39,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.EndDate, "2022-04")
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
+
+            _fileUploadCacheModel = new FileUploadCacheModel
+            {
+                CsvRecords = _csvRecords,
+                FileUploadLogId = 1235
+            };
             _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
                
             _cacheService = new Mock<ICacheService>();
-            _cacheService.Setup(x => x.GetFromCache<List<Web.Models.Cohort.CsvRecord>>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _csvRecords);
+            _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _fileUploadCacheModel);
 
             _cohortResult = fixture.Create<GetCohortResult>();
             _outerApiService = new Mock<IOuterApiService>();
@@ -65,6 +71,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.IsTrue(_apiRequest.RplDataExtended);
             Assert.AreEqual(_viewModel.ProviderId, _apiRequest.ProviderId);
+        }
+
+
+        [Test]
+        public void CommandIsReturnedFromCacheWithLogIdAsExpected()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
         }
 
         [Test]
@@ -247,5 +260,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        [Test]
+        public void VerifyFileUploadIdIsMappedFromCache()
+        {
+            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+        }
     }
 }

@@ -6,5 +6,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
     {
         public IFormFile Attachment { get; set; }
         public long ProviderId { get; set; }
+        public long? FileUploadLogId { get; set; }
     }
 }

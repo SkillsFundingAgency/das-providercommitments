@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
-    public class WhenMappingFileUploadStartViewModelToReviewRequestMapperTests
+    public class FileUploadValidateViewModelToReviewRequestMapperTests
     {
-        private FileUploadStartViewModelToReviewRequestMapper _mapper;
+        private FileUploadValidateViewModelToReviewRequestMapper _mapper;
         private Mock<IBulkUploadFileParser> _fileParser;
         private List<CsvRecord> _csvRecords;
         private FileUploadCacheModel _fileUploadCacheModel;
-        private FileUploadStartViewModel _viewModel;
+        private FileUploadValidateViewModel _viewModel;
         private Mock<ICacheService> _cacheService;
         private Guid _cacheRequestId;
 
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new Fixture();
             _csvRecords = fixture.Create<List<CsvRecord>>();
-            _viewModel = fixture.Build<FileUploadStartViewModel>()
+            _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>()).Create();
             _fileUploadCacheModel = new FileUploadCacheModel
             {
@@ -41,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _cacheService = new Mock<ICacheService>();
             _cacheService.Setup(x => x.SetCache(It.IsAny<FileUploadCacheModel>(), It.IsAny<string>())).ReturnsAsync(_cacheRequestId);
 
-            _mapper = new FileUploadStartViewModelToReviewRequestMapper(_fileParser.Object, _cacheService.Object);
+            _mapper = new FileUploadValidateViewModelToReviewRequestMapper(_fileParser.Object, _cacheService.Object);
         }
 
         [Test]

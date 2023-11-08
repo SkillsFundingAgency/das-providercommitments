@@ -6,6 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
+using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -24,14 +25,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<BulkUploadAddDraftApprenticeshipsRequest> Map(FileUploadReviewViewModel source)
         {
-            var csVRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
+            var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
+            var csVRecords = cacheModel.CsvRecords;
+            var fileUploadLogId = cacheModel.FileUploadLogId;
+            var rplExtendedData = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
             await _cacheService.ClearCache(source.CacheRequestId.ToString(),nameof(FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper));
-            var rplExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
-                RplDataExtended = rplExtended,
-                BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId, rplExtended)
+                FileUploadLogId = fileUploadLogId,
+                RplDataExtended = rplExtendedData,
+                BulkUploadDraftApprenticeships = ConvertToBulkUploadApiRequest(csVRecords, source.ProviderId, rplExtendedData)
             };
         }
     }
