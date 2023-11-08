@@ -25,27 +25,19 @@
             {
                 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Action required
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        RPL price reduction too low: @Model.FullName can't be approved until this is resolved.
-                    </p>
-                    <p class="govuk-body">
-                        Price reduction is below the minimum required based on the off-the-job reduction that you have entered.
-                    </p>
-                    <ol class="govuk-list govuk-list--number">
-                        <li>Check the price reduction.</li>
-                        <li>Check the total off-the-job training time and the reduction due to RPL.</li>
-                        <li>Re-enter any incorrect data</li>
-                    </ol>
-                </div>
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            Important
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            RPL price reduction due to RPL is below the minimum outlined in <a class="govuk-link" href="https://www.gov.uk/guidance/apprenticeship-funding-rules">the funding rules</a>. Review the figures below and make necessary changes
+                        </p>
+                    </div>
                 </div>
             }
 
-            <h2 class="govuk-heading-m govuk-!-margin-top-9">Check the RPL details for this apprentice</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-top-9">RPL details for this apprentice</h2>
 
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
@@ -92,16 +84,15 @@
 
             <div class="govuk-inset-text">
                 <p class="govuk-body">
-                    Based on the reduction in training time that you have entered, the minimum price reduction is <strong>£@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N0")</strong>.
+                    Based on the reduction in training time that you have entered, the minimum price reduction due to RPL is <strong>£@Model.MinimumPriceReduction.GetValueOrDefault().ToString("N0")</strong>.
                 </p>
 
                 <p class="govuk-body">
-                    The calculation below use your figures and <a class="govuk-link" href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1155957/Apprenticeship_funding_rules_2324_Version_1.pdf">the apprenticeship
-                        funding rules</a>.
+                    Refer to the <a class="govuk-link" href="https://www.gov.uk/guidance/apprenticeship-funding-rules">apprenticeship funding rules</a> and <a class="govuk-link" href="https://www.gov.uk/government/publications/apprenticeships-recognition-of-prior-learning/apprenticeships-initial-assessment-to-recognise-prior-learning">initial assessment for RPL guidance</a> for further information on calculating this price reduction.
                 </p>
             </div>
 
-            <h3 class="govuk-heading-s ">Funding calculation</h3>
+            <h3 class="govuk-heading-s ">Calculation according to the funding rules</h3>
 
             <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                 <div class="govuk-summary-list__row ">
