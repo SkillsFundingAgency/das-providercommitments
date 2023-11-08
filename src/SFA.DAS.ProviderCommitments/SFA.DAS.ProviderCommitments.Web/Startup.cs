@@ -107,6 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web
             services.AddTransient<ITempDataStorageService, TempDataStorageService>();
             services.AddTransient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiService, OuterApiService>();
+            services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
         }
 
         public void ConfigureContainer(Registry registry)
