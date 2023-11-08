@@ -32,7 +32,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         public async Task<FileUploadReviewApprenticeViewModel> Map(FileUploadReviewApprenticeRequest source)
         {
             //Get CsvRecord details
-            var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());            
+            var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
+            var csvRecords = cacheModel.CsvRecords;
             var csvRecordsGroupedByCohort = csvRecords.Where(x => (!string.IsNullOrWhiteSpace(x.CohortRef) && x.CohortRef == source.CohortRef) ||
                                    (string.IsNullOrWhiteSpace(source.CohortRef) && string.IsNullOrWhiteSpace(x.CohortRef) && source.AgreementId == x.AgreementId));
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);

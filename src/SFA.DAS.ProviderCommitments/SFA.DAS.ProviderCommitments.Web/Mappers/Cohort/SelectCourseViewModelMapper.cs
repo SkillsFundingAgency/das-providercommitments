@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var result = new SelectCourseViewModel
             {
                 CacheKey = source.CacheKey,
-                CourseCode = cacheItem.CourseCode,
+                CourseCode = cacheItem.CourseCode != null? cacheItem.CourseCode : source.CourseCode,
                 ProviderId = source.ProviderId,
                 EmployerName = apiResponse.EmployerName,
                 ShowManagingStandardsContent = apiResponse.IsMainProvider,

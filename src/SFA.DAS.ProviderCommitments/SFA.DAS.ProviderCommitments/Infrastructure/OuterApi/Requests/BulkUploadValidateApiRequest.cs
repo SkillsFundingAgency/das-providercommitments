@@ -7,5 +7,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
         public long ProviderId { get; set; }
         public bool RplDataExtended { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> CsvRecords { get; set; }
+        public long FileUploadLogId { get; set; }
     }
 }
