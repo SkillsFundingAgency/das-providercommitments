@@ -16,6 +16,7 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.5"/>
+        <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.27" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21"/>
         
         <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0"/>
@@ -78,13 +79,6 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
-    </ItemGroup>
-
-
-    <ItemGroup>
-      <Reference Include="SFA.DAS.Provider.Shared.UI">
-        <HintPath>..\..\..\lib\SFA.DAS.Provider.Shared.UI\net6.0\SFA.DAS.Provider.Shared.UI.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>
