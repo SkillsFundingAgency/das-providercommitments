@@ -2,7 +2,6 @@ jobs:
 - job: 'CodeBuild'
   pool:
     name: DAS - Continuous Integration Agents
-    demands: LATEST_DOTNET_VERSION -equals 6.0
   variables:
   - group: BUILD Management Resources
   - name: buildConfiguration
