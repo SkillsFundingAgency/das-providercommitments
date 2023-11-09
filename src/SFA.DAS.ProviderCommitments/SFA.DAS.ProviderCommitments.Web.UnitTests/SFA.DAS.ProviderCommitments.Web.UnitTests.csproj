@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <Reference Include="SFA.DAS.Provider.Shared.UI">
-      <HintPath>..\..\..\lib\SFA.DAS.Provider.Shared.UI\netstandard2.0\SFA.DAS.Provider.Shared.UI.dll</HintPath>
+      <HintPath>..\..\..\lib\SFA.DAS.Provider.Shared.UI\net6.0\SFA.DAS.Provider.Shared.UI.dll</HintPath>
     </Reference>
     <Reference Include="SFA.DAS.ProviderCommitments.Web">
       <HintPath>..\SFA.DAS.ProviderCommitments.Web\bin\Debug\net6.0\SFA.DAS.ProviderCommitments.Web.dll</HintPath>
