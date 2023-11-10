@@ -47,27 +47,70 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
                     TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
                     TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
-                    IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToTrueIfDurationReducedByHoldsAValueForExtendedRpl(csvRecord, extendedRpl),
-                    DurationReducedByAsString = csvRecord.DurationReducedBy,
+                    IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(csvRecord, extendedRpl),
+                    DurationReducedByAsString = BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(csvRecord, extendedRpl),
                     PriceReducedByAsString = csvRecord.PriceReducedBy,
                 };
 
             }).ToList();
         }
 
-        private string DefaultIsDurationReducedByRplToTrueIfDurationReducedByHoldsAValueForExtendedRpl(CsvRecord csvRecord, bool extendedRpl)
+        private string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord, bool extendedRpl)
         {
             if (!extendedRpl)
             {
                 return csvRecord.IsDurationReducedByRPL;
             }
-            if (!string.IsNullOrWhiteSpace(csvRecord.DurationReducedBy) &&
-                string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
+
+            if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
+            {
+                return csvRecord.IsDurationReducedByRPL;
+            }
+
+            var durationReducedBy = DurationReducedByValue(csvRecord.DurationReducedBy);
+            if (durationReducedBy > 0)
             {
                 return "TRUE";
             }
-            return csvRecord.IsDurationReducedByRPL;
+
+            if (csvRecord.DurationReducedBy == "0")
+            {
+                return "FALSE";
+            }
+            return null;
         }
+
+        private string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord, bool extendedRpl)
+        {
+            if (!extendedRpl)
+            {
+                return csvRecord.DurationReducedBy;
+            }
+
+            if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
+            {
+                return csvRecord.DurationReducedBy;
+            }
+
+            if (csvRecord.DurationReducedBy == "0")
+            {
+                return null;
+            }
+            
+            return csvRecord.DurationReducedBy;
+
+        }
+
+        private static long? DurationReducedByValue(string durationReducedBy)
+        {
+            if (long.TryParse(durationReducedBy, out var reducedBy))
+            {
+                return reducedBy;
+            }
+            return null;
+        }
+
+
 
         private async Task<long?> GetTransferSenderId(string cohortRef)
         {
