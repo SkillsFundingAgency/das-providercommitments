@@ -98,7 +98,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
             
             return csvRecord.DurationReducedBy;
-
         }
 
         private static long? DurationReducedByValue(string durationReducedBy)
@@ -109,8 +108,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
             return null;
         }
-
-
 
         private async Task<long?> GetTransferSenderId(string cohortRef)
         {
