@@ -38,7 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var result = new FileUploadReviewViewModel();
             result.ProviderId = source.ProviderId;
             result.CacheRequestId = source.CacheRequestId;
-            var csvRecords = await _cacheService.GetFromCache<List<CsvRecord>>(source.CacheRequestId.ToString());
+            var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
+            var csvRecords = cacheModel.CsvRecords;
             _logger.LogInformation("Total number of records from cache: " + csvRecords.Count);
 
             result.CanApprove = await _policyAuthorizationWrapper.IsAuthorized(_httpContextAccessor.HttpContext.User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
