@@ -19,6 +19,7 @@
         public const string ApprenticeSelectDeliveryModel = "apprentice-select-delivery-model";
         public const string ApprenticeStartDate = "apprentice-start-date";
         public const string ApprenticeEndDate = "apprentice-end-date";
+        public const string ApprenticeTrainingDates = "apprentice-training-dates";
         public const string ApprenticePrice = "apprentice-price";
         public const string ApprenticeConfirm = "apprentice-confirm";
         public const string ApprenticeSent = "apprentice-sent";

@@ -231,7 +231,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(viewModel);
             }
 
-            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
+            return RedirectToAction("TrainingDates", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
         [HttpPost]
@@ -247,8 +247,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             else
             {
-                var request = await _modelMapper.Map<StartDateRequest>(viewModel);
-                return RedirectToAction("StartDate", request);
+                var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
+                return RedirectToAction("TrainingDates", request);
+            }
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/training-dates", Name = RouteNames.ApprenticeTrainingDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> TrainingDates(TrainingDatesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<TrainingDatesViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/training-dates", Name = RouteNames.ApprenticeTrainingDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
+        {                    
+            if (viewModel.InEditMode)
+            {
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), request);
+
+            }
+            else
+            {
+                var request = await _modelMapper.Map<PriceRequest>(viewModel);
+                return RedirectToAction(nameof(Price), request);
             }
         }
 
