@@ -78,5 +78,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_cacheItem.CourseCode, result.CourseCode);
         }
+
+        [Test]
+        public async Task CourseCode_Is_Mapped_From_Request_When_Not_In_Cache()
+        {
+            _cacheItem.CourseCode = null;
+            _request.CourseCode = "123";
+
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.CourseCode, result.CourseCode);
+        }
     }
 }

@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FileUploadCacheModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadCacheModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -140,6 +141,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private Mock<IEncodingService> _encodingService;
             private Mock<IOuterApiService> _commitmentApiClient;
             private Mock<ICacheService> _cacheService;
+            private FileUploadCacheModel _fileUploadCacheModel;
             private List<CsvRecord> _csvRecords;
             private FileUploadReviewViewModel _result;
             private readonly Mock<IPolicyAuthorizationWrapper> _policyAuthorizationWrapper;
@@ -154,6 +156,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 fixture = new Fixture();
                 _csvRecords = new List<CsvRecord>();
+                _fileUploadCacheModel = new FileUploadCacheModel
+                {
+                    CsvRecords = _csvRecords,
+                    FileUploadLogId = 1235
+                };
 
                 _request = fixture.Create<FileUploadReviewRequest>();
                 var accountLegalEntityEmployer1 = fixture.Build<GetAccountLegalEntityQueryResult>()
@@ -171,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(2)).ReturnsAsync(accountLegalEntityEmployer2);               
 
                 _cacheService = new Mock<ICacheService>();
-                _cacheService.Setup(x => x.GetFromCache<List<CsvRecord>>(_request.CacheRequestId.ToString())).ReturnsAsync(_csvRecords);
+                _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_request.CacheRequestId.ToString())).ReturnsAsync(_fileUploadCacheModel);
                 
                 _routeData = new RouteData();
                 _routingFeature = new Mock<IRoutingFeature>();
