@@ -35,8 +35,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasPendingChangeOfPartyRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
         public bool HasContinuation { get; set; }
-        public bool ShowChangeEmployerLink => (Status == ApprenticeshipStatus.Stopped &&
-                                               !HasContinuation);
+        public bool ShowChangeEmployerLink => ShouldShowChangeEmployerLink();
+
         public List<EmployerHistory> EmployerHistory { get; set; }
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
@@ -87,6 +87,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
+        }
+        private bool ShouldShowChangeEmployerLink()
+        {
+            if ((Status == ApprenticeshipStatus.Stopped || Status == ApprenticeshipStatus.Live) && !HasContinuation)
+            {
+                return true;
+            }
+            if (Status == ApprenticeshipStatus.Paused || Status == ApprenticeshipStatus.WaitingToStart)
+            {
+                return true;
+            }
+            return false;
         }
     }
 

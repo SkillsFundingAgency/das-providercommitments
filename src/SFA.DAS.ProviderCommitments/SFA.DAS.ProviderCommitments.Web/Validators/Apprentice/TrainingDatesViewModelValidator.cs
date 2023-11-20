@@ -19,9 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             RuleFor(x => x.ProviderId)
                 .GreaterThan(0);
 
-            RuleFor(x => x.StopDate)
-                .NotEmpty();
-
             RuleFor(x => x.StartDate)
                 .Must((y, _) => y.StartDate.Date < y.EndDate.Date)
                 .WithMessage("Enter a start date prior to the new training end date")
@@ -40,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             When(x => x.DeliveryModel != DeliveryModel.PortableFlexiJob, () =>
             {
                 RuleFor(x => x.StartDate)
-                    .Must((y, _) => y.StartDate.Date >= y.StopDate)
+                    .Must((y, _) => (y.StartDate.Date >= y.StopDate) || !y.StopDate.HasValue)
                     .WithMessage("The new training start date cannot be before the stop date")
                     .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
             });
@@ -48,12 +45,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
             When(x => x.DeliveryModel == DeliveryModel.PortableFlexiJob, () =>
             {
                 RuleFor(x => x.StartDate)
-                    .Must((y, _) => y.StartDate.Date >= y.StopDate)
+                    .Must((y, _) => (y.StartDate.Date >= y.StopDate) || !y.StopDate.HasValue)
                     .WithMessage("This date must not be before the previous employment end date")
                     .When(a => a.StartDate.HasValue && a.StartDate.IsValid);
             });
 
-            // end date from here                            
             RuleFor(x => x.EndDate)
                 .Must(y => y.IsValid)
                 .WithMessage("You must enter a valid date, for example 09 2022")

@@ -6,6 +6,7 @@
 
 @{
     var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
+    var stopDateString = @Model.StopDate.HasValue ? Model.StopDate.Value.ToGdsFormatWithoutDay() : "N/A";
     ViewData["Title"] = isRegular ? "New training dates" : "Training Dates for this employment";
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;
@@ -15,7 +16,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
+        
         <partial name="_ValidationSummary" />
 
         <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
@@ -43,7 +44,7 @@
                         <tr class="govuk-table__row">
                             <th asp-show="@isRegular" scope="row" class="govuk-table__header das-table-cell-width-50">Stop date</th>
                             <th asp-show="!isRegular" scope="row" class="govuk-table__cell das-table-cell-width-50">Previous employment end date</th>
-                            <td id="stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                            <td id="stop-date" class="govuk-table__cell">@stopDateString</td>
                         </tr>
 
                     </tbody>
