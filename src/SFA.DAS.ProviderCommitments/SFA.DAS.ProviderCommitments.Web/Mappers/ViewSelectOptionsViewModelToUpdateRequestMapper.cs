@@ -28,6 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Uln = apiResponse.Uln,
                 CourseCode = apiResponse.CourseCode,
                 Cost = apiResponse.Cost,
+                TrainingPrice = apiResponse.TrainingPrice,
+                EndPointAssessmentPrice = apiResponse.EndPointAssessmentPrice,
                 ActualStartDate = apiResponse.ActualStartDate,
                 StartDate = apiResponse.StartDate?.Date,
                 EndDate = apiResponse.EndDate?.Date,
