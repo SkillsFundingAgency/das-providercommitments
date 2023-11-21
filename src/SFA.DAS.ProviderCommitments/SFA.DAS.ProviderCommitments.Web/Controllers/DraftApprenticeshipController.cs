@@ -283,7 +283,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
+        public IActionResult SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
@@ -683,7 +683,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
         }
 
-        private void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        private static void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
         {
             if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
                 return;
@@ -693,7 +693,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             model.ActualStartMonth = model.StartMonth;
         }
 
-        private void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+        private static void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
         {
             if (model.StartDate.HasValue)
                 return;
