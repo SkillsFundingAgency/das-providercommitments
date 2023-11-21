@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
@@ -155,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>(), Mock.Of<ILogger<DraftApprenticeshipController>>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),
@@ -202,7 +203,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
-            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>());
+            var controller = new DraftApprenticeshipController(null, null, null, null, null, null,Mock.Of<IAuthenticationService>(),  Mock.Of<ILogger<DraftApprenticeshipController>>());
 
             var actionExecutingContext = new ActionExecutingContext(
                 new ActionContext(httpContext, new RouteData(), new ActionDescriptor()),

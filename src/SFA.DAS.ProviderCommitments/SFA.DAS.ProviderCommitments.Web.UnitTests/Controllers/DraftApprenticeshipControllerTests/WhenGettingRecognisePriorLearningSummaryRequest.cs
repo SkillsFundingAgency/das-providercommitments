@@ -10,6 +10,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -45,7 +46,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Mock.Of<IEncodingService>(),
                 _providerFeatureToggle.Object,
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthenticationService>());
+                Mock.Of<IAuthenticationService>(),
+                 Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
         [Test]
