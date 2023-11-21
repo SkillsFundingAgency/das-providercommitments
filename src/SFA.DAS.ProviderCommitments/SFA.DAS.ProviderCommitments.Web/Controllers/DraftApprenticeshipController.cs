@@ -317,7 +317,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(ReservationsAddDraftApprenticeshipRequest request)
         {
+            _logger.LogInformation("AddDraftApprenticeship GET processing started.");
+            
             var model = GetStoredAddDraftApprenticeshipState();
+            
             if (model == null)
             {
                 model = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
@@ -334,6 +337,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
            
             _logger.LogInformation("AddDraftApprenticeship GET model: {Model}", JsonSerializer.Serialize(model));
             
+            _logger.LogInformation("AddDraftApprenticeship GET processing completed.");
+            
             return View(model);
         }
 
@@ -343,6 +348,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
+            _logger.LogInformation("AddDraftApprenticeship POST processing started.");
+            
             StoreAddDraftApprenticeshipState(model);
             
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
