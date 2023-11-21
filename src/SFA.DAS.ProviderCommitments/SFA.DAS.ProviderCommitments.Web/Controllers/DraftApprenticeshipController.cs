@@ -727,12 +727,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private void StoreAddDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
+            _logger.LogInformation("StoreAddDraftApprenticeshipState saving model: {Model}", JsonSerializer.Serialize(model));
+            
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
         }
 
         private AddDraftApprenticeshipViewModel GetStoredAddDraftApprenticeshipState()
         {
-            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+            var model = TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
+            
+            _logger.LogInformation("GetStoredAddDraftApprenticeshipState retrieving model: {Model}", JsonSerializer.Serialize(model));
+
+            return model;
         }
 
         private void StoreEditDraftApprenticeshipState(EditDraftApprenticeshipViewModel model)
