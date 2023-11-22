@@ -26,17 +26,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.FileDiscardConfirmed, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<FileDiscardViewModel, T>> property, FileDiscardViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<FileDiscardViewModel, T>> property, FileDiscardViewModel instance, bool expectedValid)
         {
             var validator = new FileDiscardViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

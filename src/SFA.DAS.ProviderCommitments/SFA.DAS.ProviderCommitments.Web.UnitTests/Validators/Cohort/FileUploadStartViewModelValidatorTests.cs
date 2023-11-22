@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Moq;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
@@ -53,36 +54,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenIsEmptyFileContent()
+        public async Task ShouldReturnInvalidMessageWhenIsEmptyFileContent()
         {
             const string fileContents = "";
             var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
             _file.Setup(m => m.OpenReadStream()).Returns(textStream);
 
             var model = new FileUploadStartViewModel { Attachment = _file.Object };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResultAsync(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenColumnCountIsNot13()
+        public async Task ShouldReturnInvalidMessageWhenColumnCountIsNot13()
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,InvalidColumn";
 
             var file = CreateFakeFormFile(HeaderLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResultAsync(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
+        public async Task ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
 
             var file = CreateFakeFormFile(HeaderLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResultAsync(vm => vm.Attachment, model, false);
         }
 
         [TestCase(
@@ -99,15 +100,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 @"CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy
 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15")]
-        public void ShouldReturnInvalidMessageWhenAnyRowsColumnCountIsWrong(string fileContents)
+        public async Task ShouldReturnInvalidMessageWhenAnyRowsColumnCountIsWrong(string fileContents)
         {
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResultAsync(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenFileRowCountIsInvalid()
+        public async Task ShouldReturnInvalidMessageWhenFileRowCountIsInvalid()
         {
             var builder = new StringBuilder();
             builder.AppendLine(HeaderLine);
@@ -121,14 +122,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var model = new FileUploadStartViewModel { Attachment = file };
 
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             Assert.IsFalse(result.IsValid);
         }
 
 
         [Test]
-        public void ShouldBeValidWhenFileIsValid()
+        public async Task ShouldBeValidWhenFileIsValid()
         {
             var builder = new StringBuilder();
             builder.AppendLine(HeaderLine);
@@ -142,14 +143,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 
             var model = new FileUploadStartViewModel { Attachment = file };
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             Assert.IsTrue(result.IsValid);
         }
 
 
         [Test]
-        public void ShouldCheckRplExtendedColumns()
+        public async Task ShouldCheckRplExtendedColumns()
         {
             var builder = new StringBuilder();
             builder.AppendLine(RplExtendedHeaderLine);
@@ -163,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 
             var model = new FileUploadStartViewModel { Attachment = file };
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             Assert.IsTrue(result.IsValid);
         }
@@ -174,7 +175,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,XIsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,XDurationReducedBy,PriceReducedBy")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,XPriceReducedBy")]
-        public void ShouldCheckCorruptRplColumns(string headerLine)
+        public async Task ShouldCheckCorruptRplColumns(string headerLine)
         {
             var builder = new StringBuilder();
             builder.AppendLine(headerLine);
@@ -188,7 +189,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 
             var model = new FileUploadStartViewModel { Attachment = file };
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             Assert.IsFalse(result.IsValid);
         }
@@ -206,7 +207,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAO,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,Provider,,,,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
-        public void ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
+        public async Task ShouldReturnInvalidMessageWhenColumnHeaderIsNotMatchedWithTemplate(string header)
         {
             //Arrange            
             var fileContents = new StringBuilder().AppendLine(header).ToString();
@@ -215,7 +216,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
 
             //Act
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             //Assert
             Assert.AreEqual(1,result.Errors.Count);
@@ -223,7 +224,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenFileContainsOnlyColumnHeader()
+        public async Task ShouldReturnInvalidMessageWhenFileContainsOnlyColumnHeader()
         {
             //Arrange
             var fileContents = new StringBuilder().AppendLine(HeaderLine).ToString();
@@ -232,7 +233,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             
             //Act
-            var result = validator.Validate(model);
+            var result = await validator.ValidateAsync(model);
 
             //Assert
             Assert.AreEqual(1, result.Errors.Count);
@@ -244,6 +245,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
 
             var validationResult = validator.TestValidate(instance);
+            if (expectedValid)
+            {
+                validationResult.ShouldNotHaveValidationErrorFor(property);
+            }
+            else
+            {
+                validationResult.ShouldHaveValidationErrorFor(property);
+            }
+        }
+        
+        private async Task AssertValidationResultAsync<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)
+        {
+            var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
+
+            var validationResult = await validator.TestValidateAsync(instance);
             if (expectedValid)
             {
                 validationResult.ShouldNotHaveValidationErrorFor(property);

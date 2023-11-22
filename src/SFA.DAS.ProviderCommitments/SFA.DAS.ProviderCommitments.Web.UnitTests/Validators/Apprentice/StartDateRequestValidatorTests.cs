@@ -27,17 +27,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.ApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<StartDateRequest, T>> property, StartDateRequest instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<StartDateRequest, T>> property, StartDateRequest instance, bool expectedValid)
         {
             var validator = new StartDateRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

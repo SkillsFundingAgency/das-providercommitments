@@ -19,17 +19,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.Confirm, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<FileUploadAmendedFileViewModel, T>> property, FileUploadAmendedFileViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<FileUploadAmendedFileViewModel, T>> property, FileUploadAmendedFileViewModel instance, bool expectedValid)
         {
             var validator = new FileUploadAmendedFileViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

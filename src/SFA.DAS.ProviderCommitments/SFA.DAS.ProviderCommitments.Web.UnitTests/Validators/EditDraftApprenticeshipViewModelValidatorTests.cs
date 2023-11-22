@@ -55,17 +55,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             var model = new EditDraftApprenticeshipViewModel { IsOnFlexiPaymentPilot = false, EndMonth = month, EndYear = year };
             AssertValidationResult(request => request.EndDate, model, expectedValid);
         }
-        private void AssertValidationResult<T>(Expression<Func<EditDraftApprenticeshipViewModel, T>> property, EditDraftApprenticeshipViewModel instance, bool expectedValid)
+        
+        private static void AssertValidationResult<T>(Expression<Func<EditDraftApprenticeshipViewModel, T>> property, EditDraftApprenticeshipViewModel instance, bool expectedValid)
         {
             var validator = new EditDraftApprenticeshipViewModelValidator();
-
+            var result = validator.TestValidate(instance);
+            
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

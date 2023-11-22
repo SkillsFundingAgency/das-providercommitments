@@ -19,17 +19,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(x => x.SelectedVersion, viewModel, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ChangeVersionViewModel, T>> property, ChangeVersionViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<ChangeVersionViewModel, T>> property, ChangeVersionViewModel instance, bool expectedValid)
         {
             var validator = new ChangeVersionViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

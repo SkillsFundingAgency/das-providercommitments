@@ -36,17 +36,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.AccountLegalEntityId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<ConfirmEmployerRequest, T>> property, ConfirmEmployerRequest instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<ConfirmEmployerRequest, T>> property, ConfirmEmployerRequest instance, bool expectedValid)
         {
             var validator = new ConfirmEmployerRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

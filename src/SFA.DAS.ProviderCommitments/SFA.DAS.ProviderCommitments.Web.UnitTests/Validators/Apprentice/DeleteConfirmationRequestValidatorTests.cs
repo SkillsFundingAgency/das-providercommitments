@@ -28,17 +28,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.DraftApprenticeshipHashedId, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<DeleteConfirmationRequest, T>> property, DeleteConfirmationRequest instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<DeleteConfirmationRequest, T>> property, DeleteConfirmationRequest instance, bool expectedValid)
         {
             var validator = new DeleteConfirmationRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

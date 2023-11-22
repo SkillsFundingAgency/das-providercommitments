@@ -52,17 +52,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.EmploymentPrice, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<PriceViewModel, T>> property, PriceViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<PriceViewModel, T>> property, PriceViewModel instance, bool expectedValid)
         {
             var validator = new PriceViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }
