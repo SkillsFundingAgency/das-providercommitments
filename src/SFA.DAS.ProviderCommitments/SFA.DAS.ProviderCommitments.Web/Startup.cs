@@ -1,4 +1,5 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -87,8 +88,12 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .SetDfESignInConfiguration(useDfeSignIn)
                 .AddZenDeskSettings(Configuration)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddControllersAsServices()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+                .AddControllersAsServices();
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>();
+            
             services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
             services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
             services.AddScoped<ValidateModelStateFilter>();
