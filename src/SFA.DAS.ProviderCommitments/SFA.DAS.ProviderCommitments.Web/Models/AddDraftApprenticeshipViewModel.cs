@@ -5,7 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class AddDraftApprenticeshipViewModel : DraftApprenticeshipViewModel, IAuthorizationContextModel
     {
-        public Guid CacheKey { get; set; }
+        public Guid CacheKey { get; set; } = Guid.NewGuid();
     }
 
     public class AddDraftApprenticeshipOrRoutePostRequest : AddDraftApprenticeshipViewModel
