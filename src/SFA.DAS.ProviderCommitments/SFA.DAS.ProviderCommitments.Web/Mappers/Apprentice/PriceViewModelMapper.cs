@@ -11,7 +11,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
-
         public PriceViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
@@ -27,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                ApprenticeshipStatus = apprenticeship.Status,
                 Price = cacheItem.Price,
                 EmploymentPrice = cacheItem.EmploymentPrice,
                 InEditMode = source.IsEdit,
