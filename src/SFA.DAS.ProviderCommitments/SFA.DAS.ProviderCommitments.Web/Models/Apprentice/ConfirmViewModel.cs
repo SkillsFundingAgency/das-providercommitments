@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DeliveryModel DeliveryModel { get; set; }
 
         public string ApprenticeName { get; set; }
+        public string Uln { get; set; }
         public string OldEmployerName { get; set; }
         public DateTime OldStartDate { get; set; }
         public DateTime OldEndDate { get; set; }

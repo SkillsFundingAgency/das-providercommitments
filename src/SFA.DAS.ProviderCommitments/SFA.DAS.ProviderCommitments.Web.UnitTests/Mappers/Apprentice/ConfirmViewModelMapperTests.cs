@@ -61,6 +61,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual($"{_fixture.getApprenticeshipResponse.FirstName} {_fixture.getApprenticeshipResponse.LastName}", result.ApprenticeName);
         }
+        
+        [Test]
+        public async Task ThenUlnIsMapped()
+        {
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(_fixture.getApprenticeshipResponse.Uln, result.Uln);
+        }
 
         [Test]
         public async Task ThenStopDateIsMapped()

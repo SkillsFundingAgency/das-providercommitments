@@ -52,6 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                    Uln = data.Apprenticeship.Uln,
                     StopDate = data.Apprenticeship.StopDate, 
                     OldStartDate = data.Apprenticeship.StartDate.Value,
                     OldEndDate = data.Apprenticeship.EndDate,
