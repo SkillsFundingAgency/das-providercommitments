@@ -12,7 +12,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="_ValidationSummary" />
+        <partial name="_ValidationSummary"/>
 
         <h1 asp-show="@isRegular" class="govuk-heading-xl">@ViewBag.Title</h1>
         <h2 asp-show="!isRegular" class="govuk-heading-l">Agreed prices</h2>
@@ -24,7 +24,7 @@
                 <p>Agreed training price for this period of employment (excluding VAT)</p>
                 <span class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,000 enter 1000</span>
                 @Html.ValidationMessageFor(m => m.EmploymentPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.EmploymentPrice) })
-                <input asp-for="EmploymentPrice" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.EmploymentPrice, "govuk-input--error input-validation-error")" />
+                <input asp-for="EmploymentPrice" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-input--error input-validation-error")"/>
             </div>
 
             <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Price, "govuk-form-group--error ")">
@@ -34,7 +34,10 @@
                 <span asp-show="@isRegular" class="govuk-hint">For example, for &pound;1,500 enter 1500</span>
                 <span asp-show="!isRegular" class="govuk-hint">Enter the price in whole pounds. For example, for &pound;1,500 enter 1500</span>
                 @Html.ValidationMessageFor(m => m.Price, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Price) })
-                <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x=>x.Price, "govuk-input--error input-validation-error")" />
+                <div class="govuk-input__wrapper">
+                    <div class="govuk-input__prefix" aria-hidden="true">£</div>
+                    <input asp-for="Price" class="govuk-input govuk-!-width-one-third @Html.AddClassIfPropertyInError(x => x.Price, "govuk-input--error input-validation-error")"/>
+                </div>
             </div>
 
             <button id="save-and-continue-button" class="govuk-button" type="submit" data-module="govuk-button">
@@ -48,7 +51,7 @@
 {
     @{
         var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeTrainingDates;
-        var backModel = new 
+        var backModel = new
         {
             Model.CacheKey,
         };
