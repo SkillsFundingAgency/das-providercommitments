@@ -1,7 +1,8 @@
 ﻿using System;
 using SFA.DAS.Authorization.ModelBinding;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
+using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -9,6 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
     {
         public long ProviderId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
+        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
         public long ApprenticeshipId { get; set; }
         public string LegalEntityName { get; set; }
         [SuppressArgumentException(nameof(EmploymentPrice), "You must enter a valid price. For example, for £1,000 enter 1000")]

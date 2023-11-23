@@ -21,6 +21,12 @@ using System.Threading.Tasks;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderUrlHelper;
 using SFA.DAS.ProviderCommitments.Exceptions;
+using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
+using SFA.DAS.ProviderCommitments.Web.Models;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.Encoding;
+using MediatR;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -31,6 +37,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IOuterApiService _outerApiService;
+        private readonly IEncodingService _encodingService;
+        private readonly IMediator _mediator;
+
 
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
@@ -39,11 +50,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
+        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient, 
+            IAuthenticationService authenticationService, IOuterApiService outerApiService, IEncodingService encodingService, IMediator mediator)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
+            _authenticationService = authenticationService;
+            _outerApiService = outerApiService;
+            _encodingService = encodingService;
+            _mediator = mediator;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -267,7 +283,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
-        {                    
+        {
+
+            // map from TrainingDatesViewModel to draft model
+            var addApprenticeViewModel = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(viewModel);
+
+            //await AddLegalEntityAndCoursesToModel(addApprenticeViewModel);
+
+
+            StoreAddDraftApprenticeshipState(addApprenticeViewModel);
+
+            // do oltd check in controller here too. 
+            // this should throw domain exceptions if overlap but not oltd scenario
+            var overlapResult = await HasStartDateOverlap(addApprenticeViewModel);
+           
+
             if (viewModel.InEditMode)
             {
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
@@ -277,8 +307,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             else
             {
                 var request = await _modelMapper.Map<PriceRequest>(viewModel);
+
                 return RedirectToAction(nameof(Price), request);
-            }
+            }         
         }
 
         [HttpGet]
@@ -393,9 +424,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
-        {
-            var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
+        {            
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            {
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
+            }
+           
+
+            var overlapRequest = await _modelMapper.Map<ChangeOfEmployerOverlapAlertRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ChangeEmployerOverlapAlert, overlapRequest);
         }
 
         [HttpGet]
@@ -407,7 +445,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
             return View(viewModel);
         }
-
+      
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
@@ -417,6 +455,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/overlap-alert", Name = RouteNames.ChangeEmployerOverlapAlert)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertRequest request)
+        {
+            var model = await _modelMapper.Map<ChangeOfEmployerOverlapAlertViewModel>(request);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/overlap-alert", Name = RouteNames.ChangeEmployerOverlapAlert)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertViewModel viewModel)
+        {
+            var model = await _modelMapper.Map<DraftApprenticeshipOverlapOptionRequest>(viewModel);
+
+            return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", model);
         }
 
         [HttpGet]
@@ -768,6 +827,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ProviderId = request.ProviderId,
                 ApprenticeshipHashedId = request.ApprenticeshipHashedId
             });
+        }
+
+
+        private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
+        {
+            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
+            {
+                var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+                
+                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
+
+                var result = await _outerApiService.ValidateUlnOverlapOnStartDate(
+                model.ProviderId,
+                model.Uln,
+                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
+                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
+                );
+
+                return result;
+            }
+
+            return null;
+        }
+     
+        private void StoreAddDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
+        {
+            TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
+        }
+
+        private AddDraftApprenticeshipViewModel GetStoredAddDraftApprenticeshipState()
+        {
+            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
     }
 }

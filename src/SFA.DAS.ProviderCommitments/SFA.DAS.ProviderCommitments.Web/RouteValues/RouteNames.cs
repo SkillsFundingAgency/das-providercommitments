@@ -11,6 +11,7 @@
         public const string ChangeEmployer = "apprentice-change-employer";
         public const string ChangeEmployerInform = "apprentice-change-employer-inform";
         public const string ChangeEmployerDetails = "apprentice-change-employer-details";
+        public const string ChangeEmployerOverlapAlert = "apprentice-change-employer-overlap-alert";
         public const string ChangeVersion = "change-version";
         public const string ChangeOption = "change-option";
         public const string EditApprenticeship = "edit-apprenticeship";

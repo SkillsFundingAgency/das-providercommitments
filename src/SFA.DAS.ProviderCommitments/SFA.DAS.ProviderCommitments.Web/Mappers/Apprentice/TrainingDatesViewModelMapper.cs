@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
@@ -12,17 +13,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
+        private readonly IEncodingService _encodingService;
 
-        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
+        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _cacheStorage = cacheStorage;
+            _encodingService = encodingService;
         }
 
         public async Task<TrainingDatesViewModel> Map(TrainingDatesRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+            cacheItem.CohortReference = _encodingService.Encode(apprenticeship.CohortId, EncodingType.CohortReference);
+            await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
 
             return new TrainingDatesViewModel
             {
