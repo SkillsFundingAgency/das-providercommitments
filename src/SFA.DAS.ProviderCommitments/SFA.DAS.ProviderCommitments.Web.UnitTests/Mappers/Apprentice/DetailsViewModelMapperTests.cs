@@ -534,9 +534,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [TestCase(ApprenticeshipStatus.Stopped, true)]
-        [TestCase(ApprenticeshipStatus.Paused, false)]
-        [TestCase(ApprenticeshipStatus.Live, false)]
-        [TestCase(ApprenticeshipStatus.WaitingToStart, false)]
+        [TestCase(ApprenticeshipStatus.Paused, true)]
+        [TestCase(ApprenticeshipStatus.Live, true)]
+        [TestCase(ApprenticeshipStatus.WaitingToStart, true)]
         [TestCase(ApprenticeshipStatus.Completed, false)]
         public async Task WhenApprenticeStatusThenShowChangeEmployerLinkIsMappedCorrectly(ApprenticeshipStatus apprenticeshipStatus, bool expected)
         {

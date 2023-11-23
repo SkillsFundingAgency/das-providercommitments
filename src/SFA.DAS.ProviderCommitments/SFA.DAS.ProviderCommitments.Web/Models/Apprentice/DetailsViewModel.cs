@@ -90,15 +90,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         }
         private bool ShouldShowChangeEmployerLink()
         {
-            if ((Status == ApprenticeshipStatus.Stopped || Status == ApprenticeshipStatus.Live) && !HasContinuation)
+            switch (Status)
             {
-                return true;
+                case ApprenticeshipStatus.Stopped or ApprenticeshipStatus.Live when !HasContinuation:
+                case ApprenticeshipStatus.Paused:
+                case ApprenticeshipStatus.WaitingToStart:
+                    return true;
+                default:
+                    return false;
             }
-            if (Status == ApprenticeshipStatus.Paused || Status == ApprenticeshipStatus.WaitingToStart)
-            {
-                return true;
-            }
-            return false;
         }
     }
 
