@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string OldEmployerName { get; set; }
         public DateTime OldStartDate { get; set; }
         public DateTime OldEndDate { get; set; }
-        public DateTime StopDate { get; set; }
+        public DateTime? StopDate { get; set; }
         public int OldPrice { get; set; }
         public int? OldEmploymentPrice { get; set; }
         public DateTime? OldEmploymentEndDate { get; set; }

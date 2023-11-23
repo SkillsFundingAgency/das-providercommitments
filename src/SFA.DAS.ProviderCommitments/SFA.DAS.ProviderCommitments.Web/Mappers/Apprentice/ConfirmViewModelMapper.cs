@@ -1,18 +1,17 @@
 ﻿using System;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -53,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
-                    StopDate = data.Apprenticeship.StopDate.Value, 
+                    StopDate = data.Apprenticeship.StopDate, 
                     OldStartDate = data.Apprenticeship.StartDate.Value,
                     OldEndDate = data.Apprenticeship.EndDate,
                     OldPrice = decimal.ToInt32(data.PriceEpisodes.PriceEpisodes.GetPrice()), 
@@ -102,7 +101,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 course.TrainingProgramme);
         }
 
-        private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
+        private static int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
         {
             if (course == null)
             {
