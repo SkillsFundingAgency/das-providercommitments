@@ -81,7 +81,7 @@
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Stop applies from</th>
-                <td class="govuk-table__cell">@(Model.StopDate.HasValue ? DisplayDate(Model.StopDate.Value) : "None")</td>
+                <td class="govuk-table__cell">@DisplayDate(Model.StopDate)</td>
                 <td class="govuk-table__cell">&nbsp;</td>
             </tr>
             <tr asp-hide="@isRegular" class="govuk-table__row">
@@ -160,7 +160,7 @@
     @Html.HiddenFor(x => x.AccountLegalEntityPublicHashedId)
     @Html.HiddenFor(x => x.CacheKey)
 
-    <button id="confirm-button" type="Submit" class="govuk-button">Save and continue</button>
+    <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 
 </form>
 
