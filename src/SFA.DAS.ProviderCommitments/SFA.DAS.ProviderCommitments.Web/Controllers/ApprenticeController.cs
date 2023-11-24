@@ -42,7 +42,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IEncodingService _encodingService;
         private readonly IMediator _mediator;
 
-
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
         public const string ChangesUndoneFlashMessage = "Changes undone";
@@ -284,30 +283,25 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
         {
-
             // map from TrainingDatesViewModel to draft model
             var addApprenticeViewModel = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(viewModel);
 
             //await AddLegalEntityAndCoursesToModel(addApprenticeViewModel);
-
 
             StoreAddDraftApprenticeshipState(addApprenticeViewModel);
 
             // do oltd check in controller here too. 
             // this should throw domain exceptions if overlap but not oltd scenario
             var overlapResult = await HasStartDateOverlap(addApprenticeViewModel);
-           
 
             if (viewModel.InEditMode)
             {
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToAction(nameof(Confirm), request);
-
             }
             else
             {
                 var request = await _modelMapper.Map<PriceRequest>(viewModel);
-
                 return RedirectToAction(nameof(Price), request);
             }         
         }
