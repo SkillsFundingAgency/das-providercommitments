@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderUrlHelper;
 
@@ -154,7 +155,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 AuthenticationService = new Mock<IAuthenticationService>();
                 AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
+                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>());
 
                 _sut.TempData = tempData;
             }

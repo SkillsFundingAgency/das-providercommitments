@@ -37,10 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IAuthenticationService _authenticationService;
         private readonly IOuterApiService _outerApiService;
-        private readonly IEncodingService _encodingService;
-        private readonly IMediator _mediator;
 
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
@@ -49,16 +46,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient, 
-            IAuthenticationService authenticationService, IOuterApiService outerApiService, IEncodingService encodingService, IMediator mediator)
+        public ApprenticeController(IModelMapper modelMapper,
+            ICookieStorageService<IndexRequest> cookieStorage,
+            ICommitmentsApiClient commitmentsApiClient, 
+            IOuterApiService outerApiService)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
-            _authenticationService = authenticationService;
             _outerApiService = outerApiService;
-            _encodingService = encodingService;
-            _mediator = mediator;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -285,7 +281,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             // map from TrainingDatesViewModel to draft model
             var addApprenticeViewModel = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(viewModel);
-
             //await AddLegalEntityAndCoursesToModel(addApprenticeViewModel);
 
             StoreAddDraftApprenticeshipState(addApprenticeViewModel);
@@ -424,7 +419,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
             }
-           
 
             var overlapRequest = await _modelMapper.Map<ChangeOfEmployerOverlapAlertRequest>(viewModel);
             return RedirectToRoute(RouteNames.ChangeEmployerOverlapAlert, overlapRequest);
@@ -826,33 +820,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
         {
-            if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
+            if (!model.StartDate.Date.HasValue || !model.EndDate.Date.HasValue || string.IsNullOrWhiteSpace(model.Uln))
             {
-                var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+                return null;
+            }
+            
+            var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
                 
-                await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
+            await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
 
-                var result = await _outerApiService.ValidateUlnOverlapOnStartDate(
+            return await _outerApiService.ValidateUlnOverlapOnStartDate(
                 model.ProviderId,
                 model.Uln,
                 model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
                 model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-                );
+            );
 
-                return result;
-            }
-
-            return null;
         }
      
         private void StoreAddDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
         {
             TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
-        }
-
-        private AddDraftApprenticeshipViewModel GetStoredAddDraftApprenticeshipState()
-        {
-            return TempData.Get<AddDraftApprenticeshipViewModel>(nameof(AddDraftApprenticeshipViewModel));
         }
     }
 }

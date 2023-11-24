@@ -7,6 +7,7 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using System.Threading;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -27,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();            
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<DatalockConfirmRestartViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object);
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object, Mock.Of<IOuterApiService>());
         }
 
 

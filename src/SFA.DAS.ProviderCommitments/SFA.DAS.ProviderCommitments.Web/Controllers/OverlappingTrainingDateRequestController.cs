@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -41,7 +42,35 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authenticationService = authenticationService;
             _outerApiService = outerApiService;
         }
+        
+        [HttpGet]
+        [Route("overlap-options-change-employer")]
+        public IActionResult DraftApprenticeshipOverlapOptionsChangeEmployer(DraftApprenticeshipOverlapOptionRequest request)
+        {
+           return View(new DraftApprenticeshipOverlapOptionViewModel());
+        }
+        
+        [HttpPost]
+        [Route("overlap-options-change-employer")]
+        public IActionResult DraftApprenticeshipOverlapOptionsChangeEmployer(DraftApprenticeshipOverlapOptionViewModel viewModel)
+        {
+            // redirect 302 does not clear tempdata.
+            RemoveStoredDraftApprenticeshipState(viewModel.DraftApprenticeshipHashedId);
+            
+            if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
+            {
+                throw new NotImplementedException();
+            }
+            
+            if (viewModel.OverlapOptions == OverlapOptions.ContactTheEmployer)
+            {
+                throw new NotImplementedException();
+            }
 
+            return RedirectToAction("Index", "Apprentice");
+        }
+        
+        [HttpGet]
         [Route("overlap-options-with-pending-request")]
         public IActionResult DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequest request)
         {
@@ -70,6 +99,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-options")]
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
+            var cachedItem = GetStoredAddDraftApprenticeshipState();
+            if (cachedItem is { IsChangeOfEmployer: true })
+            {
+                return RedirectToAction("DraftApprenticeshipOverlapOptionsChangeEmployer", request);
+            }
+            
             var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
 
             if (request.DraftApprenticeshipId.HasValue)

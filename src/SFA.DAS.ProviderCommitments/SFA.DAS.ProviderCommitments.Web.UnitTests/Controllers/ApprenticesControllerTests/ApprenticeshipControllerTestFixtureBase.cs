@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
@@ -35,7 +36,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             _controller = new ApprenticeController(_mockMapper.Object,
                 Mock.Of<ICookieStorageService<IndexRequest>>(),
-                _mockCommitmentsApiClient.Object);
+                _mockCommitmentsApiClient.Object,
+                Mock.Of<IOuterApiService>());
 
             _controller.Url = _mockUrlHelper.Object;
             _controller.TempData = _mockTempData.Object;

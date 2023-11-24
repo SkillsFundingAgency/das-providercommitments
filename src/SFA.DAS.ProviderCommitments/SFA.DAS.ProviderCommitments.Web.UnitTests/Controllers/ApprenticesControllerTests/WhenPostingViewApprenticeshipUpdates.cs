@@ -16,6 +16,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -101,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 AuthenticationService = new Mock<IAuthenticationService>();
                 AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object);
+                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>());
 
                 _sut.TempData = tempData;
             }

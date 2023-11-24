@@ -1,15 +1,14 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -18,33 +17,36 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly IOuterApiClient _outerApiClient;
         private readonly ICacheStorageService _cacheStorage;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IEncodingService _encodingService;
 
-        public TrainingDatesViewModelToAddDraftApprenticeshipViewModelMapper(IOuterApiClient outerApiClient, ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
+        public TrainingDatesViewModelToAddDraftApprenticeshipViewModelMapper(IOuterApiClient outerApiClient,
+            ICommitmentsApiClient commitmentsApiClient,
+            ICacheStorageService cacheStorage)
         {
             _outerApiClient = outerApiClient;
             _cacheStorage = cacheStorage;
             _commitmentsApiClient = commitmentsApiClient;
-            _encodingService = encodingService;
         }
 
         public async Task<AddDraftApprenticeshipViewModel> Map(TrainingDatesViewModel source)
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+            
+            // Don't want the existing CohortReference as a change of employer means new cohort is required.
+            cacheItem.CohortReference = string.Empty;
+            await _cacheStorage.SaveToCache(cacheItem, 1);
+            
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
-
 
             var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, cacheItem.AccountLegalEntityId, apprenticeship.CourseCode);
             var apiResponse = await _outerApiClient.Get<GetAddDraftApprenticeshipDetailsResponse>(apiRequest);
 
             var result = new AddDraftApprenticeshipViewModel
             {
+                IsChangeOfEmployer = true,
                 CacheKey = source.CacheKey,
                 ProviderId = source.ProviderId,
-                //CohortId = apprenticeship.CohortId,
                 EmployerAccountLegalEntityPublicHashedId = source.EmployerAccountLegalEntityPublicHashedId,
                 Courses = null,
-               // ReservationId = cacheItem.ReservationId,
                 StartDate = new MonthYearModel(cacheItem.StartDate),
                 CourseCode = apprenticeship.CourseCode,
                 DeliveryModel = (DeliveryModel)cacheItem.DeliveryModel.Value,
@@ -58,7 +60,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Uln = apprenticeship.Uln,
                 TrainingPrice = null,
                 EndPointAssessmentPrice = null,
-                //Reference = _encodingService.Encode(apprenticeship.CohortId, EncodingType.CohortReference),
                 EmploymentPrice = cacheItem.EmploymentPrice,
                 BirthDay = apprenticeship.DateOfBirth.Day,
                 BirthMonth = apprenticeship.DateOfBirth.Month,
@@ -76,14 +77,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 result.EndDay = source.EndDate.Day;
                 result.EndMonth = source.EndDate.Month;
                 result.EndYear = source.EndDate.Year;
-            }           
+            }
           
             if (source.EmploymentEndDate.HasValue)
             {
                 result.EmploymentEndMonth = source.EmploymentEndDate.Month;
                 result.EmploymentEndYear = source.EmploymentEndDate.Year;
             }
-
 
             return result;
         }
