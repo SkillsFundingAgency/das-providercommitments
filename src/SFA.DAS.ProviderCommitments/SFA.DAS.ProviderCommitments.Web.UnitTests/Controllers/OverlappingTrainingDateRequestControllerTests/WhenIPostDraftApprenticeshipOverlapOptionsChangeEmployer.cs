@@ -27,27 +27,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.VerifyUserRedirectedTo(ControllerConstants.OverlappingTrainingDateRequestController.Actions.EmployerNotified);
         }
         
-        // [Test]
-        // public async Task AndWhenExistingDraftApprenticeship_AndUserSelectsToSendOverlapEmailToEmployer_ThenUpdateRecord()
-        // {
-        //     await _fixture
-        //         .SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest)
-        //         .SetupUpdateDraftApprenticeshipRequestMapper()
-        //         .SetupGetTempEditDraftApprenticeship()
-        //         .WithCohortReference()
-        //         .WithDraftApprenticeshipHashedId()
-        //         .DraftApprenticeshipOverlapOptions();
-        //     
-        //     _fixture.VerifyExistingDraftApprenticeshipUpdated();
-        // }
-        
-        // [Test]
-        // public async Task AndWhenWhenUserSelectsToContactTheEmployer()
-        // {
-        //     await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();
-        //     _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-        //     _fixture.VerifyUserRedirectedTo("Details");
-        // }
+        [Test]
+        public async Task AndWhenWhenUserSelectsToContactTheEmployer()
+        {
+            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.ContactTheEmployer)
+                .DraftApprenticeshipOverlapOptionsChangeEmployer();
+            
+            _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.ApprenticeController.Actions.Index,  ControllerConstants.ApprenticeController.Name);
+        }
         
         [Test]
         public async Task AndWhenWhenUserSelectsToAddApprenticeshipLater()
