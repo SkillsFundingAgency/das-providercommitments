@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
-        public async Task AndWhenEixstingDraftApprenticeship_AndUserSelectsToSendOverlapEmailToEmployer_ThenUpdateRecord()
+        public async Task AndWhenExistingDraftApprenticeship_AndUserSelectsToSendOverlapEmailToEmployer_ThenUpdateRecord()
         {
             await _fixture
                 .SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest)
