@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "This apprentice already has an existing apprenticeship record";
-    ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-options";
+    ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-options-change-employer";
 }
 
 <div class="govuk-grid-row">
@@ -19,12 +19,15 @@
         </ul>
         
         <form method="post">
+            <input type="hidden" asp-for="ApprenticeshipHashedId" value="@Model.ApprenticeshipHashedId"/>
+            <input type="hidden" asp-for="ApprenticeshipId" value="@Model.ApprenticeshipId"/>
+            
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.OverlapOptions, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h3 class="govuk-fieldset__heading">To update a stop date you can:</h3>
                     </legend>
-                    <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId"/>
+                    
                     @Html.ValidationMessageFor(m => m.OverlapOptions, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.OverlapOptions) })
                     <div class="govuk-radios" data-module="radios">
                         <div class="govuk-radios__item">

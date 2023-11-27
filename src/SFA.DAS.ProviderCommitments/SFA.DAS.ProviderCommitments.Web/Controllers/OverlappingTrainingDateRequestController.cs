@@ -50,7 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var viewModel = new DraftApprenticeshipOverlapOptionViewModel
             {
-                CohortReference = request.CohortReference
+                ApprenticeshipHashedId = request.ApprenticeshipHashedId,
+                ApprenticeshipId = request.ApprenticeshipId,
             };
             
             return View(viewModel);
@@ -61,10 +62,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> DraftApprenticeshipOverlapOptionsChangeEmployer(DraftApprenticeshipOverlapOptionViewModel viewModel)
         {
             // redirect 302 does not clear tempdata.
-            RemoveStoredDraftApprenticeshipState(viewModel.DraftApprenticeshipHashedId);
+            RemoveStoredDraftApprenticeshipState(viewModel.ApprenticeshipHashedId);
             
             if (viewModel.OverlapOptions == OverlapOptions.SendStopRequest)
             {
+                viewModel.DraftApprenticeshipHashedId = viewModel.ApprenticeshipHashedId;
+                viewModel.DraftApprenticeshipId = viewModel.ApprenticeshipId;
+                
                 await CreateOverlappingTrainingDateRequest(viewModel);
                 return RedirectToAction(nameof(EmployerNotified), new { viewModel.ProviderId, viewModel.CohortReference });
             }
@@ -106,14 +110,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-options")]
         public async Task<IActionResult> DraftApprenticeshipOverlapOptions(DraftApprenticeshipOverlapOptionRequest request)
         {
+            var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
+            
             var cachedItem = GetStoredAddDraftApprenticeshipState();
             if (cachedItem is { IsChangeOfEmployer: true })
             {
                 return RedirectToAction(nameof(DraftApprenticeshipOverlapOptionsChangeEmployer), request);
             }
-            
-            var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
-
+           
             var enableStopRequestEmail = apprenticeshipDetails.Status == ApprenticeshipStatus.Live
                                          || apprenticeshipDetails.Status == ApprenticeshipStatus.WaitingToStart
                                          || apprenticeshipDetails.Status == ApprenticeshipStatus.Paused
