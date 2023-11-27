@@ -334,6 +334,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _tempData.Setup(x => x.TryGetValue(nameof(EditDraftApprenticeshipViewModel), out addModelAsString)).Returns(true);
             return this;
         }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture SetupGetTempAddDraftApprenticeshipWithChangeOfEmployerTrue()
+        {
+            _model.IsChangeOfEmployer = true;
+
+            object addModelAsString = JsonConvert.SerializeObject(_model);
+            _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString)).Returns(true);
+            return this;
+        }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyPeekStoredEditDraftApprenticeshipStateIsCalled()
         {

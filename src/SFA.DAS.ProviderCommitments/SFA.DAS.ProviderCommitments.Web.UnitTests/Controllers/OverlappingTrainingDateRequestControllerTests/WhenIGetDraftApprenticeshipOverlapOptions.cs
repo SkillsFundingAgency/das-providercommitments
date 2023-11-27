@@ -21,6 +21,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             await _fixture.GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
         }
+        
+        [Test]
+        public async Task AndWhenIGetDraftApprenticeshipOverlapOptionsIsChangeOfEmployer_ThenRedirectToDraftApprenticeshipOverlapOptionsChangeEmployer()
+        {
+            await  _fixture
+                .SetupGetTempAddDraftApprenticeshipWithChangeOfEmployerTrue()
+                .GetDraftApprenticeshipOverlapOptions();
+
+            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptionsChangeEmployer");
+        }
 
         [Test]
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
@@ -54,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
             _fixture.VerifyUserRedirectedTo("Review");
         }
-
+        
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Live, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart, true)]
