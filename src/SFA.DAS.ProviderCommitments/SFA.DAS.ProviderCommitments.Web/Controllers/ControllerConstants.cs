@@ -9,6 +9,7 @@ public static class ControllerConstants
         public static class Actions
         {
             public const string Index = nameof(Index);
+            public const string Details = nameof(Details);
         }
     }
 

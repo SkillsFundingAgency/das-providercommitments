@@ -223,10 +223,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (viewModel.Confirm.Value)
             {
                 var request = await _modelMapper.Map<SelectDeliveryModelRequest>(viewModel);
-                return RedirectToAction("SelectDeliveryModel", request);
+                return RedirectToAction(nameof(SelectDeliveryModel), request);
             }
 
-            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -241,7 +241,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(viewModel);
             }
 
-            return RedirectToAction("TrainingDates", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
+            return RedirectToAction(nameof(TrainingDates), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
         [HttpPost]
@@ -258,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             else
             {
                 var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
-                return RedirectToAction("TrainingDates", request);
+                return RedirectToAction(nameof(TrainingDates), request);
             }
         }
 
@@ -534,10 +534,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.HasOptions)
             {
-                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -574,7 +574,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             draft.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
             TempData.Put(ViewModelForEdit, draft);
 
-            return RedirectToAction("EditApprenticeship", new { request.ProviderId, request.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(EditApprenticeship), new { request.ProviderId, request.ApprenticeshipHashedId });
         }
 
         [HttpPost]
@@ -591,7 +591,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var draft = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
             draft.DeliveryModel = (DeliveryModel)model.DeliveryModel.Value;
             TempData.Put(ViewModelForEdit, draft);
-            return RedirectToAction("EditApprenticeship", new { draft.ProviderId, draft.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(EditApprenticeship), new { draft.ProviderId, draft.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -624,10 +624,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (editApprenticeshipRequestViewModel.HasOptions)
             {
-                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -651,7 +651,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             TempData.Put("EditApprenticeshipRequestViewModel", editViewModel);
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -719,10 +719,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SubmitStatusViewModel.HasValue && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
             {
-                return RedirectToAction("ConfirmRestart", new DatalockConfirmRestartRequest { ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ConfirmRestart), new DatalockConfirmRestartRequest { ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -746,7 +746,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -766,10 +766,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
             {
-                return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+                return RedirectToAction(nameof(ConfirmDataLockChanges), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -793,7 +793,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [Route("{apprenticeshipHashedId}/details/resend-email-invitation")]
@@ -809,7 +809,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             catch { }
 
-            return RedirectToAction("Details", new
+            return RedirectToAction(nameof(Details), new
             {
                 ProviderId = request.ProviderId,
                 ApprenticeshipHashedId = request.ApprenticeshipHashedId
