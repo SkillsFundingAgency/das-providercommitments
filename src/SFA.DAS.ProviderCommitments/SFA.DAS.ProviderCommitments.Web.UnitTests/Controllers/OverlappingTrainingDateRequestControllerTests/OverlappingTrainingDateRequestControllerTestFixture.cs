@@ -185,6 +185,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _actionResult = await _controller.DraftApprenticeshipOverlapOptions(_draftApprenticeshipOverlapOptionViewModel);
             return this;
         }
+        
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> DraftApprenticeshipOverlapOptionsChangeEmployer()
+        {
+            _actionResult = await _controller.DraftApprenticeshipOverlapOptionsChangeEmployer(_draftApprenticeshipOverlapOptionViewModel);
+            return this;
+        }
 
         public async Task<OverlappingTrainingDateRequestControllerTestFixture> GetDraftApprenticeshipOverlapOptions()
         {
@@ -233,6 +239,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyUserRedirectedTo(string page)
         {
             _actionResult.VerifyReturnsRedirectToActionResult().WithActionName(page);
+            return this;
+        }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyUserRedirectedTo( string page, string controller)
+        {
+            _actionResult.VerifyReturnsRedirectToActionResult()
+                .WithControllerName(controller)
+                .WithActionName(page);
             return this;
         }
 

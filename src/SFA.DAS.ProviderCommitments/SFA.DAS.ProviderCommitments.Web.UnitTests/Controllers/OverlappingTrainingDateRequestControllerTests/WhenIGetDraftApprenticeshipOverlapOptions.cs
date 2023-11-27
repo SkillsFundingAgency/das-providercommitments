@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
@@ -29,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 .SetupGetTempAddDraftApprenticeshipWithChangeOfEmployerTrue()
                 .GetDraftApprenticeshipOverlapOptions();
 
-            _fixture.VerifyUserRedirectedTo("DraftApprenticeshipOverlapOptionsChangeEmployer");
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptionsChangeEmployer);
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmailSent();
-            _fixture.VerifyUserRedirectedTo("EmployerNotified");
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.OverlappingTrainingDateRequestController.Actions.EmployerNotified);
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.ContactTheEmployer).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Details");
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.CohortController.Actions.Details, ControllerConstants.CohortController.Name);
         }
 
         [Test]
@@ -62,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.AddApprenticeshipLater).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
-            _fixture.VerifyUserRedirectedTo("Review");
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.CohortController.Actions.Review, ControllerConstants.CohortController.Name);
         }
         
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, true)]

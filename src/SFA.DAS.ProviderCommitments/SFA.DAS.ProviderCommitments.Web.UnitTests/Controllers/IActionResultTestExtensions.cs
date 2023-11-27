@@ -31,6 +31,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
             Assert.AreEqual(expectedName, result.ActionName);
             return result;
         }
+        
+        public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
+        {
+            Assert.AreEqual(expectedName, result.ControllerName);
+            return result;
+        }
 
         public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
         {
