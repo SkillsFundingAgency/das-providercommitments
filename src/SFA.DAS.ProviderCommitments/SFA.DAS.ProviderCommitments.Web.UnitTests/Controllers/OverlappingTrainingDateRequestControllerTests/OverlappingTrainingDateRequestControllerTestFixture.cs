@@ -271,6 +271,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _actionResult = _controller.DraftApprenticeshipOverlapOptionsWithPendingRequest(_overlapRequest);
             return this;
         }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapOptionsChangeEmployer()
+        {
+            _actionResult = _controller.DraftApprenticeshipOverlapOptionsChangeEmployer(_draftApprenticeshipOverlapOptionRequest);
+            return this;
+        }
 
         public async Task<OverlappingTrainingDateRequestControllerTestFixture> DraftApprenticeshipOverlapOptionsWithPendingRequest()
         {
