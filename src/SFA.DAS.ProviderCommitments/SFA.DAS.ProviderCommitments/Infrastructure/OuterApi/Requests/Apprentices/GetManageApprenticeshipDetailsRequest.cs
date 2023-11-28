@@ -80,9 +80,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public long? TransferSenderId { get; set; }
             public bool? IsOnFlexiPaymentPilot { get; set; }
             public int? DurationReducedByHours { get; set; }
-            public int? WeightageReducedBy { get; set; }
-            public string QualificationsForRplReduction { get; set; }
-            public string ReasonForRplReduction { get; set; }
             public int? TrainingTotalHours { get; set; }
             public bool? IsDurationReducedByRpl { get; set; }
         }
