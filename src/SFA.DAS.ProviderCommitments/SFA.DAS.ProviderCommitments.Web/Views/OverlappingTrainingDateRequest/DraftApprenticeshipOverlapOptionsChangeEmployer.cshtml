@@ -1,6 +1,6 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
-@model DraftApprenticeshipOverlapOptionViewModel
+@model DraftApprenticeshipOverlapOptionChangeEmployerViewModel
 
 @{
     ViewData["Title"] = "This apprentice already has an existing apprenticeship record";
@@ -19,8 +19,7 @@
         </ul>
         
         <form method="post">
-            <input type="hidden" asp-for="ApprenticeshipHashedId" value="@Model.ApprenticeshipHashedId"/>
-            <input type="hidden" asp-for="ApprenticeshipId" value="@Model.ApprenticeshipId"/>
+            <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId"/>
             
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.OverlapOptions, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">

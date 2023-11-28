@@ -1,0 +1,12 @@
+﻿using SFA.DAS.Authorization.ModelBinding;
+
+namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
+
+public class DraftApprenticeshipOverlapOptionChangeEmployerRequest : IAuthorizationContextModel
+{
+    public string DraftApprenticeshipHashedId { get; set; }
+    public long? DraftApprenticeshipId { get; set; }
+    public string ApprenticeshipHashedId { get; set; }
+    public long? ApprenticeshipId { get; set; }
+    public string CohortReference { get; set; }
+}

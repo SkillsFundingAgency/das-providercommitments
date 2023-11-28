@@ -10,17 +10,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICacheStorageService _cacheStorage;
 
-        public TrainingDatesViewModelToPriceRequestMapper(ICacheStorageService cacheStorage)
-        {
-            _cacheStorage = cacheStorage;
-        }
+        public TrainingDatesViewModelToPriceRequestMapper(ICacheStorageService cacheStorage) => _cacheStorage = cacheStorage;
 
         public async Task<PriceRequest> Map(TrainingDatesViewModel source)
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-            cacheItem.StartDate = source.StartDate.Date.Value.ToString("MMyyyy");
+            
+            cacheItem.StartDate = source.StartDate.MonthYear;
             cacheItem.EndDate = source.EndDate.MonthYear;
             cacheItem.EmploymentEndDate = source.EmploymentEndDate.MonthYear;
+            
             await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
 
             return new PriceRequest

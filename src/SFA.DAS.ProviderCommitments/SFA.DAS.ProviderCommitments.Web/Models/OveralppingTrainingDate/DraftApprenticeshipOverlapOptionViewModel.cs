@@ -5,8 +5,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
 {
     public class DraftApprenticeshipOverlapOptionViewModel : IAuthorizationContextModel
     {
-        public string ApprenticeshipHashedId { get; set; }
-        public long? ApprenticeshipId { get; set; }
         public long ProviderId { get; set; }
         public string CohortReference { get; set; }
         public OverlapOptions? OverlapOptions { get; set; }
