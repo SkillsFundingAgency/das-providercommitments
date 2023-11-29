@@ -18,6 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId
             };
-        
+
+        }
     }
 }
