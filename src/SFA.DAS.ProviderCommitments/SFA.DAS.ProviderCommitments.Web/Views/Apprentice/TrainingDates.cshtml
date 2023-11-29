@@ -2,16 +2,17 @@
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using Microsoft.Azure.Documents.SystemFunctions
+@using SFA.DAS.ProviderCommitments.Web.Extensions
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.TrainingDatesViewModel
 
 @{
-    var isRegular = @Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
     var stopDateString = @Model.StopDate.HasValue ? Model.StopDate.Value.ToGdsFormatWithoutDay() : "N/A";
-    ViewData["Title"] = isRegular ? "New training dates" : "Training Dates for this employment";
+    ViewData["Title"] = "Add new training dates" ;
     ViewBag.GaData.Vpv = "/apprentices/change-employer/dates";
     ViewBag.GaData.Org = Model.LegalEntityName;
-    var startDateLabel = isRegular ? "New training start date" : "Start date for this employment";
-    var endDateLabel = isRegular ? "New training end date" : "End date for this employment";
+    var startDateLabel = "Enter the new start training date";
+    var endDateLabel =  "Enter the new end training date";
+    var statusLabel = Model.ApprenticeshipStatus.GetDescription();
 }
 
 <div class="govuk-grid-row">
@@ -20,6 +21,20 @@
         <partial name="_ValidationSummary" />
 
         <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+            
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-40"><b>Status with previous employer</b></th>
+                    <td class="govuk-table__cell das-table-cell-width-40">&nbsp;</td>
+                    <td class="govuk-table__cell">
+                        <strong class="govuk-tag @Model.ApprenticeshipStatus.GetDisplayClass()">
+                            @Model.ApprenticeshipStatus.GetDescription()
+                        </strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <form novalidate method="post">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="start-date-hint">
@@ -31,27 +46,12 @@
                 @Html.HiddenFor(x => x.Price)
                 @Html.HiddenFor(x => x.DeliveryModel)
 
-                <p asp-show="@isRegular" class="govuk-body">The restart date must be on or after the stop date.</p>
-
-                <table class="govuk-table">
-                    <tbody class="govuk-table__body">
-
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header"></th>
-                            <td class="govuk-table__cell"></td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th asp-show="@isRegular" scope="row" class="govuk-table__header das-table-cell-width-50">Stop date</th>
-                            <th asp-show="!isRegular" scope="row" class="govuk-table__cell das-table-cell-width-50">Previous employment end date</th>
-                            <td id="stop-date" class="govuk-table__cell">@stopDateString</td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <div class="govuk-inset-text">
+                    To stop this @statusLabel record enter the new training start and end dates then continue.
+                </div>
+               
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.StartDate,"govuk-form-group--error")">
-                  
-                        <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the start date for this employment</h3>
+                                        
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                             @startDateLabel
                         </legend>
@@ -93,51 +93,12 @@
             <fieldset class="govuk-fieldset" aria-describedby="finish-date-hint" role="group">
                 @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
            
-                <p asp-show="@isRegular" class="govuk-body">The new training date must be after the new start date.</p>
-                <p asp-show="!isRegular" class="govuk-body">Enter the end dates for this employment and for the apprenticeship training.</p>
-
-                <div asp-show="!isRegular" class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate,"govuk-form-group--error")">
-
-                    <h3 class="govuk-heading-s">Enter the end date for this employment</h3>
-
-                    <span id="end-date-hint" class="govuk-hint">
-                        For example, 04 2020
-                    </span>
-
-                    @if (!ViewContext.ModelState.IsValid)
-                    {
-                        <span id="error-message-EmploymentEndDate" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(x => x.EmploymentEndDate)
-                        </span>
-                    }
-
-                    <div class="govuk-date-input" id="employment-end-date">
-
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label" for="employment-end-date-month">
-                                    Month
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-input--error")" id="employment-end-date-month" asp-for="EmploymentEndMonth" type="number" pattern="[0-9]*" inputmode="numeric">
-                            </div>
-                        </div>
-
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label" for="employment-end-date-year">
-                                    Year
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @Html.AddClassIfPropertyInError(x => x.EmploymentEndDate, "govuk-input--error")" id="employment-end-date-year" asp-for="EmploymentEndYear" type="number" pattern="[0-9]*" inputmode="numeric">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p class="govuk-body">The new training date must be after the new start date.</p>
 
                 <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.EndDate,"govuk-form-group--error")">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         @endDateLabel
                     </legend>
-                    <h3 asp-show="!isRegular" class="govuk-heading-s">Enter the projected apprenticeship training end date</h3>
 
                     <span id="end-date-hint" class="govuk-hint">
                         For example, 04 2020

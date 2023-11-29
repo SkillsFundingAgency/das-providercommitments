@@ -241,6 +241,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(viewModel);
             }
 
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            {
+                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
+            }
+
             return RedirectToAction(nameof(TrainingDates), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
@@ -252,14 +257,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.IsEdit)
             {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
+                var confirmRequest = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), confirmRequest);
             }
-            else
+            else if(viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
             {
-                var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
-                return RedirectToAction(nameof(TrainingDates), request);
+                var startDateRequest = await _modelMapper.Map<StartDateRequest>(viewModel);
+                return RedirectToAction("StartDate", startDateRequest);
             }
+
+            var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
+            return RedirectToAction(nameof(TrainingDates), request);
         }
 
         [HttpGet]
@@ -280,7 +288,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             // map from TrainingDatesViewModel to draft model
             var addApprenticeViewModel = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(viewModel);
-            //await AddLegalEntityAndCoursesToModel(addApprenticeViewModel);
 
             StoreAddDraftApprenticeshipState(addApprenticeViewModel);
 
@@ -288,16 +295,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             // this should throw domain exceptions if overlap but not oltd scenario
             var overlapResult = await HasStartDateOverlap(addApprenticeViewModel);
 
-            if (viewModel.InEditMode)
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
-            }
-            else
-            {
-                var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), request);
-            }         
+            var request = await _modelMapper.Map<PriceRequest>(viewModel);
+            return RedirectToAction(nameof(Price), request);
         }
 
         [HttpGet]

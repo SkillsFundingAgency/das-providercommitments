@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
@@ -13,16 +14,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly IOuterApiClient _outerApiClient;
         private readonly ICacheStorageService _cacheStorage;
+        private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public SelectDeliveryModelViewModelMapper(IOuterApiClient approvalsOuterApiClient, ICacheStorageService cacheStorage)
+        public SelectDeliveryModelViewModelMapper(IOuterApiClient approvalsOuterApiClient, ICacheStorageService cacheStorage, ICommitmentsApiClient commitmentsApiClient)
         {
             _outerApiClient = approvalsOuterApiClient;
             _cacheStorage = cacheStorage;
+            _commitmentsApiClient = commitmentsApiClient;
         }
 
         public async Task<SelectDeliveryModelViewModel> Map(SelectDeliveryModelRequest source)
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
+            var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
             var apiRequest = new GetSelectDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
             var apiResponse = await _outerApiClient.Get<GetSelectDeliveryModelResponse>(apiRequest);
@@ -42,7 +46,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 DeliveryModels = apiResponse.DeliveryModels,
                 DeliveryModel = cacheItem.DeliveryModel,
                 CacheKey = source.CacheKey,
-                IsEdit = source.IsEdit
+                IsEdit = source.IsEdit,
+                ApprenticeshipStatus = apprenticeship.Status
             };
         }
     }

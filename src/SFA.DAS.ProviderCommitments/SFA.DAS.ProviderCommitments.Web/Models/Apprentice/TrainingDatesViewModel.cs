@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using System;
+using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -19,6 +20,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
         public long ProviderId { get; set; }
+        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
+
         public int? EmploymentPrice { get; set; }
         public int? Price { get; set; }
         public MonthYearModel StartDate { get; set; }

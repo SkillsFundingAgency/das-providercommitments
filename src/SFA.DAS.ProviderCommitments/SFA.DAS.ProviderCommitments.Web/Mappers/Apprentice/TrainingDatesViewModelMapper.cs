@@ -33,6 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                ApprenticeshipStatus = apprenticeship.Status,
                 StopDate = apprenticeship.StopDate,
                 StartDate = new MonthYearModel(cacheItem.StartDate),
                 LegalEntityName = apprenticeship.EmployerName,
