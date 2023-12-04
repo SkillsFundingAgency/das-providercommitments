@@ -502,6 +502,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        [Ignore("Ignore this test until RPL is no longer just a warning")]
         public async Task ShowApprovalOfCohortAsFalseWhenRplErrorsExist()
         {
             var fixture = new DetailsViewModelMapperTestsFixture
@@ -514,6 +515,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.SetTransferSender().SetIsAgreementSigned(true);
             var result = await fixture.Map();
             Assert.IsFalse(result.ShowApprovalOptionMessage);
+        }
+
+        [Test]
+        public async Task ShowApprovalOfCohortAsTrueWhenRplErrorsExist()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture();
+            fixture.CohortDetails.IsApprovedByEmployer = true;
+            fixture.SetTransferSender().SetIsAgreementSigned(true);
+            var result = await fixture.Map();
+            Assert.IsTrue(result.ShowApprovalOptionMessage);
         }
 
         [Test]

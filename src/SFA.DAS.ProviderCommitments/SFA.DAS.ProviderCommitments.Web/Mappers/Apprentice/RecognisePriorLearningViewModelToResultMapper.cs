@@ -27,9 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = source.ReducedDuration,
                     PriceReducedBy = source.ReducedPrice,
                     DurationReducedByHours = source.DurationReducedByHours,
-                    WeightageReducedBy = source.WeightageReducedBy,
-                    QualificationsForRplReduction = source.QualificationsForRplReduction,
-                    ReasonForRplReduction = source.ReasonForRplReduction,
                     Rpl2Mode = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended)
                 });
 

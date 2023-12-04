@@ -1,53 +1,54 @@
-﻿using SFA.DAS.Encoding;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System.Collections.Generic;
-using System.Linq;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     [TestFixture]
     public class FileUploadMapperBaseTests
     {
-        private List<Web.Models.Cohort.CsvRecord> _csvRecords;
-        private List<BulkUploadAddDraftApprenticeshipRequest> _result;
-        private FileUploadMapperBase _sut;
-        private Fixture _fixture;
-        private Mock<IEncodingService> _encodingService;
+        public List<CsvRecord> CsvRecords { get; set; }
+        public List<BulkUploadAddDraftApprenticeshipRequest> Result { get; set; }
+        public FileUploadMapperBase Sut { get; set; }
+        public Fixture Fixture { get; set; }
+        public Mock<IEncodingService> EncodingService { get; set; }
         private Mock<IOuterApiService> _outerApiService;
         private GetCohortResult _cohortResult;
 
         [SetUp]
         public void Setup()
         {
-            _fixture = new Fixture();
-            _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
-            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
+            Fixture = new Fixture();
+            EncodingService = new Mock<IEncodingService>();
+            EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
+            EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
 
-            _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()
+            CsvRecords = Fixture.Build<CsvRecord>()
                 .With(x => x.DateOfBirth, "2000-02-02")
                 .With(x => x.StartDate, "2021-03-04")
                 .With(x => x.EndDate, "2022-04")
                 .With(x => x.TotalPrice, "1000")
                 .CreateMany(2).ToList();
 
-            _cohortResult = _fixture.Create<GetCohortResult>();
+            _cohortResult = Fixture.Create<GetCohortResult>();
             _outerApiService = new Mock<IOuterApiService>();
             _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
 
-            _sut = new FileUploadMapperBase(_encodingService.Object, _outerApiService.Object);
-            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            Sut = new FileUploadMapperBase(EncodingService.Object, _outerApiService.Object);
+            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
         }
 
         [Test]
         public void VerifyUlnIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.Where(x => x.Uln == record.ULN);
+                var result = Result.Where(x => x.Uln == record.ULN);
                 Assert.AreEqual(1, result.Count());
             }
         }
@@ -55,9 +56,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyFirstNameIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.GivenNames, result.FirstName);
             }
         }
@@ -65,19 +66,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyLastNameIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.FamilyName, result.LastName);
             }
         }
 
         [Test]
-        public void VerifyDOBIsMapped()
+        public void VerifyDobIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.DateOfBirth, result.DateOfBirthAsString);
             }
         }
@@ -85,9 +86,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyStartDateIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.StartDate, result.StartDateAsString);
             }
         }
@@ -95,9 +96,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyEndDateIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.EndDate, result.EndDateAsString);
             }
         }
@@ -105,9 +106,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyCostIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.TotalPrice, result.CostAsString);
             }
         }
@@ -115,9 +116,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyProviderRefIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.ProviderRef, result.ProviderRef);
             }
         }
@@ -125,9 +126,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyCourseCodeIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.StdCode, result.CourseCode);
             }
         }
@@ -135,9 +136,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyLegalEntityIdIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(2, result.LegalEntityId);
             }
         }
@@ -145,19 +146,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyCohortIdIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(1, result.CohortId);
             }
         }
 
         [Test]
-        public void VerifyTransferSenderIdISMapped()
+        public void VerifyTransferSenderIdIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual((result.CohortId + 1), result.TransferSenderId);
             }
         }
@@ -165,9 +166,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyRecognisePriorLearningIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearningAsString);
             }
         }
@@ -175,19 +176,45 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyDurationReducedByIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.DurationReducedBy, result.DurationReducedByAsString);
+            }
+        }
+
+        [TestCase(null, null, null)]
+        [TestCase(null, "200", "200")]
+        [TestCase(null, "0", null)]
+        [TestCase("TRUE", "200", "200")]
+        [TestCase("TRUE", "0", "0")]
+        [TestCase("FALSE", "0", "0")]
+        public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+        {
+            CsvRecords = Fixture.Build<CsvRecord>()
+                .With(x => x.DateOfBirth, "2000-02-02")
+                .With(x => x.StartDate, "2021-03-04")
+                .With(x => x.EndDate, "2022-04")
+                .With(x => x.TotalPrice, "1000")
+                .With(x => x.IsDurationReducedByRPL, isDurationReducedByRpl)
+                .With(x => x.DurationReducedBy, durationReducedBy)
+                .CreateMany(2).ToList();
+
+            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
+
+            foreach (var record in CsvRecords)
+            {
+                var result = Result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(result.DurationReducedByAsString, expectedValue);
             }
         }
 
         [Test]
         public void VerifyPriceReducedByIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
             }
         }
@@ -198,12 +225,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(" \tTest\tMe\t", "Test Me")]
         public void VerifyTabsAndSpacesAreTrimmedFromFirstName(string inputValue, string expectedResult)
         {
-            var source = _csvRecords.First();
+            var source = CsvRecords.First();
             source.GivenNames = inputValue;
 
-            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
 
-            var result = _result.First(x => x.Uln == source.ULN);
+            var result = Result.First(x => x.Uln == source.ULN);
 
             Assert.AreEqual(expectedResult, result.FirstName);
         }
@@ -214,12 +241,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(" \tTest\tMe\t", "Test Me")]
         public void VerifyTabsAndSpacesAreTrimmedFromLastName(string inputValue, string expectedResult)
         {
-            var source = _csvRecords.First();
+            var source = CsvRecords.First();
             source.FamilyName = inputValue;
 
-            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, false);
+            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
 
-            var result = _result.First(x => x.Uln == source.ULN);
+            var result = Result.First(x => x.Uln == source.ULN);
 
             Assert.AreEqual(expectedResult, result.LastName);
         }
@@ -227,9 +254,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyIsDurationReducedByRplIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
             }
         }
@@ -240,9 +267,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("FALSE", "200", "FALSE")]
         [TestCase("FALSE", null, "FALSE")]
         [TestCase("XXX", null, "XXX")]
+        [TestCase(null, "0", "FALSE")]
         public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
         {
-            _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()
+            CsvRecords = Fixture.Build<CsvRecord>()
                 .With(x => x.DateOfBirth, "2000-02-02")
                 .With(x => x.StartDate, "2021-03-04")
                 .With(x => x.EndDate, "2022-04")
@@ -251,11 +279,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x=>x.DurationReducedBy, durationReducedBy)
                 .CreateMany(2).ToList();
 
-            _result = _sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, true);
+            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
 
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(result.IsDurationReducedByRPLAsString, expectedValue);
             }
         }
@@ -263,9 +291,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyTrainingTotalHoursIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.TrainingTotalHours, result.TrainingTotalHoursAsString);
             }
         }
@@ -273,9 +301,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyTrainingHoursReductionIsMapped()
         {
-            foreach (var record in _csvRecords)
+            foreach (var record in CsvRecords)
             {
-                var result = _result.First(x => x.Uln == record.ULN);
+                var result = Result.First(x => x.Uln == record.ULN);
                 Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
             }
         }
