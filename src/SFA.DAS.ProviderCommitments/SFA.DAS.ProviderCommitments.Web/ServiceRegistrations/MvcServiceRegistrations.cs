@@ -32,7 +32,6 @@ public static class MvcServiceRegistrations
                 options.Filters.Add<AuthorizationFilter>(int.MaxValue);
                 options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
                 options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
-                options.AddStringModelBinderProvider();
                 options.AddAuthorization();
             })
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
