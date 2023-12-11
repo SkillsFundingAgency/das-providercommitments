@@ -76,6 +76,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public string IsOnFlexiPaymentPilotDisplay => IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
+        public PendingPriceChange PendingPriceChange { get; set; }
+        public bool HasPendingPriceChange => PendingPriceChange != null;
 
         public enum DataLockSummaryStatus
         {
@@ -99,5 +101,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime ToDate { get; set; }
         public string HashedApprenticeshipId { get; set; }
         public bool ShowLink { get; set; }
+    }
+
+    public class PendingPriceChange
+    {
+        public decimal Cost { get; set; }
+        public decimal? TrainingPrice { get; set; }
+        public decimal? EndPointAssessmentPrice { get; set; }
     }
 }
