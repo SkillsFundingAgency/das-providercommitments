@@ -285,15 +285,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
-        {
-            // map from TrainingDatesViewModel to draft model
-            var addApprenticeViewModel = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(viewModel);
-
-            StoreAddDraftApprenticeshipState(addApprenticeViewModel);
-
-            // do oltd check in controller here too. 
-            // this should throw domain exceptions if overlap but not oltd scenario
-            var overlapResult = await HasStartDateOverlap(addApprenticeViewModel);
+        {           
+            await ValidateChangeOfEmployerOverlap(viewModel);
 
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
             return RedirectToAction(nameof(Price), request);
@@ -459,9 +452,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertViewModel viewModel)
         {
-            var model = await _modelMapper.Map<DraftApprenticeshipOverlapOptionRequest>(viewModel);
-
-            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptions, ControllerConstants.OverlappingTrainingDateRequestController.Name, model);
+            var model = await _modelMapper.Map<OverlapOptionsForChangeEmployerRequest>(viewModel);
+            
+            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.OverlapOptionsForChangeEmployer, ControllerConstants.OverlappingTrainingDateRequestController.Name, model);
         }
 
         [HttpGet]
@@ -815,30 +808,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             });
         }
 
-
-        private async Task<ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
+        private async Task ValidateChangeOfEmployerOverlap(TrainingDatesViewModel model)
         {
-            if (!model.StartDate.Date.HasValue || !model.EndDate.Date.HasValue || string.IsNullOrWhiteSpace(model.Uln))
-            {
-                return null;
-            }
-            
-            var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
-                
-            await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
-
-            return await _outerApiService.ValidateUlnOverlapOnStartDate(
-                model.ProviderId,
-                model.Uln,
-                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
-                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-            );
-
-        }
-     
-        private void StoreAddDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)
-        {
-            TempData.Put(nameof(AddDraftApprenticeshipViewModel), model);
+            var apimRequest = await _modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
+            await _outerApiService.ValidateChangeOfEmployerOverlap(apimRequest);
         }
     }
 }

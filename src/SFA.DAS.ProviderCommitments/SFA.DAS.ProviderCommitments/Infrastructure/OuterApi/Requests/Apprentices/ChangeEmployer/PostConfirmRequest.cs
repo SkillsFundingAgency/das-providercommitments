@@ -27,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public DateTime? EmploymentEndDate { get; set; }
             public int? EmploymentPrice { get; set; }
             public DeliveryModel? DeliveryModel { get; set; }
+            public bool HasOLTD { get; set; }
         }
     }
 

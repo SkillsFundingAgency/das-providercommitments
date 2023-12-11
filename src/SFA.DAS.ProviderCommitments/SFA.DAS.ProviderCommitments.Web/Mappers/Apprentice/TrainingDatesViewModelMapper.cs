@@ -13,22 +13,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
-        private readonly IEncodingService _encodingService;
-
-        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage, IEncodingService encodingService)
+        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _cacheStorage = cacheStorage;
-            _encodingService = encodingService;
         }
 
         public async Task<TrainingDatesViewModel> Map(TrainingDatesRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-            cacheItem.CohortReference = _encodingService.Encode(apprenticeship.CohortId, EncodingType.CohortReference);
-            await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
-
+         
             return new TrainingDatesViewModel
             {
                 ProviderId = source.ProviderId,
@@ -42,7 +37,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 SkippedDeliveryModelSelection = cacheItem.SkippedDeliveryModelSelection,
                 InEditMode = source.IsEdit,
                 EmploymentEndDate = new MonthYearModel(cacheItem.EmploymentEndDate),
-                EndDate = new MonthYearModel(cacheItem.EndDate)              
+                EndDate = new MonthYearModel(cacheItem.EndDate),
+                Uln = apprenticeship.Uln
             };
         }
     }

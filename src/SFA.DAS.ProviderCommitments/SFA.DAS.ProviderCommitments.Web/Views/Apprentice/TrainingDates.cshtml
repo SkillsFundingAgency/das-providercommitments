@@ -25,7 +25,7 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-40"><b>Status with previous employer</b></th>
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45"><b>Status with previous employer</b></th>
                     <td class="govuk-table__cell das-table-cell-width-40">&nbsp;</td>
                     <td class="govuk-table__cell">
                         <strong class="govuk-tag @Model.ApprenticeshipStatus.GetDisplayClass()">
@@ -45,6 +45,7 @@
                 @Html.HiddenFor(x => x.EmploymentPrice)
                 @Html.HiddenFor(x => x.Price)
                 @Html.HiddenFor(x => x.DeliveryModel)
+                @Html.HiddenFor(x => x.Uln)
 
                 <div class="govuk-inset-text">
                     To stop this @statusLabel record enter the new training start and end dates then continue.

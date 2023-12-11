@@ -34,6 +34,7 @@ public static class ControllerConstants
             public const string EmployerNotified = nameof(EmployerNotified);
             public const string DraftApprenticeshipOverlapOptions = nameof(DraftApprenticeshipOverlapOptions);
             public const string DraftApprenticeshipOverlapOptionsChangeEmployer = nameof(DraftApprenticeshipOverlapOptionsChangeEmployer);
+            public const string OverlapOptionsForChangeEmployer = nameof(OverlapOptionsForChangeEmployer);
         }
     }
 }

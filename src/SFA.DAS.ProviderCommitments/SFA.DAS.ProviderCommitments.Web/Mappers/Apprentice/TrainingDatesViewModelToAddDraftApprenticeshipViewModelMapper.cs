@@ -31,10 +31,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
             
-            // Don't want the existing CohortReference as a change of employer means new cohort is required.
-            cacheItem.CohortReference = string.Empty;
-            await _cacheStorage.SaveToCache(cacheItem, 1);
-            
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
             var apiRequest = new GetAddDraftApprenticeshipDetailsRequest(source.ProviderId, cacheItem.AccountLegalEntityId, apprenticeship.CourseCode);
