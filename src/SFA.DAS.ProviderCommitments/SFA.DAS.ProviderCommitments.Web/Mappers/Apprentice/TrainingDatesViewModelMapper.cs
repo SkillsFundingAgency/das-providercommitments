@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
@@ -13,7 +12,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
-        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
+
+        public TrainingDatesViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
+            ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _cacheStorage = cacheStorage;
@@ -23,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
-         
+
             return new TrainingDatesViewModel
             {
                 ProviderId = source.ProviderId,

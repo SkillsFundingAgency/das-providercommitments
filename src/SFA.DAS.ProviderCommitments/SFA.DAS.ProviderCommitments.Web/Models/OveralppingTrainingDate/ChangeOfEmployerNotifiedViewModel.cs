@@ -4,5 +4,5 @@
     {
         public long ProviderId { get; set; }
         public NextAction? NextAction { get; set; }
-    }    
+    }
 }

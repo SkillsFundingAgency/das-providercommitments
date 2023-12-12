@@ -11,13 +11,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly ICacheStorageService _cacheStorage;
+
         public PriceViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ICacheStorageService cacheStorage)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _cacheStorage = cacheStorage;
         }
 
-        public  async Task<PriceViewModel> Map(PriceRequest source)
+        public async Task<PriceViewModel> Map(PriceRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);

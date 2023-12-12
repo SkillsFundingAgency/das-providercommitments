@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangeOfEmployerOverlapAlertRequestMapper : IMapper<PriceViewModel, ChangeOfEmployerOverlapAlertRequest>
+    public class
+        ChangeOfEmployerOverlapAlertRequestMapper : IMapper<PriceViewModel, ChangeOfEmployerOverlapAlertRequest>
     {
         private readonly ICacheStorageService _cacheStorage;
 

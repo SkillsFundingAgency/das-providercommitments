@@ -28,10 +28,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime? StopDate { get; set; }
 
         [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
-        public int? StartMonth { get => StartDate.Month; set => StartDate.Month = value; }
-        
+        public int? StartMonth
+        {
+            get => StartDate.Month;
+            set => StartDate.Month = value;
+        }
+
         [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
-        public int? StartYear { get => StartDate.Year; set => StartDate.Year = value; }
+        public int? StartYear
+        {
+            get => StartDate.Year;
+            set => StartDate.Year = value;
+        }
 
         public bool InEditMode { get; set; }
         public string LegalEntityName { get; set; }
@@ -42,17 +50,33 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public MonthYearModel EmploymentEndDate { get; set; }
 
         [SuppressArgumentException(nameof(EmploymentEndDate), "You must enter a valid date, for example 09 2022")]
-        public int? EmploymentEndMonth { get => EmploymentEndDate.Month; set => EmploymentEndDate.Month = value; }
+        public int? EmploymentEndMonth
+        {
+            get => EmploymentEndDate.Month;
+            set => EmploymentEndDate.Month = value;
+        }
 
         [SuppressArgumentException(nameof(EmploymentEndDate), "You must enter a valid date, for example 09 2022")]
-        public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
+        public int? EmploymentEndYear
+        {
+            get => EmploymentEndDate.Year;
+            set => EmploymentEndDate.Year = value;
+        }
 
         public MonthYearModel EndDate { get; set; }
 
         [SuppressArgumentException(nameof(EndDate), "You must enter a valid date, for example 09 2022")]
-        public int? EndMonth { get => EndDate.Month; set => EndDate.Month = value; }
+        public int? EndMonth
+        {
+            get => EndDate.Month;
+            set => EndDate.Month = value;
+        }
 
         [SuppressArgumentException(nameof(EndDate), "You must enter a valid date, for example 09 2022")]
-        public int? EndYear { get => EndDate.Year; set => EndDate.Year = value; }
+        public int? EndYear
+        {
+            get => EndDate.Year;
+            set => EndDate.Year = value;
+        }
     }
 }

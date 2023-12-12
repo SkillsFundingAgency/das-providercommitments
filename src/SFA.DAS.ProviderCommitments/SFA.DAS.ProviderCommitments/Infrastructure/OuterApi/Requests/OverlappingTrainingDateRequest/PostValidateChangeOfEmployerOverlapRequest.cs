@@ -5,6 +5,7 @@
         public string PostUrl => "OverlappingTrainingDateRequest/validateChangeOfEmployerOverlap";
 
         public object Data { get; set; }
+
         public PostValidateChangeOfEmployerOverlapRequest(ValidateChangeOfEmployerOverlapApimRequest data)
         {
             Data = data;

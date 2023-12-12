@@ -25,11 +25,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .When(a => a.EndDate.HasValue && a.EndDate.IsValid && a.StartDate.HasValue && a.StartDate.IsValid);
 
             RuleFor(x => x.StartDate)
-                .Must((y, _) => y.StartDate.Date <= (new MonthYearModel(_academicYearDateProvider.CurrentAcademicYearEndDate.AddYears(1).ToString("MMyyyy")).Date))
+                .Must((y, _) =>
+                    y.StartDate.Date <= (new MonthYearModel(_academicYearDateProvider.CurrentAcademicYearEndDate
+                        .AddYears(1).ToString("MMyyyy")).Date))
                 .WithMessage("The start date must be no later than one year after the end of the current teaching year")
                 .When(a => a.StartDate.HasValue && a.StartDate.IsValid)
                 .Unless(a => a.EndDate.HasValue && a.EndDate.IsValid && a.StartDate.Date > a.EndDate.Date);
-            
+
             RuleFor(x => x.StartDate)
                 .Must(y => y.IsValid)
                 .WithMessage("You must enter a valid date, for example 09 2022");
@@ -76,7 +78,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 RuleFor(x => x.EndDate)
                     .Must((y, _) => y.EndDate.Date > (y.StartDate.Date))
                     .WithMessage("This date must be later than the employment start date")
-                    .When(a => a.EndDate.IsValid && a.EmploymentEndDate.IsValid && a.EmploymentEndDate.Date <= a.EndDate.Date);
+                    .When(a => a.EndDate.IsValid && a.EmploymentEndDate.IsValid &&
+                               a.EmploymentEndDate.Date <= a.EndDate.Date);
 
                 RuleFor(x => x.EmploymentEndDate)
                     .Must(x => x.IsValid)

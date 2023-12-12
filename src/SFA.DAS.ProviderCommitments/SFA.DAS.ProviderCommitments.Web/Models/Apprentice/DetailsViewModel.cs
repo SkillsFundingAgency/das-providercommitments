@@ -43,13 +43,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
         public bool SuppressDataLockStatusReviewLink => HasEmployerPendingUpdate || HasProviderPendingUpdate;
 
-        public bool ShowActionRequiredBanner => HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Provider ||
-                                                HasEmployerPendingUpdate ||
-                                                DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks;
+        public bool ShowActionRequiredBanner =>
+            HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Provider ||
+            HasEmployerPendingUpdate ||
+            DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks;
 
-        public bool ShowChangesToThisApprenticeshipBanner => HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Employer ||
-                                                             HasProviderPendingUpdate ||
-                                                             DataLockStatus == DataLockSummaryStatus.AwaitingTriage;
+        public bool ShowChangesToThisApprenticeshipBanner =>
+            HasPendingChangeOfPartyRequest && PendingChangeOfPartyRequestWithParty == Party.Employer ||
+            HasProviderPendingUpdate ||
+            DataLockStatus == DataLockSummaryStatus.AwaitingTriage;
 
         public TriageOption AvailableTriageOption { get; set; }
         public ConfirmationStatus? ConfirmationStatus { get; set; }
@@ -59,7 +61,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasOptions { get; set; }
         public bool SingleOption { get; set; }
         public bool EmailAddressConfirmedByApprentice { get; set; }
-        public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice && Status != ApprenticeshipStatus.Stopped;
+
+        public bool CanResendInvitation => !string.IsNullOrEmpty(Email) && !EmailAddressConfirmedByApprentice &&
+                                           Status != ApprenticeshipStatus.Stopped;
+
         public DeliveryModel? DeliveryModel { get; set; }
         public int? EmploymentPrice { get; set; }
         public string EmploymentPriceDisplay => EmploymentPrice?.ToGdsCostFormat() ?? string.Empty;
@@ -75,7 +80,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
-        public string IsOnFlexiPaymentPilotDisplay => IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
+
+        public string IsOnFlexiPaymentPilotDisplay =>
+            IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
         public enum DataLockSummaryStatus
         {
@@ -90,6 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Update,
             Both
         }
+
         private bool ShouldShowChangeEmployerLink()
         {
             switch (Status)

@@ -6,7 +6,7 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class TrainingDatesRequestMapper :IMapper<SelectDeliveryModelViewModel, TrainingDatesRequest>
+    public class TrainingDatesRequestMapper : IMapper<SelectDeliveryModelViewModel, TrainingDatesRequest>
     {
         private readonly ICacheStorageService _cacheStorageService;
 

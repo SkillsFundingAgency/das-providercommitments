@@ -17,6 +17,5 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public Guid CacheKey { get; set; }
         public bool IsEdit { get; set; }
         public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
-
     }
 }

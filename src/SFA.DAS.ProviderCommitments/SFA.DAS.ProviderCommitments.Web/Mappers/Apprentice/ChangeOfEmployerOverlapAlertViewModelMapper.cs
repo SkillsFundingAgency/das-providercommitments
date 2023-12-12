@@ -15,14 +15,18 @@ using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangeOfEmployerOverlapAlertViewModelMapper : IMapper<ChangeOfEmployerOverlapAlertRequest, ChangeOfEmployerOverlapAlertViewModel>
+    public class
+        ChangeOfEmployerOverlapAlertViewModelMapper : IMapper<ChangeOfEmployerOverlapAlertRequest,
+            ChangeOfEmployerOverlapAlertViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly ICacheStorageService _cacheStorage;
         private readonly IEncodingService _encodingService;
         private readonly ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> _logger;
 
-        public ChangeOfEmployerOverlapAlertViewModelMapper(ICommitmentsApiClient commitmentsApiClient, ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> logger, ICacheStorageService cacheStorage, IEncodingService encodingService)
+        public ChangeOfEmployerOverlapAlertViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
+            ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> logger, ICacheStorageService cacheStorage,
+            IEncodingService encodingService)
         {
             _commitmentApiClient = commitmentsApiClient;
             _logger = logger;
@@ -49,7 +53,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DeliveryModel = cacheItem.DeliveryModel.Value,
                     OldDeliveryModel = data.Apprenticeship.DeliveryModel,
                     ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                    AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId),
+                    AccountLegalEntityPublicHashedId = _encodingService.Encode(cacheItem.AccountLegalEntityId,
+                        EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
                     StopDate = data.Apprenticeship.StopDate,
@@ -66,23 +71,26 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
                     FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
                     ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
-                                        (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel != (int)data.Apprenticeship.DeliveryModel),
+                                        (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel !=
+                                            (int)data.Apprenticeship.DeliveryModel),
                     ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
                     CacheKey = source.CacheKey
                 };
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ChangeOfEmployerOverlapAlertViewModel)}", e);
+                _logger.LogError(
+                    $"Error mapping apprenticeshipId {source.ApprenticeshipId} to model {nameof(ChangeOfEmployerOverlapAlertViewModel)}",
+                    e);
                 throw;
             }
         }
 
         private async Task<(GetApprenticeshipResponse Apprenticeship,
-           GetPriceEpisodesResponse PriceEpisodes,
-           AccountLegalEntityResponse AccountLegalEntity,
-           TrainingProgramme TrainingProgramme)>
-           GetApprenticeshipData(long apprenticeshipId, ChangeEmployerCacheItem cacheItem)
+                GetPriceEpisodesResponse PriceEpisodes,
+                AccountLegalEntityResponse AccountLegalEntity,
+                TrainingProgramme TrainingProgramme)>
+            GetApprenticeshipData(long apprenticeshipId, ChangeEmployerCacheItem cacheItem)
         {
             var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
             var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
@@ -119,4 +127,3 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         }
     }
 }
-

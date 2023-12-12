@@ -74,7 +74,7 @@
                     <td asp-show="@Model.OldEmploymentEndDate.HasValue" class="govuk-table__cell">@DisplayDate(Model.OldEmploymentEndDate.Value)</td>
                     <td class="govuk-table__cell">&nbsp;</td>
                 </tr>
-                <tr asp-hide="@hasStopDate==false" class="govuk-table__row">
+                <tr asp-hide="hasStopDate==false" class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Stop applies from</th>
                     <td class="govuk-table__cell">@stopDateString</td>
                     <td class="govuk-table__cell">&nbsp;</td>

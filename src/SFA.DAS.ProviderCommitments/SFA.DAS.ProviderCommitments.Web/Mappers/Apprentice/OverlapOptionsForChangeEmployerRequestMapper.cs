@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class OverlapOptionsForChangeEmployerRequestMapper : IMapper<ChangeOfEmployerOverlapAlertViewModel, OverlapOptionsForChangeEmployerRequest>
+    public class OverlapOptionsForChangeEmployerRequestMapper : IMapper<ChangeOfEmployerOverlapAlertViewModel,
+        OverlapOptionsForChangeEmployerRequest>
     {
         public OverlapOptionsForChangeEmployerRequestMapper()
         {
@@ -13,13 +14,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<OverlapOptionsForChangeEmployerRequest> Map(ChangeOfEmployerOverlapAlertViewModel source)
         {
-            return new OverlapOptionsForChangeEmployerRequest
-            {
-                ProviderId = source.ProviderId,
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
-                ApprenticeshipId = source.ApprenticeshipId,
-                CacheKey = source.CacheKey
-            };
+            return await Task.FromResult(new OverlapOptionsForChangeEmployerRequest
+                {
+                    ProviderId = source.ProviderId,
+                    ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                    ApprenticeshipId = source.ApprenticeshipId,
+                    CacheKey = source.CacheKey
+                }
+            );
         }
     }
 }

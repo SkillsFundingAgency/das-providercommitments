@@ -11,13 +11,16 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
-    public class ChangeOfEmployerNotifiedRequestMapper : IMapper<OverlapOptionsForChangeEmployerViewModel, ChangeOfEmployerNotifiedRequest>
+    public class
+        ChangeOfEmployerNotifiedRequestMapper : IMapper<OverlapOptionsForChangeEmployerViewModel,
+            ChangeOfEmployerNotifiedRequest>
     {
         private readonly IOuterApiClient _outerApiClient;
         private readonly ICacheStorageService _cacheStorage;
         private readonly IAuthenticationService _authenticationService;
 
-        public ChangeOfEmployerNotifiedRequestMapper(IOuterApiClient outerApiClient, ICacheStorageService cacheStorage, IAuthenticationService authenticationService)
+        public ChangeOfEmployerNotifiedRequestMapper(IOuterApiClient outerApiClient, ICacheStorageService cacheStorage,
+            IAuthenticationService authenticationService)
         {
             _outerApiClient = outerApiClient;
             _cacheStorage = cacheStorage;
@@ -34,7 +37,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Price = cacheItem.Price,
                 StartDate = new MonthYearModel(cacheItem.StartDate).Date.Value,
                 EndDate = new MonthYearModel(cacheItem.EndDate).Date.Value,
-                EmploymentEndDate = string.IsNullOrWhiteSpace(cacheItem.EmploymentEndDate) ? default : new MonthYearModel(cacheItem.EmploymentEndDate).Date.Value,
+                EmploymentEndDate = string.IsNullOrWhiteSpace(cacheItem.EmploymentEndDate)
+                    ? default
+                    : new MonthYearModel(cacheItem.EmploymentEndDate).Date.Value,
                 EmploymentPrice = cacheItem.EmploymentPrice,
                 DeliveryModel = cacheItem.DeliveryModel,
                 HasOLTD = true,
@@ -60,4 +65,3 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         }
     }
 }
-

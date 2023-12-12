@@ -16,7 +16,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private readonly ICacheStorageService _cacheStorage;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public SelectDeliveryModelViewModelMapper(IOuterApiClient approvalsOuterApiClient, ICacheStorageService cacheStorage, ICommitmentsApiClient commitmentsApiClient)
+        public SelectDeliveryModelViewModelMapper(IOuterApiClient approvalsOuterApiClient,
+            ICacheStorageService cacheStorage, ICommitmentsApiClient commitmentsApiClient)
         {
             _outerApiClient = approvalsOuterApiClient;
             _cacheStorage = cacheStorage;
@@ -28,7 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
 
-            var apiRequest = new GetSelectDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
+            var apiRequest = new GetSelectDeliveryModelRequest(source.ProviderId, source.ApprenticeshipId,
+                cacheItem.AccountLegalEntityId);
             var apiResponse = await _outerApiClient.Get<GetSelectDeliveryModelResponse>(apiRequest);
 
             if (apiResponse.DeliveryModels.Count == 1)
@@ -37,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 cacheItem.SkippedDeliveryModelSelection = true;
                 await _cacheStorage.SaveToCache(cacheItem.Key, cacheItem, 1);
             }
-           
+
             return new SelectDeliveryModelViewModel
             {
                 ProviderId = source.ProviderId,
