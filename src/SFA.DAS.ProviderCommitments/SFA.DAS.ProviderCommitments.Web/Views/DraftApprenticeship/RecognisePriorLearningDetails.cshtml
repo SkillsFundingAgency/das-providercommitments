@@ -1,7 +1,5 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningDetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Features;
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Provide recognition of prior learning (RPL) details";
@@ -25,89 +23,29 @@
                     </h1>
                 </legend>
                 <div class="govuk-form-group">
-
-                    @if (!AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
-                    {
-                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedDuration, "govuk-form-group--error")">
-                            <label asp-for="ReducedDuration" class="govuk-label govuk-!-font-weight-bold">
-                                How many weeks have you reduced the apprenticeship duration by due to RPL?
-                            </label>
-                            <span id="price-hint" class="govuk-hint">
-                                Enter the reduction in weeks
-                            </span>
-                            @Html.ValidationMessageFor(m => m.ReducedDuration, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedDuration) })
-                            <div class="govuk-input__wrapper">
-                                <input asp-for="ReducedDuration" class="govuk-input govuk-input--width-5" />
-                                <div class="govuk-input__suffix" aria-hidden="true"> weeks</div>
-                            </div>
+                    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedDuration, "govuk-form-group--error")">
+                        <label asp-for="ReducedDuration" class="govuk-label govuk-!-font-weight-bold">
+                            How many weeks have you reduced the apprenticeship duration by due to RPL?
+                        </label>
+                        <span id="price-hint" class="govuk-hint">
+                            Enter the reduction in weeks
+                        </span>
+                        @Html.ValidationMessageFor(m => m.ReducedDuration, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedDuration) })
+                        <div class="govuk-input__wrapper">
+                            <input asp-for="ReducedDuration" class="govuk-input govuk-input--width-5" />
+                            <div class="govuk-input__suffix" aria-hidden="true"> weeks</div>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DurationReducedByHours, "govuk-form-group--error")">
-                            <label asp-for="DurationReducedByHours" class="govuk-label govuk-!-font-weight-bold">
-                                How many hours have you reduced the apprenticeship duration by due to RPL?
-                            </label>
-                            <span id="price-hint" class="govuk-hint">
-                                Enter the reduction in hours
-                            </span>
-                            @Html.ValidationMessageFor(m => m.DurationReducedByHours, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DurationReducedByHours) })
-                            <div class="govuk-input__wrapper">
-                                <input asp-for="DurationReducedByHours" class="govuk-input govuk-input--width-5" />
-                                <div class="govuk-input__suffix" aria-hidden="true"> hours</div>
-                            </div>
-                        </div>
-                    }
+                    </div>
                     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReducedPrice, "govuk-form-group--error")">
                         <label asp-for="ReducedPrice" class="govuk-label govuk-!-font-weight-bold">
                             How much have you reduced the apprenticeship price by due to RPL?
                         </label>
                         <span id="price-hint" class="govuk-hint">
-                            Enter the price in whole pounds.  For example, for £1,500 enter 1500
+                            Enter the price in whole pounds. For example, for £1,500 enter 1500
                         </span>
-                        @Html.ValidationMessageFor(m => m.ReducedPrice, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedPrice) })
-                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="ReducedPrice" class="govuk-input govuk-input--width-5" />
+                        @Html.ValidationMessageFor(m => m.ReducedPrice, null, new {@class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReducedPrice)})
+                        <span class="govuk-body govuk-!-font-weight-bold">£ </span><input asp-for="ReducedPrice" class="govuk-input govuk-input--width-5"/>
                     </div>
-
-                    @if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
-                    {
-                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.WeightageReducedBy, "govuk-form-group--error")">
-                            <label asp-for="WeightageReducedBy" class="govuk-label govuk-!-font-weight-bold">
-                                What is the KSB weighted reduction of content, duration and cost for the apprenticeship due to RPL?
-                            </label>
-                            <span id="price-hint" class="govuk-hint">
-                                Enter the reduction as a percentage. For exampl, for 12% enter 12
-                            </span>
-                            @Html.ValidationMessageFor(m => m.WeightageReducedBy, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.WeightageReducedBy) })
-                            <div class="govuk-input__wrapper">
-                                <input asp-for="WeightageReducedBy" class="govuk-input govuk-input--width-5" />
-                                <div class="govuk-input__suffix" aria-hidden="true"> %</div>
-                            </div>
-                        </div>
-
-                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.QualificationsForRplReduction, "govuk-form-group--error")">
-                            <label asp-for="QualificationsForRplReduction" class="govuk-label govuk-!-font-weight-bold">
-                                What qualifications have contributed to the reduction in content due to RPL?
-                            </label>
-                            <span id="price-hint" class="govuk-hint">
-                                List any formal qualifications that form the prior learning
-                            </span>
-                            @Html.ValidationMessageFor(m => m.QualificationsForRplReduction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.QualificationsForRplReduction) })
-                            <div class="govuk-input__wrapper">
-                                <textarea asp-for="QualificationsForRplReduction" rows="2" class="govuk-textarea govuk-input--width-full"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ReasonForRplReduction, "govuk-form-group--error")">
-                            <label asp-for="ReasonForRplReduction" class="govuk-label govuk-!-font-weight-bold">
-                                What is the reason for this amount of RPL
-                            </label>
-                            @Html.ValidationMessageFor(m => m.ReasonForRplReduction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ReasonForRplReduction) })
-                            <div class="govuk-input__wrapper">
-                                <textarea asp-for="ReasonForRplReduction" rows="4" class="govuk-textarea govuk-input--width-full"></textarea>
-                            </div>
-                        </div>
-                    }
                 </div>
             </fieldset>
 

@@ -195,7 +195,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.GetPrice(), _fixture.Result.Cost);
+            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.GetCost(), _fixture.Result.Cost);
+        }
+
+        [Test]
+        public async Task ThenTrainingPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.First().TrainingPrice, _fixture.Result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
+        {
+            await _fixture.Map();
+            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.First().EndPointAssessmentPrice, _fixture.Result.EndPointAssessmentPrice);
         }
 
         [Test]
@@ -701,7 +715,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 CohortReference = Fixture.Create<string>();
                 AgreementId = Fixture.Create<string>();
                 URL = Fixture.Create<string>();
-                PriceEpisodes = new List<GetManageApprenticeshipDetailsResponse.PriceEpisode>
+                ApiResponse.PriceEpisodes = new List<GetManageApprenticeshipDetailsResponse.PriceEpisode>
                 {
                     new GetManageApprenticeshipDetailsResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
                 };

@@ -185,6 +185,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             }
         }
 
+        [TestCase(null, null, null)]
+        [TestCase(null, "200", "200")]
+        [TestCase(null, "0", null)]
+        [TestCase("TRUE", "200", "200")]
+        [TestCase("TRUE", "0", "0")]
+        [TestCase("FALSE", "0", "0")]
+        public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+        {
+            _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()
+                .With(x => x.DateOfBirth, "2000-02-02")
+                .With(x => x.StartDate, "2021-03-04")
+                .With(x => x.EndDate, "2022-04")
+                .With(x => x.TotalPrice, "1000")
+                .With(x => x.IsDurationReducedByRPL, isDurationReducedByRpl)
+                .With(x => x.DurationReducedBy, durationReducedBy)
+                .CreateMany(2).ToList();
+
+            _result = Sut.ConvertToBulkUploadApiRequest(_csvRecords, 1, true);
+
+            foreach (var record in _csvRecords)
+            {
+                var result = _result.First(x => x.Uln == record.ULN);
+                Assert.AreEqual(result.DurationReducedByAsString, expectedValue);
+            }
+        }
+
         [Test]
         public void VerifyPriceReducedByIsMapped()
         {
@@ -243,6 +269,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase("FALSE", "200", "FALSE")]
         [TestCase("FALSE", null, "FALSE")]
         [TestCase("XXX", null, "XXX")]
+        [TestCase(null, "0", "FALSE")]
         public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
         {
             _csvRecords = _fixture.Build<Web.Models.Cohort.CsvRecord>()

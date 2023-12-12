@@ -1,18 +1,14 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -147,16 +143,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     )));
         }
 
-        [TestCase(1, 1, null, null, null, null)]
-        [TestCase(2, null, null, null, null, null)]
-        [TestCase(null, 3, null, null, null, null)]
-        [TestCase(null, null, 10, 20, "1 ALevel", "Because of his qual")]
-        [TestCase(null, null, 30, 2, null, "Because I like him/her")]
-        public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours,
-            int? weightageReduction, string qualifications, string reason)
+        [TestCase(1, 1, null)]
+        [TestCase(2, null, null)]
+        [TestCase(null, 3, null)]
+        [TestCase(null, null, 10)]
+        [TestCase(null, null, 30)]
+        public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours)
         {
             var fixture = new WhenRecognisingPriorLearningFixture()
-                .WithPreviousDetails(durationReducedBy, priceReducedBy, durationReducedByHours, weightageReduction, qualifications, reason);
+                .WithPreviousDetails(durationReducedBy, priceReducedBy, durationReducedByHours);
 
             var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.Request);
 
@@ -164,9 +159,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             model.ReducedDuration.Should().Be(durationReducedBy);
             model.ReducedPrice.Should().Be(priceReducedBy);
             model.DurationReducedByHours.Should().Be(durationReducedByHours);
-            model.WeightageReducedBy.Should().Be(weightageReduction);
-            model.QualificationsForRplReduction.Should().Be(qualifications);
-            model.ReasonForRplReduction.Should().Be(reason);
         }
 
         [Test]
@@ -482,15 +474,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             return this;
         }
 
-        internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours,
-            int? weightageReducedBy, string qualificationsForRplReduction, string reasonForRplReduction)
+        internal WhenRecognisingPriorLearningFixture WithPreviousDetails(int? durationReducedBy, int? priceReducedBy, int? durationReducedByHours)
         {
             Apprenticeship.DurationReducedBy = durationReducedBy;
             Apprenticeship.PriceReducedBy = priceReducedBy;
             Apprenticeship.DurationReducedByHours = durationReducedByHours;
-            Apprenticeship.WeightageReducedBy = weightageReducedBy;
-            Apprenticeship.QualificationsForRplReduction = qualificationsForRplReduction;
-            Apprenticeship.ReasonForRplReduction = reasonForRplReduction;
             return this;
         }
 
@@ -565,9 +553,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             DetailsViewModel.ReducedDuration = model.ReducedDuration;
             DetailsViewModel.ReducedPrice = model.ReducedPrice;
             DetailsViewModel.DurationReducedByHours = model.DurationReducedByHours;
-            DetailsViewModel.WeightageReducedBy = model.WeightageReducedBy;
-            DetailsViewModel.QualificationsForRplReduction = model.QualificationsForRplReduction;
-            DetailsViewModel.ReasonForRplReduction = model.ReasonForRplReduction;
             return this;
         }
 
