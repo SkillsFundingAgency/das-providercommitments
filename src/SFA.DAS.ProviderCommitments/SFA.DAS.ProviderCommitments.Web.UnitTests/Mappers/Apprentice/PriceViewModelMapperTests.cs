@@ -75,5 +75,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _act();
             Assert.AreEqual(_source.IsEdit, result.InEditMode);
         }
+        
+        [Test]
+        public async Task ThenApprenticeshipStatusIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_getApprenticeshipApiResponse.Status, result.ApprenticeshipStatus);
+        }
     }
 }

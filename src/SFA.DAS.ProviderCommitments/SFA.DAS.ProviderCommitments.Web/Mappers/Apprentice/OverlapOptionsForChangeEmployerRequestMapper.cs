@@ -8,10 +8,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
     public class OverlapOptionsForChangeEmployerRequestMapper : IMapper<ChangeOfEmployerOverlapAlertViewModel,
         OverlapOptionsForChangeEmployerRequest>
     {
-        public OverlapOptionsForChangeEmployerRequestMapper()
-        {
-        }
-
         public async Task<OverlapOptionsForChangeEmployerRequest> Map(ChangeOfEmployerOverlapAlertViewModel source)
         {
             return await Task.FromResult(new OverlapOptionsForChangeEmployerRequest
