@@ -21,17 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
-        }
-        
-        [Test]
-        public async Task AndWhenIGetDraftApprenticeshipOverlapOptionsIsChangeOfEmployer_ThenRedirectToDraftApprenticeshipOverlapOptionsChangeEmployer()
-        {
-            await  _fixture
-                .SetupGetTempAddDraftApprenticeshipWithChangeOfEmployerTrue()
-                .GetDraftApprenticeshipOverlapOptions();
-
-            _fixture.VerifyUserRedirectedTo(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptionsChangeEmployer);
-        }
+        }           
 
         [Test]
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()

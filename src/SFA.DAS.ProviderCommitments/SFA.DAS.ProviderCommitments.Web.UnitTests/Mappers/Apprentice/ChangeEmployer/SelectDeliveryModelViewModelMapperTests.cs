@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
@@ -18,11 +21,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
     {
         private SelectDeliveryModelViewModelMapper _mapper;
         private Mock<IOuterApiClient> _apiClient;
+        private Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private Mock<ICacheStorageService> _cacheStorage;
         private ChangeEmployerCacheItem _cacheItem;
         private SelectDeliveryModelRequest _request;
         private GetSelectDeliveryModelResponse _apiResponse;
         private readonly Fixture _fixture = new Fixture();
+        private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
 
         [SetUp]
         public void Setup()
@@ -36,13 +41,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
                     && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_apiResponse);
 
+            _apprenticeshipDetails = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse()
+            {
+                Id = 1,
+                Status = CommitmentsV2.Types.ApprenticeshipStatus.Live
+            };
+
+            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+
+
             _cacheItem = _fixture.Create<ChangeEmployerCacheItem>();
             _cacheStorage = new Mock<ICacheStorageService>();
             _cacheStorage.Setup(x =>
                     x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == _request.CacheKey)))
                 .ReturnsAsync(_cacheItem);
 
-            _mapper = new SelectDeliveryModelViewModelMapper(_apiClient.Object, _cacheStorage.Object);
+            _mapper = new SelectDeliveryModelViewModelMapper(_apiClient.Object, _cacheStorage.Object, _commitmentsApiClient.Object);
         }
 
         [Test]

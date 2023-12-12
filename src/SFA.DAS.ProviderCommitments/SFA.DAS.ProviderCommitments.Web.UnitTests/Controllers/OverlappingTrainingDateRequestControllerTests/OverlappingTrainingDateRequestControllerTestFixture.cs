@@ -44,11 +44,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly Mock<ITempDataDictionary> _tempData;
         private readonly string _draftApprenticeshipHashedId;
         private readonly DraftApprenticeshipOverlapOptionViewModel _draftApprenticeshipOverlapOptionViewModel;
-        private readonly DraftApprenticeshipOverlapOptionChangeEmployerViewModel _draftApprenticeshipOptionChangeEmployerViewModel;
+        private readonly OverlapOptionsForChangeEmployerViewModel _overlapOptionsForChangeEmployerViewModel;
         private readonly Mock<IOuterApiService> _outerApiService;
         private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
-        private readonly DraftApprenticeshipOverlapOptionChangeEmployerRequest _draftApprenticeshipOverlapOptionChangeEmployerRequest;
+        private readonly OverlapOptionsForChangeEmployerRequest _overlapOptionsForChangeEmployerRequest;
         private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
         private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             };
 
             _draftApprenticeshipOverlapOptionRequest = new DraftApprenticeshipOverlapOptionRequest() { DraftApprenticeshipHashedId = "XXXXX", ApprenticeshipId = 1 };
-            _draftApprenticeshipOverlapOptionChangeEmployerRequest = new DraftApprenticeshipOverlapOptionChangeEmployerRequest { DraftApprenticeshipHashedId = "XXXXX", ApprenticeshipId = 1 };
+            _overlapOptionsForChangeEmployerRequest = new OverlapOptionsForChangeEmployerRequest { ProviderId = 2, ApprenticeshipId = 1, CacheKey = Guid.NewGuid() };
 
             _tempData = new Mock<ITempDataDictionary>();
 
@@ -106,7 +106,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 ProviderId = 2,
             };
             
-            _draftApprenticeshipOptionChangeEmployerViewModel = new DraftApprenticeshipOverlapOptionChangeEmployerViewModel
+            _overlapOptionsForChangeEmployerViewModel = new OverlapOptionsForChangeEmployerViewModel
             {
                 OverlapOptions = OverlapOptions.AddApprenticeshipLater,
                 ProviderId = 2,
@@ -195,9 +195,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
         
-        public async Task<OverlappingTrainingDateRequestControllerTestFixture> DraftApprenticeshipOverlapOptionsChangeEmployer()
+        public async Task<OverlappingTrainingDateRequestControllerTestFixture> OverlapOptionsForChangeEmployer()
         {
-            _actionResult = await _controller.DraftApprenticeshipOverlapOptionsChangeEmployer(_draftApprenticeshipOptionChangeEmployerViewModel);
+            _actionResult = await _controller.OverlapOptionsForChangeEmployer(_overlapOptionsForChangeEmployerViewModel);
             return this;
         }
 
@@ -210,7 +210,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture SetupStartDraftOverlapOptions(OverlapOptions overlapOption)
         {
             _draftApprenticeshipOverlapOptionViewModel.OverlapOptions = overlapOption;
-            _draftApprenticeshipOptionChangeEmployerViewModel.OverlapOptions = overlapOption;
+            _overlapOptionsForChangeEmployerViewModel.OverlapOptions = overlapOption;
             return this;
         }
 
@@ -296,9 +296,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
         
-        public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapOptionsChangeEmployer()
+        public OverlappingTrainingDateRequestControllerTestFixture GetOverlapOptionsForChangeEmployer()
         {
-            _actionResult = _controller.DraftApprenticeshipOverlapOptionsChangeEmployer(_draftApprenticeshipOverlapOptionChangeEmployerRequest);
+            _actionResult = _controller.OverlapOptionsForChangeEmployer(_overlapOptionsForChangeEmployerRequest);
             return this;
         }
 
@@ -364,16 +364,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _tempData.Setup(x => x.TryGetValue(nameof(EditDraftApprenticeshipViewModel), out addModelAsString)).Returns(true);
             return this;
         }
-        
-        public OverlappingTrainingDateRequestControllerTestFixture SetupGetTempAddDraftApprenticeshipWithChangeOfEmployerTrue()
-        {
-            _model.IsChangeOfEmployer = true;
-
-            object addModelAsString = JsonConvert.SerializeObject(_model);
-            _tempData.Setup(x => x.TryGetValue(nameof(AddDraftApprenticeshipViewModel), out addModelAsString)).Returns(true);
-            return this;
-        }
-
+               
         public OverlappingTrainingDateRequestControllerTestFixture VerifyPeekStoredEditDraftApprenticeshipStateIsCalled()
         {
             _tempData.Verify(mock => mock.Peek(nameof(EditDraftApprenticeshipViewModel)), Times.Once);
