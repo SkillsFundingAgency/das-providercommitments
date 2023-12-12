@@ -1,14 +1,17 @@
-﻿using AutoFixture;
+﻿using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderUrlHelper;
-using static SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests;
+using static SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.
+    EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -18,6 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         protected Mock<IModelMapper> _mockMapper;
         protected Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        protected Mock<IOuterApiService> _mockOuterApiService;
         protected Mock<ILinkGenerator> _mockLinkGenerator;
         protected Mock<IUrlHelper> _mockUrlHelper;
         protected Mock<ITempDataDictionary> _mockTempData;
@@ -33,11 +37,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockLinkGenerator = new Mock<ILinkGenerator>();
             _mockUrlHelper = new Mock<IUrlHelper>();
             _mockTempData = new Mock<ITempDataDictionary>();
+            _mockOuterApiService = new Mock<IOuterApiService>();
+
+            _mockOuterApiService.Setup(x =>
+                    x.ValidateChangeOfEmployerOverlap(It.IsAny<ValidateChangeOfEmployerOverlapApimRequest>()))
+                .Returns(Task.CompletedTask);
 
             _controller = new ApprenticeController(_mockMapper.Object,
                 Mock.Of<ICookieStorageService<IndexRequest>>(),
                 _mockCommitmentsApiClient.Object,
-                Mock.Of<IOuterApiService>());
+                _mockOuterApiService.Object);
 
             _controller.Url = _mockUrlHelper.Object;
             _controller.TempData = _mockTempData.Object;

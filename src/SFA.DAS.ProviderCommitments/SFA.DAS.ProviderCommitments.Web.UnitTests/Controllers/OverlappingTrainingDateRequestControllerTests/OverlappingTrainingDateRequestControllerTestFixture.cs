@@ -8,13 +8,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -58,6 +55,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         private readonly EmployerNotifiedRequest _employerNotifiedRequest;
         private readonly EmployerNotifiedViewModel _employerNotifiedViewModel;
 
+        private readonly ChangeOfEmployerNotifiedRequest _changeOfEmployerNotifiedRequest;
+        private readonly ChangeOfEmployerNotifiedViewModel _changeOfEmployerNotifiedViewModel;
+        
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
         private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
 
@@ -141,6 +141,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _employerNotifiedRequest = _autoFixture.Create<EmployerNotifiedRequest>();
             _employerNotifiedViewModel = _autoFixture.Create<EmployerNotifiedViewModel>();
+            
+            _changeOfEmployerNotifiedRequest  = _autoFixture.Create<ChangeOfEmployerNotifiedRequest>();
+            _changeOfEmployerNotifiedViewModel= _autoFixture.Create<ChangeOfEmployerNotifiedViewModel>();
 
             _controller = new OverlappingTrainingDateRequestController(
                 _mediator.Object,
@@ -185,6 +188,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             var viewResult = _actionResult as ViewResult;
             Assert.IsNotNull(viewResult);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
+            Assert.IsNotNull(model);
+            return this;
+        }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapOptionsForChangeEmployerViewModelViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
             Assert.IsNotNull(model);
             return this;
         }
@@ -233,6 +245,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             return this;
         }
 
+        public OverlappingTrainingDateRequestControllerTestFixture SetupChangeOfEmployerNotified(NextAction nextAction)
+        {
+            _changeOfEmployerNotifiedViewModel.NextAction = nextAction;
+            _actionResult = _controller.ChangeOfEmployerNotified(_changeOfEmployerNotifiedViewModel);
+            return this;
+        }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture GetChangeOfEmployerNotified()
+        {
+            _actionResult = _controller.ChangeOfEmployerNotified(_changeOfEmployerNotifiedRequest);
+            return this;
+        }
+        
         public OverlappingTrainingDateRequestControllerTestFixture GetEmployerNotified()
         {
             _actionResult = _controller.EmployerNotified(_employerNotifiedRequest);
@@ -287,6 +312,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             Assert.AreEqual(model.CohortReference, _employerNotifiedRequest.CohortReference);
             Assert.AreEqual(model.ProviderId, _employerNotifiedRequest.ProviderId);
+            return this;
+        }
+        
+        public OverlappingTrainingDateRequestControllerTestFixture VerifyChangeOfEmployerNotifiedViewReturned()
+        {
+            var viewResult = _actionResult as ViewResult;
+            Assert.IsNotNull(viewResult);
+            var model = viewResult.Model as ChangeOfEmployerNotifiedViewModel;
+            Assert.IsNotNull(model);
+
+            Assert.AreEqual(model.ProviderId, _changeOfEmployerNotifiedRequest.ProviderId);
             return this;
         }
 

@@ -4,7 +4,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
     [TestFixture]
-    public class WhenIPostEmployerNotified
+    public class WhenIPostChangeOfEmployerNotified
     {
         private OverlappingTrainingDateRequestControllerTestFixture _fixture;
 
@@ -17,21 +17,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         [Test]
         public void AndWhenUserSelectsToViewAllCohorts()
         {
-            _fixture.SetupEmployerNotified(NextAction.ViewAllCohorts);
+            _fixture.SetupChangeOfEmployerNotified(NextAction.ViewAllCohorts);
             _fixture.VerifyUserRedirectedTo("Review");
-        }
-
-        [Test]
-        public void AndWhenUserSelectsToAddAnotherApprentice()
-        {
-            _fixture.SetupEmployerNotified(NextAction.AddAnotherApprentice);
-            _fixture.VerifyUserRedirectedTo("Details");
         }
 
         [Test]
         public void AndWhenUserSelectsToViewDashBoard()
         {
-            _fixture.SetupEmployerNotified(NextAction.ViewDashBoard);
+            _fixture.SetupChangeOfEmployerNotified(NextAction.ViewDashBoard);
             _fixture.VerifyUserRedirectedToUrl();
         }
     }

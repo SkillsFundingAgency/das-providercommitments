@@ -3,7 +3,7 @@
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
     [TestFixture]
-    public class WhenIGetOverlapOptionsForChangeEmployer
+    public class WhenIGetChangeOfChangeOfEmployerNotified
     {
         private OverlappingTrainingDateRequestControllerTestFixture _fixture;
 
@@ -14,10 +14,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         }
 
         [Test]
-        public void AndWhenGetDraftApprenticeshipOverlapOptionsChangeEmployerEndpointIsCalled_CorrectViewModelIsReturned()
+        public void AndWhenGetChangeOfEmployerNotifiedEndPointIsCalled_CorrectViewModelIsReturned()
         {
-            _fixture.GetOverlapOptionsForChangeEmployer();
-            _fixture.VerifyOverlapOptionsForChangeEmployerViewModelViewReturned();
+            _fixture.GetChangeOfEmployerNotified();
+            _fixture.VerifyChangeOfEmployerNotifiedViewReturned();
         }
     }
 }
