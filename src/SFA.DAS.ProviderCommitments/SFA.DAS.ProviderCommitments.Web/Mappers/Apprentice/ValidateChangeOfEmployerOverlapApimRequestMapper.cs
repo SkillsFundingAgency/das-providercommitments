@@ -9,10 +9,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         ValidateChangeOfEmployerOverlapApimRequestMapper : IMapper<TrainingDatesViewModel,
             ValidateChangeOfEmployerOverlapApimRequest>
     {
-        public ValidateChangeOfEmployerOverlapApimRequestMapper()
-        {
-        }
-
         public async Task<ValidateChangeOfEmployerOverlapApimRequest> Map(TrainingDatesViewModel source)
         {
             return await Task.FromResult(new ValidateChangeOfEmployerOverlapApimRequest
