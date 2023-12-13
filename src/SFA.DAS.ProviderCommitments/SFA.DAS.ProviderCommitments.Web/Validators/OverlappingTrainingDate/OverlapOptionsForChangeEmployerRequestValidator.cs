@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate
         public OverlapOptionsForChangeEmployerRequestValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
-            RuleFor(x => x.CacheKey).NotNull();
+            RuleFor(x => x.CacheKey).NotEmpty();
             RuleFor(x => x.ApprenticeshipHashedId).NotEmpty();
 
         }
