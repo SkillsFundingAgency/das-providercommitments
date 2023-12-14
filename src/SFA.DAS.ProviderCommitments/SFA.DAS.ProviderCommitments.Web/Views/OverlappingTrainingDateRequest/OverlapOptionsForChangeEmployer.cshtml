@@ -11,13 +11,19 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary"/>
         <h1 class="govuk-heading-xl">This apprentice already has an existing apprenticeship record</h1>
-        <p>The planned start date overlaps with existing training for the same apprentice.</p>
-        <p>This may be because:</p>
+        <p>The planned start date overlaps with existing training for the same apprentice.  This may be because:</p>
+        <h2 class="govuk-heading-m">An existing apprenticeship ended or completed early</h2>
         <ul class="govuk-list govuk-list--bullet">
-            <li>the previous employer has not updated the stop date</li>
-            <li>this apprentice has an existing apprenticeship record that is still live</li>
+            <li>the employer has not updated the stop date</li>
+            <li>the employer has entered an incorrect stop date</li>
         </ul>
         
+        <p>To request a stop date you can:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
+            <li>send an email from the service</li>
+            <li>contact the employer, if you have their details</li>          
+        </ul>
+
         <form method="post">
             <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId"/>
             <input type="hidden" asp-for="ApprenticeshipId" value="@Model.ApprenticeshipId" />
@@ -28,7 +34,7 @@
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.OverlapOptions, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">To update a stop date you can:</h3>
+                        <h3 class="govuk-fieldset__heading">What would you like to do?</h3>
                     </legend>
                     
                     @Html.ValidationMessageFor(m => m.OverlapOptions, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.OverlapOptions) })
@@ -45,19 +51,19 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="overlap-option-2" name="OverlapOptions" type="radio" value="@OverlapOptions.ContactTheEmployer" aria-describedby="hint-saved-cohort">
                             <label class="govuk-label govuk-radios__label" for="overlap-option-2">
-                                Contact the previous employer myself
+                                I'll contact the employer
                             </label>
                             <div id="hint-saved-cohort" class="govuk-hint govuk-radios__hint">
-                                If you know the previous employer details you can contact them directly to agree the stop date.
+                                Apprentice details will be saved in the cohort until the previous employer amends the date.
                             </div>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="overlap-option-3" name="OverlapOptions" type="radio" value="@OverlapOptions.ChangeEmployerLater" aria-describedby="hint-details-deleted">
                             <label class="govuk-label govuk-radios__label" for="overlap-option-3">
-                                I'll change the employer later
+                                I'll add the apprentice again later
                             </label>
                             <div id="hint-details-deleted" class="govuk-hint govuk-radios__hint">
-                                The details entered for this apprentice will not be saved.
+                                The details entered for this apprentice will be deleted.
                             </div>
                         </div>
                     </div>
