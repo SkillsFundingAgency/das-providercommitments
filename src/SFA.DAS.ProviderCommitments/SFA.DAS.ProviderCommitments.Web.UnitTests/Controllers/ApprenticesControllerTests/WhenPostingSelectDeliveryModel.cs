@@ -49,7 +49,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         public ApprenticeController Sut { get; set; }
 
-        public string RedirectUrl;
         private readonly SelectDeliveryModelViewModel _viewModel;
         private readonly long _providerId;
 
