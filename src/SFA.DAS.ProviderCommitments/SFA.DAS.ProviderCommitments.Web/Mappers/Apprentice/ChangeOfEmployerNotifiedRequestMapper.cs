@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     : new MonthYearModel(cacheItem.EmploymentEndDate).Date.Value,
                 EmploymentPrice = cacheItem.EmploymentPrice,
                 DeliveryModel = cacheItem.DeliveryModel,
-                HasOLTD = true,
+                HasOverlappingTrainingDates = true,
                 UserInfo = new ApimUserInfo
                 {
                     UserDisplayName = _authenticationService.UserName,

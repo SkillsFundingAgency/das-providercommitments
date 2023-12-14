@@ -100,11 +100,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
         
         [Test]
-        public async Task Map_HasOLTD_Is_Set_True()
+        public async Task Map_HasOverlappingTrainingDates_Is_Set_True()
         {
             await _mapper.Map(_source);
             var data = _apiRequest.Data as PostConfirmRequest.Body;
-            Assert.AreEqual(true, data.HasOLTD);
+            Assert.AreEqual(true, data.HasOverlappingTrainingDates);
         }
     }
 }
