@@ -2,20 +2,20 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -211,11 +211,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private readonly ChangeOfEmployerOverlapAlertViewModelMapper _sut;
 
         public ChangeOfEmployerOverlapAlertRequest request { get; }
-
-        public TrainingProgramme trainingProgramme;
+        public GetApprenticeshipDataResponse getApprenticeshipDataResponse { get; set; }
         public GetApprenticeshipResponse getApprenticeshipResponse { get; set; }
         public AccountLegalEntityResponse accountLegalEntityResponse { get; set; }
         public GetPriceEpisodesResponse priceEpisodesResponse { get; set; }
+        public GetTrainingProgrammeResponse getTrainingProgrammeResponse { get; set; }
+        public TrainingProgramme trainingProgramme { get; set; }
 
         public ChangeEmployerCacheItem cacheItem { get; set; }
         public string encodedAccountLegalEntityId { get; set; }
@@ -226,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             request = fixture.Create<ChangeOfEmployerOverlapAlertRequest>();
             encodedAccountLegalEntityId = fixture.Create<string>();
             getApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
-            trainingProgramme = fixture.Create<TrainingProgramme>();
+            getTrainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
             accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
             priceEpisodesResponse = new GetPriceEpisodesResponse
             {
@@ -235,6 +236,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     new GetPriceEpisodesResponse.PriceEpisode { Cost = 100, FromDate = DateTime.UtcNow }
                 }
             };
+
+            getApprenticeshipDataResponse = fixture.Build<GetApprenticeshipDataResponse>()
+               .With(x => x.Apprenticeship, getApprenticeshipResponse)
+               .With(x => x.PriceEpisodes, priceEpisodesResponse)
+               .With(x => x.AccountLegalEntity, accountLegalEntityResponse)
+               .With(x => x.TrainingProgrammeResponse, getTrainingProgrammeResponse)
+               .Create();
 
             cacheItem = fixture.Build<ChangeEmployerCacheItem>()
                 .With(x => x.StartDate, "092023")
@@ -245,29 +253,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             cacheService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
                 .ReturnsAsync(cacheItem);
 
-            var commitmentAiClient = new Mock<ICommitmentsApiClient>();
+            var outerApiClient = new Mock<IOuterApiClient>();
 
-            commitmentAiClient.Setup(x => x.GetApprenticeship(request.ApprenticeshipId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => getApprenticeshipResponse);
-            commitmentAiClient
-                .Setup(x => x.GetAccountLegalEntity(cacheItem.AccountLegalEntityId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => accountLegalEntityResponse);
-            commitmentAiClient.Setup(x => x.GetPriceEpisodes(request.ApprenticeshipId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => priceEpisodesResponse);
-            commitmentAiClient
-                .Setup(y => y.GetTrainingProgramme(getApprenticeshipResponse.CourseCode, CancellationToken.None))
-                .ReturnsAsync(() => new
-                    GetTrainingProgrammeResponse
-                    {
-                        TrainingProgramme = trainingProgramme
-                    });
+            outerApiClient.Setup(x => x.Get<GetApprenticeshipDataResponse>(It.Is<GetApprenticeshipDataRequest>(r =>
+                  r.ApprenticeshipId == request.ApprenticeshipId && r.ProviderId == request.ProviderId
+                  && r.AccountLegalEntityId == cacheItem.AccountLegalEntityId)))
+              .ReturnsAsync(getApprenticeshipDataResponse);
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(It.Is<long>(id => id == cacheItem.AccountLegalEntityId),
                     It.Is<EncodingType>(e => e == EncodingType.PublicAccountLegalEntityId)))
                 .Returns(encodedAccountLegalEntityId);
 
-            _sut = new ChangeOfEmployerOverlapAlertViewModelMapper(commitmentAiClient.Object,
+            _sut = new ChangeOfEmployerOverlapAlertViewModelMapper(outerApiClient.Object,
                 Mock.Of<ILogger<ChangeOfEmployerOverlapAlertViewModelMapper>>(), cacheService.Object,
                 encodingService.Object);
         }
@@ -276,7 +274,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             trainingProgramme = new TrainingProgramme()
             {
-                FundingPeriods = new System.Collections.Generic.List<TrainingProgrammeFundingPeriod>
+                FundingPeriods = new List<TrainingProgrammeFundingPeriod>
                 {
                     new TrainingProgrammeFundingPeriod
                     {
@@ -286,6 +284,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     }
                 }
             };
+
+            getTrainingProgrammeResponse.TrainingProgramme = trainingProgramme;
 
             return this;
         }

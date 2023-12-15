@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Models;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -19,19 +19,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         ChangeOfEmployerOverlapAlertViewModelMapper : IMapper<ChangeOfEmployerOverlapAlertRequest,
             ChangeOfEmployerOverlapAlertViewModel>
     {
-        private readonly ICommitmentsApiClient _commitmentApiClient;
         private readonly ICacheStorageService _cacheStorage;
         private readonly IEncodingService _encodingService;
+        private readonly IOuterApiClient _outerApiClient;
         private readonly ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> _logger;
 
-        public ChangeOfEmployerOverlapAlertViewModelMapper(ICommitmentsApiClient commitmentsApiClient,
+        public ChangeOfEmployerOverlapAlertViewModelMapper(IOuterApiClient outerApiClient,
             ILogger<ChangeOfEmployerOverlapAlertViewModelMapper> logger, ICacheStorageService cacheStorage,
             IEncodingService encodingService)
         {
-            _commitmentApiClient = commitmentsApiClient;
             _logger = logger;
             _cacheStorage = cacheStorage;
             _encodingService = encodingService;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<ChangeOfEmployerOverlapAlertViewModel> Map(ChangeOfEmployerOverlapAlertRequest source)
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
 
-                var data = await GetApprenticeshipData(source.ApprenticeshipId, cacheItem);
+                var data = await GetApprenticeshipData(source.ProviderId, source.ApprenticeshipId, cacheItem.AccountLegalEntityId);
 
                 var newStartDate = new MonthYearModel(cacheItem.StartDate);
                 var newEndDate = new MonthYearModel(cacheItem.EndDate);
@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     NewPrice = cacheItem.Price.Value,
                     NewEmploymentEndDate = newEmploymentEndDate?.MonthYear,
                     NewEmploymentPrice = cacheItem.EmploymentPrice,
-                    FundingBandCap = GetFundingBandCap(data.TrainingProgramme, newStartDate.Date),
+                    FundingBandCap = GetFundingBandCap(data.TrainingProgrammeResponse.TrainingProgramme, newStartDate.Date),
                     ShowDeliveryModel = !cacheItem.SkippedDeliveryModelSelection ||
                                         (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel !=
                                             (int)data.Apprenticeship.DeliveryModel),
@@ -86,27 +86,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private async Task<(GetApprenticeshipResponse Apprenticeship,
-                GetPriceEpisodesResponse PriceEpisodes,
-                AccountLegalEntityResponse AccountLegalEntity,
-                TrainingProgramme TrainingProgramme)>
-            GetApprenticeshipData(long apprenticeshipId, ChangeEmployerCacheItem cacheItem)
+        private async Task<GetApprenticeshipDataResponse> GetApprenticeshipData(long providerId, long apprenticeshipId, long accountLegalEntityId)
         {
-            var apprenticeship = await _commitmentApiClient.GetApprenticeship(apprenticeshipId);
-            var priceEpisodesTask = _commitmentApiClient.GetPriceEpisodes(apprenticeshipId);
-            var legalEntityTask = _commitmentApiClient.GetAccountLegalEntity(cacheItem.AccountLegalEntityId);
-            var trainingProgrammeTask = _commitmentApiClient.GetTrainingProgramme(apprenticeship.CourseCode);
+            var apprenticeshipDetails = await _outerApiClient.Get<GetApprenticeshipDataResponse>(
+                new GetApprenticeshipDataRequest(providerId, apprenticeshipId, accountLegalEntityId));
 
-            await Task.WhenAll(priceEpisodesTask, legalEntityTask, trainingProgrammeTask);
-
-            var priceEpisodes = priceEpisodesTask.Result;
-            var legalEntity = legalEntityTask.Result;
-            var course = trainingProgrammeTask.Result;
-
-            return (apprenticeship,
-                priceEpisodes,
-                legalEntity,
-                course.TrainingProgramme);
+            return apprenticeshipDetails;
         }
 
         private int? GetFundingBandCap(TrainingProgramme course, DateTime? startDate)
