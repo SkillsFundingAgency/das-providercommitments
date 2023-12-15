@@ -1,12 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using NUnit.Framework;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -14,56 +6,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     [TestFixture]
     public class WhenGettingApprenticeDetails
     {
-        [Test]
-        public async Task ThenCallsModelMapper()
+        private ApprenticeControllerTestFixtureBase _fixture;
+
+        [SetUp]
+        public void Arrange()
         {
-            var fixture = new GetApprenticeDetailsFixture();
+            _fixture = new ApprenticeControllerTestFixtureBase();
+        }
 
-            await fixture.Act();
+        [Test]
+        public async Task AndWhenIGetDetails_Request_ToViewModelsMapped()
+        {
+            await _fixture.GetDetails();
 
-            fixture.VerifyMapperWasCalled();
+            _fixture.VerifyModelMapperDetailsRequest_ToViewModelIsCalled();
         }
 
         [Test]
         public async Task ThenReturnsView()
         {
-            var fixture = new GetApprenticeDetailsFixture();
+            await _fixture.GetDetails();
 
-            var result = await fixture.Act();
-
-            result.VerifyReturnsViewModel().WithModel<DetailsViewModel>();
+            _fixture.VerifyDetailViewReturned();
         }
-    }
-
-    public class GetApprenticeDetailsFixture
-    {
-        public ApprenticeController Sut { get; set; }
-
-        private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly DetailsViewModel _viewModel;
-        private readonly DetailsRequest _request;
-        private readonly long _providerId;
-
-        public GetApprenticeDetailsFixture()
-        {
-            var fixture = new Fixture();
-            _providerId = 123;
-            _request = new DetailsRequest { ProviderId = _providerId, ApprenticeshipHashedId = "XYZ" };
-            _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<DetailsViewModel>();
-
-            _modelMapperMock
-                .Setup(x => x.Map<DetailsViewModel>(_request))
-                .ReturnsAsync(_viewModel);
-
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
-        }
-
-        public void VerifyMapperWasCalled()
-        {
-            _modelMapperMock.Verify(x => x.Map<DetailsViewModel>(_request));
-        }
-
-        public async Task<IActionResult> Act() => await Sut.Details(_request);
     }
 }
