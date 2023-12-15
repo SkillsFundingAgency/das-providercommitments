@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +18,9 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderUrlHelper;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public async Task AndSelectCourseIsToBeChangedThenTheUserIsRedirectedToSelectCoursePage()
         {
             _fixture.WithRedirectAction(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse);
-            await _fixture.PostDraftApprenticeshipViewModel(changeCourse:"Edit");
+            await _fixture.PostDraftApprenticeshipViewModel(changeCourse: "Edit");
             _fixture.VerifyUserRedirectedTo("SelectCourse");
         }
 
@@ -188,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _draftApprenticeshipOverlapOptionViewModel = new DraftApprenticeshipOverlapOptionViewModel
                 {
-                    OverlapOptions = OverlapOptions.AddApprenticeshipLater,
+                    OverlapOptions = OverlapOptions.CompleteActionLater,
                     ProviderId = 2
                 };
 
@@ -261,7 +261,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _encodingService.Setup(x => x.Encode(draftApprenticeshipId, EncodingType.ApprenticeshipId))
                     .Returns(_draftApprenticeshipHashedId);
-                
+
                 _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(new CreateCohortResponse
                     {
@@ -276,7 +276,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             public UnapprovedControllerTestFixture VerifyCohortCreated()
             {
                 //1. Verify that the viewmodel submitted was mapped
-                _mockModelMapper.Verify(x => x.Map<CreateCohortRequest>(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)),Times.Once);
+                _mockModelMapper.Verify(x => x.Map<CreateCohortRequest>(It.Is<AddDraftApprenticeshipViewModel>(m => m == _model)), Times.Once);
                 //2. Verify that the mapper result (request) was sent
                 _mediator.Verify(x => x.Send(It.Is<CreateCohortRequest>(r => r == _createCohortRequest), It.IsAny<CancellationToken>()), Times.Once);
                 return this;

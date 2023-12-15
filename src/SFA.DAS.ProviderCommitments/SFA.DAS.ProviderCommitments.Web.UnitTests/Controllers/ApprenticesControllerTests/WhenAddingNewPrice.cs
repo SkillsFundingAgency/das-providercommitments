@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using AutoFixture;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -100,14 +100,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             PriceRequest = _fixture.Create<PriceRequest>();
             PriceViewModel = _fixture.Create<PriceViewModel>();
             ConfirmRequest = _fixture.Create<ConfirmRequest>();
-            
+
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<PriceViewModel>(It.IsAny<PriceRequest>()))
                 .ReturnsAsync(PriceViewModel);
             _modelMapperMock.Setup(x => x.Map<ConfirmRequest>(It.IsAny<PriceViewModel>()))
                 .ReturnsAsync(ConfirmRequest);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(),
+                Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
         }
 
         public void VerifyPriceViewMapperWasCalled()
@@ -119,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             _modelMapperMock.Verify(x => x.Map<ConfirmRequest>(PriceViewModel));
         }
-        
+
         public void VerifyChangeOfEmployerOverlapAlertRequestWasCalled()
         {
             _modelMapperMock.Verify(x => x.Map<ChangeOfEmployerOverlapAlertRequest>(PriceViewModel));

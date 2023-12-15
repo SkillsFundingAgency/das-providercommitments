@@ -3,12 +3,12 @@ using System;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer
 {
-    public class PostConfirmRequest : IPostApiRequest
+    public class PostCreateChangeOfEmployerRequest : IPostApiRequest
     {
         public long ProviderId { get; }
         public long ApprenticeshipId { get; }
 
-        public PostConfirmRequest(long providerId, long apprenticeshipId, Body body)
+        public PostCreateChangeOfEmployerRequest(long providerId, long apprenticeshipId, Body body)
         {
             ProviderId = providerId;
             ApprenticeshipId = apprenticeshipId;
@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
         }
     }
 
-    public class PostConfirmResponse
+    public class PostCreateChangeOfEmployerResponse
     {
     }
 }

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.GetDraftApprenticeshipOverlapOptions();
             _fixture.VerifyDraftApprenticeshipOverlapOptionsViewReturned();
-        }           
+        }
 
         [Test]
         public async Task AndWhenIGetDraftApprenticeshipOverlapOptions_ModelIsMapped()
@@ -51,11 +51,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         [Test]
         public async Task AndWhenWhenUserSelectsToAddApprenticeshipLater()
         {
-            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.AddApprenticeshipLater).DraftApprenticeshipOverlapOptions();
+            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.CompleteActionLater).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
             _fixture.VerifyUserRedirectedTo(ControllerConstants.CohortController.Actions.Review, ControllerConstants.CohortController.Name);
         }
-        
+
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Completed, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.Live, true)]
         [TestCase(CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart, true)]

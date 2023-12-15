@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -8,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         {
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
 
-            var apiRequestBody = new PostConfirmRequest.Body
+            var apiRequestBody = new PostCreateChangeOfEmployerRequest.Body
             {
                 AccountLegalEntityId = cacheItem.AccountLegalEntityId,
                 Price = cacheItem.Price,
@@ -44,10 +44,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     UserId = _authenticationService.UserId
                 }
             };
-            
-            var apiRequest = new PostConfirmRequest(source.ProviderId, source.ApprenticeshipId, apiRequestBody);
 
-            await _outerApiClient.Post<PostConfirmResponse>(apiRequest);
+            var apiRequest = new PostCreateChangeOfEmployerRequest(source.ProviderId, source.ApprenticeshipId, apiRequestBody);
+
+            await _outerApiClient.Post<PostCreateChangeOfEmployerResponse>(apiRequest);
 
             await _cacheStorage.DeleteFromCache(source.CacheKey.ToString());
 

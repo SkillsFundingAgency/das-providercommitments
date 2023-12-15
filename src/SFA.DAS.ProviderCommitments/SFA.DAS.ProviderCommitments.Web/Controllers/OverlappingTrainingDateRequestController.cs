@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -14,6 +13,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -149,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             // redirect 302 does not clear tempdata.
             RemoveStoredDraftApprenticeshipState(viewModel.DraftApprenticeshipHashedId);
 
-            if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
+            if (viewModel.OverlapOptions == OverlapOptions.CompleteActionLater)
             {
                 return Redirect(viewModel);
             }

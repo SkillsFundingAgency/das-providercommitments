@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 .WithCohortReference()
                 .WithDraftApprenticeshipHashedId()
                 .DraftApprenticeshipOverlapOptions();
-            
+
             _fixture.VerifyExistingDraftApprenticeshipUpdated();
         }
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         [Test]
         public async Task AndWhenWhenUserSelectsToAddApprenticeshipLater()
         {
-            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.AddApprenticeshipLater).DraftApprenticeshipOverlapOptions();
+            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.CompleteActionLater).DraftApprenticeshipOverlapOptions();
             _fixture.VerifyOverlappingTrainingDateRequestEmail_IsNotSent();
             _fixture.VerifyUserRedirectedTo("Review");
         }

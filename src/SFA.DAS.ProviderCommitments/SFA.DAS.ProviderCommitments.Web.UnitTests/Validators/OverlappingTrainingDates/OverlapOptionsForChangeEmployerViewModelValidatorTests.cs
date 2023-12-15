@@ -29,8 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
 
         
         [TestCase(null, false)]
-        [TestCase(OverlapOptions.AddApprenticeshipLater, true)]
-        [TestCase(OverlapOptions.ChangeEmployerLater, true)]
+        [TestCase(OverlapOptions.CompleteActionLater, true)]
         [TestCase(OverlapOptions.ContactTheEmployer, true)]
         [TestCase(OverlapOptions.SendStopRequest, true)]
         public void Validate_Selection_ShouldBeValidated(OverlapOptions? selection, bool expectedValid)

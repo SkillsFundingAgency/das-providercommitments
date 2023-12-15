@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
@@ -21,26 +21,26 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.SendStopRequest)
                 .OverlapOptionsForChangeEmployer();
-            
+
             _fixture.VerifyUserRedirectedTo(ControllerConstants.OverlappingTrainingDateRequestController.Actions.ChangeOfEmployerNotified);
         }
-        
+
         [Test]
         public async Task AndWhenWhenUserSelectsToContactTheEmployer()
         {
             await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.ContactTheEmployer)
                 .OverlapOptionsForChangeEmployer();
-            
-            _fixture.VerifyUserRedirectedTo(ControllerConstants.ApprenticeController.Actions.Index,  ControllerConstants.ApprenticeController.Name);
+
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.ApprenticeController.Actions.Index, ControllerConstants.ApprenticeController.Name);
         }
-        
+
         [Test]
         public async Task AndWhenWhenUserSelectsToAddApprenticeshipLater()
         {
-            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.AddApprenticeshipLater)
+            await _fixture.SetupStartDraftOverlapOptions(OverlapOptions.CompleteActionLater)
                 .OverlapOptionsForChangeEmployer();
-            
-            _fixture.VerifyUserRedirectedTo(ControllerConstants.ApprenticeController.Actions.Index,  ControllerConstants.ApprenticeController.Name);
+
+            _fixture.VerifyUserRedirectedTo(ControllerConstants.ApprenticeController.Actions.Index, ControllerConstants.ApprenticeController.Name);
         }
     }
 }

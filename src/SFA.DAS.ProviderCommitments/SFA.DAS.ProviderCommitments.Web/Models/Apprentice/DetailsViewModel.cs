@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasPendingChangeOfPartyRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
         public bool HasContinuation { get; set; }
-        public bool ShowChangeEmployerLink => ShouldShowChangeEmployerLink();
+        public bool ShowChangeEmployerLink => !HasContinuation;
 
         public List<EmployerHistory> EmployerHistory { get; set; }
 
@@ -96,19 +96,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
-        }
-
-        private bool ShouldShowChangeEmployerLink()
-        {
-            switch (Status)
-            {
-                case ApprenticeshipStatus.Stopped or ApprenticeshipStatus.Live when !HasContinuation:
-                case ApprenticeshipStatus.Paused:
-                case ApprenticeshipStatus.WaitingToStart:
-                    return true;
-                default:
-                    return false;
-            }
         }
     }
 

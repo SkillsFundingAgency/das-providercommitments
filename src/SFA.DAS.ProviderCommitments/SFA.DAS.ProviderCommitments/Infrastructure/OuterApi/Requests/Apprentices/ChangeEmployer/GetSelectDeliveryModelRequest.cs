@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using System.Collections.Generic;
+using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer
 {
@@ -23,5 +24,6 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
     {
         public string LegalEntityName { get; set; }
         public List<DeliveryModel> DeliveryModels { get; set; }
+        public ApprenticeshipStatus Status { get; set; }
     }
 }

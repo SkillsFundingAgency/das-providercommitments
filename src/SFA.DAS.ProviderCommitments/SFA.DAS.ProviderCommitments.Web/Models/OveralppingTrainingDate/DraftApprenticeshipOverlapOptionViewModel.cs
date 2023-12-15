@@ -18,7 +18,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
     {
         SendStopRequest,
         ContactTheEmployer,
-        AddApprenticeshipLater,
-        ChangeEmployerLater
+        CompleteActionLater
     }
 }
