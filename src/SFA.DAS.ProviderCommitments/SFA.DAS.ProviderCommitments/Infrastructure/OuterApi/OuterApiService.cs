@@ -1,19 +1,19 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.IO;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -30,22 +30,22 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
         {
-           try
-           {
-               return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
-           }
-           catch (CommitmentsApiBulkUploadModelException ex)
-           {
-               if (data.FileUploadLogId != null)
-                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
-               throw;
-           }
-           catch (Exception ex)
-           {
-               if (data.FileUploadLogId != null)
-                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
-               throw;
-           }
+            try
+            {
+                return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+            }
+            catch (CommitmentsApiBulkUploadModelException ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                throw;
+            }
         }
 
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest data)
@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             }
             catch (CommitmentsApiBulkUploadModelException ex)
             {
-                if(data.FileUploadLogId != null)
+                if (data.FileUploadLogId != null)
                     await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
                 throw;
             }

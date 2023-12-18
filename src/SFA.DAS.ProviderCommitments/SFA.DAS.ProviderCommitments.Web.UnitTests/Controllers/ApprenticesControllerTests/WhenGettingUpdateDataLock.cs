@@ -1,13 +1,13 @@
-﻿using AutoFixture;
+﻿using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -38,13 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             //Assert
             _modelMapperMock.Verify(x => x.Map<UpdateDateLockViewModel>(_request));
-        }      
+        }
 
         [Test]
         public async Task ThenReturnsView()
         {
             //Act
-            var result =await _sut.UpdateDataLock(_request) as ViewResult;
+            var result = await _sut.UpdateDataLock(_request) as ViewResult;
 
             //Assert
             Assert.NotNull(result);

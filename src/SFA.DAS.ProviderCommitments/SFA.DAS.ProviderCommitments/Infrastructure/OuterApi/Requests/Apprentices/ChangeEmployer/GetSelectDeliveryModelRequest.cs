@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer

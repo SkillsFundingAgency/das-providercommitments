@@ -1,5 +1,5 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
-using System;
+﻿using System;
+using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 

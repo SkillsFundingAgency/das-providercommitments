@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public void Then_Redirect_To_Details_Page()
         {
             //Act
-            var result =  _sut.DataLockRequestRestart(_viewModel);
+            var result = _sut.DataLockRequestRestart(_viewModel);
 
             //Assert
             result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
@@ -44,12 +44,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             //Arrange
             _viewModel.SubmitStatusViewModel = SubmitStatusViewModel.Confirm;
-            
+
             //Act
             var result = _sut.DataLockRequestRestart(_viewModel);
 
             //Assert
             result.VerifyReturnsRedirectToActionResult().WithActionName("ConfirmRestart");
-        }       
+        }
     }
 }

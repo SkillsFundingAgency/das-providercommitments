@@ -1,9 +1,7 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using FluentValidation.TestHelper;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate;
 
@@ -28,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             var model = new ChangeOfEmployerNotifiedViewModel { NextAction = action };
             AssertValidationResult(request => request.NextAction, model, expectedValid);
         }
-       
+
         private void AssertValidationResult<T>(Expression<Func<ChangeOfEmployerNotifiedViewModel, T>> property, ChangeOfEmployerNotifiedViewModel instance, bool expectedValid)
         {
             var validator = new ChangeOfEmployerNotifiedViewModelValidator();

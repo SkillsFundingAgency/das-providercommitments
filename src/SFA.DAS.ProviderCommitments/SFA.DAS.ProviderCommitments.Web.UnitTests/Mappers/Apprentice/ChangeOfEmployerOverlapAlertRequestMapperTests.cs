@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(_fixture.ViewModel.ProviderId, result.ProviderId);
         }
-        
+
         [Test]
         public async Task ThenCacheKeyIsMapped()
         {

@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
-using System;
+﻿using System;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer
 {

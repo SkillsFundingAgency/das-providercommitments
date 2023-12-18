@@ -1,13 +1,13 @@
-﻿using FluentValidation.TestHelper;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
-using System;
-using System.Linq.Expressions;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
@@ -170,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             string endDate, bool expected)
         {
             var model = new TrainingDatesViewModel
-                { StartDate = new MonthYearModel(startDate), EndDate = new MonthYearModel(endDate) };
+            { StartDate = new MonthYearModel(startDate), EndDate = new MonthYearModel(endDate) };
             AssertValidationResult(request => request.EndDate, model, expected);
         }
 

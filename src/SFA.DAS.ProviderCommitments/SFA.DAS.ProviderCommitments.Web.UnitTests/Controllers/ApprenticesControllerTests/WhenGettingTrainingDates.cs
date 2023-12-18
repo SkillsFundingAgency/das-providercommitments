@@ -1,13 +1,13 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             result.VerifyReturnsViewModel().WithModel<TrainingDatesViewModel>();
         }
-     
+
         private class GetTrainingDatesFixture
         {
             private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
@@ -69,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             }
 
             public Task<IActionResult> Act() => _sut.TrainingDates(_request);
-           
+
             public void Verify_ModelMapperWasCalled(Times times) =>
                 _modelMapperMock.Verify(x => x.Map<TrainingDatesViewModel>(_request), times);
         }

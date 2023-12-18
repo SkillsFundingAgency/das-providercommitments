@@ -123,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var draft = await _modelMapper.Map<AddDraftApprenticeshipViewModel>(request);
             await AddLegalEntityAndCoursesToModel(draft);
 
-            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel{ Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot});
+            return View("ChoosePilotStatus", new ChoosePilotStatusViewModel { Selection = draft.IsOnFlexiPaymentPilot == null ? null : draft.IsOnFlexiPaymentPilot.Value ? ChoosePilotStatusOptions.Pilot : ChoosePilotStatusOptions.NonPilot });
         }
 
         [HttpPost]
@@ -266,13 +266,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
-            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
+            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?)draft.DeliveryModel;
 
             if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 return View(model);
             }
-            draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
+            draft.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
             StoreEditDraftApprenticeshipState(draft);
 
             return RedirectToAction("EditDraftApprenticeship");
@@ -284,7 +284,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
-            draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
+            draft.DeliveryModel = (DeliveryModel)model.DeliveryModel;
             draft.CourseCode = model.CourseCode;
             StoreEditDraftApprenticeshipState(draft);
 

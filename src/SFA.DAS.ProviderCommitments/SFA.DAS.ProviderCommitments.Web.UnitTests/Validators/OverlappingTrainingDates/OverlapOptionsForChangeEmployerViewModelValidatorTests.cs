@@ -1,7 +1,7 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using FluentValidation.TestHelper;
+using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate;
 
@@ -17,8 +17,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             var model = new OverlapOptionsForChangeEmployerViewModel { ProviderId = providerId };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
-        
-        
+
+
         [TestCase(0, false)]
         [TestCase(1, true)]
         public void Validate_ApprenticeshipId_ShouldBeValidated(int apprenticeshipId, bool expectedValid)
@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             AssertValidationResult(request => request.ApprenticeshipId, model, expectedValid);
         }
 
-        
+
         [TestCase(null, false)]
         [TestCase(OverlapOptions.CompleteActionLater, true)]
         [TestCase(OverlapOptions.ContactTheEmployer, true)]

@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var baseDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
             var startDate = baseDate;
             var endDate = baseDate.AddYears(2);
-            
+
             var fixture = new Fixture();
 
             viewModel = fixture.Build<TrainingDatesViewModel>()
@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await mapper.Map(viewModel);
             Assert.AreEqual(viewModel.Uln, result.Uln);
         }
-        
+
         [Test, MoqAutoData]
         public async Task ProviderId_IsMapped()
         {
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.AreEqual(viewModel.StartDate.Date.Value.ToString("dd-MM-yyyy"), result.StartDate);
         }
-        
+
         [Test, MoqAutoData]
         public async Task EndDate_IsMapped()
         {

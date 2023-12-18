@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         public ApprenticeController(IModelMapper modelMapper,
             ICookieStorageService<IndexRequest> cookieStorage,
-            ICommitmentsApiClient commitmentsApiClient, 
+            ICommitmentsApiClient commitmentsApiClient,
             IOuterApiService outerApiService)
         {
             _modelMapper = modelMapper;
@@ -258,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var confirmRequest = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToAction(nameof(Confirm), confirmRequest);
             }
-            else if(viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            else if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
             {
                 var startDateRequest = await _modelMapper.Map<StartDateRequest>(viewModel);
                 return RedirectToAction("StartDate", startDateRequest);
@@ -283,7 +283,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
-        {           
+        {
             await ValidateChangeOfEmployerOverlap(viewModel);
 
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
@@ -402,7 +402,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
-        {            
+        {
             if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
             {
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
@@ -422,7 +422,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var viewModel = await _modelMapper.Map<ConfirmViewModel>(request);
             return View(viewModel);
         }
-      
+
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/confirm", Name = RouteNames.ApprenticeConfirm)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
@@ -451,7 +451,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertViewModel viewModel)
         {
             var model = await _modelMapper.Map<OverlapOptionsForChangeEmployerRequest>(viewModel);
-            
+
             return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.OverlapOptionsForChangeEmployer, ControllerConstants.OverlappingTrainingDateRequestController.Name, model);
         }
 
