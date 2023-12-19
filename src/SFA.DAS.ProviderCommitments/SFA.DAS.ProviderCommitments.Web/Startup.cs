@@ -5,6 +5,7 @@ using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
+using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -50,7 +51,7 @@ public class Startup
         });
 
         services.AddConfigurationOptions(_configuration);
-        services.AddFeatureToggleService();
+        services.AddProviderFeatures();
 
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
