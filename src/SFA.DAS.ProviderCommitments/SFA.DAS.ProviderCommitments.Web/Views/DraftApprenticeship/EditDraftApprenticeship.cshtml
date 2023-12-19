@@ -12,7 +12,7 @@
     ViewBag.GaData.Org = Model.Employer;
 
     bool rplStillNeedsConsideration;
-    if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
+    if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
     {
         rplStillNeedsConsideration = Model.RecognisingPriorLearningExtendedStillNeedsToBeConsidered;
     }

@@ -62,7 +62,7 @@
                             </h2>
                             @Html.ValidationMessageFor(m => m.SelectedOption, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption) })
                             <div class="govuk-radios">
-                                @if (!AuthorizationService.IsAuthorized(ProviderFeature.RplExtended) && Model.CanApprove)
+                                @if (!await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended) && Model.CanApprove)
                                 {
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
@@ -76,7 +76,7 @@
                                 <label class="govuk-label govuk-radios__label" for="details-save">
                                     Save all but don't send to employer(s)
                                 </label>
-                                @if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
+                                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
                                 {
                                     <div id="details-save-hint" class="govuk-hint govuk-radios__hint">
                                         You will need save first and then approve the cohorts. This is because the new RPL rules still need to be implemented here.

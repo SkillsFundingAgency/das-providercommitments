@@ -209,7 +209,7 @@
                 </p>
             </div>
         }
-        if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
+        if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id) && !course.RplErrorHasBeenDisplayed)
             {
@@ -256,7 +256,7 @@
                 {
                     <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
                 }
-                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
                 }
@@ -352,7 +352,7 @@
                         }
                     </td>
                 }
-                @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
                         @draftApprenticeship.DisplayIsPilot

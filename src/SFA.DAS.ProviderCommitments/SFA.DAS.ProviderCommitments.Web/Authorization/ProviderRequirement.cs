@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization
+namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+
+public class ProviderRequirement : IAuthorizationRequirement
 {
-    public class ProviderRequirement : IAuthorizationRequirement
-    {
-    }
 }

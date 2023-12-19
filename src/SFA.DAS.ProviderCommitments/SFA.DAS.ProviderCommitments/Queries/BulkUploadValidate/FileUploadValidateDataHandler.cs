@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
            
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
-            apiRequest.RplDataExtended = _authorizationService.IsAuthorized(ProviderFeature.RplExtended);
+            apiRequest.RplDataExtended = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
             try
             {
                 await _client.ValidateBulkUploadRequest(apiRequest);

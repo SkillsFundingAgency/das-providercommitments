@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentsPilot == null)
+            if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentsPilot == null)
             {
                 return RedirectToAction("ChoosePilotStatus", request);
             }
@@ -502,7 +502,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningDetails(RecognisePriorLearningRequest request)
         {
-            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
             {
                 return RedirectToAction("RecognisePriorLearningData",
                     new { request.CohortReference, request.DraftApprenticeshipHashedId });
@@ -531,7 +531,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> RecognisePriorLearningData(RecognisePriorLearningRequest request)
         {
-            if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
             {
                 return RedirectToAction("RecognisePriorLearningDetails",
                     new { request.CohortReference, request.DraftApprenticeshipHashedId });

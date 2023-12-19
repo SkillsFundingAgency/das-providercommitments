@@ -102,7 +102,7 @@ else
                 </div>
             }
 
-            @if (AuthorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
             {
                 <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
                     <dt class="govuk-summary-list__key" id="pilot-status-label">
