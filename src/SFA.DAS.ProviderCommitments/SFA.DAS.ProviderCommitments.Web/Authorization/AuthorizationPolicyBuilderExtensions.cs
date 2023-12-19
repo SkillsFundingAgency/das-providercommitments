@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using IAuthorizationHandler = Microsoft.AspNetCore.Authorization.IAuthorizationHandler;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 
