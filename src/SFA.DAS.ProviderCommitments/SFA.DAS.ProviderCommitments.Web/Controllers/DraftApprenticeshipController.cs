@@ -507,7 +507,12 @@ public class DraftApprenticeshipController : Controller
         if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             return RedirectToAction(nameof(RecognisePriorLearningData),
-                new { request.CohortReference, request.DraftApprenticeshipHashedId });
+                new
+                {
+                    request.ProviderId,
+                    request.CohortReference,
+                    request.DraftApprenticeshipHashedId
+                });
         }
 
         var model = await _modelMapper.Map<PriorLearningDetailsViewModel>(request);
@@ -536,7 +541,12 @@ public class DraftApprenticeshipController : Controller
         if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             return RedirectToAction(nameof(RecognisePriorLearningDetails),
-                new { request.CohortReference, request.DraftApprenticeshipHashedId });
+                new
+                {
+                    request.ProviderId,
+                    request.CohortReference,
+                    request.DraftApprenticeshipHashedId
+                });
         }
 
         var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
@@ -555,7 +565,9 @@ public class DraftApprenticeshipController : Controller
             return RedirectToAction(nameof(RecognisePriorLearningSummary), 
                 new
                 {
-                    model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference
+                    model.ProviderId, 
+                    model.DraftApprenticeshipHashedId,
+                    model.CohortReference
                 });
         }
 
