@@ -360,25 +360,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
+                return RedirectToAction(nameof(RecognisePriorLearning),  new { model.CohortReference, draftApprenticeshipHashedId });
             }
-            else
+
+            if (string.IsNullOrEmpty(model.CourseCode))
             {
-                if (string.IsNullOrEmpty(model.CourseCode))
-                {
-                    return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
-                }
-
-                var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
-
-                if (draftApprenticeship.HasStandardOptions)
-                {
-                    var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
-                    return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
-                }
-
                 return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
             }
+
+            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+
+            if (draftApprenticeship.HasStandardOptions)
+            {
+                var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
+                return RedirectToAction(nameof(SelectOptions), new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
+            }
+
+            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
 
         [HttpPost]
@@ -414,7 +412,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
+                return RedirectToAction(nameof(RecognisePriorLearning), new
                 {
                     model.CohortReference,
                     model.DraftApprenticeshipHashedId,
@@ -480,7 +478,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (request.IsTherePriorLearning == true)
             {
-                return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship", new
+                return RedirectToAction(nameof(RecognisePriorLearningDetails),  new
                 {
                     request.ProviderId,
                     request.DraftApprenticeshipHashedId,
@@ -550,8 +548,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (result?.RplPriceReductionError == true)
             {
-                return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship",
-                    new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
+                return RedirectToAction(nameof(RecognisePriorLearningSummary), 
+                    new
+                    {
+                        model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference
+                    });
             }
 
             return RedirectToOptionalPages(
@@ -747,12 +748,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (hasStandardOptions)
             {
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues);
+                return RedirectToAction(nameof(SelectOptions), routeValues);
             }
-            else
-            {
-                return RedirectToAction("Details", "Cohort", routeValues);
-            }
+
+            return RedirectToAction("Details", "Cohort", routeValues);
         }
 
         private async Task<ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
