@@ -66,7 +66,7 @@
                 <partial name="DetailsPartials/_DataLockBanner" />
             }
         }
-        
+
         @if (Model.ShowChangeOfPriceRequestSent)
         {
             <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
@@ -368,7 +368,9 @@
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Total price</th>
                             <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell">
+                                <a id="linkChangePrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
+                            </td>
                         </tr>
                     }
                     else
@@ -421,6 +423,7 @@
                     </tr>
                 </tbody>
             </table>
+            <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">View price changes you've requested</a>
         }
 
         @if (Model.RecognisePriorLearning != null)
