@@ -66,7 +66,11 @@
                 <partial name="DetailsPartials/_DataLockBanner" />
             }
         }
-
+        
+        @if (Model.ShowChangeOfPriceRequestSent)
+        {
+            <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
+        }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
