@@ -362,9 +362,9 @@ public class DraftApprenticeshipController : Controller
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
             return RedirectToAction(nameof(RecognisePriorLearning),  new
             {
-S                model.ProviderId,
                 CohortReference = model.CohortReference,
                 DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
+                model.ProviderId
             });
         }
 
