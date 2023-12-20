@@ -360,7 +360,11 @@ public class DraftApprenticeshipController : Controller
         if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
         {
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-            return RedirectToAction(nameof(RecognisePriorLearning),  new { model.CohortReference, draftApprenticeshipHashedId });
+            return RedirectToAction(nameof(RecognisePriorLearning),  new
+            {
+                CohortReference = model.CohortReference,
+                DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
+            });
         }
 
         if (string.IsNullOrEmpty(model.CourseCode))
@@ -414,19 +418,17 @@ public class DraftApprenticeshipController : Controller
         {
             return RedirectToAction(nameof(RecognisePriorLearning), new
             {
-                model.CohortReference,
-                model.DraftApprenticeshipHashedId,
+                CohortReference = model.CohortReference,
+                DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
             });
         }
-        else
-        {
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
-            return RedirectToOptionalPages(
-                draftApprenticeship.HasStandardOptions,
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference);
-        }
+
+        var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+        return RedirectToOptionalPages(
+            draftApprenticeship.HasStandardOptions,
+            model.ProviderId,
+            model.DraftApprenticeshipHashedId,
+            model.CohortReference);
     }
 
     private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
