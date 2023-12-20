@@ -228,6 +228,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
+                    ProviderId = model.ProviderId,
                     CacheKey = model.CacheKey,
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     ReservationId = model.ReservationId,
@@ -253,7 +254,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
                     EncodingType.ApprenticeshipId);
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
-                    new { response.CohortReference, draftApprenticeshipHashedId });
+                    new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
             }
             else if (response.HasStandardOptions)
             {
@@ -262,7 +263,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("SelectOptions", "DraftApprenticeship",
                     new
                     {
-                        model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
+                        model.ProviderId, 
+                        DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
                         response.CohortReference
                     });
             }

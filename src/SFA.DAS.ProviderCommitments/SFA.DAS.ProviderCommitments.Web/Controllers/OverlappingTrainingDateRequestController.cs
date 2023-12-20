@@ -77,6 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 {
                     return RedirectToAction(nameof(DraftApprenticeshipOverlapOptionsWithPendingRequest), new
                     {
+                        ProviderId = apprenticeshipDetails.ProviderId,
                         CohortReference = request.CohortReference,
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,

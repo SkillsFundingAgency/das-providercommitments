@@ -346,7 +346,8 @@ public class DraftApprenticeshipController : Controller
                 ReservationId = model.ReservationId,
                 StartMonthYear = model.StartDate.MonthYear,
                 CourseCode = model.CourseCode,
-                DeliveryModel = model.DeliveryModel
+                DeliveryModel = model.DeliveryModel,
+                ProviderId = model.ProviderId,
             });
         }
 
@@ -364,13 +365,16 @@ public class DraftApprenticeshipController : Controller
             {
                 CohortReference = model.CohortReference,
                 DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
-                model.ProviderId
+                ProviderId = model.ProviderId
             });
         }
 
         if (string.IsNullOrEmpty(model.CourseCode))
         {
-            return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
+            return RedirectToAction("Details", "Cohort", new
+            {
+                model.ProviderId, model.CohortReference
+            });
         }
 
         var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
@@ -406,6 +410,7 @@ public class DraftApprenticeshipController : Controller
             var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
             return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
             {
+                ProviderId = model.ProviderId,
                 DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
                 OverlapApprenticeshipHashedId = hashedApprenticeshipId
             });
@@ -419,7 +424,7 @@ public class DraftApprenticeshipController : Controller
         {
             return RedirectToAction(nameof(RecognisePriorLearning), new
             {
-                model.ProviderId,
+                ProviderId = model.ProviderId,
                 CohortReference = model.CohortReference,
                 DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
             });
@@ -489,14 +494,12 @@ public class DraftApprenticeshipController : Controller
                 request.CohortReference,
             });
         }
-        else
-        {
-            return RedirectToOptionalPages(
-                result.HasStandardOptions,
-                request.ProviderId,
-                request.DraftApprenticeshipHashedId,
-                request.CohortReference);
-        }
+
+        return RedirectToOptionalPages(
+            result.HasStandardOptions,
+            request.ProviderId,
+            request.DraftApprenticeshipHashedId,
+            request.CohortReference);
     }
 
     [HttpGet]
