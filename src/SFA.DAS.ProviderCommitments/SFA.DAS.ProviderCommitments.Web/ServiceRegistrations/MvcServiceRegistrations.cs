@@ -24,7 +24,6 @@ public static class MvcServiceRegistrations
         
         services.AddMvc(options =>
             {
-                options.EnableEndpointRouting = false;
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add(new GoogleAnalyticsFilter());
                 options.AddProviderCommitmentsValidation();
