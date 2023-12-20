@@ -6,6 +6,7 @@ using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft
 using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
+using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -75,6 +76,7 @@ public class Startup
             .AddCommitmentsApiClient(_configuration)
             .AddProviderRelationshipsApiClient(_configuration)
             .AddProviderFeaturesAuthorization()
+            .AddProviderPermissionsAuthorization()
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
 
