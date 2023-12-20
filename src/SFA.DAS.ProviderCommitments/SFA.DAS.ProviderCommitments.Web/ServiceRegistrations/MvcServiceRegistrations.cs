@@ -45,6 +45,7 @@ public static class MvcServiceRegistrations
 
         services
             .AddScoped<HandleBulkUploadValidationErrorsAttribute>()
+            .AddScoped<UseCacheForValidationAttribute>()
             .AddScoped<DomainExceptionRedirectGetFilterAttribute>()
             .AddScoped<ValidateModelStateFilter>();
 
