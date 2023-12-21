@@ -41,6 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 InEditMode = source.IsEdit,
                 EmploymentEndDate = new MonthYearModel(cacheItem.EmploymentEndDate),
                 EndDate = new MonthYearModel(cacheItem.EndDate),
+                CurrentStartDate = apiResponse.Apprenticeship.StartDate.Value,
                 Uln = apiResponse.Apprenticeship.Uln
             };
         }

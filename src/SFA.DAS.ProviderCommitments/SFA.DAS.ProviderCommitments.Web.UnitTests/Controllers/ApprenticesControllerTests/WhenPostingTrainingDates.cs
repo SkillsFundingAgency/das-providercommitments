@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task PostSelectDeliveryModelModel_WithApprenticeshipStatusLive_ShouldRedirectToTrainingDates()
+        public async Task PostTrainingDatesViewModel_ShouldRedirectToPrice()
         {
             var result = await _fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.Price));

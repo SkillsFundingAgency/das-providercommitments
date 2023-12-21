@@ -23,6 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.Apprentice
                 .Must((y, _) => y.StartDate.Date < y.EndDate.Date)
                 .WithMessage("Enter a start date prior to the new training end date")
                 .When(a => a.EndDate.HasValue && a.EndDate.IsValid && a.StartDate.HasValue && a.StartDate.IsValid);
+            
+            RuleFor(x => x.StartDate)
+                .Must((y, _) => y.StartDate.Date > y.CurrentStartDate)
+                .WithMessage("The new training start date cannot be before the training start date on the existing record");
 
             RuleFor(x => x.StartDate)
                 .Must((y, _) =>

@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? Price { get; set; }
         public MonthYearModel StartDate { get; set; }
         public DateTime? StopDate { get; set; }
+        public DateTime CurrentStartDate { get; set; }
 
         [SuppressArgumentException(nameof(StartDate), "You must enter a valid date, for example 09 2022")]
         public int? StartMonth
