@@ -101,7 +101,7 @@ public class DraftApprenticeshipController : Controller
     [HttpPost]
     [Route("add/select-course", Name = RouteNames.SelectCourse)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
+    public async Task<ActionResult> AddDraftApprenticeshipCourse(SelectCourseViewModel model)
     {
         if (string.IsNullOrEmpty(model.CourseCode))
         {
