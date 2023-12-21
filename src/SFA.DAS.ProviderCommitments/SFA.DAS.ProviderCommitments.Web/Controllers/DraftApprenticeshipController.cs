@@ -99,7 +99,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpPost]
-    [Route("add/select-course")]
+    [Route("add/select-course", Name = RouteNames.SelectCourse)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
     {
