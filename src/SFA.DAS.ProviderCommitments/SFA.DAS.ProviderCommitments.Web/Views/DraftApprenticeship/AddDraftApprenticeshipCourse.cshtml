@@ -17,7 +17,7 @@
             </div>
         }
 
-        <form id="addApprenticeship" novalidate method="post">
+        <form id="addApprenticeship" novalidate method="post" asp-route-providerId="@Model.ProviderId">
             
             <input type="hidden" asp-for="IsOnFlexiPaymentsPilot" />
 
