@@ -389,7 +389,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpPost]
-    [Route("{DraftApprenticeshipHashedId}/edit")]
+    [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> EditDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, EditDraftApprenticeshipViewModel model)
@@ -445,7 +445,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpGet]
-    [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
+    [Route("{DraftApprenticeshipHashedId}/edit")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
