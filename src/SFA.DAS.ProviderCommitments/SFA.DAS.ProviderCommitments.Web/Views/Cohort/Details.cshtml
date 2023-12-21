@@ -16,7 +16,7 @@
 }
 
 @* This ensures that only one banner is visible at any given time *@
-@if (((!Model.IsAgreementSigned)
+@if ((!Model.IsAgreementSigned
       ||
       (!Model.IsCompleteForProvider && !Model.IsReadOnly)
       ||
@@ -107,7 +107,7 @@
     </div>
 }
 
-<partial name="_ValidationSummary" />
+<partial name="_ValidationSummary"/>
 <h1 class="govuk-heading-xl">@Model.PageTitle</h1>
 <dl class="das-definition-list das-definition-list--inline">
     <dt class="das-definition-list__title govuk-!-margin-bottom-4">Employer</dt>
@@ -120,7 +120,7 @@
 
 <h2 class="govuk-heading-s">Message:</h2>
 <div class="govuk-inset-text">
-    @if (string.IsNullOrWhiteSpace(@Model.Message))
+    @if (string.IsNullOrWhiteSpace(Model.Message))
     {
         <span>No message added.</span>
     }
@@ -137,15 +137,15 @@
 {
     <h3 class="govuk-heading-m">
         <span class="govuk-!-margin-right-2">@course.Count x @course.DisplayCourseName</span>
-        @if (@course.DeliveryModel == DeliveryModel.PortableFlexiJob)
+        @if (course.DeliveryModel == DeliveryModel.PortableFlexiJob)
         {
             <span class="govuk-tag">Portable flexi job</span>
         }
-        @if (@course.DeliveryModel == DeliveryModel.FlexiJobAgency)
+        @if (course.DeliveryModel == DeliveryModel.FlexiJobAgency)
         {
             <span class="govuk-tag">Flexi-Job Agency</span>
         }
-        @if (@course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+        @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
         {
             <span class="govuk-tag">Simplified Payments Pilot</span>
         }
@@ -158,18 +158,19 @@
             </p>
         </div>
     }
+
     @foreach (var draftApprenticeship in course.DraftApprenticeships)
     {
         if (draftApprenticeship.OverlappingTrainingDateRequest != null && draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.HasValue)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
                 <h3 class="govuk-heading-s">You submitted an overlapping date enquiry on @draftApprenticeship.OverlappingTrainingDateRequest.CreatedOn.Value.ToGdsFormatLongMonth() for @draftApprenticeship.FirstName @draftApprenticeship.LastName</h3>
-                    <p>
-                        This can take up to 2 weeks for the previous employer to action
-                   </p>
+                <p>
+                    This can take up to 2 weeks for the previous employer to action
+                </p>
             </div>
-
         }
+
         if (draftApprenticeship.HasOverlappingUln && !course.ErrorHasOverlappingUlnDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -180,6 +181,7 @@
             </div>
             course.ErrorHasOverlappingUlnDisplayed = true;
         }
+
         if (draftApprenticeship.HasOverlappingEmail && !course.ErrorEmailOverlapsDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -190,6 +192,7 @@
             </div>
             course.ErrorEmailOverlapsDisplayed = true;
         }
+
         if (!draftApprenticeship.IsComplete && !course.ErrorIsCompletedDisplayed)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -200,6 +203,7 @@
             </div>
             course.ErrorIsCompletedDisplayed = true;
         }
+
         if (draftApprenticeship.EmployerHasEditedPrice)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -209,6 +213,7 @@
                 </p>
             </div>
         }
+
         if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             if (Model.RplErrorDraftApprenticeshipIds.Contains(draftApprenticeship.Id) && !course.RplErrorHasBeenDisplayed)
@@ -229,41 +234,46 @@
                 <h3 class="govuk-heading-s">@course.FundingBandExcess.FundingBandCapExcessHeader</h3>
                 <p>
                     @course.FundingBandExcess.FundingBandCapExcessLabel
-                    <text><a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>@course.FundingBandExcess.DisplaySingleFundingBandCap</text>
+                    <text>
+                        <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands">funding band maximum</a>@course.FundingBandExcess.DisplaySingleFundingBandCap
+                    </text>
                     You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
                 </p>
             </div>
             course.ErrorFundingBandExcessDisplayed = true;
         }
-     }
+    }
+
     <table class="govuk-table das-table--responsive  das-table--condensed">
         <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
-                <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
-                <th asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
-                <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
-                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
-                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
-                <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
-                @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
-                {
-                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Training price</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-20">End-point assessment price</th>
-                    <th scope="col" class="govuk-table__header das-table-cell-width-20">Total price</th>
-                }
-                else
-                {
-                    <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
-                }
-                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
-                {
-                    <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
-                }
-                <th scope="col" class="govuk-table__header das-table-cell-width-5"><span class="govuk-visually-hidden">Action</span></th>
-            </tr>
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
+            <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
+            <th asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+            <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
+            <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
+            @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+            {
+                <th scope="col" class="govuk-table__header das-table-cell-width-20">Training price</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-20">End-point assessment price</th>
+                <th scope="col" class="govuk-table__header das-table-cell-width-20">Total price</th>
+            }
+            else
+            {
+                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
+            }
+            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+            {
+                <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
+            }
+            <th scope="col" class="govuk-table__header das-table-cell-width-5">
+                <span class="govuk-visually-hidden">Action</span>
+            </th>
+        </tr>
         </thead>
-    <tbody class="govuk-table__body">
+        <tbody class="govuk-table__body">
         @foreach (var draftApprenticeship in course.DraftApprenticeships)
         {
             <tr class="govuk-table__row">
@@ -278,7 +288,7 @@
                     }
                 </td>
                 <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                    <td asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
+                <td asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                 <td class="govuk-table__cell" data-label="Training dates">
                     @if (draftApprenticeship.HasOverlappingUln)
                     {
@@ -300,9 +310,9 @@
                 @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="Training price">
-                        @if (@draftApprenticeship.DisplayTrainingPrice == null)
+                        @if (draftApprenticeship.DisplayTrainingPrice == null)
                         {
-                            if (@draftApprenticeship.DisplayCost != null && @draftApprenticeship.EndPointAssessmentPrice != @draftApprenticeship.Cost)
+                            if (draftApprenticeship.DisplayCost != null && draftApprenticeship.EndPointAssessmentPrice != draftApprenticeship.Cost)
                             {
                                 <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
                             }
@@ -317,9 +327,9 @@
                         }
                     </td>
                     <td class="govuk-table__cell" data-label="End-point assessment price">
-                        @if (@draftApprenticeship.DisplayEndPointAssessmentPrice == null)
+                        @if (draftApprenticeship.DisplayEndPointAssessmentPrice == null)
                         {
-                            if (@draftApprenticeship.DisplayCost != null && @draftApprenticeship.TrainingPrice != @draftApprenticeship.Cost)
+                            if (draftApprenticeship.DisplayCost != null && draftApprenticeship.TrainingPrice != draftApprenticeship.Cost)
                             {
                                 <span class="govuk-!-width-one-quarter das-table-cell--highlight"> - </span>
                             }
@@ -335,12 +345,12 @@
                     </td>
                     <td class="govuk-table__cell" data-label="Total price">
                         <span class="govuk-!-width-one-quarter das-table-cell">@draftApprenticeship.DisplayCost</span>
-                    </td> 
+                    </td>
                 }
                 else
                 {
                     <td class="govuk-table__cell" data-label="Price">
-                        @if (@draftApprenticeship.ExceedsFundingBandCap)
+                        @if (draftApprenticeship.ExceedsFundingBandCap)
                         {
                             <span class="das-table-cell--highlight">
                                 @draftApprenticeship.DisplayCost
@@ -359,13 +369,14 @@
                     </td>
                 }
                 <td class="govuk-table__cell govuk-table__cell--numeric">
-                    <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { @draftApprenticeship.DraftApprenticeshipHashedId, @Model.CohortReference, @Model.ProviderId })">
+                    <a class="govuk-link edit-apprentice" href="@Url.Action("ViewEditDraftApprenticeship", "DraftApprenticeship", new { draftApprenticeship.DraftApprenticeshipHashedId, Model.CohortReference, Model.ProviderId })">
                         @(Model.IsReadOnly ? "View" : "Edit")
                         <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName's details</span>
                     </a>
                     @if (!Model.IsReadOnly && !Model.IsLinkedToChangeOfPartyRequest)
                     {
-                        <br /><br />
+                        <br/>
+                        <br/>
                         <a class="govuk-link delete-apprentice"
                            href="@Url.RouteUrl(RouteNames.ApprenticeDelete, new { ProviderId = Model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeship.DraftApprenticeshipHashedId, CohortReference = Model.CohortReference })">
                             Delete <span class="govuk-visually-hidden">@draftApprenticeship.DisplayName </span>
@@ -375,22 +386,26 @@
             </tr>
         }
         </tbody>
-     </table>
+    </table>
 }
 
 <table class="govuk-table">
     <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-            @if (Model.IsReadOnly && Model.Courses.Count == 0)
-            {
-                <td class="govuk-table__cell"><p>Apprentices will appear here when the employer adds them to your cohort.</p></td>
-            }
-            else
-            {
-                <th class="govuk-table__header das-table-cell-width-80" scope="row">Total apprenticeship training price <br>(excluding VAT)</th>
-                <td class="govuk-table__cell govuk-table__header--numeric das-table-cell-width-20"><strong>@Model.DisplayTotalCost</strong></td>
-            }
-        </tr>
+    <tr class="govuk-table__row">
+        @if (Model.IsReadOnly && Model.Courses.Count == 0)
+        {
+            <td class="govuk-table__cell">
+                <p>Apprentices will appear here when the employer adds them to your cohort.</p>
+            </td>
+        }
+        else
+        {
+            <th class="govuk-table__header das-table-cell-width-80" scope="row">Total apprenticeship training price <br>(excluding VAT)</th>
+            <td class="govuk-table__cell govuk-table__header--numeric das-table-cell-width-20">
+                <strong>@Model.DisplayTotalCost</strong>
+            </td>
+        }
+    </tr>
     </tbody>
 </table>
 
@@ -399,11 +414,11 @@
     <p>
         @if (Model.ShowAddAnotherApprenticeOption)
         {
-            <a class="govuk-link add-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new {@Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId})">
+            <a class="govuk-link add-apprentice" href="@Url.Action("GetReservationId", "DraftApprenticeship", new { Model.CohortReference, Model.ProviderId, Model.AccountLegalEntityHashedId, Model.EncodedPledgeApplicationId, Model.TransferSenderHashedId })">
                 Add another apprentice
             </a>
         }
-        <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { @Model.CohortReference, @Model.ProviderId })">
+        <a class="govuk-link das-float-right delete-cohort" id="delete-cohort" href="@Url.Action("Delete", new { Model.CohortReference, Model.ProviderId })">
             Delete this cohort
         </a>
     </p>
@@ -412,7 +427,8 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form id="submitCohort" novalidate method="post">
+            <form id="submitCohort" novalidate method="post" asp-route-providerId="@Model.ProviderId">
+                <input type="hidden" asp-for="ProviderId"/>
                 <div class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.Selection, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -470,8 +486,8 @@
                 </div>
 
                 <button type="submit" id="continue-button" class="govuk-button">Save and submit</button>
-                <br />
-                <a class="govuk-link" id="save-and-exit-cohort" href="@Url.RouteUrl(RouteNames.Cohort, new { @Model.ProviderId })">
+                <br/>
+                <a class="govuk-link" id="save-and-exit-cohort" href="@Url.RouteUrl(RouteNames.Cohort, new { Model.ProviderId })">
                     Save and exit
                 </a>
 
@@ -481,6 +497,6 @@
 }
 
 @section breadcrumb
-    {
+{
     <div class="das-js-back-link"></div>
 }

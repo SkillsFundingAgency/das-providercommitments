@@ -518,7 +518,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                     var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);
+                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), new{ viewModel.ProviderId });
 
                 default:
                     return RedirectToAction(nameof(FileUploadAmendedFile),

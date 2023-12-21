@@ -628,7 +628,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpPost]
-    [Route("{DraftApprenticeshipHashedId}/select-options")]
+    [Route("{DraftApprenticeshipHashedId}/select-options", Name = RouteNames.SelectStandardOption)]
     public async Task<IActionResult> PostSelectOptions(ViewSelectOptionsViewModel model)
     {
         var request = await _modelMapper.Map<UpdateDraftApprenticeshipApimRequest>(model);

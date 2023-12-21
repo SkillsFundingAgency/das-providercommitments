@@ -44,6 +44,7 @@
         public const string CohortAddApprenticeship = "cohort-add-apprenticeship";
         public const string RecognisePriorLearningData = "recognise-prior-learning-data";
         public const string RecognisePriorLearning = "recognise-prior-learning";
+        public const string SelectStandardOption = "select-standard-option";
     }
 }
 

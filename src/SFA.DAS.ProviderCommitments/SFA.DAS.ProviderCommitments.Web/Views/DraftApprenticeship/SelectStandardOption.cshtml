@@ -26,10 +26,10 @@
         </table>
     </div>
 </div>
-<form method="post" action="@Url.Action("PostSelectOptions")">
+<form method="post" asp-route="@RouteNames.SelectStandardOption" asp-route-providerId="@Model.ProviderId">
     @Html.AntiForgeryToken()
     <input asp-for="CohortId" type="hidden"/>
-    <input asp-for="ProviderId" type="hidden" name="ProviderId" id="ProviderId"/>
+    <input asp-for="ProviderId" type="hidden"/>
     <input asp-for="CohortReference" type="hidden"/>
     <input asp-for="DraftApprenticeshipId" type="hidden"/>
     <input asp-for="DraftApprenticeshipHashedId" type="hidden"/>
