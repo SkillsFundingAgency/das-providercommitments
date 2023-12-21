@@ -274,7 +274,7 @@ public class DraftApprenticeshipController : Controller
         draft.DeliveryModel = (CommitmentsV2.Types.DeliveryModel) model.DeliveryModels.FirstOrDefault();
         StoreEditDraftApprenticeshipState(draft);
 
-        return RedirectToAction(nameof(EditDraftApprenticeship));
+        return RedirectToAction(nameof(EditDraftApprenticeship), new { request.ProviderId });
     }
 
     [HttpPost]
