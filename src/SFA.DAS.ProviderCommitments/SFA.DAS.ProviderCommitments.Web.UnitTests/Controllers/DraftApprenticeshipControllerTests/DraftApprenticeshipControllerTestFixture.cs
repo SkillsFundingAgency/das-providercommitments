@@ -268,7 +268,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
                 .ReturnsAsync(_editModel);
-            _actionResult = await _controller.ViewEditDraftApprenticeship(_draftApprenticeshipRequest);
+            _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
             return this;
         }
 
@@ -276,7 +276,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         {
             _modelMapper.Setup(x => x.Map<IDraftApprenticeshipViewModel>(_draftApprenticeshipRequest))
                 .ReturnsAsync(_viewModel);
-            _actionResult = await _controller.ViewEditDraftApprenticeship(_draftApprenticeshipRequest);
+            _actionResult = await _controller.EditDraftApprenticeship(_draftApprenticeshipRequest);
             return this;
         }
 
