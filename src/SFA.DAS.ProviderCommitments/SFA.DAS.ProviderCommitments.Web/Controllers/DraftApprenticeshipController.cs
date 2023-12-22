@@ -210,7 +210,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpPost]
-    [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
+    [Route("{DraftApprenticeshipHashedId}/edit/select-course", Name = RouteNames.SetCourseForEdit)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<ActionResult> SetCourseForEdit(EditDraftApprenticeshipCourseViewModel model)
     {

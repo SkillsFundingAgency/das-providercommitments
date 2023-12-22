@@ -1,4 +1,6 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.EditDraftApprenticeshipCourseViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.EditDraftApprenticeshipCourseViewModel
 @inject ILinkGenerator LinkGenerator;
 
 @{
@@ -17,7 +19,7 @@
             </div>
         }
 
-        <form id="addApprenticeship" novalidate method="post">
+        <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.SetCourseForEdit" asp-route-providerId="@Model.ProviderId">
 
             <partial name="_SelectStandardPartial" />
 
