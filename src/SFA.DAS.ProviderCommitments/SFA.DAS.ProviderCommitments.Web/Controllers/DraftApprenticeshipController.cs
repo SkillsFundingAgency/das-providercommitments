@@ -249,7 +249,7 @@ public class DraftApprenticeshipController : Controller
             ProviderId = draft.ProviderId,
         };
 
-        return RedirectToAction("ViewEditDraftApprenticeship", request);
+        return RedirectToAction("EditDraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -274,7 +274,7 @@ public class DraftApprenticeshipController : Controller
     [HttpPost]
     [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
+    public IActionResult SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
     {
         var draft = PeekStoredEditDraftApprenticeshipState();
         draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
@@ -435,7 +435,7 @@ public class DraftApprenticeshipController : Controller
     [Route("{DraftApprenticeshipHashedId}/edit", Name = RouteNames.DraftApprenticeshipEdit)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
-    public async Task<IActionResult> ViewEditDraftApprenticeship(DraftApprenticeshipRequest request)
+    public async Task<IActionResult> EditDraftApprenticeship(DraftApprenticeshipRequest request)
     {
         try
         {
@@ -496,7 +496,7 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
     {
-        if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+        if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             return RedirectToAction("RecognisePriorLearningData",
                 new { request.CohortReference, request.DraftApprenticeshipHashedId });
@@ -525,7 +525,7 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
     {
-        if (!_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+        if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
             return RedirectToAction("RecognisePriorLearningDetails",
                 new { request.CohortReference, request.DraftApprenticeshipHashedId });
