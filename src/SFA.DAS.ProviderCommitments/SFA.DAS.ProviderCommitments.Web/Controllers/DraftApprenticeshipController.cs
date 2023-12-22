@@ -206,7 +206,7 @@ public class DraftApprenticeshipController : Controller
     [HttpPost]
     [Route("{DraftApprenticeshipHashedId}/edit/select-course")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<ActionResult> SetCourseForEdit(EditDraftApprenticeshipCourseViewModel model)
+    public async Task<ActionResult> EditDraftApprenticeshipCourse(EditDraftApprenticeshipCourseViewModel model)
     {
         var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
         return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
@@ -268,7 +268,10 @@ public class DraftApprenticeshipController : Controller
         draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
         StoreEditDraftApprenticeshipState(draft);
 
-        return RedirectToAction("EditDraftApprenticeship");
+        return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
+        {
+            request.ProviderId, request.DraftApprenticeshipHashedId, request.CohortReference
+        });
     }
 
     [HttpPost]
