@@ -62,7 +62,7 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
     {
-        return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
+        return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -85,7 +85,7 @@ public class DraftApprenticeshipController : Controller
     {
         if (_authorizationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && request.IsOnFlexiPaymentsPilot == null)
         {
-            return RedirectToAction("ChoosePilotStatus", request);
+            return RedirectToAction("ChoosePilotStatus", "DraftApprenticeship", request);
         }
 
         var model = await _modelMapper.Map<Models.DraftApprenticeship.SelectCourseViewModel>(request);
@@ -104,7 +104,7 @@ public class DraftApprenticeshipController : Controller
         }
 
         var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-        return RedirectToAction(nameof(SelectDeliveryModel), request);
+        return RedirectToAction(nameof(SelectDeliveryModel), "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -131,7 +131,7 @@ public class DraftApprenticeshipController : Controller
         }
 
         var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-        return RedirectToAction(nameof(AddDraftApprenticeshipCourse), request);
+        return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -158,7 +158,7 @@ public class DraftApprenticeshipController : Controller
         }
 
         var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-        return RedirectToAction("AddDraftApprenticeship", request);
+        return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -175,7 +175,7 @@ public class DraftApprenticeshipController : Controller
         }
 
         request.DeliveryModel = model.DeliveryModels.FirstOrDefault();
-        return RedirectToAction("AddDraftApprenticeship", request.CloneBaseValues());
+        return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request.CloneBaseValues());
     }
 
     [HttpPost]
@@ -191,7 +191,7 @@ public class DraftApprenticeshipController : Controller
         }
 
         var request = await _modelMapper.Map<ReservationsAddDraftApprenticeshipRequest>(model);
-        return RedirectToAction("AddDraftApprenticeship", request);
+        return RedirectToAction("AddDraftApprenticeship", "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -209,7 +209,7 @@ public class DraftApprenticeshipController : Controller
     public async Task<ActionResult> EditDraftApprenticeshipCourse(EditDraftApprenticeshipCourseViewModel model)
     {
         var request = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
-        return RedirectToAction(nameof(SelectDeliveryModelForEdit), request);
+        return RedirectToAction(nameof(SelectDeliveryModelForEdit), "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -249,7 +249,7 @@ public class DraftApprenticeshipController : Controller
             ProviderId = draft.ProviderId,
         };
 
-        return RedirectToAction("EditDraftApprenticeship", request);
+        return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -291,7 +291,7 @@ public class DraftApprenticeshipController : Controller
             ProviderId = draft.ProviderId,
         };
 
-        return RedirectToAction("EditDraftApprenticeship", request);
+        return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
     }
 
     [HttpGet]
@@ -329,7 +329,7 @@ public class DraftApprenticeshipController : Controller
             StoreAddDraftApprenticeshipState(model);
             var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
             var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
-            return RedirectToAction(redirectAction, req);
+            return RedirectToAction(redirectAction, "DraftApprenticeship", req);
         }
 
         var overlapResult = await HasStartDateOverlap(model);
@@ -357,25 +357,28 @@ public class DraftApprenticeshipController : Controller
         if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
         {
             var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { model.CohortReference, draftApprenticeshipHashedId });
+            return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
+            {
+                model.ProviderId,
+                model.CohortReference,
+                draftApprenticeshipHashedId
+            });
         }
-        else
+        
+        if (string.IsNullOrEmpty(model.CourseCode))
         {
-            if (string.IsNullOrEmpty(model.CourseCode))
-            {
-                return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
-            }
-
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
-
-            if (draftApprenticeship.HasStandardOptions)
-            {
-                var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
-            }
-
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
+
+        var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, response.DraftApprenticeshipId);
+
+        if (draftApprenticeship.HasStandardOptions)
+        {
+            var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
+            return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
+        }
+
+        return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
     }
 
     [HttpPost]
@@ -390,7 +393,7 @@ public class DraftApprenticeshipController : Controller
             var req = await _modelMapper.Map<BaseDraftApprenticeshipRequest>(model);
 
             var redirectAction = changeCourse == "Edit" ? nameof(EditDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModelForEdit) : nameof(ChoosePilotStatusForEdit);
-            return RedirectToAction(redirectAction, req);
+            return RedirectToAction(redirectAction, "DraftApprenticeship", req);
         }
 
         var overlapResult = await HasStartDateOverlap(model);
@@ -413,19 +416,18 @@ public class DraftApprenticeshipController : Controller
         {
             return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
             {
+                model.ProviderId,
                 model.CohortReference,
                 model.DraftApprenticeshipHashedId,
             });
         }
-        else
-        {
-            var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
-            return RedirectToOptionalPages(
-                draftApprenticeship.HasStandardOptions,
-                model.ProviderId,
-                model.DraftApprenticeshipHashedId,
-                model.CohortReference);
-        }
+
+        var draftApprenticeship = await _commitmentsApiClient.GetDraftApprenticeship(model.CohortId.Value, model.DraftApprenticeshipId.Value);
+        return RedirectToOptionalPages(
+            draftApprenticeship.HasStandardOptions,
+            model.ProviderId,
+            model.DraftApprenticeshipHashedId,
+            model.CohortReference);
     }
 
     private static void SetStartDatesBasedOnFlexiPaymentPilotRules(DraftApprenticeshipViewModel model)
@@ -484,14 +486,12 @@ public class DraftApprenticeshipController : Controller
                 request.CohortReference,
             });
         }
-        else
-        {
-            return RedirectToOptionalPages(
-                result.HasStandardOptions,
-                request.ProviderId,
-                request.DraftApprenticeshipHashedId,
-                request.CohortReference);
-        }
+
+        return RedirectToOptionalPages(
+            result.HasStandardOptions,
+            request.ProviderId,
+            request.DraftApprenticeshipHashedId,
+            request.CohortReference);
     }
 
     [HttpGet]
@@ -501,7 +501,7 @@ public class DraftApprenticeshipController : Controller
     {
         if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
-            return RedirectToAction("RecognisePriorLearningData",
+            return RedirectToAction("RecognisePriorLearningData","DraftApprenticeship", 
                 new { request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
@@ -530,7 +530,7 @@ public class DraftApprenticeshipController : Controller
     {
         if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
-            return RedirectToAction("RecognisePriorLearningDetails",
+            return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship",
                 new { request.CohortReference, request.DraftApprenticeshipHashedId });
         }
 
@@ -746,10 +746,8 @@ public class DraftApprenticeshipController : Controller
         {
             return RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues);
         }
-        else
-        {
-            return RedirectToAction("Details", "Cohort", routeValues);
-        }
+
+        return RedirectToAction("Details", "Cohort", routeValues);
     }
 
     private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)

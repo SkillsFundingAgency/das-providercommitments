@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship();
 
-            var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
+            var result = await fixture.Sut.EditDraftApprenticeshipCourse(fixture.ViewModel);
             result.VerifyReturnsRedirectToActionResult().ActionName.Should().Be("SelectDeliveryModelForEdit");
         }
     }
