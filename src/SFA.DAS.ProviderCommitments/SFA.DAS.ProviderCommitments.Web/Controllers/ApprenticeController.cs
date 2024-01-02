@@ -238,12 +238,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return View(viewModel);
             }
-
-            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
-            {
-                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
-            }
-
+         
             return RedirectToAction(nameof(TrainingDates), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
@@ -258,12 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var confirmRequest = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToAction(nameof(Confirm), confirmRequest);
             }
-            else if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
-            {
-                var startDateRequest = await _modelMapper.Map<StartDateRequest>(viewModel);
-                return RedirectToAction("StartDate", startDateRequest);
-            }
-
+           
             var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
             return RedirectToAction(nameof(TrainingDates), request);
         }
@@ -403,7 +393,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
-            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped && viewModel.StartDate > viewModel.StopDate.Value)
             {
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
@@ -810,6 +800,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apimRequest = await _modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
             await _outerApiService.ValidateChangeOfEmployerOverlap(apimRequest);
-        }
+        }            
     }
 }
