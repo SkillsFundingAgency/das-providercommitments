@@ -38,7 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .ReturnsAsync(_getApprenticeshipApiResponse);
 
             _cacheStorage = new Mock<ICacheStorageService>();
-            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+            _cacheItem = fixture
+                          .Build<ChangeEmployerCacheItem>()
+                          .With(x => x.StartDate, "092022")
+                          .With(x => x.EndDate, "092023")
+                          .With(x => x.EmploymentEndDate, string.Empty)
+                          .Create();
+            
             _cacheStorage.Setup(x =>
                     x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(key => key == _source.CacheKey)))
                 .ReturnsAsync(_cacheItem);

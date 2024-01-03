@@ -281,63 +281,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> StartDate(StartDateRequest request)
-        {
-            var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> StartDate(StartDateViewModel viewModel)
-        {
-            if (viewModel.InEditMode)
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
-            }
-            else
-            {
-                var request = await _modelMapper.Map<EndDateRequest>(viewModel);
-                return RedirectToAction(nameof(EndDate), request);
-            }
-        }
-
-        [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> EndDate(EndDateRequest request)
-        {
-            var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> EndDate(EndDateViewModel viewModel)
-        {
-            if (viewModel.InEditMode)
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
-
-            }
-            else
-            {
-                var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), request);
-            }
-        }
-
-        [HttpGet]
         [Route("{apprenticeshipHashedId}/change-employer", Name = RouteNames.ChangeEmployer)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
@@ -800,6 +743,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apimRequest = await _modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
             await _outerApiService.ValidateChangeOfEmployerOverlap(apimRequest);
-        }            
+        }
     }
 }

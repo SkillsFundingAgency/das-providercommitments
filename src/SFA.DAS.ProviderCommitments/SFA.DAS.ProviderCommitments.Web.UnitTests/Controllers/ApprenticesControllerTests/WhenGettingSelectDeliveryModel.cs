@@ -43,25 +43,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithApprenticeshipStatusLive_RedirectToTrainingDates()
+        public async Task WithoutDeliveryModel_RedirectToTrainingDates()
         {
-            _fixture = _fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Live);
-
             var result = await _fixture.Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.TrainingDates));
         }
-
-        [Test]
-        public async Task WithApprenticeshipStatusStopped_RedirectToStartDate()
-        {
-            _fixture = _fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Stopped);
-
-            var result = await _fixture.Act();
-
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.StartDate));
-        }
-
+  
         internal class GetSelectDeliveryModelFixture
         {
             private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;

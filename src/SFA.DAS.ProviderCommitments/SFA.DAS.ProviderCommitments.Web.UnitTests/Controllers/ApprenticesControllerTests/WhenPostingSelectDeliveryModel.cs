@@ -25,20 +25,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task PostSelectDeliveryModelModel_WithApprenticeshipStatusStopped_ShouldRedirectToStartDate()
+        public async Task PostSelectDeliveryModelModel_ShouldRedirectToTrainingDates()
         {
             var fixture = new PostSelectDeliveryModelFixture();
-            fixture = fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Stopped);
-
-            var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.StartDate));
-        }
-
-        [Test]
-        public async Task PostSelectDeliveryModelModel_WithApprenticeshipStatusLive_ShouldRedirectToTrainingDates()
-        {
-            var fixture = new PostSelectDeliveryModelFixture();
-            fixture = fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Live);
 
             var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.TrainingDates));

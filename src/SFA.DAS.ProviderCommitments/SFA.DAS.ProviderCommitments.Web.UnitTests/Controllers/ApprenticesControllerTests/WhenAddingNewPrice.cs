@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -60,20 +61,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        [TestCase(ApprenticeshipStatus.Stopped)]
-        [TestCase(ApprenticeshipStatus.Live)]
-        [TestCase(ApprenticeshipStatus.Completed)]
-        [TestCase(ApprenticeshipStatus.Paused)]
-        [TestCase(ApprenticeshipStatus.WaitingToStart)]
-        public async Task PostThenReturnsARedirectResult(ApprenticeshipStatus status)
+        [TestCase(ApprenticeshipStatus.Stopped, "2020-06-15", "2021-06-15")]
+        [TestCase(ApprenticeshipStatus.Stopped, "2020-06-15", "2019-06-15")]
+        [TestCase(ApprenticeshipStatus.Live, "2020-06-15", null)]
+        [TestCase(ApprenticeshipStatus.Completed, "2020-06-15", null)]
+        [TestCase(ApprenticeshipStatus.Paused, "2020-06-15", null)]
+        [TestCase(ApprenticeshipStatus.WaitingToStart, "2020-06-15", null)]
+        public async Task PostThenReturnsARedirectResult(ApprenticeshipStatus status, DateTime startDate, DateTime? stopDate)
         {
-            var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = status } };
+            var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = status, StartDate = startDate, StopDate = stopDate } };
 
             var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
             Assert.NotNull(result);
 
-            if (status == ApprenticeshipStatus.Stopped)
+            if (status == ApprenticeshipStatus.Stopped && fixture.PriceViewModel.StartDate > fixture.PriceViewModel.StopDate.Value)
             {
                 Assert.AreEqual(RouteNames.ApprenticeConfirm, result.RouteName);
             }
