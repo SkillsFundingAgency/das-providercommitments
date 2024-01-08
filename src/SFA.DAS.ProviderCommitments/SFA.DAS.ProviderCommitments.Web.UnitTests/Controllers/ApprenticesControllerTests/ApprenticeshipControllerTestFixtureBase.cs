@@ -56,7 +56,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _controller = new ApprenticeController(_mockMapper.Object,
                 Mock.Of<ICookieStorageService<IndexRequest>>(),
                 _mockCommitmentsApiClient.Object,
-                _mockOuterApiService.Object);
+                _mockOuterApiService.Object
+                , Mock.Of<ICacheStorageService>());
 
             _controller.Url = _mockUrlHelper.Object;
             _controller.TempData = _mockTempData.Object;

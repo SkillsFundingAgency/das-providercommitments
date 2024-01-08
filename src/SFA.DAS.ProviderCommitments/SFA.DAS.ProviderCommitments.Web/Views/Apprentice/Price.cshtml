@@ -20,8 +20,6 @@
         <form novalidate method="post">
             @Html.HiddenFor(x => x.CacheKey)
             @Html.HiddenFor(x => x.ApprenticeshipStatus)
-            @Html.HiddenFor(x => x.StartDate)
-            @Html.HiddenFor(x => x.StopDate)
 
             <div asp-show="!isRegular" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.EmploymentPrice, "govuk-form-group--error ")">
                 <p>Agreed training price for this period of employment (excluding VAT)</p>

@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = "ABC"
             };
             Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(),
-                Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+                Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public PostSelectDeliveryModelFixture WithIsEditTrue()
