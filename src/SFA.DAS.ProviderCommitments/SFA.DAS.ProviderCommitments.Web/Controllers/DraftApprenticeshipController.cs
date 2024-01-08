@@ -78,7 +78,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpGet]
-    [Route("add/select-course")]
+    [Route("add/select-course", Name = RouteNames.SelectCourse)]
     [RequireQueryParameter("ReservationId")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> AddDraftApprenticeshipCourse(ReservationsAddDraftApprenticeshipRequest request)
@@ -93,7 +93,7 @@ public class DraftApprenticeshipController : Controller
     }
 
     [HttpPost]
-    [Route("add/select-course")]
+    [Route("add/select-course", Name = RouteNames.SelectCourse)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<ActionResult> SetCourse(Models.SelectCourseViewModel model)
     {
