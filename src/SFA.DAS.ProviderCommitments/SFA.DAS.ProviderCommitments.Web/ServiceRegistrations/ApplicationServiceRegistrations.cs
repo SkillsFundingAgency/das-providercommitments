@@ -12,6 +12,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderUrlHelper;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
