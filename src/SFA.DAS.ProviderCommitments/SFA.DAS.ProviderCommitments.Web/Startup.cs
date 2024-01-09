@@ -41,6 +41,7 @@ public class Startup
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
         });
+        
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 

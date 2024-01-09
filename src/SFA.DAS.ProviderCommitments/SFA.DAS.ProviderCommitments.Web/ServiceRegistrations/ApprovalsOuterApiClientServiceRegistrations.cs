@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Infrastructure;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
@@ -15,7 +16,7 @@ public static class ApprovalsOuterApiClientServiceRegistrations
             return new ApprovalsOuterApiHttpClientFactory(config, loggerFactory);
         });
         
-        services.AddSingleton(provider => provider.GetRequiredService<IApprovalsOuterApiHttpClientFactory>().CreateClient());
+        services.AddSingleton<IApprovalsOuterApiClient>(provider => provider.GetRequiredService<IApprovalsOuterApiHttpClientFactory>().CreateClient());
 
         return services;
     }

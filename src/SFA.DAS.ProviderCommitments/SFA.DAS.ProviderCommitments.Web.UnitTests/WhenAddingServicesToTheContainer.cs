@@ -20,6 +20,7 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
@@ -63,29 +64,48 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
 
+    [TestCase(typeof(ISelectDeliveryModelMapperHelper))]
+    [TestCase(typeof(ISelectCourseViewModelMapperHelper))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved_For_Application_Services(Type toResolve)
+    {
+        RunTestForType(toResolve);
+    }
+    
     private static void RunTestForType(Type toResolve)
+    {
+        var services = new ServiceCollection();
+
+        SetupServiceCollection(services);
+
+        var provider = services.BuildServiceProvider();
+        var type = provider.GetService(toResolve);
+
+        Assert.That(type, Is.Not.Null);
+    }
+
+    private static void SetupServiceCollection(IServiceCollection services)
     {
         var mockHostEnvironment = new Mock<IHostEnvironment>();
         mockHostEnvironment.Setup(x => x.EnvironmentName).Returns(Environments.Development);
 
         var stubConfiguration = GenerateStubConfiguration();
-        var services = new ServiceCollection();
 
         services.AddHttpClient();
         services.AddSingleton<IConfiguration>(stubConfiguration);
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
-        
+
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
         services.AddMemoryCache();
         services.AddCache(mockHostEnvironment.Object, stubConfiguration);
         services.AddModelMappings();
         services.AddApprovalsOuterApiClient();
+        services.AddProviderRelationshipsApiClient(stubConfiguration);
         services.AddAuthorization<AuthorizationContextProvider>();
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
-        
+
         services
             .AddCommitmentsApiClient(stubConfiguration)
             .AddProviderApprenticeshipsApiClient(stubConfiguration);
@@ -98,13 +118,10 @@ public class WhenAddingServicesToTheContainer
         services.AddTransient<DraftApprenticeshipController>();
         services.AddTransient<OverlappingTrainingDateRequestController>();
         services.AddTransient<ProviderAccountController>();
-        
-        var provider = services.BuildServiceProvider();
-        var type = provider.GetService(toResolve);
 
-        Assert.IsNotNull(type);
+        services.AddDasMvc(stubConfiguration);
     }
-
+    
     private static IConfigurationRoot GenerateStubConfiguration()
     {
         var configSource = new MemoryConfigurationSource

@@ -1,4 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.Authorization.Mvc.Filters;
 using SFA.DAS.Authorization.Mvc.ModelBinding;
@@ -21,7 +24,7 @@ public static class MvcServiceRegistrations
     public static IServiceCollection AddDasMvc(this IServiceCollection services, IConfiguration configuration)
     {
         var useDfeSignIn = configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-        
+
         services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -47,6 +50,12 @@ public static class MvcServiceRegistrations
             .AddScoped<UseCacheForValidationAttribute>()
             .AddScoped<DomainExceptionRedirectGetFilterAttribute>()
             .AddScoped<ValidateModelStateFilter>();
+
+        services.AddScoped<IUrlHelper>(sp =>
+        {
+            var actionContext = sp.GetService<IActionContextAccessor>().ActionContext;
+            return new UrlHelper(actionContext);
+        });
 
         return services;
     }
