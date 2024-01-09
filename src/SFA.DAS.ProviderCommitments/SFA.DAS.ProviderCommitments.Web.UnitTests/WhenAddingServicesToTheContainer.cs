@@ -15,7 +15,6 @@ using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
@@ -82,6 +81,7 @@ public class WhenAddingServicesToTheContainer
         services.AddMemoryCache();
         services.AddCache(mockHostEnvironment.Object, stubConfiguration);
         services.AddModelMappings();
+        services.AddApprovalsOuterApiClient();
         services.AddAuthorization<AuthorizationContextProvider>();
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
@@ -98,7 +98,7 @@ public class WhenAddingServicesToTheContainer
         services.AddTransient<DraftApprenticeshipController>();
         services.AddTransient<OverlappingTrainingDateRequestController>();
         services.AddTransient<ProviderAccountController>();
-
+        
         var provider = services.BuildServiceProvider();
         var type = provider.GetService(toResolve);
 

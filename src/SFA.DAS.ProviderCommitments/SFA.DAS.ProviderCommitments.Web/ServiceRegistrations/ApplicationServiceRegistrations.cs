@@ -43,6 +43,8 @@ public static class ApplicationServiceRegistrations
         
         services.AddTransient<IBulkUploadFileParser, BulkUploadFileParser>();
         
+        services.AddTransient<ISelectDeliveryModelMapperHelper, SelectDeliveryModelMapperHelper>();
+        
         services.AddSingleton(typeof(Interfaces.ICookieStorageService<>), typeof(Infrastructure.CookieService.CookieStorageService<>));
 
         return services;
