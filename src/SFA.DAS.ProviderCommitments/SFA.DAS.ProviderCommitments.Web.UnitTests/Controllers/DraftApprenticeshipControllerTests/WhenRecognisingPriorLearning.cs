@@ -451,7 +451,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                     new PriorLearningDataViewModelToResultMapper(OuterApiService.Object)),
                 Mock.Of<IEncodingService>(),
                     AuthorizationService.Object,
-                OuterApiService.Object,Mock.Of<IAuthenticationService>());
+                OuterApiService.Object,Mock.Of<IAuthenticationService>(), 
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
 

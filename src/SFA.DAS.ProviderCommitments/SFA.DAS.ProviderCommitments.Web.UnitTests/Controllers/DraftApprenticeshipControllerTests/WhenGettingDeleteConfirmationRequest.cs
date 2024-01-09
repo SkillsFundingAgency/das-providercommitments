@@ -39,7 +39,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
                 _providerFeatureToggle.Object,
-                Mock.Of<IOuterApiService>(), Mock.Of<IAuthenticationService>());
+                Mock.Of<IOuterApiService>(), Mock.Of<IAuthenticationService>(),
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
         }
 
         [Test]

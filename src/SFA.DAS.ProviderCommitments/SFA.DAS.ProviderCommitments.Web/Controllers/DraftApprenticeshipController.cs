@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -40,12 +41,15 @@ public class DraftApprenticeshipController : Controller
     private readonly IAuthorizationService _authorizationService;
     private readonly IOuterApiService _outerApiService;
     private readonly IAuthenticationService _authenticationService;
+    private readonly ILogger<DraftApprenticeshipController> _logger;
     public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
     public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
         IModelMapper modelMapper, IEncodingService encodingService,
         IAuthorizationService authorizationService,
-        IOuterApiService outerApiService, IAuthenticationService authenticationService)
+        IOuterApiService outerApiService, 
+        IAuthenticationService authenticationService,
+        ILogger<DraftApprenticeshipController> logger)
     {
         _mediator = mediator;
         _commitmentsApiClient = commitmentsApiClient;
@@ -54,6 +58,7 @@ public class DraftApprenticeshipController : Controller
         _authorizationService = authorizationService;
         _outerApiService = outerApiService;
         _authenticationService = authenticationService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -62,6 +67,8 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
     {
+        _logger.LogInformation("DraftApprenticeshipController.AddNewDraftApprenticeship processing started. Request: {Request}.", JsonSerializer.Serialize(request));
+        
         return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
     }
 
@@ -324,11 +331,19 @@ public class DraftApprenticeshipController : Controller
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
     {
+        _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship processing started.");
+        
+        _logger.LogInformation("changeCourse: {ChangeCourse}, changeDeliveryModel: {ChangeDeliveryModel}, changePilotStatus: {ChangePilotStatus}"
+            , changeCourse, changeDeliveryModel, changePilotStatus);
+        
         if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
         {
             StoreAddDraftApprenticeshipState(model);
             var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
             var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
+
+            _logger.LogInformation("redirectAction: {RedirectAction}, request: {Request}.", redirectAction, JsonSerializer.Serialize(req));
+            
             return RedirectToAction(redirectAction, "DraftApprenticeship", req);
         }
 

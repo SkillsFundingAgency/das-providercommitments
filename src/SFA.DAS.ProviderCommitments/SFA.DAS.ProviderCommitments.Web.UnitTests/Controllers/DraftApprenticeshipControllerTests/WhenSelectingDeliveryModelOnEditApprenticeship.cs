@@ -98,7 +98,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 Mock.Of<ICommitmentsApiClient>(),
                 modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                authorizationServiceMock.Object, Mock.Of<IOuterApiService>(),Mock.Of<IAuthenticationService>());
+                authorizationServiceMock.Object, 
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<IAuthenticationService>(), 
+                Mock.Of<ILogger<DraftApprenticeshipController>>());
             Sut.TempData = _tempDataMock.Object;
         }
 
