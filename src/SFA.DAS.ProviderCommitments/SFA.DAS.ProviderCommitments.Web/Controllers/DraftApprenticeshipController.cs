@@ -516,8 +516,8 @@ public class DraftApprenticeshipController : Controller
     {
         if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
-            return RedirectToAction("RecognisePriorLearningData","DraftApprenticeship", 
-                new { request.CohortReference, request.DraftApprenticeshipHashedId });
+            return RedirectToAction(nameof(RecognisePriorLearningData),"DraftApprenticeship", 
+                new { request.CohortReference, request.DraftApprenticeshipHashedId, request.ProviderId });
         }
 
         var model = await _modelMapper.Map<PriorLearningDetailsViewModel>(request);
@@ -545,8 +545,8 @@ public class DraftApprenticeshipController : Controller
     {
         if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
-            return RedirectToAction("RecognisePriorLearningDetails", "DraftApprenticeship",
-                new { request.CohortReference, request.DraftApprenticeshipHashedId });
+            return RedirectToAction(nameof(RecognisePriorLearningDetails), "DraftApprenticeship",
+                new { request.CohortReference, request.DraftApprenticeshipHashedId, request.ProviderId });
         }
 
         var model = await _modelMapper.Map<PriorLearningDataViewModel>(request);
@@ -562,7 +562,7 @@ public class DraftApprenticeshipController : Controller
 
         if (result?.RplPriceReductionError == true)
         {
-            return RedirectToAction("RecognisePriorLearningSummary", "DraftApprenticeship",
+            return RedirectToAction(nameof(RecognisePriorLearningSummary), "DraftApprenticeship",
                 new { model.ProviderId, model.DraftApprenticeshipHashedId, model.CohortReference });
         }
 
