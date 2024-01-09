@@ -21,7 +21,8 @@
         <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.SelectCourse" asp-route-providerId="@Model.ProviderId">
             
             <input type="hidden" asp-for="IsOnFlexiPaymentsPilot" />
-
+            <input type="hidden" asp-for="ReservationId" />
+            
             <partial name="_SelectStandardPartial" />
 
             <button type="submit" class="govuk-button">Continue</button>

@@ -51,6 +51,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
             var result = await _mapper.Map(_request);
             Assert.AreEqual(_request.ProviderId, result.ProviderId);
         }
+        
+        [Test]
+        public async Task ReservationId_Is_Mapped_Correctly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_request.ReservationId, result.ReservationId);
+        }
 
         [Test]
         public async Task ShowManagingStandardsContent_Is_Mapped_Correctly()

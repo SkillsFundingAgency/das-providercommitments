@@ -5,6 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 public class SelectCourseViewModel : IStandardSelection
 {
     public long ProviderId { get; set; }
+    public Guid? ReservationId { get; set; }
     public string EmployerName { get; set; }
     public bool ShowManagingStandardsContent { get; set; }
     public bool? IsOnFlexiPaymentsPilot { get; set; }
