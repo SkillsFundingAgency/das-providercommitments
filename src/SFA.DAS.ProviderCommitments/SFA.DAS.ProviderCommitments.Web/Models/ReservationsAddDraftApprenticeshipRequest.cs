@@ -6,12 +6,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 {
     public class ReservationsAddDraftApprenticeshipRequest : BaseReservationsAddDraftApprenticeshipRequest, IAuthorizationContextModel
     {
-        public string CohortReference { get; set; }
         public long? CohortId { get; set; }
     }
 
     public class BaseReservationsAddDraftApprenticeshipRequest
     {
+        public string CohortReference { get; set; }
         public long ProviderId { get; set; }
         public Guid ReservationId { get; set; }
         public string StartMonthYear { get; set; }
