@@ -19,7 +19,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="6.0.24"/>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.13"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.24"/>
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2"/>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.24">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
