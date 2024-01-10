@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -13,6 +12,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
@@ -26,7 +26,12 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
+using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
+using RecognisePriorLearningRequest = SFA.DAS.ProviderCommitments.Web.Models.RecognisePriorLearningRequest;
+using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers;
 
@@ -67,8 +72,6 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public IActionResult AddNewDraftApprenticeship(BaseReservationsAddDraftApprenticeshipRequest request)
     {
-        _logger.LogInformation("DraftApprenticeshipController.AddNewDraftApprenticeship processing started. Request: {Request}.", JsonSerializer.Serialize(request));
-        
         return RedirectToAction(nameof(AddDraftApprenticeshipCourse), "DraftApprenticeship", request);
     }
 
@@ -102,7 +105,7 @@ public class DraftApprenticeshipController : Controller
     [HttpPost]
     [Route("add/select-course", Name = RouteNames.SelectCourse)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<ActionResult> SetCourse(Models.SelectCourseViewModel model)
+    public async Task<ActionResult> SetCourse(SelectCourseViewModel model)
     {
         if (string.IsNullOrEmpty(model.CourseCode))
         {
@@ -174,7 +177,7 @@ public class DraftApprenticeshipController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectDeliveryModel(ReservationsAddDraftApprenticeshipRequest request)
     {
-        var model = await _modelMapper.Map<Models.SelectDeliveryModelViewModel>(request);
+        var model = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
 
         if (model.DeliveryModels.Length > 1)
         {
@@ -189,7 +192,7 @@ public class DraftApprenticeshipController : Controller
     [Route("add/select-delivery-model")]
     [RequireQueryParameter("ReservationId")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> SetDeliveryModel(Models.SelectDeliveryModelViewModel model)
+    public async Task<IActionResult> SetDeliveryModel(SelectDeliveryModelViewModel model)
     {
         if (model.DeliveryModel == null)
         {
@@ -266,13 +269,13 @@ public class DraftApprenticeshipController : Controller
         {
             var draft = PeekStoredEditDraftApprenticeshipState();
             var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
-            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?)draft.DeliveryModel;
+            model.DeliveryModel = (DeliveryModel?)draft.DeliveryModel;
 
             if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
             {
                 return View(model);
             }
-            draft.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
+            draft.DeliveryModel = (CommitmentsV2.Types.DeliveryModel)model.DeliveryModels.FirstOrDefault();
             StoreEditDraftApprenticeshipState(draft);
 
         return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
@@ -287,7 +290,7 @@ public class DraftApprenticeshipController : Controller
     public IActionResult SetDeliveryModelForEdit(SelectDeliveryModelForEditViewModel model)
     {
         var draft = PeekStoredEditDraftApprenticeshipState();
-        draft.DeliveryModel = (DeliveryModel) model.DeliveryModel;
+        draft.DeliveryModel = (CommitmentsV2.Types.DeliveryModel) model.DeliveryModel;
         draft.CourseCode = model.CourseCode;
         StoreEditDraftApprenticeshipState(draft);
 
@@ -331,18 +334,11 @@ public class DraftApprenticeshipController : Controller
     [ServiceFilter(typeof(UseCacheForValidationAttribute))]
     public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
     {
-        _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship processing started.");
-        
-        _logger.LogInformation("changeCourse: {ChangeCourse}, changeDeliveryModel: {ChangeDeliveryModel}, changePilotStatus: {ChangePilotStatus}"
-            , changeCourse, changeDeliveryModel, changePilotStatus);
-        
         if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
         {
             StoreAddDraftApprenticeshipState(model);
             var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
             var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
-
-            _logger.LogInformation("redirectAction: {RedirectAction}, request: {Request}.", redirectAction, JsonSerializer.Serialize(req));
             
             return RedirectToAction(redirectAction, "DraftApprenticeship", req);
         }
@@ -479,7 +475,7 @@ public class DraftApprenticeshipController : Controller
     [HttpGet]
     [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> RecognisePriorLearning(Models.RecognisePriorLearningRequest request)
+    public async Task<IActionResult> RecognisePriorLearning(RecognisePriorLearningRequest request)
     {
         var model = await _modelMapper.Map<RecognisePriorLearningViewModel>(request);
         return View("RecognisePriorLearning", model);
@@ -512,7 +508,7 @@ public class DraftApprenticeshipController : Controller
     [HttpGet]
     [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-details")]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> RecognisePriorLearningDetails(Models.RecognisePriorLearningRequest request)
+    public async Task<IActionResult> RecognisePriorLearningDetails(RecognisePriorLearningRequest request)
     {
         if (await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
@@ -541,7 +537,7 @@ public class DraftApprenticeshipController : Controller
     [HttpGet]
     [Route("{DraftApprenticeshipHashedId}/recognise-prior-learning-data", Name = RouteNames.RecognisePriorLearningData)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> RecognisePriorLearningData(Models.RecognisePriorLearningRequest request)
+    public async Task<IActionResult> RecognisePriorLearningData(RecognisePriorLearningRequest request)
     {
         if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
         {
@@ -716,7 +712,7 @@ public class DraftApprenticeshipController : Controller
         var result = await _mediator.Send(new GetTrainingCoursesQueryRequest
         {
             IncludeFrameworks = (!cohortDetails.IsFundedByTransfer &&
-                                 cohortDetails.LevyStatus != CommitmentsV2.Types.ApprenticeshipEmployerType.NonLevy)
+                                 cohortDetails.LevyStatus != ApprenticeshipEmployerType.NonLevy)
                                 || cohortDetails.IsLinkedToChangeOfPartyRequest
         });
 
@@ -765,7 +761,7 @@ public class DraftApprenticeshipController : Controller
         return RedirectToAction("Details", "Cohort", routeValues);
     }
 
-    private async Task<Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
+    private async Task<ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
     {
         if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
         {
@@ -783,10 +779,5 @@ public class DraftApprenticeshipController : Controller
         }
 
         return null;
-    }
-
-    private void RemoveStoredDraftApprenticeshipState()
-    {
-        TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
     }
 }
