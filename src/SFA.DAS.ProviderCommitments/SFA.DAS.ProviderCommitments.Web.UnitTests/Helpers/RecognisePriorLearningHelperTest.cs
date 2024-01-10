@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Helpers
 
         var result = RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model);
 
-        Assert.AreEqual(expectedRequireRplStatus, result);
+            Assert.That(result, Is.EqualTo(expectedRequireRplStatus));
         }
     }
 }

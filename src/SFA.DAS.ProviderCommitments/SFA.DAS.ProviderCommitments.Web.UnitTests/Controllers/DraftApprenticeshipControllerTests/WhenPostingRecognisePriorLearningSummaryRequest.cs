@@ -7,42 +7,44 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests;
+
+[TestFixture]
+public class WhenPostingRecognisePriorLearningSummaryRequest
 {
-    [TestFixture]
-    public class WhenPostingRecognisePriorLearningSummaryRequest
+    private DraftApprenticeshipController _sut;
+    private Mock<IModelMapper> _modelMapperMock;
+    private Mock<IAuthorizationService> _providerFeatureToggle;
+    private PriorLearningSummaryViewModel _viewModel;
+
+    [SetUp]
+    public void Arrange()
     {
-        private DraftApprenticeshipController _sut;
-        private Mock<IModelMapper> _modelMapperMock;
-        private Mock<IAuthorizationService> _providerFeatureToggle;
-        private PriorLearningSummaryViewModel _viewModel;
+        var autoFixture = new Fixture();
+        _modelMapperMock = new Mock<IModelMapper>();
+        _viewModel = autoFixture.Create<PriorLearningSummaryViewModel>();
 
-        [SetUp]
-        public void Arrange()
-        {
-            var autoFixture = new Fixture();
-            _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = autoFixture.Create<PriorLearningSummaryViewModel>();
+        _providerFeatureToggle = new Mock<IAuthorizationService>();
+        _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
 
-            _providerFeatureToggle = new Mock<IAuthorizationService>();
-            _providerFeatureToggle.Setup(x => x.IsAuthorized(It.IsAny<string>())).Returns(false);
+        _sut = new DraftApprenticeshipController(
+            Mock.Of<IMediator>(),
+            Mock.Of<ICommitmentsApiClient>(),
+            _modelMapperMock.Object,
+            Mock.Of<IEncodingService>(),
+            _providerFeatureToggle.Object,
+            Mock.Of<IOuterApiService>(),
+            Mock.Of<IAuthenticationService>()
+        );
+    }
 
-            _sut = new DraftApprenticeshipController(
-                Mock.Of<IMediator>(),
-                Mock.Of<ICommitmentsApiClient>(),
-                _modelMapperMock.Object,
-                Mock.Of<IEncodingService>(),
-                _providerFeatureToggle.Object,
-                Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthenticationService>()
-            );
-        }
-
-        [Test]
-        public void When_posting_from_Recognise_Prior_Learning_Summary()
-        {
-            var action = _sut.RecognisePriorLearningSummary(_viewModel);
-            action.VerifyReturnsRedirectToActionResult().WithActionName("Details");
-        }
+    [TearDown]
+    public void TearDown() => _sut.Dispose();
+    
+    [Test]
+    public void When_posting_from_Recognise_Prior_Learning_Summary()
+    {
+        var action = _sut.RecognisePriorLearningSummary(_viewModel);
+        action.VerifyReturnsRedirectToActionResult().WithActionName("Details");
     }
 }

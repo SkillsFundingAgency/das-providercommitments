@@ -192,22 +192,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, _viewModel.ProviderId);
+            Assert.That(_viewModel.ProviderId, Is.EqualTo(ProviderId));
         }
 
         public void Verify_HasCreateCohortPermission_IsMapped()
         {
-            Assert.AreEqual(_hasCreateCohortPermission, _viewModel.HasCreateCohortPermission);
+            Assert.That(_viewModel.HasCreateCohortPermission, Is.EqualTo(_hasCreateCohortPermission));
         }
 
         public void Verify_HasExistingCohort_IsMapped()
         {
-            Assert.AreEqual(true, _viewModel.HasExistingCohort);
+            Assert.That(_viewModel.HasExistingCohort, Is.EqualTo(true));
         }
 
         public void Verify_WhenNoCohortExist_HasExistingCohort_IsMapped()
         {
-            Assert.AreEqual(false, _viewModel.HasExistingCohort);
+            Assert.That(_viewModel.HasExistingCohort, Is.EqualTo(false));
         }
     }
 }

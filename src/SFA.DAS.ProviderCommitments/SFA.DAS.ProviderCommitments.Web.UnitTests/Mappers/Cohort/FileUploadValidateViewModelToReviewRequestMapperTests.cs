@@ -62,14 +62,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CachedRequestIdIsMapped()
         {
             var result = await _mapper.Map(_viewModel);
-            Assert.AreEqual(_cacheRequestId, result.CacheRequestId);
+            Assert.That(result.CacheRequestId, Is.EqualTo(_cacheRequestId));
         }
 
         [Test]
         public async Task ProviderIdIsMapped()
         {
             var result = await _mapper.Map(_viewModel);
-            Assert.AreEqual(_viewModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_viewModel.ProviderId));
         }
     }
 }

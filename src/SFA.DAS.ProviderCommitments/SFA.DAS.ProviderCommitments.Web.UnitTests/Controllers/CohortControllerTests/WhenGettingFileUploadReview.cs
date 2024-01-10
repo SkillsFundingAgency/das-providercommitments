@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadReviewViewModel>();
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
         }
     }
 

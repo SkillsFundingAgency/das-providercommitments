@@ -44,9 +44,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.ProviderReference, fixture._apprenticeshipResponse.EmployerReference);
-            Assert.AreEqual(fixture.source.ProviderReference, result.ProviderReference);
-            Assert.AreEqual(fixture._apprenticeshipResponse.ProviderReference, result.OriginalApprenticeship.ProviderReference);
+            Assert.That(fixture._apprenticeshipResponse.EmployerReference, Is.Not.EqualTo(fixture.source.ProviderReference));
+            Assert.That(result.ProviderReference, Is.EqualTo(fixture.source.ProviderReference));
+            Assert.That(result.OriginalApprenticeship.ProviderReference, Is.EqualTo(fixture._apprenticeshipResponse.ProviderReference));
         }
 
         [Test]
@@ -56,9 +56,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.FirstName, fixture._apprenticeshipResponse.FirstName);
-            Assert.AreEqual(fixture.source.FirstName, result.FirstName);
-            Assert.AreEqual(fixture._apprenticeshipResponse.FirstName, result.OriginalApprenticeship.FirstName);
+            Assert.That(fixture._apprenticeshipResponse.FirstName, Is.Not.EqualTo(fixture.source.FirstName));
+            Assert.That(result.FirstName, Is.EqualTo(fixture.source.FirstName));
+            Assert.That(result.OriginalApprenticeship.FirstName, Is.EqualTo(fixture._apprenticeshipResponse.FirstName));
         }
 
         [Test]
@@ -68,9 +68,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.LastName, fixture._apprenticeshipResponse.LastName);
-            Assert.AreEqual(fixture.source.LastName, result.LastName);
-            Assert.AreEqual(fixture._apprenticeshipResponse.LastName, result.OriginalApprenticeship.LastName);
+            Assert.That(fixture._apprenticeshipResponse.LastName, Is.Not.EqualTo(fixture.source.LastName));
+            Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
+            Assert.That(result.OriginalApprenticeship.LastName, Is.EqualTo(fixture._apprenticeshipResponse.LastName));
         }
 
         [Test]
@@ -80,9 +80,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.Email, fixture._apprenticeshipResponse.Email);
-            Assert.AreEqual(fixture.source.Email, result.Email);
-            Assert.AreEqual(fixture._apprenticeshipResponse.Email, result.OriginalApprenticeship.Email);
+            Assert.That(fixture._apprenticeshipResponse.Email, Is.Not.EqualTo(fixture.source.Email));
+            Assert.That(result.Email, Is.EqualTo(fixture.source.Email));
+            Assert.That(result.OriginalApprenticeship.Email, Is.EqualTo(fixture._apprenticeshipResponse.Email));
         }
 
         [Test]
@@ -92,9 +92,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.DateOfBirth.Day, fixture._apprenticeshipResponse.DateOfBirth.Day);
-            Assert.AreEqual(fixture.source.DateOfBirth.Date, result.DateOfBirth);
-            Assert.AreEqual(fixture._apprenticeshipResponse.DateOfBirth, result.OriginalApprenticeship.DateOfBirth);
+            Assert.That(fixture._apprenticeshipResponse.DateOfBirth.Day, Is.Not.EqualTo(fixture.source.DateOfBirth.Day));
+            Assert.That(result.DateOfBirth, Is.EqualTo(fixture.source.DateOfBirth.Date));
+            Assert.That(result.OriginalApprenticeship.DateOfBirth, Is.EqualTo(fixture._apprenticeshipResponse.DateOfBirth));
         }
 
         [Test]
@@ -105,9 +105,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.StartDate.Date, fixture._apprenticeshipResponse.StartDate);
-            Assert.AreEqual(fixture.source.StartDate.Date, result.StartDate);
-            Assert.AreEqual(fixture._apprenticeshipResponse.StartDate, result.OriginalApprenticeship.StartDate);
+            Assert.That(fixture._apprenticeshipResponse.StartDate, Is.Not.EqualTo(fixture.source.StartDate.Date));
+            Assert.That(result.StartDate, Is.EqualTo(fixture.source.StartDate.Date));
+            Assert.That(result.OriginalApprenticeship.StartDate, Is.EqualTo(fixture._apprenticeshipResponse.StartDate));
         }
 
         [Test]
@@ -118,9 +118,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.EndDate.Date, fixture._apprenticeshipResponse.EndDate);
-            Assert.AreEqual(fixture.source.EndDate.Date, result.EndDate);
-            Assert.AreEqual(fixture._apprenticeshipResponse.EndDate, result.OriginalApprenticeship.EndDate);
+            Assert.That(fixture._apprenticeshipResponse.EndDate, Is.Not.EqualTo(fixture.source.EndDate.Date));
+            Assert.That(result.EndDate, Is.EqualTo(fixture.source.EndDate.Date));
+            Assert.That(result.OriginalApprenticeship.EndDate, Is.EqualTo(fixture._apprenticeshipResponse.EndDate));
         }
 
         [Test]
@@ -130,9 +130,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.CourseCode, fixture._apprenticeshipResponse.CourseCode);
-            Assert.AreEqual(fixture.source.CourseCode, result.CourseCode);
-            Assert.AreEqual(fixture._apprenticeshipResponse.CourseCode, result.OriginalApprenticeship.CourseCode);
+            Assert.That(fixture._apprenticeshipResponse.CourseCode, Is.Not.EqualTo(fixture.source.CourseCode));
+            Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
+            Assert.That(result.OriginalApprenticeship.CourseCode, Is.EqualTo(fixture._apprenticeshipResponse.CourseCode));
         }
 
         [TestCase(DeliveryModel.Regular, DeliveryModel.PortableFlexiJob)]
@@ -144,9 +144,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.DeliveryModel, fixture._apprenticeshipResponse.DeliveryModel);
-            Assert.AreEqual(fixture.source.DeliveryModel, result.DeliveryModel);
-            Assert.AreEqual(fixture._apprenticeshipResponse.DeliveryModel, result.OriginalApprenticeship.DeliveryModel);
+            Assert.That(fixture._apprenticeshipResponse.DeliveryModel, Is.Not.EqualTo(fixture.source.DeliveryModel));
+            Assert.That(result.DeliveryModel, Is.EqualTo(fixture.source.DeliveryModel));
+            Assert.That(result.OriginalApprenticeship.DeliveryModel, Is.EqualTo(fixture._apprenticeshipResponse.DeliveryModel));
         }
 
         [Test]
@@ -156,9 +156,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.EmploymentEndDate.Date, fixture._apprenticeshipResponse.EmploymentEndDate);
-            Assert.AreEqual(fixture.source.EmploymentEndDate.Date, result.EmploymentEndDate);
-            Assert.AreEqual(fixture._apprenticeshipResponse.EmploymentEndDate, result.OriginalApprenticeship.EmploymentEndDate);
+            Assert.That(fixture._apprenticeshipResponse.EmploymentEndDate, Is.Not.EqualTo(fixture.source.EmploymentEndDate.Date));
+            Assert.That(result.EmploymentEndDate, Is.EqualTo(fixture.source.EmploymentEndDate.Date));
+            Assert.That(result.OriginalApprenticeship.EmploymentEndDate, Is.EqualTo(fixture._apprenticeshipResponse.EmploymentEndDate));
         }
 
         [Test]
@@ -168,9 +168,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.EmploymentPrice, fixture._apprenticeshipResponse.EmploymentPrice);
-            Assert.AreEqual(fixture.source.EmploymentPrice, result.EmploymentPrice);
-            Assert.AreEqual(fixture._apprenticeshipResponse.EmploymentPrice, result.OriginalApprenticeship.EmploymentPrice);
+            Assert.That(fixture._apprenticeshipResponse.EmploymentPrice, Is.Not.EqualTo(fixture.source.EmploymentPrice));
+            Assert.That(result.EmploymentPrice, Is.EqualTo(fixture.source.EmploymentPrice));
+            Assert.That(result.OriginalApprenticeship.EmploymentPrice, Is.EqualTo(fixture._apprenticeshipResponse.EmploymentPrice));
         }
 
         [Test]
@@ -180,8 +180,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.Version, fixture._apprenticeshipResponse.Version);
-            Assert.AreEqual(fixture.source.Version, result.Version);
+            Assert.That(fixture._apprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
+            Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
         }
 
         [Test]
@@ -191,8 +191,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.Version, fixture._apprenticeshipResponse.Version);
-            Assert.AreEqual(fixture.source.Version, result.Version);
+            Assert.That(fixture._apprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
+            Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
         }
 
         [Test]
@@ -202,8 +202,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreNotEqual(fixture.source.Option, fixture._apprenticeshipResponse.Option);
-            Assert.AreEqual(fixture.source.Option, result.Option);
+            Assert.That(fixture._apprenticeshipResponse.Option, Is.Not.EqualTo(fixture.source.Option));
+            Assert.That(result.Option, Is.EqualTo(fixture.source.Option));
         }
 
         [Test]
@@ -213,7 +213,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.True(result.ReturnToChangeOption);
+            Assert.That(result.ReturnToChangeOption, Is.True);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.True(result.ReturnToChangeVersion);
+            Assert.That(result.ReturnToChangeVersion, Is.True);
         }
 
         [Test]
@@ -258,8 +258,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.AreEqual(fixture.source.LastName, result.LastName);
-            Assert.AreEqual(fixture.source.CourseCode, result.CourseCode);
+            Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
+            Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
         }
 
         [Test]

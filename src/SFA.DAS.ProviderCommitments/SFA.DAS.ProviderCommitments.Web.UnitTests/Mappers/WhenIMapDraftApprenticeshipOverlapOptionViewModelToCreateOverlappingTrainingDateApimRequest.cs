@@ -24,14 +24,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenDraftApprenticeshipIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.DraftApprenticeshipId, result.DraftApprenticeshipId);
+            Assert.That(result.DraftApprenticeshipId, Is.EqualTo(_source.DraftApprenticeshipId));
         }
 
         [Test]
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
     }
 }

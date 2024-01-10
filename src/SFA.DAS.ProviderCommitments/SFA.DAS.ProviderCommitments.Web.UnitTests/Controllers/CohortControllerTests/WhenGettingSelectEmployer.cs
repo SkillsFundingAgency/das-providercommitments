@@ -31,8 +31,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.Act() as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(SelectEmployerViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(SelectEmployerViewModel)));
         }
     }
 

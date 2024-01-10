@@ -4,49 +4,50 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
+
+[TestFixture]
+public class WhenPostingDataLockRequestRestart
 {
-    [TestFixture]
-    public class WhenPostingDataLockRequestRestart
+    private ApprenticeController _sut;
+    private Mock<IModelMapper> _modelMapperMock;
+    private DataLockRequestRestartRequest _request;
+    private DataLockRequestRestartViewModel _viewModel;
+
+    [SetUp]
+    public void Arrange()
     {
-        private ApprenticeController _sut;
-        private Mock<IModelMapper> _modelMapperMock;
-        private DataLockRequestRestartRequest _request;
-        private DataLockRequestRestartViewModel _viewModel;
+        var fixture = new Fixture();
+        _request = fixture.Create<DataLockRequestRestartRequest>();
+        _viewModel = fixture.Create<DataLockRequestRestartViewModel>();
+        _modelMapperMock = new Mock<IModelMapper>();
+        _modelMapperMock.Setup(x => x.Map<DataLockRequestRestartViewModel>(_request)).ReturnsAsync(_viewModel);
+        _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+    }
+    
+    [TearDown]
+    public void TearDown() => _sut.Dispose();
 
-        [SetUp]
-        public void Arrange()
-        {
-            var fixture = new Fixture();
-            _request = fixture.Create<DataLockRequestRestartRequest>();
-            _viewModel = fixture.Create<DataLockRequestRestartViewModel>();
-            _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock.Setup(x => x.Map<DataLockRequestRestartViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
-        }
+    [Test]
+    public void Then_Redirect_To_Details_Page()
+    {
+        //Act
+        var result = _sut.DataLockRequestRestart(_viewModel);
 
-        [Test]
-        public void Then_Redirect_To_Details_Page()
-        {
-            //Act
-            var result = _sut.DataLockRequestRestart(_viewModel);
+        //Assert
+        result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
+    }
 
-            //Assert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("Details");
-        }
+    [Test]
+    public void Then_Redirect_To_ConfirmRestart_Page()
+    {
+        //Arrange
+        _viewModel.SubmitStatusViewModel = SubmitStatusViewModel.Confirm;
 
+        //Act
+        var result = _sut.DataLockRequestRestart(_viewModel);
 
-        [Test]
-        public void Then_Redirect_To_ConfirmRestart_Page()
-        {
-            //Arrange
-            _viewModel.SubmitStatusViewModel = SubmitStatusViewModel.Confirm;
-
-            //Act
-            var result = _sut.DataLockRequestRestart(_viewModel);
-
-            //Assert
-            result.VerifyReturnsRedirectToActionResult().WithActionName("ConfirmRestart");
-        }
+        //Assert
+        result.VerifyReturnsRedirectToActionResult().WithActionName("ConfirmRestart");
     }
 }

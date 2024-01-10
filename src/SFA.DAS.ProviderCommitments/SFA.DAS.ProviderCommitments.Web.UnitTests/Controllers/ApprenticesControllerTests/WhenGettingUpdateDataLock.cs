@@ -24,6 +24,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Setup(x => x.Map<UpdateDateLockViewModel>(_request)).ReturnsAsync(_viewModel);
             _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
         }
+        
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public async Task ThenCallsModelMapper()
@@ -42,8 +45,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await _sut.UpdateDataLock(_request) as ViewResult;
 
             //Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(UpdateDateLockViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(UpdateDateLockViewModel)));
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             var result = validator.Validate(viewModel);
 
-            Assert.True(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
         [Test, MoqAutoData]

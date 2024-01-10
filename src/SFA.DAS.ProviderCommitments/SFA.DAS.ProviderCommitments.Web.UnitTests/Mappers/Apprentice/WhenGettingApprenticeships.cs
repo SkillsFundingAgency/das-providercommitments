@@ -152,28 +152,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await mapper.Map(request);
 
             //Assert
-            Assert.IsNotNull(viewModel);
-            Assert.AreEqual(request.ProviderId, viewModel.ProviderId);
+            Assert.That(viewModel, Is.Not.Null);
+            Assert.That(viewModel.ProviderId, Is.EqualTo(request.ProviderId));
             viewModel.Apprenticeships.Should().AllBeEquivalentTo(expectedViewModel);
-            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsFound);
-            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound, viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound);
-            Assert.AreEqual(apprenticeshipsResponse.TotalApprenticeships, viewModel.FilterModel.TotalNumberOfApprenticeships);
-            Assert.AreEqual(apprenticeshipsResponse.PageNumber, viewModel.FilterModel.PageNumber);
-            Assert.AreEqual(request.ReverseSort,viewModel.FilterModel.ReverseSort);
-            Assert.AreEqual(request.SortField, viewModel.FilterModel.SortField);
-            Assert.AreEqual(filtersResponse.EmployerNames, viewModel.FilterModel.EmployerFilters);
-            Assert.AreEqual(filtersResponse.CourseNames, viewModel.FilterModel.CourseFilters);
-            Assert.AreEqual(filtersResponse.StartDates, viewModel.FilterModel.StartDateFilters);
-            Assert.AreEqual(filtersResponse.EndDates, viewModel.FilterModel.EndDateFilters);
-            Assert.AreEqual(request.SearchTerm, viewModel.FilterModel.SearchTerm);
-            Assert.AreEqual(request.SelectedEmployer, viewModel.FilterModel.SelectedEmployer);
-            Assert.AreEqual(request.SelectedCourse, viewModel.FilterModel.SelectedCourse);
-            Assert.AreEqual(request.SelectedStatus, viewModel.FilterModel.SelectedStatus);
-            Assert.AreEqual(request.SelectedStartDate, viewModel.FilterModel.SelectedStartDate);
-            Assert.AreEqual(request.SelectedEndDate, viewModel.FilterModel.SelectedEndDate);
-            Assert.AreEqual(request.SelectedApprenticeConfirmation, viewModel.FilterModel.SelectedApprenticeConfirmation);
-            Assert.AreEqual(request.SelectedDeliveryModel, viewModel.FilterModel.SelectedDeliveryModel);
-            Assert.AreEqual(request.SelectedPilotStatus, viewModel.FilterModel.SelectedPilotStatus);
+            Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeshipsFound, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeshipsFound));
+            Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound));
+            Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeships, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeships));
+            Assert.That(viewModel.FilterModel.PageNumber, Is.EqualTo(apprenticeshipsResponse.PageNumber));
+            Assert.That(viewModel.FilterModel.ReverseSort, Is.EqualTo(request.ReverseSort));
+            Assert.That(viewModel.FilterModel.SortField, Is.EqualTo(request.SortField));
+            Assert.That(viewModel.FilterModel.EmployerFilters, Is.EqualTo(filtersResponse.EmployerNames));
+            Assert.That(viewModel.FilterModel.CourseFilters, Is.EqualTo(filtersResponse.CourseNames));
+            Assert.That(viewModel.FilterModel.StartDateFilters, Is.EqualTo(filtersResponse.StartDates));
+            Assert.That(viewModel.FilterModel.EndDateFilters, Is.EqualTo(filtersResponse.EndDates));
+            Assert.That(viewModel.FilterModel.SearchTerm, Is.EqualTo(request.SearchTerm));
+            Assert.That(viewModel.FilterModel.SelectedEmployer, Is.EqualTo(request.SelectedEmployer));
+            Assert.That(viewModel.FilterModel.SelectedCourse, Is.EqualTo(request.SelectedCourse));
+            Assert.That(viewModel.FilterModel.SelectedStatus, Is.EqualTo(request.SelectedStatus));
+            Assert.That(viewModel.FilterModel.SelectedStartDate, Is.EqualTo(request.SelectedStartDate));
+            Assert.That(viewModel.FilterModel.SelectedEndDate, Is.EqualTo(request.SelectedEndDate));
+            Assert.That(viewModel.FilterModel.SelectedApprenticeConfirmation, Is.EqualTo(request.SelectedApprenticeConfirmation));
+            Assert.That(viewModel.FilterModel.SelectedDeliveryModel, Is.EqualTo(request.SelectedDeliveryModel));
+            Assert.That(viewModel.FilterModel.SelectedPilotStatus, Is.EqualTo(request.SelectedPilotStatus));
         }
 
         [Test, MoqAutoData]
@@ -238,7 +238,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result= await mapper.Map(webRequest);
 
-            Assert.AreEqual(1, result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value));
+            Assert.That(result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value), Is.EqualTo(1));
 
             Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
         }

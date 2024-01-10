@@ -42,72 +42,72 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task Then_The_Options_Are_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_standardOptionsResponse.TrainingProgramme.Options.ToList(), result.Options);
+
+            Assert.That(result.Options, Is.EqualTo(_standardOptionsResponse.TrainingProgramme.Options.ToList()));
         }
 
         [Test]
         public async Task Then_The_DraftApprenticeshipId_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_selectOptionsRequest.DraftApprenticeshipId, result.DraftApprenticeshipId);
+
+            Assert.That(result.DraftApprenticeshipId, Is.EqualTo(_selectOptionsRequest.DraftApprenticeshipId));
         }
 
         [Test]
         public async Task Then_The_DraftApprenticeshipHashedId_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_selectOptionsRequest.DraftApprenticeshipHashedId, result.DraftApprenticeshipHashedId);
+
+            Assert.That(result.DraftApprenticeshipHashedId, Is.EqualTo(_selectOptionsRequest.DraftApprenticeshipHashedId));
         }
         
         [Test]
         public async Task Then_The_Cohort_Reference_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_selectOptionsRequest.CohortReference, result.CohortReference);
+
+            Assert.That(result.CohortReference, Is.EqualTo(_selectOptionsRequest.CohortReference));
         }
 
         [Test]
         public async Task Then_The_Cohort_Id_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_selectOptionsRequest.CohortId, result.CohortId);
+
+            Assert.That(result.CohortId, Is.EqualTo(_selectOptionsRequest.CohortId));
         }
         
         [Test]
         public async Task Then_The_Provider_Id_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_selectOptionsRequest.ProviderId, result.ProviderId);
+
+            Assert.That(result.ProviderId, Is.EqualTo(_selectOptionsRequest.ProviderId));
         }
 
         [Test]
         public async Task Then_The_TrainingCourseName_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseName, result.TrainingCourseName);
+
+            Assert.That(result.TrainingCourseName, Is.EqualTo(_draftApprenticeshipApiResponse.TrainingCourseName));
         }
 
         [Test]
         public async Task Then_The_Standard_Version_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseVersion, result.TrainingCourseVersion);
+
+            Assert.That(result.TrainingCourseVersion, Is.EqualTo(_draftApprenticeshipApiResponse.TrainingCourseVersion));
         }
         
         [Test]
         public async Task Then_The_Standard_IFate_Link_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_standardOptionsResponse.TrainingProgramme.StandardPageUrl, result.StandardPageUrl);
+
+            Assert.That(result.StandardPageUrl, Is.EqualTo(_standardOptionsResponse.TrainingProgramme.StandardPageUrl));
         }
 
         [Test]
@@ -127,8 +127,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task Then_The_Selected_Option_Is_Mapped()
         {
             var result = await _act();
-            
-            Assert.AreEqual(_draftApprenticeshipApiResponse.TrainingCourseOption, result.SelectedOption);
+
+            Assert.That(result.SelectedOption, Is.EqualTo(_draftApprenticeshipApiResponse.TrainingCourseOption));
         }
 
         [Test]
@@ -137,8 +137,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _draftApprenticeshipApiResponse.TrainingCourseOption = "";
                 
             var result = await _act();
-            
-            Assert.AreEqual("-1", result.SelectedOption);
+
+            Assert.That(result.SelectedOption, Is.EqualTo("-1"));
         }
         
         

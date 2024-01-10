@@ -146,7 +146,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public SelectEmployerViewModelMapperFixture()
             {
-                const long providerId = 123;
                 _getAccountsApiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
@@ -256,7 +255,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+                Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(0));
             }
 
             internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
@@ -286,14 +285,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual(employerAccountName, result.AccountProviderLegalEntities[0].EmployerAccountName);
+                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo(employerAccountName));
             }
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual(employerName, result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo(employerName));
             }
         }
     }

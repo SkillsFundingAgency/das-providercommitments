@@ -28,7 +28,7 @@ public class WhenGettingChangeEmployer
         _fixture.WithMapperResult(mapperResultType);
         var result = await _fixture.Act();
         var redirectToRouteResult = result.VerifyReturnsRedirectToRouteResult();
-        Assert.AreEqual(expectedViewName, redirectToRouteResult.RouteName);
+        Assert.That(redirectToRouteResult.RouteName, Is.EqualTo(expectedViewName));
     }
 }
 

@@ -202,13 +202,13 @@ public class WhenCreateCohortRequestIsHandled
 
         public CreateCohortHandlerFixture VerifyCohortIdWasReturned()
         {
-            Assert.AreEqual(_apiResponse.CohortId, _result.CohortId);
+            Assert.That(_result.CohortId, Is.EqualTo(_apiResponse.CohortId));
             return this;
         }
             
         public CreateCohortHandlerFixture VerifyCohortReferenceWasReturned()
         {
-            Assert.AreEqual(_apiResponse.CohortReference, _result.CohortReference);
+            Assert.That(_result.CohortReference, Is.EqualTo(_apiResponse.CohortReference));
             return this;
         }
 
@@ -216,7 +216,7 @@ public class WhenCreateCohortRequestIsHandled
         {
             if (hasOptions)
             {
-                Assert.IsNotNull(_result.DraftApprenticeshipId);    
+                Assert.That(_result.DraftApprenticeshipId, Is.Not.Null);    
             }
             else
             {

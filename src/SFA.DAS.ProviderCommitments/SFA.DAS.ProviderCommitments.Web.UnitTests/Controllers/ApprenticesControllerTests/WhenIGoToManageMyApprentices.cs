@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualModel = result?.Model as IndexViewModel;
 
             //Assert
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.Should().BeEquivalentTo(expectedViewModel);
         }
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualModel = result?.Model as IndexViewModel;
 
             //Assert
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.SortedByHeaderClassName.Should().EndWith("das-table__sort--asc");
         }
 

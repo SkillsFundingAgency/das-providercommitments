@@ -34,21 +34,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(result.AccountLegalEntityId, Is.EqualTo(_source.AccountLegalEntityId));
         }
 
         [Test]
         public async Task ThenAccountIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountLegalEntityResponse.AccountId, result.AccountId);
+            Assert.That(result.AccountId, Is.EqualTo(_accountLegalEntityResponse.AccountId));
         }
     }
 }

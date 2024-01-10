@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Services
         public void Retrieve_Returns_Expected_Object()
         {
             var result = _storageService.RetrieveFromCache<TestCacheObject>();
-            Assert.AreEqual(_cacheObject.TestProperty, result.TestProperty);
+            Assert.That(result.TestProperty, Is.EqualTo(_cacheObject.TestProperty));
         }
 
         private class TestCacheObject

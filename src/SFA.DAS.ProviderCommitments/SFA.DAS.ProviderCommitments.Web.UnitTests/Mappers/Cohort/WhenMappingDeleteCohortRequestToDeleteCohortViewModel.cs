@@ -129,30 +129,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void Verify_CohortReference_Is_Mapped()
         {
-            Assert.AreEqual(_deleteCohortRequest.CohortReference, _deleteCohortViewModel.CohortReference);
+            Assert.That(_deleteCohortViewModel.CohortReference, Is.EqualTo(_deleteCohortRequest.CohortReference));
         }
 
         internal void Verify_EmployerName_Is_Mapped()
         {
-            Assert.AreEqual(_getCohortResponse.LegalEntityName, _deleteCohortViewModel.EmployerAccountName);
+            Assert.That(_deleteCohortViewModel.EmployerAccountName, Is.EqualTo(_getCohortResponse.LegalEntityName));
         }
 
         internal void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.AreEqual(_getDraftApprenticeshipsResponse.DraftApprenticeships.Count,
-                _deleteCohortViewModel.NumberOfApprenticeships);
+            Assert.That(_deleteCohortViewModel.NumberOfApprenticeships, Is.EqualTo(_getDraftApprenticeshipsResponse.DraftApprenticeships.Count));
         }
 
         internal void Verify_ApprenticeshipTrainingProgrammeAreMappedCorrectly()
         {
-            Assert.AreEqual(2, _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count);
+            Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count, Is.EqualTo(2));
             Assert.IsTrue(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1"));
             Assert.IsTrue(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2"));
         }
 
         internal void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(_deleteCohortRequest.ProviderId, _deleteCohortViewModel.ProviderId);
+            Assert.That(_deleteCohortViewModel.ProviderId, Is.EqualTo(_deleteCohortRequest.ProviderId));
         }
     }
 }

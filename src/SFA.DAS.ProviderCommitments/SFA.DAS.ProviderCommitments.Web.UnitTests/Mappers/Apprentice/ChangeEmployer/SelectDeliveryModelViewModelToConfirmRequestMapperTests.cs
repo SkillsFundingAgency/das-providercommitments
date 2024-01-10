@@ -37,16 +37,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task DeliveryModel_Is_Persisted_To_Cache()
         {
             await _mapper.Map(_request);
-            Assert.AreEqual(_request.DeliveryModel, _cacheItem.DeliveryModel);
+            Assert.That(_cacheItem.DeliveryModel, Is.EqualTo(_request.DeliveryModel));
         }
 
         [Test]
         public async Task ConfirmRequest_Is_Returned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CacheKey, result.CacheKey);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
-            Assert.AreEqual(_request.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_request.ApprenticeshipHashedId));
         }
     }
 }

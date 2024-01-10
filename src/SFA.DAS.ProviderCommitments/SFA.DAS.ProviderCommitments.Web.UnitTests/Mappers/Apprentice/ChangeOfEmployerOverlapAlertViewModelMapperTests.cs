@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.request.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.request.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.encodedAccountLegalEntityId, result.AccountLegalEntityPublicHashedId);
+            Assert.That(result.AccountLegalEntityPublicHashedId, Is.EqualTo(_fixture.encodedAccountLegalEntityId));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.EmployerName, result.OldEmployerName);
+            Assert.That(result.OldEmployerName, Is.EqualTo(_fixture.getApprenticeshipResponse.EmployerName));
         }
 
         [Test]
@@ -59,9 +59,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(
-                $"{_fixture.getApprenticeshipResponse.FirstName} {_fixture.getApprenticeshipResponse.LastName}",
-                result.ApprenticeName);
+            Assert.That(
+                result.ApprenticeName, Is.EqualTo($"{_fixture.getApprenticeshipResponse.FirstName} {_fixture.getApprenticeshipResponse.LastName}"));
         }
 
 
@@ -70,7 +69,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.StopDate, result.StopDate);
+            Assert.That(result.StopDate, Is.EqualTo(_fixture.getApprenticeshipResponse.StopDate));
         }
 
         [Test]
@@ -78,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.StartDate, result.OldStartDate);
+            Assert.That(result.OldStartDate, Is.EqualTo(_fixture.getApprenticeshipResponse.StartDate));
         }
 
         [Test]
@@ -86,7 +85,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.getApprenticeshipResponse.EndDate, result.OldEndDate);
+            Assert.That(result.OldEndDate, Is.EqualTo(_fixture.getApprenticeshipResponse.EndDate));
         }
 
 
@@ -95,7 +94,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.priceEpisodesResponse.PriceEpisodes.First().Cost, result.OldPrice);
+            Assert.That(result.OldPrice, Is.EqualTo(_fixture.priceEpisodesResponse.PriceEpisodes.First().Cost));
         }
 
         [Test]
@@ -103,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.accountLegalEntityResponse.LegalEntityName, result.NewEmployerName);
+            Assert.That(result.NewEmployerName, Is.EqualTo(_fixture.accountLegalEntityResponse.LegalEntityName));
         }
 
         [Test]
@@ -112,7 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
             var expectedStartDate = new MonthYearModel(_fixture.cacheItem.StartDate);
 
-            Assert.AreEqual(expectedStartDate.MonthYear, result.NewStartDate);
+            Assert.That(result.NewStartDate, Is.EqualTo(expectedStartDate.MonthYear));
         }
 
         [Test]
@@ -121,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
             var expectedEndDate = new MonthYearModel(_fixture.cacheItem.EndDate);
 
-            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEndDate);
+            Assert.That(result.NewEndDate, Is.EqualTo(expectedEndDate.MonthYear));
         }
 
         [Test]
@@ -132,7 +131,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
 
             var expectedEndDate = new MonthYearModel(_fixture.cacheItem.EmploymentEndDate);
-            Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate);
+            Assert.That(result.NewEmploymentEndDate, Is.EqualTo(expectedEndDate.MonthYear));
         }
 
         [Test]
@@ -140,7 +139,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.cacheItem.Price, result.NewPrice);
+            Assert.That(result.NewPrice, Is.EqualTo(_fixture.cacheItem.Price));
         }
 
         [Test]
@@ -148,7 +147,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Map();
 
-            Assert.AreEqual(_fixture.cacheItem.EmploymentPrice, result.NewEmploymentPrice);
+            Assert.That(result.NewEmploymentPrice, Is.EqualTo(_fixture.cacheItem.EmploymentPrice));
         }
 
         [Test]
@@ -158,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.SetStartDateInRequest(DateTime.Now).SetPriceBand(priceBand, DateTime.Now);
             var result = await _fixture.Map();
 
-            Assert.AreEqual(priceBand, result.FundingBandCap);
+            Assert.That(result.FundingBandCap, Is.EqualTo(priceBand));
         }
 
         [TestCase(1000, 900, true)]
@@ -170,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .SetPriceBand(fundingCap, DateTime.Now);
             var result = await _fixture.Map();
 
-            Assert.AreEqual(result.ExceedsFundingBandCap, fundingCapExceeded);
+            Assert.That(fundingCapExceeded, Is.EqualTo(result.ExceedsFundingBandCap));
         }
 
         [Test]
@@ -192,7 +191,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.cacheItem.SkippedDeliveryModelSelection = false;
             _fixture.cacheItem.DeliveryModel = selectedDeliveryModel;
             var result = await _fixture.Map();
-            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModel);
+            Assert.That(result.ShowDeliveryModel, Is.EqualTo(expectShowDeliveryModel));
         }
 
         [TestCase(true, false)]
@@ -202,7 +201,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.cacheItem.SkippedDeliveryModelSelection = skippedDeliveryModelSelection;
             var result = await _fixture.Map();
-            Assert.AreEqual(expectShowDeliveryModel, result.ShowDeliveryModelChangeLink);
+            Assert.That(result.ShowDeliveryModelChangeLink, Is.EqualTo(expectShowDeliveryModel));
         }
     }
 

@@ -110,8 +110,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var responseEmployerName = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().EmployerName;
             var viewModelEmployerName = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().EmployerName;
-            
-            Assert.AreEqual(responseEmployerName, viewModelEmployerName);
+
+            Assert.That(viewModelEmployerName, Is.EqualTo(responseEmployerName));
         }
 
         public void VerifyCohortReferenceIsMappedCorrectly()
@@ -119,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var responseCohortReference = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().CohortReference;
             var viewModelCohortReference = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().CohortReference;
 
-            Assert.AreEqual(responseCohortReference, viewModelCohortReference);
+            Assert.That(viewModelCohortReference, Is.EqualTo(responseCohortReference));
         }
 
         public void VerifyNumberOfApprenticeshipIsMappedCorrectly()
@@ -127,12 +127,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var responsenumberOfApprenticeships = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().NumberOfApprenticeships;
             var viewModelnumberOfApprenticeships = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().NumberOfApprenticeships;
 
-            Assert.AreEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
+            Assert.That(viewModelnumberOfApprenticeships, Is.EqualTo(responsenumberOfApprenticeships));
         }
 
         internal void VerifyCorrectNumberOfEmployersAreMapped()
         {
-            Assert.AreEqual(3, _result.BulkUploadDraftApprenticeshipsViewModel.Count);
+            Assert.That(_result.BulkUploadDraftApprenticeshipsViewModel.Count, Is.EqualTo(3));
         }
     }
 }

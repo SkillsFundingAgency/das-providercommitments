@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             result.VerifyReturnsViewModel().ViewName.Should().Be(null);
             var model = result.VerifyReturnsViewModel().WithModel<EditDraftApprenticeshipCourseViewModel>();
 
-            Assert.AreEqual(fixture.ViewModel, model);
+            Assert.That(model, Is.EqualTo(fixture.ViewModel));
         }
 
         [Test]

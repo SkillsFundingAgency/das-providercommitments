@@ -37,14 +37,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ApprenticeshipHashedId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheModel.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_cacheModel.ApprenticeshipHashedId));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_cacheModel.ProviderId));
         }
     }
 }

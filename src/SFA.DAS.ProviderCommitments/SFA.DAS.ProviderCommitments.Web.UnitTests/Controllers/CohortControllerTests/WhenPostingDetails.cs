@@ -162,21 +162,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
-                Assert.AreEqual("Acknowledgement", redirect.ActionName);
+                Assert.That(redirect.ActionName, Is.EqualTo("Acknowledgement"));
             }
 
             public void VerifyRedirectedToAcknowledgement()
             {
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
-                Assert.AreEqual("Acknowledgement", redirect.ActionName);
+                Assert.That(redirect.ActionName, Is.EqualTo("Acknowledgement"));
             }
 
             public void VerifyRedirectedToApprenticeRequest()
             {
                 Assert.IsInstanceOf<RedirectToActionResult>(_result);
                 var redirect = (RedirectToActionResult)_result;
-                Assert.AreEqual("Review", redirect.ActionName);
+                Assert.That(redirect.ActionName, Is.EqualTo("Review"));
             }
 
             internal void SetUpIsAuthorized(bool isAuthorized)

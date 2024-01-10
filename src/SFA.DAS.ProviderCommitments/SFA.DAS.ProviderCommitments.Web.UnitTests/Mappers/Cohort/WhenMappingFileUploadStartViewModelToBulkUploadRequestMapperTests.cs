@@ -67,14 +67,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void CommandIsReturnedWithProviderIdAndRplDataExtended()
         {
             Assert.IsTrue(_apiRequest.RplDataExtended);
-            Assert.AreEqual(_viewModel.ProviderId, _apiRequest.ProviderId);
+            Assert.That(_apiRequest.ProviderId, Is.EqualTo(_viewModel.ProviderId));
         }
 
 
         [Test]
         public void CommandIsReturnedFromCacheWithLogIdAsExpected()
         {
-            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+            Assert.That(_apiRequest.FileUploadLogId, Is.EqualTo(_fileUploadCacheModel.FileUploadLogId));
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.Where(x => x.Uln == record.ULN);
-                Assert.AreEqual(1, result.Count());
+                Assert.That(result.Count(), Is.EqualTo(1));
             }
         }
 
@@ -93,7 +93,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.GivenNames, result.FirstName);
+                Assert.That(result.FirstName, Is.EqualTo(record.GivenNames));
             }
         }
 
@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.FamilyName, result.LastName);
+                Assert.That(result.LastName, Is.EqualTo(record.FamilyName));
             }
         }
 
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.DateOfBirth, result.DateOfBirthAsString);
+                Assert.That(result.DateOfBirthAsString, Is.EqualTo(record.DateOfBirth));
             }
         }
 
@@ -122,8 +122,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             foreach (var record in _csvRecords)
             {
-                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);                
-                Assert.AreEqual(record.StartDate, result.StartDateAsString);
+                var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
+                Assert.That(result.StartDateAsString, Is.EqualTo(record.StartDate));
             }
         }
 
@@ -133,7 +133,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.EndDate, result.EndDateAsString);
+                Assert.That(result.EndDateAsString, Is.EqualTo(record.EndDate));
             }
         }
 
@@ -143,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.TotalPrice, result.CostAsString);
+                Assert.That(result.CostAsString, Is.EqualTo(record.TotalPrice));
             }
         }
 
@@ -153,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.ProviderRef, result.ProviderRef);
+                Assert.That(result.ProviderRef, Is.EqualTo(record.ProviderRef));
             }
         }
 
@@ -163,7 +163,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.StdCode, result.CourseCode);
+                Assert.That(result.CourseCode, Is.EqualTo(record.StdCode));
             }
         }
 
@@ -173,7 +173,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(1, result.LegalEntityId);
+                Assert.That(result.LegalEntityId, Is.EqualTo(1));
             }
         }
 
@@ -183,7 +183,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(2, result.CohortId);
+                Assert.That(result.CohortId, Is.EqualTo(2));
             }
         }
 
@@ -193,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual((result.CohortId +1), result.TransferSenderId);
+                Assert.That(result.TransferSenderId, Is.EqualTo((result.CohortId +1)));
             }
         }
 
@@ -203,7 +203,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
         {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.RecognisePriorLearning, result.RecognisePriorLearningAsString);
+                Assert.That(result.RecognisePriorLearningAsString, Is.EqualTo(record.RecognisePriorLearning));
             }
         }
 
@@ -213,7 +213,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
 {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.DurationReducedBy, result.DurationReducedByAsString);
+                Assert.That(result.DurationReducedByAsString, Is.EqualTo(record.DurationReducedBy));
             }
         }
 
@@ -223,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
 {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.PriceReducedBy, result.PriceReducedByAsString);
+                Assert.That(result.PriceReducedByAsString, Is.EqualTo(record.PriceReducedBy));
             }
         }
 
@@ -233,7 +233,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.TrainingTotalHours, result.TrainingTotalHoursAsString);
+                Assert.That(result.TrainingTotalHoursAsString, Is.EqualTo(record.TrainingTotalHours));
             }
         }
 
@@ -243,7 +243,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.TrainingHoursReduction, result.TrainingHoursReductionAsString);
+                Assert.That(result.TrainingHoursReductionAsString, Is.EqualTo(record.TrainingHoursReduction));
             }
         }
 
@@ -253,14 +253,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.AreEqual(record.IsDurationReducedByRPL, result.IsDurationReducedByRPLAsString);
+                Assert.That(result.IsDurationReducedByRPLAsString, Is.EqualTo(record.IsDurationReducedByRPL));
             }
         }
 
         [Test]
         public void VerifyFileUploadIdIsMappedFromCache()
         {
-            Assert.AreEqual(_fileUploadCacheModel.FileUploadLogId, _apiRequest.FileUploadLogId);
+            Assert.That(_apiRequest.FileUploadLogId, Is.EqualTo(_fileUploadCacheModel.FileUploadLogId));
         }
     }
 }

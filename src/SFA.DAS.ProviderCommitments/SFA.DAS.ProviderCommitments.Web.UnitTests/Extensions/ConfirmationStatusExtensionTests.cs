@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var actualResult = status.ToDisplayString();
 
             //Assert
-            Assert.AreEqual(expectedResult, actualResult);
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
         }
     }
 }

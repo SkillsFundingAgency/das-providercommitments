@@ -92,10 +92,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 Assert.IsInstanceOf<DetailsViewModel>(viewModel);
                 var detailsViewModel = (DetailsViewModel)viewModel;
 
-                Assert.AreEqual(_viewModel, detailsViewModel);
+                Assert.That(detailsViewModel, Is.EqualTo(_viewModel));
 
                 var expectedTotalCost = _viewModel.Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
-                Assert.AreEqual(expectedTotalCost, _viewModel.TotalCost, "The total cost stored in the model is incorrect");
+                Assert.That(_viewModel.TotalCost, Is.EqualTo(expectedTotalCost), "The total cost stored in the model is incorrect");
             }
 
             public bool IsViewModelReadOnly()

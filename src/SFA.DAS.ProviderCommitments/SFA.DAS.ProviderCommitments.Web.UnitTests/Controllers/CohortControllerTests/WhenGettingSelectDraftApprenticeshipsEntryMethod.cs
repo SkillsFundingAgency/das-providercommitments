@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<SelectAddDraftApprenticeshipJourneyViewModel>();
 
-            Assert.AreEqual(fixture.ProviderId, model.ProviderId);
+            Assert.That(model.ProviderId, Is.EqualTo(fixture.ProviderId));
         }
     }
 

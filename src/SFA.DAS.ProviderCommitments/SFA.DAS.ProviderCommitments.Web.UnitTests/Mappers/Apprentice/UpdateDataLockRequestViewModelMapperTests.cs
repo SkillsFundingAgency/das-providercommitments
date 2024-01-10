@@ -103,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_updateDataLockRequest.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_updateDataLockRequest.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_updateDataLockRequest.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(_updateDataLockRequest.ApprenticeshipId));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.FirstName, result.FirstName);
+            Assert.That(result.FirstName, Is.EqualTo(_apprenticeshipResponse.FirstName));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.LastName, result.LastName);
+            Assert.That(result.LastName, Is.EqualTo(_apprenticeshipResponse.LastName));
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.Uln, result.ULN);
+            Assert.That(result.ULN, Is.EqualTo(_apprenticeshipResponse.Uln));
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.DateOfBirth, result.DateOfBirth);
+            Assert.That(result.DateOfBirth, Is.EqualTo(_apprenticeshipResponse.DateOfBirth));
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.CourseName, result.CourseName);
+            Assert.That(result.CourseName, Is.EqualTo(_apprenticeshipResponse.CourseName));
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_apprenticeshipResponse.ProviderId));
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert
-            Assert.AreEqual(_apprenticeshipResponse.ProviderName, result.ProviderName);
+            Assert.That(result.ProviderName, Is.EqualTo(_apprenticeshipResponse.ProviderName));
         }
 
         [Test]
@@ -254,11 +254,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert            
-            Assert.AreEqual(1, result.PriceDataLocks.Count());
-            Assert.AreEqual(result.PriceDataLocks.FirstOrDefault().CurrentCost, _priceEpisodes.FirstOrDefault().Cost);
-            Assert.AreEqual(result.PriceDataLocks.FirstOrDefault().CurrentEndDate, _priceEpisodes.FirstOrDefault().ToDate);
-            Assert.AreEqual(result.PriceDataLocks.FirstOrDefault().IlrTotalCost, _dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrTotalCost);
-            Assert.AreEqual(result.PriceDataLocks.FirstOrDefault().IlrEffectiveFromDate, _dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrEffectiveFromDate);
+            Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
+            Assert.That(_priceEpisodes.FirstOrDefault().Cost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentCost));
+            Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentEndDate));
+            Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrTotalCost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrTotalCost));
+            Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrEffectiveFromDate));
         }
 
         [Test]
@@ -288,11 +288,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert            
-            Assert.AreEqual(1, result.CourseDataLocks.Count());
-            Assert.AreEqual(result.CourseDataLocks.FirstOrDefault().CurrentTrainingName, _apprenticeshipResponse.CourseName);
-            Assert.AreEqual(result.CourseDataLocks.FirstOrDefault().CurrentEndDate, _priceEpisodes.FirstOrDefault().ToDate);
-            Assert.AreEqual(result.CourseDataLocks.FirstOrDefault().IlrTrainingName, _allTrainingProgrammesResponse.TrainingProgrammes.FirstOrDefault().Name);
-            Assert.AreEqual(result.CourseDataLocks.FirstOrDefault().IlrEffectiveFromDate, _dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrEffectiveFromDate);
+            Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
+            Assert.That(_apprenticeshipResponse.CourseName, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentTrainingName));
+            Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentEndDate));
+            Assert.That(_allTrainingProgrammesResponse.TrainingProgrammes.FirstOrDefault().Name, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrTrainingName));
+            Assert.That(_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrEffectiveFromDate));
         }
         
         [Test]
@@ -332,7 +332,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert            
-            Assert.AreEqual(2, result.PriceDataLocks.Count());
+            Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -342,8 +342,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_updateDataLockRequest);
 
             //Assert            
-            Assert.AreEqual(1, result.CourseDataLocks.Count());
-            Assert.AreEqual(1, result.PriceDataLocks.Count());
+            Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
+            Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
         }
     }
 }

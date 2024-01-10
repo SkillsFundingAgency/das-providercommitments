@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new SelectCourseViewModelValidator();
             var result = validator.Validate(request);
 
-            Assert.AreEqual(expectedValid, result.Errors.All(x => x.PropertyName != nameof(request.CourseCode)));
+            Assert.That(result.Errors.All(x => x.PropertyName != nameof(request.CourseCode)), Is.EqualTo(expectedValid));
         }
     }
 }

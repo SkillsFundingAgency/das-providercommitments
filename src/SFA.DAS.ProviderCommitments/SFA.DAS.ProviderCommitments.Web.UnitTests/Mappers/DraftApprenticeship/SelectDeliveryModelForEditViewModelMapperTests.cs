@@ -45,21 +45,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         public async Task EmployerName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_apiResponse.EmployerName));
         }
 
         [Test]
         public async Task DeliveryModel_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(_apiResponse.DeliveryModel));
         }
 
         [Test]
         public async Task DeliveryModels_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_apiResponse.DeliveryModels));
         }
         
         [TestCase(true, DeliveryModel.FlexiJobAgency, true)]
@@ -71,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
             _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
 
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+            Assert.That(result.HasUnavailableFlexiJobAgencyDeliveryModel, Is.EqualTo(expectedResult));
         }
 
         [TestCase(DeliveryModel.FlexiJobAgency, true, false, true)]
@@ -92,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
 
             var result = await _mapper.Map(_request);
 
-            Assert.AreEqual(expectShowConfirmation, result.ShowFlexiJobAgencyDeliveryModelConfirmation);
+            Assert.That(result.ShowFlexiJobAgencyDeliveryModelConfirmation, Is.EqualTo(expectShowConfirmation));
         }
     }
 }

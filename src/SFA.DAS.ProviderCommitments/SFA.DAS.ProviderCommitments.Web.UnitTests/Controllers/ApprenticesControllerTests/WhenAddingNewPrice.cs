@@ -28,8 +28,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await fixture.Sut.Price(fixture.PriceRequest) as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(PriceViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(PriceViewModel)));
         }
 
         [Test]
@@ -66,15 +66,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             if (status == ApprenticeshipStatus.Stopped)
             {
-                Assert.AreEqual(RouteNames.ApprenticeConfirm, result.RouteName);
+                Assert.That(result.RouteName, Is.EqualTo(RouteNames.ApprenticeConfirm));
             }
             else
             {
-                Assert.AreEqual(RouteNames.ChangeEmployerOverlapAlert, result.RouteName);
+                Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
             }
         }
     }

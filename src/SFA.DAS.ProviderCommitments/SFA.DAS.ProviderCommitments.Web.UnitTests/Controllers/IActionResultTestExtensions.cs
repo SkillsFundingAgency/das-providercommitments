@@ -24,19 +24,19 @@
 
         public static RedirectToActionResult WithActionName(this RedirectToActionResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.ActionName);
+            Assert.That(result.ActionName, Is.EqualTo(expectedName));
             return result;
         }
 
         public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.ControllerName);
+            Assert.That(result.ControllerName, Is.EqualTo(expectedName));
             return result;
         }
 
         public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.RouteName);
+            Assert.That(result.RouteName, Is.EqualTo(expectedName));
             return result;
         }
 
@@ -48,7 +48,7 @@
 
         public static RedirectResult WithUrl(this RedirectResult result, string expectedUrl)
         {
-            Assert.AreEqual(expectedUrl, result.Url);
+            Assert.That(result.Url, Is.EqualTo(expectedUrl));
             return result;
         }
 

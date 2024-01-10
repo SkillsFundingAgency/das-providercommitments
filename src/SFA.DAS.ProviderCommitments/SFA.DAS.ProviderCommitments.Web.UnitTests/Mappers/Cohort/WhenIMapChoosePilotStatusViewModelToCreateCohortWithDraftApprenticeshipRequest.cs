@@ -26,49 +26,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_source.CourseCode));
         }
 
         [Test]
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(result.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo(_source.EmployerAccountLegalEntityPublicHashedId));
         }
 
         [Test]
         public async Task ThenAccountLegalEntityIdIsMapped()
         {
             var result = await _act();
-            Assert.AreEqual(_source.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(result.AccountLegalEntityId, Is.EqualTo(_source.AccountLegalEntityId));
         }
 
         [Test]
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(_source.DeliveryModel));
         }
 
         [Test]
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ReservationId, result.ReservationId);
+            Assert.That(result.ReservationId, Is.EqualTo(_source.ReservationId));
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
+            Assert.That(result.StartMonthYear, Is.EqualTo(_source.StartMonthYear));
         }
 
         [TestCase(ChoosePilotStatusOptions.Pilot, true)]
@@ -77,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _source.Selection = option;
             var result = await _act();
-            Assert.AreEqual(expected, result.IsOnFlexiPaymentPilot);
+            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(expected));
         }
     }
 }

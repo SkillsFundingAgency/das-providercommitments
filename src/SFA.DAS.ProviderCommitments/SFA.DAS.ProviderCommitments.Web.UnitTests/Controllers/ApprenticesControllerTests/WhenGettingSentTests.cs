@@ -25,14 +25,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             tempData[nameof(ConfirmViewModel.NewEmployerName)] = _newEmployerName;
             _sut.TempData = tempData;
         }
+        
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public void ThenNewEmployerNameIsPopulatedFromTempData()
         {
             var result = _sut.Sent() as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(_newEmployerName, result.Model as string);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model as string, Is.EqualTo(_newEmployerName));
         }
     }
 }

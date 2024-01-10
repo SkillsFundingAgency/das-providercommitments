@@ -29,8 +29,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.Sut.ChooseCohort(fixture.Request) as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(ChooseCohortViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(ChooseCohortViewModel)));
         }
     }
 

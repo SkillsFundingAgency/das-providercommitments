@@ -45,14 +45,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task LegalEntityName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.LegalEntityName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_apiResponse.LegalEntityName));
         }
 
         [Test]
         public async Task Status_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.Status, result.ApprenticeshipStatus);
+            Assert.That(result.ApprenticeshipStatus, Is.EqualTo(_apiResponse.Status));
         }
 
 
@@ -60,14 +60,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task DeliveryModels_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_apiResponse.DeliveryModels));
         }
 
         [Test]
         public async Task DeliveryModel_Previously_Persisted_To_Cache_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheItem.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(_cacheItem.DeliveryModel));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
 
             await _mapper.Map(_request);
 
-            Assert.AreEqual(deliveryModel, _cacheItem.DeliveryModel);
+            Assert.That(_cacheItem.DeliveryModel, Is.EqualTo(deliveryModel));
         }
     }
 }

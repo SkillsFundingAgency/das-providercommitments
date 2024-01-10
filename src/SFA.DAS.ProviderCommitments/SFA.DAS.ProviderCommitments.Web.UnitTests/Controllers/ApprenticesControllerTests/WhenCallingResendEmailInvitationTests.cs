@@ -61,8 +61,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var redirect = result as RedirectToActionResult;
 
-            Assert.AreEqual(redirect.RouteValues["ProviderId"], _request.ProviderId);
-            Assert.AreEqual(redirect.RouteValues["ApprenticeshipHashedId"], _request.ApprenticeshipHashedId);
+            Assert.That(_request.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
+            Assert.That(_request.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
         }
     }
 }

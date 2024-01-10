@@ -52,28 +52,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_encodedAccountLegalEntityId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(result.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo(_encodedAccountLegalEntityId));
         }
 
         [Test]
         public async Task ThenEmployerAccountNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountLegalEntityResponse.AccountName, result.EmployerAccountName);
+            Assert.That(result.EmployerAccountName, Is.EqualTo(_accountLegalEntityResponse.AccountName));
         }
 
         [Test]
         public async Task ThenEmployerAccountLegalEntityNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountLegalEntityResponse.LegalEntityName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_accountLegalEntityResponse.LegalEntityName));
         }
 
         [Test]
         public async Task ThenProviderIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
     }
 }

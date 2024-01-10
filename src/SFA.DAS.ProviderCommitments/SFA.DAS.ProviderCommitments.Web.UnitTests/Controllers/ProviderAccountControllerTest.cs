@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
                 var actual = controller.Dashboard() as RedirectResult;
 
                 //Assert
-                Assert.IsNotNull(actual);
+                Assert.That(actual, Is.Not.Null);
                 actual.Url.Should().Be(redirectUrl);
             }
         }

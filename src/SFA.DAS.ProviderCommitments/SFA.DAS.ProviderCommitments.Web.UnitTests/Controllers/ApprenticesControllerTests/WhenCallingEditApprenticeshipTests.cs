@@ -74,7 +74,7 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
         Assert.IsInstanceOf<EditApprenticeshipRequestViewModel>(viewModel);
-        Assert.AreEqual(_viewModel, viewModel);
+        Assert.That(viewModel, Is.EqualTo(_viewModel));
     }
 
     public void VerifyViewModelIsEquivalentToTempViewModel(ViewResult viewResult)

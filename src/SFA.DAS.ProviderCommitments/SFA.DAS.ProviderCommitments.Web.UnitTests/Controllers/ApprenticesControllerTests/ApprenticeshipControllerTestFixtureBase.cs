@@ -72,9 +72,9 @@ public class ApprenticeControllerTestFixtureBase
     public ApprenticeControllerTestFixtureBase VerifyDetailViewReturned()
     {
         var viewResult = _actionResult as ViewResult;
-        Assert.IsNotNull(viewResult);
+        Assert.That(viewResult, Is.Not.Null);
         var model = viewResult.Model as DetailsViewModel;
-        Assert.IsNotNull(model);
+        Assert.That(model, Is.Not.Null);
         return this;
     }
 }

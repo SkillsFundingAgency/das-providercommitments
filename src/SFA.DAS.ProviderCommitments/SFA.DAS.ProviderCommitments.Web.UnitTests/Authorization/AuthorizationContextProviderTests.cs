@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetValidCohortId().GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsTrue(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId));
         }
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId));
         }
 
@@ -58,9 +58,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetValidDraftApprenticeshipId().GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.DraftApprenticeshipId,
-                authorizationContext.Get<long?>(AuthorizationContextKeys.DraftApprenticeshipId));
+            Assert.That(authorizationContext, Is.Not.Null);
+            Assert.That(authorizationContext.Get<long?>(AuthorizationContextKeys.DraftApprenticeshipId), Is.EqualTo(_fixture.DraftApprenticeshipId));
         }
 
         [Test]
@@ -78,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.DraftApprenticeshipId,
                 out long draftApprenticeshipId));
         }
@@ -93,9 +92,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.Services,
-                authorizationContext.Get<IEnumerable<string>>(AuthorizationContextKeys.Services));
+            Assert.That(authorizationContext, Is.Not.Null);
+            Assert.That(authorizationContext.Get<IEnumerable<string>>(AuthorizationContextKeys.Services), Is.EqualTo(_fixture.Services));
         }
 
         [Test]
@@ -113,7 +111,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet(AuthorizationContextKeys.Services, out long services));
         }
 
@@ -127,9 +125,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
-            Assert.AreEqual(_fixture.UserEmail, authorizationContext.Get<string>("UserEmail"));
+            Assert.That(authorizationContext, Is.Not.Null);
+            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+            Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.UserEmail));
         }
 
         [Test]
@@ -142,9 +140,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
-            Assert.AreEqual(_fixture.DfEUserEmail, authorizationContext.Get<string>("UserEmail"));
+            Assert.That(authorizationContext, Is.Not.Null);
+            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+            Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.DfEUserEmail));
         }
 
         [Test]
@@ -172,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet("Ukprn", out long ukprn));
             Assert.IsFalse(authorizationContext.TryGet("UserEmail", out string userEmail));
         }
@@ -192,7 +190,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetUnauthenticatedUser().GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet("UserEmail", out string userEmail));
         }
 
@@ -207,9 +205,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
-            Assert.AreEqual(_fixture.AccountLegalEntityId, authorizationContext.Get<long?>("AccountLegalEntityId"));
-            Assert.AreEqual(_fixture.Ukprn, authorizationContext.Get<long?>("Ukprn"));
+            Assert.That(authorizationContext, Is.Not.Null);
+            Assert.That(authorizationContext.Get<long?>("AccountLegalEntityId"), Is.EqualTo(_fixture.AccountLegalEntityId));
+            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
         }
 
         [Test]
@@ -218,7 +216,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.IsNotNull(authorizationContext);
+            Assert.That(authorizationContext, Is.Not.Null);
             Assert.IsFalse(authorizationContext.TryGet("AccountLegalEntityId", out long accountLegalEntityId));
         }
 

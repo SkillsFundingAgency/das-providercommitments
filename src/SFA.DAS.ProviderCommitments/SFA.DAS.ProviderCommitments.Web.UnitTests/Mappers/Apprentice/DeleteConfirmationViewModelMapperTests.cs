@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_deleteConfirmationRequest.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_deleteConfirmationRequest.ProviderId));
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_deleteConfirmationRequest.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(_deleteConfirmationRequest.CohortReference));
         }
 
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_deleteConfirmationRequest.DraftApprenticeshipHashedId, result.DraftApprenticeshipHashedId);
+            Assert.That(result.DraftApprenticeshipHashedId, Is.EqualTo(_deleteConfirmationRequest.DraftApprenticeshipHashedId));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual($"{_getDraftApprenticeshipResponse.FirstName} {_getDraftApprenticeshipResponse.LastName}", result.ApprenticeshipName);
+            Assert.That(result.ApprenticeshipName, Is.EqualTo($"{_getDraftApprenticeshipResponse.FirstName} {_getDraftApprenticeshipResponse.LastName}"));
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_deleteConfirmationRequest);
 
             //Assert
-            Assert.AreEqual(_getDraftApprenticeshipResponse.DateOfBirth, result.DateOfBirth);
+            Assert.That(result.DateOfBirth, Is.EqualTo(_getDraftApprenticeshipResponse.DateOfBirth));
         }
 
         [Test]

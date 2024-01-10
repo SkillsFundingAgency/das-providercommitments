@@ -217,8 +217,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var result = await validator.ValidateAsync(model);
 
             //Assert
-            Assert.AreEqual(1,result.Errors.Count);
-            Assert.AreEqual("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this", result.ToString());
+            Assert.That(result.Errors.Count, Is.EqualTo(1));
+            Assert.That(result.ToString(), Is.EqualTo("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this"));
         }
 
         [Test]
@@ -234,8 +234,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var result = await validator.ValidateAsync(model);
 
             //Assert
-            Assert.AreEqual(1, result.Errors.Count);
-            Assert.AreEqual("The selected file does not contain apprentice details", result.ToString());
+            Assert.That(result.Errors.Count, Is.EqualTo(1));
+            Assert.That(result.ToString(), Is.EqualTo("The selected file does not contain apprentice details"));
         }
 
         private async Task AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)

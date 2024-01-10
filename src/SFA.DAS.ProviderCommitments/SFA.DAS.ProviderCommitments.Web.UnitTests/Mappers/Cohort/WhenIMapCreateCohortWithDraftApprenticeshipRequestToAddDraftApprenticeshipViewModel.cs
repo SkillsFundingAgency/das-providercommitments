@@ -49,105 +49,105 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(result.AccountLegalEntityId, Is.EqualTo(_cacheItem.AccountLegalEntityId));
         }
 
         [Test]
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(result.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo(_source.EmployerAccountLegalEntityPublicHashedId));
         }
 
         [Test]
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenEmployerIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_apiResponse.LegalEntityName, result.Employer);
+            Assert.That(result.Employer, Is.EqualTo(_apiResponse.LegalEntityName));
         }
 
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_cacheItem.CourseCode));
         }
 
         [Test]
         public async Task ThenStartMonthYearIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.StartMonthYear, _source.StartMonthYear);
+            Assert.That(_source.StartMonthYear, Is.EqualTo(_cacheItem.StartMonthYear));
         }
 
         [Test]
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.ReservationId, result.ReservationId);
+            Assert.That(result.ReservationId, Is.EqualTo(_cacheItem.ReservationId));
         }
 
         [Test]
         public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
+            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(_apiResponse.HasMultipleDeliveryModelOptions));
         }
 
         [Test]
         public async Task ThenPilotStatusIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(_cacheItem.IsOnFlexiPaymentPilot));
         }
 
         [Test]
         public async Task ThenUlnIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.Uln, result.Uln);
+            Assert.That(result.Uln, Is.EqualTo(_cacheItem.Uln));
         }
 
         [Test]
         public async Task Then_StartDate_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.StartDate.GetFirstDayOfMonth(), result.StartDate.Date.Value.Date);
+            Assert.That(result.StartDate.Date.Value.Date, Is.EqualTo(_cacheItem.StartDate.GetFirstDayOfMonth()));
         }
 
         [Test]
         public async Task Then_EndDate_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.EndDate.Value.Date, result.EndDate.Date.Value.Date);
+            Assert.That(result.EndDate.Date.Value.Date, Is.EqualTo(_cacheItem.EndDate.Value.Date));
         }
 
         [Test]
         public async Task Then_ActualStartDate_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.ActualStartDate.Value.Date, result.ActualStartDate.Date);
+            Assert.That(result.ActualStartDate.Date, Is.EqualTo(_cacheItem.ActualStartDate.Value.Date));
         }
 
         [Test]
         public async Task Then_EmploymentEndDate_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.EmploymentEndDate.GetFirstDayOfMonth(), result.EmploymentEndDate.Date.Value.Date);
+            Assert.That(result.EmploymentEndDate.Date.Value.Date, Is.EqualTo(_cacheItem.EmploymentEndDate.GetFirstDayOfMonth()));
         }
 
         [Test]
         public async Task Then_EmploymentPrice_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.EmploymentPrice, result.EmploymentPrice);
+            Assert.That(result.EmploymentPrice, Is.EqualTo(_cacheItem.EmploymentPrice));
         }
 
 
@@ -156,21 +156,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _cacheItem.IsOnFlexiPaymentPilot = false;
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.Cost, result.Cost);
+            Assert.That(result.Cost, Is.EqualTo(_cacheItem.Cost));
         }
 
         [Test]
         public async Task Then_TrainingPrice_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.TrainingPrice, result.TrainingPrice);
+            Assert.That(result.TrainingPrice, Is.EqualTo(_cacheItem.TrainingPrice));
         }
 
         [Test]
         public async Task Then_EndPointAssessmentPrice_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+            Assert.That(result.EndPointAssessmentPrice, Is.EqualTo(_cacheItem.EndPointAssessmentPrice));
         }
 
         [Test]
@@ -178,14 +178,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _cacheItem.IsOnFlexiPaymentPilot = true;
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.TrainingPrice + _cacheItem.EndPointAssessmentPrice, result.Cost);
+            Assert.That(result.Cost, Is.EqualTo(_cacheItem.TrainingPrice + _cacheItem.EndPointAssessmentPrice));
         }
 
         [Test]
         public async Task Then_Reference_IsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.Reference, result.Reference);
+            Assert.That(result.Reference, Is.EqualTo(_cacheItem.Reference));
         }
 
 
@@ -193,7 +193,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenEmailIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_cacheItem.Email, result.Email);
+            Assert.That(result.Email, Is.EqualTo(_cacheItem.Email));
         }
     }
 }

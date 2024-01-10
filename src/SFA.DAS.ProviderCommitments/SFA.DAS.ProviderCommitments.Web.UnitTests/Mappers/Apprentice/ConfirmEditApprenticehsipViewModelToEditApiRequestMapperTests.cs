@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ApprenticeshipId_IsMapped()
         {
             var result = await _mapper.Map(_viewModel);
-            Assert.AreEqual(_viewModel.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(_viewModel.ApprenticeshipId));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.FirstName, result.FirstName);
+            Assert.That(result.FirstName, Is.EqualTo(_viewModel.FirstName));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.LastName, result.LastName);
+            Assert.That(result.LastName, Is.EqualTo(_viewModel.LastName));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.Email, result.Email);
+            Assert.That(result.Email, Is.EqualTo(_viewModel.Email));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.DateOfBirth, result.DateOfBirth);
+            Assert.That(result.DateOfBirth, Is.EqualTo(_viewModel.DateOfBirth));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.StartDate, result.StartDate);
+            Assert.That(result.StartDate, Is.EqualTo(_viewModel.StartDate));
         }
 
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.EndDate, result.EndDate);
+            Assert.That(result.EndDate, Is.EqualTo(_viewModel.EndDate));
         }
 
         [Test, MoqAutoData]
@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(_viewModel.DeliveryModel));
         }
 
         [Test, MoqAutoData]
@@ -99,7 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.EmploymentEndDate, result.EmploymentEndDate);
+            Assert.That(result.EmploymentEndDate, Is.EqualTo(_viewModel.EmploymentEndDate));
         }
 
         [Test, MoqAutoData]
@@ -107,7 +107,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.EmploymentPrice, result.EmploymentPrice);
+            Assert.That(result.EmploymentPrice, Is.EqualTo(_viewModel.EmploymentPrice));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_viewModel.CourseCode));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.Cost, result.Cost);
+            Assert.That(result.Cost, Is.EqualTo(_viewModel.Cost));
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.Version, result.Version);
+            Assert.That(result.Version, Is.EqualTo(_viewModel.Version));
         }
 
         [Test, MoqAutoData]
@@ -139,7 +139,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.Option, result.Option);
+            Assert.That(result.Option, Is.EqualTo(_viewModel.Option));
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _viewModel.Option = "TBC";
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(string.Empty, result.Option);
+            Assert.That(result.Option, Is.EqualTo(string.Empty));
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _mapper.Map(_viewModel);
 
-            Assert.AreEqual(_viewModel.ProviderReference, result.ProviderReference);
+            Assert.That(result.ProviderReference, Is.EqualTo(_viewModel.ProviderReference));
         }
     }
 }

@@ -66,8 +66,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var content = await mapper.Map(request);
 
             //Assert
-            Assert.AreEqual(expectedFileName, content.Name);
-            Assert.AreEqual(expectedMemoryStream, content.Content);
+            Assert.That(content.Name, Is.EqualTo(expectedFileName));
+            Assert.That(content.Content, Is.EqualTo(expectedMemoryStream));
         }
     }
 }

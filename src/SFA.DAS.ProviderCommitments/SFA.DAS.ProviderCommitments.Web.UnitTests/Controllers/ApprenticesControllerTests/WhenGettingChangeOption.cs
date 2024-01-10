@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var viewModel = viewResult.Model as ChangeOptionViewModel;
 
-            Assert.AreEqual(_viewModel, viewModel);
+            Assert.That(viewModel, Is.EqualTo(_viewModel));
         }
     }
 }

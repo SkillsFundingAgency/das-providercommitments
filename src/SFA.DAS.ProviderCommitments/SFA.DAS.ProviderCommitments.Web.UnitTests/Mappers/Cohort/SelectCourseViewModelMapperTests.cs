@@ -44,21 +44,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task EmployerName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.EmployerName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(_apiResponse.EmployerName));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
         }
 
         [Test]
         public async Task ShowManagingStandardsContent_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.IsMainProvider, result.ShowManagingStandardsContent);
+            Assert.That(result.ShowManagingStandardsContent, Is.EqualTo(_apiResponse.IsMainProvider));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheItem.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_cacheItem.CourseCode));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _request.CourseCode = "123";
 
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_request.CourseCode));
         }
     }
 }

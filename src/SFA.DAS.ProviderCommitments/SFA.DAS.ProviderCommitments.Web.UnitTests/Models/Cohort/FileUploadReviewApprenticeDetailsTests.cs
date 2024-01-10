@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
 
             //Assert
             var result = _fileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
-            Assert.AreEqual(result, fundingCapExceeded);
+            Assert.That(fundingCapExceeded, Is.EqualTo(result));
         }
     }
 }

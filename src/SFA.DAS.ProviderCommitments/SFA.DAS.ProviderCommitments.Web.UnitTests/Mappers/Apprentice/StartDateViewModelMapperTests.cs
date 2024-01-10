@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Request.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.Request.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_fixture.Request.ProviderId));
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Response.StopDate, result.StopDate);
+            Assert.That(result.StopDate, Is.EqualTo(_fixture.Response.StopDate));
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Request.CacheKey, result.CacheKey);
+            Assert.That(result.CacheKey, Is.EqualTo(_fixture.Request.CacheKey));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.Response.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_fixture.Response.EmployerName));
         }
     }
 

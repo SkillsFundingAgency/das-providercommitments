@@ -48,35 +48,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenProviderIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_source.ApprenticeshipHashedId));
         }
 
         [Test]
         public async Task ThenLegalEntityNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_getApprenticeshipApiResponse.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_getApprenticeshipApiResponse.EmployerName));
         }
 
         [Test]
         public async Task ThenEditModeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.IsEdit, result.InEditMode);
+            Assert.That(result.InEditMode, Is.EqualTo(_source.IsEdit));
         }
 
         [Test]
         public async Task ThenApprenticeshipStatusIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_getApprenticeshipApiResponse.Status, result.ApprenticeshipStatus);
+            Assert.That(result.ApprenticeshipStatus, Is.EqualTo(_getApprenticeshipApiResponse.Status));
         }
     }
 }

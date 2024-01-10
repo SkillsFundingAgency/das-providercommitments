@@ -582,10 +582,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifySelectOptionsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
-            Assert.AreEqual("SelectStandardOption", viewResult.ViewName);
+            Assert.That(viewResult, Is.Not.Null);
+            Assert.That(viewResult.ViewName, Is.EqualTo("SelectStandardOption"));
             var model = viewResult.Model as ViewSelectOptionsViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 

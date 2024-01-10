@@ -31,6 +31,6 @@ public class WhenDeterminingTheStatusOfACourseOnSpecificDate
         var result = course.IsActiveOn(effectiveDate);
 
         //Assert
-        Assert.AreEqual(expectStatus, result);
+        Assert.That(result, Is.EqualTo(expectStatus));
     }
 }

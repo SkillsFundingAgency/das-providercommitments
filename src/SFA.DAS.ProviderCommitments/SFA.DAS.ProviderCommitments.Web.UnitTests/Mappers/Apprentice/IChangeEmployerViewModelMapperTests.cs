@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Act();
 
             var result = _fixture.VerifyResult<InformViewModel>();
-            Assert.AreEqual(_fixture.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_fixture.ProviderId));
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Act();
             var result = _fixture.VerifyResult<InformViewModel>();
 
-            Assert.AreEqual(_fixture.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(_fixture.ApprenticeshipId));
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _fixture.Act();
             var result = _fixture.VerifyResult<InformViewModel>();
-            Assert.AreEqual(_fixture.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _fixture.Act();
             var result = _fixture.VerifyResult<InformViewModel>();
-            Assert.AreEqual(_fixture.Apprenticeship.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_fixture.Apprenticeship.EmployerName));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_fixture.ProviderId));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(_fixture.ApprenticeshipId));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.EmployerName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(_fixture.EmployerName));
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.StartDate, result.StartDate);
+            Assert.That(result.StartDate, Is.EqualTo(_fixture.StartDate));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.EndDate, result.EndDate);
+            Assert.That(result.EndDate, Is.EqualTo(_fixture.EndDate));
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.Price, result.Price);
+            Assert.That(result.Price, Is.EqualTo(_fixture.Price));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.Apprenticeship.EmployerName, result.CurrentEmployerName);
+            Assert.That(result.CurrentEmployerName, Is.EqualTo(_fixture.Apprenticeship.EmployerName));
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.PriceEpisodes.PriceEpisodes.GetPrice(), result.CurrentPrice);
+            Assert.That(result.CurrentPrice, Is.EqualTo(_fixture.PriceEpisodes.PriceEpisodes.GetPrice()));
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.Apprenticeship.StartDate, result.CurrentStartDate);
+            Assert.That(result.CurrentStartDate, Is.EqualTo(_fixture.Apprenticeship.StartDate));
         }
 
         [Test]
@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.Apprenticeship.EndDate, result.CurrentEndDate);
+            Assert.That(result.CurrentEndDate, Is.EqualTo(_fixture.Apprenticeship.EndDate));
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().CohortId, result.CohortId);
+            Assert.That(result.CohortId, Is.EqualTo(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().CohortId));
         }
 
         [Test]
@@ -196,7 +196,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(_fixture.CohortReference));
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Pending);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().WithParty, result.WithParty);
+            Assert.That(result.WithParty, Is.EqualTo(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().WithParty));
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Approved);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().Status, result.Status);
+            Assert.That(result.Status, Is.EqualTo(_fixture.ChangeOfPartyRequests.ChangeOfPartyRequests.First().Status));
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestStatus.Approved);
             await _fixture.Act();
             var result = _fixture.VerifyResult<ChangeEmployerRequestDetailsViewModel>();
-            Assert.AreEqual(_fixture.EncodedNewApprenticeshipId, result.EncodedNewApprenticeshipId);
+            Assert.That(result.EncodedNewApprenticeshipId, Is.EqualTo(_fixture.EncodedNewApprenticeshipId));
         }
     }
 

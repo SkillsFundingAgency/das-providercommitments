@@ -149,16 +149,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEnableEmployerRequestEmail(bool enabled)
         {
-            Assert.AreEqual(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail, enabled);
+            Assert.That(enabled, Is.EqualTo(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail));
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.AreEqual(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId, model.DraftApprenticeshipHashedId);
+            Assert.That(model.DraftApprenticeshipHashedId, Is.EqualTo(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId));
             return this;
         }
 
@@ -171,18 +171,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapOptionsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapOptionsForChangeEmployerViewModelViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 
@@ -291,23 +291,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as EmployerNotifiedViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
 
-            Assert.AreEqual(model.CohortReference, _employerNotifiedRequest.CohortReference);
-            Assert.AreEqual(model.ProviderId, _employerNotifiedRequest.ProviderId);
+            Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
+            Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyChangeOfEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as ChangeOfEmployerNotifiedViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
 
-            Assert.AreEqual(model.ProviderId, _changeOfEmployerNotifiedRequest.ProviderId);
+            Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
             return this;
         }
 
@@ -332,12 +332,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapRequestsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
 
-            Assert.AreEqual(model.CohortReference, _overlapRequest.CohortReference);
-            Assert.AreEqual(model.DraftApprenticeshipId, _overlapRequest.DraftApprenticeshipId);
+            Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
+            Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
             return this;
         }
         
@@ -350,9 +350,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 

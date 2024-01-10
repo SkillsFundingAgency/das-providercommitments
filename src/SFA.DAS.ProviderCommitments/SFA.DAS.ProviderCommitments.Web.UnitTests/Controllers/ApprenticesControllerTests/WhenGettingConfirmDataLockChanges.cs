@@ -25,6 +25,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
         }
 
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
+
         [Test]
         public async Task ThenCallsModelMapper()
         {
@@ -42,8 +45,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await _sut.ConfirmDataLockChanges(_request) as ViewResult;
 
             //Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(ConfirmDataLockChangesViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(ConfirmDataLockChangesViewModel)));
         }
     }
 }

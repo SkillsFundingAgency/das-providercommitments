@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task HasNoDeclaredStandards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.HasNoDeclaredStandards, result.HasNoDeclaredStandards);
+            Assert.That(result.HasNoDeclaredStandards, Is.EqualTo(_apiResponse.HasNoDeclaredStandards));
         }
 
         [SetUp]

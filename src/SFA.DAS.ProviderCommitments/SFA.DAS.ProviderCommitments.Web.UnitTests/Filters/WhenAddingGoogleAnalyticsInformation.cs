@@ -26,10 +26,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             //Assert
             var actualController = context.Controller as Controller;
-            Assert.IsNotNull(actualController);
+            Assert.That(actualController, Is.Not.Null);
             var viewBagData = actualController.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBagData);
-            Assert.AreEqual(ukPrn.ToString(), viewBagData.UkPrn);
+            Assert.That(viewBagData, Is.Not.Null);
+            Assert.That(viewBagData.UkPrn, Is.EqualTo(ukPrn.ToString()));
         }
 
         [Test, DomainAutoData]

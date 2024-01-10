@@ -172,15 +172,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             object valueFromTempData;
             Controller.TempData.TryGetValue(key, out valueFromTempData);
-            Assert.AreEqual(valueFromTempData.ToString(), value);
+            Assert.That(value, Is.EqualTo(valueFromTempData.ToString()));
         }
 
         internal void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
         {
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.AreEqual(redirect.ActionName, "Details");
-            Assert.AreEqual(redirect.RouteValues["ProviderId"], viewModel.ProviderId);
-            Assert.AreEqual(redirect.RouteValues["ApprenticeshipHashedId"], viewModel.ApprenticeshipHashedId);
+            Assert.That("Details", Is.EqualTo(redirect.ActionName));
+            Assert.That(viewModel.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
+            Assert.That(viewModel.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
         }
 
         internal void SetNeedReapproval(bool value)

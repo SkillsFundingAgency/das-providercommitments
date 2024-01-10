@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(fixture.Source.ProviderId));
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.WithParty, result.WithParty);
+            Assert.That(result.WithParty, Is.EqualTo(fixture.Cohort.WithParty));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LegalEntityName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(fixture.Cohort.LegalEntityName));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.ProviderName, result.ProviderName);
+            Assert.That(result.ProviderName, Is.EqualTo(fixture.Cohort.ProviderName));
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByProvider, result.Message);
+            Assert.That(result.Message, Is.EqualTo(fixture.Cohort.LatestMessageCreatedByProvider));
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Cohort.LatestMessageCreatedByProvider = string.Empty;
 
             var result = await fixture.Map();
-            Assert.AreEqual("No message added", result.Message);
+            Assert.That(result.Message, Is.EqualTo("No message added"));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(fixture.Source.CohortReference));
         }
 
         public enum ExpectedWhatHappensNextType
@@ -120,7 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     throw new NotImplementedException();
             }
 
-            CollectionAssert.AreEquivalent(expectedWhatHappensNext, result.WhatHappensNext);
+            Assert.That(result.WhatHappensNext, Is.EquivalentTo(expectedWhatHappensNext));
         }
 
 
@@ -146,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedText, result.PageTitle);
+            Assert.That(result.PageTitle, Is.EqualTo(expectedText));
         }
 
     }

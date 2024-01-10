@@ -160,22 +160,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
-            Assert.AreEqual(GetApprenticeshipApiResponse.EmployerName, result.LegalEntityName);
-            Assert.AreEqual(filteredLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
+            Assert.That(result.LegalEntityName, Is.EqualTo(GetApprenticeshipApiResponse.EmployerName));
+            Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(filteredLegalEntities.Count()));
 
             foreach (var entity in filteredLegalEntities)
             {
-                Assert.True(result.AccountProviderLegalEntities.Any(x =>
+                Assert.That(result.AccountProviderLegalEntities.Any(x =>
                     x.EmployerAccountLegalEntityName == entity.AccountLegalEntityName &&
                     x.EmployerAccountLegalEntityPublicHashedId == entity.AccountLegalEntityPublicHashedId &&
                     x.EmployerAccountName == entity.AccountName &&
-                    x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId));
+                    x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId), Is.True);
             }
         }
 
         public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
         {
-            Assert.AreEqual(0, result.AccountProviderLegalEntities.Count);
+            Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
         }
     }
 }

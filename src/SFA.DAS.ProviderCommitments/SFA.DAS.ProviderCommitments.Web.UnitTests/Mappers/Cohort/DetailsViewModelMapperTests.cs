@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(fixture.Source.ProviderId));
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.WithParty, result.WithParty);
+            Assert.That(result.WithParty, Is.EqualTo(fixture.CohortDetails.WithParty));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.LegalEntityName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(fixture.CohortDetails.LegalEntityName));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.ProviderName, result.ProviderName);
+            Assert.That(result.ProviderName, Is.EqualTo(fixture.CohortDetails.ProviderName));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.LatestMessageCreatedByEmployer, result.Message);
+            Assert.That(result.Message, Is.EqualTo(fixture.CohortDetails.LatestMessageCreatedByEmployer));
         }
 
         [TestCase(true, true, "No, send to employer to review or add details")]
@@ -81,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture().SetIsAgreementSigned(isAgreementSigned).SetProviderComplete(providerComplete).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expected, result.SendBackToEmployerOptionMessage);
+            Assert.That(result.SendBackToEmployerOptionMessage, Is.EqualTo(expected));
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(fixture.Source.CohortReference));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.IsApprovedByEmployer, result.IsApprovedByEmployer);
+            Assert.That(result.IsApprovedByEmployer, Is.EqualTo(fixture.CohortDetails.IsApprovedByEmployer));
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture().SetTransferSenderIdAndItsExpectedHashedValue(123, "X123X");
             var result = await fixture.Map();
-            Assert.AreEqual("X123X", result.TransferSenderHashedId);
+            Assert.That(result.TransferSenderHashedId, Is.EqualTo("X123X"));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture().SetPledgeApplicationIdAndItsExpectedHashedValue(567, "Z567Z");
             var result = await fixture.Map();
-            Assert.AreEqual("Z567Z", result.EncodedPledgeApplicationId);
+            Assert.That(result.EncodedPledgeApplicationId, Is.EqualTo("Z567Z"));
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.DraftApprenticeships.Count, result.DraftApprenticeshipsCount);
+            Assert.That(result.DraftApprenticeshipsCount, Is.EqualTo(fixture.CohortDetails.DraftApprenticeships.Count));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var expectedCount = fixture.CohortDetails.DraftApprenticeships
                     .Count(a => a.CourseCode == course.CourseCode && a.CourseName == course.CourseName && a.DeliveryModel == course.DeliveryModel);
 
-                Assert.AreEqual(expectedCount, course.Count);
+                Assert.That(course.Count, Is.EqualTo(expectedCount));
             }
         }
 
@@ -221,7 +221,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
 
-                Assert.AreEqual(1000, draftApprenticeshipResult.FundingBandCap);
+                Assert.That(draftApprenticeshipResult.FundingBandCap, Is.EqualTo(1000));
             }
         }
 
@@ -237,7 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
 
-                Assert.AreEqual(null, draftApprenticeshipResult.FundingBandCap);
+                Assert.That(draftApprenticeshipResult.FundingBandCap, Is.EqualTo(null));
             }
         }
 
@@ -253,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
 
-                Assert.AreEqual(null, draftApprenticeshipResult.FundingBandCap);
+                Assert.That(draftApprenticeshipResult.FundingBandCap, Is.EqualTo(null));
             }
             fixture.CommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), CancellationToken.None), Times.Never);
         }
@@ -269,7 +269,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 var draftApprenticeshipResult =
                     result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
 
-                Assert.AreEqual(null, draftApprenticeshipResult.FundingBandCap);
+                Assert.That(draftApprenticeshipResult.FundingBandCap, Is.EqualTo(null));
             }
         }
 
@@ -280,7 +280,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
 
             var excessModel = result.Courses.FirstOrDefault(x => x.CourseCode == "C1").FundingBandExcess;
-            Assert.AreEqual(2, excessModel.NumberOfApprenticesExceedingFundingBandCap);
+            Assert.That(excessModel.NumberOfApprenticesExceedingFundingBandCap, Is.EqualTo(2));
         }
 
         [Test]
@@ -290,7 +290,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
 
             var excessModel = result.Courses.FirstOrDefault(x => x.CourseCode == "C1").FundingBandExcess;
-            Assert.AreEqual(".", excessModel.DisplaySingleFundingBandCap);
+            Assert.That(excessModel.DisplaySingleFundingBandCap, Is.EqualTo("."));
         }
 
         [Test]
@@ -300,7 +300,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
 
             var excessModel = result.Courses.FirstOrDefault(x => x.CourseCode == "C2").FundingBandExcess;
-            Assert.AreEqual(1, excessModel.NumberOfApprenticesExceedingFundingBandCap);
+            Assert.That(excessModel.NumberOfApprenticesExceedingFundingBandCap, Is.EqualTo(1));
         }
 
         [Test]
@@ -310,7 +310,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
 
             var excessModel = result.Courses.FirstOrDefault(x => x.CourseCode == "C2").FundingBandExcess;
-            Assert.AreEqual(" of £1,000.", excessModel.DisplaySingleFundingBandCap);
+            Assert.That(excessModel.DisplaySingleFundingBandCap, Is.EqualTo(" of £1,000."));
         }
 
         [Test]
@@ -339,7 +339,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedPageTitle, result.PageTitle);
+            Assert.That(result.PageTitle, Is.EqualTo(expectedPageTitle));
         }
 
         [TestCase("C2", "1 apprenticeship above funding band maximum")]
@@ -349,7 +349,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedFundingBandCapExcessHeader, result.Courses.FirstOrDefault(x => x.CourseCode == courseCode).FundingBandExcess.FundingBandCapExcessHeader);
+            Assert.That(result.Courses.FirstOrDefault(x => x.CourseCode == courseCode).FundingBandExcess.FundingBandCapExcessHeader, Is.EqualTo(expectedFundingBandCapExcessHeader));
         }
 
         [TestCase("C2", "The price for this apprenticeship is above its")]
@@ -359,7 +359,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedFundingBandCapExcessLabel, result.Courses.FirstOrDefault(x => x.CourseCode == courseCode).FundingBandExcess.FundingBandCapExcessLabel);
+            Assert.That(result.Courses.FirstOrDefault(x => x.CourseCode == courseCode).FundingBandExcess.FundingBandCapExcessLabel, Is.EqualTo(expectedFundingBandCapExcessLabel));
         }
 
         [TestCase(true, true)]
@@ -369,7 +369,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
             var result = await fixture.Map();
-            Assert.AreEqual(expectedIsAgreementSigned, result.IsAgreementSigned);
+            Assert.That(result.IsAgreementSigned, Is.EqualTo(expectedIsAgreementSigned));
         }
 
         [TestCase(true, true)]
@@ -379,7 +379,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetIsAgreementSigned(isAgreementSigned);
             var result = await fixture.Map();
-            Assert.AreEqual(expectedIsAgreementSigned, result.IsAgreementSigned);
+            Assert.That(result.IsAgreementSigned, Is.EqualTo(expectedIsAgreementSigned));
         }
 
         [TestCase(true, "Approve these details?")]
@@ -389,7 +389,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
+            Assert.That(result.OptionsTitle, Is.EqualTo(expectedOptionsTitle));
         }
 
         [TestCase(true, "Approve these details?")]
@@ -399,7 +399,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedOptionsTitle, result.OptionsTitle);
+            Assert.That(result.OptionsTitle, Is.EqualTo(expectedOptionsTitle));
         }
 
         [TestCase(true, false)]
@@ -409,7 +409,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowViewAgreementOption, result.ShowViewAgreementOption);
+            Assert.That(result.ShowViewAgreementOption, Is.EqualTo(expectedShowViewAgreementOption));
         }
 
         [TestCase(true, true)]
@@ -419,7 +419,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
+            Assert.That(result.ProviderCanApprove, Is.EqualTo(expectedShowApprovalOption));
         }
 
         [TestCase(true, false)]
@@ -429,7 +429,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetIsChangeOfParty(isChangeOfParty);
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowAddAnotherOption, result.ShowAddAnotherApprenticeOption);
+            Assert.That(result.ShowAddAnotherApprenticeOption, Is.EqualTo(expectedShowAddAnotherOption));
         }
 
         [TestCase(true, true)]
@@ -439,7 +439,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
+            Assert.That(result.ProviderCanApprove, Is.EqualTo(expectedShowApprovalOption));
         }
 
         [TestCase(true, false)]
@@ -449,7 +449,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var fixture = new DetailsViewModelMapperTestsFixture();
             fixture.SetHasInvalidCourse(hasInvalidCourse).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
+            Assert.That(result.ProviderCanApprove, Is.EqualTo(expectedShowApprovalOption));
         }
 
         [TestCase(true, false)]
@@ -460,7 +460,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.SetUlnOverlap(hasOverlap).SetRplErrorsToNone();
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedShowApprovalOption, result.ProviderCanApprove);
+            Assert.That(result.ProviderCanApprove, Is.EqualTo(expectedShowApprovalOption));
         }
 
         [TestCase(true, true, true, true)]
@@ -474,7 +474,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.IsApprovedByEmployer = isApprovedByEmployer;
             fixture.SetTransferSender().SetIsAgreementSigned(isAgreementSigned);
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowApprovalOptionMessage, result.ShowApprovalOptionMessage);
+            Assert.That(result.ShowApprovalOptionMessage, Is.EqualTo(expectedShowApprovalOptionMessage));
         }
 
         [TestCase(true, true, true, true)]
@@ -488,7 +488,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.IsApprovedByEmployer = isApprovedByEmployer;
             fixture.SetIsAgreementSigned(isAgreementSigned).SetRplErrorsToNone();
             var result = await fixture.Map();
-            Assert.AreEqual(expectedShowApprovalOptionMessage, result.ShowApprovalOptionMessage);
+            Assert.That(result.ShowApprovalOptionMessage, Is.EqualTo(expectedShowApprovalOptionMessage));
         }
 
         [Test]
@@ -532,7 +532,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.CohortDetails.IsCompleteForProvider, result.IsCompleteForProvider);
+            Assert.That(result.IsCompleteForProvider, Is.EqualTo(fixture.CohortDetails.IsCompleteForProvider));
         }
 
         [Test]
@@ -543,8 +543,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .SetupChangeOfPartyScenario()
                 .Map();
 
-            Assert.AreEqual(1000, result.Courses.First().DraftApprenticeships.First().FundingBandCap);
-            Assert.AreEqual(true, result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap);
+            Assert.That(result.Courses.First().DraftApprenticeships.First().FundingBandCap, Is.EqualTo(1000));
+            Assert.That(result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap, Is.EqualTo(true));
         }
 
         [Test]
@@ -556,11 +556,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await f.Map();
             var course = result.Courses.FirstOrDefault(x => x.DraftApprenticeships.Any(y => y.Id == apprenticeshipId));
 
-            Assert.NotNull(course);
-            Assert.NotNull(course.EmailOverlaps);
-            Assert.AreEqual(1, course.EmailOverlaps.NumberOfEmailOverlaps);
-            Assert.AreEqual(1, course.DraftApprenticeships.Count(x => x.HasOverlappingEmail));
-            Assert.AreEqual(apprenticeshipId, course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id);
+            Assert.That(course, Is.Not.Null);
+            Assert.That(course.EmailOverlaps, Is.Not.Null);
+            Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(1));
+            Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(1));
+            Assert.That(course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id, Is.EqualTo(apprenticeshipId));
         }
 
         [Test]
@@ -573,10 +573,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await f.Map();
             var course = result.Courses.FirstOrDefault();
 
-            Assert.NotNull(course);
-            Assert.NotNull(course.EmailOverlaps);
-            Assert.AreEqual(2, course.EmailOverlaps.NumberOfEmailOverlaps);
-            Assert.AreEqual(2, course.DraftApprenticeships.Count(x => x.HasOverlappingEmail));
+            Assert.That(course, Is.Not.Null);
+            Assert.That(course.EmailOverlaps, Is.Not.Null);
+            Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(2));
+            Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(2));
             Assert.IsTrue(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId1).HasOverlappingEmail);
             Assert.IsTrue(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId2).HasOverlappingEmail);
         }
@@ -601,7 +601,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.TransferApprovalStatus = TransferApprovalStatus.Pending;
 
             var result = await fixture.Map();
-            Assert.AreEqual("Pending - with funding employer", result.Status);
+            Assert.That(result.Status, Is.EqualTo("Pending - with funding employer"));
         }
 
         [Test]
@@ -618,7 +618,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.TransferApprovalStatus = TransferApprovalStatus.Rejected;
 
             var result = await fixture.Map();
-            Assert.AreEqual("Rejected by transfer sending employer", result.Status);
+            Assert.That(result.Status, Is.EqualTo("Rejected by transfer sending employer"));
         }
 
         [Test]
@@ -631,7 +631,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.LastAction = LastAction.None;
 
             var result = await fixture.Map();
-            Assert.AreEqual("New request", result.Status);
+            Assert.That(result.Status, Is.EqualTo("New request"));
         }
 
         [Test]
@@ -644,7 +644,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.LastAction = LastAction.Amend;
 
             var result = await fixture.Map();
-            Assert.AreEqual("Ready for review", result.Status);
+            Assert.That(result.Status, Is.EqualTo("Ready for review"));
         }
 
         [Test]
@@ -658,7 +658,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.IsApprovedByEmployer = true;
 
             var result = await fixture.Map();
-            Assert.AreEqual("Ready for approval", result.Status);
+            Assert.That(result.Status, Is.EqualTo("Ready for approval"));
         }
 
         [Test]
@@ -671,7 +671,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.LastAction = LastAction.None;
 
             var result = await fixture.Map();
-            Assert.AreEqual("New request", result.Status);
+            Assert.That(result.Status, Is.EqualTo("New request"));
         }
 
         [Test]
@@ -684,7 +684,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.CohortDetails.LastAction = LastAction.Amend;
 
             var result = await fixture.Map();
-            Assert.AreEqual("Under review with employer", result.Status);
+            Assert.That(result.Status, Is.EqualTo("Under review with employer"));
         }
 
         [Test]
@@ -698,7 +698,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
 
             var result = await fixture.Map();
-            Assert.AreEqual("With Employer for approval", result.Status);
+            Assert.That(result.Status, Is.EqualTo("With Employer for approval"));
         }
 
         [TestCase(nameof(DraftApprenticeshipDto.FirstName))]
@@ -757,7 +757,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(2, result.Courses.Count(c => c.CourseCode == "C4"));
+            Assert.That(result.Courses.Count(c => c.CourseCode == "C4"), Is.EqualTo(2));
         }
 
         [TestCase(DeliveryModel.PortableFlexiJob)]
@@ -766,7 +766,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new DetailsViewModelMapperTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(1, result.Courses.Count(c => c.CourseCode == "C4" && c.DeliveryModel == dm));
+            Assert.That(result.Courses.Count(c => c.CourseCode == "C4" && c.DeliveryModel == dm), Is.EqualTo(1));
         }
 
         [Test]
@@ -1029,25 +1029,25 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public static void AssertEquality(DraftApprenticeshipDto source, CohortDraftApprenticeshipViewModel result)
         {
-            Assert.AreEqual(source.Id, result.Id);
-            Assert.AreEqual(source.FirstName, result.FirstName);
-            Assert.AreEqual(source.LastName, result.LastName);
-            Assert.AreEqual(source.DateOfBirth, result.DateOfBirth);
-            Assert.AreEqual(source.Cost, result.Cost);
-            Assert.AreEqual(source.TrainingPrice, result.TrainingPrice);
-            Assert.AreEqual(source.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
-            Assert.AreEqual(source.EmploymentPrice, result.EmploymentPrice);
-            Assert.AreEqual(source.EmploymentEndDate, result.EmploymentEndDate);
-            Assert.AreEqual(source.StartDate, result.StartDate);
-            Assert.AreEqual(source.ActualStartDate, result.ActualStartDate);
-            Assert.AreEqual(source.EndDate, result.EndDate);
-            Assert.AreEqual($"X{source.Id}X", result.DraftApprenticeshipHashedId);
-            Assert.AreEqual(source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+            Assert.That(result.Id, Is.EqualTo(source.Id));
+            Assert.That(result.FirstName, Is.EqualTo(source.FirstName));
+            Assert.That(result.LastName, Is.EqualTo(source.LastName));
+            Assert.That(result.DateOfBirth, Is.EqualTo(source.DateOfBirth));
+            Assert.That(result.Cost, Is.EqualTo(source.Cost));
+            Assert.That(result.TrainingPrice, Is.EqualTo(source.TrainingPrice));
+            Assert.That(result.EndPointAssessmentPrice, Is.EqualTo(source.EndPointAssessmentPrice));
+            Assert.That(result.EmploymentPrice, Is.EqualTo(source.EmploymentPrice));
+            Assert.That(result.EmploymentEndDate, Is.EqualTo(source.EmploymentEndDate));
+            Assert.That(result.StartDate, Is.EqualTo(source.StartDate));
+            Assert.That(result.ActualStartDate, Is.EqualTo(source.ActualStartDate));
+            Assert.That(result.EndDate, Is.EqualTo(source.EndDate));
+            Assert.That(result.DraftApprenticeshipHashedId, Is.EqualTo($"X{source.Id}X"));
+            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(source.IsOnFlexiPaymentPilot));
         }
 
         public static void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)
         {
-            Assert.AreEqual(expected.Count, actual.Count, "Expected and actual sequences are different lengths");
+            Assert.That(actual.Count, Is.EqualTo(expected.Count), "Expected and actual sequences are different lengths");
 
             for (var i = 0; i < actual.Count; i++)
             {

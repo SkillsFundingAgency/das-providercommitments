@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         public void ValidateServiceClaimsTest(string claim, bool expected)
         {
             var result = claim.IsServiceClaim();
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [TestCase(ServiceClaim.DAA, new[] { ServiceClaim.DAA, ServiceClaim.DAB, ServiceClaim.DAC, ServiceClaim.DAV }, true)]
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
             var result = claimsPrincipal.HasPermission(minimumServiceClaim);
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [TestCase(ServiceClaim.DAA, new[] {"DCS", "DCFT"}, false)]
@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
             var result = claimsPrincipal.HasPermission(minimumServiceClaim);
-            Assert.AreEqual(expected, result);
+            Assert.That(result, Is.EqualTo(expected));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice
                 PageNumber = actualPageNumber
             };
 
-            Assert.AreEqual(expectedPageNumber, request.PageNumber);
+            Assert.That(request.PageNumber, Is.EqualTo(expectedPageNumber));
         }
     }
 }

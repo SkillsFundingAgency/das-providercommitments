@@ -292,50 +292,50 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task Action() => _result = await _sut.Map(_request);
 
         internal void VerifyLegalEntityNameIsMappedCorrectly()
-        {            
-            Assert.AreEqual("EmployerName", _result.LegalEntityName);
+        {
+            Assert.That(_result.LegalEntityName, Is.EqualTo("EmployerName"));
         }
 
         internal void VerifyCohortReferenceIsMappedCorrectly()
         {
-            Assert.AreEqual(cohortRef, _result.CohortRef);
+            Assert.That(_result.CohortRef, Is.EqualTo(cohortRef));
         }
         
         internal void VerifyNumberOfApprenticesAreMappedCorrectly()
         {
             var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
-            
-            Assert.AreEqual(2, groupedByCohort.Count());
+
+            Assert.That(groupedByCohort.Count(), Is.EqualTo(2));
         }
 
         internal void VerifyNumberOfExistingApprenticesAreMappedCorrectly()
         {
-            Assert.AreEqual(3, _draftApprenticeshipsResponse.DraftApprenticeships.Count());
+            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships.Count(), Is.EqualTo(3));
         }
 
         internal void VerifyTotalCostForFileUploadedApprenticesAreMappedCorrectly()
         {
             var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
 
-            Assert.AreEqual(1000, groupedByCohort.Sum(x => int.Parse(x.TotalPrice)));
+            Assert.That(groupedByCohort.Sum(x => int.Parse(x.TotalPrice)), Is.EqualTo(1000));
         }
 
         internal void TotalCostForExistingApprenticesAreMappedCorrectly()
         {
             var costfromfileUploadedCohort = _csvRecords.Where(x => x.CohortRef == cohortRef).Sum(x => int.Parse(x.TotalPrice));
-            var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);            
+            var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);
 
-            Assert.AreEqual(1300, (costfromfileUploadedCohort + costfromExistingCohort));
+            Assert.That((costfromfileUploadedCohort + costfromExistingCohort), Is.EqualTo(1300));
         }
 
         internal void VerifyFileUploadedCohortDetailsCountMappedCorrectly()
-        { 
-            Assert.AreEqual(2, _result.FileUploadCohortDetails.Count());
+        {
+            Assert.That(_result.FileUploadCohortDetails.Count(), Is.EqualTo(2));
         }
 
         internal void VerifyExistingCohortDetailsCountMappedCorrectly()
         {
-            Assert.AreEqual(3, _result.ExistingCohortDetails.Count());
+            Assert.That(_result.ExistingCohortDetails.Count(), Is.EqualTo(3));
         }
 
         internal void VerifyFileUploadedCohortDetailsMappedCorrectly()
@@ -343,13 +343,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
             var cohortDetails = _result.FileUploadCohortDetails[0];
 
-            Assert.AreEqual(cohortDetails.Name, $"{csvRecord.GivenNames} {csvRecord.FamilyName}");
-            Assert.AreEqual(cohortDetails.Email, csvRecord.EmailAddress);
-            Assert.AreEqual(cohortDetails.ULN, csvRecord.ULN);
-            Assert.AreEqual(dateOfBirth, csvRecord.DateOfBirth);
-            Assert.AreEqual(cohortDetails.Price, int.Parse(csvRecord.TotalPrice));
-            Assert.AreEqual(cohortDetails.TrainingCourse, _trainingProgramme.Title);
-            Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap);
+            Assert.That($"{csvRecord.GivenNames} {csvRecord.FamilyName}", Is.EqualTo(cohortDetails.Name));
+            Assert.That(csvRecord.EmailAddress, Is.EqualTo(cohortDetails.Email));
+            Assert.That(csvRecord.ULN, Is.EqualTo(cohortDetails.ULN));
+            Assert.That(csvRecord.DateOfBirth, Is.EqualTo(dateOfBirth));
+            Assert.That(int.Parse(csvRecord.TotalPrice), Is.EqualTo(cohortDetails.Price));
+            Assert.That(_trainingProgramme.Title, Is.EqualTo(cohortDetails.TrainingCourse));
+            Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCap));
 
         }
 
@@ -358,27 +358,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var existingRecord = _draftApprenticeshipsResponse.DraftApprenticeships.FirstOrDefault();
             var cohortDetails = _result.ExistingCohortDetails[0];
 
-            Assert.AreEqual(cohortDetails.Name, $"{existingRecord.FirstName} {existingRecord.LastName}");
-            Assert.AreEqual(cohortDetails.Email, existingRecord.Email);
-            Assert.AreEqual(cohortDetails.ULN, existingRecord.Uln);
-            Assert.AreEqual(cohortDetails.Price, existingRecord.Cost);
-            Assert.AreEqual(cohortDetails.TrainingCourse, existingRecord.CourseName);
-            Assert.AreEqual(cohortDetails.FundingBandCapForExistingCohort, _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap);
+            Assert.That($"{existingRecord.FirstName} {existingRecord.LastName}", Is.EqualTo(cohortDetails.Name));
+            Assert.That(existingRecord.Email, Is.EqualTo(cohortDetails.Email));
+            Assert.That(existingRecord.Uln, Is.EqualTo(cohortDetails.ULN));
+            Assert.That(existingRecord.Cost, Is.EqualTo(cohortDetails.Price));
+            Assert.That(existingRecord.CourseName, Is.EqualTo(cohortDetails.TrainingCourse));
+            Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCapForExistingCohort));
         }
 
         internal void VerifyFundingTextMappedCorrectlyForFileUploadedApprentices()
-        {            
-            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandTextForFileUploadCohorts);           
+        {
+            Assert.That(_result.FundingBandTextForFileUploadCohorts, Is.EqualTo("2 apprenticeships above funding band maximum"));           
         }
 
         internal void VerifyFundingBandInsetTextMappedCorrectlyForFileUploadedApprentices()
         {
-            Assert.AreEqual("The price for these apprenticeships is above the", _result.FundingBandInsetTextForFileUploadCohorts);
+            Assert.That(_result.FundingBandInsetTextForFileUploadCohorts, Is.EqualTo("The price for these apprenticeships is above the"));
         }
 
         internal void VerifyFundingBandInsetTextMappedCorrectlyForFileUploadedApprentice()
         {
-            Assert.AreEqual("The price for this apprenticeship is above its", _result.FundingBandInsetTextForFileUploadCohorts);
+            Assert.That(_result.FundingBandInsetTextForFileUploadCohorts, Is.EqualTo("The price for this apprenticeship is above its"));
         }
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
@@ -447,17 +447,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void FundingTextMappedCorrectlyForExistingApprentices()
         {
-            Assert.AreEqual("3 apprenticeships above funding band maximum", _result.FundingBandTextForExistingCohorts);
+            Assert.That(_result.FundingBandTextForExistingCohorts, Is.EqualTo("3 apprenticeships above funding band maximum"));
         }
 
         internal void FundingBandInsetTextMappedCorrectlyForExistingApprentices()
         {
-            Assert.AreEqual("The price for these apprenticeships is above the", _result.FundingBandInsetTextForExistingCohorts);
+            Assert.That(_result.FundingBandInsetTextForExistingCohorts, Is.EqualTo("The price for these apprenticeships is above the"));
         }
 
         internal void FundingBandInsetTextMappedCorrectlyForExistingApprentice()
         {
-            Assert.AreEqual("The price for this apprenticeship is above its", _result.FundingBandInsetTextForExistingCohorts);
+            Assert.That(_result.FundingBandInsetTextForExistingCohorts, Is.EqualTo("The price for this apprenticeship is above its"));
         }
     }
 }

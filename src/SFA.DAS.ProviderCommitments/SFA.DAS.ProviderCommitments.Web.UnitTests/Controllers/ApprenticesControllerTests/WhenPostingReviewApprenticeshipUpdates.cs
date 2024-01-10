@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -15,9 +12,6 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -200,15 +194,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyChangesApprovedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesApprovedFlashMessage);
+                Assert.That(flashMessage, Is.Not.Null);
+                Assert.That(ApprenticeController.ChangesApprovedFlashMessage, Is.EqualTo(flashMessage));
             }
 
             public void VerifyChangesRejectedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesRejectedFlashMessage);
+                Assert.That(flashMessage, Is.Not.Null);
+                Assert.That(ApprenticeController.ChangesRejectedFlashMessage, Is.EqualTo(flashMessage));
             }
         }
     }

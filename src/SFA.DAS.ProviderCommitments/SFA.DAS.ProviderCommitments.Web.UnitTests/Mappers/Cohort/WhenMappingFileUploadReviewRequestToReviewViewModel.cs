@@ -262,42 +262,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             internal void VerifyCorrectNumberOfEmployersAreMapped()
             {
-                Assert.AreEqual(2, _result.EmployerDetails.Count());
+                Assert.That(_result.EmployerDetails.Count(), Is.EqualTo(2));
             }
 
             internal void VerifyAgreementIdIsMappedCorrectly(string agreementId)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.AreEqual(1, employer.Count());
+                Assert.That(employer.Count(), Is.EqualTo(1));
             }
 
             public void VerifyLegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.AreEqual(1, employer.Count());
-                Assert.AreEqual(legalEntityName, employer.First().LegalEntityName);
+                Assert.That(employer.Count(), Is.EqualTo(1));
+                Assert.That(employer.First().LegalEntityName, Is.EqualTo(legalEntityName));
             }
 
             internal void VerifyCohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).First();
-                Assert.AreEqual(1, employer.CohortDetails.Where(x => x.CohortRef == cohortRef).Count());
+                Assert.That(employer.CohortDetails.Where(x => x.CohortRef == cohortRef).Count(), Is.EqualTo(1));
             }
 
             internal void VerifyNumberOfApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
             {
                 var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
                 var cohort = employer.CohortDetails.First(x => x.CohortRef == cohortRef);
-                Assert.AreEqual(numberOfApprentices, cohort.NumberOfApprentices);
+                Assert.That(cohort.NumberOfApprentices, Is.EqualTo(numberOfApprentices));
             }
 
             internal void VerifyTotalCostIsMappedCorrectly(string agreementId, string cohortRef, int totalCost)
             {
                 var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
                 var cohort = employer.CohortDetails.First(x => x.CohortRef == cohortRef);
-                Assert.AreEqual(totalCost, cohort.TotalCost);
+                Assert.That(cohort.TotalCost, Is.EqualTo(totalCost));
             }
         }
     }

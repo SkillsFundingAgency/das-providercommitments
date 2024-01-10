@@ -62,14 +62,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task Then_CacheKey_Is_Mapped_Correctly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.CacheKey, result.CacheKey);
+            Assert.That(result.CacheKey, Is.EqualTo(_source.CacheKey));
         }
 
         [Test]
         public async Task Then_ProviderId_Is_Mapped_Correctly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _source.ChangeCourse = "Edit";
             var result = await _act();
-            Assert.AreEqual(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse, result.RedirectTo);
+            Assert.That(result.RedirectTo, Is.EqualTo(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse));
         }
 
         [Test]
@@ -222,7 +222,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _source.ChangeDeliveryModel = "Edit";
             var result = await _act();
-            Assert.AreEqual(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel, result.RedirectTo);
+            Assert.That(result.RedirectTo, Is.EqualTo(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel));
         }
 
         [Test]
@@ -230,7 +230,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _source.ChangePilotStatus = "Edit";
             var result = await _act();
-            Assert.AreEqual(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus, result.RedirectTo);
+            Assert.That(result.RedirectTo, Is.EqualTo(AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus));
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await _act();
 
-            Assert.AreEqual(AddDraftApprenticeshipRedirectModel.RedirectTarget.OverlapWarning, result.RedirectTo);
+            Assert.That(result.RedirectTo, Is.EqualTo(AddDraftApprenticeshipRedirectModel.RedirectTarget.OverlapWarning));
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await _act();
 
-            Assert.AreEqual(123, result.OverlappingApprenticeshipId);
+            Assert.That(result.OverlappingApprenticeshipId, Is.EqualTo(123));
         }
     }
 }

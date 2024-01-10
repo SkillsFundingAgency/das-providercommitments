@@ -147,48 +147,48 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Only_TheCohorts_WithTransferSender_Are_Mapped()
         {
-            Assert.AreEqual(2, _withTransferSenderViewModel.Cohorts.Count());
+            Assert.That(_withTransferSenderViewModel.Cohorts.Count(), Is.EqualTo(2));
 
-            Assert.IsNotNull(GetCohortInTransferSenderViewModel(1));
-            Assert.IsNotNull(GetCohortInTransferSenderViewModel(2));
+            Assert.That(GetCohortInTransferSenderViewModel(1), Is.Not.Null);
+            Assert.That(GetCohortInTransferSenderViewModel(2), Is.Not.Null);
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
             _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
 
-            Assert.AreEqual("1_Encoded", GetCohortInTransferSenderViewModel(1).CohortReference);
-            Assert.AreEqual("2_Encoded", GetCohortInTransferSenderViewModel(2).CohortReference);
+            Assert.That(GetCohortInTransferSenderViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
+            Assert.That(GetCohortInTransferSenderViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.AreEqual(100, GetCohortInTransferSenderViewModel(1).NumberOfApprentices);
-            Assert.AreEqual(200, GetCohortInTransferSenderViewModel(2).NumberOfApprentices);
+            Assert.That(GetCohortInTransferSenderViewModel(1).NumberOfApprentices, Is.EqualTo(100));
+            Assert.That(GetCohortInTransferSenderViewModel(2).NumberOfApprentices, Is.EqualTo(200));
         }
 
         public void Verify_Ordered_By_OnDateTransferred()
         {
-            Assert.AreEqual("2_Encoded", _withTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", _withTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
         }
 
         public void Verify_Ordered_By_OnDateCreated()
         {
-            Assert.AreEqual("2_Encoded", _withTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", _withTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
         }
 
         public void Verify_Ordered_By_LatestMessageByEmployer()
         {
-            Assert.AreEqual("2_Encoded", _withTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", _withTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
         }
 
         public void Verify_Ordered_By_LatestMessageByProvider()
         {
-            Assert.AreEqual("2_Encoded", _withTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", _withTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
         }
 
         public void SetOnlyOneTransferSender()
@@ -202,14 +202,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.AreEqual(_now.AddMinutes(-7), _withTransferSenderViewModel.Cohorts.First().DateSentToEmployer);
-            Assert.AreEqual(_now.AddMinutes(-10), _withTransferSenderViewModel.Cohorts.Last().DateSentToEmployer);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-7)));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-10)));
         }
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
-            Assert.AreEqual(firstId, _withTransferSenderViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual(lastId, _withTransferSenderViewModel.Cohorts.Last().CohortReference);
+            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
+            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture MakeTheMessagesNull()

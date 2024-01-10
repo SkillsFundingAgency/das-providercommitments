@@ -35,42 +35,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.Source.ApprenticeshipHashedId, _fixture.Result.ApprenticeshipHashedId);
+            Assert.That(_fixture.Result.ApprenticeshipHashedId, Is.EqualTo(_fixture.Source.ApprenticeshipHashedId));
         }
 
         [Test]
         public async Task ThenFullNameIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.FirstName + " " + _fixture.ApiResponse.Apprenticeship.LastName, _fixture.Result.ApprenticeName);
+            Assert.That(_fixture.Result.ApprenticeName, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.FirstName + " " + _fixture.ApiResponse.Apprenticeship.LastName));
         }
 
         [Test]
         public async Task ThenEmployerIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmployerName, _fixture.Result.Employer);
+            Assert.That(_fixture.Result.Employer, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.EmployerName));
         }
 
         [Test]
         public async Task ThenReferenceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.CohortReference, _fixture.Result.Reference);
+            Assert.That(_fixture.Result.Reference, Is.EqualTo(_fixture.CohortReference));
         }
 
         [Test]
         public async Task ThenStatusIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Status, _fixture.Result.Status);
+            Assert.That(_fixture.Result.Status, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.Status));
         }
 
         [Test]
         public async Task ThenStopDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.StopDate, _fixture.Result.StopDate);
+            Assert.That(_fixture.Result.StopDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.StopDate));
         }
 
         [Test]
@@ -85,102 +85,102 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenPauseDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PauseDate, _fixture.Result.PauseDate);
+            Assert.That(_fixture.Result.PauseDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.PauseDate));
         }
 
         [Test]
         public async Task ThenCompletionDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.CompletionDate, _fixture.Result.CompletionDate);
+            Assert.That(_fixture.Result.CompletionDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.CompletionDate));
         }
 
         [Test]
         public async Task ThenAgreementIdIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.AgreementId, _fixture.Result.AgreementId);
+            Assert.That(_fixture.Result.AgreementId, Is.EqualTo(_fixture.AgreementId));
         }
 
         [Test]
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DateOfBirth, _fixture.Result.DateOfBirth);
+            Assert.That(_fixture.Result.DateOfBirth, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DateOfBirth));
         }
 
         [Test]
         public async Task ThenUlnIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Uln, _fixture.Result.Uln);
+            Assert.That(_fixture.Result.Uln, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.Uln));
         }
 
         [Test]
         public async Task ThenCourseNameIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.CourseName, _fixture.Result.CourseName);
+            Assert.That(_fixture.Result.CourseName, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.CourseName));
         }
 
         [Test]
         public async Task ThenOptionIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Option, _fixture.Result.Option);
+            Assert.That(_fixture.Result.Option, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.Option));
         }
 
         [Test]
         public async Task ThenVersionIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.Version, _fixture.Result.Version);
+            Assert.That(_fixture.Result.Version, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.Version));
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.StartDate, _fixture.Result.StartDate);
+            Assert.That(_fixture.Result.StartDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.StartDate));
         }
 
         [Test]
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.ActualStartDate, _fixture.Result.ActualStartDate);
+            Assert.That(_fixture.Result.ActualStartDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.ActualStartDate));
         }
 
         [Test]
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmploymentEndDate, _fixture.Result.EmploymentEndDate);
+            Assert.That(_fixture.Result.EmploymentEndDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.EmploymentEndDate));
         }
 
         [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EndDate, _fixture.Result.EndDate);
+            Assert.That(_fixture.Result.EndDate, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.EndDate));
         }
 
         [Test]
         public async Task ThenProviderRefIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.ProviderReference, _fixture.Result.ProviderRef);
+            Assert.That(_fixture.Result.ProviderRef, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.ProviderReference));
         }
 
         [Test]
         public async Task ThenRplDataIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.TrainingTotalHours, _fixture.Result.TrainingTotalHours);
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedByHours, _fixture.Result.DurationReducedByHours);
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedBy, _fixture.Result.DurationReducedBy);
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PriceReducedBy, _fixture.Result.PriceReducedBy);
+            Assert.That(_fixture.Result.RecognisePriorLearning, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning));
+            Assert.That(_fixture.Result.TrainingTotalHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.TrainingTotalHours));
+            Assert.That(_fixture.Result.DurationReducedByHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedByHours));
+            Assert.That(_fixture.Result.DurationReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedBy));
+            Assert.That(_fixture.Result.PriceReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.PriceReducedBy));
         }
 
 
@@ -188,56 +188,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenEmploymentPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.EmploymentPrice, _fixture.Result.EmploymentPrice);
+            Assert.That(_fixture.Result.EmploymentPrice, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.EmploymentPrice));
         }
 
         [Test]
         public async Task ThenPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.GetCost(), _fixture.Result.Cost);
+            Assert.That(_fixture.Result.Cost, Is.EqualTo(_fixture.ApiResponse.PriceEpisodes.GetCost()));
         }
 
         [Test]
         public async Task ThenTrainingPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.First().TrainingPrice, _fixture.Result.TrainingPrice);
+            Assert.That(_fixture.Result.TrainingPrice, Is.EqualTo(_fixture.ApiResponse.PriceEpisodes.First().TrainingPrice));
         }
 
         [Test]
         public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.PriceEpisodes.First().EndPointAssessmentPrice, _fixture.Result.EndPointAssessmentPrice);
+            Assert.That(_fixture.Result.EndPointAssessmentPrice, Is.EqualTo(_fixture.ApiResponse.PriceEpisodes.First().EndPointAssessmentPrice));
         }
 
         [Test]
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DeliveryModel, _fixture.Result.DeliveryModel);
+            Assert.That(_fixture.Result.DeliveryModel, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DeliveryModel));
         }
 
         [Test]
         public async Task ThenRecognisePriorLearningIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning, _fixture.Result.RecognisePriorLearning);
+            Assert.That(_fixture.Result.RecognisePriorLearning, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning));
         }
 
         [Test]
         public async Task ThenDurationReducedByIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.DurationReducedBy, _fixture.Result.DurationReducedBy);
+            Assert.That(_fixture.Result.DurationReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedBy));
         }
 
         [Test]
         public async Task ThenPriceReducedByIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.AreEqual(_fixture.ApiResponse.Apprenticeship.PriceReducedBy, _fixture.Result.PriceReducedBy);
+            Assert.That(_fixture.Result.PriceReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.PriceReducedBy));
         }
 
         [TestCase(ApprenticeshipStatus.Live, true)]
@@ -253,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+            Assert.That(_fixture.Result.AllowEditApprentice, Is.EqualTo(expectedAllowEditApprentice));
         }
 
         [TestCase(null)]
@@ -266,7 +266,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(status, _fixture.Result.ConfirmationStatus);
+            Assert.That(_fixture.Result.ConfirmationStatus, Is.EqualTo(status));
         }
 
         [TestCase]
@@ -276,7 +276,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(false, _fixture.Result.AllowEditApprentice);
+            Assert.That(_fixture.Result.AllowEditApprentice, Is.EqualTo(false));
         }
 
         [Test]
@@ -310,7 +310,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expectedAllowEditApprentice, _fixture.Result.AllowEditApprentice);
+            Assert.That(_fixture.Result.AllowEditApprentice, Is.EqualTo(expectedAllowEditApprentice));
         }
 
         [TestCase(true)]
@@ -322,7 +322,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(hasOptions, _fixture.Result.HasOptions);
+            Assert.That(_fixture.Result.HasOptions, Is.EqualTo(hasOptions));
         }
 
         [Test]
@@ -346,7 +346,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(pendingUpdate, _fixture.Result.HasProviderPendingUpdate);
+            Assert.That(_fixture.Result.HasProviderPendingUpdate, Is.EqualTo(pendingUpdate));
         }
 
         [TestCase(true)]
@@ -360,7 +360,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(pendingUpdate, _fixture.Result.HasEmployerPendingUpdate);
+            Assert.That(_fixture.Result.HasEmployerPendingUpdate, Is.EqualTo(pendingUpdate));
         }
 
         [Test]
@@ -368,7 +368,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithPendingUpdatesForProvider();
             await _fixture.Map();
-            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
+            Assert.That(_fixture.Result.HasEmployerPendingUpdate, Is.EqualTo(false));
         }
 
         [Test]
@@ -376,7 +376,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithPendingUpdatesForProvider();
             await _fixture.Map();
-            Assert.AreEqual(false, _fixture.Result.HasEmployerPendingUpdate);
+            Assert.That(_fixture.Result.HasEmployerPendingUpdate, Is.EqualTo(false));
         }
 
         [Test]
@@ -384,8 +384,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithUnresolvedAndFailedDataLocks();
             await _fixture.Map();
-            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks,
-                _fixture.Result.DataLockStatus);
+            Assert.That(_fixture.Result.DataLockStatus, Is.EqualTo(DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks));
         }
 
         [Test]
@@ -393,8 +392,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithUnResolvedAndPassingDataLocks();
             await _fixture.Map();
-            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.None,
-                _fixture.Result.DataLockStatus);
+            Assert.That(_fixture.Result.DataLockStatus, Is.EqualTo(DetailsViewModel.DataLockSummaryStatus.None));
         }
 
         [Test]
@@ -402,8 +400,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithResolvedDataLocks();
             await _fixture.Map();
-            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.None,
-                _fixture.Result.DataLockStatus);
+            Assert.That(_fixture.Result.DataLockStatus, Is.EqualTo(DetailsViewModel.DataLockSummaryStatus.None));
         }
 
         [TestCase(TriageStatus.Change)]
@@ -413,8 +410,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithUnResolvedDataLocksInTriage(triageStatus);
             await _fixture.Map();
-            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.AwaitingTriage,
-                _fixture.Result.DataLockStatus);
+            Assert.That(_fixture.Result.DataLockStatus, Is.EqualTo(DetailsViewModel.DataLockSummaryStatus.AwaitingTriage));
         }
 
         [Test]
@@ -447,7 +443,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
+            Assert.That(_fixture.Result.AvailableTriageOption, Is.EqualTo(expectedTriageOption));
         }
 
 
@@ -464,7 +460,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expectedTriageOption, _fixture.Result.AvailableTriageOption);
+            Assert.That(_fixture.Result.AvailableTriageOption, Is.EqualTo(expectedTriageOption));
         }
 
         [TestCase(null, false)]
@@ -481,7 +477,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expectHasPending, _fixture.Result.HasPendingChangeOfPartyRequest);
+            Assert.That(_fixture.Result.HasPendingChangeOfPartyRequest, Is.EqualTo(expectHasPending));
         }
 
         [TestCase(Party.Employer)]
@@ -490,7 +486,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, withParty);
             await _fixture.Map();
-            Assert.AreEqual(withParty, _fixture.Result.PendingChangeOfPartyRequestWithParty);
+            Assert.That(_fixture.Result.PendingChangeOfPartyRequestWithParty, Is.EqualTo(withParty));
         }
 
         [Test]
@@ -530,7 +526,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(true, _fixture.Result.ShowChangeEmployerLink);
+            Assert.That(_fixture.Result.ShowChangeEmployerLink, Is.EqualTo(true));
         }
 
         public async Task WhenNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
@@ -544,7 +540,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(false, _fixture.Result.ShowChangeEmployerLink);
+            Assert.That(_fixture.Result.ShowChangeEmployerLink, Is.EqualTo(false));
         }
 
         [TestCase(true, false)]
@@ -565,7 +561,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expected, _fixture.Result.ShowChangeEmployerLink);
+            Assert.That(_fixture.Result.ShowChangeEmployerLink, Is.EqualTo(expected));
         }
 
         [Test]
@@ -573,7 +569,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithChangeOfEmployerChain();
             await _fixture.Map();
-            Assert.IsNotNull(_fixture.Result.EmployerHistory);
+            Assert.That(_fixture.Result.EmployerHistory, Is.Not.Null);
         }
 
         [Test]
@@ -584,7 +580,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await _fixture.Map();
 
-            Assert.AreEqual(email, _fixture.Result.Email);
+            Assert.That(_fixture.Result.Email, Is.EqualTo(email));
         }
 
         [TestCase(false, Party.None, false, false)]
@@ -605,7 +601,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expected, _fixture.Result.ShowActionRequiredBanner);
+            Assert.That(_fixture.Result.ShowActionRequiredBanner, Is.EqualTo(expected));
         }
 
         [TestCase(false, Party.None, false, false)]
@@ -627,7 +623,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(expected, _fixture.Result.ShowChangesToThisApprenticeshipBanner);
+            Assert.That(_fixture.Result.ShowChangesToThisApprenticeshipBanner, Is.EqualTo(expected));
         }
 
         [TestCase(true)]
@@ -638,7 +634,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await _fixture.Map();
 
-            Assert.AreEqual(expected, _fixture.Result.EmailShouldBePresent);
+            Assert.That(_fixture.Result.EmailShouldBePresent, Is.EqualTo(expected));
         }
 
         [Test]
@@ -648,7 +644,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
+            Assert.That(_fixture.Result.ShowChangeVersionLink, Is.EqualTo(false));
         }
 
         [Test]
@@ -658,7 +654,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(true, _fixture.Result.ShowChangeVersionLink);
+            Assert.That(_fixture.Result.ShowChangeVersionLink, Is.EqualTo(true));
         }
 
         [Test]
@@ -668,7 +664,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.AreEqual(false, _fixture.Result.ShowChangeVersionLink);
+            Assert.That(_fixture.Result.ShowChangeVersionLink, Is.EqualTo(false));
         }
 
         [Test]
@@ -679,7 +675,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await _fixture.Map();
 
-            Assert.AreEqual(isOnPilot, _fixture.Result.IsOnFlexiPaymentPilot);
+            Assert.That(_fixture.Result.IsOnFlexiPaymentPilot, Is.EqualTo(isOnPilot));
         }
 
         public class DetailsViewModelMapperFixture

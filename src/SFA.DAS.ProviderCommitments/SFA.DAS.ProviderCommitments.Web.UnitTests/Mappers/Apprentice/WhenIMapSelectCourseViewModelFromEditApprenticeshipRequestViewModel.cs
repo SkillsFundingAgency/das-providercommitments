@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenModelIsReturned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_model, result);
+            Assert.That(result, Is.EqualTo(_model));
         }
     }
 }
