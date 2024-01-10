@@ -25,9 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="SFA.DAS.ProviderCommitments.Web">
-      <HintPath>..\SFA.DAS.ProviderCommitments.Web\bin\Debug\net6.0\SFA.DAS.ProviderCommitments.Web.dll</HintPath>
-    </Reference>
+    <Folder Include="Validators\OverlappingTrainingDates\" />
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             _cacheStorage = cacheStorage;
         }
 
-        public  async Task<PriceViewModel> Map(PriceRequest source)
+        public async Task<PriceViewModel> Map(PriceRequest source)
         {
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(source.ApprenticeshipId);
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(source.CacheKey);
@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                ApprenticeshipStatus = apprenticeship.Status,
                 Price = cacheItem.Price,
                 EmploymentPrice = cacheItem.EmploymentPrice,
                 InEditMode = source.IsEdit,

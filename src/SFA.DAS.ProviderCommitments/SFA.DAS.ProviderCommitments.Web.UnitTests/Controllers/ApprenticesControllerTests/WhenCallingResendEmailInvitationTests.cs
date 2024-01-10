@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 {
     public class WhenCallingResendEmailInvitationTests
     {
-        private WhenCallingResendEmailInvitationTestsFixture _fixture;
+        WhenCallingResendEmailInvitationTestsFixture _fixture;
 
         [SetUp]
         public void Arrange()
@@ -29,16 +29,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenCallingResendEmailInvitationTestsFixture : ApprenticeControllerTestFixtureBase
     {
-        private readonly ResendEmailInvitationRequest _request;
-        private Mock<IAuthenticationService> AuthenticationService { get; }
+        private ResendEmailInvitationRequest _request;
+        public UserInfo UserInfo;
+        public Mock<IAuthenticationService> AuthenticationService { get; }
 
-        public WhenCallingResendEmailInvitationTestsFixture()
+        public WhenCallingResendEmailInvitationTestsFixture() : base()
         {
             _request = AutoFixture.Create<ResendEmailInvitationRequest>();
 
-            var userInfo = new Fixture().Create<UserInfo>();
+            UserInfo = new Fixture().Create<UserInfo>();
             AuthenticationService = new Mock<IAuthenticationService>();
-            AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
+            AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
 
             Controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
         }

@@ -11,6 +11,7 @@ public static class RouteNames
     public const string ChangeEmployer = "apprentice-change-employer";
     public const string ChangeEmployerInform = "apprentice-change-employer-inform";
     public const string ChangeEmployerDetails = "apprentice-change-employer-details";
+    public const string ChangeEmployerOverlapAlert = "apprentice-change-employer-overlap-alert";
     public const string ChangeVersion = "change-version";
     public const string ChangeOption = "change-option";
     public const string EditApprenticeship = "edit-apprenticeship";
@@ -23,6 +24,7 @@ public static class RouteNames
     public const string ApprenticeConfirm = "apprentice-confirm";
     public const string ApprenticeSent = "apprentice-sent";
     public const string ApprenticeDelete = "apprentice-delete";
+    public const string ApprenticeTrainingDates = "apprentice-training-dates";
     public const string ConfirmRestart = "confirm-restart";
     public const string RequestRestart = "request-restart";
     public const string UpdateDateLock = "update-datalock";

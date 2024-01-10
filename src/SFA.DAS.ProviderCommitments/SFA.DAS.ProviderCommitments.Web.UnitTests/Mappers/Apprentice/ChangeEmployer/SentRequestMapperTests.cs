@@ -18,7 +18,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         private Mock<IOuterApiClient> _outerApi;
         private Mock<IAuthenticationService> _authenticationService;
         private ChangeEmployerCacheItem _cacheItem;
-        private PostConfirmRequest _apiRequest;
+        private PostCreateChangeOfEmployerRequest _apiRequest;
         private string _userId;
         private string _userEmail;
         private string _userName;
@@ -34,10 +34,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
             _userName = fixture.Create<string>();
 
             _outerApi = new Mock<IOuterApiClient>();
-            _outerApi.Setup(x => x.Post<PostConfirmResponse>(It.IsAny<PostConfirmRequest>()))
-                .Callback<IPostApiRequest>(r => _apiRequest = (PostConfirmRequest)r)
-                .ReturnsAsync(() => new PostConfirmResponse());
-            
+            _outerApi.Setup(x => x.Post<PostCreateChangeOfEmployerResponse>(It.IsAny<PostCreateChangeOfEmployerRequest>()))
+                .Callback<IPostApiRequest>(r => _apiRequest = (PostCreateChangeOfEmployerRequest)r)
+                .ReturnsAsync(() => new PostCreateChangeOfEmployerResponse());
+
             _authenticationService = new Mock<IAuthenticationService>();
             _authenticationService.Setup(x => x.UserEmail).Returns(_userEmail);
             _authenticationService.Setup(x => x.UserId).Returns(_userId);
@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task Map_Price_Is_Mapped_Correctly()
         {
             await _mapper.Map(_source);
-            var data = _apiRequest.Data as PostConfirmRequest.Body;
+            var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
             Assert.AreEqual(_cacheItem.Price, data.Price);
         }
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task Map_StartDate_Is_Mapped_Correctly()
         {
             await _mapper.Map(_source);
-            var data = _apiRequest.Data as PostConfirmRequest.Body;
+            var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
             Assert.AreEqual(_cacheItem.StartDate, data.StartDate.Value.ToString("MMyyyy"));
         }
 
@@ -91,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task Map_EndDate_Is_Mapped_Correctly()
         {
             await _mapper.Map(_source);
-            var data = _apiRequest.Data as PostConfirmRequest.Body;
+            var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
             Assert.AreEqual(_cacheItem.EndDate, data.EndDate.Value.ToString("MMyyyy"));
         }
     }

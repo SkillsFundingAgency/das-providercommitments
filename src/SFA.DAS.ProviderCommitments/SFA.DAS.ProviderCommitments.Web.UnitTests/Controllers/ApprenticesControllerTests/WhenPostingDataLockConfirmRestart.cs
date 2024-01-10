@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
@@ -20,10 +21,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var fixture = new Fixture();
             _request = fixture.Create<DatalockConfirmRestartRequest>();
             _viewModel = fixture.Create<DatalockConfirmRestartViewModel>();
-            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();            
+            _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<DatalockConfirmRestartViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object);
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object, Mock.Of<IOuterApiService>());
         }
 
 

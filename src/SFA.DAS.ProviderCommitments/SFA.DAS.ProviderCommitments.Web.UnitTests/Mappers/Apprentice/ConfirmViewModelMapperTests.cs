@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -55,6 +55,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _fixture.Map();
 
             Assert.AreEqual($"{_fixture.GetApprenticeshipResponse.FirstName} {_fixture.GetApprenticeshipResponse.LastName}", result.ApprenticeName);
+        }
+
+        [Test]
+        public async Task ThenUlnIsMapped()
+        {
+            var result = await _fixture.Map();
+
+            Assert.AreEqual(_fixture.GetApprenticeshipResponse.Uln, result.Uln);
         }
 
         [Test]
@@ -120,9 +128,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenNewEmploymentEndDateIsMapped()
         {
             _fixture.SetEmploymentEndDateInRequest(DateTime.Now);
-            
+
             var result = await _fixture.Map();
-            
+
             var expectedEndDate = new MonthYearModel(_fixture.CacheItem.EmploymentEndDate);
             Assert.AreEqual(expectedEndDate.MonthYear, result.NewEmploymentEndDate);
         }
@@ -168,16 +176,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task Then_ShowDeliveryModel_If_Automatically_Changed_To_Regular()
         {
             _fixture.CacheItem.SkippedDeliveryModelSelection = true;
-            _fixture.CacheItem.DeliveryModel = DeliveryModel.Regular;
-            _fixture.GetApprenticeshipResponse.DeliveryModel = CommitmentsV2.Types.DeliveryModel.FlexiJobAgency;
+            _fixture.CacheItem.DeliveryModel = Infrastructure.OuterApi.Types.DeliveryModel.Regular;
+            _fixture.GetApprenticeshipResponse.DeliveryModel = DeliveryModel.FlexiJobAgency;
             var result = await _fixture.Map();
             Assert.IsTrue(result.ShowDeliveryModel);
         }
 
-        [TestCase(CommitmentsV2.Types.DeliveryModel.Regular, true)]
-        [TestCase(CommitmentsV2.Types.DeliveryModel.FlexiJobAgency, true)]
-        [TestCase(CommitmentsV2.Types.DeliveryModel.Regular, true)]
-        public async Task Then_ShowDeliveryModel_If_Manual_Selection_Was_Made(DeliveryModel selectedDeliveryModel, bool expectShowDeliveryModel)
+        [TestCase(DeliveryModel.Regular, true)]
+        [TestCase(DeliveryModel.FlexiJobAgency, true)]
+        [TestCase(DeliveryModel.Regular, true)]
+        public async Task Then_ShowDeliveryModel_If_Manual_Selection_Was_Made(Infrastructure.OuterApi.Types.DeliveryModel selectedDeliveryModel, bool expectShowDeliveryModel)
         {
             _fixture.CacheItem.SkippedDeliveryModelSelection = false;
             _fixture.CacheItem.DeliveryModel = selectedDeliveryModel;
@@ -198,14 +206,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class ConfirmViewModelMapperFixture
     {
         private readonly ConfirmViewModelMapper _sut;
-        private TrainingProgramme _trainingProgramme;
-        
+
         public ConfirmRequest Request { get; }
-        public GetApprenticeshipResponse GetApprenticeshipResponse { get; }
-        public AccountLegalEntityResponse AccountLegalEntityResponse { get; }
-        public GetPriceEpisodesResponse PriceEpisodesResponse { get; }
-        public ChangeEmployerCacheItem CacheItem { get; }
-        public string EncodedAccountLegalEntityId { get; }
+        public GetApprenticeshipDataResponse GetApprenticeshipDataResponse { get; set; }
+        public GetApprenticeshipResponse GetApprenticeshipResponse { get; set; }
+        public AccountLegalEntityResponse AccountLegalEntityResponse { get; set; }
+        public GetPriceEpisodesResponse PriceEpisodesResponse { get; set; }
+        public GetTrainingProgrammeResponse GetTrainingProgrammeResponse { get; set; }
+        public TrainingProgramme TrainingProgramme { get; set; }
+
+        public ChangeEmployerCacheItem CacheItem { get; set; }
+        public string EncodedAccountLegalEntityId { get; set; }
 
         public ConfirmViewModelMapperFixture()
         {
@@ -213,15 +224,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Request = fixture.Create<ConfirmRequest>();
             EncodedAccountLegalEntityId = fixture.Create<string>();
             GetApprenticeshipResponse = fixture.Create<GetApprenticeshipResponse>();
-            _trainingProgramme = fixture.Create<TrainingProgramme>();
+            GetTrainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
             AccountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
             PriceEpisodesResponse = new GetPriceEpisodesResponse
             {
                 PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>
                     {
-                        new() {Cost = 100, FromDate = DateTime.UtcNow}
+                        new GetPriceEpisodesResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
                     }
             };
+
+            GetApprenticeshipDataResponse = fixture.Build<GetApprenticeshipDataResponse>()
+                .With(x => x.Apprenticeship, GetApprenticeshipResponse)
+                .With(x => x.PriceEpisodes, PriceEpisodesResponse)
+                .With(x => x.AccountLegalEntity, AccountLegalEntityResponse)
+                .With(x => x.TrainingProgrammeResponse, GetTrainingProgrammeResponse)
+                .Create();
 
             CacheItem = fixture.Build<ChangeEmployerCacheItem>()
                 .With(x => x.StartDate, "092023")
@@ -232,30 +250,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             cacheService.Setup(x => x.RetrieveFromCache<ChangeEmployerCacheItem>(It.IsAny<Guid>()))
                 .ReturnsAsync(CacheItem);
 
-            var commitmentAiClient = new Mock<ICommitmentsApiClient>();
+            var outerApiClient = new Mock<IOuterApiClient>();
 
-            commitmentAiClient.Setup(x => x.GetApprenticeship(Request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => GetApprenticeshipResponse);
-            commitmentAiClient.Setup(x => x.GetAccountLegalEntity(CacheItem.AccountLegalEntityId, It.IsAny<CancellationToken>())).ReturnsAsync(() => AccountLegalEntityResponse);
-            commitmentAiClient.Setup(x => x.GetPriceEpisodes(Request.ApprenticeshipId, It.IsAny<CancellationToken>())).ReturnsAsync(() => PriceEpisodesResponse);
-            commitmentAiClient
-                .Setup(y => y.GetTrainingProgramme(GetApprenticeshipResponse.CourseCode, CancellationToken.None))
-                .ReturnsAsync(()=> new
-                    GetTrainingProgrammeResponse
-                    {
-                        TrainingProgramme  = _trainingProgramme
-                    } );
+            outerApiClient.Setup(x => x.Get<GetApprenticeshipDataResponse>(It.Is<GetApprenticeshipDataRequest>(r =>
+                   r.ApprenticeshipId == Request.ApprenticeshipId && r.ProviderId == Request.ProviderId
+                   && r.AccountLegalEntityId == CacheItem.AccountLegalEntityId)))
+               .ReturnsAsync(GetApprenticeshipDataResponse);
 
             var encodingService = new Mock<IEncodingService>();
             encodingService.Setup(x => x.Encode(It.Is<long>(id => id == CacheItem.AccountLegalEntityId),
                     It.Is<EncodingType>(e => e == EncodingType.PublicAccountLegalEntityId)))
                 .Returns(EncodedAccountLegalEntityId);
 
-            _sut = new ConfirmViewModelMapper(commitmentAiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>(), cacheService.Object, encodingService.Object);
+            _sut = new ConfirmViewModelMapper(outerApiClient.Object, Mock.Of<ILogger<ConfirmViewModelMapper>>(), cacheService.Object, encodingService.Object);
         }
 
         public ConfirmViewModelMapperFixture SetPriceBand(int fundingCap, DateTime startDate)
         {
-            _trainingProgramme = new TrainingProgramme()
+            TrainingProgramme = new TrainingProgramme()
             {
                 FundingPeriods = new List<TrainingProgrammeFundingPeriod>
                 {
@@ -268,12 +280,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 }
             };
 
+            GetTrainingProgrammeResponse.TrainingProgramme = TrainingProgramme;
+
             return this;
         }
 
         public ConfirmViewModelMapperFixture SetStartDateInRequest(DateTime startDate)
         {
-            CacheItem.StartDate = startDate.Month + startDate.Year.ToString();
+            CacheItem.StartDate = startDate.Month.ToString() + startDate.Year.ToString();
 
             return this;
         }

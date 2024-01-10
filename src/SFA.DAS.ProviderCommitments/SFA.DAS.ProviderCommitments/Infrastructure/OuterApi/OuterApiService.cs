@@ -1,17 +1,17 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.IO;
 using Microsoft.AspNetCore.Http;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using Newtonsoft.Json;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -28,22 +28,22 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> BulkUploadAddAndApproveDraftApprenticeships(BulkUploadAddAndApproveDraftApprenticeshipsRequest data)
         {
-           try
-           {
-               return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
-           }
-           catch (CommitmentsApiBulkUploadModelException ex)
-           {
-               if (data.FileUploadLogId != null)
-                   await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
-               throw;
-           }
-           catch (Exception ex)
-           {
-               if (data.FileUploadLogId != null)
-                   await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
-               throw;
-           }
+            try
+            {
+                return await _outerApiClient.Post<BulkUploadAddAndApproveDraftApprenticeshipsResult>(new PostBulkUploadAddAndApproveDraftApprenticeshipsRequest(data));
+            }
+            catch (CommitmentsApiBulkUploadModelException ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (data.FileUploadLogId != null)
+                    await AddUnhandledExceptionToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Message);
+                throw;
+            }
         }
 
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> BulkUploadDraftApprenticeships(BulkUploadAddDraftApprenticeshipsRequest data)
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             }
             catch (CommitmentsApiBulkUploadModelException ex)
             {
-                if(data.FileUploadLogId != null)
+                if (data.FileUploadLogId != null)
                     await AddValidationMessagesToFileUploadLog(data.ProviderId, data.FileUploadLogId.Value, ex.Errors);
                 throw;
             }
@@ -105,6 +105,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         public async Task<ValidateUlnOverlapOnStartDateQueryResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate)
         {
             return await _outerApiClient.Get<ValidateUlnOverlapOnStartDateQueryResult>(new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate));
+        }
+
+        public async Task ValidateChangeOfEmployerOverlap(ValidateChangeOfEmployerOverlapApimRequest data)
+        {
+            await _outerApiClient.Post<object>(new PostValidateChangeOfEmployerOverlapRequest(data));
         }
 
         public async Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId)

@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
+using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -13,5 +14,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DeliveryModel? DeliveryModel { get; set; }
         public Guid CacheKey { get; set; }
         public bool IsEdit { get; set; }
+        public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
     }
 }

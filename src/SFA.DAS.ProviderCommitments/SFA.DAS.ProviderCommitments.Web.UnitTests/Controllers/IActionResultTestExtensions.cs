@@ -28,6 +28,12 @@
             return result;
         }
 
+        public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
+        {
+            Assert.AreEqual(expectedName, result.ControllerName);
+            return result;
+        }
+
         public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
         {
             Assert.AreEqual(expectedName, result.RouteName);

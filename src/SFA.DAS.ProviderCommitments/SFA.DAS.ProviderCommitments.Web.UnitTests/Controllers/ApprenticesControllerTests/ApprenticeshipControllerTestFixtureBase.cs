@@ -1,37 +1,80 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.ProviderUrlHelper;
 using static SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.EditApprenticeshipViewModelToValidateApprenticeshipForEditMapperTests;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
+
+public class ApprenticeControllerTestFixtureBase
 {
-    public class ApprenticeControllerTestFixtureBase
+    protected Fixture AutoFixture;
+
+    protected Mock<IModelMapper> MockMapper;
+    protected Mock<ICommitmentsApiClient> MockCommitmentsApiClient;
+    protected Mock<IOuterApiService> MockOuterApiService;
+    protected Mock<ILinkGenerator> MockLinkGenerator;
+    protected Mock<IUrlHelper> MockUrlHelper;
+    protected Mock<ITempDataDictionary> MockTempData;
+    private IActionResult _actionResult;
+
+    protected readonly ApprenticeController Controller;
+    private readonly DetailsViewModel _detailsViewModel;
+    private readonly DetailsRequest _detailsRequest;
+
+    public ApprenticeControllerTestFixtureBase()
     {
-        protected readonly Fixture AutoFixture;
-        protected readonly Mock<IModelMapper> MockMapper;
-        protected readonly Mock<ICommitmentsApiClient> MockCommitmentsApiClient;
-        protected readonly Mock<ITempDataDictionary> MockTempData;
-        protected readonly ApprenticeController Controller;
+        AutoFixture = new Fixture();
+        AutoFixture.Customize(new DateCustomisation());
+        MockMapper = new Mock<IModelMapper>();
+        MockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
+        MockLinkGenerator = new Mock<ILinkGenerator>();
+        MockUrlHelper = new Mock<IUrlHelper>();
+        MockTempData = new Mock<ITempDataDictionary>();
+        MockOuterApiService = new Mock<IOuterApiService>();
 
-        private readonly Mock<IUrlHelper> _mockUrlHelper;
+        MockOuterApiService.Setup(x =>
+                x.ValidateChangeOfEmployerOverlap(It.IsAny<ValidateChangeOfEmployerOverlapApimRequest>()))
+            .Returns(Task.CompletedTask);
 
-        protected ApprenticeControllerTestFixtureBase()
-        {
-            AutoFixture = new Fixture();
-            AutoFixture.Customize(new DateCustomisation());
-            MockMapper = new Mock<IModelMapper>();
-            MockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _mockUrlHelper = new Mock<IUrlHelper>();
-            MockTempData = new Mock<ITempDataDictionary>();
+        _detailsRequest = new DetailsRequest { ProviderId = 123, ApprenticeshipId = 456, ApprenticeshipHashedId = "XYZ" };
+        _detailsViewModel = AutoFixture.Create<DetailsViewModel>();
 
-            Controller = new ApprenticeController(MockMapper.Object,
-                Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
-                MockCommitmentsApiClient.Object);
+        MockMapper
+            .Setup(x => x.Map<DetailsViewModel>(It.IsAny<DetailsRequest>()))
+            .ReturnsAsync(_detailsViewModel);
 
-            Controller.Url = _mockUrlHelper.Object;
-            Controller.TempData = MockTempData.Object;
-        }
+        Controller = new ApprenticeController(MockMapper.Object,
+            Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+            MockCommitmentsApiClient.Object,
+            MockOuterApiService.Object);
+
+        Controller.Url = MockUrlHelper.Object;
+        Controller.TempData = MockTempData.Object;
+    }
+
+    public async Task<ApprenticeControllerTestFixtureBase> GetDetails()
+    {
+        _actionResult = await Controller.Details(_detailsRequest);
+        return this;
+    }
+
+    public ApprenticeControllerTestFixtureBase VerifyModelMapperDetailsRequest_ToViewModelIsCalled()
+    {
+        MockMapper.Verify(x => x.Map<DetailsViewModel>(It.IsAny<DetailsRequest>()), Times.Once);
+        return this;
+    }
+
+    public ApprenticeControllerTestFixtureBase VerifyDetailViewReturned()
+    {
+        var viewResult = _actionResult as ViewResult;
+        Assert.IsNotNull(viewResult);
+        var model = viewResult.Model as DetailsViewModel;
+        Assert.IsNotNull(model);
+        return this;
     }
 }

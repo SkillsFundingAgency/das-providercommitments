@@ -1,4 +1,5 @@
 ﻿using System;
+using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -25,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var fixture = new Fixture();
             _source = fixture.Build<PriceRequest>().Create();
 
-            _getApprenticeshipApiResponse = new GetApprenticeshipResponse {EmployerName = "TestName"};
+            _getApprenticeshipApiResponse = new GetApprenticeshipResponse { EmployerName = "TestName" };
 
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClientMock
@@ -69,6 +70,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _act();
             Assert.AreEqual(_source.IsEdit, result.InEditMode);
+        }
+
+        [Test]
+        public async Task ThenApprenticeshipStatusIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_getApprenticeshipApiResponse.Status, result.ApprenticeshipStatus);
         }
     }
 }

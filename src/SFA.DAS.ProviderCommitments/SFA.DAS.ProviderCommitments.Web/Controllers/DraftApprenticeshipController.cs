@@ -259,21 +259,21 @@ public class DraftApprenticeshipController : Controller
         return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", request);
     }
 
-    [HttpGet]
-    [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public async Task<IActionResult> SelectDeliveryModelForEdit(DraftApprenticeshipRequest request)
-    {
-        var draft = PeekStoredEditDraftApprenticeshipState();
-        var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
-        model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) draft.DeliveryModel;
-
-        if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
+        [HttpGet]
+        [Route("{DraftApprenticeshipHashedId}/edit/select-delivery-model")]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> SelectDeliveryModelForEdit(DraftApprenticeshipRequest request)
         {
-            return View(model);
-        }
-        draft.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
-        StoreEditDraftApprenticeshipState(draft);
+            var draft = PeekStoredEditDraftApprenticeshipState();
+            var model = await _modelMapper.Map<SelectDeliveryModelForEditViewModel>(request);
+            model.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?)draft.DeliveryModel;
+
+            if (model.DeliveryModels.Count > 1 || model.HasUnavailableFlexiJobAgencyDeliveryModel)
+            {
+                return View(model);
+            }
+            draft.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
+            StoreEditDraftApprenticeshipState(draft);
 
         return RedirectToAction("EditDraftApprenticeship", "DraftApprenticeship", new
         {

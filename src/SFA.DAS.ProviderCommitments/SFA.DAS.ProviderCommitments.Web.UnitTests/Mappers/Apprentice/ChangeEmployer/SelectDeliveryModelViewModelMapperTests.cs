@@ -49,6 +49,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         }
 
         [Test]
+        public async Task Status_Is_Mapped_Correctly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.AreEqual(_apiResponse.Status, result.ApprenticeshipStatus);
+        }
+
+
+        [Test]
         public async Task DeliveryModels_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
