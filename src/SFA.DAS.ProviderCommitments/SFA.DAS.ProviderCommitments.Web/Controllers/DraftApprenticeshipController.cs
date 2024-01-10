@@ -49,8 +49,10 @@ public class DraftApprenticeshipController : Controller
     private readonly ILogger<DraftApprenticeshipController> _logger;
     public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
-    public DraftApprenticeshipController(IMediator mediator, ICommitmentsApiClient commitmentsApiClient,
-        IModelMapper modelMapper, IEncodingService encodingService,
+    public DraftApprenticeshipController(IMediator mediator,
+        ICommitmentsApiClient commitmentsApiClient,
+        IModelMapper modelMapper,
+        IEncodingService encodingService,
         IAuthorizationService authorizationService,
         IOuterApiService outerApiService, 
         IAuthenticationService authenticationService,
