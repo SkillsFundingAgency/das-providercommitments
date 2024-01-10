@@ -118,7 +118,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = data.Apprenticeship.DurationReducedBy,
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                     HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
-                    IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot
+                    IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot,
+                    PendingPriceChange = Map(data.PendingPriceChange)
                 };
             }
             catch (Exception e)
@@ -126,6 +127,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 _logger.LogError(e, $"Error mapping apprenticeship {source.ApprenticeshipId} to DetailsViewModel");
                 throw;
             }
+        }
+
+        private PendingPriceChange Map(GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails priceChangeDetails)
+        {
+            if (priceChangeDetails == null)
+            {
+                return null;
+            }
+
+            return new PendingPriceChange
+            {
+                Cost = priceChangeDetails.Cost,
+                EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
+                TrainingPrice = priceChangeDetails.TrainingPrice
+            };
         }
 
         private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)
