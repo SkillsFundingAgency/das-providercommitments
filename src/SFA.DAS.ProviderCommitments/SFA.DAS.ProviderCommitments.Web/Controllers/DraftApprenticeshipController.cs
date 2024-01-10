@@ -46,7 +46,7 @@ public class DraftApprenticeshipController : Controller
     private readonly IAuthorizationService _authorizationService;
     private readonly IOuterApiService _outerApiService;
     private readonly IAuthenticationService _authenticationService;
-    private readonly ILogger<DraftApprenticeshipController> _logger;
+    
     public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
     public DraftApprenticeshipController(IMediator mediator,
@@ -55,8 +55,7 @@ public class DraftApprenticeshipController : Controller
         IEncodingService encodingService,
         IAuthorizationService authorizationService,
         IOuterApiService outerApiService, 
-        IAuthenticationService authenticationService,
-        ILogger<DraftApprenticeshipController> logger)
+        IAuthenticationService authenticationService)
     {
         _mediator = mediator;
         _commitmentsApiClient = commitmentsApiClient;
@@ -65,7 +64,6 @@ public class DraftApprenticeshipController : Controller
         _authorizationService = authorizationService;
         _outerApiService = outerApiService;
         _authenticationService = authenticationService;
-        _logger = logger;
     }
 
     [HttpGet]
