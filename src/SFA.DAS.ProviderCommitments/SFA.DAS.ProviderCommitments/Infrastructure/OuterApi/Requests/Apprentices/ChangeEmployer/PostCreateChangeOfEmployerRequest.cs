@@ -1,14 +1,14 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
-using System;
+﻿using System;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer
 {
-    public class PostConfirmRequest : IPostApiRequest
+    public class PostCreateChangeOfEmployerRequest : IPostApiRequest
     {
         public long ProviderId { get; }
         public long ApprenticeshipId { get; }
 
-        public PostConfirmRequest(long providerId, long apprenticeshipId, Body body)
+        public PostCreateChangeOfEmployerRequest(long providerId, long apprenticeshipId, Body body)
         {
             ProviderId = providerId;
             ApprenticeshipId = apprenticeshipId;
@@ -27,10 +27,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public DateTime? EmploymentEndDate { get; set; }
             public int? EmploymentPrice { get; set; }
             public DeliveryModel? DeliveryModel { get; set; }
+            public bool HasOverlappingTrainingDates { get; set; }
         }
     }
 
-    public class PostConfirmResponse
+    public class PostCreateChangeOfEmployerResponse
     {
     }
 }

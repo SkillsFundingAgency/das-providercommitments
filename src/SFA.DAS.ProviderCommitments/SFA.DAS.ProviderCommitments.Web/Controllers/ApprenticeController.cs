@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -6,21 +8,22 @@ using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
-using System.Linq;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderUrlHelper;
-using SFA.DAS.ProviderCommitments.Exceptions;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
@@ -31,6 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
+        private readonly IOuterApiService _outerApiService;
 
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
@@ -39,11 +43,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper, ICookieStorageService<IndexRequest> cookieStorage, ICommitmentsApiClient commitmentsApiClient)
+        public ApprenticeController(IModelMapper modelMapper,
+            ICookieStorageService<IndexRequest> cookieStorage,
+            ICommitmentsApiClient commitmentsApiClient,
+            IOuterApiService outerApiService)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
+            _outerApiService = outerApiService;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -214,10 +222,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (viewModel.Confirm.Value)
             {
                 var request = await _modelMapper.Map<SelectDeliveryModelRequest>(viewModel);
-                return RedirectToAction("SelectDeliveryModel", request);
+                return RedirectToAction(nameof(SelectDeliveryModel), request);
             }
 
-            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -226,31 +234,61 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelRequest request)
         {
-            var viewModel = await _modelMapper.Map<Models.Apprentice.SelectDeliveryModelViewModel>(request);
+            var viewModel = await _modelMapper.Map<SelectDeliveryModelViewModel>(request);
             if (viewModel.DeliveryModels.Count > 1)
             {
                 return View(viewModel);
             }
 
-            return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            {
+                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
+            }
+
+            return RedirectToAction(nameof(TrainingDates), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
         [HttpPost]
         [Route("{apprenticeshipHashedId}/change-employer/select-delivery-model", Name = RouteNames.ApprenticeSelectDeliveryModel)]
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> SelectDeliveryModel(Models.Apprentice.SelectDeliveryModelViewModel viewModel)
+        public async Task<IActionResult> SelectDeliveryModel(SelectDeliveryModelViewModel viewModel)
         {
             if (viewModel.IsEdit)
             {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
+                var confirmRequest = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToAction(nameof(Confirm), confirmRequest);
             }
-            else
+            else if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
             {
-                var request = await _modelMapper.Map<StartDateRequest>(viewModel);
-                return RedirectToAction("StartDate", request);
+                var startDateRequest = await _modelMapper.Map<StartDateRequest>(viewModel);
+                return RedirectToAction("StartDate", startDateRequest);
             }
+
+            var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
+            return RedirectToAction(nameof(TrainingDates), request);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/training-dates", Name = RouteNames.ApprenticeTrainingDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> TrainingDates(TrainingDatesRequest request)
+        {
+            var viewModel = await _modelMapper.Map<TrainingDatesViewModel>(request);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/training-dates", Name = RouteNames.ApprenticeTrainingDates)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> TrainingDates(TrainingDatesViewModel viewModel)
+        {
+            await ValidateChangeOfEmployerOverlap(viewModel);
+
+            var request = await _modelMapper.Map<PriceRequest>(viewModel);
+            return RedirectToAction(nameof(Price), request);
         }
 
         [HttpGet]
@@ -366,8 +404,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
-            var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-            return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            {
+                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
+                return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
+            }
+
+            var overlapRequest = await _modelMapper.Map<ChangeOfEmployerOverlapAlertRequest>(viewModel);
+            return RedirectToRoute(RouteNames.ChangeEmployerOverlapAlert, overlapRequest);
         }
 
         [HttpGet]
@@ -389,6 +433,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipHashedId}/change-employer/overlap-alert", Name = RouteNames.ChangeEmployerOverlapAlert)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertRequest request)
+        {
+            var model = await _modelMapper.Map<ChangeOfEmployerOverlapAlertViewModel>(request);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("{apprenticeshipHashedId}/change-employer/overlap-alert", Name = RouteNames.ChangeEmployerOverlapAlert)]
+        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
+        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
+        public async Task<IActionResult> ChangeOfEmployerOverlapAlert(ChangeOfEmployerOverlapAlertViewModel viewModel)
+        {
+            var model = await _modelMapper.Map<OverlapOptionsForChangeEmployerRequest>(viewModel);
+
+            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.OverlapOptionsForChangeEmployer, ControllerConstants.OverlappingTrainingDateRequestController.Name, model);
         }
 
         [HttpGet]
@@ -460,10 +525,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.HasOptions)
             {
-                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -500,7 +565,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             draft.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
             TempData.Put(ViewModelForEdit, draft);
 
-            return RedirectToAction("EditApprenticeship", new { request.ProviderId, request.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(EditApprenticeship), new { request.ProviderId, request.ApprenticeshipHashedId });
         }
 
         [HttpPost]
@@ -517,7 +582,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var draft = TempData.GetButDontRemove<EditApprenticeshipRequestViewModel>(ViewModelForEdit);
             draft.DeliveryModel = (DeliveryModel)model.DeliveryModel.Value;
             TempData.Put(ViewModelForEdit, draft);
-            return RedirectToAction("EditApprenticeship", new { draft.ProviderId, draft.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(EditApprenticeship), new { draft.ProviderId, draft.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -550,10 +615,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (editApprenticeshipRequestViewModel.HasOptions)
             {
-                return RedirectToAction("ChangeOption", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ChangeOption), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -577,7 +642,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             TempData.Put("EditApprenticeshipRequestViewModel", editViewModel);
 
-            return RedirectToAction("ConfirmEditApprenticeship", new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
+            return RedirectToAction(nameof(ConfirmEditApprenticeship), new { apprenticeshipHashedId = viewModel.ApprenticeshipHashedId, providerId = viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -645,10 +710,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SubmitStatusViewModel.HasValue && viewModel.SubmitStatusViewModel.Value == SubmitStatusViewModel.Confirm)
             {
-                return RedirectToAction("ConfirmRestart", new DatalockConfirmRestartRequest { ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(ConfirmRestart), new DatalockConfirmRestartRequest { ApprenticeshipHashedId = viewModel.ApprenticeshipHashedId, ProviderId = viewModel.ProviderId });
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -672,7 +737,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -692,10 +757,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SubmitStatusViewModel == SubmitStatusViewModel.Confirm)
             {
-                return RedirectToAction("ConfirmDataLockChanges", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+                return RedirectToAction(nameof(ConfirmDataLockChanges), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [HttpGet]
@@ -719,7 +784,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 await _commitmentsApiClient.TriageDataLocks(viewModel.ApprenticeshipId, request);
             }
 
-            return RedirectToAction("Details", "Apprentice", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
+            return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId });
         }
 
         [Route("{apprenticeshipHashedId}/details/resend-email-invitation")]
@@ -735,11 +800,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
             catch { }
 
-            return RedirectToAction("Details", new
+            return RedirectToAction(nameof(Details), new
             {
                 ProviderId = request.ProviderId,
                 ApprenticeshipHashedId = request.ApprenticeshipHashedId
             });
+        }
+
+        private async Task ValidateChangeOfEmployerOverlap(TrainingDatesViewModel model)
+        {
+            var apimRequest = await _modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
+            await _outerApiService.ValidateChangeOfEmployerOverlap(apimRequest);
         }
     }
 }
