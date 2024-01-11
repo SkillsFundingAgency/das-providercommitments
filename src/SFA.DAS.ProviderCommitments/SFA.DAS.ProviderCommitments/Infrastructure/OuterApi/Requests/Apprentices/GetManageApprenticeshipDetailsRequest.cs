@@ -27,6 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
         public IEnumerable<ChangeOfPartyRequest> ChangeOfPartyRequests { get; set; }
         public IEnumerable<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public PendingPriceChangeDetails PendingPriceChange { get; set; }
 
         public class ApprenticeshipDetails
         {
@@ -157,6 +158,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public DateTime? EndDate { get; set; }
             public DateTime? StopDate { get; set; }
             public DateTime? CreatedOn { get; set; }
+        }
+
+        public class PendingPriceChangeDetails
+        {
+            public decimal Cost { get; set; }
+            public decimal? TrainingPrice { get; set; }
+            public decimal? EndPointAssessmentPrice { get; set; }
         }
     }
 }
