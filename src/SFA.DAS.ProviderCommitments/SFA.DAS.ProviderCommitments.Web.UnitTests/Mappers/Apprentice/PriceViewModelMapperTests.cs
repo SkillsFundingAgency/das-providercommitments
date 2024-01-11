@@ -1,14 +1,14 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var fixture = new Fixture();
             _source = fixture.Build<PriceRequest>().Create();
 
-            _getApprenticeshipApiResponse = new GetApprenticeshipResponse {EmployerName = "TestName"};
+            _getApprenticeshipApiResponse = new GetApprenticeshipResponse { EmployerName = "TestName" };
 
             _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
             _commitmentsApiClientMock
@@ -74,6 +74,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _act();
             Assert.AreEqual(_source.IsEdit, result.InEditMode);
+        }
+
+        [Test]
+        public async Task ThenApprenticeshipStatusIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.AreEqual(_getApprenticeshipApiResponse.Status, result.ApprenticeshipStatus);
         }
     }
 }

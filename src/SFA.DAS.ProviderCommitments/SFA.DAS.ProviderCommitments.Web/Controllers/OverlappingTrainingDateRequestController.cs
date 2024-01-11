@@ -2,8 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -42,6 +43,37 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _outerApiService = outerApiService;
         }
 
+        [HttpGet]
+        [Route("overlap-options-change-employer")]
+        public IActionResult OverlapOptionsForChangeEmployer(OverlapOptionsForChangeEmployerRequest request)
+        {
+            var viewModel = new OverlapOptionsForChangeEmployerViewModel
+            {
+                DraftApprenticeshipHashedId = request.ApprenticeshipHashedId,
+                ApprenticeshipId = request.ApprenticeshipId,
+                ApprenticeshipHashedId = request.ApprenticeshipHashedId,
+                ProviderId = request.ProviderId,
+                CacheKey = request.CacheKey
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route("overlap-options-change-employer")]
+        public async Task<IActionResult> OverlapOptionsForChangeEmployer(OverlapOptionsForChangeEmployerViewModel viewModel)
+        {
+            if (viewModel.OverlapOptions != OverlapOptions.SendStopRequest)
+            {
+                return RedirectToAction(ControllerConstants.ApprenticeController.Actions.Index, ControllerConstants.ApprenticeController.Name, new { viewModel.ProviderId });
+            }
+
+            var request = await _modelMapper.Map<ChangeOfEmployerNotifiedRequest>(viewModel);
+
+            return RedirectToAction(nameof(ChangeOfEmployerNotified), request);
+        }
+
+        [HttpGet]
         [Route("overlap-options-with-pending-request")]
         public IActionResult DraftApprenticeshipOverlapOptionsWithPendingRequest(DraftApprenticeshipOverlapOptionWithPendingRequest request)
         {
@@ -72,6 +104,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apprenticeshipDetails = await _commitmentsApiClient.GetApprenticeship(request.ApprenticeshipId.Value);
 
+            var enableStopRequestEmail = apprenticeshipDetails.Status == ApprenticeshipStatus.Live
+                                        || apprenticeshipDetails.Status == ApprenticeshipStatus.WaitingToStart
+                                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Paused
+                                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Completed
+                                        || apprenticeshipDetails.Status == ApprenticeshipStatus.Stopped;
             if (request.DraftApprenticeshipId.HasValue)
             {
                 var pendingOverlapRequests = await _outerApiService.GetOverlapRequest(request.DraftApprenticeshipId.Value);
@@ -83,11 +120,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,
                         Status = apprenticeshipDetails.Status,
-                        EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
-                        || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
+                        EnableStopRequestEmail = enableStopRequestEmail
                     });
                 }
             }
@@ -96,11 +129,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                 Status = apprenticeshipDetails.Status,
-                EnableStopRequestEmail = (apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Live
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.WaitingToStart
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Paused
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Completed
-                || apprenticeshipDetails.Status == CommitmentsV2.Types.ApprenticeshipStatus.Stopped)
+                EnableStopRequestEmail = enableStopRequestEmail
             };
 
             return View(vm);
@@ -120,7 +149,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             // redirect 302 does not clear tempdata.
             RemoveStoredDraftApprenticeshipState(viewModel.DraftApprenticeshipHashedId);
 
-            if (viewModel.OverlapOptions == OverlapOptions.AddApprenticeshipLater)
+            if (viewModel.OverlapOptions == OverlapOptions.CompleteActionLater)
             {
                 return Redirect(viewModel);
             }
@@ -144,7 +173,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction(nameof(EmployerNotified), new { viewModel.ProviderId, viewModel.CohortReference });
             }
 
-            return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+            return RedirectToAction(ControllerConstants.CohortController.Actions.Details, ControllerConstants.CohortController.Name, new { viewModel.ProviderId, viewModel.CohortReference });
+        }
+
+        [HttpGet]
+        [Route("change-of-employer-notified")]
+        public IActionResult ChangeOfEmployerNotified(ChangeOfEmployerNotifiedRequest request)
+        {
+            var vm = new ChangeOfEmployerNotifiedViewModel { ProviderId = request.ProviderId };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Route("change-of-employer-notified")]
+        public IActionResult ChangeOfEmployerNotified(ChangeOfEmployerNotifiedViewModel vm)
+        {
+            switch (vm.NextAction)
+            {
+                case NextAction.ViewAllCohorts:
+                    return RedirectToAction("Review", "Cohort", new { vm.ProviderId });
+                default:
+                    return Redirect(_urlHelper.ProviderApprenticeshipServiceLink("/account"));
+            }
         }
 
         [HttpGet]
@@ -210,7 +260,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-alert")]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
         {
-            return RedirectToAction("DraftApprenticeshipOverlapOptions", "OverlappingTrainingDateRequest", new DraftApprenticeshipOverlapOptionRequest
+            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptions, ControllerConstants.OverlappingTrainingDateRequestController.Name, new DraftApprenticeshipOverlapOptionRequest
             {
                 CohortReference = viewModel.CohortReference,
                 DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
@@ -222,10 +272,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (!string.IsNullOrWhiteSpace(viewModel.CohortReference))
             {
-                return RedirectToAction("Details", "Cohort", new { viewModel.ProviderId, viewModel.CohortReference });
+                return RedirectToAction(ControllerConstants.CohortController.Actions.Details, ControllerConstants.CohortController.Name, new { viewModel.ProviderId, viewModel.CohortReference });
             }
 
-            return RedirectToAction("Review", "Cohort", new { viewModel.ProviderId });
+            return RedirectToAction(ControllerConstants.CohortController.Actions.Review, ControllerConstants.CohortController.Name, new { viewModel.ProviderId });
         }
 
         private async Task CreateOverlappingTrainingDateRequest(DraftApprenticeshipOverlapOptionViewModel viewModel)
@@ -253,8 +303,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task CreateCohortAndDraftApprenticeship(DraftApprenticeshipOverlapOptionViewModel viewModel, AddDraftApprenticeshipViewModel model)
         {
-            var request = await _modelMapper.Map<Application.Commands.CreateCohort.CreateCohortRequest>(model);
+            var request = await _modelMapper.Map<CreateCohortRequest>(model);
             request.IgnoreStartDateOverlap = true;
+
             var response = await _mediator.Send(request);
             viewModel.CohortReference = response.CohortReference;
             viewModel.DraftApprenticeshipId = response.DraftApprenticeshipId;

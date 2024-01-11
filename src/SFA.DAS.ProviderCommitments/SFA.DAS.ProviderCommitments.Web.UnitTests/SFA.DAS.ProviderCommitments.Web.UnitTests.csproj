@@ -24,4 +24,8 @@
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments.Web\SFA.DAS.ProviderCommitments.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\OverlappingTrainingDates\" />
+  </ItemGroup>
+
 </Project>

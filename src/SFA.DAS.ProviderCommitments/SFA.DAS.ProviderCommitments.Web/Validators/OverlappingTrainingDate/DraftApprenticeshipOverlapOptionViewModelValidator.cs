@@ -3,12 +3,12 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
 namespace SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate
 {
-    public class EmployerNotifiedViewModelValidator : AbstractValidator<EmployerNotifiedViewModel>
+    public class DraftApprenticeshipOverlapOptionViewModelValidator : AbstractValidator<DraftApprenticeshipOverlapOptionViewModel>
     {
-        public EmployerNotifiedViewModelValidator()
+        public DraftApprenticeshipOverlapOptionViewModelValidator()
         {
             RuleFor(x => x.ProviderId).GreaterThan(0);
-            RuleFor(x => x.NextAction).NotNull().WithMessage("You need to select what you want to do next");
+            RuleFor(x => x.OverlapOptions).NotNull().WithMessage("You need to select what you would like to do");
         }
     }
 }
