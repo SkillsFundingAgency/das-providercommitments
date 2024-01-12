@@ -758,7 +758,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(cacheKey);
             var startDate = new MonthYearModel(cacheItem.StartDate).Date.Value;
 
-            return startDate > apprenticeship.StopDate.Value;
+            return startDate >= apprenticeship.StopDate.Value;
         }
     }
 }
