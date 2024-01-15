@@ -43,25 +43,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task WithApprenticeshipStatusLive_RedirectToTrainingDates()
+        public async Task WithoutDeliveryModel_RedirectToTrainingDates()
         {
-            _fixture = _fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Live);
-
             var result = await _fixture.Act();
 
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.TrainingDates));
         }
-
-        [Test]
-        public async Task WithApprenticeshipStatusStopped_RedirectToStartDate()
-        {
-            _fixture = _fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Stopped);
-
-            var result = await _fixture.Act();
-
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.StartDate));
-        }
-
+  
         internal class GetSelectDeliveryModelFixture
         {
             private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
@@ -90,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     .ReturnsAsync(_viewModel);
 
                 _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object,
-                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
             }
 
             public Task<IActionResult> Act() => _sut.SelectDeliveryModel(_request);
