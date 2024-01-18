@@ -1,12 +1,12 @@
-﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-using Microsoft.AspNetCore.Http;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Collections.Generic;
 using AddDraftApprenticeshipResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.AddDraftApprenticeshipResponse;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.CreateCohortResponse;
 
@@ -24,6 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task CreateOverlappingTrainingDateRequest(CreateOverlappingTrainingDateApimRequest data);
         Task ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(ValidateDraftApprenticeshipApimRequest data);
         Task<ValidateUlnOverlapOnStartDateQueryResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate);
+        Task ValidateChangeOfEmployerOverlap(ValidateChangeOfEmployerOverlapApimRequest data);
         Task<GetOverlapRequestQueryResult> GetOverlapRequest(long apprenticeshipId);
         Task UpdateDraftApprenticeship(long cohortId, long apprenticeshipId, UpdateDraftApprenticeshipApimRequest request);
         Task<AddDraftApprenticeshipResponse> AddDraftApprenticeship(long cohortId, AddDraftApprenticeshipApimRequest request);
@@ -43,4 +44,3 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage);
     }
 }
- 
