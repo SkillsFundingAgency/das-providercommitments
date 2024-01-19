@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -1071,6 +1072,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     EndPointAssessmentPrice = 43258,
                     TrainingPrice = 3248
                 };
+                
                 return this;
             }
         }

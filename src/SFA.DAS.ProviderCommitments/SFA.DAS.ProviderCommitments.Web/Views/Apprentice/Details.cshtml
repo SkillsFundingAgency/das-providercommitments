@@ -66,7 +66,7 @@
                 <partial name="DetailsPartials/_DataLockBanner" />
             }
         }
-        
+
         @if (Model.ShowChangeOfPriceRequestSent)
         {
             <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
@@ -350,36 +350,39 @@
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
-            
-                @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+
+                @if (!Model.HasPendingPriceChange)
                 {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Training price</th>
+                    @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Training price</th>
                         <td id="apprentice-price" class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
                             @if (Model.HasPendingPriceChange) { <strong class="govuk-tag govuk-tag govuk-tag--yellow">Pending</strong> }
                             </td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Assessment price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Total price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                        <td class="govuk-table__cell">
-                            <a id="linkChangePrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
-                        </td>
-                    </tr>
-                }
-                else
-                {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
+                            <td class="govuk-table__cell"></td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Assessment price</th>
+                            <td id="apprentice-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell"></td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Total price</th>
+                            <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell">
+                                <a id="linkChangePrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
+                            <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell"></td>
+                        </tr>
+                    }
                 }
 
                 <tr class="govuk-table__row">
@@ -389,6 +392,42 @@
                 </tr>
             </tbody>
         </table>
+
+        @if (Model.HasPendingPriceChange)
+        {
+            <div class="govuk-grid-row govuk-!-margin-bottom-2">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">Price changes you've requested</h2>
+                </div>
+            </div>
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header"></th>
+                        <th class="govuk-table__header">Current</th>
+                        <th class="govuk-table__header">Requested</th>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Training price</th>
+                        <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell">@Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">End-point assessment price</th>
+                        <td class="govuk-table__cell">@Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell">@Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Total price</th>
+                        <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                        <td class="govuk-table__cell">@Model.PendingPriceChange.Cost.ToGdsCostFormat()</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">View price changes you've requested</a>
+            <br />
+        }
 
         @if (Model.RecognisePriorLearning != null)
         {
@@ -410,7 +449,7 @@
                                 <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.TrainingTotalHoursDisplay</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
-                        }                        
+                        }
                         @if (Model.DurationReducedByHours != null)
                         {
                             <tr class="govuk-table__row">
