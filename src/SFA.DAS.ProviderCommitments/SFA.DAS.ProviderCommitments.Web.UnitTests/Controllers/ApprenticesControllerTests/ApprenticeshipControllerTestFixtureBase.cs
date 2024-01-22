@@ -52,6 +52,7 @@ public class ApprenticeControllerTestFixtureBase
             Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
             MockCommitmentsApiClient.Object,
             MockOuterApiService.Object);
+            Mock.Of<ICacheStorageService>());
 
         Controller.Url = MockUrlHelper.Object;
         Controller.TempData = MockTempData.Object;

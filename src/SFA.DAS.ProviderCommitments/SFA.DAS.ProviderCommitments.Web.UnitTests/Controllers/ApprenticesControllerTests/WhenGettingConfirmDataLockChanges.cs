@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _viewModel = fixture.Create<ConfirmDataLockChangesViewModel>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<ConfirmDataLockChangesViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         [TearDown]

@@ -68,7 +68,11 @@ internal class GetChangeEmployerPageFixture
         var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
         var tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
 
-        _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>())
+        _sut = new ApprenticeController(_modelMapper.Object,
+            Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), 
+            Mock.Of<ICommitmentsApiClient>(),
+            Mock.Of<IOuterApiService>(),
+            Mock.Of<ICacheStorageService>())
         {
             TempData = tempData
         };

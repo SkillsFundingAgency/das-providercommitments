@@ -118,14 +118,14 @@
                 <th asp-hide="@isRegular" scope="row" class="govuk-table__header">New employment start date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewStartDateTime)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeStartDate, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
                 </td>
             </tr>
             <tr asp-hide="@isRegular" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">New employment end date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDateTime.Value)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
                 </td>
             </tr>
             <tr class="govuk-table__row">
@@ -133,7 +133,7 @@
                 <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Projected apprenticeship training end date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeEndDate, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
                 </td>
             </tr>
             <tr asp-hide="@isRegular" class="govuk-table__row">

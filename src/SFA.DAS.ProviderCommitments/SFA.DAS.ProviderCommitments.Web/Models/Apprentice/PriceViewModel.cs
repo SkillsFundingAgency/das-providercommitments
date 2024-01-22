@@ -23,5 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool InEditMode { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
         public Guid CacheKey { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? StopDate { get; set; }
     }
 }

@@ -25,20 +25,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         }
 
         [Test]
-        public async Task PostSelectDeliveryModelModel_WithApprenticeshipStatusStopped_ShouldRedirectToStartDate()
+        public async Task PostSelectDeliveryModelModel_ShouldRedirectToTrainingDates()
         {
             var fixture = new PostSelectDeliveryModelFixture();
-            fixture = fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Stopped);
-
-            var result = await fixture.Act();
-            result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.StartDate));
-        }
-
-        [Test]
-        public async Task PostSelectDeliveryModelModel_WithApprenticeshipStatusLive_ShouldRedirectToTrainingDates()
-        {
-            var fixture = new PostSelectDeliveryModelFixture();
-            fixture = fixture.WithApprenticeshipStatus(ApprenticeshipStatus.Live);
 
             var result = await fixture.Act();
             result.VerifyReturnsRedirectToActionResult().WithActionName(nameof(ApprenticeController.TrainingDates));
@@ -62,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 ApprenticeshipHashedId = "ABC"
             };
             Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
-                Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+                Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public PostSelectDeliveryModelFixture WithIsEditTrue()

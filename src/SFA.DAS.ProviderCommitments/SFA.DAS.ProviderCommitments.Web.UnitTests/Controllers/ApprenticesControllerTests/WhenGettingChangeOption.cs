@@ -51,7 +51,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(m => m.Map<ChangeOptionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            _controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+            _controller = new ApprenticeController(_modelMapperMock.Object,
+                Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+                Mock.Of<ICommitmentsApiClient>(), 
+                Mock.Of<IOuterApiService>(), 
+                Mock.Of<ICacheStorageService>());
         }
 
         public async Task<IActionResult> ChangeOption()

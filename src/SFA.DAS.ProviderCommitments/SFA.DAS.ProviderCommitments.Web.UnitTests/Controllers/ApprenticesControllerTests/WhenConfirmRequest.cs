@@ -51,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Setup(x => x.Map<ConfirmViewModel>(It.IsAny<ConfirmRequest>()))
                 .ReturnsAsync(ChangeOfEmployerViewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>());
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public void VerifyConfirmViewModelMapperWasCalled()
