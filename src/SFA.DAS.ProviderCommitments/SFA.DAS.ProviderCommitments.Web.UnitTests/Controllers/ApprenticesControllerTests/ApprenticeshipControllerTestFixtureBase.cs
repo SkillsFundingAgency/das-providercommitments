@@ -51,7 +51,7 @@ public class ApprenticeControllerTestFixtureBase
         Controller = new ApprenticeController(MockMapper.Object,
             Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
             MockCommitmentsApiClient.Object,
-            MockOuterApiService.Object);
+            MockOuterApiService.Object,
             Mock.Of<ICacheStorageService>());
 
         Controller.Url = MockUrlHelper.Object;
