@@ -91,6 +91,9 @@ namespace SFA.DAS.ProviderCommitments.Web
                 .AddUrlHelper()
                 .AddHealthChecks();
 
+            BearerTokenProvider.SetSigningKey(Configuration["UserBearerTokenSigningKey"]);
+
+
             services.Configure<CookieTempDataProviderOptions>(options =>
             {
                 options.Cookie.HttpOnly = true;
