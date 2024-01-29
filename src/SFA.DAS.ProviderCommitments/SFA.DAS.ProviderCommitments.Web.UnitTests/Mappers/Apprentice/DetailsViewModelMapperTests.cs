@@ -1,22 +1,22 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
+using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -384,7 +384,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithUnresolvedAndFailedDataLocks();
             await _fixture.Map();
-            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks, 
+            Assert.AreEqual(DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks,
                 _fixture.Result.DataLockStatus);
         }
 
@@ -547,17 +547,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.AreEqual(false, _fixture.Result.ShowChangeEmployerLink);
         }
 
-        [TestCase(ApprenticeshipStatus.Stopped, true)]
-        [TestCase(ApprenticeshipStatus.Paused, false)]
-        [TestCase(ApprenticeshipStatus.Live, false)]
-        [TestCase(ApprenticeshipStatus.WaitingToStart, false)]
-        [TestCase(ApprenticeshipStatus.Completed, false)]
-        public async Task WhenApprenticeStatusThenShowChangeEmployerLinkIsMappedCorrectly(ApprenticeshipStatus apprenticeshipStatus, bool expected)
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public async Task ThenShowChangeEmployerLinkIsMappedCorrectly(bool hasContination, bool expected)
         {
             //Arrange
-            _fixture
-                .WithApprenticeshipStatus(apprenticeshipStatus)
-                .WithoutNextApprenticeship();
+            if (hasContination)
+            {
+                _fixture.WithNextApprenticeship();
+            }
+            else
+            {
+                _fixture.WithoutNextApprenticeship();
+            }
 
             //Act
             await _fixture.Map();
@@ -597,7 +599,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(false, Party.Provider, true, true)]
         public async Task CheckActionRequiredBannerIsShownCorrectly(bool unresolvedDataLocks, Party? party, bool employerUpdate, bool expected)
         {
-            if(unresolvedDataLocks) _fixture.WithUnresolvedAndFailedDataLocks();
+            if (unresolvedDataLocks) _fixture.WithUnresolvedAndFailedDataLocks();
             if (employerUpdate) _fixture.WithPendingUpdatesForEmployer();
             _fixture.WithChangeOfPartyRequest(ChangeOfPartyRequestType.ChangeEmployer, ChangeOfPartyRequestStatus.Pending, party);
 
@@ -696,8 +698,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
 
-            private readonly Mock<IEncodingService> _encodingService;            
-            private readonly Mock<IAuthorizationService> _authorizationService;            
+            private readonly Mock<IEncodingService> _encodingService;
+            private readonly Mock<IAuthorizationService> _authorizationService;
             public string CohortReference { get; }
             public string AgreementId { get; }
             public string URL { get; }
@@ -857,7 +859,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
-                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { 
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> {
                     new GetManageApprenticeshipDetailsResponse.DataLock
                     {
                         Id = 1,
@@ -1023,7 +1025,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithEmailShouldBePresentPopulated(bool present)
             {
-                ApiResponse.Apprenticeship.EmailShouldBePresent =present;
+                ApiResponse.Apprenticeship.EmailShouldBePresent = present;
                 return this;
             }
 
