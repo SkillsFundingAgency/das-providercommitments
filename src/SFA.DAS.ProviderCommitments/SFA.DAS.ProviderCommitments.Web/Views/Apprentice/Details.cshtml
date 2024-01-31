@@ -310,7 +310,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Version</th>
-                        <td id="apprentice-course" class="govuk-table__cell">@Model.Version</td>
+                        <td id="apprentice-course-version" class="govuk-table__cell">@Model.Version</td>
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
@@ -324,7 +324,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Option</th>
-                        <td id="apprentice-course" class="govuk-table__cell">@(!string.IsNullOrEmpty(Model.Option) ?
+                        <td id="apprentice-course-option" class="govuk-table__cell">@(!string.IsNullOrEmpty(Model.Option) ?
                         Model.Option : "To be confirmed")</td>
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
