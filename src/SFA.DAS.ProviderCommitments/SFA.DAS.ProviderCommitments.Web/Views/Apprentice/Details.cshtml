@@ -100,20 +100,20 @@
                     <p class="govuk-body">
                         If your apprentice has not confirmed their apprenticeship details within the 14 day deadline, you
                         should:
+                    </p>
 
                     <ul class="govuk-list govuk-list--bullet">
                         <li>
                             contact the apprentice to complete their apprenticeship confirmation
-                        </li>
-                        <div>
+                            <br />
                             Or
-                        </div>
+                        </li>
                         <li>
                             contact the apprentice’s employer to ask the apprentice to complete their apprenticeship
                             confirmation
                         </li>
                     </ul>
-                    </p>
+
                 </div>
             </details>
         }
@@ -374,7 +374,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Training price for this employment</th>
-                        <td id="apprentice-end-date" class="govuk-table__cell">@Model.EmploymentPriceDisplay</td>
+                        <td id="apprentice-training-price" class="govuk-table__cell">@Model.EmploymentPriceDisplay</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
@@ -389,13 +389,13 @@
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Assessment price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">
+                        <td id="assessment-price" class="govuk-table__cell">
                             @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Total price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                        <td id="total-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
@@ -434,7 +434,7 @@
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">Total off-the-job training time for this apprenticeship
                                     standard</th>
-                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">
+                                <td id="apprenticeship-rpl-training-time-total" class="govuk-table__cell">
                                     @Model.TrainingTotalHoursDisplay</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
