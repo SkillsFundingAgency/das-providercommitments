@@ -86,7 +86,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public PendingPriceChange PendingPriceChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;
         public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
+        public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
         public bool ShowChangeOfPriceRequestSent { get; set; }
+        public bool ShowPriceChangeCancelled { get; set; }
 
         public enum DataLockSummaryStatus
         {
@@ -111,6 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string HashedApprenticeshipId { get; set; }
         public bool ShowLink { get; set; }
     }
+
     public class PendingPriceChange
     {
         public decimal Cost { get; set; }
