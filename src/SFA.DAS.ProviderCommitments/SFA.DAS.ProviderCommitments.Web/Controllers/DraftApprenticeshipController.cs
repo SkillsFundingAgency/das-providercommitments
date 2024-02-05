@@ -354,7 +354,8 @@ public class DraftApprenticeshipController : Controller
                 ReservationId = model.ReservationId,
                 StartMonthYear = model.StartDate.MonthYear,
                 CourseCode = model.CourseCode,
-                DeliveryModel = model.DeliveryModel
+                DeliveryModel = model.DeliveryModel,
+                model.ProviderId,
             });
         }
 
@@ -415,7 +416,8 @@ public class DraftApprenticeshipController : Controller
             return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
             {
                 DraftApprenticeshipHashedId = model.DraftApprenticeshipHashedId,
-                OverlapApprenticeshipHashedId = hashedApprenticeshipId
+                OverlapApprenticeshipHashedId = hashedApprenticeshipId,
+                model.ProviderId,
             });
         }
 

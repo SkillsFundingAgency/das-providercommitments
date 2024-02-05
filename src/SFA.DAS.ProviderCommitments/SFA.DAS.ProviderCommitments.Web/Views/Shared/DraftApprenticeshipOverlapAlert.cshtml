@@ -81,6 +81,7 @@
                 <fieldset class="govuk-fieldset">
                     <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
                     <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
+                    <input type="hidden" asp-for="ProviderId" value="@Model.ProviderId" />
                     @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
                     <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
                         <div class="govuk-checkboxes__item">
