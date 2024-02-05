@@ -159,21 +159,13 @@
 <form method="post">
 
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(x => x.AccountLegalEntityPublicHashedId)
-    @Html.HiddenFor(x => x.CacheKey)
-
+    <input type="hidden" asp-for="AccountLegalEntityPublicHashedId"/>
+    <input type="hidden" asp-for="CacheKey"/>
+    <input type="hidden" asp-for="ProviderId"/>
+    
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 
 </form>
-
-
-@functions
-{
-    private static string DisplayDate(DateTime value)
-    {
-        return $"{value:MMMM yyyy}";
-    }
-}
 
 @section breadcrumb
 {
