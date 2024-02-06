@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -41,9 +42,10 @@ public static class MvcServiceRegistrations
             .EnableCookieBanner()
             .SetDfESignInConfiguration(useDfeSignIn)
             .AddZenDeskSettings(configuration)
-            .AddControllersAsServices()
-            .AddFluentValidation(fv =>
-                fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
+            .AddControllersAsServices();
+
+        services.AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>();
 
         services
             .AddScoped<HandleBulkUploadValidationErrorsAttribute>()
