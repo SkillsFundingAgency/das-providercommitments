@@ -20,7 +20,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <partial name="_ValidationSummary" />
+        <partial name="_ValidationSummary"/>
 
         <h1 class="govuk-heading-xl">There may be a problem with the proposed training details</h1>
 
@@ -79,9 +79,9 @@
         <form method="post">
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DetailsAcknowledgement, " govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
-                    <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId" />
-                    <input type="hidden" asp-for="CohortReference" value="@Model.CohortReference" />
-                    <input type="hidden" asp-for="ProviderId" value="@Model.ProviderId" />
+                    <input type="hidden" asp-for="DraftApprenticeshipHashedId"/>
+                    <input type="hidden" asp-for="CohortReference"/>
+                    <input type="hidden" asp-for="ProviderId"/>
                     @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
                     <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
                         <div class="govuk-checkboxes__item">
@@ -103,4 +103,4 @@
 @section breadcrumb
 {
     <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Back</a>
-} 
+}

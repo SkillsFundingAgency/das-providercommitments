@@ -258,8 +258,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-alert")]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
         {
-            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptions, ControllerConstants.OverlappingTrainingDateRequestController.Name, new DraftApprenticeshipOverlapOptionRequest
+            return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions), new DraftApprenticeshipOverlapOptionRequest
             {
+                ProviderId = viewModel.ProviderId,
                 CohortReference = viewModel.CohortReference,
                 DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
                 ApprenticeshipHashedId = viewModel.OverlapApprenticeshipHashedId
