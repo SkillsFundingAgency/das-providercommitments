@@ -253,7 +253,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             }
         }
 
-        private IFormFile CreateFakeFormFile(string fileContents)
+        private static IFormFile CreateFakeFormFile(string fileContents)
         {
             var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
             var file = new FormFile(textStream, 0, textStream.Length, "APPDATA-20051030-213855", "APPDATA-20051030-213855.csv")
