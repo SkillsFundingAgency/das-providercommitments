@@ -8,6 +8,9 @@ public class FileUploadStartViewModelValidator : AbstractValidator<FileUploadSta
 {
     public FileUploadStartViewModelValidator(BulkUploadFileValidationConfiguration csvConfiguration)
     {
-        new FileUploadValidationHelper(csvConfiguration).AddFileValidationRules(RuleFor(x => x.Attachment));
+        new FileUploadValidationHelper(csvConfiguration)
+            .AddFileValidationRules(RuleFor(fileUploadStartViewModel => fileUploadStartViewModel.Attachment))
+            .GetAwaiter()
+            .GetResult();
     }
 }

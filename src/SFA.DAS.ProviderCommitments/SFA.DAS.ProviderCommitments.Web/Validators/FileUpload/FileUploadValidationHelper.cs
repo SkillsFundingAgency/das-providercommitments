@@ -14,7 +14,7 @@ public class FileUploadValidationHelper
         _csvConfiguration = config;
     }
 
-    public void AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
+    public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder
             .Cascade(CascadeMode.Stop)
@@ -29,7 +29,7 @@ public class FileUploadValidationHelper
             .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this");
     }
 
-    public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
+    public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder
             .Cascade(CascadeMode.Stop)
@@ -54,13 +54,13 @@ public class FileUploadValidationHelper
         return file.FileName.ToLower().EndsWith(".csv");
     }
 
-    private async Task<bool> CheckEmptyFileContent(IFormFile file, CancellationToken cancellation)
+    private static async Task<bool> CheckEmptyFileContent(IFormFile file, CancellationToken cancellation)
     {
         var fileData = await ReadFileAsync(file);
         return fileData.rowCount > 0;
     }
 
-    private async Task<bool> CheckApprenticeContent(IFormFile file, CancellationToken cancellation)
+    private static async Task<bool> CheckApprenticeContent(IFormFile file, CancellationToken cancellation)
     {
         var fileData = await ReadFileAsync(file);
         return fileData.rowCount > 1;
@@ -72,11 +72,11 @@ public class FileUploadValidationHelper
         using var reader = new StringReader(fileContent);
 
         var firstLine = await reader.ReadLineAsync();
-        var firstlineData = (firstLine).Split(',');
+        var firstlineData = firstLine.Split(',');
 
         return
             BulkUploadFileRequirements.CheckHeaderCount(firstlineData)
-            && await AllLinesHaveSameColumnCount(reader, firstlineData.Count());
+            && await AllLinesHaveSameColumnCount(reader, firstlineData.Length);
 
         static async Task<bool> AllLinesHaveSameColumnCount(StringReader reader, int count)
         {
@@ -84,7 +84,7 @@ public class FileUploadValidationHelper
 
             while ((line = await reader.ReadLineAsync()) != null)
             {
-                if (line.Split(',').Count() != count)
+                if (line.Split(',').Length != count)
                 {
                     return false;
                 }
@@ -102,32 +102,25 @@ public class FileUploadValidationHelper
 
     private static async Task<bool> CheckColumnHeaders(IFormFile file, CancellationToken cancellation)
     {
-        var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
+        var fileContent = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
         using var reader = new StringReader(fileContent);
 
         var firstLine = await reader.ReadLineAsync();
-        var firstlineData = (firstLine).Split(',');
+        var firstlineData = firstLine.Split(',');
 
         if (!BulkUploadFileRequirements.HasMinimumRequiredColumns(firstlineData))
         {
             return false;
         }
 
-        if (firstlineData.Count() == EXTENDEDRPLCOLUMNCOUNT)
-        {
-            if (!BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData))
-            {
-                return false;
-            }
-        }
-        return true;
+        return firstlineData.Length != EXTENDEDRPLCOLUMNCOUNT || BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData);
     }
 
-    private async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
+    private static async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
     {
         var firstLineData = Array.Empty<string>();
 
-        var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
+        var fileContent = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
         using var reader = new StringReader(fileContent);
         var lineCounter = 0;
 
@@ -138,12 +131,11 @@ public class FileUploadValidationHelper
             {
                 continue;
             }
-                
+
             if (firstLineData.Length == 0)
             {
                 firstLineData = lineContent.Split(',');
                 lineCounter++;
-
             }
             else
             {
