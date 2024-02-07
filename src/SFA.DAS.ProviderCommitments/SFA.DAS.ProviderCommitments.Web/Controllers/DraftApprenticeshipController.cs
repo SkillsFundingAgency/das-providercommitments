@@ -678,7 +678,7 @@ public class DraftApprenticeshipController : Controller
         model.Courses = courses;
     }
 
-    private void PrePopulateDates(EditDraftApprenticeshipViewModel model)
+    private static void PrePopulateDates(EditDraftApprenticeshipViewModel model)
     {
         if (model.IsOnFlexiPaymentPilot.GetValueOrDefault())
         {
@@ -690,7 +690,7 @@ public class DraftApprenticeshipController : Controller
         }
     }
 
-    private void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+    private static void EnsureActualStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
     {
         if (model.ActualStartYear.HasValue && model.ActualStartMonth.HasValue)
             return;
@@ -700,7 +700,7 @@ public class DraftApprenticeshipController : Controller
         model.ActualStartMonth = model.StartMonth;
     }
 
-    private void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
+    private static void EnsurePlannedStartDatePrePopulation(EditDraftApprenticeshipViewModel model)
     {
         if (model.StartDate.HasValue)
             return;
@@ -755,31 +755,26 @@ public class DraftApprenticeshipController : Controller
             cohortReference,
         };
 
-        if (hasStandardOptions)
-        {
-            return RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues);
-        }
-
-        return RedirectToAction("Details", "Cohort", routeValues);
+        return hasStandardOptions 
+            ? RedirectToAction("SelectOptions", "DraftApprenticeship", routeValues) 
+            : RedirectToAction("Details", "Cohort", routeValues);
     }
 
     private async Task<ValidateUlnOverlapOnStartDateQueryResult> HasStartDateOverlap(DraftApprenticeshipViewModel model)
     {
-        if (model.StartDate.Date.HasValue && model.EndDate.Date.HasValue && !string.IsNullOrWhiteSpace(model.Uln))
+        if (!model.StartDate.Date.HasValue || !model.EndDate.Date.HasValue || string.IsNullOrWhiteSpace(model.Uln))
         {
-            var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
-            await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
-
-            var result = await _outerApiService.ValidateUlnOverlapOnStartDate(
-                model.ProviderId,
-                model.Uln,
-                model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
-                model.EndDate.Date.Value.ToString("dd-MM-yyyy")
-            );
-
-            return result;
+            return null;
         }
+        
+        var apimRequest = await _modelMapper.Map<ValidateDraftApprenticeshipApimRequest>(model);
+        await _outerApiService.ValidateDraftApprenticeshipForOverlappingTrainingDateRequest(apimRequest);
 
-        return null;
+        return await _outerApiService.ValidateUlnOverlapOnStartDate(
+            model.ProviderId,
+            model.Uln,
+            model.StartDate.Date.Value.ToString("dd-MM-yyyy"),
+            model.EndDate.Date.Value.ToString("dd-MM-yyyy")
+        );
     }
 }
