@@ -55,7 +55,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
                 Mock.Of<ICommitmentsApiClient>(), 
                 Mock.Of<IOuterApiService>(), 
-                Mock.Of<ICacheStorageService>()
+                Mock.Of<ICacheStorageService>(), 
+                Mock.Of<ILogger<ApprenticeController>>()
                 );
         }
 

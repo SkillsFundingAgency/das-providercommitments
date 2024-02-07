@@ -21,6 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderUrlHelper;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -34,6 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiService _outerApiService;
         private readonly ICacheStorageService _cacheStorage;
+        private readonly ILogger<ApprenticeController> _logger;
 
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
@@ -46,13 +48,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             Interfaces.ICookieStorageService<IndexRequest> cookieStorage,
             ICommitmentsApiClient commitmentsApiClient,
             IOuterApiService outerApiService,
-            ICacheStorageService cacheStorage)
+            ICacheStorageService cacheStorage,
+            ILogger<ApprenticeController> logger)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
             _outerApiService = outerApiService;
             _cacheStorage = cacheStorage;
+            _logger = logger;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -364,8 +368,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
+            _logger.LogInformation("ApprenticeController.Confirm POST started processing.");
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
+            _logger.LogInformation("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonSerializer.Serialize(request));
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 

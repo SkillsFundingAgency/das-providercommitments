@@ -74,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     .ReturnsAsync(_viewModel);
 
                 _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object,
-                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>(), Mock.Of<ILogger<ApprenticeController>>());
             }
 
             public Task<IActionResult> Act() => _sut.SelectDeliveryModel(_request);

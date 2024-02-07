@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .Returns(Task.CompletedTask);
 
             Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
-                Mock.Of<ICommitmentsApiClient>(), _mockOuterApiService.Object, Mock.Of<ICacheStorageService>());
+                Mock.Of<ICommitmentsApiClient>(), _mockOuterApiService.Object, Mock.Of<ICacheStorageService>(), Mock.Of<ILogger<ApprenticeController>>());
         }
 
         public void Verify_ModelMapperWasCalled(Times times) =>
