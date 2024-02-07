@@ -156,7 +156,7 @@
     </div>
 </div>
 
-<form method="post">
+<form method="post" asp-route="@RouteNames.ApprenticeConfirm">
 
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="AccountLegalEntityPublicHashedId"/>
