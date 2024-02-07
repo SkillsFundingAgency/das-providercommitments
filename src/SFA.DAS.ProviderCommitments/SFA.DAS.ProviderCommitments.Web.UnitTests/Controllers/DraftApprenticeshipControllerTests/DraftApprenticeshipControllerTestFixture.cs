@@ -200,7 +200,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 _modelMapper.Object,
                 encodingService.Object,
                 providerFeatureToggle.Object, _outerApiService.Object, 
-                Mock.Of<IAuthenticationService>()
+                Mock.Of<IAuthenticationService>(),
+                Mock.Of<ILogger<DraftApprenticeshipController>>()
                 );
             
             _controller.TempData = _tempData.Object;

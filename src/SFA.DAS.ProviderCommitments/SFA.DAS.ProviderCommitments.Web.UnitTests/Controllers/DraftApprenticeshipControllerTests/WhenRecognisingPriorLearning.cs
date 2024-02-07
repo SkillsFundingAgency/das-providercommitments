@@ -466,7 +466,8 @@ public class WhenRecognisingPriorLearningFixture
             Mock.Of<IEncodingService>(),
             AuthorizationService.Object,
             OuterApiService.Object,
-            Mock.Of<IAuthenticationService>());
+            Mock.Of<IAuthenticationService>(),
+            Mock.Of<ILogger<DraftApprenticeshipController>>());
     }
 
     internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
