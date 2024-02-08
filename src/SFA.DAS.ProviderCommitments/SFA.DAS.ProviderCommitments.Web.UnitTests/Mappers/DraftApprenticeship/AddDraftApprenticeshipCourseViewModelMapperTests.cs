@@ -77,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         public async Task IsOnFlexiPaymentsPilot_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsFalse(result.IsOnFlexiPaymentsPilot);
+            Assert.That(result.IsOnFlexiPaymentsPilot, Is.False);
         }
 
         [Test]

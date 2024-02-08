@@ -237,7 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             //Assert
-            _fixture.VerifyIsLockedForUpdateIsMapped();
+            EditApprenticeshipRequestToViewModelMapperTestsFixture.VerifyIsLockedForUpdateIsMapped();
         }
 
         [TestCase(ApprenticeshipStatus.Live, true, true)]
@@ -505,7 +505,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.That(_viewModel.DeliveryModel, Is.EqualTo(ApprenticeshipResponse.DeliveryModel));
         }
 
-        internal void VerifyIsLockedForUpdateIsMapped()
+        internal static void VerifyIsLockedForUpdateIsMapped()
         {
             //   throw new NotImplementedException();
         }

@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }).ToList();
         }
 
-        private string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord, bool extendedRpl)
+        private static string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord, bool extendedRpl)
         {
             if (!extendedRpl)
             {
@@ -77,7 +77,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord, bool extendedRpl)
+        private static string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord, bool extendedRpl)
         {
             if (!extendedRpl)
             {

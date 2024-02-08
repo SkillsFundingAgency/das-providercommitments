@@ -79,7 +79,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.ApiResponse.Apprenticeship.Status = ApprenticeshipStatus.Stopped;
             await _fixture.Map();
-            Assert.IsFalse(_fixture.Result.CanResendInvitation);
+            Assert.That(_fixture.Result.CanResendInvitation, Is.False);
         }
 
         [Test]
@@ -287,7 +287,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.IsTrue(_fixture.Result.AllowEditApprentice);
+            Assert.That(_fixture.Result.AllowEditApprentice, Is.True);
         }
 
         [TestCase(TriageStatus.Change)]
@@ -299,7 +299,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.IsFalse(_fixture.Result.AllowEditApprentice);
+            Assert.That(_fixture.Result.AllowEditApprentice, Is.False);
         }
 
         [TestCase(true, false)]
@@ -333,7 +333,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.False(_fixture.Result.HasOptions);
+            Assert.That(_fixture.Result.HasOptions, Is.False);
         }
 
         [TestCase(true)]
@@ -419,7 +419,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithPendingUpdatesForEmployer();
             await _fixture.Map();
-            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+            Assert.That(_fixture.Result.SuppressDataLockStatusReviewLink, Is.True);
         }
 
         [Test]
@@ -427,7 +427,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithPendingUpdatesForProvider();
             await _fixture.Map();
-            Assert.IsTrue(_fixture.Result.SuppressDataLockStatusReviewLink);
+            Assert.That(_fixture.Result.SuppressDataLockStatusReviewLink, Is.True);
         }
 
         [TestCase(false, DataLockErrorCode.Dlock04, DetailsViewModel.TriageOption.Update)]
@@ -495,7 +495,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithNextApprenticeship();
             await _fixture.Map();
-            Assert.IsTrue(_fixture.Result.HasContinuation);
+            Assert.That(_fixture.Result.HasContinuation, Is.True);
         }
 
         [Test]
@@ -503,7 +503,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _fixture.WithoutNextApprenticeship();
             await _fixture.Map();
-            Assert.IsFalse(_fixture.Result.HasContinuation);
+            Assert.That(_fixture.Result.HasContinuation, Is.False);
         }
 
         [Test]
@@ -513,37 +513,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.IsFalse(_fixture.Result.HasPendingChangeOfPartyRequest);
+            Assert.That(_fixture.Result.HasPendingChangeOfPartyRequest, Is.False);
         }
-
-        public async Task WhenNoNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
-        {
-            //Arrange 
-            _fixture
-                .WithApprenticeshipStatus(ApprenticeshipStatus.Stopped)
-                .WithoutNextApprenticeship();
-
-            //Act
-            await _fixture.Map();
-
-            //Assert
-            Assert.That(_fixture.Result.ShowChangeEmployerLink, Is.EqualTo(true));
-        }
-
-        public async Task WhenNextApprenticeshipThenShowChangeEmployerLinkIsMappedCorrectly()
-        {
-            //Arrange 
-            _fixture
-                .WithApprenticeshipStatus(ApprenticeshipStatus.Stopped)
-                .WithNextApprenticeship();
-
-            //Act
-            await _fixture.Map();
-
-            //Assert
-            Assert.That(_fixture.Result.ShowChangeEmployerLink, Is.EqualTo(false));
-        }
-
+        
         [TestCase(true, false)]
         [TestCase(false, true)]
         public async Task ThenShowChangeEmployerLinkIsMappedCorrectly(bool hasContination, bool expected)
@@ -661,8 +633,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task And_NoNewerVersionExists_Then_ShowChangeVersionLinkIsFalse()
         {
-            //_fixture.WithoutNewerVersions();
-
             await _fixture.Map();
 
             Assert.That(_fixture.Result.ShowChangeVersionLink, Is.EqualTo(false));
@@ -686,7 +656,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.IsNull(_fixture.Result.PendingPriceChange);
+            Assert.That(_fixture.Result.PendingPriceChange, Is.Null);
         }
 
         [Test]
@@ -696,7 +666,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.IsNotNull(_fixture.Result.PendingPriceChange);
+            Assert.That(_fixture.Result.PendingPriceChange, Is.Not.Null);
             Assert.That(_fixture.ApiResponse.PendingPriceChange.Cost, Is.EqualTo(_fixture.Result.PendingPriceChange.Cost));
             Assert.That(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.EndPointAssessmentPrice));
             Assert.That(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.TrainingPrice));
@@ -738,7 +708,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 URL = Fixture.Create<string>();
                 ApiResponse.PriceEpisodes = new List<GetManageApprenticeshipDetailsResponse.PriceEpisode>
                 {
-                    new GetManageApprenticeshipDetailsResponse.PriceEpisode {Cost = 100, FromDate = DateTime.UtcNow}
+                    new() {Cost = 100, FromDate = DateTime.UtcNow}
                 };
 
                 ApprenticeshipUpdates = new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>();
@@ -853,7 +823,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApiResponse.ApprenticeshipUpdates =
                     new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>()
                     {
-                        new GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate
+                        new()
                         {
                             Id = 1,
                             OriginatingParty = Party.Provider
@@ -867,7 +837,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApiResponse.ApprenticeshipUpdates =
                     new List<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate>()
                     {
-                        new GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate
+                        new()
                         {
                             Id = 1,
                             OriginatingParty = Party.Employer
@@ -879,14 +849,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithResolvedDataLocks()
             {
                 ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> {
-                    new GetManageApprenticeshipDetailsResponse.DataLock
+                    new()
                     {
                         Id = 1,
                         TriageStatus = TriageStatus.Unknown,
                         DataLockStatus = Status.Fail,
                         IsResolved = true
                     },
-                    new GetManageApprenticeshipDetailsResponse.DataLock
+                    new()
                     {
                         Id = 2,
                         TriageStatus = TriageStatus.Unknown,
@@ -899,7 +869,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnresolvedAndFailedDataLocks(DataLockErrorCode errorCode = DataLockErrorCode.Dlock07)
             {
-                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new()
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -928,7 +898,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedAndPassingDataLocks()
             {
-                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new()
                 {
                     Id = 1,
                     TriageStatus = TriageStatus.Unknown,
@@ -940,7 +910,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public DetailsViewModelMapperFixture WithUnResolvedDataLocksInTriage(TriageStatus triageStatus)
             {
-                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new GetManageApprenticeshipDetailsResponse.DataLock
+                ApiResponse.DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock> { new()
                 {
                     Id = 1,
                     TriageStatus = triageStatus,
@@ -962,7 +932,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 ApiResponse.ChangeOfPartyRequests = new List<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest>
                     {
-                        new GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest
+                        new()
                         {
                             Id = 1,
                             ChangeOfPartyType = requestType,
@@ -985,7 +955,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 ApiResponse.ChangeOfEmployerChain = new List<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink>
                     {
-                        new GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink
+                        new()
                         {
                             ApprenticeshipId = newApprenticeshipId,
                             EmployerName = Fixture.Create<string>(),

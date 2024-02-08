@@ -14,6 +14,7 @@ public class FileUploadValidationHelper
         _csvConfiguration = config;
     }
 
+    // Removing the async from these methods will cause a FluentValidation exception to be thrown due to MustAsync
     public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder
@@ -29,6 +30,7 @@ public class FileUploadValidationHelper
             .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this");
     }
 
+    // Removing the async from these methods will cause a FluentValidation exception to be thrown due to MustAsync
     public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder

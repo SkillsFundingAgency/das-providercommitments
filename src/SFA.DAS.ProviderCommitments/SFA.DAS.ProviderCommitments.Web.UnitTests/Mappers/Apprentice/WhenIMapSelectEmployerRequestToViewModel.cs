@@ -255,7 +255,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
+                Assert.That(result.AccountProviderLegalEntities, Is.Empty);
             }
 
             internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
@@ -285,13 +285,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
                 Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo(employerAccountName));
             }
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
                 Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo(employerName));
             }
         }

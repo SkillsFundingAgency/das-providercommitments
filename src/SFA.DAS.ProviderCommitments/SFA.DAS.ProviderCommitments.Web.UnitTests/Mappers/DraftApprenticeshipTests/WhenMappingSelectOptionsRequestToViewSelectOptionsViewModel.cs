@@ -148,8 +148,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _draftApprenticeshipApiResponse.TrainingCourseOption = null;
                 
             var result = await _act();
-            
-            Assert.IsNull(result.SelectedOption);
+
+            Assert.That(result.SelectedOption, Is.Null);
         }
     }
 }

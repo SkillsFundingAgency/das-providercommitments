@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 
             var result = validator.Validate(viewModel);
 
-            Assert.False(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
 
         [Test, MoqAutoData]
@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 
             var result = validator.Validate(viewModel);
 
-            Assert.False(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
     }
 }

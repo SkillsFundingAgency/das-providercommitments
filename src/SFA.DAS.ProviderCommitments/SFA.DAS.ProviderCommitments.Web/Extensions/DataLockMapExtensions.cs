@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
         {
             if (apprenticeship.HasHadDataLockSuccess)
             {
-                return new CourseDataLockViewModel[0];
+                return Array.Empty<CourseDataLockViewModel>();
             }
           
             return dataLockWithCourseMismatch
@@ -47,9 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
                    if (previousPriceEpisode == null)
                    {
-                       previousPriceEpisode = priceEpisodes
-                           .OrderByDescending(m => m.FromDate)
-                           .FirstOrDefault();
+                       previousPriceEpisode = priceEpisodes.MaxBy(m => m.FromDate);
                    }
 
                    return new PriceDataLockViewModel

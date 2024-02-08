@@ -140,22 +140,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return IsLive(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value);
         }
 
-        private bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
+        private static bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.WaitingToStart;
         }
 
-        private bool IsLive(GetApprenticeshipResponse apprenticeship)
+        private static bool IsLive(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.Live;
         }
 
-        private bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        private static bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.HasHadDataLockSuccess;
         }
 
-        private bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
+        private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
         {
             var result = isLockedForUpdate;
             if (hasHadDataLockSuccess)

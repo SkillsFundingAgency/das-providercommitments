@@ -145,8 +145,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         internal void Verify_ApprenticeshipTrainingProgrammeAreMappedCorrectly()
         {
             Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count, Is.EqualTo(2));
-            Assert.IsTrue(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1"));
-            Assert.IsTrue(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2"));
+            Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1"), Is.True);
+            Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2"), Is.True);
         }
 
         internal void Verify_ProviderId_IsMapped()

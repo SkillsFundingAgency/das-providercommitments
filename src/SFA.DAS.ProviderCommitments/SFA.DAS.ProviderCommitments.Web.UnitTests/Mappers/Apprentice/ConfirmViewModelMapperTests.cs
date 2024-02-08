@@ -179,7 +179,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _fixture.CacheItem.DeliveryModel = Infrastructure.OuterApi.Types.DeliveryModel.Regular;
             _fixture.GetApprenticeshipResponse.DeliveryModel = DeliveryModel.FlexiJobAgency;
             var result = await _fixture.Map();
-            Assert.IsTrue(result.ShowDeliveryModel);
+            Assert.That(result.ShowDeliveryModel, Is.True);
         }
 
         [TestCase(DeliveryModel.Regular, true)]

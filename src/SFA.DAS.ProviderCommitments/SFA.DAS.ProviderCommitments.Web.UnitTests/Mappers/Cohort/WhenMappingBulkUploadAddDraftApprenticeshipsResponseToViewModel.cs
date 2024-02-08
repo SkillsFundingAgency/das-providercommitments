@@ -132,7 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyCorrectNumberOfEmployersAreMapped()
         {
-            Assert.That(_result.BulkUploadDraftApprenticeshipsViewModel.Count, Is.EqualTo(3));
+            Assert.That(_result.BulkUploadDraftApprenticeshipsViewModel, Has.Count.EqualTo(3));
         }
     }
 }

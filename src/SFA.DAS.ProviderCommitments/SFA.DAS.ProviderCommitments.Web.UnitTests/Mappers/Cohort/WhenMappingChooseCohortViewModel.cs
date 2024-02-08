@@ -187,13 +187,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void Verify_OnlyCohortsNotRelatedToChangeOfPartyAreMapped()
         {
             Assert.That(_chooseCohortViewModel.Cohorts.Count(), Is.EqualTo(4));
-            Assert.IsNull(GetCohortInReviewViewModel(7));
+            Assert.That(GetCohortInReviewViewModel(7), Is.Null);
         }
         
         public void Verify_CohortReference_Is_Mapped()
         {
             _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(4));
-
 
             Assert.That(GetCohortInReviewViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
             Assert.That(GetCohortInReviewViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));

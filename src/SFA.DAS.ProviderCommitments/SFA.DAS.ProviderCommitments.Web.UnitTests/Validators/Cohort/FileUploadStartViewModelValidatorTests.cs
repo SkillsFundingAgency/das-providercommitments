@@ -122,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = await validator.ValidateAsync(model);
 
-            Assert.IsFalse(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
 
 
@@ -143,7 +143,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = await validator.ValidateAsync(model);
 
-            Assert.IsTrue(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
 
@@ -164,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = await validator.ValidateAsync(model);
 
-            Assert.IsTrue(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
         [TestCase("CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,XRecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy")]
@@ -189,7 +189,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
             var result = await validator.ValidateAsync(model);
 
-            Assert.IsFalse(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
 
         [TestCase("CohortReff,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy")]
@@ -234,7 +234,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var result = await validator.ValidateAsync(model);
 
             //Assert
-            Assert.That(result.Errors.Count, Is.EqualTo(1));
+            Assert.That(result.Errors, Has.Count.EqualTo(1));
             Assert.That(result.ToString(), Is.EqualTo("The selected file does not contain apprentice details"));
         }
 

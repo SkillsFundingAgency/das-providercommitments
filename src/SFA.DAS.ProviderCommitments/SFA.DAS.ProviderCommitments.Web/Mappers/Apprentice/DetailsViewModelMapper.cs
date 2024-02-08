@@ -195,7 +195,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
 
-                var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count();
+                var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
                 return (optionsCount == 1, optionsCount > 0);
             }
 

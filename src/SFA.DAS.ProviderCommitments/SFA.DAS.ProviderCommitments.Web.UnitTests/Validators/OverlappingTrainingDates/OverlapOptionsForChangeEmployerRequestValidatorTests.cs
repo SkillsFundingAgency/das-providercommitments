@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             }
             else
             {
-                Assert.False(expectedValid);
+                Assert.That(expectedValid, Is.False);
             }
         }
 

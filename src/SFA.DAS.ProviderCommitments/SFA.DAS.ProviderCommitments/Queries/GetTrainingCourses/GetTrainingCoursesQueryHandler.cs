@@ -39,7 +39,6 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
                 getFramework ? GetAll(cancellationToken) : GetStandards(cancellationToken)
             };
 
-
             return Task.WhenAll(tasks)
                     .ContinueWith(allTasks => allTasks.Result.SelectMany(task => task), cancellationToken);
         }

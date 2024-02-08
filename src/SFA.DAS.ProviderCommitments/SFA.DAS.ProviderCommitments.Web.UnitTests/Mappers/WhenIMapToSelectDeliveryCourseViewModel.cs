@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenReturnsTrueWhenMultipleDeliveryModelsExist()
         {
             var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         {
             _response.DeliveryModels = new List<DeliveryModel> {DeliveryModel.Regular};
             var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
     }
 }

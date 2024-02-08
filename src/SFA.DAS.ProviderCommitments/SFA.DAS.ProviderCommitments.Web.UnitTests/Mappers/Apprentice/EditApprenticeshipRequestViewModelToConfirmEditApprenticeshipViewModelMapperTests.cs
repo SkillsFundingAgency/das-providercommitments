@@ -234,8 +234,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.False(result.ReturnToChangeVersion);
-            Assert.False(result.ReturnToChangeOption);
+            Assert.That(result.ReturnToChangeVersion, Is.False);
+            Assert.That(result.ReturnToChangeOption, Is.False);
         }
 
         [Test]
@@ -246,8 +246,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.False(result.ReturnToChangeVersion);
-            Assert.False(result.ReturnToChangeOption);
+            Assert.That(result.ReturnToChangeVersion, Is.False);
+            Assert.That(result.ReturnToChangeOption, Is.False);
         }
 
         [Test]
@@ -268,11 +268,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             fixture.source.CourseCode = "Course";
 
             var result = await fixture.Map();
-            Assert.IsNull(result.FirstName);
-            Assert.IsNull(result.LastName);
-            Assert.IsNull(result.EndMonth);
-            Assert.IsNull(result.StartMonth);
-            Assert.IsNull(result.BirthMonth);
+            Assert.That(result.FirstName, Is.Null);
+            Assert.That(result.LastName, Is.Null);
+            Assert.That(result.EndMonth, Is.Null);
+            Assert.That(result.StartMonth, Is.Null);
+            Assert.That(result.BirthMonth, Is.Null);
         }
     }
 

@@ -209,13 +209,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             //Act
             var viewModel = await mapper.Map(request);
-            
-            Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Live));
-            Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Paused));
-            Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Stopped));
-            Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.WaitingToStart));
-            Assert.IsTrue(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Completed));
-            Assert.IsFalse(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Unknown));
+
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Live), Is.True);
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Paused), Is.True);
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Stopped), Is.True);
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.WaitingToStart), Is.True);
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Completed), Is.True);
+            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Unknown), Is.False);
         }
 
         [Test, MoqAutoData]
@@ -239,8 +239,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result= await mapper.Map(webRequest);
 
             Assert.That(result.FilterModel.PageLinks.Count(x => x.IsCurrent.HasValue && x.IsCurrent.Value), Is.EqualTo(1));
-
-            Assert.IsTrue(result.FilterModel.PageLinks.Last().IsCurrent);
+            Assert.That(result.FilterModel.PageLinks.Last().IsCurrent, Is.True);
         }
     }
 }
