@@ -288,14 +288,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
+            _logger.LogWarning("ApprenticeController.ChangeEmployer GET request started.");
             var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
 
             if (viewModel is InformViewModel)
             {
+                _logger.LogWarning("ApprenticeController.ChangeEmployer redirecting to route RouteNames.ChangeEmployerInform.");
                 return RedirectToRoute(RouteNames.ChangeEmployerInform, new { request.ProviderId, request.ApprenticeshipHashedId });
             }
 
             TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
+            
+            _logger.LogWarning("ApprenticeController.ChangeEmployer redirecting to route RouteNames.ChangeEmployerDetails.");
+            
             return RedirectToRoute(RouteNames.ChangeEmployerDetails);
         }
 
