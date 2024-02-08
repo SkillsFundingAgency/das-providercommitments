@@ -63,8 +63,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object,
                     Mock.Of<ICommitmentsApiClient>(), 
                     Mock.Of<IOuterApiService>(), 
-                    Mock.Of<ICacheStorageService>(), 
-                    Mock.Of<ILogger<ApprenticeController>>());
+                    Mock.Of<ICacheStorageService>());
             }
 
             public Task<IActionResult> Act() => _sut.TrainingDates(_request);

@@ -152,7 +152,7 @@ public class WhenAddingNewPriceFixture
             .ReturnsAsync(_changeEmployerCacheItem);
 
         Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
-            _commitmentsApiMock.Object, Mock.Of<IOuterApiService>(), _cacheStorage.Object, Mock.Of<ILogger<ApprenticeController>>());
+            _commitmentsApiMock.Object, Mock.Of<IOuterApiService>(), _cacheStorage.Object);
     }
 
     public WhenAddingNewPriceFixture AndStoppedJourneyEligableForChangeOfEmployer()

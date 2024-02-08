@@ -72,8 +72,7 @@ internal class GetChangeEmployerPageFixture
             Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), 
             Mock.Of<ICommitmentsApiClient>(),
             Mock.Of<IOuterApiService>(),
-            Mock.Of<ICacheStorageService>(), 
-            Mock.Of<ILogger<ApprenticeController>>())
+            Mock.Of<ICacheStorageService>())
         {
             TempData = tempData
         };

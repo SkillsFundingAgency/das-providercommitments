@@ -34,8 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiService _outerApiService;
         private readonly ICacheStorageService _cacheStorage;
-        private readonly ILogger<ApprenticeController> _logger;
-
+        
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
         public const string ChangesUndoneFlashMessage = "Changes undone";
@@ -46,15 +45,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public ApprenticeController(IModelMapper modelMapper, Interfaces.ICookieStorageService<IndexRequest> cookieStorage,
             ICommitmentsApiClient commitmentsApiClient,
             IOuterApiService outerApiService,
-            ICacheStorageService cacheStorage,
-            ILogger<ApprenticeController> logger)
+            ICacheStorageService cacheStorage)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
             _outerApiService = outerApiService;
             _cacheStorage = cacheStorage;
-            _logger = logger;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -290,18 +287,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
         public async Task<IActionResult> ChangeEmployer(ChangeEmployerRequest request)
         {
-            _logger.LogWarning("ApprenticeController.ChangeEmployer GET request started.");
             var viewModel = await _modelMapper.Map<IChangeEmployerViewModel>(request);
 
             if (viewModel is InformViewModel)
             {
-                _logger.LogWarning("ApprenticeController.ChangeEmployer redirecting to route RouteNames.ChangeEmployerInform.");
                 return RedirectToRoute(RouteNames.ChangeEmployerInform, new { request.ProviderId, request.ApprenticeshipHashedId });
             }
 
             TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
-            
-            _logger.LogWarning("ApprenticeController.ChangeEmployer redirecting to route RouteNames.ChangeEmployerDetails.");
             
             return RedirectToRoute(RouteNames.ChangeEmployerDetails, new {request.ProviderId, request.ApprenticeshipHashedId});
         }
@@ -373,12 +366,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
-            _logger.LogWarning("ApprenticeController.Confirm POST started processing.");
-            
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-            
-            _logger.LogWarning("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonConvert.SerializeObject(request));
             
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }

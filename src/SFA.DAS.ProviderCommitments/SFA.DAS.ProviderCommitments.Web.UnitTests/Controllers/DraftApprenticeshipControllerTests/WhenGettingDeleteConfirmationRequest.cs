@@ -40,8 +40,7 @@ public class WhenGettingDeleteConfirmationRequest
             Mock.Of<IEncodingService>(),
             _providerFeatureToggle.Object,
             Mock.Of<IOuterApiService>(), 
-            Mock.Of<IAuthenticationService>(), 
-            Mock.Of<ILogger<DraftApprenticeshipController>>()
+            Mock.Of<IAuthenticationService>()
         );
     }
     

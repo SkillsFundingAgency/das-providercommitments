@@ -47,7 +47,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IAuthorizationService _authorizationService;
         private readonly IOuterApiService _outerApiService;
         private readonly IAuthenticationService _authenticationService;
-        private readonly ILogger<DraftApprenticeshipController> _logger;
 
         public const string DraftApprenticeDeleted = "Apprentice record deleted";
 
@@ -57,8 +56,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             IEncodingService encodingService,
             IAuthorizationService authorizationService,
             IOuterApiService outerApiService, 
-            IAuthenticationService authenticationService,
-            ILogger<DraftApprenticeshipController> logger)
+            IAuthenticationService authenticationService)
         {
             _mediator = mediator;
             _commitmentsApiClient = commitmentsApiClient;
@@ -67,7 +65,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _authorizationService = authorizationService;
             _outerApiService = outerApiService;
             _authenticationService = authenticationService;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -338,29 +335,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
-            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship starting processing.");
-                
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
             {
                 StoreAddDraftApprenticeshipState(model);
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
                 var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
-
-                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship, Edit, redirecting to '{Action}'.", redirectAction);
                     
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
             }
 
             var overlapResult = await HasStartDateOverlap(model);
-            
-            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship. Model: '{Model}'. OverlapResult: '{Result}'.", JsonConvert.SerializeObject(model), JsonConvert.SerializeObject(overlapResult));
-            
+                        
             if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
             {
                 StoreAddDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                
-                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship overlapping training dates found, redirecting to 'DraftApprenticeshipOverlapAlert'.");
                 
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
@@ -383,8 +372,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
-
-                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship required recognise prior learning, redirecting to 'RecognisePriorLearning'.");
                 
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
                 {
@@ -404,13 +391,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (draftApprenticeship.HasStandardOptions)
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
-                
-                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship HasStandardOptions, redirecting to 'SelectOptions'.");
-                
+
                 return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
             }
-
-            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship redirecting to 'Details'.");
             
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }
