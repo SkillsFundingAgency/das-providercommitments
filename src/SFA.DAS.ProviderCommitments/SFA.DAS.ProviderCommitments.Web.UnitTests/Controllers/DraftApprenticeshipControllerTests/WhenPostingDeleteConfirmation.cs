@@ -82,7 +82,7 @@ public class WhenPostingDeleteConfirmation
         //Assert           
         var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
         Assert.That(flashMessage, Is.Not.Null);
-        Assert.That(DraftApprenticeshipController.DraftApprenticeDeleted, Is.EqualTo(flashMessage));
+        Assert.That(flashMessage, Is.EqualTo(DraftApprenticeshipController.DraftApprenticeDeleted));
     }
 
     [Test]

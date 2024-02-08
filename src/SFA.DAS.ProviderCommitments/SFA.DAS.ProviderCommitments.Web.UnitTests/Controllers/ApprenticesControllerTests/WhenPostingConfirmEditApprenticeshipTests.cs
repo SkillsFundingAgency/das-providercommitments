@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         internal void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
         {
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.That("Details", Is.EqualTo(redirect.ActionName));
+            Assert.That(redirect.ActionName, Is.EqualTo("Details"));
             Assert.That(viewModel.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
             Assert.That(viewModel.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
         }

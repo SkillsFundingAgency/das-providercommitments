@@ -46,7 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         private readonly DraftApprenticeshipOverlapAlertRequest _draftApprenticeshipOverlapAlertRequest;
         private readonly UpdateDraftApprenticeshipApimRequest _updateDraftApprenticeshipRequest;
-        private ValidateUlnOverlapResult _validateUlnOverlapResult;
 
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
@@ -108,7 +107,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _outerApiService = new Mock<IOuterApiService>();
             var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
+            var validateUlnOverlapResult = new ValidateUlnOverlapResult();
+            commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => validateUlnOverlapResult);
 
             _mockModelMapper.Setup(x => x.Map<CreateOverlappingTrainingDateApimRequest>(It.IsAny<CreateCohortResponse>())).ReturnsAsync(() => new CreateOverlappingTrainingDateApimRequest());
             _mockModelMapper.Setup(x => x.Map<CreateCohortRequest>(It.IsAny<DraftApprenticeshipOverlapOptionViewModel>())).ReturnsAsync(() => new CreateCohortRequest());

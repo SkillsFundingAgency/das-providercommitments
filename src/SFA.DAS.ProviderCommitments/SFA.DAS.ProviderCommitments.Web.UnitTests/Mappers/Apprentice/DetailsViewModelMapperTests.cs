@@ -697,9 +697,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.IsNotNull(_fixture.Result.PendingPriceChange);
-            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.Cost, _fixture.Result.PendingPriceChange.Cost);
-            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, _fixture.Result.PendingPriceChange.EndPointAssessmentPrice);
-            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, _fixture.Result.PendingPriceChange.TrainingPrice);
+            Assert.That(_fixture.ApiResponse.PendingPriceChange.Cost, Is.EqualTo(_fixture.Result.PendingPriceChange.Cost));
+            Assert.That(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.EndPointAssessmentPrice));
+            Assert.That(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.TrainingPrice));
         }
 
         public class DetailsViewModelMapperFixture
@@ -708,7 +708,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsRequest Source { get; }
             public DetailsViewModel Result { get; private set; }
             public GetManageApprenticeshipDetailsResponse ApiResponse { get; }
-            public GetApprenticeshipResponse ApiResponseOld { get; }
             public GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails ApprenticeshipDetails { get; }
             public IEnumerable<GetManageApprenticeshipDetailsResponse.PriceEpisode> PriceEpisodes { get; }
             public IEnumerable<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate> ApprenticeshipUpdates { get; private set; }

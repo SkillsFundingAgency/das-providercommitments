@@ -83,8 +83,8 @@ public class WhenAddingNewPrice
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = status } };
         var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.NotNull(result);
-        Assert.AreEqual(RouteNames.ChangeEmployerOverlapAlert, result.RouteName);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
     }  
         
     [Test]     
@@ -93,18 +93,18 @@ public class WhenAddingNewPrice
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = {ApprenticeshipStatus = ApprenticeshipStatus.Stopped } };
         var result = await fixture.AndStoppedJourneyEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.NotNull(result);
-        Assert.AreEqual(RouteNames.ApprenticeConfirm, result.RouteName);          
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ApprenticeConfirm));          
     } 
         
     [Test]
-    public async Task PostStoppedRecordThenReturnsARedirectResultToChangeEmployerOverlapAlertIfInEligableForChangeOfEmployer()
+    public async Task PostStoppedRecordThenReturnsARedirectResultToChangeEmployerOverlapAlertIfInEligibleForChangeOfEmployer()
     {
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = ApprenticeshipStatus.Stopped } };
         var result = await fixture.AndStoppedJourneyInEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.NotNull(result);
-        Assert.AreEqual(RouteNames.ChangeEmployerOverlapAlert, result.RouteName);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
     }
 }
 

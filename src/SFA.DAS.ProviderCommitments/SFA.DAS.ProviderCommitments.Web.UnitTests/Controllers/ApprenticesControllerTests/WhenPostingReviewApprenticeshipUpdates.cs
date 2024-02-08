@@ -195,14 +195,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
                 Assert.That(flashMessage, Is.Not.Null);
-                Assert.That(ApprenticeController.ChangesApprovedFlashMessage, Is.EqualTo(flashMessage));
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesApprovedFlashMessage));
             }
 
             public void VerifyChangesRejectedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
                 Assert.That(flashMessage, Is.Not.Null);
-                Assert.That(ApprenticeController.ChangesRejectedFlashMessage, Is.EqualTo(flashMessage));
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesRejectedFlashMessage));
             }
         }
     }

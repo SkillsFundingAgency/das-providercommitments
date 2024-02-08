@@ -69,7 +69,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             private readonly ApprenticeController _sut;
             private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
-            private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
             private Mock<IAuthenticationService> AuthenticationService { get; }
 
@@ -124,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
                 Assert.That(flashMessage, Is.Not.Null);
-                Assert.That(ApprenticeController.ChangesUndoneFlashMessage, Is.EqualTo(flashMessage));
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesUndoneFlashMessage));
             }
         }
     }

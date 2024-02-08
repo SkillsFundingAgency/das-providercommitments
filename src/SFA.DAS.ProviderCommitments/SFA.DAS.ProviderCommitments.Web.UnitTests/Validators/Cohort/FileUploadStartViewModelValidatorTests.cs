@@ -34,54 +34,54 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenFileSizeIsMoreThan50kb()
+        public async Task ShouldReturnInvalidMessageWhenFileSizeIsMoreThan50kb()
         {
             _file.Setup(m => m.Length).Returns(51 * 1024); //51kb
 
             var model = new FileUploadStartViewModel { Attachment = _file.Object };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenFileTypeIsNotCsv()
+        public async Task ShouldReturnInvalidMessageWhenFileTypeIsNotCsv()
         {
             _file.Setup(m => m.FileName).Returns("APPDATA-20051030-213855.pdf");
 
             var model = new FileUploadStartViewModel { Attachment = _file.Object };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenIsEmptyFileContent()
+        public async Task ShouldReturnInvalidMessageWhenIsEmptyFileContent()
         {
             const string fileContents = "";
             var textStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContents));
             _file.Setup(m => m.OpenReadStream()).Returns(textStream);
 
             var model = new FileUploadStartViewModel { Attachment = _file.Object };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenColumnCountIsNot13()
+        public async Task ShouldReturnInvalidMessageWhenColumnCountIsNot13()
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,InvalidColumn";
 
             var file = CreateFakeFormFile(HeaderLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [Test]
-        public void ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
+        public async Task ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
         {
             const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
 
             var file = CreateFakeFormFile(HeaderLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [TestCase(
@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
-            AssertValidationResult(vm => vm.Attachment, model, false);
+            await AssertValidationResult(vm => vm.Attachment, model, false);
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
             var validator = new FileUploadStartViewModelValidator(_csvConfiguration);
-            
+
             //Act
             var result = await validator.ValidateAsync(model);
 
