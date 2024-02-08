@@ -130,12 +130,7 @@ public class Startup
             .UseRouting()
             .UseAuthorization()
             .ConfigureCustomExceptionMiddleware()
-            .UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            })
+            .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
             .UseHealthChecks("/health-check");
     }
 }
