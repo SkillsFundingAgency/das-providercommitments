@@ -282,7 +282,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             await ValidateChangeOfEmployerOverlap(viewModel);
 
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
-            return RedirectToAction(nameof(Price), request);
+            return RedirectToAction(nameof(Price), "Apprentice", request);
         }
 
         [HttpGet]
