@@ -21,7 +21,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderUrlHelper;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
@@ -44,8 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper,
-            Interfaces.ICookieStorageService<IndexRequest> cookieStorage,
+        public ApprenticeController(IModelMapper modelMapper, Interfaces.ICookieStorageService<IndexRequest> cookieStorage,
             ICommitmentsApiClient commitmentsApiClient,
             IOuterApiService outerApiService,
             ICacheStorageService cacheStorage,
@@ -371,7 +369,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             _logger.LogInformation("ApprenticeController.Confirm POST started processing.");
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-            _logger.LogInformation("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonSerializer.Serialize(request));
+            _logger.LogInformation("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonConvert.SerializeObject(request));
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 

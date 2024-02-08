@@ -1,5 +1,5 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -353,7 +353,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var overlapResult = await HasStartDateOverlap(model);
             
-            _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship. Model: '{Model}'. OverlapResult: '{Result}'.", JsonSerializer.Serialize(model), JsonSerializer.Serialize(overlapResult));
+            _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship. Model: '{Model}'. OverlapResult: '{Result}'.", JsonConvert.SerializeObject(model), JsonConvert.SerializeObject(overlapResult));
             
             if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
             {
