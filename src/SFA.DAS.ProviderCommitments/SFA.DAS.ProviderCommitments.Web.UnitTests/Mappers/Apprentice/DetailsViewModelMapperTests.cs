@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -678,6 +679,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             Assert.That(_fixture.Result.IsOnFlexiPaymentPilot, Is.EqualTo(isOnPilot));
         }
 
+        [Test]
+        public async Task And_PriceChangeDetailsIsNull_Then_PriceChangeDetailsNotReturned()
+        {
+            _fixture.WithoutPendingPriceChangePopulated();
+
+            await _fixture.Map();
+
+            Assert.IsNull(_fixture.Result.PendingPriceChange);
+        }
+
+        [Test]
+        public async Task And_PriceChangeDetailsArePopulated_Then_PriceChangeDetailsReturned()
+        {
+            _fixture.WithPendingPriceChangePopulated();
+
+            await _fixture.Map();
+
+            Assert.IsNotNull(_fixture.Result.PendingPriceChange);
+            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.Cost, _fixture.Result.PendingPriceChange.Cost);
+            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, _fixture.Result.PendingPriceChange.EndPointAssessmentPrice);
+            Assert.AreEqual(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, _fixture.Result.PendingPriceChange.TrainingPrice);
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -1028,6 +1052,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public DetailsViewModelMapperFixture WithIsOnFlexiPaymentPilotPopulated(bool isOnPilot)
             {
                 ApiResponse.Apprenticeship.IsOnFlexiPaymentPilot = isOnPilot;
+                return this;
+            }
+            public DetailsViewModelMapperFixture WithoutPendingPriceChangePopulated()
+            {
+                ApiResponse.PendingPriceChange = null;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithPendingPriceChangePopulated()
+            {
+                ApiResponse.PendingPriceChange = new GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails
+                {
+                    Cost = 12324,
+                    EndPointAssessmentPrice = 43258,
+                    TrainingPrice = 3248
+                };
+                
                 return this;
             }
         }
