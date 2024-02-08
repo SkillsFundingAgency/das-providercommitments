@@ -310,7 +310,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyNumberOfExistingApprenticesAreMappedCorrectly()
         {
-            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships.Count(), Is.EqualTo(3));
+            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships.Count, Is.EqualTo(3));
         }
 
         internal void VerifyTotalCostForFileUploadedApprenticesAreMappedCorrectly()
@@ -330,12 +330,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyFileUploadedCohortDetailsCountMappedCorrectly()
         {
-            Assert.That(_result.FileUploadCohortDetails.Count(), Is.EqualTo(2));
+            Assert.That(_result.FileUploadCohortDetails.Count, Is.EqualTo(2));
         }
 
         internal void VerifyExistingCohortDetailsCountMappedCorrectly()
         {
-            Assert.That(_result.ExistingCohortDetails.Count(), Is.EqualTo(3));
+            Assert.That(_result.ExistingCohortDetails.Count, Is.EqualTo(3));
         }
 
         internal void VerifyFileUploadedCohortDetailsMappedCorrectly()

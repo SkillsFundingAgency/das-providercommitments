@@ -72,7 +72,7 @@ public class WhenIGetTrainingCourses
             EffectiveDate = null
         }, new CancellationToken());
 
-        Assert.That(result.TrainingCourses.Length, Is.EqualTo(_standards.Count));
+        Assert.That(result.TrainingCourses, Has.Length.EqualTo(_standards.Count));
         result.TrainingCourses[0].Should().BeEquivalentTo(_standards[0]);
     }
 
@@ -97,7 +97,7 @@ public class WhenIGetTrainingCourses
             EffectiveDate = new DateTime(2016, 06, 01)
         }, new CancellationToken());
 
-        Assert.That(result.TrainingCourses.Length, Is.EqualTo(1));
+        Assert.That(result.TrainingCourses, Has.Length.EqualTo(1));
         result.TrainingCourses[0].Should().BeEquivalentTo(_standards[0]);
     }
 
@@ -110,6 +110,6 @@ public class WhenIGetTrainingCourses
             EffectiveDate = null
         }, new CancellationToken());
 
-        Assert.That(result.TrainingCourses.Length, Is.EqualTo(2));
+        Assert.That(result.TrainingCourses, Has.Length.EqualTo(2));
     }
 }

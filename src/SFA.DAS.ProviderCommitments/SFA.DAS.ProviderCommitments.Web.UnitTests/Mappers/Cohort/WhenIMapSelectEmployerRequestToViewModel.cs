@@ -222,7 +222,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
+                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
 
                 foreach (var entity in _apiResponse.AccountProviderLegalEntities)
                 {
@@ -236,7 +236,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(0));
+                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
             }
 
             internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)

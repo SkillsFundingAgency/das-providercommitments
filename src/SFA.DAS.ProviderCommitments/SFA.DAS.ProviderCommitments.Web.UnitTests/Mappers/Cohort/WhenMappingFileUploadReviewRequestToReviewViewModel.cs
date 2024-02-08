@@ -262,21 +262,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             internal void VerifyCorrectNumberOfEmployersAreMapped()
             {
-                Assert.That(_result.EmployerDetails.Count(), Is.EqualTo(2));
+                Assert.That(_result.EmployerDetails.Count, Is.EqualTo(2));
             }
 
             internal void VerifyAgreementIdIsMappedCorrectly(string agreementId)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.That(employer.Count(), Is.EqualTo(1));
+                Assert.That(employer.Count, Is.EqualTo(1));
             }
 
             public void VerifyLegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.That(employer.Count(), Is.EqualTo(1));
+                Assert.That(employer.Count, Is.EqualTo(1));
                 Assert.That(employer.First().LegalEntityName, Is.EqualTo(legalEntityName));
             }
 

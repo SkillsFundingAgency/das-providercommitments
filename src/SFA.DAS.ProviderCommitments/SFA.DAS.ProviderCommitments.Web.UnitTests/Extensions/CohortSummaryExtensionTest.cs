@@ -116,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var f = new GetCohortCardLinkViewModelTestsFixture();
             var result = f.GetCohortCardLinkViewModel(selectedCohortStatus);
 
-            f.VerifySelectedCohortStatusIsCorrect(result, selectedCohortStatus);
+            GetCohortCardLinkViewModelTestsFixture.VerifySelectedCohortStatusIsCorrect(result, selectedCohortStatus);
         }
 
         [TestCase(ProviderAgreementStatus.Agreed, true)]
@@ -187,7 +187,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                 _urlHelper.Verify(x => x.Action(It.Is<UrlActionContext>(p => p.Controller == "Cohort" && p.Action == "WithTransferSender")));
             }
 
-            public void VerifySelectedCohortStatusIsCorrect(ApprenticeshipRequestsHeaderViewModel result, CohortStatus expectedCohortStatus)
+            public static void VerifySelectedCohortStatusIsCorrect(ApprenticeshipRequestsHeaderViewModel result, CohortStatus expectedCohortStatus)
             {
                 Assert.That(result.CohortsWithTransferSender.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.WithTransferSender));
                 Assert.That(result.CohortsInDraft.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.Draft));

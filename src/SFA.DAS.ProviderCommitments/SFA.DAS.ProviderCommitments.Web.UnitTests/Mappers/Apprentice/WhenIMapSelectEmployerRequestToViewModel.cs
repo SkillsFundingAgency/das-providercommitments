@@ -255,7 +255,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(0));
+                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
             }
 
             internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)

@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = true;
             var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            _fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
 
         [Test, MoqAutoData]
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            _fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
 
         [Test, MoqAutoData]
@@ -122,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            _fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
     }
 
@@ -175,7 +175,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             Assert.That(value, Is.EqualTo(valueFromTempData.ToString()));
         }
 
-        internal void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
+        internal static void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
         {
             var redirect = result.VerifyReturnsRedirectToActionResult();
             Assert.That(redirect.ActionName, Is.EqualTo("Details"));

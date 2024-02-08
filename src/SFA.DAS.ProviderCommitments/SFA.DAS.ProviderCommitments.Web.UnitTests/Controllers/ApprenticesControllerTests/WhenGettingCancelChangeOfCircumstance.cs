@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = _fixture.CancelChangeOfCircumstance(_request);
 
-            _fixture.VerifyRedirectToDetails(result as RedirectToActionResult);
+            WhenGettingCancelChangeOfCircumstanceFixture.VerifyRedirectToDetails(result as RedirectToActionResult);
         }
     }
 
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         private Mock<ITempDataDictionary> _mockTempData;
 
-        public WhenGettingCancelChangeOfCircumstanceFixture() : base()
+        public WhenGettingCancelChangeOfCircumstanceFixture()
         {
 
             _mockTempData = new Mock<ITempDataDictionary>();
@@ -60,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockTempData.Verify(d => d.Remove("EditApprenticeshipRequestViewModel"), Times.Once);
         }
 
-        public void VerifyRedirectToDetails(RedirectToActionResult redirectResult)
+        public static void VerifyRedirectToDetails(RedirectToActionResult redirectResult)
         {
             redirectResult.ActionName.Should().Be("Details");
         }

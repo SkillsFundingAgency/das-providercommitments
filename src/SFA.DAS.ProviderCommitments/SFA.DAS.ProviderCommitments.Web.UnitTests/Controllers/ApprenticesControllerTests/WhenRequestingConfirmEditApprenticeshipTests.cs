@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task VerifyViewIsReturned()
         {
             var result = await _fixture.ConfirmEditApprenticeship();
-            _fixture.VerifyViewResultIsReturned(result);
+            WhenRequestingConfirmEditApprenticeshipFixture.VerifyViewResultIsReturned(result);
         }
     }
 
@@ -41,20 +41,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             return await Controller.ConfirmEditApprenticeship();
         }
-
-        public void VerifyValidationApiIsCalled()
-        {
-            MockCommitmentsApiClient.Verify(x => x.ValidateApprenticeshipForEdit(It.IsAny<ValidateApprenticeshipForEditRequest>(), CancellationToken.None), Times.Once());
-        }
-
+        
         internal void VerifyViewModelMapperIsCalled()
         {
             MockMapper.Verify(x => x.Map<ConfirmEditApprenticeshipViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
         }
 
-        internal void VerifyViewResultIsReturned(IActionResult result)
+        internal static void VerifyViewResultIsReturned(IActionResult result)
         {
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.That(result, Is.InstanceOf<ViewResult>());
         }
     }
 }

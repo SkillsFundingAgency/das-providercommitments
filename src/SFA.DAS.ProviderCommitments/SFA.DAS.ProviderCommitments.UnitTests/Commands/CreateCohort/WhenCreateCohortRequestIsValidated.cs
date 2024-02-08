@@ -30,7 +30,7 @@ public class WhenCreateCohortRequestIsValidated
     public void ThenAValidRequestValidatesSuccessfully()
     {
         var result = _act();
-        Assert.IsTrue(result.IsValid);
+        Assert.That(result.IsValid, Is.True);
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.ProviderId = 0;
         var result = _act();
-        Assert.IsFalse(result.IsValid);
+        Assert.That(result.IsValid, Is.False);
     }
 
     [Test]
@@ -46,7 +46,7 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.ReservationId = Guid.Empty;
         var result = _act();
-        Assert.IsFalse(result.IsValid);
+        Assert.That(result.IsValid, Is.False);
     }
 
 
@@ -55,6 +55,6 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.AccountLegalEntityId = 0;
         var result = _act();
-        Assert.IsFalse(result.IsValid);
+        Assert.That(result.IsValid, Is.False);
     }
 }

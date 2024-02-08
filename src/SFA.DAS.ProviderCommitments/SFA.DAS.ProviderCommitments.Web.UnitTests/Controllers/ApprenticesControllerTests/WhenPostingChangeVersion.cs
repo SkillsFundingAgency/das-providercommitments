@@ -62,7 +62,7 @@ public class WhenPostingChangeVersion
 
         var result = await _fixture.ChangeVersion(_viewModel);
 
-        _fixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
+        WhenPostingChangeVersionFixture.VerifyReturnToConfirmEditApprenticeship(result as RedirectToActionResult);
     }
 }
 
@@ -84,7 +84,7 @@ public class WhenPostingChangeVersionFixture : ApprenticeControllerTestFixtureBa
             .ReturnsAsync(editApprenticeshipViewModel);
     }
 
-    public void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
+    public static void VerifyReturnToConfirmEditApprenticeship(RedirectToActionResult redirectResult)
     {
         redirectResult.ActionName.Should().Be("ConfirmEditApprenticeship");
     }

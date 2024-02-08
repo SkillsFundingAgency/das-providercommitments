@@ -161,7 +161,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
             Assert.That(result.LegalEntityName, Is.EqualTo(GetApprenticeshipApiResponse.EmployerName));
-            Assert.That(result.AccountProviderLegalEntities.Count(), Is.EqualTo(filteredLegalEntities.Count()));
+            Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(filteredLegalEntities.Count()));
 
             foreach (var entity in filteredLegalEntities)
             {
@@ -175,7 +175,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
         {
-            Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
+            Assert.That(result.AccountProviderLegalEntities, Is.Empty);
         }
     }
 }

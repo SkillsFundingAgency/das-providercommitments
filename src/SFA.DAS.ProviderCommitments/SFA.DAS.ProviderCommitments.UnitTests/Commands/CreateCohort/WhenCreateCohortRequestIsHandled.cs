@@ -63,7 +63,6 @@ public class WhenCreateCohortRequestIsHandled
         _fixture.VerifyCohortReferenceWasReturned();
     }
         
-        
     [Test]
     public async Task ThenHasStandardOptionsIsTrueIfSingleApprenticeWithOptions()
     {   

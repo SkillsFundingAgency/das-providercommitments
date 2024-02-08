@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
                  .With(x => x.PriceEpisodes, _priceEpisodes)
                 .Create();
 
-            List<TrainingProgramme> TrainingProgrammes = new List<TrainingProgramme>
+            var TrainingProgrammes = new List<TrainingProgramme>
             {
                 new() { Name = "Software engineer", CourseCode = "548", ProgrammeType = ProgrammeType.Standard }
             };
@@ -148,7 +148,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
             var result = _dataLockSummariesResponse.MapDataLockSummary(_allTrainingProgrammeResponse);
 
             //Assert
-            Assert.That(result.DataLockWithCourseMismatch.Count, Is.EqualTo(1));
+            Assert.That(result.DataLockWithCourseMismatch, Has.Count.EqualTo(1));
         }
 
         [Test]
