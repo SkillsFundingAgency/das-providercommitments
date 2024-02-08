@@ -156,13 +156,11 @@
     </div>
 </div>
 
-<form method="post" asp-route="@RouteNames.ApprenticeConfirm">
+<form method="post" asp-route="@RouteNames.ApprenticeConfirm" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId" asp-route-providerId="@Model.ProviderId">
 
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="AccountLegalEntityPublicHashedId"/>
-    <input type="hidden" asp-for="ApprenticeshipHashedId"/>
     <input type="hidden" asp-for="CacheKey"/>
-    <input type="hidden" asp-for="ProviderId"/>
     
     <button id="confirm-button" type="Submit" class="govuk-button">Save and send</button>
 

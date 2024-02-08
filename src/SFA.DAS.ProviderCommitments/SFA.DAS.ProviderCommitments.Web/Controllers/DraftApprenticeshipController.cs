@@ -338,7 +338,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [ServiceFilter(typeof(UseCacheForValidationAttribute))]
         public async Task<IActionResult> AddDraftApprenticeship(string changeCourse, string changeDeliveryModel, string changePilotStatus, AddDraftApprenticeshipViewModel model)
         {
-            _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship starting processing.");
+            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship starting processing.");
                 
             if (changeCourse == "Edit" || changeDeliveryModel == "Edit" || changePilotStatus == "Edit")
             {
@@ -346,21 +346,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 var req = await _modelMapper.Map<BaseReservationsAddDraftApprenticeshipRequest>(model);
                 var redirectAction = changeCourse == "Edit" ? nameof(AddDraftApprenticeshipCourse) : changeDeliveryModel == "Edit" ? nameof(SelectDeliveryModel) : nameof(ChoosePilotStatusForDraftChange);
 
-                _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship, Edit, redirecting to '{Action}'.", redirectAction);
+                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship, Edit, redirecting to '{Action}'.", redirectAction);
                     
                 return RedirectToAction(redirectAction, "DraftApprenticeship", req);
             }
 
             var overlapResult = await HasStartDateOverlap(model);
             
-            _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship. Model: '{Model}'. OverlapResult: '{Result}'.", JsonConvert.SerializeObject(model), JsonConvert.SerializeObject(overlapResult));
+            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship. Model: '{Model}'. OverlapResult: '{Result}'.", JsonConvert.SerializeObject(model), JsonConvert.SerializeObject(overlapResult));
             
             if (overlapResult != null && overlapResult.HasStartDateOverlap && overlapResult.HasOverlapWithApprenticeshipId.HasValue)
             {
                 StoreAddDraftApprenticeshipState(model);
                 var hashedApprenticeshipId = _encodingService.Encode(overlapResult.HasOverlapWithApprenticeshipId.Value, EncodingType.ApprenticeshipId);
                 
-                _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship overlapping training dates found, redirecting to 'DraftApprenticeshipOverlapAlert'.");
+                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship overlapping training dates found, redirecting to 'DraftApprenticeshipOverlapAlert'.");
                 
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
@@ -384,7 +384,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId, EncodingType.ApprenticeshipId);
 
-                _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship required recognise prior learning, redirecting to 'RecognisePriorLearning'.");
+                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship required recognise prior learning, redirecting to 'RecognisePriorLearning'.");
                 
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new
                 {
@@ -405,12 +405,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(draftApprenticeship.Id, EncodingType.ApprenticeshipId);
                 
-                _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship HasStandardOptions, redirecting to 'SelectOptions'.");
+                _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship HasStandardOptions, redirecting to 'SelectOptions'.");
                 
                 return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, draftApprenticeshipHashedId, model.CohortReference });
             }
 
-            _logger.LogInformation("DraftApprenticeshipController.AddDraftApprenticeship redirecting to 'Details'.");
+            _logger.LogWarning("DraftApprenticeshipController.AddDraftApprenticeship redirecting to 'Details'.");
             
             return RedirectToAction("Details", "Cohort", new { model.ProviderId, model.CohortReference });
         }

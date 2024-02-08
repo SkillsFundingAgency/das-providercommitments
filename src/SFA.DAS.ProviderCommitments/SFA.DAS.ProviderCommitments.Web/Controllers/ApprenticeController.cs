@@ -366,10 +366,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Confirm(ConfirmViewModel viewModel)
         {
-            _logger.LogInformation("ApprenticeController.Confirm POST started processing.");
+            _logger.LogWarning("ApprenticeController.Confirm POST started processing.");
+            
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
-            _logger.LogInformation("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonConvert.SerializeObject(request));
+            
+            _logger.LogWarning("ApprenticeController.Confirm redirecting to RouteNames.ApprenticeSent with request '{Request}'.", JsonConvert.SerializeObject(request));
+            
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 
