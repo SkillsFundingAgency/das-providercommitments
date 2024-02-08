@@ -8,9 +8,5 @@
             ? "You have made a change of employer request. It’s now with the new employer for review."
             : "The new employer has reviewed the change of employer request. You need to review the new details.")
     </p>
-    <a class="govuk-link" href="@Url.Action("ChangeEmployer", "Apprentice", new { Model.ProviderId, apprenticeshipHashedId = Model.ApprenticeshipHashedId })">View changes</a>
-    <br/>
     <a class="govuk-link" asp-route="@RouteNames.ChangeEmployer" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId" asp-route-providerId="@Model.ProviderId">View changes</a>
-    <br/>
-    <a class="govuk-link" href="@Url.RouteUrl(RouteNames.ChangeEmployer, new { Model.ProviderId, apprenticeshipHashedId = Model.ApprenticeshipHashedId })">View changes</a>
 </div>
