@@ -301,7 +301,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             
             _logger.LogWarning("ApprenticeController.ChangeEmployer redirecting to route RouteNames.ChangeEmployerDetails.");
             
-            return RedirectToRoute(RouteNames.ChangeEmployerDetails);
+            return RedirectToRoute(RouteNames.ChangeEmployerDetails, new {request.ProviderId, request.ApprenticeshipHashedId});
         }
 
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
