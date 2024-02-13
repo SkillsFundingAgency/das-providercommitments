@@ -30,9 +30,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             //Act
             await authorizationHandler.HandleAsync(context);
 
-            //Assert
-            Assert.That(context.HasSucceeded, Is.False);
-            Assert.That(context.HasFailed, Is.True);
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(context.HasSucceeded, Is.False);
+                Assert.That(context.HasFailed, Is.True);
+            });
         }
 
         [Test, MoqAutoData]
@@ -49,9 +52,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             //Act
             await authorizationHandler.HandleAsync(context);
 
-            //Assert
-            Assert.That(context.HasSucceeded, Is.False);
-            Assert.That(context.HasFailed, Is.True);
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(context.HasSucceeded, Is.False);
+                Assert.That(context.HasFailed, Is.True);
+            });
         }
 
         [Test, MoqAutoData]
@@ -98,9 +104,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             //Act
             await authorizationHandler.HandleAsync(context);
 
-            //Assert
-            Assert.That(context.HasSucceeded, Is.True);
-            Assert.That(context.HasFailed, Is.False);
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(context.HasSucceeded, Is.True);
+                Assert.That(context.HasFailed, Is.False);
+            });
         }
     }
 }

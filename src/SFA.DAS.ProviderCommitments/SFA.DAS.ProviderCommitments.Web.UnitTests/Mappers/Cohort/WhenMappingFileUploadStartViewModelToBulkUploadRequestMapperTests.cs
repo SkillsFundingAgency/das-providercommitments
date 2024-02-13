@@ -70,8 +70,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void CommandIsReturnedWithProviderIdAndRplDataExtended()
         {
-            Assert.That(_apiRequest.RplDataExtended, Is.True);
-            Assert.That(_apiRequest.ProviderId, Is.EqualTo(_viewModel.ProviderId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_apiRequest.RplDataExtended, Is.True);
+                Assert.That(_apiRequest.ProviderId, Is.EqualTo(_viewModel.ProviderId));
+            });
         }
 
 

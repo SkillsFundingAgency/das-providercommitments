@@ -153,50 +153,70 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_OnlyTheCohorts_ReadyForReviewForProvider_Are_Mapped()
         {
-            Assert.That(_reviewViewModel.Cohorts.Count(), Is.EqualTo(3));
-
-            Assert.That(GetCohortInReviewViewModel(1), Is.Not.Null);
-            Assert.That(GetCohortInReviewViewModel(2), Is.Not.Null);
-            Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_reviewViewModel.Cohorts.Count(), Is.EqualTo(3));
+                Assert.That(GetCohortInReviewViewModel(1), Is.Not.Null);
+                Assert.That(GetCohortInReviewViewModel(2), Is.Not.Null);
+                Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
+            });
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
             _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(3));
 
-            Assert.That(GetCohortInReviewViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
-            Assert.That(GetCohortInReviewViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
-            Assert.That(GetCohortInReviewViewModel(5).CohortReference, Is.EqualTo("5_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(5).CohortReference, Is.EqualTo("5_Encoded"));
+            });
         }
 
         public void Verify_EmployerName_Is_Mapped()
         {
-            Assert.That(GetCohortInReviewViewModel(1).EmployerName, Is.EqualTo("Employer1"));
-            Assert.That(GetCohortInReviewViewModel(2).EmployerName, Is.EqualTo("Employer2"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).EmployerName, Is.EqualTo("Employer1"));
+                Assert.That(GetCohortInReviewViewModel(2).EmployerName, Is.EqualTo("Employer2"));
+            });
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.That(GetCohortInReviewViewModel(1).NumberOfApprentices, Is.EqualTo(100));
-            Assert.That(GetCohortInReviewViewModel(2).NumberOfApprentices, Is.EqualTo(200));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).NumberOfApprentices, Is.EqualTo(100));
+                Assert.That(GetCohortInReviewViewModel(2).NumberOfApprentices, Is.EqualTo(200));
+            });
         }
 
         public void Verify_LastMessage_Is_MappedCorrectly()
         {
-            Assert.That(GetCohortInReviewViewModel(1).LastMessage, Is.EqualTo("No message added"));
-            Assert.That(GetCohortInReviewViewModel(2).LastMessage, Is.EqualTo("This is latestMessage from employer"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).LastMessage, Is.EqualTo("No message added"));
+                Assert.That(GetCohortInReviewViewModel(2).LastMessage, Is.EqualTo("This is latestMessage from employer"));
+            });
         }
 
         public void Verify_DateReceived_Is_Mapped()
         {
-            Assert.That(GetCohortInReviewViewModel(1).DateReceived, Is.EqualTo(_now.AddMinutes(-10)));
-            Assert.That(GetCohortInReviewViewModel(2).DateReceived, Is.EqualTo(_now.AddMinutes(-2)));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).DateReceived, Is.EqualTo(_now.AddMinutes(-10)));
+                Assert.That(GetCohortInReviewViewModel(2).DateReceived, Is.EqualTo(_now.AddMinutes(-2)));
+            });
         }
 
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.That(_reviewViewModel.Cohorts.First().EmployerName, Is.EqualTo("1_Employer5"));
-            Assert.That(_reviewViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer2"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_reviewViewModel.Cohorts.First().EmployerName, Is.EqualTo("1_Employer5"));
+                Assert.That(_reviewViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer2"));
+            });
         }
 
         public void Verify_ProviderId_IsMapped()
@@ -206,8 +226,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
-            Assert.That(_reviewViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
-            Assert.That(_reviewViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_reviewViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
+                Assert.That(_reviewViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+            });
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()

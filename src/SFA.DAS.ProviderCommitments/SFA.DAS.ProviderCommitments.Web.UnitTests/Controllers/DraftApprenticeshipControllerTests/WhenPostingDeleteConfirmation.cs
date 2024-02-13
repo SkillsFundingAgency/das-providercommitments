@@ -124,8 +124,11 @@ public class WhenPostingDeleteConfirmation
 
         //Assert           
         var redirect = result.VerifyReturnsRedirectToActionResult();
-        Assert.That(redirect.ActionName, Is.EqualTo("Details"));
-        Assert.That(redirect.ControllerName, Is.EqualTo("Cohort"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(redirect.ActionName, Is.EqualTo("Details"));
+            Assert.That(redirect.ControllerName, Is.EqualTo("Cohort"));
+        });
     }
 
     [Test]

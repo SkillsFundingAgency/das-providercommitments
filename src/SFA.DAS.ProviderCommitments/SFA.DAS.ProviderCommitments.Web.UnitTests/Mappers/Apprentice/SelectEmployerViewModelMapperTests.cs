@@ -160,8 +160,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
         {
             var filteredLegalEntities = _apiResponse.AccountProviderLegalEntities.Where(x => x.AccountLegalEntityId != _accountLegalEntityId);
-            Assert.That(result.LegalEntityName, Is.EqualTo(GetApprenticeshipApiResponse.EmployerName));
-            Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(filteredLegalEntities.Count()));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.LegalEntityName, Is.EqualTo(GetApprenticeshipApiResponse.EmployerName));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(filteredLegalEntities.Count()));
+            });
 
             foreach (var entity in filteredLegalEntities)
             {

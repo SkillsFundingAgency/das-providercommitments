@@ -453,16 +453,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyEditDraftApprenticeshipViewModelIsSentToViewResult()
         {
-            Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
-            Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<EditDraftApprenticeshipViewModel>());
+            Assert.Multiple(() =>
+            {
+                Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
+                Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<EditDraftApprenticeshipViewModel>());
+            });
 
             return this;
         }
 
         public DraftApprenticeshipControllerTestFixture VerifyViewDraftApprenticeshipViewModelIsSentToViewResult()
         {
-            Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
-            Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<ViewDraftApprenticeshipViewModel>());
+            Assert.Multiple(() =>
+            {
+                Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
+                Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<ViewDraftApprenticeshipViewModel>());
+            });
 
             return this;
         }

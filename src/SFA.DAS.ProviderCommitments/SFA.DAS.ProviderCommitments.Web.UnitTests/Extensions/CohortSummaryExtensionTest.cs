@@ -74,37 +74,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [Test]
         public void TheCohortsInDraftIsPopulatedCorrectly()
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel();
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel();
 
-            f.VerifyCohortsInDraftIsCorrect(result);
+            fixture.VerifyCohortsInDraftIsCorrect(result);
         }
 
         [Test]
         public void TheCohortsInReviewIsPopulatedCorrectly()
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel();
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel();
 
-            f.VerifyCohortsInReviewIsCorrect(result);
+            fixture.VerifyCohortsInReviewIsCorrect(result);
         }
 
         [Test]
         public void TheCohortsWithEmployerIsPopulatedCorrectly()
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel();
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel();
 
-            f.VerifyCohortsWithEmployerIsCorrect(result);
+            fixture.VerifyCohortsWithEmployerIsCorrect(result);
         }
 
         [Test]
         public void TheCohortsWithTransferSenderIsPopulatedCorrectly()
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel();
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel();
 
-            f.VerifyCohortsWithTransferSenderIsCorrect(result);
+            fixture.VerifyCohortsWithTransferSenderIsCorrect(result);
         }
 
         [TestCase(CohortStatus.Draft)]
@@ -113,8 +113,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [TestCase(CohortStatus.WithTransferSender)]
         public void TheCohortsStatusIsSetCorrectly(CohortStatus selectedCohortStatus)
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel(selectedCohortStatus);
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel(selectedCohortStatus);
 
             GetCohortCardLinkViewModelTestsFixture.VerifySelectedCohortStatusIsCorrect(result, selectedCohortStatus);
         }
@@ -123,8 +123,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [TestCase(ProviderAgreementStatus.NotAgreed, false)]
         public void TheIsAgreementSignedIsPopulatedCorrectly(ProviderAgreementStatus providerAgreementStatus, bool expectedIsAgreementSigned)
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel(CohortStatus.Unknown, true, providerAgreementStatus);
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel(CohortStatus.Unknown, true, providerAgreementStatus);
 
             GetCohortCardLinkViewModelTestsFixture.VerifyIsSignedAgreementIsCorrect(result, expectedIsAgreementSigned);
         }
@@ -133,8 +133,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [TestCase(false, false)]
         public void TheShowDraftsIsPopulatedCorrectly(bool hasRelationship, bool expectedShowDrafts)
         {
-            var f = new GetCohortCardLinkViewModelTestsFixture();
-            var result = f.GetCohortCardLinkViewModel(CohortStatus.Unknown, hasRelationship);
+            var fixture = new GetCohortCardLinkViewModelTestsFixture();
+            var result = fixture.GetCohortCardLinkViewModel(CohortStatus.Unknown, hasRelationship);
 
             GetCohortCardLinkViewModelTestsFixture.VerifyShowDraftsIsCorrect(result, expectedShowDrafts);
         }
@@ -189,10 +189,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
 
             public static void VerifySelectedCohortStatusIsCorrect(ApprenticeshipRequestsHeaderViewModel result, CohortStatus expectedCohortStatus)
             {
-                Assert.That(result.CohortsWithTransferSender.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.WithTransferSender));
-                Assert.That(result.CohortsInDraft.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.Draft));
-                Assert.That(result.CohortsInReview.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.Review));
-                Assert.That(result.CohortsWithEmployer.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.WithEmployer));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(result.CohortsWithTransferSender.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.WithTransferSender));
+                    Assert.That(result.CohortsInDraft.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.Draft));
+                    Assert.That(result.CohortsInReview.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.Review));
+                    Assert.That(result.CohortsWithEmployer.IsSelected, Is.EqualTo(expectedCohortStatus == CohortStatus.WithEmployer));
+                });
             }
 
             public static void VerifyIsSignedAgreementIsCorrect(ApprenticeshipRequestsHeaderViewModel result, bool expectedIsAgreementSigned)

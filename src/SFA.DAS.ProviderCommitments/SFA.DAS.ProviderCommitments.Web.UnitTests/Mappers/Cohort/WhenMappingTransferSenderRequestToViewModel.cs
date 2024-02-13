@@ -147,48 +147,68 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Only_TheCohorts_WithTransferSender_Are_Mapped()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.Count(), Is.EqualTo(2));
-
-            Assert.That(GetCohortInTransferSenderViewModel(1), Is.Not.Null);
-            Assert.That(GetCohortInTransferSenderViewModel(2), Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.Count(), Is.EqualTo(2));
+                Assert.That(GetCohortInTransferSenderViewModel(1), Is.Not.Null);
+                Assert.That(GetCohortInTransferSenderViewModel(2), Is.Not.Null);
+            });
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
             _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
 
-            Assert.That(GetCohortInTransferSenderViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
-            Assert.That(GetCohortInTransferSenderViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInTransferSenderViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
+                Assert.That(GetCohortInTransferSenderViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
+            });
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.That(GetCohortInTransferSenderViewModel(1).NumberOfApprentices, Is.EqualTo(100));
-            Assert.That(GetCohortInTransferSenderViewModel(2).NumberOfApprentices, Is.EqualTo(200));
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInTransferSenderViewModel(1).NumberOfApprentices, Is.EqualTo(100));
+                Assert.That(GetCohortInTransferSenderViewModel(2).NumberOfApprentices, Is.EqualTo(200));
+            });
         }
 
         public void Verify_Ordered_By_OnDateTransferred()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            });
         }
 
         public void Verify_Ordered_By_OnDateCreated()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            });
         }
 
         public void Verify_Ordered_By_LatestMessageByEmployer()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            });
         }
 
         public void Verify_Ordered_By_LatestMessageByProvider()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            });
         }
 
         public void SetOnlyOneTransferSender()
@@ -202,21 +222,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-7)));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-10)));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-7)));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().DateSentToEmployer, Is.EqualTo(_now.AddMinutes(-10)));
+            });
         }
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
-            Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
-            Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_withTransferSenderViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
+                Assert.That(_withTransferSenderViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+            });
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture MakeTheMessagesNull()
         {
-            foreach (var c in _getCohortsResponse.Cohorts)
+            foreach (var cohortSummary in _getCohortsResponse.Cohorts)
             {
-                c.LatestMessageFromEmployer = c.LatestMessageFromProvider = null;
+                cohortSummary.LatestMessageFromEmployer = cohortSummary.LatestMessageFromProvider = null;
             }
 
             return this;

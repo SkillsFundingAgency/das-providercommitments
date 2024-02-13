@@ -29,11 +29,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenCallingResendEmailInvitationTestsFixture : ApprenticeControllerTestFixtureBase
     {
-        private ResendEmailInvitationRequest _request;
+        private readonly ResendEmailInvitationRequest _request;
         public UserInfo UserInfo;
         public Mock<IAuthenticationService> AuthenticationService { get; }
 
-        public WhenCallingResendEmailInvitationTestsFixture() : base()
+        public WhenCallingResendEmailInvitationTestsFixture()
         {
             _request = AutoFixture.Create<ResendEmailInvitationRequest>();
 
@@ -61,8 +61,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var redirect = result as RedirectToActionResult;
 
-            Assert.That(_request.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
-            Assert.That(_request.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_request.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
+                Assert.That(_request.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
+            });
         }
     }
 }

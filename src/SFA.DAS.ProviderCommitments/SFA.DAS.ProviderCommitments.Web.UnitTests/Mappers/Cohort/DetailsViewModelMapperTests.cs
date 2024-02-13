@@ -1037,29 +1037,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public static void AssertEquality(DraftApprenticeshipDto source, CohortDraftApprenticeshipViewModel result)
         {
-            Assert.That(result.Id, Is.EqualTo(source.Id));
-            Assert.That(result.FirstName, Is.EqualTo(source.FirstName));
-            Assert.That(result.LastName, Is.EqualTo(source.LastName));
-            Assert.That(result.DateOfBirth, Is.EqualTo(source.DateOfBirth));
-            Assert.That(result.Cost, Is.EqualTo(source.Cost));
-            Assert.That(result.TrainingPrice, Is.EqualTo(source.TrainingPrice));
-            Assert.That(result.EndPointAssessmentPrice, Is.EqualTo(source.EndPointAssessmentPrice));
-            Assert.That(result.EmploymentPrice, Is.EqualTo(source.EmploymentPrice));
-            Assert.That(result.EmploymentEndDate, Is.EqualTo(source.EmploymentEndDate));
-            Assert.That(result.StartDate, Is.EqualTo(source.StartDate));
-            Assert.That(result.ActualStartDate, Is.EqualTo(source.ActualStartDate));
-            Assert.That(result.EndDate, Is.EqualTo(source.EndDate));
-            Assert.That(result.DraftApprenticeshipHashedId, Is.EqualTo($"X{source.Id}X"));
-            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(source.IsOnFlexiPaymentPilot));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.EqualTo(source.Id));
+                Assert.That(result.FirstName, Is.EqualTo(source.FirstName));
+                Assert.That(result.LastName, Is.EqualTo(source.LastName));
+                Assert.That(result.DateOfBirth, Is.EqualTo(source.DateOfBirth));
+                Assert.That(result.Cost, Is.EqualTo(source.Cost));
+                Assert.That(result.TrainingPrice, Is.EqualTo(source.TrainingPrice));
+                Assert.That(result.EndPointAssessmentPrice, Is.EqualTo(source.EndPointAssessmentPrice));
+                Assert.That(result.EmploymentPrice, Is.EqualTo(source.EmploymentPrice));
+                Assert.That(result.EmploymentEndDate, Is.EqualTo(source.EmploymentEndDate));
+                Assert.That(result.StartDate, Is.EqualTo(source.StartDate));
+                Assert.That(result.ActualStartDate, Is.EqualTo(source.ActualStartDate));
+                Assert.That(result.EndDate, Is.EqualTo(source.EndDate));
+                Assert.That(result.DraftApprenticeshipHashedId, Is.EqualTo($"X{source.Id}X"));
+                Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(source.IsOnFlexiPaymentPilot));
+            });
         }
 
         public static void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)
         {
-            Assert.That(actual.Count, Is.EqualTo(expected.Count), "Expected and actual sequences are different lengths");
+            Assert.That(actual, Has.Count.EqualTo(expected.Count), "Expected and actual sequences are different lengths");
 
             for (var i = 0; i < actual.Count; i++)
             {
-                Assert.IsTrue(evaluator(expected[i], actual[i]), "Actual sequence are not in same order as expected");
+                Assert.That(evaluator(expected[i], actual[i]), Is.True, "Actual sequence are not in same order as expected");
             }
         }
 

@@ -293,10 +293,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             var viewResult = _actionResult as ViewResult;
             Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as EmployerNotifiedViewModel;
-            Assert.That(model, Is.Not.Null);
-
-            Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
-            Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
+                Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            });
             return this;
         }
 
@@ -305,9 +307,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             var viewResult = _actionResult as ViewResult;
             Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as ChangeOfEmployerNotifiedViewModel;
-            Assert.That(model, Is.Not.Null);
-
-            Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            });
             return this;
         }
 
@@ -334,10 +338,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             var viewResult = _actionResult as ViewResult;
             Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
-            Assert.That(model, Is.Not.Null);
-
-            Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
-            Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
+                Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
+            });
             return this;
         }
         

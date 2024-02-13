@@ -44,9 +44,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task ConfirmRequest_Is_Returned()
         {
             var result = await _mapper.Map(_request);
-            Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
-            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
-            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_request.ApprenticeshipHashedId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
+                Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
+                Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_request.ApprenticeshipHashedId));
+            });
         }
     }
 }

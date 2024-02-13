@@ -277,8 +277,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var viewModel = await fixture.Map();
 
-            Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
-            Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.LastName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.LastName));
+            });
         }
 
         [Test]
@@ -288,8 +291,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var viewModel = await fixture.Map();
 
-            Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
-            Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.FirstName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.FirstName));
+            });
         }
 
         [Test]
@@ -297,8 +303,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
-            Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
+            });
         }
 
         [Test]

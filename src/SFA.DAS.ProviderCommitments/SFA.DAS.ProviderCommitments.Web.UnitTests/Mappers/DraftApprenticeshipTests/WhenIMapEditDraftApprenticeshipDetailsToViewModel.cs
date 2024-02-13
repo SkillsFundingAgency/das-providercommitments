@@ -107,9 +107,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.That(result.DateOfBirth.Day, Is.EqualTo(_apiResponse.DateOfBirth?.Day));
-            Assert.That(result.DateOfBirth.Month, Is.EqualTo(_apiResponse.DateOfBirth?.Month));
-            Assert.That(result.DateOfBirth.Year, Is.EqualTo(_apiResponse.DateOfBirth?.Year));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.DateOfBirth.Day, Is.EqualTo(_apiResponse.DateOfBirth?.Day));
+                Assert.That(result.DateOfBirth.Month, Is.EqualTo(_apiResponse.DateOfBirth?.Month));
+                Assert.That(result.DateOfBirth.Year, Is.EqualTo(_apiResponse.DateOfBirth?.Year));
+            });
         }
 
         [Test]
@@ -144,25 +147,34 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.That(result.StartDate.Month, Is.EqualTo(_apiResponse.StartDate?.Month));
-            Assert.That(result.StartDate.Year, Is.EqualTo(_apiResponse.StartDate?.Year));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StartDate.Month, Is.EqualTo(_apiResponse.StartDate?.Month));
+                Assert.That(result.StartDate.Year, Is.EqualTo(_apiResponse.StartDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.That(result.ActualStartDate.Month, Is.EqualTo(_apiResponse.ActualStartDate?.Month));
-            Assert.That(result.ActualStartDate.Day, Is.EqualTo(_apiResponse.ActualStartDate?.Day));
-            Assert.That(result.ActualStartDate.Year, Is.EqualTo(_apiResponse.ActualStartDate?.Year));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.ActualStartDate.Month, Is.EqualTo(_apiResponse.ActualStartDate?.Month));
+                Assert.That(result.ActualStartDate.Day, Is.EqualTo(_apiResponse.ActualStartDate?.Day));
+                Assert.That(result.ActualStartDate.Year, Is.EqualTo(_apiResponse.ActualStartDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.That(result.EndDate.Month, Is.EqualTo(_apiResponse.EndDate?.Month));
-            Assert.That(result.EndDate.Year, Is.EqualTo(_apiResponse.EndDate?.Year));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.EndDate.Month, Is.EqualTo(_apiResponse.EndDate?.Month));
+                Assert.That(result.EndDate.Year, Is.EqualTo(_apiResponse.EndDate?.Year));
+            });
         }
 
         [Test]
@@ -235,8 +247,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.That(result.EmploymentEndDate.Month, Is.EqualTo(_apiResponse.EmploymentEndDate?.Month));
-            Assert.That(result.EmploymentEndDate.Year, Is.EqualTo(_apiResponse.EmploymentEndDate?.Year));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.EmploymentEndDate.Month, Is.EqualTo(_apiResponse.EmploymentEndDate?.Month));
+                Assert.That(result.EmploymentEndDate.Year, Is.EqualTo(_apiResponse.EmploymentEndDate?.Year));
+            });
         }
 
         [Test]

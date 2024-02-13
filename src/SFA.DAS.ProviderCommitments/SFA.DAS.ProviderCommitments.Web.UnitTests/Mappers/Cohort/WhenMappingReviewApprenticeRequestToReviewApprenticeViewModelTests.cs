@@ -337,13 +337,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var csvRecord = _csvRecords.FirstOrDefault(x => x.CohortRef == cohortRef);
             var cohortDetails = _result.FileUploadCohortDetails[0];
 
-            Assert.That($"{csvRecord.GivenNames} {csvRecord.FamilyName}", Is.EqualTo(cohortDetails.Name));
-            Assert.That(csvRecord.EmailAddress, Is.EqualTo(cohortDetails.Email));
-            Assert.That(csvRecord.ULN, Is.EqualTo(cohortDetails.ULN));
-            Assert.That(csvRecord.DateOfBirth, Is.EqualTo(dateOfBirth));
-            Assert.That(int.Parse(csvRecord.TotalPrice), Is.EqualTo(cohortDetails.Price));
-            Assert.That(_trainingProgramme.Title, Is.EqualTo(cohortDetails.TrainingCourse));
-            Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCap));
+            Assert.Multiple(() =>
+            {
+                Assert.That($"{csvRecord.GivenNames} {csvRecord.FamilyName}", Is.EqualTo(cohortDetails.Name));
+                Assert.That(csvRecord.EmailAddress, Is.EqualTo(cohortDetails.Email));
+                Assert.That(csvRecord.ULN, Is.EqualTo(cohortDetails.ULN));
+                Assert.That(csvRecord.DateOfBirth, Is.EqualTo(dateOfBirth));
+                Assert.That(int.Parse(csvRecord.TotalPrice), Is.EqualTo(cohortDetails.Price));
+                Assert.That(_trainingProgramme.Title, Is.EqualTo(cohortDetails.TrainingCourse));
+                Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCap));
+            });
 
         }
 
@@ -352,12 +355,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var existingRecord = _draftApprenticeshipsResponse.DraftApprenticeships.FirstOrDefault();
             var cohortDetails = _result.ExistingCohortDetails[0];
 
-            Assert.That($"{existingRecord.FirstName} {existingRecord.LastName}", Is.EqualTo(cohortDetails.Name));
-            Assert.That(existingRecord.Email, Is.EqualTo(cohortDetails.Email));
-            Assert.That(existingRecord.Uln, Is.EqualTo(cohortDetails.ULN));
-            Assert.That(existingRecord.Cost, Is.EqualTo(cohortDetails.Price));
-            Assert.That(existingRecord.CourseName, Is.EqualTo(cohortDetails.TrainingCourse));
-            Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCapForExistingCohort));
+            Assert.Multiple(() =>
+            {
+                Assert.That($"{existingRecord.FirstName} {existingRecord.LastName}", Is.EqualTo(cohortDetails.Name));
+                Assert.That(existingRecord.Email, Is.EqualTo(cohortDetails.Email));
+                Assert.That(existingRecord.Uln, Is.EqualTo(cohortDetails.ULN));
+                Assert.That(existingRecord.Cost, Is.EqualTo(cohortDetails.Price));
+                Assert.That(existingRecord.CourseName, Is.EqualTo(cohortDetails.TrainingCourse));
+                Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCapForExistingCohort));
+            });
         }
 
         internal void VerifyFundingTextMappedCorrectlyForFileUploadedApprentices()

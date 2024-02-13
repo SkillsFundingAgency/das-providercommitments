@@ -65,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
         }
 
         [Test]
@@ -243,31 +243,43 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 if (reverseSort)
                 {
-                    Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
-                    Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
-                    Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
+                    });
                 }
                 else
                 {
-                    Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
-                    Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
-                    Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
+                    });
                 }
             }
 
-            internal void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
             {
                 if (reverseSort)
                 {
-                    Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("CTestAccountName"));
-                    Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
-                    Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("CTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+                    });
                 }
                 else
                 {
-                    Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("ATestAccountName"));
-                    Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
-                    Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("CTestAccountName"));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("CTestAccountName"));
+                    });
                 }
             }
 

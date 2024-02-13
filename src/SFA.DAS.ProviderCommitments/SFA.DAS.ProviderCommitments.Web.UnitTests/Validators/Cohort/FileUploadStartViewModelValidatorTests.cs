@@ -13,8 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
     [TestFixture]
     public class FileUploadStartViewModelValidatorTests
     {
-        const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
-        const string RplExtendedHeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
+        private const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
+        private const string RplExtendedHeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
 
         private Mock<IFormFile> _file;
         private BulkUploadFileValidationConfiguration _csvConfiguration;
@@ -64,9 +64,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [Test]
         public async Task ShouldReturnInvalidMessageWhenColumnCountIsNot13()
         {
-            const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,InvalidColumn";
+            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,InvalidColumn";
 
-            var file = CreateFakeFormFile(HeaderLine);
+            var file = CreateFakeFormFile(headerLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
             await AssertValidationResult(vm => vm.Attachment, model, false);
@@ -75,9 +75,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         [Test]
         public async Task ShouldReturnInvalidMessageWhenColumnCountIsLessThan13()
         {
-            const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
+            const string headerLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID";
 
-            var file = CreateFakeFormFile(HeaderLine);
+            var file = CreateFakeFormFile(headerLine);
             var model = new FileUploadStartViewModel { Attachment = file };
 
             await AssertValidationResult(vm => vm.Attachment, model, false);
@@ -109,11 +109,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var builder = new StringBuilder();
             builder.AppendLine(HeaderLine);
-            for (int i = 1; i < 101; i++)
+            for (var i = 1; i < 101; i++)
             {
                 builder.AppendLine(HeaderLine);
             }
-            string fileContents = builder.ToString();
+            var fileContents = builder.ToString();
 
             var file = CreateFakeFormFile(fileContents);
             var model = new FileUploadStartViewModel { Attachment = file };
@@ -130,11 +130,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var builder = new StringBuilder();
             builder.AppendLine(HeaderLine);
-            for (int i = 1; i < 99; i++)
+            for (var i = 1; i < 99; i++)
             {
                 builder.AppendLine(HeaderLine);
             }
-            string fileContents = builder.ToString();
+            var fileContents = builder.ToString();
 
             var file = CreateFakeFormFile(fileContents);
 
@@ -151,11 +151,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var builder = new StringBuilder();
             builder.AppendLine(RplExtendedHeaderLine);
-            for (int i = 1; i < 99; i++)
+            for (var i = 1; i < 99; i++)
             {
                 builder.AppendLine(RplExtendedHeaderLine);
             }
-            string fileContents = builder.ToString();
+            var fileContents = builder.ToString();
 
             var file = CreateFakeFormFile(fileContents);
 
@@ -176,11 +176,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
         {
             var builder = new StringBuilder();
             builder.AppendLine(headerLine);
-            for (int i = 1; i < 99; i++)
+            for (var index = 1; index < 99; index++)
             {
                 builder.AppendLine(headerLine);
             }
-            string fileContents = builder.ToString();
+            var fileContents = builder.ToString();
 
             var file = CreateFakeFormFile(fileContents);
 
@@ -215,9 +215,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             //Act
             var result = await validator.ValidateAsync(model);
 
-            //Assert
-            Assert.That(result.Errors, Has.Count.EqualTo(1));
-            Assert.That(result.ToString(), Is.EqualTo("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this"));
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(result.Errors, Has.Count.EqualTo(1));
+                Assert.That(result.ToString(), Is.EqualTo("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this"));
+            });
         }
 
         [Test]
@@ -232,9 +235,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             //Act
             var result = await validator.ValidateAsync(model);
 
-            //Assert
-            Assert.That(result.Errors, Has.Count.EqualTo(1));
-            Assert.That(result.ToString(), Is.EqualTo("The selected file does not contain apprentice details"));
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(result.Errors, Has.Count.EqualTo(1));
+                Assert.That(result.ToString(), Is.EqualTo("The selected file does not contain apprentice details"));
+            });
         }
 
         private async Task AssertValidationResult<T>(Expression<Func<FileUploadStartViewModel, T>> property, FileUploadStartViewModel instance, bool expectedValid)

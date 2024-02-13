@@ -113,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value); else return false;
         }
 
-        private bool IsPaused(GetApprenticeshipResponse apprenticeship)
+        private static bool IsPaused(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.Paused;
         }
@@ -130,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     && IsWaitingToStart(apprenticeship);
         }
 
-        private bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        private static bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
         {
             return IsLive(apprenticeship) && HasHadDataLockSuccess(apprenticeship);
         }

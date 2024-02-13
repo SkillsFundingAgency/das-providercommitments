@@ -253,12 +253,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Act
             var result = await _mapper.Map(_updateDataLockRequest);
 
-            //Assert            
-            Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
-            Assert.That(_priceEpisodes.FirstOrDefault().Cost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentCost));
-            Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentEndDate));
-            Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrTotalCost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrTotalCost));
-            Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrEffectiveFromDate));
+            Assert.Multiple(() =>
+            {
+                //Assert            
+                Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
+                Assert.That(_priceEpisodes.FirstOrDefault().Cost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentCost));
+                Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().CurrentEndDate));
+                Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrTotalCost, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrTotalCost));
+                Assert.That(_dataLockSummariesResponse.DataLocksWithOnlyPriceMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.PriceDataLocks.FirstOrDefault().IlrEffectiveFromDate));
+            });
         }
 
         [Test]
@@ -287,12 +290,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Act
             var result = await _mapper.Map(_updateDataLockRequest);
 
-            //Assert            
-            Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
-            Assert.That(_apprenticeshipResponse.CourseName, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentTrainingName));
-            Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentEndDate));
-            Assert.That(_allTrainingProgrammesResponse.TrainingProgrammes.FirstOrDefault().Name, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrTrainingName));
-            Assert.That(_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrEffectiveFromDate));
+            Assert.Multiple(() =>
+            {
+                //Assert            
+                Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
+                Assert.That(_apprenticeshipResponse.CourseName, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentTrainingName));
+                Assert.That(_priceEpisodes.FirstOrDefault().ToDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().CurrentEndDate));
+                Assert.That(_allTrainingProgrammesResponse.TrainingProgrammes.FirstOrDefault().Name, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrTrainingName));
+                Assert.That(_dataLockSummariesResponse.DataLocksWithCourseMismatch.FirstOrDefault().IlrEffectiveFromDate, Is.EqualTo(result.CourseDataLocks.FirstOrDefault().IlrEffectiveFromDate));
+            });
         }
         
         [Test]
@@ -341,9 +347,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Act
             var result = await _mapper.Map(_updateDataLockRequest);
 
-            //Assert            
-            Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
-            Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
+            Assert.Multiple(() =>
+            {
+                //Assert            
+                Assert.That(result.CourseDataLocks.Count(), Is.EqualTo(1));
+                Assert.That(result.PriceDataLocks.Count(), Is.EqualTo(1));
+            });
         }
     }
 }

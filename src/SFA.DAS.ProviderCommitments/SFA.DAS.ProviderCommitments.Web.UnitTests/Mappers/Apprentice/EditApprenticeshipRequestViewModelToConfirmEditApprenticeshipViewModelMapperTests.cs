@@ -44,9 +44,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.EmployerReference, Is.Not.EqualTo(fixture.source.ProviderReference));
-            Assert.That(result.ProviderReference, Is.EqualTo(fixture.source.ProviderReference));
-            Assert.That(result.OriginalApprenticeship.ProviderReference, Is.EqualTo(fixture._apprenticeshipResponse.ProviderReference));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture._apprenticeshipResponse.EmployerReference, Is.Not.EqualTo(fixture.source.ProviderReference));
+                Assert.That(result.ProviderReference, Is.EqualTo(fixture.source.ProviderReference));
+                Assert.That(result.OriginalApprenticeship.ProviderReference, Is.EqualTo(fixture._apprenticeshipResponse.ProviderReference));
+            });
         }
 
         [Test]
@@ -56,9 +59,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.FirstName, Is.Not.EqualTo(fixture.source.FirstName));
-            Assert.That(result.FirstName, Is.EqualTo(fixture.source.FirstName));
-            Assert.That(result.OriginalApprenticeship.FirstName, Is.EqualTo(fixture._apprenticeshipResponse.FirstName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture._apprenticeshipResponse.FirstName, Is.Not.EqualTo(fixture.source.FirstName));
+                Assert.That(result.FirstName, Is.EqualTo(fixture.source.FirstName));
+                Assert.That(result.OriginalApprenticeship.FirstName, Is.EqualTo(fixture._apprenticeshipResponse.FirstName));
+            });
         }
 
         [Test]
@@ -68,9 +74,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.LastName, Is.Not.EqualTo(fixture.source.LastName));
-            Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
-            Assert.That(result.OriginalApprenticeship.LastName, Is.EqualTo(fixture._apprenticeshipResponse.LastName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture._apprenticeshipResponse.LastName, Is.Not.EqualTo(fixture.source.LastName));
+                Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
+                Assert.That(result.OriginalApprenticeship.LastName, Is.EqualTo(fixture._apprenticeshipResponse.LastName));
+            });
         }
 
         [Test]
@@ -80,9 +89,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.Email, Is.Not.EqualTo(fixture.source.Email));
-            Assert.That(result.Email, Is.EqualTo(fixture.source.Email));
-            Assert.That(result.OriginalApprenticeship.Email, Is.EqualTo(fixture._apprenticeshipResponse.Email));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture._apprenticeshipResponse.Email, Is.Not.EqualTo(fixture.source.Email));
+                Assert.That(result.Email, Is.EqualTo(fixture.source.Email));
+                Assert.That(result.OriginalApprenticeship.Email, Is.EqualTo(fixture._apprenticeshipResponse.Email));
+            });
         }
 
         [Test]
@@ -92,9 +104,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.DateOfBirth.Day, Is.Not.EqualTo(fixture.source.DateOfBirth.Day));
-            Assert.That(result.DateOfBirth, Is.EqualTo(fixture.source.DateOfBirth.Date));
-            Assert.That(result.OriginalApprenticeship.DateOfBirth, Is.EqualTo(fixture._apprenticeshipResponse.DateOfBirth));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture._apprenticeshipResponse.DateOfBirth.Day, Is.Not.EqualTo(fixture.source.DateOfBirth.Day));
+                Assert.That(result.DateOfBirth, Is.EqualTo(fixture.source.DateOfBirth.Date));
+                Assert.That(result.OriginalApprenticeship.DateOfBirth, Is.EqualTo(fixture._apprenticeshipResponse.DateOfBirth));
+            });
         }
 
         [Test]

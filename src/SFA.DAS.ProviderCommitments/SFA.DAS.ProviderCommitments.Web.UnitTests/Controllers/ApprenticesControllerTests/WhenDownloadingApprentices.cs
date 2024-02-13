@@ -40,9 +40,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualFileResult = actual as FileResult;
 
             //Assert
-            Assert.That(actualFileResult, Is.Not.Null);
-            Assert.That(actualFileResult.FileDownloadName, Is.EqualTo(expectedCsvContent.Name));
-            Assert.That(actualFileResult.ContentType, Is.EqualTo(expectedCsvContent.ContentType));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualFileResult, Is.Not.Null);
+                Assert.That(actualFileResult.FileDownloadName, Is.EqualTo(expectedCsvContent.Name));
+                Assert.That(actualFileResult.ContentType, Is.EqualTo(expectedCsvContent.ContentType));
+            });
         }
     }
 

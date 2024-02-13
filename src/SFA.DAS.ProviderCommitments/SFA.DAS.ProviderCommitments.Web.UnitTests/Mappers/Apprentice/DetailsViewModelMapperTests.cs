@@ -171,11 +171,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenRplDataIsMappedCorrectly()
         {
             await _fixture.Map();
-            Assert.That(_fixture.Result.RecognisePriorLearning, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning));
-            Assert.That(_fixture.Result.TrainingTotalHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.TrainingTotalHours));
-            Assert.That(_fixture.Result.DurationReducedByHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedByHours));
-            Assert.That(_fixture.Result.DurationReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedBy));
-            Assert.That(_fixture.Result.PriceReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.PriceReducedBy));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_fixture.Result.RecognisePriorLearning, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.RecognisePriorLearning));
+                Assert.That(_fixture.Result.TrainingTotalHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.TrainingTotalHours));
+                Assert.That(_fixture.Result.DurationReducedByHours, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedByHours));
+                Assert.That(_fixture.Result.DurationReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.DurationReducedBy));
+                Assert.That(_fixture.Result.PriceReducedBy, Is.EqualTo(_fixture.ApiResponse.Apprenticeship.PriceReducedBy));
+            });
         }
 
 
