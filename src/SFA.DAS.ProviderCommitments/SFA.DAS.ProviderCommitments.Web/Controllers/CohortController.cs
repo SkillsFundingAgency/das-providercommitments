@@ -256,7 +256,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
                     new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
             }
-            else if (response.HasStandardOptions)
+
+            if (response.HasStandardOptions)
             {
                 var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
                     EncodingType.ApprenticeshipId);
@@ -302,14 +303,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model.HasNoDeclaredStandards)
                 {
-                    return RedirectToAction("NoDeclaredStandards");
+                    return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
                 }
 
                 return Redirect(_urlHelper.ReservationsLink(
                     $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
-            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
+            return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -332,7 +333,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
-                return RedirectToAction("Review", new { viewModel.ProviderId });
+                return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
             }
 
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
@@ -348,7 +349,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.HasNoDeclaredStandards)
             {
-                return RedirectToAction("NoDeclaredStandards");
+                return RedirectToAction(nameof(NoDeclaredStandards), request.ProviderId);
             }
 
             return View(viewModel);
@@ -382,7 +383,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 }
                 case CohortDetailsOptions.ApprenticeRequest:
                 {
-                    return RedirectToAction("Review", new { viewModel.ProviderId });
+                    return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
                 }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
@@ -417,15 +418,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction(nameof(FileUploadInform), new { ProviderId = viewModel.ProviderId });
             }
-            else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
+
+            if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
             {
                 return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney),
                     new { ProviderId = viewModel.ProviderId });
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+            throw new InvalidOperationException();
         }
 
         [HttpGet]
@@ -464,7 +463,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
-            if (viewModel.HasNoDeclaredStandards) return RedirectToAction("NoDeclaredStandards");
+            if (viewModel.HasNoDeclaredStandards) return RedirectToAction(nameof(NoDeclaredStandards), request.ProviderId);
             return View(viewModel);
         }
 
@@ -648,14 +647,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
             }
-            else if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
+
+            if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
             {
                 return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+            throw new InvalidOperationException();
         }
 
         [HttpGet]
