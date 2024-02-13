@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
@@ -22,6 +24,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using SFA.DAS.ProviderUrlHelper;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectDeliveryModelViewModel;
 
@@ -35,6 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiService _outerApiService;
+        private readonly ICacheStorageService _cacheStorage;
 
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
@@ -46,12 +50,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public ApprenticeController(IModelMapper modelMapper,
             ICookieStorageService<IndexRequest> cookieStorage,
             ICommitmentsApiClient commitmentsApiClient,
-            IOuterApiService outerApiService)
+            IOuterApiService outerApiService,
+            ICacheStorageService cacheStorage)
         {
             _modelMapper = modelMapper;
             _cookieStorage = cookieStorage;
             _commitmentsApiClient = commitmentsApiClient;
             _outerApiService = outerApiService;
+            _cacheStorage = cacheStorage;
         }
 
         [Route("", Name = RouteNames.ApprenticesIndex)]
@@ -81,9 +87,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-        public async Task<IActionResult> Details(DetailsRequest request)
+        public async Task<IActionResult> Details(DetailsRequest request, bool showChangeOfPriceRequestSent = false, bool showPriceChangeCancelled = false)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
+            viewModel.ShowChangeOfPriceRequestSent = showChangeOfPriceRequestSent;
+            viewModel.ShowPriceChangeCancelled = showPriceChangeCancelled;
             return View(viewModel);
         }
 
@@ -239,11 +247,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(viewModel);
             }
 
-            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
-            {
-                return RedirectToAction("StartDate", new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
-            }
-
             return RedirectToAction(nameof(TrainingDates), new { viewModel.ProviderId, viewModel.ApprenticeshipHashedId, viewModel.CacheKey });
         }
 
@@ -257,11 +260,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 var confirmRequest = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToAction(nameof(Confirm), confirmRequest);
-            }
-            else if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
-            {
-                var startDateRequest = await _modelMapper.Map<StartDateRequest>(viewModel);
-                return RedirectToAction("StartDate", startDateRequest);
             }
 
             var request = await _modelMapper.Map<TrainingDatesRequest>(viewModel);
@@ -288,63 +286,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
             return RedirectToAction(nameof(Price), request);
-        }
-
-        [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> StartDate(StartDateRequest request)
-        {
-            var viewModel = await _modelMapper.Map<StartDateViewModel>(request);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/start-date", Name = RouteNames.ApprenticeStartDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> StartDate(StartDateViewModel viewModel)
-        {
-            if (viewModel.InEditMode)
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
-            }
-            else
-            {
-                var request = await _modelMapper.Map<EndDateRequest>(viewModel);
-                return RedirectToAction(nameof(EndDate), request);
-            }
-        }
-
-        [HttpGet]
-        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> EndDate(EndDateRequest request)
-        {
-            var viewModel = await _modelMapper.Map<EndDateViewModel>(request);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("{apprenticeshipHashedId}/change-employer/end-date", Name = RouteNames.ApprenticeEndDate)]
-        [DasAuthorize(CommitmentOperation.AccessApprenticeship)]
-        [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
-        public async Task<IActionResult> EndDate(EndDateViewModel viewModel)
-        {
-            if (viewModel.InEditMode)
-            {
-                var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
-                return RedirectToAction(nameof(Confirm), request);
-
-            }
-            else
-            {
-                var request = await _modelMapper.Map<PriceRequest>(viewModel);
-                return RedirectToAction(nameof(Price), request);
-            }
         }
 
         [HttpGet]
@@ -403,7 +344,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
         public async Task<IActionResult> Price(PriceViewModel viewModel)
         {
-            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped)
+            if (viewModel.ApprenticeshipStatus == ApprenticeshipStatus.Stopped
+                && await ValidateApprenticeshipDatesForChangeOfEmployer(viewModel.CacheKey, viewModel.ApprenticeshipId))
             {
                 var request = await _modelMapper.Map<ConfirmRequest>(viewModel);
                 return RedirectToRoute(RouteNames.ApprenticeConfirm, request);
@@ -810,6 +752,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var apimRequest = await _modelMapper.Map<ValidateChangeOfEmployerOverlapApimRequest>(model);
             await _outerApiService.ValidateChangeOfEmployerOverlap(apimRequest);
+        }
+
+        private async Task<bool> ValidateApprenticeshipDatesForChangeOfEmployer(Guid cacheKey, long apprenticeshipId)
+        {
+            var apprenticeship = await _commitmentsApiClient.GetApprenticeship(apprenticeshipId);
+            var cacheItem = await _cacheStorage.RetrieveFromCache<ChangeEmployerCacheItem>(cacheKey);
+            var startDate = new MonthYearModel(cacheItem.StartDate).Date.Value;
+
+            return startDate >= apprenticeship.StopDate.Value;
         }
     }
 }
