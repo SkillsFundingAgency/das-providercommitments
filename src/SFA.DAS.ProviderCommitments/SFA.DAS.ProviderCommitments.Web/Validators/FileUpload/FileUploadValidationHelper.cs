@@ -14,35 +14,35 @@ public class FileUploadValidationHelper
         _csvConfiguration = config;
     }
 
-    // Removing the async from these methods will cause a FluentValidation exception to be thrown due to MustAsync
-    public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
+    // The async methods have been refactored to be synchronous due to
+    // https://docs.fluentvalidation.net/en/latest/upgrading-to-11.html#sync-over-async-now-throws-an-exception
+    public void AddFileValidationRules(IRuleBuilderInitial<FileUploadStartViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder
             .Cascade(CascadeMode.Stop)
             .NotNull().WithMessage("Select a file to upload")
             .Must(CheckFileSize).WithMessage($"The selected file must be smaller than {_csvConfiguration.MaxBulkUploadFileSize}KB")
             .Must(CheckFileType).WithMessage("The selected file must be a CSV")
-            .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
-            .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
-            .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
-            .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
-            .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
-            .MustAsync(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this");
+            .Must(CheckEmptyFileContent).WithMessage("The selected file is empty")
+            .Must(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
+            .Must(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
+            .Must(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
+            .Must(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines")
+            .Must(CheckColumnHeaders).WithMessage($"One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this");
     }
 
-    // Removing the async from these methods will cause a FluentValidation exception to be thrown due to MustAsync
-    public async Task AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
+    public void AddFileValidationRules(IRuleBuilderInitial<FileUploadValidateViewModel, IFormFile> ruleBuilder)
     {
         ruleBuilder
             .Cascade(CascadeMode.Stop)
             .NotNull().WithMessage("Select a file to upload")
             .Must(CheckFileSize).WithMessage($"The selected file must be smaller than {_csvConfiguration.MaxBulkUploadFileSize}KB")
             .Must(CheckFileType).WithMessage("The selected file must be a CSV")
-            .MustAsync(CheckEmptyFileContent).WithMessage("The selected file is empty")
-            .MustAsync(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
-            .MustAsync(CheckColumnHeaders).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
-            .MustAsync(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
-            .MustAsync(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
+            .Must(CheckEmptyFileContent).WithMessage("The selected file is empty")
+            .Must(CheckFileColumnCount).WithMessage("The selected file could not be uploaded – use the template")
+            .Must(CheckColumnHeaders).WithMessage("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this")
+            .Must(CheckApprenticeContent).WithMessage("The selected file does not contain apprentice details")
+            .Must(CheckFileRowCount).WithMessage($"The selected file must be less than {_csvConfiguration.MaxAllowedFileRowCount} lines");
     }
 
     private bool CheckFileSize(IFormFile file)
@@ -56,35 +56,35 @@ public class FileUploadValidationHelper
         return file.FileName.ToLower().EndsWith(".csv");
     }
 
-    private static async Task<bool> CheckEmptyFileContent(IFormFile file, CancellationToken cancellation)
+    private static bool CheckEmptyFileContent(IFormFile file)
     {
-        var fileData = await ReadFileAsync(file);
+        var fileData = ReadFile(file);
         return fileData.rowCount > 0;
     }
 
-    private static async Task<bool> CheckApprenticeContent(IFormFile file, CancellationToken cancellation)
+    private static bool CheckApprenticeContent(IFormFile file)
     {
-        var fileData = await ReadFileAsync(file);
+        var fileData = ReadFile(file);
         return fileData.rowCount > 1;
     }
 
-    private static async Task<bool> CheckFileColumnCount(IFormFile file, CancellationToken cancellation)
+    private static bool CheckFileColumnCount(IFormFile file)
     {
         var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
         using var reader = new StringReader(fileContent);
 
-        var firstLine = await reader.ReadLineAsync();
+        var firstLine = reader.ReadLine();
         var firstlineData = firstLine.Split(',');
 
         return
             BulkUploadFileRequirements.CheckHeaderCount(firstlineData)
-            && await AllLinesHaveSameColumnCount(reader, firstlineData.Length);
+            && AllLinesHaveSameColumnCount(reader, firstlineData.Length);
 
-        static async Task<bool> AllLinesHaveSameColumnCount(StringReader reader, int count)
+        static bool AllLinesHaveSameColumnCount(TextReader reader, int count)
         {
             string line;
 
-            while ((line = await reader.ReadLineAsync()) != null)
+            while ((line = reader.ReadLine()) != null)
             {
                 if (line.Split(',').Length != count)
                 {
@@ -96,18 +96,18 @@ public class FileUploadValidationHelper
         }
     }
 
-    private async Task<bool> CheckFileRowCount(IFormFile file, CancellationToken cancellation)
+    private bool CheckFileRowCount(IFormFile file)
     {
-        var fileData = await ReadFileAsync(file);
+        var fileData = ReadFile(file);
         return fileData.rowCount <= _csvConfiguration.MaxAllowedFileRowCount;
     }
 
-    private static async Task<bool> CheckColumnHeaders(IFormFile file, CancellationToken cancellation)
+    private static bool CheckColumnHeaders(IFormFile file)
     {
-        var fileContent = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
+        var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
         using var reader = new StringReader(fileContent);
 
-        var firstLine = await reader.ReadLineAsync();
+        var firstLine = reader.ReadLine();
         var firstlineData = firstLine.Split(',');
 
         if (!BulkUploadFileRequirements.HasMinimumRequiredColumns(firstlineData))
@@ -118,17 +118,17 @@ public class FileUploadValidationHelper
         return firstlineData.Length != EXTENDEDRPLCOLUMNCOUNT || BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData);
     }
 
-    private static async Task<(string[] firstlineData, int rowCount)> ReadFileAsync(IFormFile file)
+    private static (string[] firstlineData, int rowCount) ReadFile(IFormFile file)
     {
         var firstLineData = Array.Empty<string>();
 
-        var fileContent = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
+        var fileContent = new StreamReader(file.OpenReadStream()).ReadToEnd();
         using var reader = new StringReader(fileContent);
         var lineCounter = 0;
 
         while (reader.Peek() >= 0)
         {
-            var lineContent = await reader.ReadLineAsync();
+            var lineContent =  reader.ReadLine();
             if (string.IsNullOrWhiteSpace(lineContent))
             {
                 continue;
@@ -152,12 +152,12 @@ public class FileUploadValidationHelper
         return (firstLineData, lineCounter);
     }
 
-    private static bool IsEmptyRow(string[] lineContents)
+    private static bool IsEmptyRow(IReadOnlyList<string> lineContents)
     {
         return
-            (lineContents.Length == 1 && string.IsNullOrEmpty(lineContents[0]))
+            (lineContents.Count == 1 && string.IsNullOrEmpty(lineContents[0]))
             ||
-            (lineContents.Length == 13 &&
+            (lineContents.Count == 13 &&
              string.IsNullOrWhiteSpace(lineContents[0]) &&
              string.IsNullOrWhiteSpace(lineContents[1]) &&
              string.IsNullOrWhiteSpace(lineContents[2]) &&
