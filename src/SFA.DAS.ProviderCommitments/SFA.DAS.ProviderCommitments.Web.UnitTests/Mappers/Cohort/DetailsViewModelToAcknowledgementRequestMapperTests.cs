@@ -38,10 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             await _mapper.Map(_source);
 
-            Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
-            Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
-            Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Approve));
-            Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.ApproveMessage));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
+                Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Approve));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.ApproveMessage));
+            });
         }
 
         [Test]
@@ -51,10 +54,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             await _mapper.Map(_source);
 
-            Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
-            Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
-            Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Send));
-            Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.SendMessage));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
+                Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Send));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.SendMessage));
+            });
         }
 
         [Test]

@@ -36,7 +36,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [Test]
         public void Fail_fast_when_adding_invalid_mappers()
         {
+#pragma warning disable CA1806
             Action ctor = () => new SimpleModelMapper("I am not a mapper");
+#pragma warning restore CA1806
 
             ctor.Should().Throw<Exception>().WithMessage("`System.String` is not a valid IMapper<,>");
         }

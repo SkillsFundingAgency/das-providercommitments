@@ -123,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return apprenticeship.StartDate.Value > new DateTime(_currentDateTime.UtcNow.Year, _currentDateTime.UtcNow.Month, 1);
         }
 
-        private bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+        private static bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
         {
             return isFundedByTransfer
                     && HasHadDataLockSuccess(apprenticeship)
