@@ -387,16 +387,16 @@ else
                     </td>
                     <td class="govuk-table__cell" data-label="Status">
                         <strong class="govuk-tag @apprenticeship.Status.GetDisplayClass()">
-                            @apprenticeship.Status.GetDescription()
+                            @apprenticeship.Status.GetDescription().ToUpper()
                         </strong>
                     </td>
                     <td class="govuk-table__cell" data-label="Alerts">
-                        @for (var i = 0; i < apprenticeship.Alerts.Count(); i++)
+                        @for (var index = 0; index < apprenticeship.Alerts.Count(); index++)
                         {
                             <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@apprenticeship.EncodedApprenticeshipId">
-                                @apprenticeship.Alerts.ElementAt(i)
+                                @apprenticeship.Alerts.ElementAt(index)
                             </a>
-                            @if (i < apprenticeship.Alerts.Count() - 1)
+                            @if (index < apprenticeship.Alerts.Count() - 1)
                             {
                                 <br />
                             }
