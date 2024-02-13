@@ -254,6 +254,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 Assert.That(draftApprenticeshipResult.FundingBandCap, Is.EqualTo(null));
             }
+
             fixture.CommitmentsApiClient.Verify(x => x.GetTrainingProgramme(It.IsAny<string>(), CancellationToken.None), Times.Never);
         }
 
@@ -552,8 +553,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .SetupChangeOfPartyScenario()
                 .Map();
 
-            Assert.That(result.Courses.First().DraftApprenticeships.First().FundingBandCap, Is.EqualTo(1000));
-            Assert.That(result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap, Is.EqualTo(true));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Courses.First().DraftApprenticeships.First().FundingBandCap, Is.EqualTo(1000));
+                Assert.That(result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap, Is.EqualTo(true));
+            });
         }
 
         [Test]
@@ -565,11 +569,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
             var course = result.Courses.FirstOrDefault(x => x.DraftApprenticeships.Any(y => y.Id == apprenticeshipId));
 
-            Assert.That(course, Is.Not.Null);
-            Assert.That(course.EmailOverlaps, Is.Not.Null);
-            Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(1));
-            Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(1));
-            Assert.That(course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id, Is.EqualTo(apprenticeshipId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(course, Is.Not.Null);
+                Assert.That(course.EmailOverlaps, Is.Not.Null);
+                Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(1));
+                Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(1));
+                Assert.That(course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id, Is.EqualTo(apprenticeshipId));
+            });
         }
 
         [Test]
@@ -582,12 +589,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var result = await fixture.Map();
             var course = result.Courses.FirstOrDefault();
 
-            Assert.That(course, Is.Not.Null);
-            Assert.That(course.EmailOverlaps, Is.Not.Null);
-            Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(2));
-            Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(2));
-            Assert.That(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId1).HasOverlappingEmail, Is.True);
-            Assert.That(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId2).HasOverlappingEmail, Is.True);
+           Assert.Multiple(() =>
+            {
+                Assert.That(course, Is.Not.Null);
+                Assert.That(course.EmailOverlaps, Is.Not.Null);
+                Assert.That(course.EmailOverlaps.NumberOfEmailOverlaps, Is.EqualTo(2));
+                Assert.That(course.DraftApprenticeships.Count(x => x.HasOverlappingEmail), Is.EqualTo(2));
+                Assert.That(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId1).HasOverlappingEmail, Is.True);
+                Assert.That(course.DraftApprenticeships.First(x => x.Id == apprenticeshipId2).HasOverlappingEmail, Is.True);
+            });
         }
 
         [Test]
@@ -854,7 +864,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private readonly DateTime _endFundingPeriod = new(2019, 10, 30);
 
         public DetailsRequest Source { get; }
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient{ get; }
+        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
         public GetCohortDetailsResponse CohortDetails { get; }
         public DateTime DefaultStartDate = new(2019, 10, 1);
 
@@ -874,8 +884,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .With(x => x.HasUnavailableFlexiJobAgencyDeliveryModel, false)
                 .With(x => x.HasNoDeclaredStandards, false)
                 .With(x => x.InvalidProviderCourseCodes, Enumerable.Empty<string>())
-                .With(x=>x.DraftApprenticeships, draftApprenticeships)
-                .With(x=>x.ApprenticeshipEmailOverlaps, new List<ApprenticeshipEmailOverlap>())
+                .With(x => x.DraftApprenticeships, draftApprenticeships)
+                .With(x => x.ApprenticeshipEmailOverlaps, new List<ApprenticeshipEmailOverlap>())
                 .Create();
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
@@ -894,8 +904,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _fundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000},
-                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), FundingCap = 500}
+                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, FundingCap = 1000 },
+                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), FundingCap = 500 }
             };
             var trainingProgramme = new TrainingProgramme { EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), FundingPeriods = _fundingPeriods };
 
@@ -903,7 +913,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(new GetTrainingProgrammeResponse { TrainingProgramme = trainingProgramme });
 
             CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
-               .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = false, HasOverlappingStartDate = false });
+                .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = false, HasOverlappingStartDate = false });
             CommitmentsApiClient.Setup(x => x.GetTrainingProgramme("no-course", CancellationToken.None))
                 .ThrowsAsync(new RestHttpClientException(new HttpResponseMessage(HttpStatusCode.NotFound)
                 {
@@ -913,7 +923,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _encodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
-            
+
 
             _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object, _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(), providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();
@@ -990,6 +1000,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 draftApprenticeship.CourseName = "ABC Name";
                 draftApprenticeship.DeliveryModel = DeliveryModel.Regular;
             }
+
             CohortDetails.DraftApprenticeships = draftApprenticeships;
             var first = CohortDetails.DraftApprenticeships.First();
             var last = CohortDetails.DraftApprenticeships.Last();
@@ -1007,7 +1018,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             {
                 return this;
             }
-            
+
             var propertyInfo = draftApprenticeship.GetType().GetProperty(propertyName);
             // make sure object has the property we are after
             if (propertyInfo != null)
@@ -1118,13 +1129,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public DetailsViewModelMapperTestsFixture SetTransferApprovalStatus(TransferApprovalStatus transferApprovalStatus)
         {
-            CohortDetails.TransferApprovalStatus = transferApprovalStatus; ;
+            CohortDetails.TransferApprovalStatus = transferApprovalStatus;
+            ;
             return this;
         }
 
         public DetailsViewModelMapperTestsFixture SetCohortApprovedStatus(bool isApproved)
         {
-            CohortDetails.IsApprovedByEmployer = CohortDetails.IsApprovedByProvider = isApproved; ;
+            CohortDetails.IsApprovedByEmployer = CohortDetails.IsApprovedByProvider = isApproved;
+            ;
             return this;
         }
 
@@ -1169,15 +1182,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var agreementStatus = isAgreementSigned ? ProviderAgreementStatus.Agreed : ProviderAgreementStatus.NotAgreed;
             _pasAccountApiClient
-               .Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-               .ReturnsAsync(new ProviderAgreement { Status = agreementStatus });
+                .Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ProviderAgreement { Status = agreementStatus });
             return this;
         }
 
         internal DetailsViewModelMapperTestsFixture SetUlnOverlap(bool hasOverlap)
         {
             CommitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), CancellationToken.None))
-             .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = hasOverlap, HasOverlappingStartDate = hasOverlap });
+                .ReturnsAsync(new ValidateUlnOverlapResult { HasOverlappingEndDate = hasOverlap, HasOverlappingStartDate = hasOverlap });
 
             return this;
         }

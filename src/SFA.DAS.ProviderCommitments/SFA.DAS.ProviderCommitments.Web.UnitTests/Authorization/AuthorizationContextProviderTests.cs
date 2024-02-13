@@ -30,8 +30,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetValidCohortId().GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId), Is.True);
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId), Is.True);
+            });
         }
 
         [Test]
@@ -47,9 +50,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             GetAuthorizationContext_WhenCohortIdDoesNotExist_ThenShouldReturnAuthorizationContextWithoutCohortId()
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId), Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out long cohortId), Is.False);
+            });
         }
 
         [Test]
@@ -58,8 +63,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetValidDraftApprenticeshipId().GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.Get<long?>(AuthorizationContextKeys.DraftApprenticeshipId), Is.EqualTo(_fixture.DraftApprenticeshipId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.Get<long?>(AuthorizationContextKeys.DraftApprenticeshipId), Is.EqualTo(_fixture.DraftApprenticeshipId));
+            });
         }
 
         [Test]
@@ -76,10 +84,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             GetAuthorizationContext_WhenDraftApprenticeshipIdDoesNotExist_ThenShouldReturnAuthorizationContextWithoutDraftApprenticeshipId()
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.DraftApprenticeshipId,
-                out long draftApprenticeshipId), Is.False);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.DraftApprenticeshipId,
+                    out long draftApprenticeshipId), Is.False);
+            });
         }
 
         [Test]
@@ -91,9 +102,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetUserEmail()
                 .SetValidUkprn()
                 .GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.Get<IEnumerable<string>>(AuthorizationContextKeys.Services), Is.EqualTo(_fixture.Services));
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.Get<IEnumerable<string>>(AuthorizationContextKeys.Services), Is.EqualTo(_fixture.Services));
+            });
         }
 
         [Test]
@@ -110,9 +124,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             GetAuthorizationContext_WhenUserIsUnauthenticated_ThenShouldReturnAuthorizationContextWithoutServices()
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.Services, out long services), Is.False);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet(AuthorizationContextKeys.Services, out long services), Is.False);
+            });
         }
 
         [Test]
@@ -124,10 +141,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetUserEmail()
                 .SetValidUkprn()
                 .GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
-            Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.UserEmail));
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+                Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.UserEmail));
+            });
         }
 
         [Test]
@@ -139,10 +159,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetDfEUserEmail()
                 .SetValidUkprn()
                 .GetAuthorizationContext();
-
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
-            Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.DfEUserEmail));
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+                Assert.That(authorizationContext.Get<string>("UserEmail"), Is.EqualTo(_fixture.DfEUserEmail));
+            });
         }
 
         [Test]
@@ -170,9 +193,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet("Ukprn", out long ukprn), Is.False);
-            Assert.That(authorizationContext.TryGet("UserEmail", out string userEmail), Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet("Ukprn", out long ukprn), Is.False);
+                Assert.That(authorizationContext.TryGet("UserEmail", out string userEmail), Is.False);
+            });
         }
 
         [Test]
@@ -190,8 +216,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.SetUnauthenticatedUser().GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet("UserEmail", out string userEmail), Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet("UserEmail", out string userEmail), Is.False);
+            });
         }
 
         [Test]
@@ -205,9 +234,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
                 .SetValidUkprn()
                 .GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.Get<long?>("AccountLegalEntityId"), Is.EqualTo(_fixture.AccountLegalEntityId));
-            Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.Get<long?>("AccountLegalEntityId"), Is.EqualTo(_fixture.AccountLegalEntityId));
+                Assert.That(authorizationContext.Get<long?>("Ukprn"), Is.EqualTo(_fixture.Ukprn));
+            });
         }
 
         [Test]
@@ -216,8 +248,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         {
             var authorizationContext = _fixture.GetAuthorizationContext();
 
-            Assert.That(authorizationContext, Is.Not.Null);
-            Assert.That(authorizationContext.TryGet("AccountLegalEntityId", out long accountLegalEntityId), Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationContext, Is.Not.Null);
+                Assert.That(authorizationContext.TryGet("AccountLegalEntityId", out long accountLegalEntityId), Is.False);
+            });
         }
 
         [Test]
@@ -236,14 +271,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
         private readonly Mock<IRoutingFeature> _routingFeature;
         private readonly Mock<IEncodingService> _encodingService;
         private readonly Mock<IAuthenticationService> _authenticationService;
-        private readonly AuthorizationContextProvider _authorizationContextProvider ;
-        private string _accountLegalEntityPublicHashedId ;
-       
-        private long _cohortId ;
+        private readonly AuthorizationContextProvider _authorizationContextProvider;
+        private string _accountLegalEntityPublicHashedId;
+
+        private long _cohortId;
         private string _cohortReference;
-        private string _ukprnClaimValue ;
-        private string _draftApprenticeshipHashedId ;
-        
+        private string _ukprnClaimValue;
+        private string _draftApprenticeshipHashedId;
+
         public long DraftApprenticeshipId { get; private set; }
         public List<string> Services { get; private set; }
         public long Ukprn { get; private set; }

@@ -663,10 +663,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.That(_fixture.Result.PendingPriceChange, Is.Not.Null);
-            Assert.That(_fixture.ApiResponse.PendingPriceChange.Cost, Is.EqualTo(_fixture.Result.PendingPriceChange.Cost));
-            Assert.That(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.EndPointAssessmentPrice));
-            Assert.That(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.TrainingPrice));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_fixture.Result.PendingPriceChange, Is.Not.Null);
+                Assert.That(_fixture.ApiResponse.PendingPriceChange.Cost, Is.EqualTo(_fixture.Result.PendingPriceChange.Cost));
+                Assert.That(_fixture.ApiResponse.PendingPriceChange.EndPointAssessmentPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.EndPointAssessmentPrice));
+                Assert.That(_fixture.ApiResponse.PendingPriceChange.TrainingPrice, Is.EqualTo(_fixture.Result.PendingPriceChange.TrainingPrice));
+            });
         }
 
         public class DetailsViewModelMapperFixture

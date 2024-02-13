@@ -46,9 +46,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.Multiple(() =>
             {
-                Assert.That(fixture._apprenticeshipResponse.EmployerReference, Is.Not.EqualTo(fixture.source.ProviderReference));
+                Assert.That(fixture.ApprenticeshipResponse.EmployerReference, Is.Not.EqualTo(fixture.source.ProviderReference));
                 Assert.That(result.ProviderReference, Is.EqualTo(fixture.source.ProviderReference));
-                Assert.That(result.OriginalApprenticeship.ProviderReference, Is.EqualTo(fixture._apprenticeshipResponse.ProviderReference));
+                Assert.That(result.OriginalApprenticeship.ProviderReference, Is.EqualTo(fixture.ApprenticeshipResponse.ProviderReference));
             });
         }
 
@@ -61,9 +61,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.Multiple(() =>
             {
-                Assert.That(fixture._apprenticeshipResponse.FirstName, Is.Not.EqualTo(fixture.source.FirstName));
+                Assert.That(fixture.ApprenticeshipResponse.FirstName, Is.Not.EqualTo(fixture.source.FirstName));
                 Assert.That(result.FirstName, Is.EqualTo(fixture.source.FirstName));
-                Assert.That(result.OriginalApprenticeship.FirstName, Is.EqualTo(fixture._apprenticeshipResponse.FirstName));
+                Assert.That(result.OriginalApprenticeship.FirstName, Is.EqualTo(fixture.ApprenticeshipResponse.FirstName));
             });
         }
 
@@ -76,9 +76,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.Multiple(() =>
             {
-                Assert.That(fixture._apprenticeshipResponse.LastName, Is.Not.EqualTo(fixture.source.LastName));
+                Assert.That(fixture.ApprenticeshipResponse.LastName, Is.Not.EqualTo(fixture.source.LastName));
                 Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
-                Assert.That(result.OriginalApprenticeship.LastName, Is.EqualTo(fixture._apprenticeshipResponse.LastName));
+                Assert.That(result.OriginalApprenticeship.LastName, Is.EqualTo(fixture.ApprenticeshipResponse.LastName));
             });
         }
 
@@ -91,51 +91,57 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.Multiple(() =>
             {
-                Assert.That(fixture._apprenticeshipResponse.Email, Is.Not.EqualTo(fixture.source.Email));
+                Assert.That(fixture.ApprenticeshipResponse.Email, Is.Not.EqualTo(fixture.source.Email));
                 Assert.That(result.Email, Is.EqualTo(fixture.source.Email));
-                Assert.That(result.OriginalApprenticeship.Email, Is.EqualTo(fixture._apprenticeshipResponse.Email));
+                Assert.That(result.OriginalApprenticeship.Email, Is.EqualTo(fixture.ApprenticeshipResponse.Email));
             });
         }
 
         [Test]
         public async Task WhenDobIsChanged()
         {
-            fixture.source.DateOfBirth = new CommitmentsV2.Shared.Models.DateModel(new DateTime(2000, 12, 31));
+            fixture.source.DateOfBirth = new DateModel(new DateTime(2000, 12, 31));
 
             var result = await fixture.Map();
 
             Assert.Multiple(() =>
             {
-                Assert.That(fixture._apprenticeshipResponse.DateOfBirth.Day, Is.Not.EqualTo(fixture.source.DateOfBirth.Day));
+                Assert.That(fixture.ApprenticeshipResponse.DateOfBirth.Day, Is.Not.EqualTo(fixture.source.DateOfBirth.Day));
                 Assert.That(result.DateOfBirth, Is.EqualTo(fixture.source.DateOfBirth.Date));
-                Assert.That(result.OriginalApprenticeship.DateOfBirth, Is.EqualTo(fixture._apprenticeshipResponse.DateOfBirth));
+                Assert.That(result.OriginalApprenticeship.DateOfBirth, Is.EqualTo(fixture.ApprenticeshipResponse.DateOfBirth));
             });
         }
 
         [Test]
         public async Task WhenStartDateIsChanged()
         {
-            var newStartDate = fixture._apprenticeshipResponse.StartDate.Value.AddMonths(-1);
-            fixture.source.StartDate = new CommitmentsV2.Shared.Models.MonthYearModel(newStartDate.Month.ToString() + newStartDate.Year);
+            var newStartDate = fixture.ApprenticeshipResponse.StartDate.Value.AddMonths(-1);
+            fixture.source.StartDate = new MonthYearModel(newStartDate.Month.ToString() + newStartDate.Year);
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.StartDate, Is.Not.EqualTo(fixture.source.StartDate.Date));
-            Assert.That(result.StartDate, Is.EqualTo(fixture.source.StartDate.Date));
-            Assert.That(result.OriginalApprenticeship.StartDate, Is.EqualTo(fixture._apprenticeshipResponse.StartDate));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.StartDate, Is.Not.EqualTo(fixture.source.StartDate.Date));
+                Assert.That(result.StartDate, Is.EqualTo(fixture.source.StartDate.Date));
+                Assert.That(result.OriginalApprenticeship.StartDate, Is.EqualTo(fixture.ApprenticeshipResponse.StartDate));
+            });
         }
 
         [Test]
         public async Task WhenEndDateIsChanged()
         {
-            var newEndDate = fixture._apprenticeshipResponse.EndDate.AddMonths(-1);
-            fixture.source.EndDate = new CommitmentsV2.Shared.Models.MonthYearModel(newEndDate.Month.ToString() + newEndDate.Year);
+            var newEndDate = fixture.ApprenticeshipResponse.EndDate.AddMonths(-1);
+            fixture.source.EndDate = new MonthYearModel(newEndDate.Month.ToString() + newEndDate.Year);
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.EndDate, Is.Not.EqualTo(fixture.source.EndDate.Date));
-            Assert.That(result.EndDate, Is.EqualTo(fixture.source.EndDate.Date));
-            Assert.That(result.OriginalApprenticeship.EndDate, Is.EqualTo(fixture._apprenticeshipResponse.EndDate));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.EndDate, Is.Not.EqualTo(fixture.source.EndDate.Date));
+                Assert.That(result.EndDate, Is.EqualTo(fixture.source.EndDate.Date));
+                Assert.That(result.OriginalApprenticeship.EndDate, Is.EqualTo(fixture.ApprenticeshipResponse.EndDate));
+            });
         }
 
         [Test]
@@ -145,23 +151,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.CourseCode, Is.Not.EqualTo(fixture.source.CourseCode));
-            Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
-            Assert.That(result.OriginalApprenticeship.CourseCode, Is.EqualTo(fixture._apprenticeshipResponse.CourseCode));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.CourseCode, Is.Not.EqualTo(fixture.source.CourseCode));
+                Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
+                Assert.That(result.OriginalApprenticeship.CourseCode, Is.EqualTo(fixture.ApprenticeshipResponse.CourseCode));
+            });
         }
 
         [TestCase(DeliveryModel.Regular, DeliveryModel.PortableFlexiJob)]
         [TestCase(DeliveryModel.PortableFlexiJob, DeliveryModel.Regular)]
         public async Task WhenDeliveryModelIsChanged(DeliveryModel original, DeliveryModel changedTo)
         {
-            fixture._apprenticeshipResponse.DeliveryModel = original;
+            fixture.ApprenticeshipResponse.DeliveryModel = original;
             fixture.source.DeliveryModel = changedTo;
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.DeliveryModel, Is.Not.EqualTo(fixture.source.DeliveryModel));
-            Assert.That(result.DeliveryModel, Is.EqualTo(fixture.source.DeliveryModel));
-            Assert.That(result.OriginalApprenticeship.DeliveryModel, Is.EqualTo(fixture._apprenticeshipResponse.DeliveryModel));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.DeliveryModel, Is.Not.EqualTo(fixture.source.DeliveryModel));
+                Assert.That(result.DeliveryModel, Is.EqualTo(fixture.source.DeliveryModel));
+                Assert.That(result.OriginalApprenticeship.DeliveryModel, Is.EqualTo(fixture.ApprenticeshipResponse.DeliveryModel));
+            });
         }
 
         [Test]
@@ -171,9 +183,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.EmploymentEndDate, Is.Not.EqualTo(fixture.source.EmploymentEndDate.Date));
-            Assert.That(result.EmploymentEndDate, Is.EqualTo(fixture.source.EmploymentEndDate.Date));
-            Assert.That(result.OriginalApprenticeship.EmploymentEndDate, Is.EqualTo(fixture._apprenticeshipResponse.EmploymentEndDate));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.EmploymentEndDate, Is.Not.EqualTo(fixture.source.EmploymentEndDate.Date));
+                Assert.That(result.EmploymentEndDate, Is.EqualTo(fixture.source.EmploymentEndDate.Date));
+                Assert.That(result.OriginalApprenticeship.EmploymentEndDate, Is.EqualTo(fixture.ApprenticeshipResponse.EmploymentEndDate));
+            });
         }
 
         [Test]
@@ -183,9 +198,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.EmploymentPrice, Is.Not.EqualTo(fixture.source.EmploymentPrice));
-            Assert.That(result.EmploymentPrice, Is.EqualTo(fixture.source.EmploymentPrice));
-            Assert.That(result.OriginalApprenticeship.EmploymentPrice, Is.EqualTo(fixture._apprenticeshipResponse.EmploymentPrice));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.EmploymentPrice, Is.Not.EqualTo(fixture.source.EmploymentPrice));
+                Assert.That(result.EmploymentPrice, Is.EqualTo(fixture.source.EmploymentPrice));
+                Assert.That(result.OriginalApprenticeship.EmploymentPrice, Is.EqualTo(fixture.ApprenticeshipResponse.EmploymentPrice));
+            });
         }
 
         [Test]
@@ -195,8 +213,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
-            Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
+                Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
+            });
         }
 
         [Test]
@@ -206,8 +227,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
-            Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.Version, Is.Not.EqualTo(fixture.source.Version));
+                Assert.That(result.Version, Is.EqualTo(fixture.source.Version));
+            });
         }
 
         [Test]
@@ -217,8 +241,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(fixture._apprenticeshipResponse.Option, Is.Not.EqualTo(fixture.source.Option));
-            Assert.That(result.Option, Is.EqualTo(fixture.source.Option));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fixture.ApprenticeshipResponse.Option, Is.Not.EqualTo(fixture.source.Option));
+                Assert.That(result.Option, Is.EqualTo(fixture.source.Option));
+            });
         }
 
         [Test]
@@ -249,8 +276,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(result.ReturnToChangeVersion, Is.False);
-            Assert.That(result.ReturnToChangeOption, Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.ReturnToChangeVersion, Is.False);
+                Assert.That(result.ReturnToChangeOption, Is.False);
+            });
         }
 
         [Test]
@@ -261,8 +291,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(result.ReturnToChangeVersion, Is.False);
-            Assert.That(result.ReturnToChangeOption, Is.False);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.ReturnToChangeVersion, Is.False);
+                Assert.That(result.ReturnToChangeOption, Is.False);
+            });
         }
 
         [Test]
@@ -273,8 +306,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var result = await fixture.Map();
 
-            Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
-            Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.LastName, Is.EqualTo(fixture.source.LastName));
+                Assert.That(result.CourseCode, Is.EqualTo(fixture.source.CourseCode));
+            });
         }
 
         [Test]
@@ -283,32 +319,33 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             fixture.source.CourseCode = "Course";
 
             var result = await fixture.Map();
-            Assert.That(result.FirstName, Is.Null);
-            Assert.That(result.LastName, Is.Null);
-            Assert.That(result.EndMonth, Is.Null);
-            Assert.That(result.StartMonth, Is.Null);
-            Assert.That(result.BirthMonth, Is.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.FirstName, Is.Null);
+                Assert.That(result.LastName, Is.Null);
+                Assert.That(result.EndMonth, Is.Null);
+                Assert.That(result.StartMonth, Is.Null);
+                Assert.That(result.BirthMonth, Is.Null);
+            });
         }
     }
 
     public class ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapperTestsFixture
     {
-        private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        private readonly Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
 
-        public GetApprenticeshipResponse _apprenticeshipResponse;
-        private GetPriceEpisodesResponse _priceEpisodeResponse;
+        public readonly GetApprenticeshipResponse ApprenticeshipResponse;
+        private readonly GetPriceEpisodesResponse _priceEpisodeResponse;
 
-        private ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapper _mapper;
-        private TrainingProgramme _standardSummary;
-        private Mock<IEncodingService> _encodingService;
-        public EditApprenticeshipRequestViewModel source;
-        public ConfirmEditApprenticeshipViewModel resultViewModl;
+        private readonly ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapper _mapper;
+        public readonly EditApprenticeshipRequestViewModel source;
+        private ConfirmEditApprenticeshipViewModel _resultViewModel;
 
         public ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapperTestsFixture()
         {
             var autoFixture = new Fixture();
 
-            _apprenticeshipResponse = autoFixture.Build<GetApprenticeshipResponse>()
+            ApprenticeshipResponse = autoFixture.Build<GetApprenticeshipResponse>()
                 .With(x => x.CourseCode, "ABC")
                 .With(x => x.Version, "1.0")
                 .With(x => x.StartDate, new DateTime(2020, 1, 1))
@@ -319,51 +356,51 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .Create();
 
             source = new EditApprenticeshipRequestViewModel();
-            source.ApprenticeshipId = _apprenticeshipResponse.Id;
-            source.CourseCode = _apprenticeshipResponse.CourseCode;
-            source.FirstName = _apprenticeshipResponse.FirstName;
-            source.LastName = _apprenticeshipResponse.LastName;
-            source.Email = _apprenticeshipResponse.Email;
-            source.DateOfBirth = new DateModel(_apprenticeshipResponse.DateOfBirth);
+            source.ApprenticeshipId = ApprenticeshipResponse.Id;
+            source.CourseCode = ApprenticeshipResponse.CourseCode;
+            source.FirstName = ApprenticeshipResponse.FirstName;
+            source.LastName = ApprenticeshipResponse.LastName;
+            source.Email = ApprenticeshipResponse.Email;
+            source.DateOfBirth = new DateModel(ApprenticeshipResponse.DateOfBirth);
             source.Cost = 1000;
-            source.ProviderReference = _apprenticeshipResponse.ProviderReference;
-            source.StartDate = new MonthYearModel(_apprenticeshipResponse.StartDate.Value.Month.ToString() + _apprenticeshipResponse.StartDate.Value.Year);
-            source.EndDate = new MonthYearModel(_apprenticeshipResponse.EndDate.Month.ToString() + _apprenticeshipResponse.EndDate.Year);
+            source.ProviderReference = ApprenticeshipResponse.ProviderReference;
+            source.StartDate = new MonthYearModel(ApprenticeshipResponse.StartDate.Value.Month.ToString() + ApprenticeshipResponse.StartDate.Value.Year);
+            source.EndDate = new MonthYearModel(ApprenticeshipResponse.EndDate.Month.ToString() + ApprenticeshipResponse.EndDate.Year);
 
             _priceEpisodeResponse = autoFixture.Build<GetPriceEpisodesResponse>()
                 .With(x => x.PriceEpisodes, new List<PriceEpisode> {
                     new() { Cost = 1000, FromDate = DateTime.Now.AddMonths(-1), ToDate = null}})
                 .Create();
 
-            _standardSummary = autoFixture.Create<TrainingProgramme>();
-            _standardSummary.EffectiveFrom = new DateTime(2018, 1, 1);
-            _standardSummary.EffectiveTo = new DateTime(2022, 1, 1);
-            _standardSummary.FundingPeriods = SetPriceBand(1000);
+            var standardSummary = autoFixture.Create<TrainingProgramme>();
+            standardSummary.EffectiveFrom = new DateTime(2018, 1, 1);
+            standardSummary.EffectiveTo = new DateTime(2022, 1, 1);
+            standardSummary.FundingPeriods = SetPriceBand(1000);
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
             _mockCommitmentsApiClient.Setup(c => c.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_apprenticeshipResponse);
+                .ReturnsAsync(ApprenticeshipResponse);
             _mockCommitmentsApiClient.Setup(c => c.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_priceEpisodeResponse);
             _mockCommitmentsApiClient.Setup(t => t.GetTrainingProgrammeVersionByCourseCodeAndVersion(source.CourseCode, source.Version, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetTrainingProgrammeResponse
                 {
-                    TrainingProgramme = _standardSummary
+                    TrainingProgramme = standardSummary
                 });
 
-            _encodingService = new Mock<IEncodingService>();
-            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.ApprenticeshipId)).Returns(_apprenticeshipResponse.Id);
-            _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.AccountId)).Returns(_apprenticeshipResponse.EmployerAccountId);
+            var encodingService = new Mock<IEncodingService>();
+            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.ApprenticeshipId)).Returns(ApprenticeshipResponse.Id);
+            encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.AccountId)).Returns(ApprenticeshipResponse.EmployerAccountId);
 
-            _mapper = new ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapper(_mockCommitmentsApiClient.Object, _encodingService.Object);
+            _mapper = new ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapper(_mockCommitmentsApiClient.Object, encodingService.Object);
         }
 
         public ConfirmEditApprenticeshipRequestToConfirmEditViewModelMapperTestsFixture WithPortableFlexiJob()
         {
-            _apprenticeshipResponse.DeliveryModel = DeliveryModel.PortableFlexiJob;
-            _apprenticeshipResponse.EmploymentPrice = 500;
-            _apprenticeshipResponse.EmploymentEndDate = new DateTime(2020,09,01);
+            ApprenticeshipResponse.DeliveryModel = DeliveryModel.PortableFlexiJob;
+            ApprenticeshipResponse.EmploymentPrice = 500;
+            ApprenticeshipResponse.EmploymentEndDate = new DateTime(2020,09,01);
             return this;
         }
 
@@ -382,18 +419,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public async Task<ConfirmEditApprenticeshipViewModel> Map()
         {
-            resultViewModl = await _mapper.Map(source);
-            return resultViewModl;
+            _resultViewModel = await _mapper.Map(source);
+            return _resultViewModel;
         }
 
         internal void VerifyCommitmentApiIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(c => c.GetApprenticeship(_apprenticeshipResponse.Id, It.IsAny<CancellationToken>()), Times.Once());
+            _mockCommitmentsApiClient.Verify(c => c.GetApprenticeship(ApprenticeshipResponse.Id, It.IsAny<CancellationToken>()), Times.Once());
         }
 
         internal void VerifyPriceEpisodeIsCalled()
         {
-            _mockCommitmentsApiClient.Verify(c => c.GetPriceEpisodes(_apprenticeshipResponse.Id, It.IsAny<CancellationToken>()), Times.Once());
+            _mockCommitmentsApiClient.Verify(c => c.GetPriceEpisodes(ApprenticeshipResponse.Id, It.IsAny<CancellationToken>()), Times.Once());
         }
     }
 }
