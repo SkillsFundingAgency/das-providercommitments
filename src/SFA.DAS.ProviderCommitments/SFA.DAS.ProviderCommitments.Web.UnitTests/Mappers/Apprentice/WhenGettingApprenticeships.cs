@@ -210,12 +210,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Act
             var viewModel = await mapper.Map(request);
 
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Live), Is.True);
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Paused), Is.True);
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Stopped), Is.True);
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.WaitingToStart), Is.True);
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Completed), Is.True);
-            Assert.That(viewModel.FilterModel.StatusFilters.Contains(ApprenticeshipStatus.Unknown), Is.False);
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Contain(ApprenticeshipStatus.Live));
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Contain(ApprenticeshipStatus.Paused));
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Contain(ApprenticeshipStatus.Stopped));
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Contain(ApprenticeshipStatus.WaitingToStart));
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Contain(ApprenticeshipStatus.Completed));
+            Assert.That(viewModel.FilterModel.StatusFilters, Does.Not.Contain(ApprenticeshipStatus.Unknown));
         }
 
         [Test, MoqAutoData]

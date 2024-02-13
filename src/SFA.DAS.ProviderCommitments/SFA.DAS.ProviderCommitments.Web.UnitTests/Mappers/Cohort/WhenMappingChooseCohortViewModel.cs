@@ -179,7 +179,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void Verify_Cohorts_InDraftWithProvider_Are_Mapped()
         {
             Assert.That(_chooseCohortViewModel.Cohorts.Count(), Is.EqualTo(4));
-
             Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
             Assert.That(GetCohortInReviewViewModel(6), Is.Not.Null);
         }
@@ -248,7 +247,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             Assert.That(_chooseCohortViewModel.Cohorts.Last().Status, Is.EqualTo("Draft"));
         }
 
-        private GetCohortsResponse CreateGetCohortsResponse()
+        private static GetCohortsResponse CreateGetCohortsResponse()
         {
             IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
             {

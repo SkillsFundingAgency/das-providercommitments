@@ -6,7 +6,6 @@ using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.Validators;
 using SFA.DAS.ProviderCommitments.Web.Validators.FileUpload;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
@@ -217,7 +216,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var result = await validator.ValidateAsync(model);
 
             //Assert
-            Assert.That(result.Errors.Count, Is.EqualTo(1));
+            Assert.That(result.Errors, Has.Count.EqualTo(1));
             Assert.That(result.ToString(), Is.EqualTo("One or more Field Names in the header row are invalid. You need to refer to the template or specification to correct this"));
         }
 

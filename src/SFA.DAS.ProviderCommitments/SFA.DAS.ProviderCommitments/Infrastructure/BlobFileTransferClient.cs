@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
                 var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
 
-                _logger.LogDebug($"Uploading {path} to blob storage {ContainerName}");
+                _logger.LogDebug("Uploading {path} to blob storage {ContainerName}", path, ContainerName);
 
                 var array = System.Text.Encoding.ASCII.GetBytes(fileContents);
                 using (var stream = new MemoryStream(array))
@@ -35,37 +35,37 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                     await blob.UploadFromStreamAsync(stream);
                 }
 
-                _logger.LogDebug($"Uploaded {path} to blob storage {ContainerName}");
+                _logger.LogDebug("Uploaded {path} to blob storage {ContainerName}", path, ContainerName);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error uploading file {path}");
+                _logger.LogError(ex, "Error uploading file {path}", path);
                 throw;
             }
         }
 
         public async Task<string> DownloadFile(string path)
         {
-            var fileContent = string.Empty;
+            string fileContent;
 
             try
             {
-                _logger.LogDebug($"Downloading {path} from blob storage {ContainerName}");
+                _logger.LogDebug("Downloading {path} from blob storage {ContainerName}", path, ContainerName);
 
                 using (var stream = new MemoryStream())
                 {
                     await Download(path, stream);
                     using (var reader = new StreamReader(stream, System.Text.Encoding.UTF8))
                     {
-                        fileContent = reader.ReadToEnd();
+                        fileContent = await reader.ReadToEndAsync();
                     }
                 }
 
-                _logger.LogDebug($"Downloaded {path} from blob storage {ContainerName}");
+                _logger.LogDebug("Downloaded {path} from blob storage {ContainerName}", path, ContainerName);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error downloading {path} from blob storage {ContainerName}");
+                _logger.LogError(ex, "Error downloading {path} from blob storage {ContainerName}", path, ContainerName);
                 throw;
             }
 
@@ -79,20 +79,20 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
                 var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
 
-                _logger.LogDebug($"Deleting {path} from blob storage {ContainerName}");
+                _logger.LogDebug("Deleting {path} from blob storage {ContainerName}", path, ContainerName);
 
                 await blob.DeleteAsync();
 
-                _logger.LogDebug($"Deleted {path} from blob storage {ContainerName}");
+                _logger.LogDebug("Deleted {path} from blob storage {ContainerName}", path, ContainerName);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error deleting {path} from blob storage {ContainerName}");
+                _logger.LogError(ex, "Error deleting {path} from blob storage {ContainerName}", path, ContainerName);
                 throw;
             }
         }
 
-        private async Task Download(string path, MemoryStream stream)
+        private async Task Download(string path, Stream stream)
         {
             var directory = await GetCloudBlobDirectory(GetBlobDirectoryName(path));
             var blob = directory.GetBlockBlobReference(GetBlobFileName(path));
@@ -102,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 await blob.DownloadToStreamAsync(memoryStream);
 
                 memoryStream.Position = 0;
-                memoryStream.CopyTo(stream);
+                await memoryStream.CopyToAsync(stream);
                 stream.Position = 0;
             }
         }

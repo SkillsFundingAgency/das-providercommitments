@@ -42,7 +42,7 @@
 
         private static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
         {
-            Assert.IsTrue(result is TExpectedResponseType, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
+            Assert.That(result is TExpectedResponseType, Is.True, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
             return (TExpectedResponseType)result;
         }
 
@@ -54,7 +54,7 @@
 
         public static TExpectedModel WithModel<TExpectedModel>(this ViewResult result) where TExpectedModel : class
         {
-            Assert.IsInstanceOf<TExpectedModel>(result.Model);
+            Assert.That(result.Model, Is.InstanceOf<TExpectedModel>());
             return result.Model as TExpectedModel;
         }
     }

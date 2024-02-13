@@ -350,9 +350,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _apprenticeshipResponse.EmploymentPrice = 500;
             _apprenticeshipResponse.EmploymentEndDate = new DateTime(2020,09,01);
             return this;
-        } 
+        }
 
-        public List<TrainingProgrammeFundingPeriod> SetPriceBand(int fundingCap)
+        private static List<TrainingProgrammeFundingPeriod> SetPriceBand(int fundingCap)
         {
             return new List<TrainingProgrammeFundingPeriod>
             {

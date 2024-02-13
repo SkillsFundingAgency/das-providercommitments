@@ -47,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
         }
 
         [TestCase(true)]
@@ -108,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_ListOfEmployersIsEmpty(result);
+            SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
         }
 
 
@@ -222,7 +222,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
 
                 foreach (var entity in _apiResponse.AccountProviderLegalEntities)
                 {
@@ -234,12 +234,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 }
             }
 
-            public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+            public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(0));
+                Assert.That(result.AccountProviderLegalEntities, Is.Empty);
             }
 
-            internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
             {
                 if (reverseSort)
                 {
@@ -273,13 +273,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
                 Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("ATestAccountName"));
             }
 
             internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities.Count, Is.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
                 Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
             }
         }

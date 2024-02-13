@@ -2,12 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -548,7 +542,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task CheckEmailIsMappedCorrectly()
         {
-            var email = "a@a.com";
+            const string email = "a@a.com";
             _fixture.WithEmailPopulated(email);
 
             var result = await _fixture.Map();
@@ -641,7 +635,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [Test]
         public async Task CheckIsOnFlexiPaymentPilotIsMappedCorrectly()
         {
-            var isOnPilot = true;
+            const bool isOnPilot = true;
             _fixture.WithIsOnFlexiPaymentPilotPopulated(isOnPilot);
 
             var result = await _fixture.Map();

@@ -357,7 +357,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public T VerifyResult<T>()
         {
-            Assert.IsInstanceOf<T>(_result);
+            Assert.That(_result, Is.InstanceOf<T>());
             return (T) _result;
         }
     }

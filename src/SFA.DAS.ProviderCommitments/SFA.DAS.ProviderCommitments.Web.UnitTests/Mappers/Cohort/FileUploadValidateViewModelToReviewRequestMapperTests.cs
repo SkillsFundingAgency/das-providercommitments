@@ -1,13 +1,9 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Http;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {

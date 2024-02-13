@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _fixture.WithParty(withParty);
             await _fixture.GetDetails();
-            Assert.IsTrue(_fixture.IsViewModelReadOnly());
+            Assert.That(_fixture.IsViewModelReadOnly(), Is.True);
         }
 
         public class WhenGettingDetailsTestFixture
@@ -89,7 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 var viewResult = (ViewResult)_result;
                 var viewModel = viewResult.Model;
 
-                Assert.IsInstanceOf<DetailsViewModel>(viewModel);
+                Assert.That(viewModel, Is.InstanceOf<DetailsViewModel>());
                 var detailsViewModel = (DetailsViewModel)viewModel;
 
                 Assert.That(detailsViewModel, Is.EqualTo(_viewModel));

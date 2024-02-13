@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort

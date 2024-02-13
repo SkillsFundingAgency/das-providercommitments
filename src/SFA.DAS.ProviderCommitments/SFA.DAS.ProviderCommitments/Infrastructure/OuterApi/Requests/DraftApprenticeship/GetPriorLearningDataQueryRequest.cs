@@ -1,7 +1,4 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
 {
     public class GetPriorLearningDataQueryRequest : IGetApiRequest
     {

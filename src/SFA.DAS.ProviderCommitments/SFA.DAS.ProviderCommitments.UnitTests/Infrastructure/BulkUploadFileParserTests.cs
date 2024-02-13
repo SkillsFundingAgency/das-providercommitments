@@ -15,21 +15,21 @@ public class BulkUploadFileParserTests
 {
     private const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy,TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction";
 
-    BulkUploadFileParser _bulkUploadFileParser;
-    string _fileContent;
-    long _proivderId;
-    IFormFile _file;
+    private BulkUploadFileParser _bulkUploadFileParser;
+    private string _fileContent;
+    private long _providerId;
+    private IFormFile _file;
 
     [SetUp]
     public void Setup()
     {
-        _proivderId = 1;
+        _providerId = 1;
         _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
         _fileContent = Headers + Environment.NewLine +
                        "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,1000,TRUE,100" + Environment.NewLine +
                        "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,,,,";
 
-        var fileName = "test.pdf";
+        const string fileName = "test.pdf";
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
         writer.Write(_fileContent);
@@ -42,7 +42,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void CohortRefParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().CohortRef, Is.EqualTo("P9DD4P"));
         Assert.That(result.Last().CohortRef, Is.EqualTo("P9DD4P"));
     }
@@ -50,7 +50,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void AgreementIdParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().AgreementId, Is.EqualTo("XEGE5X"));
         Assert.That(result.Last().AgreementId, Is.EqualTo("XEGE5X"));
     }
@@ -58,7 +58,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void ULNParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().ULN, Is.EqualTo("8652496047"));
         Assert.That(result.Last().ULN, Is.EqualTo("6347198567"));
     }
@@ -66,7 +66,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void FamilyNameParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().FamilyName, Is.EqualTo("Jones"));
         Assert.That(result.Last().FamilyName, Is.EqualTo("Smith"));
     }
@@ -74,16 +74,15 @@ public class BulkUploadFileParserTests
     [Test]
     public void GivenNamesParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().GivenNames, Is.EqualTo("Louise"));
         Assert.That(result.Last().GivenNames, Is.EqualTo("Mark"));
     }
 
-
     [Test]
     public void DateOfBirthParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().DateOfBirth, Is.EqualTo("2000-01-01"));
         Assert.That(result.Last().DateOfBirth, Is.EqualTo("2002-02-02"));
     }
@@ -91,7 +90,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void EmailAddressParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().EmailAddress, Is.EqualTo("abc1@abc.com"));
         Assert.That(result.Last().EmailAddress, Is.EqualTo("abc2@abc.com"));
     }
@@ -99,7 +98,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void StdCodeParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().StdCode, Is.EqualTo("57"));
         Assert.That(result.Last().StdCode, Is.EqualTo("58"));
     }
@@ -107,7 +106,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void StartDateParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().StartDate, Is.EqualTo("2017-05-03"));
         Assert.That(result.Last().StartDate, Is.EqualTo("2018-06-01"));
     }
@@ -115,7 +114,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void EndDateParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().EndDate, Is.EqualTo("2018-05"));
         Assert.That(result.Last().EndDate, Is.EqualTo("2019-06"));
     }
@@ -123,7 +122,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void TotalPriceParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().TotalPrice, Is.EqualTo("2000"));
         Assert.That(result.Last().TotalPrice, Is.EqualTo("3333"));
     }
@@ -131,7 +130,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void ProviderRefIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().ProviderRef, Is.EqualTo("CX768"));
         Assert.That(result.Last().ProviderRef, Is.EqualTo("ZB657"));
     }
@@ -139,7 +138,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void RecognisePriorLearningIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().RecognisePriorLearning, Is.EqualTo("true"));
         Assert.That(result.Last().RecognisePriorLearning, Is.EqualTo("false"));
     }
@@ -147,7 +146,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void DurationReducedByLearningIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().DurationReducedBy, Is.EqualTo("12"));
         Assert.That(result.Last().DurationReducedBy, Is.EqualTo(""));
     }
@@ -155,7 +154,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void PriceReducedByLearningIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().PriceReducedBy, Is.EqualTo("99"));
         Assert.That(result.Last().PriceReducedBy, Is.EqualTo(""));
     }
@@ -163,7 +162,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void TrainingTotalHoursIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().TrainingTotalHours, Is.EqualTo("1000"));
         Assert.That(result.Last().TrainingTotalHours, Is.EqualTo(""));
     }
@@ -171,7 +170,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void IsDurationReducedByRPLIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().IsDurationReducedByRPL, Is.EqualTo("TRUE"));
         Assert.That(result.Last().IsDurationReducedByRPL, Is.EqualTo(""));
     }
@@ -179,7 +178,7 @@ public class BulkUploadFileParserTests
     [Test]
     public void TrainingHoursReductionIsParsedCorrectly()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         Assert.That(result.First().TrainingHoursReduction, Is.EqualTo("100"));
         Assert.That(result.Last().TrainingHoursReduction, Is.EqualTo(""));
     }
@@ -187,8 +186,8 @@ public class BulkUploadFileParserTests
     [Test]
     public void CorrectNumberOfApprenticeshipMapped()
     {
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-        Assert.That(result.Count, Is.EqualTo(2));
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Has.Count.EqualTo(2));
     }
 
     [Test]
@@ -203,8 +202,8 @@ public class BulkUploadFileParserTests
 
         CreateFile();
 
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-        Assert.That(result.Count, Is.EqualTo(2));
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Has.Count.EqualTo(2));
     }
 
     [Test]
@@ -217,8 +216,8 @@ public class BulkUploadFileParserTests
 
         CreateFile();
 
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-        Assert.That(result.Count, Is.EqualTo(0));
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Is.Empty);
     }
 
     [Test]
@@ -230,7 +229,7 @@ public class BulkUploadFileParserTests
 
         CreateFile();
 
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         result.Should().ContainEquivalentOf(new
         {
             CohortRef = "P9DD4P",
@@ -249,7 +248,7 @@ public class BulkUploadFileParserTests
 
         CreateFile();
 
-        var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
         result.Should().ContainEquivalentOf(new
         {
             CohortRef = "P9DD4P",
@@ -261,7 +260,7 @@ public class BulkUploadFileParserTests
 
     private void CreateFile()
     {
-        var fileName = "test.pdf";
+        const string fileName = "test.pdf";
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
         writer.Write(_fileContent);

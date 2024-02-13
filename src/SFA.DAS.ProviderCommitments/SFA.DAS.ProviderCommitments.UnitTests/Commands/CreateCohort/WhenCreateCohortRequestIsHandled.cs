@@ -219,7 +219,7 @@ public class WhenCreateCohortRequestIsHandled
             }
             else
             {
-                Assert.IsNull(_result.DraftApprenticeshipId);
+                Assert.That(_result.DraftApprenticeshipId, Is.Null);
             }
                 
             return this;

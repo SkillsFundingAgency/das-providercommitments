@@ -43,13 +43,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 FileUploadLogId = 1235
             };
             _viewModel = fixture.Build<FileUploadReviewViewModel>().Create();
-               
+
             _cacheService = new Mock<ICacheService>();
             _cacheService.Setup(x => x.GetFromCache<FileUploadCacheModel>(_viewModel.CacheRequestId.ToString())).ReturnsAsync(() => _fileUploadCacheModel);
 
             _cohortResult = fixture.Create<GetCohortResult>();
             _outerApiService = new Mock<IOuterApiService>();
-            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
+            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) =>
+            {
+                _cohortResult.TransferSenderId = cohortId + 1;
+                return _cohortResult;
+            });
 
             _encodingService = new Mock<IEncodingService>();
             _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(1);
@@ -66,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void CommandIsReturnedWithProviderIdAndRplDataExtended()
         {
-            Assert.IsTrue(_apiRequest.RplDataExtended);
+            Assert.That(_apiRequest.RplDataExtended, Is.True);
             Assert.That(_apiRequest.ProviderId, Is.EqualTo(_viewModel.ProviderId));
         }
 
@@ -193,7 +197,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             foreach (var record in _csvRecords)
             {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
-                Assert.That(result.TransferSenderId, Is.EqualTo((result.CohortId +1)));
+                Assert.That(result.TransferSenderId, Is.EqualTo((result.CohortId + 1)));
             }
         }
 
@@ -201,7 +205,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyRecognisePriorLearningIsMapped()
         {
             foreach (var record in _csvRecords)
-        {
+            {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.That(result.RecognisePriorLearningAsString, Is.EqualTo(record.RecognisePriorLearning));
             }
@@ -211,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyDurationReducedBy()
         {
             foreach (var record in _csvRecords)
-{
+            {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.That(result.DurationReducedByAsString, Is.EqualTo(record.DurationReducedBy));
             }
@@ -221,7 +225,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public void VerifyPriceReducedBy()
         {
             foreach (var record in _csvRecords)
-{
+            {
                 var result = _apiRequest.BulkUploadDraftApprenticeships.First(x => x.Uln == record.ULN);
                 Assert.That(result.PriceReducedByAsString, Is.EqualTo(record.PriceReducedBy));
             }

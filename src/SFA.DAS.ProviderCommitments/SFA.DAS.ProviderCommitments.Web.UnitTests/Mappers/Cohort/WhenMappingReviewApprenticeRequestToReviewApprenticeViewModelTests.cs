@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -10,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -121,7 +116,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyExistingCohortDetailsCountMappedCorrectly();
         }
 
-
         [Test]
         public async Task FileUploadedCohortDetailsMappedCorrectly()
         {
@@ -229,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture
     {
-        private Fixture fixture;
+        private readonly Fixture _fixture;
         private ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
         private FileUploadReviewApprenticeRequest _request;
         private Mock<IEncodingService> _encodingService;
@@ -240,19 +234,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private FileUploadReviewApprenticeViewModel _result;
         private List<GetStandardFundingResponse> _fundingPeriods;
         private GetStandardResponse _trainingProgramme;
-        private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
-        private DateTime _endFundingPeriod = new DateTime(2020, 10, 30);
-        public DateTime DefaultStartDate = new DateTime(2020, 10, 1);
+        private DateTime _startFundingPeriod = new(2020, 10, 1);
+        private DateTime _endFundingPeriod = new(2020, 10, 30);
+        public DateTime DefaultStartDate = new(2020, 10, 1);
         private const string cohortRef = "Cohort4";
         private const string dateOfBirth = "2001-09-05";
         private GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
 
         public WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture()
         {
-            fixture = new Fixture();
+            _fixture = new Fixture();
             _csvRecords = new List<CsvRecord>();
 
-            _request = fixture.Create<FileUploadReviewApprenticeRequest>();
+            _request = _fixture.Create<FileUploadReviewApprenticeRequest>();
             _fileUploadCacheModel = new FileUploadCacheModel
             {
                 CsvRecords = _csvRecords,
@@ -260,10 +254,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             };
 
             _request.CohortRef = cohortRef;
-            var accountLegalEntityEmployer = fixture.Build<GetAccountLegalEntityQueryResult>()
+            var accountLegalEntityEmployer = _fixture.Build<GetAccountLegalEntityQueryResult>()
                 .With(x => x.LegalEntityName, "EmployerName").Create();
 
-            var cohort = fixture.Build<GetCohortResult>()
+            var cohort = _fixture.Build<GetCohortResult>()
                 .With(x => x.LatestMessageCreatedByEmployer, "A message").Create();
 
             _encodingService = new Mock<IEncodingService>();
@@ -275,8 +269,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _fundingPeriods = new List<GetStandardFundingResponse>
             {
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
+                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
+                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
             };
             _trainingProgramme = new GetStandardResponse { Title = "CourseName", EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), ApprenticeshipFunding = _fundingPeriods };
 
@@ -310,7 +304,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyNumberOfExistingApprenticesAreMappedCorrectly()
         {
-            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships.Count, Is.EqualTo(3));
+            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships, Has.Count.EqualTo(3));
         }
 
         internal void VerifyTotalCostForFileUploadedApprenticesAreMappedCorrectly()
@@ -330,17 +324,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void VerifyFileUploadedCohortDetailsCountMappedCorrectly()
         {
-            Assert.That(_result.FileUploadCohortDetails.Count, Is.EqualTo(2));
+            Assert.That(_result.FileUploadCohortDetails, Has.Count.EqualTo(2));
         }
 
         internal void VerifyExistingCohortDetailsCountMappedCorrectly()
         {
-            Assert.That(_result.ExistingCohortDetails.Count, Is.EqualTo(3));
+            Assert.That(_result.ExistingCohortDetails, Has.Count.EqualTo(3));
         }
 
         internal void VerifyFileUploadedCohortDetailsMappedCorrectly()
         {
-            var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
+            var csvRecord = _csvRecords.FirstOrDefault(x => x.CohortRef == cohortRef);
             var cohortDetails = _result.FileUploadCohortDetails[0];
 
             Assert.That($"{csvRecord.GivenNames} {csvRecord.FamilyName}", Is.EqualTo(cohortDetails.Name));
@@ -384,14 +378,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
         {           
             // This will create three csv records, with total cost of 1000 (2 * 500)
-            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
+            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
 
             return this;
         }
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithPriceDefaultData(int numberOfApprentices)
         {
-            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
+            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
 
             return this;
         }   
@@ -415,7 +409,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                 .With(x => x.Cost, 100)
                 .With(x => x.CourseName, "CourseName")
                 .With(x => x.StartDate, DefaultStartDate)
@@ -432,7 +426,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                .With(x => x.Cost, 3000)
                .With(x => x.CourseName, "CourseName")
                .With(x => x.StartDate, DefaultStartDate)

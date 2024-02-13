@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 // even if the version has options
                 var apprenticeshipStopped = data.Apprenticeship.Status == ApprenticeshipStatus.Completed || data.Apprenticeship.Status == ApprenticeshipStatus.Stopped;
                 var preDateStandardVersioning = apprenticeshipStopped && data.Apprenticeship.Option == null;
-                (var singleOption, var hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
+                var (singleOption, hasOptions) = await HasOptions(data.Apprenticeship.StandardUId);
                 var showOptions = hasOptions && !preDateStandardVersioning;
 
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.SingleOrDefault(x =>
@@ -129,7 +129,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
         }
 
-        private PendingPriceChange Map(GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails priceChangeDetails)
+        private static PendingPriceChange Map(GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails priceChangeDetails)
         {
             if (priceChangeDetails == null)
             {
@@ -178,28 +178,28 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         private async Task<bool> HasNewerVersions(GetManageApprenticeshipDetailsResponse.ApprenticeshipDetails apprenticeship)
         {
-            if (apprenticeship.StandardUId != null)
+            if (apprenticeship.StandardUId == null)
             {
-                var newerVersions = await _commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
-
-                if (newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Count() > 0)
-                    return true;
+                return false;
             }
+            
+            var newerVersions = await _commitmentApiClient.GetNewerTrainingProgrammeVersions(apprenticeship.StandardUId);
 
-            return false;
+            return newerVersions?.NewerVersions != null && newerVersions.NewerVersions.Any();
         }
 
         private async Task<(bool singleOption, bool hasOptions)> HasOptions(string standardUId)
         {
-            if (!string.IsNullOrEmpty(standardUId))
+            if (string.IsNullOrEmpty(standardUId))
             {
-                var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
-
-                var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
-                return (optionsCount == 1, optionsCount > 0);
+                return (false, false);
             }
+            
+            var trainingProgrammeVersionResponse = await _commitmentApiClient.GetTrainingProgrammeVersionByStandardUId(standardUId);
 
-            return (false,false);
+            var optionsCount = trainingProgrammeVersionResponse?.TrainingProgramme?.Options.Count;
+            return (optionsCount == 1, optionsCount > 0);
+
         }
     }
 }
