@@ -20,7 +20,8 @@
     <div class="govuk-grid-column-two-thirds">
         @if (Model.ShowActionRequiredBanner)
         {
-            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner">
                 <div class="govuk-notification-banner__header">
                     <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                         Action required
@@ -33,7 +34,8 @@
                             <partial name="DetailsPartials/_PendingEmployerUpdateBanner" />
                         }
 
-                        @if (Model.HasPendingChangeOfPartyRequest && Model.PendingChangeOfPartyRequestWithParty == Party.Provider)
+                        @if (Model.HasPendingChangeOfPartyRequest && Model.PendingChangeOfPartyRequestWithParty ==
+                       Party.Provider)
                         {
                             <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
                         }
@@ -77,10 +79,15 @@
         }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
-        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
+        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) &&
+        Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus ==
+        DetailsViewModel.DataLockSummaryStatus.None)
         {
             <div class="govuk-inset-text">
-                This apprentice is part of the simplified payments pilot. To change these details, you must contact <a class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We aim to respond within 2 working days.
+                This apprentice is part of the simplified payments pilot. To change these details, you must contact <a
+                    class="govuk-link"
+                    href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We
+                aim to respond within 2 working days.
             </div>
         }
 
@@ -99,19 +106,21 @@
                 </summary>
                 <div class="govuk-details__text">
                     <p class="govuk-body">
-                        If your apprentice has not confirmed their apprenticeship details within the 14 day deadline, you should:
+                        If your apprentice has not confirmed their apprenticeship details within the 14 day deadline, you
+                        should:
 
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>
-                                contact the apprentice to complete their apprenticeship confirmation
-                            </li>
-                            <div>
-                                Or
-                            </div>
-                            <li>
-                                contact the apprentice’s employer to ask the apprentice to complete their apprenticeship confirmation
-                            </li>
-                        </ul>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            contact the apprentice to complete their apprenticeship confirmation
+                        </li>
+                        <div>
+                            Or
+                        </div>
+                        <li>
+                            contact the apprentice’s employer to ask the apprentice to complete their apprenticeship
+                            confirmation
+                        </li>
+                    </ul>
                     </p>
                 </div>
             </details>
@@ -123,24 +132,28 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">
+                        @Model.Status.GetDescription()</td>
                 </tr>
                 @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>
-                        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.IsOnFlexiPaymentPilotDisplay</td>
+                        <td id="apprenticeship-payment-pilot" class="govuk-table__cell das-table-cell-width-55">
+                            @Model.IsOnFlexiPaymentPilotDisplay</td>
                     </tr>
                 }
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice confirmation</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.ConfirmationStatus.ToDisplayString()</td>
+                    <td id="apprenticeship-confirmation" class="govuk-table__cell das-table-cell-width-55">
+                        @Model.ConfirmationStatus.ToDisplayString()</td>
                 </tr>
                 @if (Model.Status == ApprenticeshipStatus.Stopped)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Stop applies from</th>
-                        <td id="apprenticeship-stop-date" class="govuk-table__cell">@Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
+                        <td id="apprenticeship-stop-date" class="govuk-table__cell">
+                            @Model.StopDate.Value.ToGdsFormatWithoutDay()</td>
                     </tr>
                 }
 
@@ -148,7 +161,8 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship pause date</th>
-                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()</td>
+                        <td id="apprenticeship-pause-date" class="govuk-table__cell">@Model.PauseDate.Value.ToGdsFormat()
+                        </td>
                     </tr>
                 }
 
@@ -156,7 +170,8 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Completion payment month</th>
-                        <td id="apprenticeship-completed-date" class="govuk-table__cell">@Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
+                        <td id="apprenticeship-completed-date" class="govuk-table__cell">
+                            @Model.CompletionDate.Value.ToGdsFormatWithoutDay()</td>
                     </tr>
                 }
             </tbody>
@@ -174,11 +189,13 @@
                 <tr class="govuk-table__row">
 
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
-                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer</td>
+                    <td id="apprenticeship-employer" class="govuk-table__cell das-table-cell-width-40">@Model.Employer
+                    </td>
                     <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                         @if (Model.ShowChangeEmployerLink && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
                         {
-                            <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
+                            <a id="change-employer-link" class="govuk-link"
+                                href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">Change</a>
                         }
                     </td>
                 </tr>
@@ -205,7 +222,8 @@
                                 <p class="govuk-body">
                                     @if (employer.ShowLink)
                                     {
-                                        <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail" asp-route-apprenticeshipHashedId="@employer.HashedApprenticeshipId">
+                                        <a class="govuk-link" asp-route="@RouteNames.ApprenticeDetail"
+                                            asp-route-apprenticeshipHashedId="@employer.HashedApprenticeshipId">
                                             @employer.EmployerName
                                         </a>
                                     }
@@ -214,7 +232,8 @@
                                         <span>@employer.EmployerName</span>
                                     }
                                     <br />
-                                    <span class="govuk-body-s">@employer.FromDate.ToString("MMM yyyy") to @employer.ToDate.ToString("MMM yyyy")</span>
+                                    <span class="govuk-body-s">@employer.FromDate.ToString("MMM yyyy") to
+                                        @employer.ToDate.ToString("MMM yyyy")</span>
                                 </p>
                             }
                         </td>
@@ -231,7 +250,9 @@
             <div class="govuk-grid-column-one-third das-!-text-align-right--from-tablet">
                 @if (Model.AllowEditApprentice)
                 {
-                    <a id="edit-apprentice-link" href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link govuk-body">Edit apprentice</a>
+                    <a id="edit-apprentice-link"
+                        href="@Url.Action("EditApprenticeship", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
+                        class="govuk-link govuk-body">Edit apprentice</a>
                 }
             </div>
         </div>
@@ -240,7 +261,8 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Name</th>
-                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName</td>
+                    <td id="apprentice-name" class="govuk-table__cell das-table-cell-width-55">@Model.ApprenticeName
+                    </td>
                     <td class="govuk-table__cell"></td>
                 </tr>
                 @if (!string.IsNullOrEmpty(Model.Email) || Model.EmailShouldBePresent)
@@ -256,7 +278,9 @@
                                 {
                                     <tr>
                                         <td>
-                                            <a id="resend-email-invitation-link" href="@Url.Action("ResendEmailInvitation", new ResendEmailInvitationRequest { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" class="govuk-link">Resend invitation email</a>
+                                            <a id="resend-email-invitation-link"
+                                                href="@Url.Action("ResendEmailInvitation", new ResendEmailInvitationRequest { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
+                                                class="govuk-link">Resend invitation email</a>
                                         </td>
                                     </tr>
                                 }
@@ -285,7 +309,8 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Apprenticeship delivery model</th>
-                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel.ToDescription()</td>
+                        <td id="apprentice-deliverymodel" class="govuk-table__cell">@Model.DeliveryModel.ToDescription()
+                        </td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
@@ -297,7 +322,8 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
-                                <a id="change-version-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ChangeVersion)">Change</a>
+                                <a id="change-version-link" class="govuk-link"
+                                    href="@Url.RouteUrl(RouteNames.ChangeVersion)">Change</a>
                             }
                         </td>
                     </tr>
@@ -306,11 +332,13 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Option</th>
-                        <td id="apprentice-course" class="govuk-table__cell">@(!string.IsNullOrEmpty(Model.Option) ? Model.Option : "To be confirmed")</td>
+                        <td id="apprentice-course" class="govuk-table__cell">@(!string.IsNullOrEmpty(Model.Option) ?
+                        Model.Option : "To be confirmed")</td>
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
                             {
-                                <a id="change-version-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ChangeOption)">Change</a>
+                                <a id="change-version-link" class="govuk-link"
+                                    href="@Url.RouteUrl(RouteNames.ChangeOption)">Change</a>
                             }
                         </td>
                     </tr>
@@ -319,7 +347,8 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Actual training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()</td>
+                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()
+                        </td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
@@ -327,14 +356,17 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Planned training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
+                        <td id="apprentice-start-date" class="govuk-table__cell">
+                            @Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                         <td class="govuk-table__cell"></td>
                     </tr>
                 }
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>
-                    <td id="apprentice-end-date" class="govuk-table__cell">@(Model.IsOnFlexiPaymentPilot.GetValueOrDefault() ? Model.EndDate.ToGdsFormat() : Model.EndDate.ToGdsFormatWithoutDay())</td>
+                    <td id="apprentice-end-date" class="govuk-table__cell">
+                        @(Model.IsOnFlexiPaymentPilot.GetValueOrDefault() ? Model.EndDate.ToGdsFormat() :
+                            Model.EndDate.ToGdsFormatWithoutDay())</td>
                     <td class="govuk-table__cell"></td>
                 </tr>
 
@@ -361,21 +393,28 @@
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Training price</th>
-                        <td id="apprentice-price" class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
-                            @if (Model.HasPendingPriceChange) { <strong class="govuk-tag govuk-tag govuk-tag--yellow">Pending</strong> }
+                            <td id="training-price" class="govuk-table__cell">
+                                @Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
+                                @if (Model.HasPendingPriceChange)
+                                {
+                                    <strong class="govuk-tag govuk-tag govuk-tag--yellow">Pending</strong>
+                                }
                             </td>
                             <td class="govuk-table__cell"></td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">End-point assessment price</th>
-                            <td id="apprentice-price" class="govuk-table__cell">@Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                            <td id="end-point-assessment-price" class="govuk-table__cell">
+                                @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
                             <td class="govuk-table__cell"></td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Total price</th>
-                            <td id="apprentice-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                            <td id="total-price" class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
                             <td class="govuk-table__cell">
-                                <a id="linkChangePrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
+                                <a id="linkChangePrice" asp-external-controller=""
+                                    asp-external-subdomain="apprenticeshipdetails"
+                                    asp-external-relativeroute="@Model.ChangeOfPriceRoute" class="govuk-link">Change</a>
                             </td>
                         </tr>
                     }
@@ -416,12 +455,15 @@
                         <tr class="govuk-table__row" id="pendingPriceChangeTrainingPriceRow">
                             <th scope="row" class="govuk-table__header">Training price</th>
                             <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">@Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell">
+                                @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
                         </tr>
                         <tr class="govuk-table__row" id="pendingPriceChangeEPAPriceRow">
                             <th scope="row" class="govuk-table__header">End-point assessment price</th>
-                            <td class="govuk-table__cell">@Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">@Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell">
+                                @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                            <td class="govuk-table__cell">
+                                @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
                         </tr>
                         <tr class="govuk-table__row" id="pendingPriceChangeTotalPriceRow">
                             <th scope="row" class="govuk-table__header">Total price</th>
@@ -430,9 +472,13 @@
                         </tr>
                     </tbody>
                 </table>
-                <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails" asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">View price changes you've requested</a>
+                <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
+                    asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">View price changes you've
+                    requested</a>
             </div>
-            <br /><br/>
+            <br />
+
+            <br />
         }
 
         @if (Model.RecognisePriorLearning != null)
@@ -451,16 +497,20 @@
                         @if (Model.TrainingTotalHours != null)
                         {
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">Total off-the-job training time for this apprenticeship standard</th>
-                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.TrainingTotalHoursDisplay</td>
+                                <th scope="row" class="govuk-table__header">Total off-the-job training time for this apprenticeship
+                                    standard</th>
+                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">
+                                    @Model.TrainingTotalHoursDisplay</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
                         @if (Model.DurationReducedByHours != null)
                         {
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">Off-the-job training time reduction due to prior learning</th>
-                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">@Model.DurationReducedByHoursDisplay</td>
+                                <th scope="row" class="govuk-table__header">Off-the-job training time reduction due to prior
+                                    learning</th>
+                                <td id="apprenticeship-rpl-training-time-reduction" class="govuk-table__cell">
+                                    @Model.DurationReducedByHoursDisplay</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
@@ -468,7 +518,8 @@
                         {
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">Duration reduction due to prior learning</th>
-                                <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">@Model.DurationReducedByDisplay</td>
+                                <td id="apprenticeship-rpl-duration-reduction" class="govuk-table__cell">
+                                    @Model.DurationReducedByDisplay</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
@@ -477,7 +528,8 @@
                         {
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">Price reduction due to prior learning</th>
-                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">@Model.PriceReducedBy.FormatCost()</td>
+                                <td id="apprenticeship-rpl-price-reduction" class="govuk-table__cell">
+                                    @Model.PriceReducedBy.FormatCost()</td>
                                 <td class="govuk-table__cell"></td>
                             </tr>
                         }
