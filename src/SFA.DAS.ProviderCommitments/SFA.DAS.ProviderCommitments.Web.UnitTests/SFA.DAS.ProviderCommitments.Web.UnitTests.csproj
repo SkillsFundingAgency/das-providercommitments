@@ -17,7 +17,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Testing" Version="3.0.169" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
