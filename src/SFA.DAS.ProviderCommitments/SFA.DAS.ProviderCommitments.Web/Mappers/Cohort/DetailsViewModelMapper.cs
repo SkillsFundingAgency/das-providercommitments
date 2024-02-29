@@ -413,7 +413,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             foreach (var draftApprenticeship in draftApprenticeships)
             {
-                draftApprenticeship.FundingBandCap = GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.StartDate);
+                draftApprenticeship.FundingBandCap = draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()
+                    ? GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.ActualStartDate)
+                    : GetFundingBandCap(course, draftApprenticeship.OriginalStartDate ?? draftApprenticeship.StartDate);
             }
         }
 
