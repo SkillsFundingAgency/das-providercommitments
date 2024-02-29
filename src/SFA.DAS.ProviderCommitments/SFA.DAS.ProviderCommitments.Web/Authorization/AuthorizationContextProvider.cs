@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Authorization.CommitmentPermissions.Context;
-using SFA.DAS.Authorization.Context;
-using SFA.DAS.Authorization.ProviderFeatures.Context;
-using SFA.DAS.Authorization.ProviderPermissions.Context;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+
+public interface IAuthorizationContextProvider
+{
+    IAuthorizationContext GetAuthorizationContext();
+}
 
 public class AuthorizationContextProvider : IAuthorizationContextProvider
 {

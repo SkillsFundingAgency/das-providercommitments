@@ -2,8 +2,9 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.Authorization.Services
 @using SFA.DAS.ProviderCommitments.Features
+@using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService
 
-@inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
+@inject IAuthorizationService authorisationService
 
 @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
 {

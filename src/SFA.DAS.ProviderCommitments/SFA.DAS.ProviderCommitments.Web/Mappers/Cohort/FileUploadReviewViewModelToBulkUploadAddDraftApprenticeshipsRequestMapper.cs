@@ -5,6 +5,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.Authorization.Services;
 using System.Runtime.CompilerServices;
+using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {

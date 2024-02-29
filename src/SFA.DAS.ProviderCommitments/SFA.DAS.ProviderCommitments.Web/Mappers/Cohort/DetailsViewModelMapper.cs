@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using System.Net;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
@@ -32,11 +33,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IEncodingService _encodingService;
         private readonly IPasAccountApiClient _pasAccountsApiClient;
         private readonly ITempDataStorageService _storageService;
-        private readonly DAS.Authorization.Services.IAuthorizationService _authorizationService;
+        private readonly IAuthorizationService _authorizationService;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
             IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
-            DAS.Authorization.Services.IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;

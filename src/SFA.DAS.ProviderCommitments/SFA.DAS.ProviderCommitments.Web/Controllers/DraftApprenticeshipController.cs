@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -28,7 +26,7 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
 using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
-using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
+using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 using RecognisePriorLearningRequest = SFA.DAS.ProviderCommitments.Web.Models.RecognisePriorLearningRequest;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectCourseViewModel;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.SelectDeliveryModelViewModel;
@@ -36,7 +34,7 @@ using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Sele
 namespace SFA.DAS.ProviderCommitments.Web.Controllers
 {
     [Route("{providerId}/unapproved/{cohortReference}/apprentices")]
-    [DasAuthorize(CommitmentOperation.AccessCohort)]
+    [Authorize(Policy = nameof(PolicyNames.AccessCohort))]
     public class DraftApprenticeshipController : Controller
     {
         private readonly IMediator _mediator;

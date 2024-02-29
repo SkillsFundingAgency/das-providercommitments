@@ -2,11 +2,6 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.Authorization.Mvc.Filters;
-using SFA.DAS.Authorization.Mvc.ModelBinding;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
@@ -32,10 +27,8 @@ public static class MvcServiceRegistrations
                 options.Filters.Add(new GoogleAnalyticsFilter());
                 options.AddProviderCommitmentsValidation();
                 options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
-                options.Filters.Add<AuthorizationFilter>(int.MaxValue);
                 options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
                 options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
-                options.AddAuthorization();
             })
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()

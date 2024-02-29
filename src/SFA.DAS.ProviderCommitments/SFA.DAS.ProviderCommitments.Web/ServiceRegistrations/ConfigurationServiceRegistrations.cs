@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Authorization.CommitmentPermissions.Configuration;
-using SFA.DAS.Authorization.ProviderFeatures.Configuration;
+﻿using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;

@@ -5,6 +5,7 @@ using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Features;
+using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectCourseViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;

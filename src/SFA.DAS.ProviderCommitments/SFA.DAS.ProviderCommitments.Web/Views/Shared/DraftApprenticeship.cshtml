@@ -4,8 +4,10 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Authorization
 @using SFA.DAS.ProviderCommitments.Web.Models
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@using SFA.DAS.ProviderCommitments.Web.Services
+@inject IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeshipViewModel
 

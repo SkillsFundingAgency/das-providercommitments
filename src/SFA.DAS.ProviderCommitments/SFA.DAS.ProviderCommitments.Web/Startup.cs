@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.Mvc.Extensions;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Services;
@@ -19,6 +18,8 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
+using AuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.AuthorizationService;
+using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -65,7 +66,6 @@ public class Startup
         services.AddProviderUiServiceRegistration(_configuration);
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
-        services.AddAuthorization<AuthorizationContextProvider>();
 
         services
             .AddAuthorizationService()
@@ -121,7 +121,6 @@ public class Startup
         }
 
         app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
-            .UseUnauthorizedAccessExceptionHandler()
             .UseHttpsRedirection()
             .UseStaticFiles()
             .UseDasHealthChecks()
