@@ -225,6 +225,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
+        public async Task FundingBandCapsAreMappedCorrectlyForPilotApprenticeships()
+        {
+            var fixture = new DetailsViewModelMapperTestsFixture();
+            var result = await fixture.Map();
+
+            foreach (var draftApprenticeship in fixture.CohortDetails.DraftApprenticeships.Where(x => x.IsOnFlexiPaymentPilot.GetValueOrDefault()))
+            {
+                var draftApprenticeshipResult =
+                    result.Courses.SelectMany(c => c.DraftApprenticeships).Single(x => x.Id == draftApprenticeship.Id);
+
+                Assert.AreEqual(1000, draftApprenticeshipResult.FundingBandCap);
+            }
+        }
+
+        [Test]
         public async Task Then_Funding_Cap_Is_Null_When_No_Course_Found()
         {
             var fixture = new DetailsViewModelMapperTestsFixture().SetNoCourse();
