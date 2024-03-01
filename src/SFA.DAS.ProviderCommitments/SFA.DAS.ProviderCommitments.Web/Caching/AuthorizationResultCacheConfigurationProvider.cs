@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Caching.Memory;
-using SFA.DAS.Authorization.Caching;
-using SFA.DAS.Authorization.CommitmentPermissions.Handlers;
-using SFA.DAS.Authorization.Context;
+﻿using Microsoft.Extensions.Caching.Memory;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
-namespace SFA.DAS.Authorization.CommitmentPermissions.Caching
+namespace SFA.DAS.ProviderCommitments.Web.Caching;
+
+public interface IAuthorizationResultCacheConfigurationProvider
 {
-    public class AuthorizationResultCacheConfigurationProvider : IAuthorizationResultCacheConfigurationProvider
+    Type HandlerType { get; }
+    object GetCacheKey(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext);
+    void ConfigureCacheEntry(ICacheEntry cacheEntry);
+}
+
+public class AuthorizationResultCacheConfigurationProvider : IAuthorizationResultCacheConfigurationProvider
+{
+    public Type HandlerType { get; } = typeof(AuthorizationHandler);
+
+    public object GetCacheKey(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext)
     {
-        public Type HandlerType { get; } = typeof(AuthorizationHandler);
+        return new CacheKey(options, authorizationContext);
+    }
 
-        public object GetCacheKey(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext)
-        {
-            return new CacheKey(options, authorizationContext);
-        }
-
-        public void ConfigureCacheEntry(ICacheEntry cacheEntry)
-        {
-            cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(60);
-        }
+    public void ConfigureCacheEntry(ICacheEntry cacheEntry)
+    {
+        cacheEntry.SlidingExpiration = TimeSpan.FromMinutes(60);
     }
 }

@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Caching.Memory;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
+using AuthorizationResultCache = SFA.DAS.ProviderCommitments.Web.Caching.AuthorizationResultCache;
+using AuthorizationResultLogger = SFA.DAS.ProviderCommitments.Web.Authorization.AuthorizationResultLogger;
+using IAuthorizationResultCacheConfigurationProvider = SFA.DAS.ProviderCommitments.Web.Caching.IAuthorizationResultCacheConfigurationProvider;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
@@ -15,19 +19,19 @@ public static class AuthorizationPolicy
         AddAuthorizationPolicies(services);
 
         services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
-        
+
         services.AddSingleton<ICommitmentsAuthorisationHandler, CommitmentsAuthorisationHandler>();
         services.AddSingleton<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
-        
+
         services.AddTransient<IAuthorizationHandler, ProviderHandler>();
         services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
         services.AddSingleton<IAuthorizationHandler, AccessApprenticeshipAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, AccessCohortAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, CreateCohortAuthorizationHandler>();
-        
+
         services.AddTransient<IAuthorizationContext, AuthorizationContext>();
         services.AddSingleton<IAuthorizationContextProvider, AuthorizationContextProvider>();
-        
+
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
 
@@ -82,7 +86,7 @@ public static class AuthorizationPolicy
                 policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
                 policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
             });
-            
+
             options.AddPolicy(PolicyNames.AccessApprenticeship, policy =>
             {
                 policy.RequireAuthenticatedUser();
@@ -90,7 +94,7 @@ public static class AuthorizationPolicy
                 policy.RequireClaim(ProviderClaims.Ukprn);
                 policy.Requirements.Add(new AccessApprenticeshipRequirement());
             });
-            
+
             options.AddPolicy(PolicyNames.AccessCohort, policy =>
             {
                 policy.RequireAuthenticatedUser();
@@ -98,7 +102,7 @@ public static class AuthorizationPolicy
                 policy.RequireClaim(ProviderClaims.Ukprn);
                 policy.Requirements.Add(new AccessCohortRequirement());
             });
-            
+
             options.AddPolicy(PolicyNames.CreateCohort, policy =>
             {
                 policy.RequireAuthenticatedUser();
@@ -106,6 +110,26 @@ public static class AuthorizationPolicy
                 policy.RequireClaim(ProviderClaims.Ukprn);
                 policy.Requirements.Add(new CreateCohortRequirement());
             });
+        });
+    }
+
+    public static IServiceCollection AddAuthorizationHandler<T>(this IServiceCollection services, bool enableAuthorizationResultCache = false) where T : class, SFA.DAS.ProviderCommitments.Web.Authorization.Handlers.IAuthorizationHandler
+    {
+        return services.AddScoped<T>().AddScoped(provider =>
+        {
+            var authorizationHandler = (Authorization.Handlers.IAuthorizationHandler)provider.GetService(typeof(T));
+            var authorizationResultCacheConfigurationProviders = provider.GetServices<IAuthorizationResultCacheConfigurationProvider>();
+            var memoryCache = provider.GetService<IMemoryCache>();
+            var logger = provider.GetService<ILogger<AuthorizationResultLogger>>();
+
+            if (enableAuthorizationResultCache)
+            {
+                authorizationHandler = new AuthorizationResultCache(authorizationHandler, authorizationResultCacheConfigurationProviders, memoryCache);
+            }
+
+            authorizationHandler = new AuthorizationResultLogger(authorizationHandler, logger);
+
+            return authorizationHandler;
         });
     }
 }
