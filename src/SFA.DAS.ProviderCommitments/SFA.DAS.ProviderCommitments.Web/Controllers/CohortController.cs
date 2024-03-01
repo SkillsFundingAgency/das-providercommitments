@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using SFA.DAS.Authorization.CommitmentPermissions.Options;
-using SFA.DAS.Authorization.Mvc.Attributes;
-using SFA.DAS.Authorization.ProviderPermissions.Options;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -9,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -684,7 +682,7 @@ public class CohortController : Controller
     private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
     {
         var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
-        bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
+        bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
         var response = await _mediator.Send(bulkValidate);
         return response.LogId;
     }

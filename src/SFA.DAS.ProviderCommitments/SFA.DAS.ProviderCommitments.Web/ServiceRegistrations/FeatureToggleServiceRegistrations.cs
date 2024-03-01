@@ -1,8 +1,7 @@
-﻿using SFA.DAS.Authorization.Features.Services;
-using SFA.DAS.Authorization.Handlers;
-using SFA.DAS.Authorization.ProviderFeatures.Configuration;
-using SFA.DAS.Authorization.ProviderFeatures.Handlers;
-using SFA.DAS.Authorization.ProviderFeatures.Models;
+﻿using SFA.DAS.Authorization.ProviderFeatures.Models;
+using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 

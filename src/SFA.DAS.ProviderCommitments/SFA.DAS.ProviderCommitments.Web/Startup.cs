@@ -64,6 +64,7 @@ public class Startup
 
         services.AddDasMvc(_configuration);
         services.AddProviderUiServiceRegistration(_configuration);
+        services.AddProviderFeatures();
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 

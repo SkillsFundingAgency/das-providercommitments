@@ -30,4 +30,10 @@ public static class AuthorizationContextExtensions
         authorizationContext.Set(AuthorizationContextKeys.Ukprn, ukprn);
         authorizationContext.Set(AuthorizationContextKeys.UserEmail, userEmail);
     }
+    
+    internal static (long Ukprn, long AccountLegalEntityId) GetProviderPermissionValues(this IAuthorizationContext authorizationContext)
+    {
+        return (authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
+            authorizationContext.Get<long>(AuthorizationContextKeys.AccountLegalEntityId));
+    }
 }

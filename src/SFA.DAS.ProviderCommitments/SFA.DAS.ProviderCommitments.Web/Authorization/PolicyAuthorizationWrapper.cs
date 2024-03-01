@@ -3,11 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 
+public interface IPolicyAuthorizationWrapper
+{
+    Task<bool> IsAuthorized(ClaimsPrincipal user, string policyName);
+}
+
 public class PolicyAuthorizationWrapper : IPolicyAuthorizationWrapper
 {
-    private readonly IAuthorizationService _authorizationService;
+    private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 
-    public PolicyAuthorizationWrapper(IAuthorizationService authorizationService)
+    public PolicyAuthorizationWrapper(Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
     {
         _authorizationService = authorizationService;
     }
@@ -17,9 +22,4 @@ public class PolicyAuthorizationWrapper : IPolicyAuthorizationWrapper
         var result = await _authorizationService.AuthorizeAsync(user, policyName);
         return result.Succeeded;
     }
-}
-
-public interface IPolicyAuthorizationWrapper
-{
-    Task<bool> IsAuthorized(ClaimsPrincipal user, string policyName);
 }

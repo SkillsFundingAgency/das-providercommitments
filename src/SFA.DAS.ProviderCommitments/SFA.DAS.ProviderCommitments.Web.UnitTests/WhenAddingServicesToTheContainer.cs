@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SFA.DAS.Authorization.ProviderFeatures.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
@@ -20,7 +19,6 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
-using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
@@ -94,6 +92,7 @@ public class WhenAddingServicesToTheContainer
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
+        services.AddAuthorizationService();
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
         services.AddMemoryCache();
@@ -103,6 +102,7 @@ public class WhenAddingServicesToTheContainer
         services.AddProviderRelationshipsApiClient(stubConfiguration);
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
+        services.AddProviderFeatures();
         
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 
