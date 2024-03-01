@@ -68,11 +68,11 @@ public class LocalDevApiClientFactory : ICommitmentsApiClientFactory, ICommitmen
 
     private static void AddDevelopmentRole(HttpClient httpClient, string role)
     {
-        // some operations on the Commitments API require the role to be specificed
+        // some operations on the Commitments API require the role to be specified
         // this would usually be done as part of the MI authorization, but when
         // MI is disabled this must be done using a custom header which will be read
         // by the Commitments API when running in Development mode and the role
-        // will transfered into a claim
+        // will transferred into a claim
         httpClient.DefaultRequestHeaders.Add("Authorization",  role);
     }
 }
