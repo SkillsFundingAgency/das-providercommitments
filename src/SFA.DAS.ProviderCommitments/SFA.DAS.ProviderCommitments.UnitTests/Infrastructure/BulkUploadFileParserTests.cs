@@ -8,267 +8,319 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure
+namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure;
+
+[TestFixture]
+public class BulkUploadFileParserTests
 {
-    [TestFixture]
-    public class BulkUploadFileParserTests
+    private const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy,TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction";
+
+    private BulkUploadFileParser _bulkUploadFileParser;
+    private string _fileContent;
+    private long _providerId;
+    private IFormFile _file;
+
+    [SetUp]
+    public void Setup()
     {
-        const string Headers = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy,TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction";
+        _providerId = 1;
+        _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
+        _fileContent = Headers + Environment.NewLine +
+                       "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,1000,TRUE,100" + Environment.NewLine +
+                       "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,,,,";
 
-        BulkUploadFileParser _bulkUploadFileParser;
-        string _fileContent;
-        long _proivderId;
-        IFormFile _file;
+        const string fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(_fileContent);
+        writer.Flush();
+        stream.Position = 0;
 
-        [SetUp]
-        public void Setup()
+        _file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
+    }
+
+    [Test]
+    public void CohortRefParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            _proivderId = 1;
-            _bulkUploadFileParser = new BulkUploadFileParser(Mock.Of<ILogger<BulkUploadFileParser>>());
-            _fileContent = Headers + Environment.NewLine +
-                           "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,1000,TRUE,100" + Environment.NewLine +
-                           "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,false,,,,,";
+            Assert.That(result.First().CohortRef, Is.EqualTo("P9DD4P"));
+            Assert.That(result.Last().CohortRef, Is.EqualTo("P9DD4P"));
+        });
+    }
 
-            var fileName = "test.pdf";
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(_fileContent);
-            writer.Flush();
-            stream.Position = 0;
-
-            _file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
-        }
-
-        [Test]
-        public void CohortRefParsedCorrectly()
+    [Test]
+    public void AgreementIdParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("P9DD4P", result.First().CohortRef);
-            Assert.AreEqual("P9DD4P", result.Last().CohortRef);
-        }
+            Assert.That(result.First().AgreementId, Is.EqualTo("XEGE5X"));
+            Assert.That(result.Last().AgreementId, Is.EqualTo("XEGE5X"));
+        });
+    }
 
-        [Test]
-        public void AgreementIDParsedCorrectly()
+    [Test]
+    public void ULNParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("XEGE5X", result.First().AgreementId);
-            Assert.AreEqual("XEGE5X", result.Last().AgreementId);
-        }
+            Assert.That(result.First().ULN, Is.EqualTo("8652496047"));
+            Assert.That(result.Last().ULN, Is.EqualTo("6347198567"));
+        });
+    }
 
-        [Test]
-        public void ULNParsedCorrectly()
+    [Test]
+    public void FamilyNameParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("8652496047", result.First().ULN);
-            Assert.AreEqual("6347198567", result.Last().ULN);
-        }
+            Assert.That(result.First().FamilyName, Is.EqualTo("Jones"));
+            Assert.That(result.Last().FamilyName, Is.EqualTo("Smith"));
+        });
+    }
 
-        [Test]
-        public void FamilyNameParsedCorrectly()
+    [Test]
+    public void GivenNamesParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("Jones", result.First().FamilyName);
-            Assert.AreEqual("Smith", result.Last().FamilyName);
-        }
+            Assert.That(result.First().GivenNames, Is.EqualTo("Louise"));
+            Assert.That(result.Last().GivenNames, Is.EqualTo("Mark"));
+        });
+    }
 
-        [Test]
-        public void GivenNamesParsedCorrectly()
+    [Test]
+    public void DateOfBirthParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("Louise",  result.First().GivenNames);
-            Assert.AreEqual("Mark", result.Last().GivenNames);
-        }
+            Assert.That(result.First().DateOfBirth, Is.EqualTo("2000-01-01"));
+            Assert.That(result.Last().DateOfBirth, Is.EqualTo("2002-02-02"));
+        });
+    }
 
-
-        [Test]
-        public void DateOfBirthParsedCorrectly()
+    [Test]
+    public void EmailAddressParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("2000-01-01", result.First().DateOfBirth);
-            Assert.AreEqual("2002-02-02", result.Last().DateOfBirth);
-        }
+            Assert.That(result.First().EmailAddress, Is.EqualTo("abc1@abc.com"));
+            Assert.That(result.Last().EmailAddress, Is.EqualTo("abc2@abc.com"));
+        });
+    }
 
-        [Test]
-        public void EmailAddressParsedCorrectly()
+    [Test]
+    public void StdCodeParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("abc1@abc.com", result.First().EmailAddress);
-            Assert.AreEqual("abc2@abc.com", result.Last().EmailAddress);
-        }
+            Assert.That(result.First().StdCode, Is.EqualTo("57"));
+            Assert.That(result.Last().StdCode, Is.EqualTo("58"));
+        });
+    }
 
-        [Test]
-        public void StdCodeParsedCorrectly()
+    [Test]
+    public void StartDateParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("57", result.First().StdCode);
-            Assert.AreEqual("58", result.Last().StdCode);
-        }
+            Assert.That(result.First().StartDate, Is.EqualTo("2017-05-03"));
+            Assert.That(result.Last().StartDate, Is.EqualTo("2018-06-01"));
+        });
+    }
 
-        [Test]
-        public void StartDateParsedCorrectly()
+    [Test]
+    public void EndDateParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("2017-05-03", result.First().StartDate);
-            Assert.AreEqual("2018-06-01", result.Last().StartDate);
-        }
+            Assert.That(result.First().EndDate, Is.EqualTo("2018-05"));
+            Assert.That(result.Last().EndDate, Is.EqualTo("2019-06"));
+        });
+    }
 
-        [Test]
-        public void EndDateParsedCorrectly()
+    [Test]
+    public void TotalPriceParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("2018-05", result.First().EndDate);
-            Assert.AreEqual("2019-06", result.Last().EndDate);
-        }
+            Assert.That(result.First().TotalPrice, Is.EqualTo("2000"));
+            Assert.That(result.Last().TotalPrice, Is.EqualTo("3333"));
+        });
+    }
 
-        [Test]
-        public void TotalPriceParsedCorrectly()
+    [Test]
+    public void ProviderRefIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("2000", result.First().TotalPrice);
-            Assert.AreEqual("3333", result.Last().TotalPrice);
-        }
+            Assert.That(result.First().ProviderRef, Is.EqualTo("CX768"));
+            Assert.That(result.Last().ProviderRef, Is.EqualTo("ZB657"));
+        });
+    }
 
-        [Test]
-        public void ProviderRefIsParsedCorrectly()
+    [Test]
+    public void RecognisePriorLearningIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("CX768", result.First().ProviderRef);
-            Assert.AreEqual("ZB657", result.Last().ProviderRef);
-        }
+            Assert.That(result.First().RecognisePriorLearning, Is.EqualTo("true"));
+            Assert.That(result.Last().RecognisePriorLearning, Is.EqualTo("false"));
+        });
+    }
 
-        [Test]
-        public void RecognisePriorLearningIsParsedCorrectly()
+    [Test]
+    public void DurationReducedByLearningIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("true", result.First().RecognisePriorLearning);
-            Assert.AreEqual("false", result.Last().RecognisePriorLearning);
-        }
+            Assert.That(result.First().DurationReducedBy, Is.EqualTo("12"));
+            Assert.That(result.Last().DurationReducedBy, Is.EqualTo(""));
+        });
+    }
 
-        [Test]
-        public void DurationReducedByLearningIsParsedCorrectly()
+    [Test]
+    public void PriceReducedByLearningIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("12", result.First().DurationReducedBy);
-            Assert.AreEqual("", result.Last().DurationReducedBy);
-        }
+            Assert.That(result.First().PriceReducedBy, Is.EqualTo("99"));
+            Assert.That(result.Last().PriceReducedBy, Is.EqualTo(""));
+        });
+    }
 
-        [Test]
-        public void PriceReducedByLearningIsParsedCorrectly()
+    [Test]
+    public void TrainingTotalHoursIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("99", result.First().PriceReducedBy);
-            Assert.AreEqual("", result.Last().PriceReducedBy);
-        }
+            Assert.That(result.First().TrainingTotalHours, Is.EqualTo("1000"));
+            Assert.That(result.Last().TrainingTotalHours, Is.EqualTo(""));
+        });
+    }
 
-        [Test]
-        public void TrainingTotalHoursIsParsedCorrectly()
+    [Test]
+    public void IsDurationReducedByRPLIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("1000", result.First().TrainingTotalHours);
-            Assert.AreEqual("", result.Last().TrainingTotalHours);
-        }
+            Assert.That(result.First().IsDurationReducedByRPL, Is.EqualTo("TRUE"));
+            Assert.That(result.Last().IsDurationReducedByRPL, Is.EqualTo(""));
+        });
+    }
 
-        [Test]
-        public void IsDurationReducedByRPLIsParsedCorrectly()
+    [Test]
+    public void TrainingHoursReductionIsParsedCorrectly()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.Multiple(() =>
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("TRUE", result.First().IsDurationReducedByRPL);
-            Assert.AreEqual("", result.Last().IsDurationReducedByRPL);
-        }
+            Assert.That(result.First().TrainingHoursReduction, Is.EqualTo("100"));
+            Assert.That(result.Last().TrainingHoursReduction, Is.EqualTo(""));
+        });
+    }
 
-        [Test]
-        public void TrainingHoursReductionIsParsedCorrectly()
+    [Test]
+    public void CorrectNumberOfApprenticeshipMapped()
+    {
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Has.Count.EqualTo(2));
+    }
+
+    [Test]
+    public void VerifyEmptyRowsRemovedFromUploadedFile()
+    {
+        //Arrange          
+        _fileContent = Headers + Environment.NewLine +
+                       ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
+                       "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,,,,,," + Environment.NewLine +
+                       "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,,,,,," + Environment.NewLine +
+                       ",,,,,,,,,,,,,,,,,,";
+
+        CreateFile();
+
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Has.Count.EqualTo(2));
+    }
+
+    [Test]
+    public void VerifyNoRowsReturnedFromEmptyFile()
+    {
+        //Arrange          
+        _fileContent = Headers + Environment.NewLine +
+                       ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
+                       ",,,,,,,,,,,,,,,,,,";
+
+        CreateFile();
+
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        Assert.That(result, Is.Empty);
+    }
+
+    [Test]
+    public void OptionalFieldsMayBeOmitted()
+    {
+        //Arrange          
+        _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", "") + Environment.NewLine +
+                       "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
+
+        CreateFile();
+
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        result.Should().ContainEquivalentOf(new
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual("100", result.First().TrainingHoursReduction);
-            Assert.AreEqual("", result.Last().TrainingHoursReduction);
-        }
+            CohortRef = "P9DD4P",
+            TrainingTotalHours = (string)null,
+            IsDurationReducedByRPL = (bool?)null,
+            TrainingHoursReduction = (string)null,
+        });
+    }
 
-        [Test]
-        public void CorrectNumberOfApprenticeshipMapped()
+    [Test]
+    public void OptionalFieldsWithoutHeaderName()
+    {
+        //Arrange          
+        _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", ",,,") + Environment.NewLine +
+                       "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,9000,TRUE,90" + Environment.NewLine;
+
+        CreateFile();
+
+        var result = _bulkUploadFileParser.GetCsvRecords(_providerId, _file);
+        result.Should().ContainEquivalentOf(new
         {
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual(2, result.Count());
-        }
+            CohortRef = "P9DD4P",
+            TrainingTotalHours = (string)null,
+            IsDurationReducedByRPL = (bool?)null,
+            TrainingHoursReduction = (string)null,
+        });
+    }
 
-        [Test]
-        public void VerifyEmptyRowsRemovedFromUploadedFile()
-        {
-            //Arrange          
-            _fileContent = Headers + Environment.NewLine +
-                ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
-                 "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,,,,,," + Environment.NewLine +
-                 "P9DD4P,XEGE5X,6347198567,Smith,Mark,2002-02-02,abc2@abc.com,58,2018-06-01,2019-06,3333,EPA0001,ZB657,,,,,," + Environment.NewLine +
-                 ",,,,,,,,,,,,,,,,,,";
+    private void CreateFile()
+    {
+        const string fileName = "test.pdf";
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(_fileContent);
+        writer.Flush();
+        stream.Position = 0;
 
-            CreateFile();
-
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual(2, result.Count());
-        }
-
-        [Test]
-        public void VerifyNoRowsReturnedFromEmptyFile()
-        {
-            //Arrange          
-            _fileContent = Headers + Environment.NewLine +
-                ",,,,,,,,,,,,,,,,,," + Environment.NewLine +
-                ",,,,,,,,,,,,,,,,,,";
-
-            CreateFile();
-
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            Assert.AreEqual(0, result.Count());
-        }
-
-        [Test]
-        public void OptionalFieldsMayBeOmitted()
-        {
-            //Arrange          
-            _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", "") + Environment.NewLine +
-                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99" + Environment.NewLine;
-
-            CreateFile();
-
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            result.Should().ContainEquivalentOf(new
-            {
-                CohortRef = "P9DD4P",
-                TrainingTotalHours = (string)null,
-                IsDurationReducedByRPL = (bool?)null,
-                TrainingHoursReduction = (string)null,
-            });
-        }
-
-        [Test]
-        public void OptionalFieldsWithoutHeaderName()
-        {
-            //Arrange          
-            _fileContent = Headers.Replace(",TrainingTotalHours,IsDurationReducedByRPL,TrainingHoursReduction", ",,,") + Environment.NewLine +
-                "P9DD4P,XEGE5X,8652496047,Jones,Louise,2000-01-01,abc1@abc.com,57,2017-05-03,2018-05,2000,,CX768,true,12,99,9000,TRUE,90" + Environment.NewLine;
-
-            CreateFile();
-
-            var result = _bulkUploadFileParser.GetCsvRecords(_proivderId, _file);
-            result.Should().ContainEquivalentOf(new
-            {
-                CohortRef = "P9DD4P",
-                TrainingTotalHours = (string)null,
-                IsDurationReducedByRPL = (bool?)null,
-                TrainingHoursReduction = (string)null,
-            });
-        }
-
-        private void CreateFile()
-        {
-            var fileName = "test.pdf";
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(_fileContent);
-            writer.Flush();
-            stream.Position = 0;
-
-            _file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
-        }
+        _file = new FormFile(stream, 0, stream.Length, "id_from_form", fileName);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -11,10 +10,7 @@ public class SelectPilotStatusViewModelMapper : IMapper<SelectPilotStatusRequest
 {
     private readonly ICacheStorageService _cacheStorageService;
 
-    public SelectPilotStatusViewModelMapper(ICacheStorageService cacheStorageService)
-    {
-        _cacheStorageService = cacheStorageService;
-    }
+    public SelectPilotStatusViewModelMapper(ICacheStorageService cacheStorageService) => _cacheStorageService = cacheStorageService;
 
     public async Task<SelectPilotStatusViewModel> Map(SelectPilotStatusRequest source)
     {

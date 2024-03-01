@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using AutoFixture;
 using AutoFixture.Kernel;
 using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
@@ -19,13 +17,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
 
             if (parameter.ParameterType != typeof(ActionExecutingContext))
             {
-                throw new ArgumentException(nameof(parameter));
+                throw new ArgumentException(null, nameof(parameter));
             }
 
             return new ArrangeActionContextCustomisation();
         }
 
-        public class ArrangeActionContextCustomisation : ICustomization
+        private class ArrangeActionContextCustomisation : ICustomization
         {
             public void Customize(IFixture fixture)
             {
@@ -35,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
             }
         }
 
-        public class ActionExecutingContextBuilder : ISpecimenBuilder
+        private class ActionExecutingContextBuilder : ISpecimenBuilder
         {
             public object Create(object request, ISpecimenContext context)
             {

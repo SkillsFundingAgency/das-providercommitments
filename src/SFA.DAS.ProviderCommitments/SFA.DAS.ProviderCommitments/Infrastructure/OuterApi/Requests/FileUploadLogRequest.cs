@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests
 {
     public class FileUploadLogRequest : ApimSaveDataRequest
     {

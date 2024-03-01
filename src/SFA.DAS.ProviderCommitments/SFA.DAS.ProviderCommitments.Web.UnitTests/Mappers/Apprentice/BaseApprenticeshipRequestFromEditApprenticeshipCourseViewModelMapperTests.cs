@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using System.Threading.Tasks;
+﻿using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -15,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private BaseApprenticeshipRequestFromEditApprenticeshipCourseViewModelMapper _mapper;
         private Mock<ITempDataStorageService> _tempDataStorageService;
         private EditApprenticeshipCourseViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private EditApprenticeshipRequestViewModel _cacheModel;
         private const string ViewModelForEdit = "ViewModelForEdit";
 
@@ -41,14 +37,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ApprenticeshipHashedId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheModel.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_cacheModel.ApprenticeshipHashedId));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_cacheModel.ProviderId));
         }
     }
 }

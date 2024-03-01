@@ -1,9 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions
 {
@@ -11,10 +8,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
     {
         public static IEnumerable<CourseDataLockViewModel> MapCourseDataLock(this GetApprenticeshipResponse apprenticeship, IList<DataLockViewModel> dataLockWithCourseMismatch, IReadOnlyCollection<GetPriceEpisodesResponse.PriceEpisode> priceEpisodes)
         {
-            if (apprenticeship.HasHadDataLockSuccess) return new CourseDataLockViewModel[0];
-
-            var result = new List<CourseDataLockViewModel>();
-
+            if (apprenticeship.HasHadDataLockSuccess)
+            {
+                return Array.Empty<CourseDataLockViewModel>();
+            }
+          
             return dataLockWithCourseMismatch
               .Select(dataLock =>
               {
@@ -49,9 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Extensions
 
                    if (previousPriceEpisode == null)
                    {
-                       previousPriceEpisode = priceEpisodes
-                           .OrderByDescending(m => m.FromDate)
-                           .FirstOrDefault();
+                       previousPriceEpisode = priceEpisodes.MaxBy(m => m.FromDate);
                    }
 
                    return new PriceDataLockViewModel

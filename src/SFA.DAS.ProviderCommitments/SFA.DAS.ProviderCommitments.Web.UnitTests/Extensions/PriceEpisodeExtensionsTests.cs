@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
@@ -29,10 +28,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         [TestCase("2020-06-01", 3, Description = "Within an episode without an end date")]
         public void PriceIsDeterminedCorrectly(DateTime effectiveDate, decimal expectedCost)
         {
-            Assert.AreEqual(expectedCost, _priceEpisodes.GetPrice(effectiveDate));
+            Assert.That(_priceEpisodes.GetPrice(effectiveDate), Is.EqualTo(expectedCost));
         }
 
-        private GetPriceEpisodesResponse.PriceEpisode CreatePriceEpisode(decimal cost, DateTime from, DateTime? to)
+        private static GetPriceEpisodesResponse.PriceEpisode CreatePriceEpisode(decimal cost, DateTime from, DateTime? to)
         {
             return new GetPriceEpisodesResponse.PriceEpisode {Cost = cost, FromDate = from, ToDate = to};
         }

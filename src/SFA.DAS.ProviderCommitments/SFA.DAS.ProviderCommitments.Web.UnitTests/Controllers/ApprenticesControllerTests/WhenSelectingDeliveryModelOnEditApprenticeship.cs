@@ -1,17 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoFixture;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -42,15 +35,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
 
         [Test]
         public void WhenSettingDeliveryModel_AndNoOptionSet_ShouldThrowException()
         {
-            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture();
-
-            fixture.ViewModel.DeliveryModel = null;
+            var fixture = new WhenSelectingDeliveryModelOnEditApprenticeshipFixture
+            {
+                ViewModel =
+                {
+                    DeliveryModel = null
+                }
+            };
 
             try
             {
@@ -71,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithTempViewModel()
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
-            fixture.ViewModel.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel?) DeliveryModel.PortableFlexiJob;
+            fixture.ViewModel.DeliveryModel = DeliveryModel.PortableFlexiJob;
 
             var result = fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel) as RedirectToActionResult;
             result.ActionName.Should().Be("EditApprenticeship");
@@ -80,45 +77,44 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class WhenSelectingDeliveryModelOnEditApprenticeshipFixture
     {
-        public ApprenticeController Sut { get; set; }
-
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public Mock<ITempDataDictionary> TempDataMock;
-        public EditApprenticeshipDeliveryModelViewModel ViewModel;
-        public EditApprenticeshipRequest Request;
-        public EditApprenticeshipRequestViewModel Apprenticeship;
+        private readonly EditApprenticeshipRequestViewModel _apprenticeship;
+        private readonly Mock<IModelMapper> _modelMapperMock;
+        private readonly Mock<ITempDataDictionary> _tempDataMock;
+        
+        public EditApprenticeshipDeliveryModelViewModel ViewModel { get; }
+        public EditApprenticeshipRequest Request { get; }
+        public string RedirectUrl { get; }
+        public ApprenticeController Sut { get; }
+        
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
             ViewModel = fixture.Create<EditApprenticeshipDeliveryModelViewModel>();
             Request = fixture.Create<EditApprenticeshipRequest>();
-            Apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            _apprenticeship = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x=>x.EndDate).Without(x => x.EndMonth).Without(x => x.EndYear)
                 .Create();
 
-            ModelMapperMock = new Mock<IModelMapper>();
-            TempDataMock = new Mock<ITempDataDictionary>();
-            AuthorizationServiceMock = new Mock<IAuthorizationService>();
+            _modelMapperMock = new Mock<IModelMapper>();
+            _tempDataMock = new Mock<ITempDataDictionary>();
 
-            Sut = new ApprenticeController(ModelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
-            Sut.TempData = TempDataMock.Object;
+            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            Sut.TempData = _tempDataMock.Object;
         }
 
-        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<Infrastructure.OuterApi.Types.DeliveryModel> list)
+        public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithDeliveryModels(List<DeliveryModel> list)
         {
-            ModelMapperMock.Setup(x => x.Map<EditApprenticeshipDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
+            _modelMapperMock.Setup(x => x.Map<EditApprenticeshipDeliveryModelViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()))
                 .ReturnsAsync(new EditApprenticeshipDeliveryModelViewModel { DeliveryModels = list });
             return this;
         }
 
         public WhenSelectingDeliveryModelOnEditApprenticeshipFixture WithTempViewModel()
         {
-            object asString = JsonConvert.SerializeObject(Apprenticeship);
-            TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            object asString = JsonConvert.SerializeObject(_apprenticeship);
+            _tempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
             return this;
         }
 

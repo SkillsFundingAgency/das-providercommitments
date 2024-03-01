@@ -1,13 +1,8 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using System.Threading.Tasks;
-using Moq;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
-
 {
     [TestFixture]
     public class WhenIMapSelectDeliveryModelViewModelFromEditDraftApprenticeshipViewModel 
@@ -43,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenModelIsReturned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_model, result);
+            Assert.That(result, Is.EqualTo(_model));
         }
     }
 }

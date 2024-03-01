@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Services
@@ -42,12 +40,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Services
         public void Retrieve_Returns_Expected_Object()
         {
             var result = _storageService.RetrieveFromCache<TestCacheObject>();
-            Assert.AreEqual(_cacheObject.TestProperty, result.TestProperty);
+            Assert.That(result.TestProperty, Is.EqualTo(_cacheObject.TestProperty));
         }
 
-        public class TestCacheObject
+        private class TestCacheObject
         {
-            public string TestProperty { get; set; }
+            public string TestProperty { get; init; }
         }
     }
 }

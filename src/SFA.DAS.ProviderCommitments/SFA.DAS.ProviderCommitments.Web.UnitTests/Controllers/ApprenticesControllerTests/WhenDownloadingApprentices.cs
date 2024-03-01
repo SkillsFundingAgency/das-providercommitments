@@ -1,10 +1,6 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -14,7 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 {
     public class WhenDownloadingApprentices
     {
-
         [Test, MoqAutoData]
         public async Task ThenTheFileContentIsSetCorrectly(
             DownloadRequest request,
@@ -45,9 +40,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualFileResult = actual as FileResult;
 
             //Assert
-            Assert.IsNotNull(actualFileResult);
-            Assert.AreEqual(expectedCsvContent.Name, actualFileResult.FileDownloadName);
-            Assert.AreEqual(actualFileResult.ContentType, actualFileResult.ContentType);
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualFileResult, Is.Not.Null);
+                Assert.That(actualFileResult.FileDownloadName, Is.EqualTo(expectedCsvContent.Name));
+                Assert.That(actualFileResult.ContentType, Is.EqualTo(expectedCsvContent.ContentType));
+            });
         }
     }
 

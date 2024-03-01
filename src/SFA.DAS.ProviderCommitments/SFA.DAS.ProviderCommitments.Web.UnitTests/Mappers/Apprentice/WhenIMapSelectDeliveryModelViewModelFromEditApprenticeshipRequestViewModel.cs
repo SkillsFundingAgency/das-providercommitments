@@ -1,14 +1,9 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
-
 {
     [TestFixture]
     public class WhenIMapSelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModel
@@ -41,14 +36,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task Then_DeliveryModels_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.DeliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_apiResponse.DeliveryModels));
         }
 
         [Test]
         public async Task Then_DeliveryModel_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual((SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel) _request.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo((SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel) _request.DeliveryModel));
         }
     }
 }

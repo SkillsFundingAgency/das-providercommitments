@@ -1,18 +1,13 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Controllers;
-using SFA.DAS.ProviderUrlHelper;
-using System.Threading;
+﻿using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.Authorization.Services;
-using System.Threading.Tasks;
+using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderUrlHelper;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -48,54 +43,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 .WithHasNoDeclaredStandards(true);
 
             var result = await fixture.Act();
-            fixture.VerifyNoDeclaredStandardsRedirect(result);
+            PostConfirmEmployerFixture.VerifyNoDeclaredStandardsRedirect(result);
         }
     }
 
     public class PostConfirmEmployerFixture
     {
-        public CohortController Sut { get; set; }
-
-        public string RedirectUrl;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
-        private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
-        private readonly CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest _emptyCohortRequest;
         private readonly ConfirmEmployerRedirectModel _hasDeclaredStandardsViewModel;
-        private readonly CommitmentsV2.Api.Types.Responses.CreateCohortResponse _emptyCohortResponse;
         private readonly ConfirmEmployerViewModel _viewModel;
-        private readonly long _providerId;
+
+        private readonly CohortController _sut;
+        private readonly string _redirectUrl;
 
         public PostConfirmEmployerFixture()
         {
             var fixture = new Fixture();
-            _providerId = 123;
-            _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" };
-            _commitmentApiClient = new Mock<ICommitmentsApiClient>();
+            const long providerId = 123;
+            
+            _viewModel = new ConfirmEmployerViewModel { ProviderId = providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ" };
+            var commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
-            _emptyCohortRequest = fixture.Create<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>();
+            var emptyCohortRequest = fixture.Create<CreateEmptyCohortRequest>();
             _hasDeclaredStandardsViewModel = fixture.Create<ConfirmEmployerRedirectModel>();
-            _emptyCohortResponse = fixture.Create<CommitmentsV2.Api.Types.Responses.CreateCohortResponse>();
+            var emptyCohortResponse = fixture.Create<CreateCohortResponse>();
 
-            _mockModelMapper = new Mock<IModelMapper>();
-            _mockModelMapper
-                .Setup(x => x.Map<CommitmentsV2.Api.Types.Requests.CreateEmptyCohortRequest>(_viewModel))
-                .ReturnsAsync(_emptyCohortRequest);
+            var mockModelMapper = new Mock<IModelMapper>();
+            mockModelMapper
+                .Setup(x => x.Map<CreateEmptyCohortRequest>(_viewModel))
+                .ReturnsAsync(emptyCohortRequest);
 
-            _mockModelMapper
+            mockModelMapper
                 .Setup(x => x.Map<ConfirmEmployerRedirectModel>(_viewModel))
                 .ReturnsAsync(_hasDeclaredStandardsViewModel);
 
-            _commitmentApiClient
-                .Setup(x => x.CreateCohort(_emptyCohortRequest, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_emptyCohortResponse);
+            commitmentApiClient
+                .Setup(x => x.CreateCohort(emptyCohortRequest, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(emptyCohortResponse);
 
-            RedirectUrl = $"{_providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ReservationsLink(RedirectUrl)).Returns(RedirectUrl);
+            _redirectUrl = $"{providerId}/reservations/{_viewModel.EmployerAccountLegalEntityPublicHashedId}/select";
+            var linkGenerator = new Mock<ILinkGenerator>();
+            linkGenerator.Setup(x => x.ReservationsLink(_redirectUrl)).Returns(_redirectUrl);
 
-            Sut = new CohortController(Mock.Of<IMediator>(), _mockModelMapper.Object, _linkGenerator.Object, _commitmentApiClient.Object, 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
+            _sut = new CohortController(Mock.Of<IMediator>(), mockModelMapper.Object, linkGenerator.Object, commitmentApiClient.Object, 
+                         Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public PostConfirmEmployerFixture WithHasNoDeclaredStandards(bool hasDeclaredStandards)
@@ -118,14 +108,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         public void VerifyReturnsRedirect(IActionResult redirectResult)
         {
-            redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
+            var equals = redirectResult.VerifyReturnsRedirect().Url.Equals(_redirectUrl);
         }
-        public void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
+
+        public static void VerifyNoDeclaredStandardsRedirect(IActionResult redirectResult)
         {
             redirectResult.VerifyReturnsRedirectToActionResult().WithActionName("NoDeclaredStandards");
         }
 
-
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_viewModel);
+        public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);
     }
 }

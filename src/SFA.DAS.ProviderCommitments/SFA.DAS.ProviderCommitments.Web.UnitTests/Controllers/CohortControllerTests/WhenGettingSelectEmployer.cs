@@ -1,9 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -36,17 +31,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var result = await fixture.Act() as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(SelectEmployerViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(SelectEmployerViewModel)));
         }
     }
 
     public class SelectEmployerFixture
     {
         public CohortController Sut { get; set; }
-        
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly SelectEmployerViewModel _viewModel;
         private readonly SelectEmployerRequest _request;
         private readonly long _providerId;
 
@@ -54,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _request = new SelectEmployerRequest { ProviderId = _providerId };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = new SelectEmployerViewModel
+            var viewModel = new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityViewModel>(),
                 BackLink = "Test.com"
@@ -63,10 +56,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             _modelMapperMock
                 .Setup(x => x.Map<SelectEmployerViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(), _modelMapperMock.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public SelectEmployerFixture WithModelStateErrors()

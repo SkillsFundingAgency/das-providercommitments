@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -42,28 +38,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _cacheItem.IsOnFlexiPaymentPilot = pilotStatus;
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(expectedOption, result.Selection);
+            Assert.That(result.Selection, Is.EqualTo(expectedOption));
         }
 
         [Test]
         public async Task ThenCacheKeyIsMappedCorrectly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CacheKey, result.CacheKey);
+            Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
         }
 
         [Test]
         public async Task ThenIsEditIsMappedCorrectly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.IsEdit, result.IsEdit);
+            Assert.That(result.IsEdit, Is.EqualTo(_request.IsEdit));
         }
 
         [Test]
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
         }
     }
 }

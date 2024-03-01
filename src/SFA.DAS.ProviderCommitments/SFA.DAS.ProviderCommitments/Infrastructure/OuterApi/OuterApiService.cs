@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
@@ -19,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
     public class OuterApiService : IOuterApiService
     {
-        private IOuterApiClient _outerApiClient;
+        private readonly IOuterApiClient _outerApiClient;
         private readonly IAuthenticationServiceForApim _authenticationService;
 
         public OuterApiService(IOuterApiClient outerApiClient, IAuthenticationServiceForApim authenticationService)

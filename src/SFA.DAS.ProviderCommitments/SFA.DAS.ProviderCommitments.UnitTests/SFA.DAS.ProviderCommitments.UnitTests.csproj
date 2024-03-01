@@ -1,28 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoFixture.NUnit3" Version="4.17.0" />
-    <PackageReference Include="CompareNETObjects" Version="4.78.0" />
-    <PackageReference Include="FluentAssertions" Version="6.8.0" />
-    <PackageReference Include="FluentValidation" Version="11.3.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
-    <PackageReference Include="Moq" Version="4.18.2" />
+    <PackageReference Include="AutoFixture.NUnit3" Version="4.18.1" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+    <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="nunit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="NUnit.Analyzers" Version="3.10.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="CsvHelper" Version="31.0.0" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.ProviderCommitments.Web\SFA.DAS.ProviderCommitments.Web.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderCommitments\SFA.DAS.ProviderCommitments.csproj" />
   </ItemGroup>
   

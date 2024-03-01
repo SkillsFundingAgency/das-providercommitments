@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -9,10 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public ConfirmEmployerRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient)
-        {
-            _commitmentsApiClient = commitmentsApiClient;
-        }
+        public ConfirmEmployerRequestToViewModelMapper(ICommitmentsApiClient commitmentsApiClient) => _commitmentsApiClient = commitmentsApiClient;
 
         public async Task<ConfirmEmployerViewModel> Map(ConfirmEmployerRequest source)
         {

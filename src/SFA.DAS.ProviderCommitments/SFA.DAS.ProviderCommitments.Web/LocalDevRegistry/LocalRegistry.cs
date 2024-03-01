@@ -1,10 +1,8 @@
-﻿using System;
-using SFA.DAS.Authorization.CommitmentPermissions.Client;
+﻿using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.ProviderCommitments.Infrastructure;
 using StructureMap;
 
-namespace SFA.DAS.ProviderCommitments.Web
+namespace SFA.DAS.ProviderCommitments.Web.LocalDevRegistry
 {
     public class LocalRegistry : Registry
     {

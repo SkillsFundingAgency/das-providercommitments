@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
-using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
 {

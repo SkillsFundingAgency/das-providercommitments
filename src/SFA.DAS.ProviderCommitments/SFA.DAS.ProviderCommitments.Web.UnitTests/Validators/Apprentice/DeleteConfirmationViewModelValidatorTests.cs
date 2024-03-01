@@ -1,9 +1,8 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
-using System;
-using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
@@ -38,19 +37,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.DeleteConfirmed, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<DeleteConfirmationViewModel, T>> property, DeleteConfirmationViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<DeleteConfirmationViewModel, T>> property, DeleteConfirmationViewModel instance, bool expectedValid)
         {
             var validator = new DeleteConfirmationViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
-
     }
 }

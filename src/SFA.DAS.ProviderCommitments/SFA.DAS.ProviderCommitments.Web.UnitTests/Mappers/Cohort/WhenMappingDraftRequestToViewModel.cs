@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -104,110 +99,125 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingDraftRequestToViewModelFixture
     {
-        public Mock<IEncodingService> EncodingService { get; set; }
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public Mock<IProviderRelationshipsApiClient> ProviderRelationshipsApiClient { get; }
-        public Mock<IPasAccountApiClient> PasAccountApiClient { get; set; }
-        public Mock<IUrlHelper> UrlHelper { get; }
-        public CohortsByProviderRequest DraftRequest { get; set; }
-        public GetCohortsResponse GetCohortsResponse { get; set; }
-        public DraftRequestViewModelMapper Mapper { get; set; }
-        public DraftViewModel DraftViewModel { get; set; }
+        private readonly Mock<IEncodingService> _encodingService;
+        private readonly CohortsByProviderRequest _draftRequest;
+        private readonly DraftRequestViewModelMapper _mapper;
+        private DraftViewModel _draftViewModel;
 
-        public long ProviderId => 1;
-        public DateTime Now = DateTime.Now;
+        private const long ProviderId = 1;
+        private readonly DateTime _now = DateTime.Now;
 
         public WhenMappingDraftRequestToViewModelFixture()
         {
-            EncodingService = new Mock<IEncodingService>();
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _encodingService = new Mock<IEncodingService>();
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
-            DraftRequest = new CohortsByProviderRequest() { ProviderId = ProviderId };
-            GetCohortsResponse = CreateGetCohortsResponse();
+            _draftRequest = new CohortsByProviderRequest() { ProviderId = ProviderId };
+            var getCohortsResponse = CreateGetCohortsResponse();
 
-            CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
-            EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
+            commitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(getCohortsResponse);
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
 
-            ProviderRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
+            var providerRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
 
-            PasAccountApiClient = new Mock<IPasAccountApiClient>();
-            PasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = ProviderAgreementStatus.Agreed });
+            var pasAccountApiClient = new Mock<IPasAccountApiClient>();
+            pasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = ProviderAgreementStatus.Agreed });
 
-            UrlHelper = new Mock<IUrlHelper>();
-            UrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
+            var urlHelper = new Mock<IUrlHelper>();
+            urlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
 
-            Mapper = new DraftRequestViewModelMapper(CommitmentsApiClient.Object, ProviderRelationshipsApiClient.Object, UrlHelper.Object, PasAccountApiClient.Object, EncodingService.Object);
+            _mapper = new DraftRequestViewModelMapper(commitmentsApiClient.Object, providerRelationshipsApiClient.Object, urlHelper.Object, pasAccountApiClient.Object, _encodingService.Object);
         }
 
         public async Task<WhenMappingDraftRequestToViewModelFixture> Map()
         {
-            DraftViewModel = await Mapper.Map(DraftRequest);
+            _draftViewModel = await _mapper.Map(_draftRequest);
             return this;
         }
 
         public WhenMappingDraftRequestToViewModelFixture WithSortApplied(string sortField, bool reverse)
         {
-            DraftRequest.SortField = sortField;
-            DraftRequest.ReverseSort = reverse;
+            _draftRequest.SortField = sortField;
+            _draftRequest.ReverseSort = reverse;
             return this;
         }
 
         public void Verify_OnlyTheCohorts_InDraftWithProvider_Are_Mapped()
         {
-            Assert.AreEqual(2, DraftViewModel.Cohorts.Count());
-
-            Assert.IsNotNull(GetCohortInReviewViewModel(5));
-            Assert.IsNotNull(GetCohortInReviewViewModel(6));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_draftViewModel.Cohorts.Count(), Is.EqualTo(2));
+                Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
+                Assert.That(GetCohortInReviewViewModel(6), Is.Not.Null);
+            });
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
-            EncodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
+            _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
 
-            Assert.AreEqual("5_Encoded", GetCohortInReviewViewModel(5).CohortReference);
-            Assert.AreEqual("6_Encoded", GetCohortInReviewViewModel(6).CohortReference);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(5).CohortReference, Is.EqualTo("5_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(6).CohortReference, Is.EqualTo("6_Encoded"));
+            });
         }
 
         public void Verify_EmployerName_Is_Mapped()
         {
-            Assert.AreEqual("Employer5", GetCohortInReviewViewModel(5).EmployerName);
-            Assert.AreEqual("Employer6", GetCohortInReviewViewModel(6).EmployerName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(5).EmployerName, Is.EqualTo("Employer5"));
+                Assert.That(GetCohortInReviewViewModel(6).EmployerName, Is.EqualTo("Employer6"));
+            });
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.AreEqual(500, GetCohortInReviewViewModel(5).NumberOfApprentices);
-            Assert.AreEqual(600, GetCohortInReviewViewModel(6).NumberOfApprentices);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(5).NumberOfApprentices, Is.EqualTo(500));
+                Assert.That(GetCohortInReviewViewModel(6).NumberOfApprentices, Is.EqualTo(600));
+            });
         }
 
         public void Verify_Ordered_By_DateCreatedAscending()
         {
-            Assert.AreEqual("Employer5", DraftViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer6", DraftViewModel.Cohorts.Last().EmployerName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_draftViewModel.Cohorts.First().EmployerName, Is.EqualTo("Employer5"));
+                Assert.That(_draftViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer6"));
+            });
         }
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.AreEqual(Now.AddMinutes(-2), GetCohortInReviewViewModel(5).DateCreated);
-            Assert.AreEqual(Now.AddMinutes(-1), GetCohortInReviewViewModel(6).DateCreated);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(5).DateCreated, Is.EqualTo(_now.AddMinutes(-2)));
+                Assert.That(GetCohortInReviewViewModel(6).DateCreated, Is.EqualTo(_now.AddMinutes(-1)));
+            });
         }
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, DraftViewModel.ProviderId);
+            Assert.That(_draftViewModel.ProviderId, Is.EqualTo(ProviderId));
         }
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
-            Assert.AreEqual(firstId, DraftViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual(lastId, DraftViewModel.Cohorts.Last().CohortReference);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_draftViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
+                Assert.That(_draftViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+            });
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()
         {
             IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
             {
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -216,9 +226,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 100,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = Now.AddMinutes(-10)
+                    CreatedOn = _now.AddMinutes(-10)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 2,
                     AccountId = 2,
@@ -227,10 +237,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 200,
                     IsDraft = false,
                     WithParty = Party.Provider,
-                    CreatedOn = Now.AddMinutes(-5),
-                    LatestMessageFromEmployer = new Message("This is latestMessage from employer", Now.AddMinutes(-2))
+                    CreatedOn = _now.AddMinutes(-5),
+                    LatestMessageFromEmployer = new Message("This is latestMessage from employer", _now.AddMinutes(-2))
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 3,
                     AccountId = 3,
@@ -239,10 +249,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 300,
                     IsDraft = true,
                     WithParty = Party.Employer,
-                    CreatedOn = Now.AddMinutes(-4)
+                    CreatedOn = _now.AddMinutes(-4)
                 },
-                 new CohortSummary
-                {
+                 new()
+                 {
                     CohortId = 4,
                     AccountId = 4,
                     ProviderId = 1,
@@ -250,9 +260,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     NumberOfDraftApprentices = 400,
                     IsDraft = false,
                     WithParty = Party.Employer,
-                    CreatedOn = Now.AddMinutes(-3)
+                    CreatedOn = _now.AddMinutes(-3)
                 },
-                 new CohortSummary
+                 new()
                  {
                      CohortId = 5,
                      AccountId = 5,
@@ -261,9 +271,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      NumberOfDraftApprentices = 500,
                      IsDraft = true,
                      WithParty = Party.Provider,
-                     CreatedOn = Now.AddMinutes(-2)
+                     CreatedOn = _now.AddMinutes(-2)
                  },
-                 new CohortSummary
+                 new()
                  {
                      CohortId = 6,
                      AccountId = 6,
@@ -272,21 +282,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      NumberOfDraftApprentices = 600,
                      IsDraft = true,
                      WithParty = Party.Provider,
-                     CreatedOn = Now.AddMinutes(-1)
+                     CreatedOn = _now.AddMinutes(-1)
                  }
             };
 
             return new GetCohortsResponse(cohorts);
         }
 
-        private long GetCohortId(string cohortReference)
+        private static long GetCohortId(string cohortReference)
         {
             return long.Parse(cohortReference.Replace("_Encoded", ""));
         }
 
         private DraftCohortSummaryViewModel GetCohortInReviewViewModel(long id)
         {
-            return DraftViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
+            return _draftViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
+﻿using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
@@ -26,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Extensions
         public void HasCourseDataLock_Returns_Correct_Value(DataLockErrorCode errorCode, bool expectedResult)
         {
             _dataLock.ErrorCode = errorCode;
-            Assert.AreEqual(expectedResult, _dataLock.HasCourseDataLock());
+            Assert.That(_dataLock.HasCourseDataLock(), Is.EqualTo(expectedResult));
         }
     }
 }

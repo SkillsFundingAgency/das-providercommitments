@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using System.Collections.Generic;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit

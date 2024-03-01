@@ -1,28 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.Encoding;
-using SFA.DAS.PAS.Account.Api.ClientV2;
-using SFA.DAS.PAS.Account.Api.Types;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderCommitments.Web.UnitTests;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -35,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(fixture.Source.ProviderId));
         }
 
         [Test]
@@ -43,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.WithParty, result.WithParty);
+            Assert.That(result.WithParty, Is.EqualTo(fixture.Cohort.WithParty));
         }
 
         [Test]
@@ -51,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LegalEntityName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(fixture.Cohort.LegalEntityName));
         }
 
         [Test]
@@ -59,7 +39,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.ProviderName, result.ProviderName);
+            Assert.That(result.ProviderName, Is.EqualTo(fixture.Cohort.ProviderName));
         }
 
         [Test]
@@ -67,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Cohort.LatestMessageCreatedByProvider, result.Message);
+            Assert.That(result.Message, Is.EqualTo(fixture.Cohort.LatestMessageCreatedByProvider));
         }
 
         [Test]
@@ -77,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.Cohort.LatestMessageCreatedByProvider = string.Empty;
 
             var result = await fixture.Map();
-            Assert.AreEqual("No message added", result.Message);
+            Assert.That(result.Message, Is.EqualTo("No message added"));
         }
 
         [Test]
@@ -85,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
             var result = await fixture.Map();
-            Assert.AreEqual(fixture.Source.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(fixture.Source.CohortReference));
         }
 
         public enum ExpectedWhatHappensNextType
@@ -101,10 +81,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, SaveStatus.Approve, ExpectedWhatHappensNextType.UpdatedCohort)]
         public async Task ThenWhatHappensNextIsPopulatedCorrectly(bool isTransfer, SaveStatus saveStatus, ExpectedWhatHappensNextType expectedWhatHappensNextType)
         {
-            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
-
-            fixture.Cohort.TransferSenderId = isTransfer ? 100 : default(long?);
-            fixture.Cohort.ChangeOfPartyRequestId = isTransfer ? default(long?) : 100;
+            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture
+            {
+                Cohort =
+                {
+                    TransferSenderId = isTransfer ? 100 : default(long?),
+                    ChangeOfPartyRequestId = isTransfer ? default(long?) : 100
+                }
+            };
 
             fixture.CommitmentsApiClient
                 .Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -135,7 +119,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     throw new NotImplementedException();
             }
 
-            CollectionAssert.AreEquivalent(expectedWhatHappensNext, result.WhatHappensNext);
+            Assert.That(result.WhatHappensNext, Is.EquivalentTo(expectedWhatHappensNext));
         }
 
 
@@ -144,10 +128,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [TestCase(false, false, SaveStatus.AmendAndSend, "Cohort sent to employer for review")]
         public async Task ThenPageTitleMappedCorrectly(bool isApprovedByProvider, bool isApprovedByEmployer, SaveStatus saveStatus, string expectedText)
         {
-            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture();
-
-            fixture.Cohort.IsApprovedByProvider = isApprovedByProvider;
-            fixture.Cohort.IsApprovedByEmployer = isApprovedByEmployer;
+            var fixture = new WhenMappingAcknowledgementRequestToViewModelTestsFixture
+            {
+                Cohort =
+                {
+                    IsApprovedByProvider = isApprovedByProvider,
+                    IsApprovedByEmployer = isApprovedByEmployer
+                }
+            };
 
             fixture.CommitmentsApiClient
                 .Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -157,52 +145,41 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Map();
 
-            Assert.AreEqual(expectedText, result.PageTitle);
+            Assert.That(result.PageTitle, Is.EqualTo(expectedText));
         }
 
     }
 
     public class WhenMappingAcknowledgementRequestToViewModelTestsFixture
     {
-        public AcknowledgementRequestViewModelMapper Mapper;
-        public AcknowledgementRequest Source;
-        public AcknowledgementViewModel Result;
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient;
-        public Mock<IEncodingService> EncodingService;
-        public GetCohortResponse Cohort;
-        public GetDraftApprenticeshipsResponse DraftApprenticeshipsResponse;
-        private Fixture _autoFixture;
+        private readonly AcknowledgementRequestViewModelMapper _mapper;
 
+        public AcknowledgementRequest Source { get; }
+        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; }
+        public GetCohortResponse Cohort { get; }
+        
         public WhenMappingAcknowledgementRequestToViewModelTestsFixture()
         {
-            _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
 
-            Cohort = _autoFixture.Create<GetCohortResponse>();
+            Cohort = autoFixture.Create<GetCohortResponse>();
 
-            DraftApprenticeshipsResponse = _autoFixture.Create<GetDraftApprenticeshipsResponse>();
+            var draftApprenticeshipsResponse = autoFixture.Create<GetDraftApprenticeshipsResponse>();
 
             CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             CommitmentsApiClient.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Cohort);
 
             CommitmentsApiClient.Setup(x => x.GetDraftApprenticeships(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DraftApprenticeshipsResponse);
+                .ReturnsAsync(draftApprenticeshipsResponse);
 
-            EncodingService = new Mock<IEncodingService>();
-
-            Mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
-            Source = _autoFixture.Create<AcknowledgementRequest>();
+            _mapper = new AcknowledgementRequestViewModelMapper(CommitmentsApiClient.Object);
+            Source = autoFixture.Create<AcknowledgementRequest>();
         }
-
-        public WhenMappingAcknowledgementRequestToViewModelTestsFixture SetCohortWithParty(Party party)
-        {
-            Cohort.WithParty = party;
-            return this;
-        }
-
+        
         public Task<AcknowledgementViewModel> Map()
         {
-            return Mapper.Map(TestHelper.Clone(Source));
+            return _mapper.Map(TestHelper.Clone(Source));
         }
     }
 }

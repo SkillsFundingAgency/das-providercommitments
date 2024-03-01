@@ -1,9 +1,8 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
-using System;
-using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
 {
@@ -19,17 +18,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             AssertValidationResult(request => request.Selection, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<DetailsViewModel, T>> property, DetailsViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<DetailsViewModel, T>> property, DetailsViewModel instance, bool expectedValid)
         {
             var validator = new DetailsViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

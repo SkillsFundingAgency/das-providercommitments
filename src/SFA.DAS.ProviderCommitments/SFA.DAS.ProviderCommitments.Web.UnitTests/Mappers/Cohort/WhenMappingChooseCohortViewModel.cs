@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -73,19 +69,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void Then_ProviderId_IsMapped()
+        public async Task Then_ProviderId_IsMapped()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
-            fixture.Map();
+            await fixture.Map();
 
             fixture.Verify_ProviderId_IsMapped();
         }
 
         [Test]
-        public void Then_AccountLegalEntityPublicHashedId_IsMapped()
+        public async Task Then_AccountLegalEntityPublicHashedId_IsMapped()
         {
             var fixture = new WhenMappingChooseCohortViewModelFixture();
-            fixture.Map();
+            await fixture.Map();
 
             fixture.Verify_AccountLegalEntityPublicHashedId_IsMapped();
         }
@@ -102,10 +98,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_EmployerNameDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.EmployerName);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.EmployerName),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 
@@ -115,10 +115,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_CohortReferenceDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.CohortReference);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.CohortReference),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 
@@ -128,10 +132,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public async Task Then_Cohort_Ordered_By_StatusDescending_Correctly()
         {
-            var fixture = new WhenMappingChooseCohortViewModelFixture();
-
-            fixture.ChooseCohortByProviderRequest.SortField = nameof(ChooseCohortSummaryViewModel.Status);
-            fixture.ChooseCohortByProviderRequest.ReverseSort = true;
+            var fixture = new WhenMappingChooseCohortViewModelFixture
+            {
+                ChooseCohortByProviderRequest =
+                {
+                    SortField = nameof(ChooseCohortSummaryViewModel.Status),
+                    ReverseSort = true
+                }
+            };
 
             await fixture.Map();
 
@@ -141,121 +149,139 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingChooseCohortViewModelFixture
     {
-        public Mock<IEncodingService> EncodingService { get; set; }
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public ChooseCohortByProviderRequest ChooseCohortByProviderRequest { get; set; }
-        public GetCohortsResponse GetCohortsResponse { get; set; }
-        public ChooseCohortViewModelMapper Mapper { get; set; }
-        public ChooseCohortViewModel ChooseCohortViewModel { get; set; }
+        private readonly Mock<IEncodingService> _encodingService;
+        private readonly ChooseCohortViewModelMapper _mapper;
+        private ChooseCohortViewModel _chooseCohortViewModel ;
+        private const long ProviderId = 1;
 
-        public long ProviderId => 1;
+        public ChooseCohortByProviderRequest ChooseCohortByProviderRequest { get; }
 
         public WhenMappingChooseCohortViewModelFixture()
         {
-            EncodingService = new Mock<IEncodingService>();
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _encodingService = new Mock<IEncodingService>();
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
 
             ChooseCohortByProviderRequest = new ChooseCohortByProviderRequest() { ProviderId = ProviderId };
-            GetCohortsResponse = CreateGetCohortsResponse();
+            var getCohortsResponse = CreateGetCohortsResponse();
 
-            CommitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(GetCohortsResponse);
-            EncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
+            commitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(getCohortsResponse);
+            _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
 
-            Mapper = new ChooseCohortViewModelMapper(CommitmentsApiClient.Object, EncodingService.Object);
+            _mapper = new ChooseCohortViewModelMapper(commitmentsApiClient.Object, _encodingService.Object);
         }
 
         public async Task<WhenMappingChooseCohortViewModelFixture> Map()
         {
-            ChooseCohortViewModel = await Mapper.Map(ChooseCohortByProviderRequest);
+            _chooseCohortViewModel = await _mapper.Map(ChooseCohortByProviderRequest);
             return this;
         }
 
         public void Verify_Cohorts_InDraftWithProvider_Are_Mapped()
         {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
-
-            Assert.IsNotNull(GetCohortInReviewViewModel(5));
-            Assert.IsNotNull(GetCohortInReviewViewModel(6));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.Count(), Is.EqualTo(4));
+                Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
+                Assert.That(GetCohortInReviewViewModel(6), Is.Not.Null);
+            });
         }
 
         public void Verify_OnlyCohortsNotRelatedToChangeOfPartyAreMapped()
         {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
-            Assert.IsNull(GetCohortInReviewViewModel(7));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.Count(), Is.EqualTo(4));
+                Assert.That(GetCohortInReviewViewModel(7), Is.Null);
+            });
         }
-
-        public void Verify_CohortsInReviewWithProviderAreMapped()
-        {
-            Assert.AreEqual(4, ChooseCohortViewModel.Cohorts.Count());
-
-            Assert.IsNotNull(GetCohortInReviewViewModel(1));
-            Assert.IsNotNull(GetCohortInReviewViewModel(2));
-        }
-
+        
         public void Verify_CohortReference_Is_Mapped()
         {
-            EncodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(4));
+            _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(4));
 
-
-            Assert.AreEqual("1_Encoded", GetCohortInReviewViewModel(1).CohortReference);
-            Assert.AreEqual("2_Encoded", GetCohortInReviewViewModel(2).CohortReference);
-            Assert.AreEqual("5_Encoded", GetCohortInReviewViewModel(5).CohortReference);
-            Assert.AreEqual("6_Encoded", GetCohortInReviewViewModel(6).CohortReference);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).CohortReference, Is.EqualTo("1_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(2).CohortReference, Is.EqualTo("2_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(5).CohortReference, Is.EqualTo("5_Encoded"));
+                Assert.That(GetCohortInReviewViewModel(6).CohortReference, Is.EqualTo("6_Encoded"));
+            });
         }
 
         public void Verify_EmployerName_Is_Mapped()
         {
-            Assert.AreEqual("Employer1", GetCohortInReviewViewModel(1).EmployerName);
-            Assert.AreEqual("Employer2", GetCohortInReviewViewModel(2).EmployerName);
-            Assert.AreEqual("Employer5", GetCohortInReviewViewModel(5).EmployerName);
-            Assert.AreEqual("Employer6", GetCohortInReviewViewModel(6).EmployerName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).EmployerName, Is.EqualTo("Employer1"));
+                Assert.That(GetCohortInReviewViewModel(2).EmployerName, Is.EqualTo("Employer2"));
+                Assert.That(GetCohortInReviewViewModel(5).EmployerName, Is.EqualTo("Employer5"));
+                Assert.That(GetCohortInReviewViewModel(6).EmployerName, Is.EqualTo("Employer6"));
+            });
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.AreEqual(500, GetCohortInReviewViewModel(5).NumberOfApprentices);
-            Assert.AreEqual(600, GetCohortInReviewViewModel(6).NumberOfApprentices);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(5).NumberOfApprentices, Is.EqualTo(500));
+                Assert.That(GetCohortInReviewViewModel(6).NumberOfApprentices, Is.EqualTo(600));
+            });
         }
         public void Verify_AccountLegalEntityPublicHashedId_IsMapped()
         {
-            Assert.AreEqual("100A", GetCohortInReviewViewModel(1).AccountLegalEntityPublicHashedId);
-            Assert.AreEqual("200B", GetCohortInReviewViewModel(2).AccountLegalEntityPublicHashedId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetCohortInReviewViewModel(1).AccountLegalEntityPublicHashedId, Is.EqualTo("100A"));
+                Assert.That(GetCohortInReviewViewModel(2).AccountLegalEntityPublicHashedId, Is.EqualTo("200B"));
+            });
         }
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(ProviderId, ChooseCohortViewModel.ProviderId);
+            Assert.That(_chooseCohortViewModel.ProviderId, Is.EqualTo(ProviderId));
         }
 
         public void Verify_Ordered_By_DateCreatedDescending()
         {
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.First().EmployerName, Is.EqualTo("Employer6"));
+                Assert.That(_chooseCohortViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer1"));
+            });
         }
 
         public void Verify_Ordered_By_EmployerNameDescending()
         {
-            Assert.AreEqual("Employer6", ChooseCohortViewModel.Cohorts.First().EmployerName);
-            Assert.AreEqual("Employer1", ChooseCohortViewModel.Cohorts.Last().EmployerName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.First().EmployerName, Is.EqualTo("Employer6"));
+                Assert.That(_chooseCohortViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer1"));
+            });
         }
 
         public void Verify_Ordered_By_CohortReferenceDescending()
         {
-            Assert.AreEqual("6_Encoded", ChooseCohortViewModel.Cohorts.First().CohortReference);
-            Assert.AreEqual("1_Encoded", ChooseCohortViewModel.Cohorts.Last().CohortReference);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.First().CohortReference, Is.EqualTo("6_Encoded"));
+                Assert.That(_chooseCohortViewModel.Cohorts.Last().CohortReference, Is.EqualTo("1_Encoded"));
+            });
         }
 
         public void Verify_Ordered_By_StatusDescending()
         {
-            Assert.AreEqual("Ready to review", ChooseCohortViewModel.Cohorts.First().Status);
-            Assert.AreEqual("Draft", ChooseCohortViewModel.Cohorts.Last().Status);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_chooseCohortViewModel.Cohorts.First().Status, Is.EqualTo("Ready to review"));
+                Assert.That(_chooseCohortViewModel.Cohorts.Last().Status, Is.EqualTo("Draft"));
+            });
         }
 
-        private GetCohortsResponse CreateGetCohortsResponse()
+        private static GetCohortsResponse CreateGetCohortsResponse()
         {
             IEnumerable<CohortSummary> cohorts = new List<CohortSummary>()
             {
-                new CohortSummary
+                new()
                 {
                     CohortId = 1,
                     AccountId = 1,
@@ -267,7 +293,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Provider,
                     CreatedOn = DateTime.Now.AddHours(-6),
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 2,
                     AccountId = 2,
@@ -279,7 +305,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Provider,
                     CreatedOn = DateTime.Now.AddHours(-5)
                 },
-                new CohortSummary
+                new()
                 {
                     CohortId = 3,
                     AccountId = 3,
@@ -291,8 +317,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Employer,
                     CreatedOn = DateTime.Now.AddHours(-4)
                 },
-                 new CohortSummary
-                {
+                 new()
+                 {
                     CohortId = 4,
                     AccountId = 4,
                     ProviderId = 1,
@@ -303,7 +329,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     WithParty = Party.Employer,
                     CreatedOn = DateTime.Now.AddHours(-3)
                 },
-                 new CohortSummary
+                 new()
                  {
                      CohortId = 5,
                      AccountId = 5,
@@ -315,7 +341,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      WithParty = Party.Provider,
                      CreatedOn = DateTime.Now.AddHours(-2)
                  },
-                 new CohortSummary
+                 new()
                  {
                      CohortId = 6,
                      AccountId = 6,
@@ -327,7 +353,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                      WithParty = Party.Provider,
                      CreatedOn = DateTime.Now.AddHours(-1)
                  },
-                 new CohortSummary
+                 new()
                  {
                      CohortId = 7,
                      AccountId = 7,
@@ -346,14 +372,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             return new GetCohortsResponse(cohorts);
         }
 
-        private long GetCohortId(string cohortReference)
+        private static long GetCohortId(string cohortReference)
         {
             return long.Parse(cohortReference.Replace("_Encoded", ""));
         }
 
         private ChooseCohortSummaryViewModel GetCohortInReviewViewModel(long id)
         {
-            return ChooseCohortViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
+            return _chooseCohortViewModel.Cohorts.FirstOrDefault(x => GetCohortId(x.CohortReference) == id);
         }
     }
 }

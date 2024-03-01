@@ -10,15 +10,10 @@ using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
@@ -103,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             };
         }
 
-        private string GetCohortStatus(GetCohortDetailsResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
+        private static string GetCohortStatus(GetCohortDetailsResponse cohort, IReadOnlyCollection<DraftApprenticeshipDto> draftApprenticeships)
         {
             if (cohort.TransferSenderId.HasValue &&
                 cohort.TransferApprovalStatus == TransferApprovalStatus.Pending)
@@ -112,11 +107,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 {
                     return "Pending - with funding employer";
                 }
-                else if (cohort.WithParty == Party.Employer)
+
+                if (cohort.WithParty == Party.Employer)
                 {
                     return GetEmployerOnlyStatus(cohort);
                 }
-                else if (cohort.WithParty == Party.Provider)
+
+                if (cohort.WithParty == Party.Provider)
                 {
                     return GetProviderOnlyStatus(cohort);
                 }
@@ -148,21 +145,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 return "New request";
             }
-            else if (cohort.LastAction == LastAction.Amend)
+
+            if (cohort.LastAction == LastAction.Amend)
             {
                 return "Ready for review";
             }
-            else if (cohort.LastAction == LastAction.Approve)
+            if (cohort.LastAction == LastAction.Approve)
             {
                 if (!cohort.IsApprovedByProvider && !cohort.IsApprovedByEmployer)
                     return "Ready for review";
 
                 return "Ready for approval";
             }
-            else
-            {
-                return "New request";
-            }
+            return "New request";
         }
 
         private static string GetEmployerOnlyStatus(GetCohortDetailsResponse cohort)
@@ -171,18 +166,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 return "New request";
             }
-            else if (cohort.LastAction == LastAction.Amend)
+
+            if (cohort.LastAction == LastAction.Amend)
             {
                 return "Under review with employer";
             }
-            else if (cohort.LastAction == LastAction.Approve)
+            
+            if (cohort.LastAction == LastAction.Approve)
             {
                 return "With Employer for approval";
             }
-            else
-            {
-                return "Under review with employer";
-            }
+            return "Under review with employer";
         }
 
         private async Task<IReadOnlyCollection<DetailsViewCourseGroupingModel>> GroupCourses(IEnumerable<DraftApprenticeshipDto> draftApprenticeships, List<ApprenticeshipEmailOverlap> emailOverlaps, GetCohortDetailsResponse cohortResponse)
@@ -305,7 +299,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private async Task SetOverlappingTrainingDateRequest(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships)
         {
-            List<Task<GetOverlapRequestQueryResult>> overlapRequestQueryResultsTasks = new List<Task<GetOverlapRequestQueryResult>>();
+            var overlapRequestQueryResultsTasks = new List<Task<GetOverlapRequestQueryResult>>();
             foreach (var draftApprenticeship in draftApprenticeships) 
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
@@ -316,6 +310,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
 
             await Task.WhenAll(overlapRequestQueryResultsTasks);
+            
             foreach (var task in overlapRequestQueryResultsTasks)
             {
                  var result = task.Result;
@@ -339,7 +334,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             foreach (var courseGroup in courseGroups)
             {
                 var apprenticesExceedingFundingBand = courseGroup.DraftApprenticeships.Where(x => x.ExceedsFundingBandCap).ToList();
-                int numberExceedingBand = apprenticesExceedingFundingBand.Count;
+                var numberExceedingBand = apprenticesExceedingFundingBand.Count;
 
                 if (numberExceedingBand > 0)
                 {
@@ -353,7 +348,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private void PopulateEmailOverlapsModel(List<DetailsViewCourseGroupingModel> courseGroups)
+        private static void PopulateEmailOverlapsModel(List<DetailsViewCourseGroupingModel> courseGroups)
         {
             foreach (var courseGroup in courseGroups)
             {
@@ -366,7 +361,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsResponse cohort)
+        private static void SetRplErrors(List<DetailsViewCourseGroupingModel> courseGroups, GetCohortDetailsResponse cohort)
         {
             foreach (var courseGroup in courseGroups)
             {
@@ -419,7 +414,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
         }
 
-        private int? GetFundingBandCap(GetTrainingProgrammeResponse course, DateTime? startDate)
+        private static int? GetFundingBandCap(GetTrainingProgrammeResponse course, DateTime? startDate)
         {
             if (startDate == null)
             {
@@ -441,7 +436,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private string GetFundingBandExcessHeader(int apprenticeshipsOverCap)
+        private static string GetFundingBandExcessHeader(int apprenticeshipsOverCap)
         {
             if (apprenticeshipsOverCap == 1)
                 return new string($"{apprenticeshipsOverCap} apprenticeship above funding band maximum");
@@ -450,7 +445,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private string GetFundingBandExcessLabel(int apprenticeshipsOverCap)
+        private static string GetFundingBandExcessLabel(int apprenticeshipsOverCap)
         {
             if (apprenticeshipsOverCap == 1)
                 return new string("The price for this apprenticeship is above its");

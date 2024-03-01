@@ -8,7 +8,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Mappers
 @using SFA.DAS.Authorization.Services
 
-@inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
+@inject IAuthorizationService AuthorisationService
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -77,7 +77,7 @@
         }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
-        @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
+        @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
         {
             <div class="govuk-inset-text">
                 This apprentice is part of the simplified payments pilot. To change these details, you must contact <a class="govuk-link" href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We aim to respond within 2 working days.
@@ -123,9 +123,9 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription()</td>
+                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">@Model.Status.GetDescription().ToUpper()</td>
                 </tr>
-                @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>

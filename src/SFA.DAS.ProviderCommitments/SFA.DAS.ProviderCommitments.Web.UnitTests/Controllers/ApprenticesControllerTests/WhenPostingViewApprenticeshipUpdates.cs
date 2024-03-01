@@ -1,11 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -75,11 +69,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             private readonly ApprenticeController _sut;
             private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
-            private readonly UndoApprenticeshipUpdatesRequest _mapperResult;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
-            private readonly Mock<IModelMapper> _modelMapper;
-            public UserInfo UserInfo;
-            public Mock<IAuthenticationService> AuthenticationService { get; }
+            private Mock<IAuthenticationService> AuthenticationService { get; }
 
             public WhenPostingViewApprenticeshipUpdatesFixture()
             {
@@ -87,7 +78,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _apiClient.Setup(x => x.UndoApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<UndoApprenticeshipUpdatesRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _modelMapper = new Mock<IModelMapper>();
+                var modelMapper = new Mock<IModelMapper>();
 
                 _viewModel = new ViewApprenticeshipUpdatesViewModel
                 {
@@ -98,11 +89,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
                 var autoFixture = new Fixture();
-                UserInfo = autoFixture.Create<UserInfo>();
+                var userInfo = autoFixture.Create<UserInfo>();
                 AuthenticationService = new Mock<IAuthenticationService>();
-                AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
+                AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+                _sut = new ApprenticeController(modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
 
                 _sut.TempData = tempData;
             }
@@ -131,8 +122,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyChangesUndoneFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesUndoneFlashMessage);
+                Assert.That(flashMessage, Is.Not.Null);
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesUndoneFlashMessage));
             }
         }
     }

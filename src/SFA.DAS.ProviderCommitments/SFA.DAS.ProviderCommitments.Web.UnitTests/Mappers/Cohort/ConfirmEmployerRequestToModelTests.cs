@@ -1,9 +1,5 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -17,13 +13,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private Mock<IOuterApiClient> _apiClient;
         private ConfirmEmployerViewModel _request;
         private GetConfirmEmployerResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [Test]
         public async Task HasNoDeclaredStandards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.HasNoDeclaredStandards, result.HasNoDeclaredStandards);
+            Assert.That(result.HasNoDeclaredStandards, Is.EqualTo(_apiResponse.HasNoDeclaredStandards));
         }
 
         [SetUp]

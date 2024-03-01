@@ -1,8 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
+﻿using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -39,17 +35,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenPostingSelectDraftApprenticeshipsEntryMethodFixture
     {
-        public CohortController Sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly SelectDraftApprenticeshipsEntryMethodViewModel _viewModel;
-        public readonly long ProviderId = 123;
+        private const long ProviderId = 123;
 
         public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture()
         {
             _viewModel = new SelectDraftApprenticeshipsEntryMethodViewModel { ProviderId = ProviderId };
 
-            Sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>());
+            _sut = new CohortController(Mock.Of<IMediator>(), Mock.Of<IModelMapper>(), Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
+                        Mock.Of<IEncodingService>(),Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public WhenPostingSelectDraftApprenticeshipsEntryMethodFixture Manual()
@@ -64,6 +59,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             return this;
         }
 
-        public IActionResult Act() => Sut.SelectDraftApprenticeshipsEntryMethod(_viewModel);
+        public IActionResult Act() => _sut.SelectDraftApprenticeshipsEntryMethod(_viewModel);
     }
 }

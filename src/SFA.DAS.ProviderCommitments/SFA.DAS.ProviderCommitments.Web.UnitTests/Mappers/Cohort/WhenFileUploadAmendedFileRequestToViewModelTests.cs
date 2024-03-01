@@ -1,8 +1,5 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -25,13 +22,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         [Test]
         public void VerifyProviderIdIsMapped()
         {
-            Assert.AreEqual(_request.ProviderId, _viewModel.ProviderId);
+            Assert.That(_viewModel.ProviderId, Is.EqualTo(_request.ProviderId));
         }
 
         [Test]
         public void VerifyCacheRequestIdIsMapped()
         {
-            Assert.AreEqual(_request.CacheRequestId, _viewModel.CacheRequestId);
+            Assert.That(_viewModel.CacheRequestId, Is.EqualTo(_request.CacheRequestId));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
@@ -17,6 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
             return fixture;
         })
         {
+            
         }
     }
 }

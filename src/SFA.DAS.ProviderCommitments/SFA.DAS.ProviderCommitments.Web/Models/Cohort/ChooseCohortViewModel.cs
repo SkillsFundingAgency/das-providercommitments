@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.AccessControl;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class ChooseCohortViewModel
     {

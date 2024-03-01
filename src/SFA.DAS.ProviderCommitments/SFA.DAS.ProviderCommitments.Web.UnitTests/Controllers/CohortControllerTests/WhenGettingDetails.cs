@@ -1,16 +1,10 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.Authorization.Services;
@@ -41,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         {
             _fixture.WithParty(withParty);
             await _fixture.GetDetails();
-            Assert.IsTrue(_fixture.IsViewModelReadOnly());
+            Assert.That(_fixture.IsViewModelReadOnly(), Is.True);
         }
 
         public class WhenGettingDetailsTestFixture
@@ -49,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly DetailsRequest _request;
             private readonly DetailsViewModel _viewModel;
             private IActionResult _result;
-            private readonly string _linkGeneratorResult;
+            private readonly CohortController _cohortController;
 
             public WhenGettingDetailsTestFixture()
             {
@@ -64,18 +58,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 modelMapper.Setup(x => x.Map<DetailsViewModel>(It.Is<DetailsRequest>(r => r == _request)))
                     .ReturnsAsync(_viewModel);
 
-                _linkGeneratorResult = autoFixture.Create<string>();
+                var linkGeneratorResult = autoFixture.Create<string>();
                 var linkGenerator = new Mock<ILinkGenerator>();
                 linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
-                    .Returns(_linkGeneratorResult);
+                    .Returns(linkGeneratorResult);
 
-                CohortController = new CohortController(Mock.Of<IMediator>(),
+                _cohortController = new CohortController(Mock.Of<IMediator>(),
                      modelMapper.Object,
                      linkGenerator.Object,
-                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+                    Mock.Of<ICommitmentsApiClient>(), 
+                     Mock.Of<IEncodingService>(),
+                     Mock.Of<IOuterApiService>(),
+                     Mock.Of<IAuthorizationService>()
+                     );
             }
-
-            public CohortController CohortController { get; set; }
 
             public WhenGettingDetailsTestFixture WithParty(Infrastructure.OuterApi.Responses.Party withParty)
             {
@@ -85,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             public async Task GetDetails()
             {
-                _result = await CohortController.Details(_request);
+                _result = await _cohortController.Details(_request);
             }
 
             public void VerifyViewModelIsMappedFromRequest()
@@ -93,20 +89,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 var viewResult = (ViewResult)_result;
                 var viewModel = viewResult.Model;
 
-                Assert.IsInstanceOf<DetailsViewModel>(viewModel);
+                Assert.That(viewModel, Is.InstanceOf<DetailsViewModel>());
                 var detailsViewModel = (DetailsViewModel)viewModel;
 
-                Assert.AreEqual(_viewModel, detailsViewModel);
+                Assert.That(detailsViewModel, Is.EqualTo(_viewModel));
 
                 var expectedTotalCost = _viewModel.Courses?.Sum(g => g.DraftApprenticeships.Sum(a => a.Cost ?? 0)) ?? 0;
-                Assert.AreEqual(expectedTotalCost, _viewModel.TotalCost, "The total cost stored in the model is incorrect");
+                Assert.That(_viewModel.TotalCost, Is.EqualTo(expectedTotalCost), "The total cost stored in the model is incorrect");
             }
 
             public bool IsViewModelReadOnly()
             {
                 return _viewModel.IsReadOnly;
             }
-
         }
     }
 }

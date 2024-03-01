@@ -5,8 +5,6 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderCommitments.Web.Services;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship
 {

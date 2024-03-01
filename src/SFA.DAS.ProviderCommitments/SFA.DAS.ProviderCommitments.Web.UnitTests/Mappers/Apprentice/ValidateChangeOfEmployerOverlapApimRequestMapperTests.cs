@@ -1,7 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -37,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task Uln_IsMapped()
         {
             var result = await mapper.Map(viewModel);
-            Assert.AreEqual(viewModel.Uln, result.Uln);
+            Assert.That(result.Uln, Is.EqualTo(viewModel.Uln));
         }
 
         [Test, MoqAutoData]
@@ -45,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(viewModel.ProviderId));
         }
 
         [Test, MoqAutoData]
@@ -53,7 +50,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.StartDate.Date.Value.ToString("dd-MM-yyyy"), result.StartDate);
+            Assert.That(result.StartDate, Is.EqualTo(viewModel.StartDate.Date.Value.ToString("dd-MM-yyyy")));
         }
 
         [Test, MoqAutoData]
@@ -61,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.EndDate.Date.Value.ToString("dd-MM-yyyy"), result.EndDate);
+            Assert.That(result.EndDate, Is.EqualTo(viewModel.EndDate.Date.Value.ToString("dd-MM-yyyy")));
         }
     }
 }

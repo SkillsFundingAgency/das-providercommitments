@@ -1,6 +1,4 @@
 ﻿using SFA.DAS.ProviderCommitments.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
 {

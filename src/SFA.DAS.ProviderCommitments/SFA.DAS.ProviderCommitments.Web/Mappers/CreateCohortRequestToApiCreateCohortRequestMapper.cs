@@ -1,13 +1,12 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using WebApp= SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
-    public class CreateCohortRequestToApiCreateCohortRequestMapper : IMapper<WebApp.CreateCohortRequest, CreateCohortApimRequest>
+    public class CreateCohortRequestToApiCreateCohortRequestMapper : IMapper<CreateCohortRequest, CreateCohortApimRequest>
     {
-        public Task<CreateCohortApimRequest> Map(WebApp.CreateCohortRequest source)
+        public Task<CreateCohortApimRequest> Map(CreateCohortRequest source)
         {
             return Task.FromResult(new CreateCohortApimRequest
             {

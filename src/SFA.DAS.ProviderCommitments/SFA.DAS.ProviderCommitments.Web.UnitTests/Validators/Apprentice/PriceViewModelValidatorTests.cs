@@ -1,10 +1,9 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators.Apprentice;
-using System;
-using System.Linq.Expressions;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 {
@@ -52,17 +51,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             AssertValidationResult(request => request.EmploymentPrice, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<PriceViewModel, T>> property, PriceViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<PriceViewModel, T>> property, PriceViewModel instance, bool expectedValid)
         {
             var validator = new PriceViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

@@ -1,12 +1,7 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
@@ -37,35 +32,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(result.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo(_source.EmployerAccountLegalEntityPublicHashedId));
         }
 
         [Test]
         public async Task ThenEmployerAccountNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountLegalEntityResponse.AccountName, result.EmployerAccountName);
+            Assert.That(result.EmployerAccountName, Is.EqualTo(_accountLegalEntityResponse.AccountName));
         }
 
         [Test]
         public async Task ThenEmployerAccountLegalEntityNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountLegalEntityResponse.LegalEntityName, result.EmployerAccountLegalEntityName);
+            Assert.That(result.EmployerAccountLegalEntityName, Is.EqualTo(_accountLegalEntityResponse.LegalEntityName));
         }
 
         [Test]
         public async Task ThenProviderIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenAccountLegalEntityIdIsNotMapped()
         {
             var result = await _act();
-            Assert.AreEqual(0, result.AccountLegalEntityId);
+            Assert.That(result.AccountLegalEntityId, Is.EqualTo(0));
         }
     }
 }

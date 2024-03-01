@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
 using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.Encoding;
@@ -21,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderUrlHelper;
+using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -130,8 +125,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             private readonly Mock<IOuterApiService> _outerApiService;
             private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
             private readonly AddDraftApprenticeshipRedirectModel _addDraftApprenticeshipRedirectModel;
-
-            private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
             private Infrastructure.OuterApi.Responses.ValidateUlnOverlapOnStartDateQueryResult _validateUlnOverlapOnStartDateResult;
 
 
@@ -204,7 +197,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
                 _outerApiService = new Mock<IOuterApiService>();
                 _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-                _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
+                var validateUlnOverlapResult = new ValidateUlnOverlapResult();
+
+                _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => validateUlnOverlapResult);
 
                 _outerApiService.Setup(x => x.ValidateUlnOverlapOnStartDate(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(() => _validateUlnOverlapOnStartDateResult);
 
@@ -215,9 +210,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                     _mockModelMapper.Object,
                     _linkGenerator.Object,
                     _commitmentsApiClient.Object,
-                    authorizationService,
                     _encodingService.Object,
-                    _outerApiService.Object);
+                    _outerApiService.Object,
+                    authorizationService);
                 _controller.TempData = _tempData.Object;
             }
 
@@ -292,7 +287,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
                 var result = _actionResult as RedirectToActionResult;
-                Assert.IsNotNull(result);
+                Assert.That(result, Is.Not.Null);
                 result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
                 return this;
             }
@@ -315,8 +310,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult();
                 var result = _actionResult as RedirectToActionResult;
-                Assert.IsNotNull(result);
-                Assert.AreNotSame("RecognisePriorLearning", result.ActionName);
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.ActionName, Is.Not.SameAs("RecognisePriorLearning"));
             }
 
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmailSent()

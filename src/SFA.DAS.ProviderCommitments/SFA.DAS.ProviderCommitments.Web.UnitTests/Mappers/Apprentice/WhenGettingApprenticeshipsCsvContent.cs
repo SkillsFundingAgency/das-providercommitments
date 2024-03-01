@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -70,9 +65,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             //Act
             var content = await mapper.Map(request);
 
-            //Assert
-            Assert.AreEqual(expectedFileName, content.Name);
-            Assert.AreEqual(expectedMemoryStream, content.Content);
+            Assert.Multiple(() =>
+            {
+                //Assert
+                Assert.That(content.Name, Is.EqualTo(expectedFileName));
+                Assert.That(content.Content, Is.EqualTo(expectedMemoryStream));
+            });
         }
     }
 }

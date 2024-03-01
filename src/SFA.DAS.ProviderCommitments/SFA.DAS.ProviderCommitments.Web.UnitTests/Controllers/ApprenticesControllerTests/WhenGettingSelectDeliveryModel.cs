@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -52,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
   
         internal class GetSelectDeliveryModelFixture
         {
-            private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
+            private readonly Mock<Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
             private readonly Mock<IModelMapper> _modelMapperMock;
             private readonly SelectDeliveryModelRequest _request;
             private readonly ApprenticeController _sut;
@@ -71,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     ProviderId = 2342,
                     CacheKey = Guid.NewGuid()
                 };
-                _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
+                _cookieStorageServiceMock = new Mock<Interfaces.ICookieStorageService<IndexRequest>>();
                 _modelMapperMock = new Mock<IModelMapper>();
                 _modelMapperMock
                     .Setup(x => x.Map<SelectDeliveryModelViewModel>(_request))

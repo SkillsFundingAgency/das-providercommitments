@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
-
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
     [TestFixture]
     public class WhenIViewADraftApprenticeship

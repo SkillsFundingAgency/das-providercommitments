@@ -1,6 +1,4 @@
 ﻿using AutoFixture.NUnit3;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests
@@ -17,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             var actual = model.BuildSortRouteData(sortField);
 
             //Assert
-            Assert.AreEqual(sortField, actual[nameof(model.SortField)]);
+            Assert.That(actual[nameof(model.SortField)], Is.EqualTo(sortField));
         }
 
         [Test, AutoData]
@@ -32,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             var actual = model.BuildSortRouteData(sortField);
 
             //Assert
-            Assert.AreEqual(sortField, actual[nameof(model.SortField)]);
+            Assert.That(actual[nameof(model.SortField)], Is.EqualTo(sortField));
         }
 
         [Test, AutoData]
@@ -48,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             var actual = model.BuildSortRouteData(sortField);
 
             //Assert
-            Assert.AreEqual(expected.ToString(), actual[nameof(model.ReverseSort)]);
+            Assert.That(actual[nameof(model.ReverseSort)], Is.EqualTo(expected.ToString()));
         }
 
         [Test, AutoData]
@@ -64,7 +62,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             var actual = model.BuildSortRouteData(sortField);
 
             //Assert
-            Assert.AreEqual(expected.ToString(), actual[nameof(model.ReverseSort)]);
+            Assert.That(actual[nameof(model.ReverseSort)], Is.EqualTo(expected.ToString()));
         }
     }
 }

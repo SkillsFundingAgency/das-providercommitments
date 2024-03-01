@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
+using BulkUploadValidationError = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationErrors
 {
@@ -123,7 +124,8 @@ namespace SFA.DAS.ProviderCommitments.UnitTests.Queries.GetBulkUploadValidationE
 
             internal void VerifyFileUploadUpdatedWithErrorContent()
             {
-                _outerApiService.Verify(x => x.AddValidationMessagesToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<List<BulkUploadValidationError>>()), Times.Once);
+                _outerApiService.Verify(x => x.AddValidationMessagesToFileUploadLog(It.IsAny<long>(), It.IsAny<long>(),
+                    It.IsAny<List<BulkUploadValidationError>>()), Times.Once);
             }
 
             internal void ThrowsCommitmentsApiBulkUploadModelException()

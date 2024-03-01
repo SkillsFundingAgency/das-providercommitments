@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -16,9 +12,7 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
 {
     private readonly ICacheStorageService _cacheStorageService;
     private readonly ValidateModelStateFilter _validateModelStateFilter;
-
     
-
     public CacheFriendlyValidateModelStateFilter(ICacheStorageService cacheStorageService, ValidateModelStateFilter validateModelStateFilter)
     {
         _cacheStorageService = cacheStorageService;
@@ -76,14 +70,16 @@ public class CacheFriendlyValidateModelStateFilter : ActionFilterAttribute
 
     private void PopulateErrorsFromModelState(ActionExecutingContext filterContext)
     {
-        if (filterContext.HttpContext.Request.Method != "GET" && !filterContext.ModelState.IsValid)
+        if (filterContext.HttpContext.Request.Method == "GET" || filterContext.ModelState.IsValid)
         {
-            var modelStateErrorGuid = Guid.NewGuid();
-            _cacheStorageService.SaveToCache(modelStateErrorGuid, filterContext.ModelState.ToSerializable(), 1);
-            filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
-            filterContext.RouteData.Values[CacheKeyConstants.CachedModelStateGuidKey] = modelStateErrorGuid;
-            filterContext.Result = (IActionResult)new RedirectToRouteResult((object)filterContext.RouteData.Values);
+            return;
         }
+        
+        var modelStateErrorGuid = Guid.NewGuid();
+        _cacheStorageService.SaveToCache(modelStateErrorGuid, filterContext.ModelState.ToSerializable(), 1);
+        filterContext.RouteData.Values.Merge(filterContext.HttpContext.Request.Query);
+        filterContext.RouteData.Values[CacheKeyConstants.CachedModelStateGuidKey] = modelStateErrorGuid;
+        filterContext.Result = new RedirectToRouteResult(filterContext.RouteData.Values);
     }
 
     private bool TryGetFromCache<T>(ActionExecutingContext filterContext, string key, out T cacheResult)

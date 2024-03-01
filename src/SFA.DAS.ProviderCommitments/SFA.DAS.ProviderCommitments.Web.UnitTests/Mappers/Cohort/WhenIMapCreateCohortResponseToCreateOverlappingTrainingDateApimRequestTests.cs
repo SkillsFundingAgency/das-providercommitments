@@ -1,8 +1,5 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+﻿using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -27,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.DraftApprenticeshipId, result.DraftApprenticeshipId);
+            Assert.That(result.DraftApprenticeshipId, Is.EqualTo(_source.DraftApprenticeshipId));
         }
     }
 }

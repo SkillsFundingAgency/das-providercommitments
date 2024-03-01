@@ -1,9 +1,4 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
@@ -12,8 +7,6 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -56,35 +49,29 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenGettingFileUploadReviewDeleteFixture
     {
-        private CohortController _sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly FileUploadReviewDeleteRequest _request;
-        private readonly long _providerId = 123;
+        private const long ProviderId = 123;
         private readonly Guid _cacheRequestId = Guid.NewGuid();
-        private readonly Mock<IModelMapper> _modelMapper;
-        private readonly FileUploadReviewViewModel _viewModel;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly Mock<IMediator> _mediator;
 
         public WhenGettingFileUploadReviewDeleteFixture()
         {
             var fixture = new Fixture();
 
-            _viewModel = fixture.Create<FileUploadReviewViewModel>();
-            _request = new FileUploadReviewDeleteRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
+            var viewModel = fixture.Create<FileUploadReviewViewModel>();
+            _request = new FileUploadReviewDeleteRequest { ProviderId = ProviderId, CacheRequestId = _cacheRequestId };
 
-            _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<FileUploadReviewViewModel>(_request)).ReturnsAsync(_viewModel);
+            var modelMapper = new Mock<IModelMapper>();
+            modelMapper.Setup(x => x.Map<FileUploadReviewViewModel>(_request)).ReturnsAsync(viewModel);
             
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.IsAny<DeleteCachedFileCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => Unit.Value);
-
-
-           _linkGenerator = new Mock<ILinkGenerator>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink("/account")).Returns("pasurl/account");
+            
+           var linkGenerator = new Mock<ILinkGenerator>();
+            linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink("/account")).Returns("pasurl/account");
         
-            _sut = new CohortController(_mediator.Object, _modelMapper.Object, _linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+            _sut = new CohortController(_mediator.Object, modelMapper.Object, linkGenerator.Object, Mock.Of<ICommitmentsApiClient>(), 
+                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public Task<IActionResult> Act() => _sut.FileUploadReviewDelete(_request);

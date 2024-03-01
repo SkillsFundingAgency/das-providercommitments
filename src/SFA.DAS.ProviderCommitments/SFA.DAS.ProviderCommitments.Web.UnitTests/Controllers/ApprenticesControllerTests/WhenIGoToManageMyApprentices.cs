@@ -1,9 +1,5 @@
-﻿using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
@@ -33,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualModel = result?.Model as IndexViewModel;
 
             //Assert
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.Should().BeEquivalentTo(expectedViewModel);
         }
 
@@ -55,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualModel = result?.Model as IndexViewModel;
 
             //Assert
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.SortedByHeaderClassName.Should().EndWith("das-table__sort--asc");
         }
 
@@ -64,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -87,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest savedRequest,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -114,7 +110,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest savedRequest,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange
@@ -168,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             IndexRequest request,
             IndexViewModel expectedViewModel,
             [Frozen] Mock<IModelMapper> apprenticeshipMapper,
-            [Frozen] Mock<ICookieStorageService<IndexRequest>> cookieService,
+            [Frozen] Mock<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>> cookieService,
             [Greedy] ApprenticeController controller)
         {
             //Arrange

@@ -1,151 +1,136 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using FluentValidation;
+using Microsoft.Extensions.Logging.ApplicationInsights;
+using SFA.DAS.Authorization.CommitmentPermissions.Client;
+using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
+using SFA.DAS.Authorization.DependencyResolution.Microsoft;
 using SFA.DAS.Authorization.Mvc.Extensions;
+using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
+using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.Microsoft;
+using SFA.DAS.Authorization.Services;
+using SFA.DAS.Provider.Shared.UI.Startup;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.DependencyResolution;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
-using SFA.DAS.ProviderCommitments.Web.Validators;
-using StructureMap;
-using SFA.DAS.Provider.Shared.UI.Startup;
-using SFA.DAS.ProviderCommitments.Web.Filters;
-using SFA.DAS.ProviderCommitments.Web.ModelBinding;
-using SFA.DAS.Authorization.Mvc.Filters;
-using SFA.DAS.Authorization.Mvc.ModelBinding;
-using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using SFA.DAS.CommitmentsV2.Shared.Filters;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Infrastructure;
-using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using SFA.DAS.ProviderCommitments.Configuration;
-using SFA.DAS.Validation.Mvc.Filters;
-using SFA.DAS.ProviderCommitments.Web.Exceptions;
+using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
+using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
-namespace SFA.DAS.ProviderCommitments.Web
+namespace SFA.DAS.ProviderCommitments.Web;
+
+public class Startup
 {
-    public class Startup
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _environment;
+
+    public Startup(IConfiguration configuration, IHostEnvironment environment)
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        _configuration = configuration.BuildDasConfiguration();
+        _environment = environment;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddSingleton(_configuration);
+        services.AddLogging(builder =>
         {
-            Configuration = configuration;
-            Environment = environment;
+            builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+        });
+        
+        services.AddHttpContextAccessor();
+        services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
+
+        services.Configure<CookiePolicyOptions>(options =>
+        {
+            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            options.CheckConsentNeeded = _ => true;
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
+
+        services.AddConfigurationOptions(_configuration);
+        services.AddProviderFeatures();
+
+        services.AddDasHealthChecks();
+        services.AddProviderAuthentication(_configuration);
+        services.AddMemoryCache();
+        services.AddCache(_environment, _configuration);
+        services.AddModelMappings();
+
+        services.AddDasMvc(_configuration);
+        services.AddProviderUiServiceRegistration(_configuration);
+
+        services.AddTransient<IAuthorizationService, AuthorizationService>();
+        services.AddAuthorization<AuthorizationContextProvider>();
+
+        services
+            .AddAuthorizationService()
+            .AddDataProtection(_configuration, _environment)
+            .AddUrlHelper()
+            .AddHealthChecks();
+
+        services
+            .AddCommitmentsApiClient(_configuration)
+            .AddProviderRelationshipsApiClient(_configuration)
+            .AddProviderFeaturesAuthorization()
+            .AddProviderPermissionsAuthorization()
+            .AddApprovalsOuterApiClient()
+            .AddProviderApprenticeshipsApiClient(_configuration);
+
+        services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
+        services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
+
+        if (_configuration.UseLocalRegistry())
+        {
+            services.AddTransient<ICommitmentPermissionsApiClientFactory, LocalDevApiClientFactory>();
+        }
+        else
+        {
+            services.AddCommitmentPermissionsAuthorization();
         }
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        services.AddEncodingServices(_configuration);
+        services.AddApplicationServices();
 
-        // This method gets called by the runtime. Use this method to add services to the container.    
-        public void ConfigureServices(IServiceCollection services)
+        services.Configure<CookieTempDataProviderOptions>(options =>
         {
-            var useDfeSignIn = Configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-            services
-                .Configure<CookiePolicyOptions>(options =>
-                {
-                    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                    options.CheckConsentNeeded = context => true;
-                    options.MinimumSameSitePolicy = SameSiteMode.None;
-                })
-                .AddHttpContextAccessor()
-                .AddDasHealthChecks()
-                .AddProviderAuthentication(Configuration)
-                .AddMemoryCache()
-                .AddCache(Environment, Configuration)
-                .AddMvc(options =>
-                {
-                    options.EnableEndpointRouting = false;
-                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                    options.Filters.Add(new GoogleAnalyticsFilter());
-                    options.AddProviderCommitmentsValidation();
-                    options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
-                    options.Filters.Add<AuthorizationFilter>(int.MaxValue);
-                    options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
-                    options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
-                })
-                .AddNavigationBarSettings(Configuration)
-                .EnableGoogleAnalytics()
-                .EnableCookieBanner()
-                .SetDfESignInConfiguration(useDfeSignIn)
-                .AddZenDeskSettings(Configuration)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddControllersAsServices()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDraftApprenticeshipViewModelValidator>());
-            services.AddScoped<HandleBulkUploadValidationErrorsAttribute>();
-            services.AddScoped<DomainExceptionRedirectGetFilterAttribute>();
-            services.AddScoped<ValidateModelStateFilter>();
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
 
-            services
-                .AddAuthorizationService()
-                .AddDataProtection(Configuration, Environment)
-                .AddUrlHelper()
-                .AddHealthChecks();
+        services.AddHttpClient();
+        services.AddApplicationInsightsTelemetry();
+    }
 
-            services.Configure<CookieTempDataProviderOptions>(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-            });
-
-            services.AddHttpClient();
-            services.AddProviderUiServiceRegistration(Configuration);
-            services.AddSingleton<IBlobFileTransferClient, BlobFileTransferClient>();
-            services.AddSingleton<ICacheService, CacheService>();
-            services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<ITempDataStorageService, TempDataStorageService>();
-            services.AddTransient<IOuterApiClient, OuterApiClient>();
-            services.AddTransient<IOuterApiService, OuterApiService>();
-            services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
+    public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+    {
+        if (_environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler("/error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
         }
 
-        public void ConfigureContainer(Registry registry)
-        {
-            IoC.Initialize(registry, Configuration);
-        }
-
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
-        {
-            if (Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
-                .UseUnauthorizedAccessExceptionHandler()
-                .UseHttpsRedirection()
-                .UseStaticFiles()
-                .UseDasHealthChecks()
-                .UseCookiePolicy()
-                .UseAuthentication()
-                .UseAuthorization()
-                .ConfigureCustomExceptionMiddleware()
-                .UseMvc(routes =>
-                {
-                    routes.MapRoute(
-                        name: "default",
-                        template: "{controller=Home}/{action=Index}/{id?}");
-                })
-                .UseHealthChecks("/health-check");
-
-            var logger = loggerFactory.CreateLogger(nameof(Startup));
-            logger.Log(LogLevel.Information, "Application start up configure is complete");
-        }
+        app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
+            .UseUnauthorizedAccessExceptionHandler()
+            .UseHttpsRedirection()
+            .UseStaticFiles()
+            .UseDasHealthChecks()
+            .UseCookiePolicy()
+            .UseAuthentication()
+            .UseRouting()
+            .UseAuthorization()
+            .ConfigureCustomExceptionMiddleware()
+            .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
+            .UseHealthChecks("/health-check");
     }
 }

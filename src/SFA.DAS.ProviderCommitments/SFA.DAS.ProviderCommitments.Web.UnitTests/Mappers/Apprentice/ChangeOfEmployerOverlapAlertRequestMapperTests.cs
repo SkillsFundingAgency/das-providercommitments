@@ -1,8 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -26,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.ViewModel.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.ViewModel.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -34,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.ViewModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_fixture.ViewModel.ProviderId));
         }
 
         [Test]
@@ -42,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.AreEqual(_fixture.ViewModel.CacheKey, result.CacheKey);
+            Assert.That(result.CacheKey, Is.EqualTo(_fixture.ViewModel.CacheKey));
         }
 
 

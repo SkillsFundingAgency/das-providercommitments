@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -32,39 +28,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var result = await fixture.Act() as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(SelectEmployerViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(SelectEmployerViewModel)));
         }
     }
 
     public class SelectEmployerFixture
     {
-        public ApprenticeController Sut { get; set; }
-
+        private readonly ApprenticeController _sut;
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly SelectEmployerViewModel _viewModel;
         private readonly SelectEmployerRequest _request;
 
         public SelectEmployerFixture()
         {
             _request = new SelectEmployerRequest { ProviderId = 1, ApprenticeshipId = 1 };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = new SelectEmployerViewModel
+            var viewModel = new SelectEmployerViewModel
             {
                 AccountProviderLegalEntities = new List<AccountProviderLegalEntityViewModel>(),
             };
 
             _modelMapperMock
                 .Setup(x => x.Map<SelectEmployerViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
-        }
-
-        public SelectEmployerFixture WithModelStateErrors()
-        {
-            Sut.ControllerContext.ModelState.AddModelError("TestError", "Test Error");
-            return this;
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public void VerifyMapperWasCalled()
@@ -72,6 +60,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Verify(x => x.Map<SelectEmployerViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.SelectEmployer(_request);
+        public async Task<IActionResult> Act() => await _sut.SelectEmployer(_request);
     }
 }

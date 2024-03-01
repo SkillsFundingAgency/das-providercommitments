@@ -1,5 +1,4 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.EditApprenticeshipCourseViewModel
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.EditApprenticeshipCourseViewModel
 @inject ILinkGenerator LinkGenerator;
 
 @{
@@ -20,6 +19,8 @@
 
         <form id="addApprenticeship" novalidate method="post">
 
+            <input type="hidden" asp-for="ProviderId"/>
+            
             <partial name="_SelectStandardPartial" />
 
             <button type="submit" class="govuk-button">Continue</button>

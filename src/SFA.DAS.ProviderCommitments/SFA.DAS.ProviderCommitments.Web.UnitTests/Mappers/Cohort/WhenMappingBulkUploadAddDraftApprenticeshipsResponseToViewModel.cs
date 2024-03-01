@@ -1,10 +1,8 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -67,42 +65,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingBulkUploadAddDraftApprenticeshipsResponseToViewModelFixture
     {
-        public GetBulkUploadAddDraftApprenticeshipsResponse DraftApprenticeshipsResponse { get; set; }
-
-        public BulkUploadAddDraftApprenticeshipsViewModel _result { get; set; }
-
-        public BulkUploadAddDraftApprenticeshipsViewModelMapper _sut { get; set; }
-
-        public string cohortReference = "MKRK7V";
-        public string EmployerName = "Tesco";
-        public int NumberOfApprenticeships = 2;
-
+        private GetBulkUploadAddDraftApprenticeshipsResponse _draftApprenticeshipsResponse;
+        private BulkUploadAddDraftApprenticeshipsViewModel _result;
+        private readonly BulkUploadAddDraftApprenticeshipsViewModelMapper _sut;
+        
         public WhenMappingBulkUploadAddDraftApprenticeshipsResponseToViewModelFixture()
         {
             _sut = new BulkUploadAddDraftApprenticeshipsViewModelMapper();
         }
 
-        public async Task Action() => _result = await _sut.Map(DraftApprenticeshipsResponse);
+        public async Task Action() => _result = await _sut.Map(_draftApprenticeshipsResponse);
 
         public WhenMappingBulkUploadAddDraftApprenticeshipsResponseToViewModelFixture Map()
         {
-            DraftApprenticeshipsResponse = new GetBulkUploadAddDraftApprenticeshipsResponse()
+            _draftApprenticeshipsResponse = new GetBulkUploadAddDraftApprenticeshipsResponse()
             {
                 BulkUploadAddDraftApprenticeshipsResponse = new List<BulkUploadAddDraftApprenticeshipsResponse>()
                     {  
-                        new BulkUploadAddDraftApprenticeshipsResponse()
+                        new()
                         {                            
                             CohortReference = "MKRK7V", 
                             EmployerName = "Tesco", 
                             NumberOfApprenticeships = 1
                         },
-                       new BulkUploadAddDraftApprenticeshipsResponse()
+                       new()
                        {
                             CohortReference = "MKRK7V",
                             EmployerName = "Tesco",
                             NumberOfApprenticeships = 1
                        },
-                       new BulkUploadAddDraftApprenticeshipsResponse()
+                       new()
                        {
                             CohortReference = "MKRK7N",
                             EmployerName = "Nasdaq",
@@ -116,31 +108,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void VerifyEmployerNameIsMappedCorrectly()
         {
-            var responseEmployerName = DraftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().EmployerName;
+            var responseEmployerName = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().EmployerName;
             var viewModelEmployerName = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().EmployerName;
-            
-            Assert.AreEqual(responseEmployerName, viewModelEmployerName);
+
+            Assert.That(viewModelEmployerName, Is.EqualTo(responseEmployerName));
         }
 
         public void VerifyCohortReferenceIsMappedCorrectly()
         {            
-            var responseCohortReference = DraftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().CohortReference;
+            var responseCohortReference = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().CohortReference;
             var viewModelCohortReference = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().CohortReference;
 
-            Assert.AreEqual(responseCohortReference, viewModelCohortReference);
+            Assert.That(viewModelCohortReference, Is.EqualTo(responseCohortReference));
         }
 
         public void VerifyNumberOfApprenticeshipIsMappedCorrectly()
         {           
-            var responsenumberOfApprenticeships = DraftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().NumberOfApprenticeships;
+            var responsenumberOfApprenticeships = _draftApprenticeshipsResponse.BulkUploadAddDraftApprenticeshipsResponse.FirstOrDefault().NumberOfApprenticeships;
             var viewModelnumberOfApprenticeships = _result.BulkUploadDraftApprenticeshipsViewModel.FirstOrDefault().NumberOfApprenticeships;
 
-            Assert.AreEqual(responsenumberOfApprenticeships, viewModelnumberOfApprenticeships);
+            Assert.That(viewModelnumberOfApprenticeships, Is.EqualTo(responsenumberOfApprenticeships));
         }
 
         internal void VerifyCorrectNumberOfEmployersAreMapped()
         {
-            Assert.AreEqual(3, _result.BulkUploadDraftApprenticeshipsViewModel.Count());
+            Assert.That(_result.BulkUploadDraftApprenticeshipsViewModel, Has.Count.EqualTo(3));
         }
     }
 }

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -19,7 +13,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         private Mock<ICacheStorageService> _cacheStorage;
         private ChangeEmployerCacheItem _cacheItem;
         private SelectDeliveryModelViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()
@@ -43,16 +37,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
         public async Task DeliveryModel_Is_Persisted_To_Cache()
         {
             await _mapper.Map(_request);
-            Assert.AreEqual(_request.DeliveryModel, _cacheItem.DeliveryModel);
+            Assert.That(_cacheItem.DeliveryModel, Is.EqualTo(_request.DeliveryModel));
         }
 
         [Test]
         public async Task ConfirmRequest_Is_Returned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CacheKey, result.CacheKey);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
-            Assert.AreEqual(_request.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
+                Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
+                Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_request.ApprenticeshipHashedId));
+            });
         }
     }
 }

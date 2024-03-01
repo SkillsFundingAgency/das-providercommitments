@@ -1,27 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class AcknowledgementRequestViewModelMapper : IMapper<AcknowledgementRequest, AcknowledgementViewModel>
     {
-        private readonly IEncodingService _encodingService;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public AcknowledgementRequestViewModelMapper(ICommitmentsApiClient commitmentApiClient, IEncodingService encodingSummary)
-        {
-            _encodingService = encodingSummary;
-            _commitmentsApiClient = commitmentApiClient;
-        }
+        public AcknowledgementRequestViewModelMapper(ICommitmentsApiClient commitmentApiClient) => _commitmentsApiClient = commitmentApiClient;
 
         public async Task<AcknowledgementViewModel> Map(AcknowledgementRequest source)
         {
-            GetCohortResponse cohort = await _commitmentsApiClient.GetCohort(source.CohortId);
+            var cohort = await _commitmentsApiClient.GetCohort(source.CohortId);
 
             var result = new AcknowledgementViewModel
             {

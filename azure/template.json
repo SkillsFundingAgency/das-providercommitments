@@ -37,8 +37,7 @@
         },
         "appServiceAllowedIPs": {
             "type": "array",
-            "defaultValue": [
-            ]
+            "defaultValue": []
         },
         "keyVaultCertificateName": {
             "type": "string"
@@ -74,7 +73,8 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-        "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]"
+        "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
+        "configNames": "SFA.DAS.ProviderCommitments,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding"
     },
     "resources": [
         {
@@ -83,8 +83,7 @@
             "type": "Microsoft.Resources/resourceGroups",
             "location": "[parameters('resourceGroupLocation')]",
             "tags": "[parameters('tags')]",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "apiVersion": "2021-04-01",
@@ -216,36 +215,40 @@
                     },
                     "appServiceAppSettings": {
                         "value": {
-                          "array": [
-                            {
-                              "name": "ConfigurationStorageConnectionString",
-                              "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                              "name": "EnvironmentName",
-                              "value": "[parameters('environmentName')]"
-                            },
-                            {
-                              "name": "ResourceEnvironmentName",
-                              "value": "[parameters('resourceEnvironmentName')]"
-                            },
-                            {
-                              "name": "LoggingRedisConnectionString",
-                              "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                              "name": "LoggingRedisKey",
-                              "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                              "value": "[reference(concat(variables('appServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
-                            },
-                            {
-                              "name": "Cdn:Url",
-                              "value": "[parameters('cdnUrl')]"
-                            }
-                          ]
+                            "array": [
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ResourceEnvironmentName",
+                                    "value": "[parameters('resourceEnvironmentName')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                                    "value": "[reference(concat(variables('appServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "Cdn:Url",
+                                    "value": "[parameters('cdnUrl')]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "[variables('configNames')]"
+                                }
+                            ]
                         }
                     },
                     "customHostName": {

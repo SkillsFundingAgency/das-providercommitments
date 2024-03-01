@@ -1,14 +1,11 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Services;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using System.Linq;
+using FluentAssertions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+using SFA.DAS.ProviderCommitments.Web.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -20,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private Mock<ITempDataStorageService> _tempDataStorageService;
         private EditApprenticeshipRequest _request;
         private GetEditApprenticeshipCourseResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private EditApprenticeshipRequestViewModel _cacheModel;
         private const string ViewModelForEdit = "ViewModelForEdit";
 
@@ -48,28 +45,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task EmployerName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.EmployerName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(_apiResponse.EmployerName));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
         }
 
         [Test]
         public async Task ShowManagingStandardsContent_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.IsMainProvider, result.ShowManagingStandardsContent);
+            Assert.That(result.ShowManagingStandardsContent, Is.EqualTo(_apiResponse.IsMainProvider));
         }
 
         [Test]
         public async Task Standards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsTrue(TestHelper.EnumerablesAreEqual(_apiResponse.Standards.ToList(), result.Standards.ToList()));
+            _apiResponse.Standards.ToList().Should().BeEquivalentTo(result.Standards.ToList());
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -53,7 +52,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new SentRequest
             {
-                ApprenticeshipHashedId = source.ApprenticeshipHashedId
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
+                ProviderId = source.ProviderId
             };
         }
     }

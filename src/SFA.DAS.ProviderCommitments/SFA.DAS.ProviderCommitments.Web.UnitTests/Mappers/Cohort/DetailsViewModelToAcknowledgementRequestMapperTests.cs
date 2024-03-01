@@ -1,9 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.Azure.Documents;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -43,10 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             await _mapper.Map(_source);
 
-            Assert.AreEqual(_source.ProviderId, _apiRequest.ProviderId);
-            Assert.AreEqual(_source.CohortId, _apiRequest.CohortId);
-            Assert.AreEqual(PostCohortDetailsRequest.CohortSubmissionType.Approve, ((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType);
-            Assert.AreEqual(_source.ApproveMessage, ((PostCohortDetailsRequest.Body)_apiRequest.Data).Message);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
+                Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Approve));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.ApproveMessage));
+            });
         }
 
         [Test]
@@ -56,10 +54,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             await _mapper.Map(_source);
 
-            Assert.AreEqual(_source.ProviderId, _apiRequest.ProviderId);
-            Assert.AreEqual(_source.CohortId, _apiRequest.CohortId);
-            Assert.AreEqual(PostCohortDetailsRequest.CohortSubmissionType.Send, ((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType);
-            Assert.AreEqual(_source.SendMessage, ((PostCohortDetailsRequest.Body)_apiRequest.Data).Message);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
+                Assert.That(_apiRequest.CohortId, Is.EqualTo(_source.CohortId));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).SubmissionType, Is.EqualTo(PostCohortDetailsRequest.CohortSubmissionType.Send));
+                Assert.That(((PostCohortDetailsRequest.Body)_apiRequest.Data).Message, Is.EqualTo(_source.SendMessage));
+            });
         }
 
         [Test]
@@ -72,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await _mapper.Map(request);
 
-            Assert.AreEqual(SaveStatus.AmendAndSend, result.SaveStatus);
+            Assert.That(result.SaveStatus, Is.EqualTo(SaveStatus.AmendAndSend));
         }
 
         [TestCase(true,SaveStatus.Approve)]
@@ -87,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await _mapper.Map(request);
 
-            Assert.AreEqual(expectedStatus, result.SaveStatus);
+            Assert.That(result.SaveStatus, Is.EqualTo(expectedStatus));
         }
     }
 }

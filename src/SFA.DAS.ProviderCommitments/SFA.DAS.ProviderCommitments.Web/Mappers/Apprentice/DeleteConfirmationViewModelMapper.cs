@@ -1,11 +1,7 @@
-﻿using System;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using System.Threading;
 using SFA.DAS.Http;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 

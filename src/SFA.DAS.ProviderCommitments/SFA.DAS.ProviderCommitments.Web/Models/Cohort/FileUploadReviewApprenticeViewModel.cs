@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public class FileUploadReviewApprenticeViewModel
     {
@@ -15,14 +11,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string MessageFromEmployerText => MessageFromEmployer ?? "No message added.";
         public List<ReviewApprenticeDetailsForFileUploadCohort> FileUploadCohortDetails { get; set; }
         public List<ReviewApprenticeDetailsForExistingCohort> ExistingCohortDetails { get; set; }
-        public int? TotalApprentices => FileUploadCohortDetails?.Count() + ExistingCohortDetails?.Count();        
+        public int? TotalApprentices => FileUploadCohortDetails?.Count + ExistingCohortDetails?.Count;        
         public decimal? TotalCost => FileUploadCohortDetails?.Sum(x => x.Price ?? 0) + ExistingCohortDetails?.Sum(x => x.Price ?? 0);       
 
         public string FileUploadTotalApprenticesText
         {
             get
             {
-                int? count = FileUploadCohortDetails?.Count();
+                int? count = FileUploadCohortDetails?.Count;
 
                 if (count == 0) return string.Empty;
 
@@ -34,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public string ExistingCohortTotalApprenticesText {
             get
             {
-                int? count = ExistingCohortDetails?.Count();
+                int? count = ExistingCohortDetails?.Count;
 
                 if (count == 0) return string.Empty;
 
@@ -43,25 +39,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
         }
 
-        public string FundingBandTextForFileUploadCohorts
-        {
-            get  {  return FundingBandText(UploadedCohortsCount); }
-        }       
+        public string FundingBandTextForFileUploadCohorts => FundingBandText(UploadedCohortsCount);
 
-        public string FundingBandTextForExistingCohorts
-        {
-            get { return FundingBandText(ExistingCohortsCount); }
-        }
+        public string FundingBandTextForExistingCohorts => FundingBandText(ExistingCohortsCount);
 
-        public string FundingBandInsetTextForFileUploadCohorts
-        {
-            get { return FundingBandInsetText(UploadedCohortsCount); }
-        }
+        public string FundingBandInsetTextForFileUploadCohorts => FundingBandInsetText(UploadedCohortsCount);
 
-        public string FundingBandInsetTextForExistingCohorts
-        {
-            get  { return FundingBandInsetText(ExistingCohortsCount); }
-        }
+        public string FundingBandInsetTextForExistingCohorts => FundingBandInsetText(ExistingCohortsCount);
 
         private static string FundingBandText(int count)
         {

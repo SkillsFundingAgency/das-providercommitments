@@ -2,7 +2,6 @@
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Web.Services;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
@@ -15,19 +14,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             _tempData = tempData;
         }
 
-        public async Task<BaseDraftApprenticeshipRequest> Map(EditDraftApprenticeshipCourseViewModel source)
+        public Task<BaseDraftApprenticeshipRequest> Map(EditDraftApprenticeshipCourseViewModel source)
         {
             var draft = _tempData.RetrieveFromCache<EditDraftApprenticeshipViewModel>();
             draft.CourseCode = source.CourseCode;
             _tempData.AddToCache(draft);
 
-            return new BaseDraftApprenticeshipRequest
+            var request = new BaseDraftApprenticeshipRequest
             {
                 CohortReference = draft.CohortReference,
                 DraftApprenticeshipHashedId = draft.DraftApprenticeshipHashedId,
                 ProviderId = draft.ProviderId
             };
 
+            return Task.FromResult(request);
         }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
     public static class BulkUploadFileRequirements
     {
-        public static string[] RequiredHeaders = new[]
-        {
+        private static readonly string[] RequiredHeaders = {
             nameof(CsvRecord.CohortRef),
             nameof(CsvRecord.ULN),
             nameof(CsvRecord.FamilyName),
@@ -25,16 +23,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             nameof(CsvRecord.PriceReducedBy),
         };
 
-        public static string[] OptionalHeaders = new[]
-        {
+        public static readonly string[] OptionalHeaders = {
             nameof(CsvRecord.TrainingTotalHours),
             nameof(CsvRecord.IsDurationReducedByRPL),
             nameof(CsvRecord.TrainingHoursReduction)
         };
 
-        public static int MinimumColumnCount = RequiredHeaders.Length;
+        private static readonly int MinimumColumnCount = RequiredHeaders.Length;
 
-        public static int MaximumColumnCount = RequiredHeaders.Length + OptionalHeaders.Length;
+        private static readonly int MaximumColumnCount = RequiredHeaders.Length + OptionalHeaders.Length;
 
         public static bool CheckHeaderCount(string[] headers)
         {

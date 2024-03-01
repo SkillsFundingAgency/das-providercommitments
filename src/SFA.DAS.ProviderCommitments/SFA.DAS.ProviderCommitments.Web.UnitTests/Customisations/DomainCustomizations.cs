@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using AutoFixture.AutoMoq;
+﻿using AutoFixture.AutoMoq;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations
 {

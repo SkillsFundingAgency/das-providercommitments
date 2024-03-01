@@ -1,33 +1,29 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+[TestFixture]
+public class WhenGettingApprenticeDetails
 {
-    [TestFixture]
-    public class WhenGettingApprenticeDetails
+    private ApprenticeControllerTestFixtureBase _fixture;
+
+    [SetUp]
+    public void Arrange()
     {
-        private ApprenticeControllerTestFixtureBase _fixture;
+        _fixture = new ApprenticeControllerTestFixtureBase();
+    }
 
-        [SetUp]
-        public void Arrange()
-        {
-            _fixture = new ApprenticeControllerTestFixtureBase();
-        }
+    [Test]
+    public async Task AndWhenIGetDetails_Request_ToViewModelsMapped()
+    {
+        await _fixture.GetDetails();
 
-        [Test]
-        public async Task AndWhenIGetDetails_Request_ToViewModelsMapped()
-        {
-            await _fixture.GetDetails();
+        _fixture.VerifyModelMapperDetailsRequest_ToViewModelIsCalled();
+    }
 
-            _fixture.VerifyModelMapperDetailsRequest_ToViewModelIsCalled();
-        }
+    [Test]
+    public async Task ThenReturnsView()
+    {
+        await _fixture.GetDetails();
 
-        [Test]
-        public async Task ThenReturnsView()
-        {
-            await _fixture.GetDetails();
-
-            _fixture.VerifyDetailViewReturned();
-        }
+        _fixture.VerifyDetailViewReturned();
     }
 }

@@ -1,16 +1,12 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading.Tasks;
+﻿using System;
 using System.Linq;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+using FluentAssertions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using System;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -23,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
         private Mock<ICacheStorageService> _cacheService;
         private CreateCohortCacheItem _cacheItem;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()
@@ -48,35 +44,35 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task EmployerName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.EmployerName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(_apiResponse.EmployerName));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
         }
 
         [Test]
         public async Task ShowManagingStandardsContent_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.IsMainProvider, result.ShowManagingStandardsContent);
+            Assert.That(result.ShowManagingStandardsContent, Is.EqualTo(_apiResponse.IsMainProvider));
         }
 
         [Test]
         public async Task Standards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsTrue(TestHelper.EnumerablesAreEqual(_apiResponse.Standards.ToList(), result.Standards.ToList()));
+            _apiResponse.Standards.ToList().Should().BeEquivalentTo(result.Standards.ToList());
         }
 
         [Test]
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_cacheItem.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_cacheItem.CourseCode));
         }
 
         [Test]
@@ -86,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _request.CourseCode = "123";
 
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_request.CourseCode));
         }
     }
 }

@@ -1,15 +1,12 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Interfaces;
-
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class BulkUploadValidateApiResponseToFileUpldValidateViewModel : IMapper<FileUploadValidateErrorRequest, FileUploadValidateViewModel>
     {
-        private ICacheService _cacheService;
+        private readonly ICacheService _cacheService;
         public BulkUploadValidateApiResponseToFileUpldValidateViewModel(ICacheService cacheService)
         {
             _cacheService = cacheService;
@@ -17,8 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         public async Task<FileUploadValidateViewModel> Map(FileUploadValidateErrorRequest source )
         {
-            List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> errors =
-                new List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>();
+            var errors = new List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError>();
 
             if (!string.IsNullOrWhiteSpace(source.CachedErrorGuid))
             {
@@ -27,8 +23,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 await _cacheService.ClearCache(source.CachedErrorGuid, nameof(BulkUploadValidateApiResponseToFileUpldValidateViewModel));
             }
 
-            var viewModel = new FileUploadValidateViewModel();
-            viewModel.ProviderId = source.ProviderId;
+            var viewModel = new FileUploadValidateViewModel
+            {
+                ProviderId = source.ProviderId
+            };
 
             foreach (var sourceError in errors)
             {

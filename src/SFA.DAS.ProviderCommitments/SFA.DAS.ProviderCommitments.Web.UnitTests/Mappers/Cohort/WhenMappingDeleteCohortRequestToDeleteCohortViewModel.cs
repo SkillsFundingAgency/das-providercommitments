@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -64,45 +60,47 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingDeleteCohortRequestToDeleteCohortViewModelFixture
     {
-        public Mock<ICommitmentsApiClient> CommitmentsApiClient { get; set; }
-        public DeleteCohortRequest DeleteCohortRequest { get; set; }
-        public DeleteCohortViewModel DeleteCohortViewModel { get; set; }
-        public DeleteCohortRequestViewModelMapper Mapper { get; set; }
-        public GetCohortResponse GetCohortResponse { get; set; }
-        public GetDraftApprenticeshipsResponse GetDraftApprenticeshipsResponse { get; set; }
+        private readonly DeleteCohortRequest _deleteCohortRequest;
+        private DeleteCohortViewModel _deleteCohortViewModel;
+        private readonly DeleteCohortRequestViewModelMapper _mapper;
+        private readonly GetCohortResponse _getCohortResponse;
+        private readonly GetDraftApprenticeshipsResponse _getDraftApprenticeshipsResponse;
 
-        public long ProviderId => 1;
-        public long CohortId => 22;
+        private const long ProviderId = 1;
+        private const long CohortId = 22;
 
         public WhenMappingDeleteCohortRequestToDeleteCohortViewModelFixture()
         {
-            DeleteCohortRequest = new DeleteCohortRequest { ProviderId = ProviderId, CohortId = CohortId, CohortReference = "XYZ" };
-            CommitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            GetCohortResponse = CreateGetCohortResponse();
-            GetDraftApprenticeshipsResponse = CreateGetDraftApprenticeships();
-            CommitmentsApiClient.Setup(c => c.GetCohort(CohortId, CancellationToken.None)).ReturnsAsync(GetCohortResponse);
-            CommitmentsApiClient.Setup(c => c.GetDraftApprenticeships(CohortId, CancellationToken.None)).ReturnsAsync(GetDraftApprenticeshipsResponse);
+            _deleteCohortRequest = new DeleteCohortRequest
+                { ProviderId = ProviderId, CohortId = CohortId, CohortReference = "XYZ" };
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            _getCohortResponse = CreateGetCohortResponse();
+            _getDraftApprenticeshipsResponse = CreateGetDraftApprenticeships();
+            commitmentsApiClient.Setup(c => c.GetCohort(CohortId, CancellationToken.None))
+                .ReturnsAsync(_getCohortResponse);
+            commitmentsApiClient.Setup(c => c.GetDraftApprenticeships(CohortId, CancellationToken.None))
+                .ReturnsAsync(_getDraftApprenticeshipsResponse);
 
-            Mapper = new DeleteCohortRequestViewModelMapper(CommitmentsApiClient.Object);
+            _mapper = new DeleteCohortRequestViewModelMapper(commitmentsApiClient.Object);
         }
 
-        private GetDraftApprenticeshipsResponse CreateGetDraftApprenticeships()
+        private static GetDraftApprenticeshipsResponse CreateGetDraftApprenticeships()
         {
             return new GetDraftApprenticeshipsResponse
             {
                 DraftApprenticeships = new List<DraftApprenticeshipDto>
                 {
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 1,
                         CourseName = "Course1"
                     },
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 2,
                         CourseName = "Course1"
                     },
-                    new DraftApprenticeshipDto
+                    new()
                     {
                         Id = 3,
                         CourseName = "Course2"
@@ -113,11 +111,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public async Task<WhenMappingDeleteCohortRequestToDeleteCohortViewModelFixture> Map()
         {
-            DeleteCohortViewModel = await Mapper.Map(DeleteCohortRequest);
+            _deleteCohortViewModel = await _mapper.Map(_deleteCohortRequest);
             return this;
         }
 
-        private GetCohortResponse CreateGetCohortResponse()
+        private static GetCohortResponse CreateGetCohortResponse()
         {
             return new GetCohortResponse
             {
@@ -127,34 +125,36 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 LegalEntityName = "Employer1",
                 WithParty = Party.Provider,
             };
-          
         }
 
         internal void Verify_CohortReference_Is_Mapped()
         {
-            Assert.AreEqual(DeleteCohortRequest.CohortReference, DeleteCohortViewModel.CohortReference);
+            Assert.That(_deleteCohortViewModel.CohortReference, Is.EqualTo(_deleteCohortRequest.CohortReference));
         }
 
         internal void Verify_EmployerName_Is_Mapped()
         {
-            Assert.AreEqual(GetCohortResponse.LegalEntityName, DeleteCohortViewModel.EmployerAccountName);
+            Assert.That(_deleteCohortViewModel.EmployerAccountName, Is.EqualTo(_getCohortResponse.LegalEntityName));
         }
 
         internal void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.AreEqual(GetDraftApprenticeshipsResponse.DraftApprenticeships.Count, DeleteCohortViewModel.NumberOfApprenticeships);
+            Assert.That(_deleteCohortViewModel.NumberOfApprenticeships, Is.EqualTo(_getDraftApprenticeshipsResponse.DraftApprenticeships.Count));
         }
 
         internal void Verify_ApprenticeshipTrainingProgrammeAreMappedCorrectly()
         {
-            Assert.AreEqual(2, DeleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count);
-            Assert.IsTrue(DeleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1"));
-            Assert.IsTrue(DeleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1"), Is.True);
+                Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes, Has.Count.EqualTo(2));
+                Assert.That(_deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2"), Is.True);
+            });
         }
 
         internal void Verify_ProviderId_IsMapped()
         {
-            Assert.AreEqual(DeleteCohortRequest.ProviderId  , DeleteCohortViewModel.ProviderId);
+            Assert.That(_deleteCohortViewModel.ProviderId, Is.EqualTo(_deleteCohortRequest.ProviderId));
         }
     }
 }

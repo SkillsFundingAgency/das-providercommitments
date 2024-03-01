@@ -1,9 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -11,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
-
 {
     [TestFixture]
     public class WhenIMapSelectCourseViewModelFromEditApprenticeshipRequestViewModel
@@ -58,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ThenModelIsReturned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_model, result);
+            Assert.That(result, Is.EqualTo(_model));
         }
     }
 }

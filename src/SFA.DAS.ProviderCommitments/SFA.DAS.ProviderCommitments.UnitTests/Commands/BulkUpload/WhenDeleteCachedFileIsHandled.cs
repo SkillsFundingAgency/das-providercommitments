@@ -6,50 +6,48 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.BulkUpload
+namespace SFA.DAS.ProviderCommitments.UnitTests.Commands.BulkUpload;
+
+public class WhenDeleteCachedFileIsHandled
 {
-    public class WhenDeleteCachedFileIsHandled
+    WhenDeleteCachedFileIsHandledFixture _fixture;
+
+    [SetUp]
+    public void Arrange()
     {
-        WhenDeleteCachedFileIsHandledFixture _fixture;
+        _fixture = new WhenDeleteCachedFileIsHandledFixture();
+    }
 
-        [SetUp]
-        public void Arrange()
+    [Test]
+    public async Task ThenCachedFileIsDeleted()
+    {
+        await _fixture.Handle();
+        _fixture.VerifyCachedFileIsDeleted();
+    }
+
+    private class WhenDeleteCachedFileIsHandledFixture
+    {
+        private readonly DeleteCachedFileHandler _handler;
+        private readonly Mock<ICacheService> _cacheService;
+        private readonly DeleteCachedFileCommand _command;
+
+        public WhenDeleteCachedFileIsHandledFixture()
         {
-            _fixture = new WhenDeleteCachedFileIsHandledFixture();
+            var fixture = new Fixture();
+            _command = fixture.Create<DeleteCachedFileCommand>();
+            _cacheService = new Mock<ICacheService>();
+
+            _handler = new DeleteCachedFileHandler(_cacheService.Object);
         }
 
-        [Test]
-        public async Task ThenCachedFileIsDeleted()
+        public async Task Handle()
         {
-            await _fixture.Handle();
-            _fixture.VerifyCachedFileIsDeleted();
+            await _handler.Handle(_command, CancellationToken.None);
         }
 
-        public class WhenDeleteCachedFileIsHandledFixture
+        internal void VerifyCachedFileIsDeleted()
         {
-            private DeleteCachedFileHandler _handler;
-            private Mock<ICacheService> _cacheService;
-            private DeleteCachedFileCommand _command;
-
-            public WhenDeleteCachedFileIsHandledFixture()
-            {
-                var fixture = new Fixture();
-                _command = fixture.Create<DeleteCachedFileCommand>();
-                _cacheService = new Mock<ICacheService>();
-
-                _handler = new DeleteCachedFileHandler(_cacheService.Object);
-            }
-
-            public async Task<WhenDeleteCachedFileIsHandledFixture> Handle()
-            {
-                await _handler.Handle(_command, CancellationToken.None);
-                return this;
-            }
-
-            internal void VerifyCachedFileIsDeleted()
-            {
-                _cacheService.Verify(x => x.ClearCache(_command.CachedRequestId.ToString(), It.IsAny<string>()), Times.Once);
-            }
+            _cacheService.Verify(x => x.ClearCache(_command.CachedRequestId.ToString(), It.IsAny<string>()), Times.Once);
         }
     }
 }

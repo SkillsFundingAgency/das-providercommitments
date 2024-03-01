@@ -1,10 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -48,25 +43,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeSent);
         }
 
-        internal class WhenPostingConfirmFixture
+        private class WhenPostingConfirmFixture
         {
             private readonly ApprenticeController _sut;
             private readonly ConfirmViewModel _viewModel;
-            private readonly SentRequest _mapperResult;
-            private readonly Mock<ICommitmentsApiClient> _apiClient;
             private readonly Mock<IModelMapper> _modelMapper;
 
             public WhenPostingConfirmFixture()
             {
-                _apiClient = new Mock<ICommitmentsApiClient>();
-                _apiClient.Setup(x => x.CreateChangeOfPartyRequest(It.IsAny<long>(), It.IsAny<CreateChangeOfPartyRequestRequest>(),
+                var apiClient = new Mock<ICommitmentsApiClient>();
+                apiClient.Setup(x => x.CreateChangeOfPartyRequest(It.IsAny<long>(), It.IsAny<CreateChangeOfPartyRequestRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _mapperResult = new SentRequest();
+                var mapperResult = new SentRequest();
 
                 _modelMapper = new Mock<IModelMapper>();
                 _modelMapper.Setup(x => x.Map<SentRequest>(It.IsAny<ConfirmViewModel>()))
-                    .ReturnsAsync(_mapperResult);
+                    .ReturnsAsync(mapperResult);
 
                 _viewModel = new ConfirmViewModel
                 {
@@ -80,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
 
                 _sut.TempData = tempData;
             }
@@ -95,8 +88,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyNewEmployerNameIsStoredInTempData()
             {
                 var newEmployerName = _sut.TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
-                Assert.NotNull(newEmployerName);
-                Assert.AreEqual(_viewModel.NewEmployerName, newEmployerName);
+                Assert.That(newEmployerName, Is.Not.Null);
+                Assert.That(newEmployerName, Is.EqualTo(_viewModel.NewEmployerName));
             }
         }
     }

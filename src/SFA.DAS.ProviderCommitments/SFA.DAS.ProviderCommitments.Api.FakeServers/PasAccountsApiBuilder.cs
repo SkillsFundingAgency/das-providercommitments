@@ -10,11 +10,11 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
 {
     public class PasAccountsApiBuilder
     {
-        private static JsonSerializerSettings DefaultSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+        private static readonly JsonSerializerSettings DefaultSerializerSettings = new() { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
         private readonly WireMockServer _server;
 
-        public PasAccountsApiBuilder(int port)
+        private PasAccountsApiBuilder(int port)
         {
             _server = WireMockServer.StartWithAdminInterface(port, true);
         }

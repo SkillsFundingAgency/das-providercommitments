@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Shared.Models;
+﻿using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System;
@@ -23,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Helpers
 
         var result = RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model);
 
-        Assert.AreEqual(expectedRequireRplStatus, result);
+            Assert.That(result, Is.EqualTo(expectedRequireRplStatus));
         }
     }
 }

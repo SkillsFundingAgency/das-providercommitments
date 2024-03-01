@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
@@ -75,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return withEmployerViewModel;
         }
 
-        private string GetMessage(Message latestMessageFromProvider)
+        private static string GetMessage(Message latestMessageFromProvider)
         {
             return !string.IsNullOrWhiteSpace(latestMessageFromProvider?.Text) 
                 ? latestMessageFromProvider.Text 

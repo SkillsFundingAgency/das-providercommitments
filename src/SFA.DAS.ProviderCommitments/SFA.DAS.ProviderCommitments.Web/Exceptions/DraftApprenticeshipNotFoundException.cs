@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Exceptions
+﻿namespace SFA.DAS.ProviderCommitments.Web.Exceptions
 {
     public class DraftApprenticeshipNotFoundException : Exception
     {

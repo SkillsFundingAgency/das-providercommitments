@@ -17,9 +17,9 @@
         <form method="POST">
 
             @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.ProviderId)
-            @Html.HiddenFor(x => x.ApprenticeshipHashedId)
-            @Html.HiddenFor(x => x.IsValidCourseCode)
+            <input type="hidden" asp-for="ProviderId"/>
+            <input type="hidden" asp-for="ApprenticeshipHashedId"/>
+            <input type="hidden" asp-for="IsValidCourseCode"/>
 
             @if (!Model.IsValidCourseCode)
             {

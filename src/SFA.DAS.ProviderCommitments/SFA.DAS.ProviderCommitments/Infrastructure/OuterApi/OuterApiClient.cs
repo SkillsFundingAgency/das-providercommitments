@@ -5,10 +5,8 @@ using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
@@ -16,9 +14,9 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
     {
         private readonly HttpClient _httpClient;
         private readonly ApprovalsOuterApiConfiguration _config;
-        private ILogger<OuterApiClient> _logger;
-        const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
-        const string VersionRequestHeaderKey = "X-Version";
+        private readonly ILogger<OuterApiClient> _logger;
+        private const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
+        private const string VersionRequestHeaderKey = "X-Version";
 
         public OuterApiClient(IHttpClientFactory httpClientFactory, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
         {
@@ -101,15 +99,11 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
                 {
                     throw CreateBulkUploadApiModelException(response, json);
                 }
-                else
-                {
-                    throw new RestHttpClientException(response, json);
-                }
+
+                throw new RestHttpClientException(response, json);
             }
-            else
-            {
-                responseBody = JsonConvert.DeserializeObject<TResponse>(json);
-            }
+
+            responseBody = JsonConvert.DeserializeObject<TResponse>(json);
 
             return responseBody;
         }
@@ -123,7 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             if (string.IsNullOrWhiteSpace(content))
             {
-                _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
+                _logger.LogWarning("{RequestUri} has returned an empty string when an array of error responses was expected.", httpResponseMessage.RequestMessage.RequestUri);
                 return new CommitmentsApiBulkUploadModelException(new List<BulkUploadValidationError>());
             }
 
@@ -135,14 +129,14 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
         {
             if (string.IsNullOrWhiteSpace(content))
             {
-                _logger.LogWarning($"{httpResponseMessage.RequestMessage.RequestUri} has returned an empty string when an array of error responses was expected.");
+                _logger.LogWarning("{RequestUri} has returned an empty string when an array of error responses was expected.", httpResponseMessage.RequestMessage.RequestUri);
                 return new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(new List<CommitmentsV2.Api.Types.Validation.ErrorDetail>());
             }
 
             var errors = new CommitmentsV2.Api.Types.Validation.CommitmentsApiModelException(JsonConvert.DeserializeObject<CommitmentsV2.Api.Types.Validation.ErrorResponse>(content).Errors);
 
             var errorDetails = string.Join(";", errors.Errors.Select(e => $"{e.Field} ({e.Message})"));
-            _logger.Log(errors.Errors.Count == 0 ? LogLevel.Warning : LogLevel.Debug, $"{httpResponseMessage.RequestMessage.RequestUri} has returned {errors.Errors.Count} errors: {errorDetails}");
+            _logger.Log(errors.Errors.Count == 0 ? LogLevel.Warning : LogLevel.Debug, "{RequestUri} has returned {ErrorsCount} errors: {ErrorDetails}", httpResponseMessage.RequestMessage.RequestUri, errors.Errors.Count, errorDetails);
 
             return errors;
         }

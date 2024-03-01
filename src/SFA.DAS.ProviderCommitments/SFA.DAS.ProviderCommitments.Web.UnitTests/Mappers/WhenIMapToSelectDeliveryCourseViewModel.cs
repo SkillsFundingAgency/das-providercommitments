@@ -1,9 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -43,14 +38,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_courseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_courseCode));
         }
 
         [Test]
         public async Task ThenDeliveryModelsAreReturnedCorrectly()
         {
             var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_response.DeliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_response.DeliveryModels));
         }
 
         [TestCase(DeliveryModel.PortableFlexiJob)]
@@ -59,14 +54,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenDeliveryModelisMappedCorrectly(DeliveryModel? dm)
         {
             var result = await _mapper.Map(_providerId, _courseCode, 1234, dm, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(dm, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(dm));
         }
 
         [Test]
         public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
         {
             var result = await _mapper.Map(_providerId, _courseCode, 1234, null, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_isOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
+            Assert.That(result.IsOnFlexiPaymentsPilot, Is.EqualTo(_isOnFlexiPaymentsPilot));
         }
     }
 
@@ -101,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenReturnsTrueWhenMultipleDeliveryModelsExist()
         {
             var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -109,7 +104,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         {
             _response.DeliveryModels = new List<DeliveryModel> {DeliveryModel.Regular};
             var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
     }
 }

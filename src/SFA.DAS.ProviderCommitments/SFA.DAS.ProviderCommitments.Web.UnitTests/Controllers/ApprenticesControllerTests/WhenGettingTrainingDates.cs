@@ -1,8 +1,4 @@
 using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -40,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         private class GetTrainingDatesFixture
         {
-            private readonly Mock<ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
+            private readonly Mock<Interfaces.ICookieStorageService<IndexRequest>> _cookieStorageServiceMock;
             private readonly Mock<IModelMapper> _modelMapperMock;
             private readonly TrainingDatesRequest _request;
             private readonly ApprenticeController _sut;
@@ -58,14 +54,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                     ProviderId = 2342,
                     CacheKey = Guid.NewGuid()
                 };
-                _cookieStorageServiceMock = new Mock<ICookieStorageService<IndexRequest>>();
+                _cookieStorageServiceMock = new Mock<Interfaces.ICookieStorageService<IndexRequest>>();
                 _modelMapperMock = new Mock<IModelMapper>();
                 _modelMapperMock
                     .Setup(x => x.Map<TrainingDatesViewModel>(_request))
                     .ReturnsAsync(_viewModel);
 
                 _sut = new ApprenticeController(_modelMapperMock.Object, _cookieStorageServiceMock.Object,
-                    Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+                    Mock.Of<ICommitmentsApiClient>(), 
+                    Mock.Of<IOuterApiService>(), 
+                    Mock.Of<ICacheStorageService>());
             }
 
             public Task<IActionResult> Act() => _sut.TrainingDates(_request);

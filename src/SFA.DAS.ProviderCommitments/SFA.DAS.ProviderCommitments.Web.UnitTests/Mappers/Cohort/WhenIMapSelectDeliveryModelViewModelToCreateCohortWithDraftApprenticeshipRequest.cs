@@ -1,16 +1,11 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System;
-using System.Threading.Tasks;
-using Moq;
+﻿using System;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
+using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
-
 {
     [TestFixture]
     public class WhenIMapSelectDeliveryModelViewModelToCreateCohortWithDraftApprenticeshipRequest
@@ -41,21 +36,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenEmployerAccountLegalEntityPublicHashedIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.EmployerAccountLegalEntityPublicHashedId, result.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(result.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo(_source.EmployerAccountLegalEntityPublicHashedId));
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.StartMonthYear, result.StartMonthYear);
+            Assert.That(result.StartMonthYear, Is.EqualTo(_source.StartMonthYear));
         }
     }
 }
