@@ -23,11 +23,11 @@ public class AuthorizationResultTests
     public void Constructor_WhenConstructingAnAuthorizationResultWithAnError_ThenShouldConstructAnInvalidAuthorizationResult()
     {
         var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult(fixture.EmployerUserRoleNotAuthorized);
+        var result = new AuthorizationResult(fixture.ProviderPermissionNotGranted);
 
         result.Should().NotBeNull();
         result.IsAuthorized.Should().BeFalse();
-        result.Errors.Should().HaveCount(1).And.Contain(fixture.EmployerUserRoleNotAuthorized);
+        result.Errors.Should().HaveCount(1).And.Contain(fixture.ProviderPermissionNotGranted);
     }
 
     [Test]
@@ -45,18 +45,18 @@ public class AuthorizationResultTests
     public void AddError_WhenAddingAnError_ThenShouldInvalidateAuthorizationResult()
     {
         var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult().AddError(fixture.EmployerUserRoleNotAuthorized);
+        var result = new AuthorizationResult().AddError(fixture.ProviderPermissionNotGranted);
 
         result.Should().NotBeNull();
         result.IsAuthorized.Should().BeFalse();
-        result.Errors.Should().HaveCount(1).And.Contain(fixture.EmployerUserRoleNotAuthorized);
+        result.Errors.Should().HaveCount(1).And.Contain(fixture.ProviderPermissionNotGranted);
     }
 
     [Test]
     public void AddError_WhenAddingAErrors_ThenShouldInvalidateAuthorizationResult()
     {
         var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult().AddError(fixture.EmployerUserRoleNotAuthorized).AddError(fixture.ProviderPermissionNotGranted);
+        var result = new AuthorizationResult().AddError(fixture.ProviderPermissionNotGranted);
 
         result.Should().NotBeNull();
         result.IsAuthorized.Should().BeFalse();
@@ -67,18 +67,9 @@ public class AuthorizationResultTests
     public void HasError_WhenAnErrorOfTypeExists_ThenShouldReturnTrue()
     {
         var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult().AddError(fixture.EmployerUserRoleNotAuthorized);
+        var result = new AuthorizationResult().AddError(fixture.ProviderPermissionNotGranted);
 
-        result.HasError<EmployerUserRoleNotAuthorized>().Should().BeTrue();
-    }
-
-    [Test]
-    public void HasError_WhenAnErrorOfTypeDoesNotExist_ThenShouldReturnFalse()
-    {
-        var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult().AddError(fixture.EmployerUserRoleNotAuthorized);
-
-        result.HasError<ProviderPermissionNotGranted>().Should().BeFalse();
+        result.HasError<ProviderPermissionNotGranted>().Should().BeTrue();
     }
 
     [Test]
@@ -93,26 +84,23 @@ public class AuthorizationResultTests
     public void ToString_WhenUnauthorized_ThenShouldReturnUnauthorizedDescription()
     {
         var fixture = new AuthorizationResultTestsFixture();
-        var result = new AuthorizationResult().AddError(fixture.EmployerUserRoleNotAuthorized).AddError(fixture.ProviderPermissionNotGranted).ToString();
+        var result = new AuthorizationResult().AddError(fixture.ProviderPermissionNotGranted).AddError(fixture.ProviderPermissionNotGranted).ToString();
 
-        result.Should().Be($"IsAuthorized: False, Errors: {fixture.EmployerUserRoleNotAuthorized.Message}, {fixture.ProviderPermissionNotGranted.Message}");
+        result.Should().Be($"IsAuthorized: False, Errors: {fixture.ProviderPermissionNotGranted.Message}, {fixture.ProviderPermissionNotGranted.Message}");
     }
 }
 
 public class AuthorizationResultTestsFixture
 {
-    public EmployerUserRoleNotAuthorized EmployerUserRoleNotAuthorized { get; set; }
     public ProviderPermissionNotGranted ProviderPermissionNotGranted { get; set; }
     public List<AuthorizationError> Errors { get; set; }
 
     public AuthorizationResultTestsFixture()
     {
-        EmployerUserRoleNotAuthorized = new EmployerUserRoleNotAuthorized();
         ProviderPermissionNotGranted = new ProviderPermissionNotGranted();
 
         Errors = new List<AuthorizationError>
         {
-            EmployerUserRoleNotAuthorized,
             ProviderPermissionNotGranted
         };
     }
