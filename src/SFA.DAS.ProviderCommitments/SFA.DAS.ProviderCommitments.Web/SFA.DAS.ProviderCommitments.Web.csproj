@@ -34,8 +34,6 @@
         <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24"/>
 
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1"/>
-
-        <PackageReference Include="SFA.DAS.Authorization.Mvc" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84"/>
         <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.76" />
