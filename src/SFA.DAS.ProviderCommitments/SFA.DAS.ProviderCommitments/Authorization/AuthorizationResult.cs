@@ -2,16 +2,6 @@
 
 namespace SFA.DAS.ProviderCommitments.Authorization;
 
-public abstract class AuthorizationError
-{
-    public string Message { get; }
-
-    protected AuthorizationError(string message)
-    {
-        Message = message;
-    }
-}
-    
 public class AuthorizationResult
 {
     public bool IsAuthorized => _errors.Count == 0;
