@@ -19,7 +19,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
-using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
+using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 

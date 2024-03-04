@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.27" />
         <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+        <PackageReference Include="Scrutor" Version="4.2.2" />
         <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.30" />
         <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21"/>
 
@@ -34,7 +35,6 @@
         <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24"/>
 
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1"/>
-        <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.97"/>
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84"/>
         <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.76" />
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1"/>

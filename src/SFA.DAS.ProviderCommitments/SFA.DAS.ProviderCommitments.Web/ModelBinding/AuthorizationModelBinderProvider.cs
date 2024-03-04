@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.ModelBinding;
+
+public interface IAuthorizationContextModel { }
 
 public class AuthorizationModelBinderProvider : IModelBinderProvider
 {
@@ -18,6 +19,5 @@ public class AuthorizationModelBinderProvider : IModelBinderProvider
         var authorizationModelBinder = new AuthorizationModelBinder(simpleTypeModelBinder);
 
         return authorizationModelBinder;
-
     }
 }

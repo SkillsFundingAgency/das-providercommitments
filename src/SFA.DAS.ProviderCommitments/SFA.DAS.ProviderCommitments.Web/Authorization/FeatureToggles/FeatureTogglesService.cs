@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
-using SFA.DAS.Authorization.Features.Configuration;
-using SFA.DAS.Authorization.Features.Models;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles
 {

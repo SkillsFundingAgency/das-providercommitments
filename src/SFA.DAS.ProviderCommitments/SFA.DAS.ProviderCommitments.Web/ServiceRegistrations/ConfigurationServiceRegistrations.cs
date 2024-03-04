@@ -2,6 +2,7 @@
 using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
+using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
 using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;

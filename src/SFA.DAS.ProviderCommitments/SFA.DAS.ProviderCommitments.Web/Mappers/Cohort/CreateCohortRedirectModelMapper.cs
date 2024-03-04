@@ -1,11 +1,10 @@
-﻿using SFA.DAS.Authorization.Services;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
-using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {

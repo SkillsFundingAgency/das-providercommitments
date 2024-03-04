@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using SFA.DAS.Authorization.ModelBinding;
+﻿using System.ComponentModel.DataAnnotations;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {

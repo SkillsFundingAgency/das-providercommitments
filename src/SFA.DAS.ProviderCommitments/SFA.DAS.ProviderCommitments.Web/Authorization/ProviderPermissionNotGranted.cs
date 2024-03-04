@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Authorization.Errors;
+﻿using SFA.DAS.ProviderCommitments.Authorization;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 

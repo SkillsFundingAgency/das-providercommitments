@@ -1,3 +1,4 @@
+using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 

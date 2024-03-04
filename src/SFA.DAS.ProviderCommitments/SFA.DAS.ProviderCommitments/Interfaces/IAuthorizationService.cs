@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Authorization.Results;
+﻿using SFA.DAS.ProviderCommitments.Authorization;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Interfaces;
 
 public interface IAuthorizationService
 {

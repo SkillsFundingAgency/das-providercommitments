@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using SFA.DAS.Authorization.Caching;
+using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
@@ -26,7 +26,7 @@ public class AuthorizationResultCache : IAuthorizationHandler
         var authorizationHandlerType = _authorizationHandler.GetType();
         var authorizationResultCacheConfigurationProvider = _authorizationResultCacheConfigurationProviders[authorizationHandlerType];
         var key = authorizationResultCacheConfigurationProvider.GetCacheKey(options, authorizationContext);
-        var authorizationResult = MemoryCacheExtensions.GetOrCreateAsync(_memoryCache, key, e => CreateCacheEntryValue(_authorizationHandler, options, authorizationContext, authorizationResultCacheConfigurationProvider, e));
+        var authorizationResult = _memoryCache.GetOrCreateAsync(key, e => CreateCacheEntryValue(_authorizationHandler, options, authorizationContext, authorizationResultCacheConfigurationProvider, e));
 
         return authorizationResult;
     }

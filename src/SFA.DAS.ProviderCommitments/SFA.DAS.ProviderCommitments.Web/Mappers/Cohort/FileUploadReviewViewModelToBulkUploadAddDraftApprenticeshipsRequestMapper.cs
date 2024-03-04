@@ -1,11 +1,10 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.Authorization.Services;
-using System.Runtime.CompilerServices;
-using IAuthorizationService = SFA.DAS.ProviderCommitments.Web.Authorization.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -27,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var cacheModel = await _cacheService.GetFromCache<FileUploadCacheModel>(source.CacheRequestId.ToString());
             var csVRecords = cacheModel.CsvRecords;
             var fileUploadLogId = cacheModel.FileUploadLogId;
-            var rplExtendedData = await _authorizationService.IsAuthorizedAsync(Features.ProviderFeature.RplExtended);
+            var rplExtendedData = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
             await _cacheService.ClearCache(source.CacheRequestId.ToString(),nameof(FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper));
             return new BulkUploadAddDraftApprenticeshipsRequest
             {
