@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
+using SFA.DAS.ProviderCommitments.Web.Caching;
 using AuthorizationResultCache = SFA.DAS.ProviderCommitments.Web.Caching.AuthorizationResultCache;
 using AuthorizationResultLogger = SFA.DAS.ProviderCommitments.Web.Authorization.AuthorizationResultLogger;
+using IAuthorizationHandler = Microsoft.AspNetCore.Authorization.IAuthorizationHandler;
 using IAuthorizationResultCacheConfigurationProvider = SFA.DAS.ProviderCommitments.Web.Caching.IAuthorizationResultCacheConfigurationProvider;
+using ProviderAuthorizationHandler = SFA.DAS.ProviderCommitments.Web.Authorization.Provider.ProviderAuthorizationHandler;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
@@ -34,6 +38,16 @@ public static class AuthorizationPolicy
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
+        
+        services.AddLogging()
+            .AddMemoryCache()
+            .AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()))
+            .AddScoped<IAuthorizationService, AuthorizationService>()
+            .AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>()
+            .AddScoped<DefaultAuthorizationContextProvider>()
+            .AddScoped(p => p.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
+
+        services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
         
         return services;
     }
