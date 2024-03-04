@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
-using System.Threading.Tasks;
-using Moq;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
@@ -47,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenModelIsReturned()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_model, result);
+            Assert.That(result, Is.EqualTo(_model));
         }
     }
 }

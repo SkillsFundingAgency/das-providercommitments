@@ -1,9 +1,7 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using System;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
@@ -38,14 +36,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         [Test]
         public void Fail_fast_when_adding_invalid_mappers()
         {
+#pragma warning disable CA1806
             Action ctor = () => new SimpleModelMapper("I am not a mapper");
+#pragma warning restore CA1806
 
             ctor.Should().Throw<Exception>().WithMessage("`System.String` is not a valid IMapper<,>");
         }
     }
 
     public class A
-    { public int Id { get; set; } }
+    {
+        public int Id { get; set; }
+    }
 
     public class B
     { public int Id { get; set; } }

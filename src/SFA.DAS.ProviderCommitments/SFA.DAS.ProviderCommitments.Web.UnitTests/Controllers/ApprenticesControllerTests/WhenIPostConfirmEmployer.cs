@@ -1,11 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
@@ -36,17 +32,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class PostConfirmEmployerFixture
     {
-        public ApprenticeController Sut { get; set; }
-
-        public string RedirectUrl;
+        private readonly ApprenticeController _sut;
         private readonly ConfirmEmployerViewModel _viewModel;
-        private readonly long _providerId;
 
         public PostConfirmEmployerFixture()
         {
-            _providerId = 123;
-            _viewModel = new ConfirmEmployerViewModel { ProviderId = _providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ", ApprenticeshipHashedId = "ABC" };
-            Sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            var providerId = 123;
+            _viewModel = new ConfirmEmployerViewModel { ProviderId = providerId, EmployerAccountLegalEntityPublicHashedId = "XYZ", ApprenticeshipHashedId = "ABC" };
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public PostConfirmEmployerFixture WithConfirmFalse()
@@ -61,6 +54,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             return this;
         }
 
-        public async Task<IActionResult> Act() => await Sut.ConfirmEmployer(_viewModel);
+        public async Task<IActionResult> Act() => await _sut.ConfirmEmployer(_viewModel);
     }
 }

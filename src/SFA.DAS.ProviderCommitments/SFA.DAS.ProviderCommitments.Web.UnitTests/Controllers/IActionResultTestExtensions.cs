@@ -1,8 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
-
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
     internal static class IActionResultTestExtensions
     {
@@ -28,66 +24,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 
         public static RedirectToActionResult WithActionName(this RedirectToActionResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.ActionName);
+            Assert.That(result.ActionName, Is.EqualTo(expectedName));
             return result;
         }
 
         public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.ControllerName);
+            Assert.That(result.ControllerName, Is.EqualTo(expectedName));
             return result;
         }
 
         public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
         {
-            Assert.AreEqual(expectedName, result.RouteName);
+            Assert.That(result.RouteName, Is.EqualTo(expectedName));
             return result;
         }
 
-        public static IActionResult VerifyReturnsBadRequest(this IActionResult result)
+        private static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
         {
-            var badRequest = result.VerifyResponseObjectType<BadRequestResult>();
-
-            result.VerifyReturnsSpecifiedStatusCode(HttpStatusCode.BadRequest);
-
-            return badRequest;
-        }
-
-        public static IActionResult VerifyReturnsBadRequestObject(this IActionResult result)
-        {
-            var badRequest = result.VerifyResponseObjectType<BadRequestObjectResult>();
-
-            result.VerifyReturnsSpecifiedStatusCode(HttpStatusCode.BadRequest);
-
-            return badRequest;
-        }
-
-
-        public static ObjectResult VerifyReturnsSpecifiedStatusCode(this IActionResult result, HttpStatusCode expectedStatusCode)
-        {
-            var objectResult = result
-                .VerifyResponseObjectType<ObjectResult>();
-
-            Assert.AreEqual((int?)expectedStatusCode, objectResult.StatusCode);
-
-            return objectResult;
-        }
-
-        public static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
-        {
-            Assert.IsTrue(result is TExpectedResponseType, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
+            Assert.That(result is TExpectedResponseType, Is.True, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
             return (TExpectedResponseType)result;
         }
 
         public static RedirectResult WithUrl(this RedirectResult result, string expectedUrl)
         {
-            Assert.AreEqual(expectedUrl, result.Url);
+            Assert.That(result.Url, Is.EqualTo(expectedUrl));
             return result;
         }
 
         public static TExpectedModel WithModel<TExpectedModel>(this ViewResult result) where TExpectedModel : class
         {
-            Assert.IsInstanceOf<TExpectedModel>(result.Model);
+            Assert.That(result.Model, Is.InstanceOf<TExpectedModel>());
             return result.Model as TExpectedModel;
         }
     }

@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -242,7 +237,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             //Assert
-            _fixture.VerifyIsLockedForUpdateIsMapped();
+            EditApprenticeshipRequestToViewModelMapperTestsFixture.VerifyIsLockedForUpdateIsMapped();
         }
 
         [TestCase(ApprenticeshipStatus.Live, true, true)]
@@ -260,7 +255,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
+            Assert.That(viewModel.IsLockedForUpdate, Is.EqualTo(expectedIsLockedForUpdated));
         }
 
         [TestCase(ApprenticeshipStatus.Live, true)]
@@ -277,7 +272,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
+            Assert.That(viewModel.IsLockedForUpdate, Is.EqualTo(expectedIsLockedForUpdated));
         }
 
         [TestCase(ApprenticeshipStatus.Paused, false)]
@@ -292,7 +287,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
+            Assert.That(viewModel.IsLockedForUpdate, Is.EqualTo(expectedIsLockedForUpdated));
         }
 
         [TestCase(ApprenticeshipStatus.WaitingToStart, true, true)]
@@ -308,7 +303,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsLockedForUpdated, viewModel.IsLockedForUpdate);
+            Assert.That(viewModel.IsLockedForUpdate, Is.EqualTo(expectedIsLockedForUpdated));
         }
 
         [TestCase(true, false, true)]
@@ -324,7 +319,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsUpdateLockedForStartDateAndCourse, viewModel.IsUpdateLockedForStartDateAndCourse);
+            Assert.That(viewModel.IsUpdateLockedForStartDateAndCourse, Is.EqualTo(expectedIsUpdateLockedForStartDateAndCourse));
         }
 
         [TestCase(ApprenticeshipStatus.WaitingToStart, true, true)]
@@ -342,7 +337,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var viewModel = await _fixture.Map();
 
             //Assert
-            Assert.AreEqual(expectedIsEndDateLockedForUpdate, viewModel.IsEndDateLockedForUpdate);
+            Assert.That(viewModel.IsEndDateLockedForUpdate, Is.EqualTo(expectedIsEndDateLockedForUpdate));
         }
 
         [Test]
@@ -371,23 +366,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
     public class EditApprenticeshipRequestToViewModelMapperTestsFixture
     {
-        public EditApprenticeshipRequest _request;
-        public GetApprenticeshipResponse ApprenticeshipResponse { get; set; }
-        private Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
-        private Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
-        private Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
-        private Mock<IEncodingService> _mockEncodingService;
-        private Mock<IOuterApiClient> _outerApiClient;
-
-        private GetPriceEpisodesResponse _priceEpisodesResponse;
-        private AccountResponse _accountResponse;
-        private GetAllTrainingProgrammeStandardsResponse _allTrainingProgrammeStandardsResponse;
-        private GetAllTrainingProgrammesResponse _allTrainingProgrammeResponse;
-        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
-        private EditApprenticeshipRequestToViewModelMapper _mapper;
+        private readonly EditApprenticeshipRequest _request;
+        public GetApprenticeshipResponse ApprenticeshipResponse { get; }
+        private readonly Mock<ICommitmentsApiClient> _mockCommitmentsApiClient;
+        private readonly Mock<IAcademicYearDateProvider> _mockAcademicYearDateProvider;
+        private readonly Mock<ICurrentDateTime> _mockCurrentDateTimeProvider;
+        private readonly AccountResponse _accountResponse;
+        private readonly EditApprenticeshipRequestToViewModelMapper _mapper;
         private EditApprenticeshipRequestViewModel _viewModel;
         private IEnumerable<TrainingProgramme> _courses;
-        private GetEditApprenticeshipResponse _editApprenticeshipResponse;
+        private readonly GetEditApprenticeshipResponse _editApprenticeshipResponse;
 
         public async Task<EditApprenticeshipRequestViewModel> Map()
         {
@@ -474,57 +462,57 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         internal void VerifyHashedApprenticeshipIdIsMapped()
         {
-            Assert.AreEqual(_request.ApprenticeshipHashedId, _viewModel.ApprenticeshipHashedId);
+            Assert.That(_viewModel.ApprenticeshipHashedId, Is.EqualTo(_request.ApprenticeshipHashedId));
         }
 
         internal void VerifyLastNameIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.LastName, _viewModel.LastName);
+            Assert.That(_viewModel.LastName, Is.EqualTo(ApprenticeshipResponse.LastName));
         }
 
         internal void VerifyEmailIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.Email, _viewModel.Email);
+            Assert.That(_viewModel.Email, Is.EqualTo(ApprenticeshipResponse.Email));
         }
 
         internal void VerifyEmailAddressConfirmedByApprenticeIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.EmailAddressConfirmedByApprentice, _viewModel.EmailAddressConfirmedByApprentice);
+            Assert.That(_viewModel.EmailAddressConfirmedByApprentice, Is.EqualTo(ApprenticeshipResponse.EmailAddressConfirmedByApprentice));
         }
 
         internal void VerifyEmailShouldBePresentIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.EmailShouldBePresent, _viewModel.EmailShouldBePresent);
+            Assert.That(_viewModel.EmailShouldBePresent, Is.EqualTo(ApprenticeshipResponse.EmailShouldBePresent));
         }
 
         internal void VerifyULNIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.Uln, _viewModel.ULN);
+            Assert.That(_viewModel.ULN, Is.EqualTo(ApprenticeshipResponse.Uln));
         }
 
         internal void VerifyCourseCodeIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.CourseCode, _viewModel.CourseCode);
+            Assert.That(_viewModel.CourseCode, Is.EqualTo(ApprenticeshipResponse.CourseCode));
         }
 
         internal void VerifyCoursesAreMapped()
         {
-            Assert.AreEqual(_courses, _viewModel.Courses);
+            Assert.That(_viewModel.Courses, Is.EqualTo(_courses));
         }
 
         internal void VerifyDeliveryModelIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.DeliveryModel, _viewModel.DeliveryModel);
+            Assert.That(_viewModel.DeliveryModel, Is.EqualTo(ApprenticeshipResponse.DeliveryModel));
         }
 
-        internal void VerifyIsLockedForUpdateIsMapped()
+        internal static void VerifyIsLockedForUpdateIsMapped()
         {
             //   throw new NotImplementedException();
         }
 
         internal void VerifyFirstNameIsMapped()
         {
-            Assert.AreEqual(ApprenticeshipResponse.FirstName, _viewModel.FirstName);
+            Assert.That(_viewModel.FirstName, Is.EqualTo(ApprenticeshipResponse.FirstName));
         }
 
         internal EditApprenticeshipRequestToViewModelMapperTestsFixture IsWithInFundingPeriod()
@@ -589,12 +577,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         internal void VerifyAccountLegalEntityIsMapped()
         {
-            Assert.AreEqual("PALEID", _viewModel.EmployerAccountLegalEntityPublicHashedId);
+            Assert.That(_viewModel.EmployerAccountLegalEntityPublicHashedId, Is.EqualTo("PALEID"));
         }
 
         internal void VerifyHasMultipleDeliveryModelsIsMapped()
         {
-            Assert.AreEqual(_editApprenticeshipResponse.HasMultipleDeliveryModelOptions, _viewModel.HasMultipleDeliveryModelOptions);
+            Assert.That(_viewModel.HasMultipleDeliveryModelOptions, Is.EqualTo(_editApprenticeshipResponse.HasMultipleDeliveryModelOptions));
         }
 
         public EditApprenticeshipRequestToViewModelMapperTestsFixture()
@@ -610,56 +598,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .With(x => x.CourseCode, "ABC")
                 .With(x => x.DateOfBirth, autoFixture.Create<DateTime>())
                 .Create();
-            _priceEpisodesResponse = autoFixture.Build<GetPriceEpisodesResponse>()
-                 .With(x => x.PriceEpisodes, new List<PriceEpisode> {
-                    new PriceEpisode { Cost = 1000, ToDate = DateTime.Now.AddMonths(-1)}})
+            var priceEpisodesResponse = autoFixture.Build<GetPriceEpisodesResponse>()
+                .With(x => x.PriceEpisodes, new List<PriceEpisode> {
+                    new() { Cost = 1000, ToDate = DateTime.Now.AddMonths(-1)}})
                 .Create();
 
             _accountResponse = autoFixture.Create<AccountResponse>();
-            _allTrainingProgrammeStandardsResponse = autoFixture.Create<GetAllTrainingProgrammeStandardsResponse>();
-            _allTrainingProgrammeResponse = autoFixture.Create<GetAllTrainingProgrammesResponse>();
+            var allTrainingProgrammeStandardsResponse = autoFixture.Create<GetAllTrainingProgrammeStandardsResponse>();
+            var allTrainingProgrammeResponse = autoFixture.Create<GetAllTrainingProgrammesResponse>();
 
-            _trainingProgrammeResponse = autoFixture.Build<GetTrainingProgrammeResponse>().Create();
+            var trainingProgrammeResponse = autoFixture.Build<GetTrainingProgrammeResponse>().Create();
 
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _mockCommitmentsApiClient.Setup(r => r.GetApprenticeship(It.IsAny<long>(), CancellationToken.None))
                 .ReturnsAsync(ApprenticeshipResponse);
             _mockCommitmentsApiClient.Setup(c => c.GetPriceEpisodes(It.IsAny<long>(), CancellationToken.None))
-                .ReturnsAsync(_priceEpisodesResponse);
+                .ReturnsAsync(priceEpisodesResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetTrainingProgramme(ApprenticeshipResponse.CourseCode, It.IsAny<CancellationToken>()))
-               .ReturnsAsync(_trainingProgrammeResponse);
+               .ReturnsAsync(trainingProgrammeResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetAccount(ApprenticeshipResponse.EmployerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => _accountResponse);
 
             _mockCommitmentsApiClient.Setup(t => t.GetAllTrainingProgrammeStandards(It.IsAny<CancellationToken>()))
               .ReturnsAsync(() => {
-                  _courses = _allTrainingProgrammeStandardsResponse.TrainingProgrammes;
-                  return _allTrainingProgrammeStandardsResponse;
+                  _courses = allTrainingProgrammeStandardsResponse.TrainingProgrammes;
+                  return allTrainingProgrammeStandardsResponse;
               });
 
             _mockCommitmentsApiClient.Setup(t => t.GetAllTrainingProgrammes(It.IsAny<CancellationToken>()))
               .ReturnsAsync(() => {
-                  _courses = _allTrainingProgrammeResponse.TrainingProgrammes;
-                  return _allTrainingProgrammeResponse;
+                  _courses = allTrainingProgrammeResponse.TrainingProgrammes;
+                  return allTrainingProgrammeResponse;
               });
 
             _mockAcademicYearDateProvider = new Mock<IAcademicYearDateProvider>();
 
             _mockCurrentDateTimeProvider = new Mock<ICurrentDateTime>();
 
-            _mockEncodingService = new Mock<IEncodingService>();
-            _mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
+            var mockEncodingService = new Mock<IEncodingService>();
+            mockEncodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.PublicAccountLegalEntityId))
                 .Returns("PALEID");
 
             _editApprenticeshipResponse = autoFixture.Create<GetEditApprenticeshipResponse>();
-            _outerApiClient = new Mock<IOuterApiClient>();
-            _outerApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
+            var outerApiClient = new Mock<IOuterApiClient>();
+            outerApiClient.Setup(x => x.Get<GetEditApprenticeshipResponse>(It.Is<GetEditApprenticeshipRequest>(r =>
                     r.ApprenticeshipId == _request.ApprenticeshipId && r.ProviderId == _request.ProviderId)))
                 .ReturnsAsync(_editApprenticeshipResponse);
 
-            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, _mockEncodingService.Object, _outerApiClient.Object);
+            _mapper = new EditApprenticeshipRequestToViewModelMapper(_mockCommitmentsApiClient.Object, _mockAcademicYearDateProvider.Object, _mockCurrentDateTimeProvider.Object, mockEncodingService.Object, outerApiClient.Object);
         }
     }
 }

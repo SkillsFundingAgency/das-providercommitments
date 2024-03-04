@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -15,7 +11,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice.ChangeEmp
     {
         private SelectDeliveryModelRequestMapper _mapper;
         private ConfirmEmployerViewModel _request;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private Mock<ICacheStorageService> _cacheStorage;
         private Mock<IEncodingService> _encodingService;
         private long _accountLegalEntityId;

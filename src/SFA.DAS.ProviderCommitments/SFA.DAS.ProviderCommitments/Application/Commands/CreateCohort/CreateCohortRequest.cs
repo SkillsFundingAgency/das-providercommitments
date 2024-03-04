@@ -1,5 +1,4 @@
 ﻿using System;
-using MediatR;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort

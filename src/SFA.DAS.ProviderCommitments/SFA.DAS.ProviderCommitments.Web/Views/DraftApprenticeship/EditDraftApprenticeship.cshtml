@@ -12,7 +12,7 @@
     ViewBag.GaData.Org = Model.Employer;
 
     bool rplStillNeedsConsideration;
-    if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
+    if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
     {
         rplStillNeedsConsideration = Model.RecognisingPriorLearningExtendedStillNeedsToBeConsidered;
     }
@@ -41,10 +41,11 @@
             </div>
         </div>
         
-        <form id="addApprenticeship" novalidate method="post">
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.EmployerAccountLegalEntityPublicHashedId)
-            @Html.HiddenFor(x => x.HasMultipleDeliveryModelOptions)
+        <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.DraftApprenticeshipEdit" asp-route-providerId="@Model.ProviderId">
+            
+            <input type="hidden" asp-for="ProviderId"/>
+            <input type="hidden" asp-for="EmployerAccountLegalEntityPublicHashedId"/>
+            <input type="hidden" asp-for="HasMultipleDeliveryModelOptions"/>
 
             <button type="submit" id="defaultButton" aria-hidden="true" class="govuk-visually-hidden" tabindex="-1"></button>
 

@@ -1,12 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -43,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await _fixture.Act();
 
             var redirect = result.VerifyReturnsRedirect();
-            redirect.Url.Should().Contain($"/{_fixture._viewModel.ProviderId}/review-your-details");
+            redirect.Url.Should().Contain($"/{_fixture.ViewModel.ProviderId}/review-your-details");
         }
 
         [Test]
@@ -120,12 +114,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         internal class WhenPostingReviewApprenticeshipUpdatesFixture
         {
             private readonly ApprenticeController _sut;
-            public readonly ReviewApprenticeshipUpdatesViewModel _viewModel;
+            public readonly ReviewApprenticeshipUpdatesViewModel ViewModel;
             private readonly Mock<ICommitmentsApiClient> _apiClient;
-            private readonly Mock<IModelMapper> _modelMapper;
-            protected Mock<ILinkGenerator> _mockLinkGenerator;
-            public UserInfo UserInfo;
-            public Mock<IAuthenticationService> AuthenticationService { get; }
+            private readonly Mock<ILinkGenerator> _mockLinkGenerator;
+            private Mock<IAuthenticationService> AuthenticationService { get; }
 
             public WhenPostingReviewApprenticeshipUpdatesFixture()
             {
@@ -133,14 +125,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 _apiClient.Setup(x => x.UndoApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<UndoApprenticeshipUpdatesRequest>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-                _modelMapper = new Mock<IModelMapper>();
+                var modelMapper = new Mock<IModelMapper>();
 
                 _mockLinkGenerator = new Mock<ILinkGenerator>();
 
                 _mockLinkGenerator.Setup(x => x.CourseManagementLink(It.IsAny<string>()))
                          .Returns((string url) => "http://coursemanagement/" + url);
 
-                _viewModel = new ReviewApprenticeshipUpdatesViewModel
+                ViewModel = new ReviewApprenticeshipUpdatesViewModel
                 {
                     ApprenticeshipId = 123,
                     ApprenticeshipHashedId = "DF34WG2",
@@ -151,50 +143,50 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
 
                 var autoFixture = new Fixture();
-                UserInfo = autoFixture.Create<UserInfo>();
+                var userInfo = autoFixture.Create<UserInfo>();
                 AuthenticationService = new Mock<IAuthenticationService>();
-                AuthenticationService.Setup(x => x.UserInfo).Returns(UserInfo);
+                AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
 
-                _sut = new ApprenticeController(_modelMapper.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+                _sut = new ApprenticeController(modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
 
                 _sut.TempData = tempData;
             }
 
-            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, _viewModel, _mockLinkGenerator.Object);
+            public Task<IActionResult> Act() => _sut.ReviewApprenticeshipUpdates(AuthenticationService.Object, ViewModel, _mockLinkGenerator.Object);
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithIsValidCourseCode(bool isValidCourseCode)
             {
-                _viewModel.IsValidCourseCode = isValidCourseCode;
+                ViewModel.IsValidCourseCode = isValidCourseCode;
                 return this;
             }
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithApproveAddStandardToTraining(bool? approveAddStandardToTraining)
             {
-                _viewModel.ApproveAddStandardToTraining = approveAddStandardToTraining;
+                ViewModel.ApproveAddStandardToTraining = approveAddStandardToTraining;
                 return this;
             }
             public WhenPostingReviewApprenticeshipUpdatesFixture WithAcceptChanges()
             {
-                _viewModel.ApproveChanges = true;
+                ViewModel.ApproveChanges = true;
                 return this;
             }
 
             public WhenPostingReviewApprenticeshipUpdatesFixture WithRejectChanges()
             {
-                _viewModel.ApproveChanges = false;
+                ViewModel.ApproveChanges = false;
                 return this;
             }
 
             public void VerifyAcceptChangesCalled()
             {
-                _apiClient.Verify(x => x.AcceptApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
+                _apiClient.Verify(x => x.AcceptApprenticeshipUpdates(It.Is<long>(id => id == ViewModel.ApprenticeshipId),
                     It.Is<AcceptApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
                     It.IsAny<CancellationToken>()));
             }
 
             public void VerifyRejectChangesCalled()
             {
-                _apiClient.Verify(x => x.RejectApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
+                _apiClient.Verify(x => x.RejectApprenticeshipUpdates(It.Is<long>(id => id == ViewModel.ApprenticeshipId),
                     It.Is<RejectApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
                     It.IsAny<CancellationToken>()));
             }
@@ -202,15 +194,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyChangesApprovedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesApprovedFlashMessage);
+                Assert.That(flashMessage, Is.Not.Null);
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesApprovedFlashMessage));
             }
 
             public void VerifyChangesRejectedFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.NotNull(flashMessage);
-                Assert.AreEqual(flashMessage, ApprenticeController.ChangesRejectedFlashMessage);
+                Assert.That(flashMessage, Is.Not.Null);
+                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesRejectedFlashMessage));
             }
         }
     }

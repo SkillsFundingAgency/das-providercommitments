@@ -1,9 +1,5 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderRelationships.Api.Client;
 
@@ -25,17 +21,20 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.HealthChecks
         public async Task CheckHealthAsync_WhenPingSucceeds_ThenShouldReturnHealthyStatus()
         {
             var healthCheckResult = await _fixture.SetPingSuccess().CheckHealthAsync();
-            
-            Assert.AreEqual(HealthStatus.Healthy, healthCheckResult.Status);
+
+            Assert.That(healthCheckResult.Status, Is.EqualTo(HealthStatus.Healthy));
         }
         
         [Test]
         public async Task CheckHealthAsync_WhenPingFails_ThenShouldReturnDegradedStatus()
         {
             var healthCheckResult = await _fixture.SetPingFailure().CheckHealthAsync();
-            
-            Assert.AreEqual(HealthStatus.Degraded, healthCheckResult.Status);
-            Assert.AreEqual(_fixture.Exception.Message, healthCheckResult.Description);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(healthCheckResult.Status, Is.EqualTo(HealthStatus.Degraded));
+                Assert.That(healthCheckResult.Description, Is.EqualTo(_fixture.Exception.Message));
+            });
         }
 
         private class ProviderRelationshipsApiHealthCheckTestsFixture

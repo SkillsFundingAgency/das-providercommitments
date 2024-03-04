@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+﻿using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -28,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenSavingFailsBecauseOfModelValidationItShouldThrowCommitmentApiModelException()
+        public void AndWhenSavingFailsBecauseOfModelValidationItShouldThrowCommitmentApiModelException()
         {
             _fixture.SetupAddingToThrowCommitmentsApiException();
             Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToAddDraftApprenticeship());
@@ -57,7 +55,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         }
 
         [Test]
-        public async Task AndWhenReturningToPageAfterChnagingTheCourseOrDeliveryModel()
+        public async Task AndWhenReturningToPageAfterChangingTheCourseOrDeliveryModel()
         {
             _fixture.SetupTempDraftApprenticeship();
 

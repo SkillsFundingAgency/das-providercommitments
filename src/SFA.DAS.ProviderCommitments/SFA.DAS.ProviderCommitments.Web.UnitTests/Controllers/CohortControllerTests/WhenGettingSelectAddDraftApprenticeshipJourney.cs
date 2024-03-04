@@ -1,18 +1,11 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Authorization.Services;
+﻿using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -34,7 +27,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
         private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
         public readonly long ProviderId = 123;
-        private readonly Mock<IModelMapper> _modelMapperMock;
         public  SelectAddDraftApprenticeshipJourneyViewModel ViewModel { get; set; }
 
         public WhenGettingSelectAddDraftApprenticeshipJourneyFixture()
@@ -47,17 +39,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             ViewModel.HasExistingCohort = true;
             ViewModel.HasCreateCohortPermission = true;
 
-            _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock
+            var modelMapperMock = new Mock<IModelMapper>();
+            modelMapperMock
                 .Setup(x => x.Map<SelectAddDraftApprenticeshipJourneyViewModel>(_request))
                 .ReturnsAsync(ViewModel);
 
             Sut = new CohortController(Mock.Of<IMediator>(),
-                _modelMapperMock.Object, 
-                Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(),
-                Mock.Of<IAuthorizationService>(),
+                modelMapperMock.Object, 
+                Mock.Of<ILinkGenerator>(), 
+                Mock.Of<ICommitmentsApiClient>(),
                 Mock.Of<IEncodingService>(),
-                Mock.Of<IOuterApiService>());
+                Mock.Of<IOuterApiService>(),
+                Mock.Of<IAuthorizationService>()
+                );
         }
 
         public async Task<IActionResult> ActAsync() => await Sut.SelectAddDraftApprenticeshipJourney(_request);

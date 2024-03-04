@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.Kernel;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -14,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetApprenticeshipUpdatesResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -34,7 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             fixture.GetReviewApprenticeshipUpdatesResponse.ApprenticeshipUpdates.CourseCode = "ABC";
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.IsValidCourseCode, viewModel.IsValidCourseCode);
+            Assert.That(viewModel.IsValidCourseCode, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.IsValidCourseCode));
         }
 
         [Test]
@@ -42,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.Source.ApprenticeshipHashedId, viewModel.ApprenticeshipHashedId);
+            Assert.That(viewModel.ApprenticeshipHashedId, Is.EqualTo(fixture.Source.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -50,7 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.Source.ProviderId, viewModel.ProviderId);
+            Assert.That(viewModel.ProviderId, Is.EqualTo(fixture.Source.ProviderId));
         }
 
         [Test]
@@ -58,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
+            Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
         }
 
         [Test]
@@ -66,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.LastName, viewModel.ApprenticeshipUpdates.LastName);
+            Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
         }
 
         [Test]
@@ -74,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.DateOfBirth, viewModel.ApprenticeshipUpdates.DateOfBirth);
+            Assert.That(viewModel.ApprenticeshipUpdates.DateOfBirth, Is.EqualTo(fixture.ApprenticeshipUpdate.DateOfBirth));
         }
 
         [Test]
@@ -82,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Cost, viewModel.ApprenticeshipUpdates.Cost);
+            Assert.That(viewModel.ApprenticeshipUpdates.Cost, Is.EqualTo(fixture.ApprenticeshipUpdate.Cost));
         }
 
         [Test]
@@ -90,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.StartDate, viewModel.ApprenticeshipUpdates.StartDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.StartDate, Is.EqualTo(fixture.ApprenticeshipUpdate.StartDate));
         }
 
         [Test]
@@ -98,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EndDate, viewModel.ApprenticeshipUpdates.EndDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.EndDate, Is.EqualTo(fixture.ApprenticeshipUpdate.EndDate));
         }
 
         [Test]
@@ -106,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel, viewModel.ApprenticeshipUpdates.DeliveryModel);
+            Assert.That(viewModel.ApprenticeshipUpdates.DeliveryModel, Is.EqualTo(fixture.ApprenticeshipUpdate.DeliveryModel));
         }
 
         [Test]
@@ -114,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentEndDate, viewModel.ApprenticeshipUpdates.EmploymentEndDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.EmploymentEndDate, Is.EqualTo(fixture.ApprenticeshipUpdate.EmploymentEndDate));
         }
 
         [Test]
@@ -122,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentPrice, viewModel.ApprenticeshipUpdates.EmploymentPrice);
+            Assert.That(viewModel.ApprenticeshipUpdates.EmploymentPrice, Is.EqualTo(fixture.ApprenticeshipUpdate.EmploymentPrice));
         }
 
         [Test]
@@ -130,7 +124,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseCode, viewModel.ApprenticeshipUpdates.CourseCode);
+            Assert.That(viewModel.ApprenticeshipUpdates.CourseCode, Is.EqualTo(fixture.ApprenticeshipUpdate.CourseCode));
         }
 
         [Test]
@@ -138,7 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Email, viewModel.ApprenticeshipUpdates.Email);
+            Assert.That(viewModel.ApprenticeshipUpdates.Email, Is.EqualTo(fixture.ApprenticeshipUpdate.Email));
         }
 
         [Test]
@@ -146,7 +140,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseName, viewModel.ApprenticeshipUpdates.CourseName);
+            Assert.That(viewModel.ApprenticeshipUpdates.CourseName, Is.EqualTo(fixture.ApprenticeshipUpdate.CourseName));
         }
 
         [Test]
@@ -154,7 +148,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Version, viewModel.ApprenticeshipUpdates.Version);
+            Assert.That(viewModel.ApprenticeshipUpdates.Version, Is.EqualTo(fixture.ApprenticeshipUpdate.Version));
         }
 
         [Test]
@@ -162,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Option, viewModel.ApprenticeshipUpdates.Option);
+            Assert.That(viewModel.ApprenticeshipUpdates.Option, Is.EqualTo(fixture.ApprenticeshipUpdate.Option));
         }
 
         [Test]
@@ -170,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.ProviderName, viewModel.ProviderName);
+            Assert.That(viewModel.ProviderName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.ProviderName));
         }
 
         [Test]
@@ -178,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
+            Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
         }
 
         [Test]
@@ -186,7 +180,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.LastName, viewModel.ApprenticeshipUpdates.LastName);
+            Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
         }
 
         [Test]
@@ -194,7 +188,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.DateOfBirth, viewModel.ApprenticeshipUpdates.DateOfBirth);
+            Assert.That(viewModel.ApprenticeshipUpdates.DateOfBirth, Is.EqualTo(fixture.ApprenticeshipUpdate.DateOfBirth));
         }
 
         [Test]
@@ -202,14 +196,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Cost, viewModel.ApprenticeshipUpdates.Cost);
+            Assert.That(viewModel.ApprenticeshipUpdates.Cost, Is.EqualTo(fixture.ApprenticeshipUpdate.Cost));
         }
 
         [Test] public async Task OriginalApprenticeship_DeliveryModel_IsMapped()
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.DeliveryModel, viewModel.ApprenticeshipUpdates.DeliveryModel);
+            Assert.That(viewModel.ApprenticeshipUpdates.DeliveryModel, Is.EqualTo(fixture.ApprenticeshipUpdate.DeliveryModel));
         }
 
         [Test]
@@ -217,7 +211,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentEndDate, viewModel.ApprenticeshipUpdates.EmploymentEndDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.EmploymentEndDate, Is.EqualTo(fixture.ApprenticeshipUpdate.EmploymentEndDate));
         }
 
         [Test]
@@ -225,7 +219,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EmploymentPrice, viewModel.ApprenticeshipUpdates.EmploymentPrice);
+            Assert.That(viewModel.ApprenticeshipUpdates.EmploymentPrice, Is.EqualTo(fixture.ApprenticeshipUpdate.EmploymentPrice));
         }
 
         [Test]
@@ -233,7 +227,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.StartDate, viewModel.ApprenticeshipUpdates.StartDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.StartDate, Is.EqualTo(fixture.ApprenticeshipUpdate.StartDate));
         }
 
         [Test]
@@ -241,7 +235,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.EndDate, viewModel.ApprenticeshipUpdates.EndDate);
+            Assert.That(viewModel.ApprenticeshipUpdates.EndDate, Is.EqualTo(fixture.ApprenticeshipUpdate.EndDate));
         }
 
         [Test]
@@ -249,7 +243,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseCode, viewModel.ApprenticeshipUpdates.CourseCode);
+            Assert.That(viewModel.ApprenticeshipUpdates.CourseCode, Is.EqualTo(fixture.ApprenticeshipUpdate.CourseCode));
         }
 
         [Test]
@@ -257,7 +251,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.CourseName, viewModel.ApprenticeshipUpdates.CourseName);
+            Assert.That(viewModel.ApprenticeshipUpdates.CourseName, Is.EqualTo(fixture.ApprenticeshipUpdate.CourseName));
         }
 
         [Test]
@@ -265,7 +259,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Version, viewModel.ApprenticeshipUpdates.Version);
+            Assert.That(viewModel.ApprenticeshipUpdates.Version, Is.EqualTo(fixture.ApprenticeshipUpdate.Version));
         }
 
         [Test]
@@ -273,7 +267,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Option, viewModel.ApprenticeshipUpdates.Option);
+            Assert.That(viewModel.ApprenticeshipUpdates.Option, Is.EqualTo(fixture.ApprenticeshipUpdate.Option));
         }
 
         [Test]
@@ -283,8 +277,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
-            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.LastName, viewModel.ApprenticeshipUpdates.LastName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.LastName));
+            });
         }
 
         [Test]
@@ -294,8 +291,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.LastName, viewModel.ApprenticeshipUpdates.LastName);
-            Assert.AreEqual(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.GetReviewApprenticeshipUpdatesResponse.OriginalApprenticeship.FirstName));
+            });
         }
 
         [Test]
@@ -303,8 +303,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.FirstName, viewModel.ApprenticeshipUpdates.FirstName);
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.LastName, viewModel.ApprenticeshipUpdates.LastName);
+            Assert.Multiple(() =>
+            {
+                Assert.That(viewModel.ApprenticeshipUpdates.FirstName, Is.EqualTo(fixture.ApprenticeshipUpdate.FirstName));
+                Assert.That(viewModel.ApprenticeshipUpdates.LastName, Is.EqualTo(fixture.ApprenticeshipUpdate.LastName));
+            });
         }
 
         [Test]
@@ -312,7 +315,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var viewModel = await fixture.Map();
 
-            Assert.AreEqual(fixture.ApprenticeshipUpdate.Email, viewModel.ApprenticeshipUpdates.Email);
+            Assert.That(viewModel.ApprenticeshipUpdates.Email, Is.EqualTo(fixture.ApprenticeshipUpdate.Email));
         }
 
         public class ReviewApprenticeshipUpdatesRequestToViewModelMapperTestsFixture
@@ -346,8 +349,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 var priceEpisode = new GetPriceEpisodesResponse
                 {
-                    PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>(){ new GetPriceEpisodesResponse.PriceEpisode
-                {
+                    PriceEpisodes = new List<GetPriceEpisodesResponse.PriceEpisode>(){ new()
+                    {
                     FromDate = DateTime.UtcNow.AddDays(-10),
                     ToDate = null,
                     Cost = 100

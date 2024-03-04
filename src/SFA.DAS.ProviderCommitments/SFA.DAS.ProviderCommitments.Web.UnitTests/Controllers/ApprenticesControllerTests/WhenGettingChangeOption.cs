@@ -1,9 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -41,8 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetChangeOptionFixture
     {
-        public ApprenticeController Controller { get; set; }
-
+        private readonly ApprenticeController _controller;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ChangeOptionRequest _request;
         private readonly ChangeOptionViewModel _viewModel;
@@ -57,12 +51,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(m => m.Map<ChangeOptionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            Controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _controller = new ApprenticeController(_modelMapperMock.Object,
+                Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+                Mock.Of<ICommitmentsApiClient>(), 
+                Mock.Of<IOuterApiService>(), 
+                Mock.Of<ICacheStorageService>());
         }
 
         public async Task<IActionResult> ChangeOption()
         {
-            var result = await Controller.ChangeOption(_request);
+            var result = await _controller.ChangeOption(_request);
 
             return result as ViewResult;
         }
@@ -76,7 +74,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var viewModel = viewResult.Model as ChangeOptionViewModel;
 
-            Assert.AreEqual(_viewModel, viewModel);
+            Assert.That(viewModel, Is.EqualTo(_viewModel));
         }
     }
 }

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
@@ -50,8 +49,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
             }
             catch (Exception exc)
             {
-                _logger.LogError(exc, $"Failed to process bulk upload file - ProviderId {providerId}");
-                throw exc;
+                _logger.LogError(exc, "Failed to process bulk upload file - ProviderId {providerId}", providerId);
+                throw;
             }
         }
 

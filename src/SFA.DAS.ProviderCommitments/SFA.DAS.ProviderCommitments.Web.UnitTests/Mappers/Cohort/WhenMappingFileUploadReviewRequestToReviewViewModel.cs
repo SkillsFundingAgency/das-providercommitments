@@ -1,11 +1,7 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -14,19 +10,18 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FileUploadCacheModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadCacheModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
     public class WhenMappingFileUploadReviewRequestToReviewViewModel
     {
-        private WhenMappingFileUploadReviewRequestToReviewViewModelFixture fixture;
+        private WhenMappingFileUploadReviewRequestToReviewViewModelFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
+            _fixture = new WhenMappingFileUploadReviewRequestToReviewViewModelFixture();
         }
 
 
@@ -35,31 +30,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task LegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyLegalEntityNameIsMappedCorrectly(agreementId, legalEntityName);
+            _fixture.VerifyLegalEntityNameIsMappedCorrectly(agreementId, legalEntityName);
         }
 
         [TestCase("Employer1")]
         [TestCase("Employer2")]
-        public async Task AgrrementIdIsMappedCorrectly(string agreementId)
+        public async Task AgreementIdIsMappedCorrectly(string agreementId)
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyAgreementIdIsMappedCorrectly(agreementId);
+            _fixture.VerifyAgreementIdIsMappedCorrectly(agreementId);
         }
 
         [Test]
         public async Task CorrectNumberOfEmployersAreMapped()
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyCorrectNumberOfEmployersAreMapped();
+            _fixture.VerifyCorrectNumberOfEmployersAreMapped();
         }
 
         [TestCase("Employer1", "Cohort1")]
@@ -69,10 +64,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task CohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyCohortReferenceIsMappedCorrectly(agreementId, cohortRef);
+            _fixture.VerifyCohortReferenceIsMappedCorrectly(agreementId, cohortRef);
         }
 
         [TestCase("Employer1", "Cohort1", 3)]
@@ -82,10 +77,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task NumberOfApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
+            _fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
         }
 
         [TestCase("Employer1", "Cohort1", 3000)]
@@ -95,10 +90,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task TotalCostIsMappedCorrectly(string agreementId, string cohortRef, int totalCost)
         {
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
+            _fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
         [TestCase("Employer1", "Cohort1", 6)]
@@ -108,13 +103,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task NumberOfApprenticesWithDraftApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
         {
             //Arrange
-            fixture.SetupDraftApprenticeships();
+            _fixture.SetupDraftApprenticeships();
 
             //Act            
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
             
             //Assert
-            fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
+            _fixture.VerifyNumberOfApprenticesAreMappedCorrectly(agreementId, cohortRef, numberOfApprentices);
         }
 
         [TestCase("Employer1", "Cohort1", 3300)]
@@ -124,13 +119,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task TotalCostWithDraftApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int totalCost)
         {   
             //Arrange
-            fixture.SetupDraftApprenticeships();
+            _fixture.SetupDraftApprenticeships();
             
             //Act
-            await fixture.WithDefaultData().Action();
+            await _fixture.WithDefaultData().Action();
 
             //Assert
-            fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
+            _fixture.VerifyTotalCostIsMappedCorrectly(agreementId, cohortRef, totalCost);
         }
 
         public class WhenMappingFileUploadReviewRequestToReviewViewModelFixture
@@ -211,7 +206,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             /// <param name="cohortRef"></param>
             /// <param name="price"></param>
             /// <returns></returns>
-            private static List<CsvRecord> CreateCsvRecords(Fixture fixture, string employerAgreementId, string cohortRef, int price = 1000, int numberOfApprentices = 3)
+            private static IEnumerable<CsvRecord> CreateCsvRecords(IFixture fixture, string employerAgreementId, string cohortRef, int price = 1000, int numberOfApprentices = 3)
             {
                var list = fixture.Build<CsvRecord>()
                     .With(x => x.AgreementId, employerAgreementId)
@@ -262,42 +257,42 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             internal void VerifyCorrectNumberOfEmployersAreMapped()
             {
-                Assert.AreEqual(2, _result.EmployerDetails.Count());
+                Assert.That(_result.EmployerDetails, Has.Count.EqualTo(2));
             }
 
             internal void VerifyAgreementIdIsMappedCorrectly(string agreementId)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.AreEqual(1, employer.Count());
+                Assert.That(employer, Has.Count.EqualTo(1));
             }
 
             public void VerifyLegalEntityNameIsMappedCorrectly(string agreementId, string legalEntityName)
             {
                 var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).ToList();
 
-                Assert.AreEqual(1, employer.Count());
-                Assert.AreEqual(legalEntityName, employer.First().LegalEntityName);
+                Assert.That(employer, Has.Count.EqualTo(1));
+                Assert.That(employer.First().LegalEntityName, Is.EqualTo(legalEntityName));
             }
 
             internal void VerifyCohortReferenceIsMappedCorrectly(string agreementId, string cohortRef)
             {
-                var employer = _result.EmployerDetails.Where(x => x.AgreementId == agreementId).First();
-                Assert.AreEqual(1, employer.CohortDetails.Where(x => x.CohortRef == cohortRef).Count());
+                var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
+                Assert.That(employer.CohortDetails.Count(x => x.CohortRef == cohortRef), Is.EqualTo(1));
             }
 
             internal void VerifyNumberOfApprenticesAreMappedCorrectly(string agreementId, string cohortRef, int numberOfApprentices)
             {
                 var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
                 var cohort = employer.CohortDetails.First(x => x.CohortRef == cohortRef);
-                Assert.AreEqual(numberOfApprentices, cohort.NumberOfApprentices);
+                Assert.That(cohort.NumberOfApprentices, Is.EqualTo(numberOfApprentices));
             }
 
             internal void VerifyTotalCostIsMappedCorrectly(string agreementId, string cohortRef, int totalCost)
             {
                 var employer = _result.EmployerDetails.First(x => x.AgreementId == agreementId);
                 var cohort = employer.CohortDetails.First(x => x.CohortRef == cohortRef);
-                Assert.AreEqual(totalCost, cohort.TotalCost);
+                Assert.That(cohort.TotalCost, Is.EqualTo(totalCost));
             }
         }
     }

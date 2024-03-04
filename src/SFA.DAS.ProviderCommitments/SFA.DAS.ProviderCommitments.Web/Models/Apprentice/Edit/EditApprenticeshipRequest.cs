@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.Authorization.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
 {
@@ -8,6 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
         [FromRoute]
         public long ApprenticeshipId { get; set; }
     }
+    
     public class BaseApprenticeshipRequest
     {
         [FromRoute]

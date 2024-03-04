@@ -2,8 +2,6 @@
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 

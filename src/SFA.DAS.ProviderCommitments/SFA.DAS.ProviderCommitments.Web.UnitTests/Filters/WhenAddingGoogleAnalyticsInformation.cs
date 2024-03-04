@@ -1,15 +1,10 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Filters;
 using SFA.DAS.ProviderCommitments.Web.UnitTests.Customisations;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 {
@@ -31,10 +26,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             //Assert
             var actualController = context.Controller as Controller;
-            Assert.IsNotNull(actualController);
+            Assert.That(actualController, Is.Not.Null);
             var viewBagData = actualController.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBagData);
-            Assert.AreEqual(ukPrn.ToString(), viewBagData.UkPrn);
+            Assert.That(viewBagData, Is.Not.Null);
+            Assert.That(viewBagData.UkPrn, Is.EqualTo(ukPrn.ToString()));
         }
 
         [Test, DomainAutoData]

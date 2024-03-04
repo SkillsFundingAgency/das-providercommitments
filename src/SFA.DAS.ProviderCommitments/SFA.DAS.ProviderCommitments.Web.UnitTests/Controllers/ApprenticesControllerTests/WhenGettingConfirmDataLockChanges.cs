@@ -1,9 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -27,8 +22,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _viewModel = fixture.Create<ConfirmDataLockChangesViewModel>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<ConfirmDataLockChangesViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
+
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public async Task ThenCallsModelMapper()
@@ -47,8 +45,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await _sut.ConfirmDataLockChanges(_request) as ViewResult;
 
             //Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(ConfirmDataLockChangesViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(ConfirmDataLockChangesViewModel)));
         }
     }
 }

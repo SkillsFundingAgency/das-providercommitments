@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System.Linq;
+﻿using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Validators.Cohort;
 
@@ -17,7 +16,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort
             var validator = new SelectCourseViewModelValidator();
             var result = validator.Validate(request);
 
-            Assert.AreEqual(expectedValid, result.Errors.All(x => x.PropertyName != nameof(request.CourseCode)));
+            Assert.That(result.Errors.All(x => x.PropertyName != nameof(request.CourseCode)), Is.EqualTo(expectedValid));
         }
     }
 }

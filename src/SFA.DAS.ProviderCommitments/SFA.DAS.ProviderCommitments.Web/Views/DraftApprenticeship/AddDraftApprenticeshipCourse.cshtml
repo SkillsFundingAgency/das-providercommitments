@@ -1,4 +1,5 @@
-﻿@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectCourseViewModel
+﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+@model SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship.SelectCourseViewModel
 @inject ILinkGenerator LinkGenerator;
 
 @{
@@ -17,10 +18,11 @@
             </div>
         }
 
-        <form id="addApprenticeship" novalidate method="post">
+        <form id="addApprenticeship" novalidate method="post" asp-route="@RouteNames.SelectCourse" asp-route-providerId="@Model.ProviderId">
             
             <input type="hidden" asp-for="IsOnFlexiPaymentsPilot" />
-
+            <input type="hidden" asp-for="ReservationId" />
+            
             <partial name="_SelectStandardPartial" />
 
             <button type="submit" class="govuk-button">Continue</button>

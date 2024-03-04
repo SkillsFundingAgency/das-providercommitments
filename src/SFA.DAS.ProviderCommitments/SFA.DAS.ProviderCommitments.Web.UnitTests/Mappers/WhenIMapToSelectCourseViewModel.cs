@@ -1,10 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using MediatR;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
@@ -53,21 +47,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_courseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_courseCode));
         }
 
         [Test]
         public async Task ThenCoursesAreReturnedCorrectly()
         {
             var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_trainingCourses.TrainingCourses, result.Courses);
+            Assert.That(result.Courses, Is.EqualTo(_trainingCourses.TrainingCourses));
         }
 
         [Test]
         public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
         {
             var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
-            Assert.AreEqual(_isOnFlexiPaymentsPilot, result.IsOnFlexiPaymentsPilot);
+            Assert.That(result.IsOnFlexiPaymentsPilot, Is.EqualTo(_isOnFlexiPaymentsPilot));
         }
     }
 }

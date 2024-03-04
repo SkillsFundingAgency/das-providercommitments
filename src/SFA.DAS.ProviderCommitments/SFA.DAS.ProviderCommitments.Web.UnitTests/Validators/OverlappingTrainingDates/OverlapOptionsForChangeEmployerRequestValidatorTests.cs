@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate;
 
@@ -35,10 +34,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
         {
             if (cacheKey == null)
             {
-                Assert.False(expectedValid);
+                Assert.That(expectedValid, Is.False);
             }
 
-            bool isGuid = Guid.TryParse(cacheKey, out var key);
+            var isGuid = Guid.TryParse(cacheKey, out var key);
             if (isGuid)
             {
                 var model = new OverlapOptionsForChangeEmployerRequest { CacheKey = key };
@@ -46,22 +45,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             }
             else
             {
-                Assert.False(expectedValid);
+                Assert.That(expectedValid, Is.False);
             }
         }
 
-        private void AssertValidationResult<T>(Expression<Func<OverlapOptionsForChangeEmployerRequest, T>> property,
+        private static void AssertValidationResult<T>(Expression<Func<OverlapOptionsForChangeEmployerRequest, T>> property,
             OverlapOptionsForChangeEmployerRequest instance, bool expectedValid)
         {
             var validator = new OverlapOptionsForChangeEmployerRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

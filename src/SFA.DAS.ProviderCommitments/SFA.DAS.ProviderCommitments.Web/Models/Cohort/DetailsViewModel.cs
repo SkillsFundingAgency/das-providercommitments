@@ -1,8 +1,5 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
-using SFA.DAS.CommitmentsV2.Types;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {

@@ -6,6 +6,10 @@
 @{
     ViewBag.Title = "Change apprentice details";    
     ViewBag.GaData.Vpv = "/apprentices/datalock/confirm-update";
+    
+    string GetThisChangeText(int count) => count > 1 ? "these changes" : "this change";
+
+    string PluraliseString(int errorCount, string str) => errorCount > 1 ? $"{str}s" : str;
 }
 
 <div class="govuk-grid-row">
@@ -162,21 +166,6 @@
         </form>      
     </div>
 </div>
-
-
-@functions
-{
-    public string GetThisChangeText(int count)
-    {
-        return count > 1 ? "these changes" : "this change";
-    }
-
-    string PluraliseString(int errorCount, string str)
-    {
-        return errorCount > 1 ? $"{str}s" : str;
-    }
-}
-
 
 @section breadcrumb {
     <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })" aria-label="Back to apprentice details" >Back to apprentice details</a>

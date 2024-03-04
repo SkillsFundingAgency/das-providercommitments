@@ -1,6 +1,6 @@
-﻿using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
@@ -9,10 +9,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -26,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
                 .WithApprenticeship(456);
 
-            var result = await fixture.Map(new SelectEmployerRequest { ProviderId = 456 } );
+            await fixture.Map(new SelectEmployerRequest { ProviderId = 456 } );
 
             fixture.Verify_ProviderRelationshipsApiClientWasCalled_Once(456);
         }
@@ -70,7 +66,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ReverseSort = reverseSort
                 });
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
         }
 
         [TestCase(true)]
@@ -88,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     ReverseSort = reverseSort
                 });
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
         }
 
         [Test]
@@ -104,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     SearchTerm = "atestaccountname"
                 });
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result, "ATestAccountName");
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result, "ATestAccountName");
         }
 
 
@@ -121,7 +117,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     SearchTerm = "atestaccountlegal"
                 });
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result, "ATestAccountLegalEntityName");
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result, "ATestAccountLegalEntityName");
         }
 
         [Test]
@@ -137,7 +133,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 SearchTerm = "atestaccountlegal"
             });
 
-            fixture.Assert_ListOfEmployersIsEmpty(result);
+            SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
         }
 
         public class SelectEmployerViewModelMapperFixture
@@ -145,21 +141,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             private readonly SelectEmployerViewModelMapper _sut;
             private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
             private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-            private SelectEmployerRequest _request;
-            private readonly long _providerId;
-            
             private GetAccountProviderLegalEntitiesWithPermissionResponse _getAccountsApiResponse;
             private GetApprenticeshipResponse _getApprenticeshipApiResponse;
 
             public SelectEmployerViewModelMapperFixture()
             {
-                _providerId = 123;
-                _request = new SelectEmployerRequest { ProviderId = _providerId };
                 _getAccountsApiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "DSFF23",
@@ -218,12 +209,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 return this;
             }
 
-            internal SelectEmployerViewModelMapperFixture WithRequest(SelectEmployerRequest selectEmployerRequest)
-            {
-                _request = selectEmployerRequest;
-                return this;
-            }
-
             public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest selectEmployerRequest) => await _sut.Map(selectEmployerRequest);
 
 
@@ -268,12 +253,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 accountProviderLegalEntities.Should().BeEquivalentTo(result.AccountProviderLegalEntities);
             }
 
-            public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+            public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+                Assert.That(result.AccountProviderLegalEntities, Is.Empty);
             }
 
-            internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
             {
                 if (reverseSort)
                 {
@@ -285,7 +270,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 }
             }
 
-            internal void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
             {
                 if (reverseSort)
                 {
@@ -298,16 +283,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 }
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual(employerAccountName, result.AccountProviderLegalEntities[0].EmployerAccountName);
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo(employerAccountName));
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual(employerName, result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo(employerName));
             }
         }
     }

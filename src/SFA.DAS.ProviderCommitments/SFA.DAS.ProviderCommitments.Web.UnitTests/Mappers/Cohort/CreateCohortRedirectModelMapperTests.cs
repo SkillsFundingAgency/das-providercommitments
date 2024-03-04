@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -45,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 .ReturnsAsync(isFlexiPaymentsEnabled);
 
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(expectTarget, result.RedirectTo);
+            Assert.That(result.RedirectTo, Is.EqualTo(expectTarget));
         }
 
         [Test]

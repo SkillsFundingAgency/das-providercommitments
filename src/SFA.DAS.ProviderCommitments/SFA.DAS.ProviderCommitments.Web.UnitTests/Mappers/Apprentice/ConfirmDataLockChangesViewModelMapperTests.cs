@@ -1,16 +1,10 @@
-﻿using AutoFixture;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
-using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Types;
-using System.Linq;
+using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using static SFA.DAS.CommitmentsV2.Api.Types.Responses.GetPriceEpisodesResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
@@ -24,21 +18,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         private GetDataLockSummariesResponse _getDataLockSummariesResponse;
         private GetApprenticeshipResponse _getApprenticeshipResponse;
         private GetAllTrainingProgrammesResponse _getAllTrainingProgrammesResponse;
-        private List<DataLock> DataLocksWithCourseMismatch;
-        private List<TrainingProgramme> TrainingProgrammes;
+        private List<DataLock> _dataLocksWithCourseMismatch;
+        private List<TrainingProgramme> _trainingProgrammes;
         private GetPriceEpisodesResponse _getPriceEpisodesResponse;
-        private List<PriceEpisode> PriceEpisodes = new List<PriceEpisode>();
+        private readonly List<PriceEpisode> _priceEpisodes = new();
 
         [SetUp]
         public void Arrange()
         {
-            var _autoFixture = new Fixture();
+            var autoFixture = new Fixture();
 
-            _confirmDataLockChangesRequest = _autoFixture.Create<ConfirmDataLockChangesRequest>();
+            _confirmDataLockChangesRequest = autoFixture.Create<ConfirmDataLockChangesRequest>();
 
-            DataLocksWithCourseMismatch = new List<DataLock>
+            _dataLocksWithCourseMismatch = new List<DataLock>
             {
-                new DataLock
+                new()
                 {
                     IsResolved = false,
                     DataLockStatus = Status.Fail,
@@ -47,24 +41,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     IlrEffectiveFromDate = DateTime.Now.Date.AddDays(15)
                 }
             };
-            _getDataLockSummariesResponse = _autoFixture.Build<GetDataLockSummariesResponse>().With(x => x.DataLocksWithCourseMismatch, DataLocksWithCourseMismatch).Create();
+            _getDataLockSummariesResponse = autoFixture.Build<GetDataLockSummariesResponse>().With(x => x.DataLocksWithCourseMismatch, _dataLocksWithCourseMismatch).Create();
 
-            _getApprenticeshipResponse = _autoFixture.Build<GetApprenticeshipResponse>()
+            _getApprenticeshipResponse = autoFixture.Build<GetApprenticeshipResponse>()
                 .With(p => p.CourseCode, "111")
                 .With(p => p.CourseName, "Training 111")
                 .With(p => p.EndDate, DateTime.Now.Date.AddDays(100))
                 .Create();
 
 
-            TrainingProgrammes = new List<TrainingProgramme>
+            _trainingProgrammes = new List<TrainingProgramme>
             {
-                new TrainingProgramme { CourseCode = "454-3-1", ProgrammeType = ProgrammeType.Standard, Name = "Training 111" }
+                new() { CourseCode = "454-3-1", ProgrammeType = ProgrammeType.Standard, Name = "Training 111" }
             };
-            _getAllTrainingProgrammesResponse = _autoFixture.Build<GetAllTrainingProgrammesResponse>().With(x => x.TrainingProgrammes, TrainingProgrammes).Create();
+            _getAllTrainingProgrammesResponse = autoFixture.Build<GetAllTrainingProgrammesResponse>().With(x => x.TrainingProgrammes, _trainingProgrammes).Create();
 
-            PriceEpisodes.Add(new PriceEpisode { FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M });
-            _getPriceEpisodesResponse = _autoFixture.Build<GetPriceEpisodesResponse>()
-                 .With(x => x.PriceEpisodes, PriceEpisodes)
+            _priceEpisodes.Add(new PriceEpisode { FromDate = DateTime.Now.Date, ToDate = null, Cost = 1000.0M });
+            _getPriceEpisodesResponse = autoFixture.Build<GetPriceEpisodesResponse>()
+                 .With(x => x.PriceEpisodes, _priceEpisodes)
                 .Create();
 
 
@@ -88,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_confirmDataLockChangesRequest.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_confirmDataLockChangesRequest.ApprenticeshipHashedId));
         }
 
         [Test]
@@ -98,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_confirmDataLockChangesRequest.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(_confirmDataLockChangesRequest.ApprenticeshipId));
         }
 
         [Test]
@@ -108,7 +102,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.FirstName, result.FirstName);
+            Assert.That(result.FirstName, Is.EqualTo(_getApprenticeshipResponse.FirstName));
         }
 
         [Test]
@@ -118,7 +112,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.LastName, result.LastName);
+            Assert.That(result.LastName, Is.EqualTo(_getApprenticeshipResponse.LastName));
         }
 
         [Test]
@@ -128,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.Uln, result.ULN);
+            Assert.That(result.ULN, Is.EqualTo(_getApprenticeshipResponse.Uln));
         }
 
         [Test]
@@ -138,7 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.DateOfBirth, result.DateOfBirth);
+            Assert.That(result.DateOfBirth, Is.EqualTo(_getApprenticeshipResponse.DateOfBirth));
         }
 
         [Test]
@@ -148,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.CourseName, result.CourseName);
+            Assert.That(result.CourseName, Is.EqualTo(_getApprenticeshipResponse.CourseName));
         }
 
         [Test]
@@ -158,7 +152,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_getApprenticeshipResponse.ProviderId));
         }
 
         [Test]
@@ -168,24 +162,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             var result = await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
-            Assert.AreEqual(_getApprenticeshipResponse.ProviderName, result.ProviderName);
+            Assert.That(result.ProviderName, Is.EqualTo(_getApprenticeshipResponse.ProviderName));
         }
 
         [Test]
         public async Task GetDraftApprenticeshipIsCalled()
         {
             //Act
-            var result = await _mapper.Map(_confirmDataLockChangesRequest);
+            await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
             _mockCommitmentsApiClient.Verify(m => m.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Test]
-        public async Task GetApprenticeshipDatalockSummariesStatusIsCalled()
+        public async Task GetApprenticeshipDataLockSummariesStatusIsCalled()
         {
             //Act
-            var result = await _mapper.Map(_confirmDataLockChangesRequest);
+            await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
             _mockCommitmentsApiClient.Verify(m => m.GetApprenticeshipDatalockSummariesStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -195,7 +189,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task GetAllTrainingProgrammesIsCalled()
         {
             //Act
-            var result = await _mapper.Map(_confirmDataLockChangesRequest);
+            await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
             _mockCommitmentsApiClient.Verify(m => m.GetAllTrainingProgrammes(It.IsAny<CancellationToken>()), Times.Once());
@@ -205,7 +199,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task GetPriceEpisodesIsCalled()
         {
             //Act
-            var result = await _mapper.Map(_confirmDataLockChangesRequest);
+            await _mapper.Map(_confirmDataLockChangesRequest);
 
             //Assert
             _mockCommitmentsApiClient.Verify(m => m.GetPriceEpisodes(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Once());

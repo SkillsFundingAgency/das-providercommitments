@@ -4,13 +4,9 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeships;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -117,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             if (!CheckWaitingToStart(apprenticeship)) return IsPaused(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value); else return false;
         }
 
-        private bool IsPaused(GetApprenticeshipResponse apprenticeship)
+        private static bool IsPaused(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.Paused;
         }
@@ -127,14 +123,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return apprenticeship.StartDate.Value > new DateTime(_currentDateTime.UtcNow.Year, _currentDateTime.UtcNow.Month, 1);
         }
 
-        private bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
+        private static bool IsWaitingToStartAndHasHadDataLockSuccessAndIsFundedByTransfer(GetApprenticeshipResponse apprenticeship, bool isFundedByTransfer)
         {
             return isFundedByTransfer
                     && HasHadDataLockSuccess(apprenticeship)
                     && IsWaitingToStart(apprenticeship);
         }
 
-        private bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        private static bool IsLiveAndHasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
         {
             return IsLive(apprenticeship) && HasHadDataLockSuccess(apprenticeship);
         }
@@ -144,22 +140,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             return IsLive(apprenticeship) && !IsWithInFundingPeriod(apprenticeship.StartDate.Value);
         }
 
-        private bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
+        private static bool IsWaitingToStart(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.WaitingToStart;
         }
 
-        private bool IsLive(GetApprenticeshipResponse apprenticeship)
+        private static bool IsLive(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.Status == ApprenticeshipStatus.Live;
         }
 
-        private bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
+        private static bool HasHadDataLockSuccess(GetApprenticeshipResponse apprenticeship)
         {
             return apprenticeship.HasHadDataLockSuccess;
         }
 
-        private bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
+        private static bool IsEndDateLocked(bool isLockedForUpdate, bool hasHadDataLockSuccess, ApprenticeshipStatus status)
         {
             var result = isLockedForUpdate;
             if (hasHadDataLockSuccess)

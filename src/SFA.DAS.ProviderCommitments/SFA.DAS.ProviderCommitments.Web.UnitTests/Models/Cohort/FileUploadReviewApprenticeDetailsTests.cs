@@ -1,16 +1,15 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
 {
     public class FileUploadReviewApprenticeDetailsTests
     {
-        public ReviewApprenticeDetailsForFileUploadCohort FileUploadReviewApprenticeDetails;
+        private ReviewApprenticeDetailsForFileUploadCohort _fileUploadReviewApprenticeDetails;
 
         [SetUp]
         public void Arrange()
         {
-            FileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
+            _fileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
         }
 
         [TestCase(1000, 900, true)]
@@ -19,12 +18,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
         public void TestExceedsFundingBandCap(int price, int fundingCap, bool fundingCapExceeded)
         {
             //Act
-            FileUploadReviewApprenticeDetails.Price = price;
-            FileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
+            _fileUploadReviewApprenticeDetails.Price = price;
+            _fileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
 
             //Assert
-            var result = FileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
-            Assert.AreEqual(result, fundingCapExceeded);
+            var result = _fileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
+            Assert.That(fundingCapExceeded, Is.EqualTo(result));
         }
     }
 }

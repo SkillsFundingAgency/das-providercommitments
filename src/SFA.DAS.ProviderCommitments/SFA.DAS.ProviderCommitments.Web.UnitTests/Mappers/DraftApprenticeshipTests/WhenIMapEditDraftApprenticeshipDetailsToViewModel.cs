@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -21,14 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         private Func<Task<EditDraftApprenticeshipViewModel>> _act;
         private GetEditDraftApprenticeshipResponse _apiResponse;
         private Mock<ITempDataStorageService> _tempDataStorageService;
-        private string _cohortReference;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
-
-            _cohortReference = fixture.Create<string>();
 
             _apiResponse = fixture.Build<GetEditDraftApprenticeshipResponse>().Create();
             var commitmentsApiClient = new Mock<IOuterApiClient>();
@@ -50,49 +43,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenDraftApprenticeshipIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.DraftApprenticeshipId, result.DraftApprenticeshipId);
+            Assert.That(result.DraftApprenticeshipId, Is.EqualTo(_source.Request.DraftApprenticeshipId));
         }
 
         [Test]
         public async Task ThenCohortIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.CohortId, result.CohortId);
+            Assert.That(result.CohortId, Is.EqualTo(_source.Request.CohortId));
         }
 
         [Test]
         public async Task ThenCohortReferenceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.CohortReference, result.CohortReference);
+            Assert.That(result.CohortReference, Is.EqualTo(_source.Request.CohortReference));
         }
 
         [Test]
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.ReservationId, result.ReservationId);
+            Assert.That(result.ReservationId, Is.EqualTo(_apiResponse.ReservationId));
         }
 
         [Test]
         public async Task ThenFirstNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.FirstName, result.FirstName);
+            Assert.That(result.FirstName, Is.EqualTo(_apiResponse.FirstName));
         }
 
         [Test]
         public async Task ThenEmailIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.Email, result.Email);
+            Assert.That(result.Email, Is.EqualTo(_apiResponse.Email));
         }
 
         [Test]
         public async Task ThenEmailAddressConfirmedIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.EmailAddressConfirmed, result.EmailAddressConfirmed);
+            Assert.That(result.EmailAddressConfirmed, Is.EqualTo(_apiResponse.EmailAddressConfirmed));
         }
 
 
@@ -100,90 +93,102 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         public async Task ThenLastNameIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.LastName, result.LastName);
+            Assert.That(result.LastName, Is.EqualTo(_apiResponse.LastName));
         }
 
         [Test]
         public async Task ThenUniqueLearnerNumberIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.Uln, result.Uln);
+            Assert.That(result.Uln, Is.EqualTo(_apiResponse.Uln));
         }
 
         [Test]
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.DateOfBirth?.Day, result.DateOfBirth.Day);
-            Assert.AreEqual(_apiResponse.DateOfBirth?.Month, result.DateOfBirth.Month);
-            Assert.AreEqual(_apiResponse.DateOfBirth?.Year, result.DateOfBirth.Year);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.DateOfBirth.Day, Is.EqualTo(_apiResponse.DateOfBirth?.Day));
+                Assert.That(result.DateOfBirth.Month, Is.EqualTo(_apiResponse.DateOfBirth?.Month));
+                Assert.That(result.DateOfBirth.Year, Is.EqualTo(_apiResponse.DateOfBirth?.Year));
+            });
         }
 
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_apiResponse.CourseCode));
         }
 
         [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.Cost, result.Cost);
+            Assert.That(result.Cost, Is.EqualTo(_apiResponse.Cost));
         }
 
         [Test]
         public async Task ThenTrainingPriceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.TrainingPrice, result.TrainingPrice);
+            Assert.That(result.TrainingPrice, Is.EqualTo(_apiResponse.TrainingPrice));
         }
 
         [Test]
         public async Task ThenEndPointAssessmentPriceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+            Assert.That(result.EndPointAssessmentPrice, Is.EqualTo(_apiResponse.EndPointAssessmentPrice));
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.StartDate?.Month, result.StartDate.Month);
-            Assert.AreEqual(_apiResponse.StartDate?.Year, result.StartDate.Year);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StartDate.Month, Is.EqualTo(_apiResponse.StartDate?.Month));
+                Assert.That(result.StartDate.Year, Is.EqualTo(_apiResponse.StartDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.ActualStartDate?.Month, result.ActualStartDate.Month);
-            Assert.AreEqual(_apiResponse.ActualStartDate?.Day, result.ActualStartDate.Day);
-            Assert.AreEqual(_apiResponse.ActualStartDate?.Year, result.ActualStartDate.Year);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.ActualStartDate.Month, Is.EqualTo(_apiResponse.ActualStartDate?.Month));
+                Assert.That(result.ActualStartDate.Day, Is.EqualTo(_apiResponse.ActualStartDate?.Day));
+                Assert.That(result.ActualStartDate.Year, Is.EqualTo(_apiResponse.ActualStartDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.EndDate?.Month, result.EndDate.Month);
-            Assert.AreEqual(_apiResponse.EndDate?.Year, result.EndDate.Year);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.EndDate.Month, Is.EqualTo(_apiResponse.EndDate?.Month));
+                Assert.That(result.EndDate.Year, Is.EqualTo(_apiResponse.EndDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenOriginatorReferenceIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.ProviderReference, result.Reference);
+            Assert.That(result.Reference, Is.EqualTo(_apiResponse.ProviderReference));
         }
 
         [Test]
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.Request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.Request.ProviderId));
         }
 
         [TestCase(true)]
@@ -193,8 +198,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.HasStandardOptions = hasStandardOptions;
 
             var result = await _act();
-            
-            Assert.AreEqual(_apiResponse.HasStandardOptions, result.HasStandardOptions);
+
+            Assert.That(result.HasStandardOptions, Is.EqualTo(_apiResponse.HasStandardOptions));
         }
 
         [TestCase(true)]
@@ -203,14 +208,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             _apiResponse.IsContinuation = isContinuation;
             var result = await _act();
-            Assert.AreEqual(_apiResponse.IsContinuation, result.IsContinuation);
+            Assert.That(result.IsContinuation, Is.EqualTo(_apiResponse.IsContinuation));
         }
 
         [Test]
         public async Task ThenTheTrainingCourseOptionIsMapped()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.TrainingCourseOption, result.TrainingCourseOption);
+            Assert.That(result.TrainingCourseOption, Is.EqualTo(_apiResponse.TrainingCourseOption));
         }
         
         [Test]
@@ -218,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             _apiResponse.TrainingCourseOption = string.Empty;
             var result = await _act();
-            Assert.AreEqual("-1", result.TrainingCourseOption);
+            Assert.That(result.TrainingCourseOption, Is.EqualTo("-1"));
         }
 
         [TestCase(DeliveryModel.Regular)]
@@ -227,7 +232,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             _apiResponse.DeliveryModel = (Infrastructure.OuterApi.Types.DeliveryModel) dm;
             var result = await _act();
-            Assert.AreEqual(dm, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(dm));
         }
 
         [Test]
@@ -235,43 +240,46 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         {
             _apiResponse.EmploymentPrice = 1234;
             var result = await _act();
-            Assert.AreEqual(1234, result.EmploymentPrice);
+            Assert.That(result.EmploymentPrice, Is.EqualTo(1234));
         }
 
         [Test]
         public async Task ThenEmploymentEndDateIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.EmploymentEndDate?.Month, result.EmploymentEndDate.Month);
-            Assert.AreEqual(_apiResponse.EmploymentEndDate?.Year, result.EmploymentEndDate.Year);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.EmploymentEndDate.Month, Is.EqualTo(_apiResponse.EmploymentEndDate?.Month));
+                Assert.That(result.EmploymentEndDate.Year, Is.EqualTo(_apiResponse.EmploymentEndDate?.Year));
+            });
         }
 
         [Test]
         public async Task ThenRecognisePriorLearningIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.RecognisePriorLearning, result.RecognisePriorLearning);
+            Assert.That(result.RecognisePriorLearning, Is.EqualTo(_apiResponse.RecognisePriorLearning));
         }
 
         [Test]
         public async Task ThenDurationReducedByIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.DurationReducedBy, result.DurationReducedBy);
+            Assert.That(result.DurationReducedBy, Is.EqualTo(_apiResponse.DurationReducedBy));
         }
 
         [Test]
         public async Task ThenPriceReducedByIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.PriceReducedBy, result.PriceReducedBy);
+            Assert.That(result.PriceReducedBy, Is.EqualTo(_apiResponse.PriceReducedBy));
         }
 
         [Test]
         public async Task ThenRecognisingPriorLearningStillNeedsToBeConsideredIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+            Assert.That(result.RecognisingPriorLearningStillNeedsToBeConsidered, Is.EqualTo(_apiResponse.RecognisingPriorLearningStillNeedsToBeConsidered));
         }
 
         [TestCase(true, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, true)]
@@ -289,28 +297,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.HasUnavailableDeliveryModel = hasUnavailableDeliveryModel;
 
             var result = await _act();
-            Assert.AreEqual(expectedResult, result.HasUnavailableFlexiJobAgencyDeliveryModel);
+            Assert.That(result.HasUnavailableFlexiJobAgencyDeliveryModel, Is.EqualTo(expectedResult));
         }
 
         [Test]
         public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(_apiResponse.IsOnFlexiPaymentPilot));
         }
 
         [Test]
         public async Task ThenEmployerHasEditedCostIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.EmployerHasEditedCost, result.EmployerHasEditedCost);
+            Assert.That(result.EmployerHasEditedCost, Is.EqualTo(_apiResponse.EmployerHasEditedCost));
         }
 
         [Test]
         public async Task ThenHasMultipleDeliveryModelOptionsIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_apiResponse.HasMultipleDeliveryModelOptions, result.HasMultipleDeliveryModelOptions);
+            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(_apiResponse.HasMultipleDeliveryModelOptions));
         }
 
         [TestCase(DeliveryModel.Regular, Infrastructure.OuterApi.Types.DeliveryModel.FlexiJobAgency, true)]
@@ -326,7 +334,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
             _apiResponse.DeliveryModel = persistedDeliveryModel;
 
             var result = await _act();
-            Assert.AreEqual(expectedResult, result.HasChangedDeliveryModel);
+            Assert.That(result.HasChangedDeliveryModel, Is.EqualTo(expectedResult));
         }
     }
 }

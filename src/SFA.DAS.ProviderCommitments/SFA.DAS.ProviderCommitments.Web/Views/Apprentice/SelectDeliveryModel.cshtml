@@ -13,10 +13,11 @@
         <h1 class="govuk-heading-xl">Select the apprenticeship delivery model</h1>
 
         <form id="selectDeliveryModel" novalidate method="post">
-            @Html.HiddenFor(x => x.CacheKey)
-            @Html.HiddenFor(x => x.IsEdit)
+            <input type="hidden" asp-for="CacheKey"/>
+            <input type="hidden" asp-for="IsEdit"/>
+            <input type="hidden" asp-for="ProviderId"/>
 
-            <partial name="_SelectDeliveryModelPartial" />
+            <partial name="_SelectDeliveryModelPartial"/>
 
             <button type="submit" class="govuk-button">Continue</button>
         </form>

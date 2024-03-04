@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace SFA.DAS.ProviderCommitments.Web.Exceptions
+﻿namespace SFA.DAS.ProviderCommitments.Web.Exceptions
 {
     public static class ExceptionMiddleWareExtensions
     {

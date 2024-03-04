@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
@@ -120,14 +118,15 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             TrainingDatesViewModel instance, bool expectedValid)
         {
             var validator = new TrainingDatesViewModelValidator(_mockAcademicYearDateProvider.Object);
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
 

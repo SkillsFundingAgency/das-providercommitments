@@ -9,7 +9,6 @@ public static class ControllerConstants
         public static class Actions
         {
             public const string Index = nameof(Index);
-            public const string Details = nameof(Details);
         }
     }
 
@@ -30,10 +29,8 @@ public static class ControllerConstants
 
         public static class Actions
         {
-            public const string Index = nameof(Index);
             public const string EmployerNotified = nameof(EmployerNotified);
             public const string ChangeOfEmployerNotified = nameof(ChangeOfEmployerNotified);
-            public const string DraftApprenticeshipOverlapOptions = nameof(DraftApprenticeshipOverlapOptions);
             public const string OverlapOptionsForChangeEmployer = nameof(OverlapOptionsForChangeEmployer);
         }
     }

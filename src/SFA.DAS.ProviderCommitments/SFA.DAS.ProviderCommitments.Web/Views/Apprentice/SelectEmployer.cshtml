@@ -1,6 +1,7 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+﻿@using Microsoft.AspNetCore.Routing
+@using Newtonsoft.Json
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Models.Shared
-@using Newtonsoft.Json;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.SelectEmployerViewModel
 
 @{
@@ -71,7 +72,15 @@
                                 <td class="govuk-table__cell" data-label="Account name">@viewModel.EmployerAccountName</td>
                                 <td class="govuk-table__cell" data-label="Agreement ID">@viewModel.EmployerAccountLegalEntityPublicHashedId</td>
                                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Link">
-                                    <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer, new { viewModel.EmployerAccountLegalEntityPublicHashedId })">Select</a>
+                                    @{
+                                        var routeData = new
+                                        {
+                                            viewModel.EmployerAccountLegalEntityPublicHashedId,
+                                            apprenticeshipHashedId = Context.GetRouteValue("apprenticeshipHashedId"),
+                                            providerId = Context.GetRouteValue("providerId"),
+                                        };
+                                    }
+                                    <a href="@Url.RouteUrl(RouteNames.ApprenticeConfirmEmployer, routeData)">Select</a>
                                 </td>
                             </tr>
                         }

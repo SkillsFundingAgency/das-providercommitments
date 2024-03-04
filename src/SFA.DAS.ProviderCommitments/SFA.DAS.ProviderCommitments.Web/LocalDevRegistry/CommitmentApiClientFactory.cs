@@ -1,13 +1,12 @@
-﻿using System;
-using System.Net.Http;
-using Microsoft.Extensions.Logging;
+﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using SFA.DAS.Authorization.CommitmentPermissions.Client;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Client.Configuration;
 using SFA.DAS.CommitmentsV2.Api.Client.Http;
 using SFA.DAS.Http;
 
-namespace SFA.DAS.ProviderCommitments.Web
+namespace SFA.DAS.ProviderCommitments.Web.LocalDevRegistry
 {
     public class LocalDevApiClientFactory : ICommitmentsApiClientFactory, ICommitmentPermissionsApiClientFactory
     {
@@ -34,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web
 
                 httpClient.BaseAddress = new Uri(_configuration.ApiBaseUrl);
                 var byteArray = System.Text.Encoding.ASCII.GetBytes($"provider:password1234");
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
                 var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
                 return new CommitmentsApiClient(restHttpClient);
@@ -62,13 +61,11 @@ namespace SFA.DAS.ProviderCommitments.Web
                 var restHttpClient = new CommitmentsRestHttpClient(httpClient, _loggerFactory);
                 return new CommitmentPermissionsApiClient(restHttpClient);
             }
-            else
-            {
-                throw new UnauthorizedAccessException("Not accessible");
-            }
+
+            throw new UnauthorizedAccessException("Not accessible");
         }
 
-        private void AddDevelopmentRole(HttpClient httpClient, string role)
+        private static void AddDevelopmentRole(HttpClient httpClient, string role)
         {
             // some operations on the Commitments API require the role to be specificed
             // this would usually be done as part of the MI authorization, but when

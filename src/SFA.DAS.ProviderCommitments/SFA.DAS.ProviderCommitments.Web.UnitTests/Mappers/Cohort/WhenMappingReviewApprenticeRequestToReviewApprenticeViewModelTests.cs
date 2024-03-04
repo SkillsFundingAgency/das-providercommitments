@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -10,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -121,7 +116,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             fixture.VerifyExistingCohortDetailsCountMappedCorrectly();
         }
 
-
         [Test]
         public async Task FileUploadedCohortDetailsMappedCorrectly()
         {
@@ -229,7 +223,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
     public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture
     {
-        private Fixture fixture;
+        private readonly Fixture _fixture;
         private ReviewApprenticeRequestToReviewApprenticeViewModelMapper _sut;
         private FileUploadReviewApprenticeRequest _request;
         private Mock<IEncodingService> _encodingService;
@@ -240,19 +234,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private FileUploadReviewApprenticeViewModel _result;
         private List<GetStandardFundingResponse> _fundingPeriods;
         private GetStandardResponse _trainingProgramme;
-        private DateTime _startFundingPeriod = new DateTime(2020, 10, 1);
-        private DateTime _endFundingPeriod = new DateTime(2020, 10, 30);
-        public DateTime DefaultStartDate = new DateTime(2020, 10, 1);
+        private DateTime _startFundingPeriod = new(2020, 10, 1);
+        private DateTime _endFundingPeriod = new(2020, 10, 30);
+        public DateTime DefaultStartDate = new(2020, 10, 1);
         private const string cohortRef = "Cohort4";
         private const string dateOfBirth = "2001-09-05";
         private GetDraftApprenticeshipsResult _draftApprenticeshipsResponse;
 
         public WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture()
         {
-            fixture = new Fixture();
+            _fixture = new Fixture();
             _csvRecords = new List<CsvRecord>();
 
-            _request = fixture.Create<FileUploadReviewApprenticeRequest>();
+            _request = _fixture.Create<FileUploadReviewApprenticeRequest>();
             _fileUploadCacheModel = new FileUploadCacheModel
             {
                 CsvRecords = _csvRecords,
@@ -260,10 +254,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             };
 
             _request.CohortRef = cohortRef;
-            var accountLegalEntityEmployer = fixture.Build<GetAccountLegalEntityQueryResult>()
+            var accountLegalEntityEmployer = _fixture.Build<GetAccountLegalEntityQueryResult>()
                 .With(x => x.LegalEntityName, "EmployerName").Create();
 
-            var cohort = fixture.Build<GetCohortResult>()
+            var cohort = _fixture.Build<GetCohortResult>()
                 .With(x => x.LatestMessageCreatedByEmployer, "A message").Create();
 
             _encodingService = new Mock<IEncodingService>();
@@ -275,8 +269,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             _fundingPeriods = new List<GetStandardFundingResponse>
             {
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
-                new GetStandardFundingResponse{ EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
+                new() { EffectiveFrom = _startFundingPeriod, EffectiveTo = _endFundingPeriod, MaxEmployerLevyCap = 1000},
+                new() { EffectiveFrom = _startFundingPeriod.AddMonths(1), EffectiveTo = _endFundingPeriod.AddMonths(1), MaxEmployerLevyCap = 500}
             };
             _trainingProgramme = new GetStandardResponse { Title = "CourseName", EffectiveFrom = DefaultStartDate, EffectiveTo = DefaultStartDate.AddYears(1), ApprenticeshipFunding = _fundingPeriods };
 
@@ -292,64 +286,67 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task Action() => _result = await _sut.Map(_request);
 
         internal void VerifyLegalEntityNameIsMappedCorrectly()
-        {            
-            Assert.AreEqual("EmployerName", _result.LegalEntityName);
+        {
+            Assert.That(_result.LegalEntityName, Is.EqualTo("EmployerName"));
         }
 
         internal void VerifyCohortReferenceIsMappedCorrectly()
         {
-            Assert.AreEqual(cohortRef, _result.CohortRef);
+            Assert.That(_result.CohortRef, Is.EqualTo(cohortRef));
         }
         
         internal void VerifyNumberOfApprenticesAreMappedCorrectly()
         {
             var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
-            
-            Assert.AreEqual(2, groupedByCohort.Count());
+
+            Assert.That(groupedByCohort.Count(), Is.EqualTo(2));
         }
 
         internal void VerifyNumberOfExistingApprenticesAreMappedCorrectly()
         {
-            Assert.AreEqual(3, _draftApprenticeshipsResponse.DraftApprenticeships.Count());
+            Assert.That(_draftApprenticeshipsResponse.DraftApprenticeships, Has.Count.EqualTo(3));
         }
 
         internal void VerifyTotalCostForFileUploadedApprenticesAreMappedCorrectly()
         {
             var groupedByCohort = _csvRecords.Where(x => x.CohortRef == cohortRef);
 
-            Assert.AreEqual(1000, groupedByCohort.Sum(x => int.Parse(x.TotalPrice)));
+            Assert.That(groupedByCohort.Sum(x => int.Parse(x.TotalPrice)), Is.EqualTo(1000));
         }
 
         internal void TotalCostForExistingApprenticesAreMappedCorrectly()
         {
             var costfromfileUploadedCohort = _csvRecords.Where(x => x.CohortRef == cohortRef).Sum(x => int.Parse(x.TotalPrice));
-            var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);            
+            var costfromExistingCohort = _draftApprenticeshipsResponse.DraftApprenticeships.Sum(x => x.Cost);
 
-            Assert.AreEqual(1300, (costfromfileUploadedCohort + costfromExistingCohort));
+            Assert.That((costfromfileUploadedCohort + costfromExistingCohort), Is.EqualTo(1300));
         }
 
         internal void VerifyFileUploadedCohortDetailsCountMappedCorrectly()
-        { 
-            Assert.AreEqual(2, _result.FileUploadCohortDetails.Count());
+        {
+            Assert.That(_result.FileUploadCohortDetails, Has.Count.EqualTo(2));
         }
 
         internal void VerifyExistingCohortDetailsCountMappedCorrectly()
         {
-            Assert.AreEqual(3, _result.ExistingCohortDetails.Count());
+            Assert.That(_result.ExistingCohortDetails, Has.Count.EqualTo(3));
         }
 
         internal void VerifyFileUploadedCohortDetailsMappedCorrectly()
         {
-            var csvRecord = _csvRecords.Where(x => x.CohortRef == cohortRef).FirstOrDefault();
+            var csvRecord = _csvRecords.FirstOrDefault(x => x.CohortRef == cohortRef);
             var cohortDetails = _result.FileUploadCohortDetails[0];
 
-            Assert.AreEqual(cohortDetails.Name, $"{csvRecord.GivenNames} {csvRecord.FamilyName}");
-            Assert.AreEqual(cohortDetails.Email, csvRecord.EmailAddress);
-            Assert.AreEqual(cohortDetails.ULN, csvRecord.ULN);
-            Assert.AreEqual(dateOfBirth, csvRecord.DateOfBirth);
-            Assert.AreEqual(cohortDetails.Price, int.Parse(csvRecord.TotalPrice));
-            Assert.AreEqual(cohortDetails.TrainingCourse, _trainingProgramme.Title);
-            Assert.AreEqual(cohortDetails.FundingBandCap, _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap);
+            Assert.Multiple(() =>
+            {
+                Assert.That($"{csvRecord.GivenNames} {csvRecord.FamilyName}", Is.EqualTo(cohortDetails.Name));
+                Assert.That(csvRecord.EmailAddress, Is.EqualTo(cohortDetails.Email));
+                Assert.That(csvRecord.ULN, Is.EqualTo(cohortDetails.ULN));
+                Assert.That(csvRecord.DateOfBirth, Is.EqualTo(dateOfBirth));
+                Assert.That(int.Parse(csvRecord.TotalPrice), Is.EqualTo(cohortDetails.Price));
+                Assert.That(_trainingProgramme.Title, Is.EqualTo(cohortDetails.TrainingCourse));
+                Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCap));
+            });
 
         }
 
@@ -358,40 +355,43 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var existingRecord = _draftApprenticeshipsResponse.DraftApprenticeships.FirstOrDefault();
             var cohortDetails = _result.ExistingCohortDetails[0];
 
-            Assert.AreEqual(cohortDetails.Name, $"{existingRecord.FirstName} {existingRecord.LastName}");
-            Assert.AreEqual(cohortDetails.Email, existingRecord.Email);
-            Assert.AreEqual(cohortDetails.ULN, existingRecord.Uln);
-            Assert.AreEqual(cohortDetails.Price, existingRecord.Cost);
-            Assert.AreEqual(cohortDetails.TrainingCourse, existingRecord.CourseName);
-            Assert.AreEqual(cohortDetails.FundingBandCapForExistingCohort, _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap);
+            Assert.Multiple(() =>
+            {
+                Assert.That($"{existingRecord.FirstName} {existingRecord.LastName}", Is.EqualTo(cohortDetails.Name));
+                Assert.That(existingRecord.Email, Is.EqualTo(cohortDetails.Email));
+                Assert.That(existingRecord.Uln, Is.EqualTo(cohortDetails.ULN));
+                Assert.That(existingRecord.Cost, Is.EqualTo(cohortDetails.Price));
+                Assert.That(existingRecord.CourseName, Is.EqualTo(cohortDetails.TrainingCourse));
+                Assert.That(_trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap, Is.EqualTo(cohortDetails.FundingBandCapForExistingCohort));
+            });
         }
 
         internal void VerifyFundingTextMappedCorrectlyForFileUploadedApprentices()
-        {            
-            Assert.AreEqual("2 apprenticeships above funding band maximum", _result.FundingBandTextForFileUploadCohorts);           
+        {
+            Assert.That(_result.FundingBandTextForFileUploadCohorts, Is.EqualTo("2 apprenticeships above funding band maximum"));           
         }
 
         internal void VerifyFundingBandInsetTextMappedCorrectlyForFileUploadedApprentices()
         {
-            Assert.AreEqual("The price for these apprenticeships is above the", _result.FundingBandInsetTextForFileUploadCohorts);
+            Assert.That(_result.FundingBandInsetTextForFileUploadCohorts, Is.EqualTo("The price for these apprenticeships is above the"));
         }
 
         internal void VerifyFundingBandInsetTextMappedCorrectlyForFileUploadedApprentice()
         {
-            Assert.AreEqual("The price for this apprenticeship is above its", _result.FundingBandInsetTextForFileUploadCohorts);
+            Assert.That(_result.FundingBandInsetTextForFileUploadCohorts, Is.EqualTo("The price for this apprenticeship is above its"));
         }
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithDefaultData()
         {           
             // This will create three csv records, with total cost of 1000 (2 * 500)
-            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
+            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 500, 2));
 
             return this;
         }
 
         internal WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsFixture WithPriceDefaultData(int numberOfApprentices)
         {
-            _csvRecords.AddRange(CreateCsvRecords(fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
+            _csvRecords.AddRange(CreateCsvRecords(_fixture, "Employer", cohortRef, dateOfBirth, "2020-10-01", "2022-11", 1500, numberOfApprentices));
 
             return this;
         }   
@@ -415,7 +415,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                 .With(x => x.Cost, 100)
                 .With(x => x.CourseName, "CourseName")
                 .With(x => x.StartDate, DefaultStartDate)
@@ -432,7 +432,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             _draftApprenticeshipsResponse = new GetDraftApprenticeshipsResult
             {
-                DraftApprenticeships = fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
+                DraftApprenticeships = _fixture.Build<Infrastructure.OuterApi.Responses.DraftApprenticeship>()
                .With(x => x.Cost, 3000)
                .With(x => x.CourseName, "CourseName")
                .With(x => x.StartDate, DefaultStartDate)
@@ -447,17 +447,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         internal void FundingTextMappedCorrectlyForExistingApprentices()
         {
-            Assert.AreEqual("3 apprenticeships above funding band maximum", _result.FundingBandTextForExistingCohorts);
+            Assert.That(_result.FundingBandTextForExistingCohorts, Is.EqualTo("3 apprenticeships above funding band maximum"));
         }
 
         internal void FundingBandInsetTextMappedCorrectlyForExistingApprentices()
         {
-            Assert.AreEqual("The price for these apprenticeships is above the", _result.FundingBandInsetTextForExistingCohorts);
+            Assert.That(_result.FundingBandInsetTextForExistingCohorts, Is.EqualTo("The price for these apprenticeships is above the"));
         }
 
         internal void FundingBandInsetTextMappedCorrectlyForExistingApprentice()
         {
-            Assert.AreEqual("The price for this apprenticeship is above its", _result.FundingBandInsetTextForExistingCohorts);
+            Assert.That(_result.FundingBandInsetTextForExistingCohorts, Is.EqualTo("The price for this apprenticeship is above its"));
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using FluentValidation.TestHelper;
-using NUnit.Framework;
+﻿using System;
+using System.Linq.Expressions;
+using FluentValidation.TestHelper;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Validators;
-using System;
-using System.Linq.Expressions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
 {
@@ -27,17 +26,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             var model = new ChangeEmployerRequest { ProviderId = providerId };
             AssertValidationResult(request => request.ProviderId, model, expectedValid);
         }
-        private void AssertValidationResult<T>(Expression<Func<ChangeEmployerRequest, T>> property, ChangeEmployerRequest instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<ChangeEmployerRequest, T>> property, ChangeEmployerRequest instance, bool expectedValid)
         {
             var validator = new ApprenticeInformRequestValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

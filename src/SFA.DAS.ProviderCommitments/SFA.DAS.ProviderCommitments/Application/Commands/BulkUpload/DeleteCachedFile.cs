@@ -1,5 +1,4 @@
-﻿using MediatR;
-using System;
+﻿using System;
 
 namespace SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload
 {

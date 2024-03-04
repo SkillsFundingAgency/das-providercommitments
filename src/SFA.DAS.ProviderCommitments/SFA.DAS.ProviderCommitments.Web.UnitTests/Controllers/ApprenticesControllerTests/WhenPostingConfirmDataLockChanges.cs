@@ -1,8 +1,4 @@
-﻿using System.Threading;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -28,8 +24,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockCommitmentsApiClient = new Mock<ICommitmentsApiClient>();
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(x => x.Map<ConfirmDataLockChangesViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _mockCommitmentsApiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
+        
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public void Then_TriageDataLocks_Api_Called()

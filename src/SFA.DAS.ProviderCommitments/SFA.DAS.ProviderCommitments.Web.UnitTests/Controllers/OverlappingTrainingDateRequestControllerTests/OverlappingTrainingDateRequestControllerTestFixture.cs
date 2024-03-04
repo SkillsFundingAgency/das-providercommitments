@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
+using SFA.DAS.CommitmentsV2.Api.Types.Requests;
+using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -21,34 +15,26 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderUrlHelper;
 using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using CreateCohortResponse = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortResponse;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
     public class OverlappingTrainingDateRequestControllerTestFixture
     {
         private readonly OverlappingTrainingDateRequestController _controller;
-        private readonly Mock<IMediator> _mediator;
         private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ILinkGenerator> _linkGenerator;
         private readonly DraftApprenticeshipViewModel _model;
-        private readonly CreateCohortRequest _createCohortRequest;
-        private readonly CreateCohortResponse _createCohortResponse;
         private IActionResult _actionResult;
         private readonly string _linkGeneratorRedirectUrl;
-        private string _linkGeneratorParameter;
-        private Fixture _autoFixture;
-        private readonly Mock<IEncodingService> _encodingService;
+        private readonly Fixture _autoFixture;
         private readonly Mock<ITempDataDictionary> _tempData;
-        private readonly string _draftApprenticeshipHashedId;
         private readonly DraftApprenticeshipOverlapOptionViewModel _draftApprenticeshipOverlapOptionViewModel;
         private readonly OverlapOptionsForChangeEmployerViewModel _overlapOptionsForChangeEmployerViewModel;
         private readonly Mock<IOuterApiService> _outerApiService;
-        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClient;
         private readonly DraftApprenticeshipOverlapOptionRequest _draftApprenticeshipOverlapOptionRequest;
         private readonly OverlapOptionsForChangeEmployerRequest _overlapOptionsForChangeEmployerRequest;
-        private CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse _apprenticeshipDetails;
-        private CommitmentsV2.Api.Types.Responses.ValidateUlnOverlapResult _validateUlnOverlapResult;
-
+        private GetApprenticeshipResponse _apprenticeshipDetails;
+        
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequest _overlapRequest;
         private readonly DraftApprenticeshipOverlapOptionWithPendingRequestViewModel _overlapViewModel;
 
@@ -64,12 +50,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture()
         {
             _autoFixture = new Fixture();
-
-            _draftApprenticeshipHashedId = _autoFixture.Create<string>();
-            _mediator = new Mock<IMediator>();
             _mockModelMapper = new Mock<IModelMapper>();
-            _linkGenerator = new Mock<ILinkGenerator>();
-            _encodingService = new Mock<IEncodingService>();
+            
+            var linkGenerator = new Mock<ILinkGenerator>();
 
             _draftApprenticeshipOverlapAlertRequest = _autoFixture.Create<DraftApprenticeshipOverlapAlertRequest>();
             _updateDraftApprenticeshipRequest = _autoFixture.Create<UpdateDraftApprenticeshipApimRequest>();
@@ -87,12 +70,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _tempData = new Mock<ITempDataDictionary>();
 
-            _createCohortRequest = new CreateCohortRequest();
+            var createCohortRequest = new CreateCohortRequest();
             _mockModelMapper
                 .Setup(x => x.Map<CreateCohortRequest>(It.IsAny<AddDraftApprenticeshipViewModel>()))
-                .ReturnsAsync(_createCohortRequest);
+                .ReturnsAsync(createCohortRequest);
 
-            _createCohortResponse = new CreateCohortResponse
+            var createCohortResponse = new CreateCohortResponse
             {
                 CohortId = _autoFixture.Create<long>(),
                 CohortReference = _autoFixture.Create<string>(),
@@ -112,29 +95,31 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
                 ProviderId = 2,
             };
 
-            _mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_createCohortResponse);
+            var mediator = new Mock<IMediator>();
+            mediator.Setup(x => x.Send(It.IsAny<CreateCohortRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(createCohortResponse);
 
             _linkGeneratorRedirectUrl = _autoFixture.Create<string>();
-            _linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
+            linkGenerator.Setup(x => x.ProviderApprenticeshipServiceLink(It.IsAny<string>()))
                 .Returns(_linkGeneratorRedirectUrl)
-                .Callback((string value) => _linkGeneratorParameter = value);
+                .Callback((string value) => _ = value);
 
 
             _outerApiService = new Mock<IOuterApiService>();
-            _commitmentsApiClient = new Mock<ICommitmentsApiClient>();
-            _commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<CommitmentsV2.Api.Types.Requests.ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _validateUlnOverlapResult);
+            var commitmentsApiClient = new Mock<ICommitmentsApiClient>();
+            var validateUlnOverlapResult = new ValidateUlnOverlapResult();
+            commitmentsApiClient.Setup(x => x.ValidateUlnOverlap(It.IsAny<ValidateUlnOverlapRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => validateUlnOverlapResult);
 
             _mockModelMapper.Setup(x => x.Map<CreateOverlappingTrainingDateApimRequest>(It.IsAny<CreateCohortResponse>())).ReturnsAsync(() => new CreateOverlappingTrainingDateApimRequest());
             _mockModelMapper.Setup(x => x.Map<CreateCohortRequest>(It.IsAny<DraftApprenticeshipOverlapOptionViewModel>())).ReturnsAsync(() => new CreateCohortRequest());
             _mockModelMapper.Setup(x => x.Map<DraftApprenticeshipOverlapOptionViewModel>(It.IsAny<DraftApprenticeshipOverlapOptionRequest>())).ReturnsAsync(() => new DraftApprenticeshipOverlapOptionViewModel());
 
-            _apprenticeshipDetails = new CommitmentsV2.Api.Types.Responses.GetApprenticeshipResponse()
+            _apprenticeshipDetails = new GetApprenticeshipResponse()
             {
                 Id = 1,
-                Status = CommitmentsV2.Types.ApprenticeshipStatus.Live
+                Status = ApprenticeshipStatus.Live
             };
-            _commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
+            commitmentsApiClient.Setup(x => x.GetApprenticeship(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => _apprenticeshipDetails);
 
             _overlapRequest = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequest>();
             _overlapViewModel = _autoFixture.Create<DraftApprenticeshipOverlapOptionWithPendingRequestViewModel>();
@@ -146,17 +131,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             _changeOfEmployerNotifiedViewModel = _autoFixture.Create<ChangeOfEmployerNotifiedViewModel>();
 
             _controller = new OverlappingTrainingDateRequestController(
-                _mediator.Object,
+                mediator.Object,
                 _mockModelMapper.Object,
-                _linkGenerator.Object,
-                _commitmentsApiClient.Object,
+                linkGenerator.Object,
+                commitmentsApiClient.Object,
                 Mock.Of<IAuthenticationService>(),
                 _outerApiService.Object
                 );
             _controller.TempData = _tempData.Object;
         }
 
-        public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(CommitmentsV2.Types.ApprenticeshipStatus status)
+        public OverlappingTrainingDateRequestControllerTestFixture SetApprenticeshipStatus(ApprenticeshipStatus status)
         {
             _apprenticeshipDetails.Status = status;
             return this;
@@ -164,16 +149,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEnableEmployerRequestEmail(bool enabled)
         {
-            Assert.AreEqual(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail, enabled);
+            Assert.That(enabled, Is.EqualTo(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail));
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.AreEqual(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId, model.DraftApprenticeshipHashedId);
+            Assert.That(model.DraftApprenticeshipHashedId, Is.EqualTo(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId));
             return this;
         }
 
@@ -186,18 +171,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapOptionsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapOptionsForChangeEmployerViewModelViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 
@@ -306,23 +291,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as EmployerNotifiedViewModel;
-            Assert.IsNotNull(model);
-
-            Assert.AreEqual(model.CohortReference, _employerNotifiedRequest.CohortReference);
-            Assert.AreEqual(model.ProviderId, _employerNotifiedRequest.ProviderId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
+                Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            });
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyChangeOfEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as ChangeOfEmployerNotifiedViewModel;
-            Assert.IsNotNull(model);
-
-            Assert.AreEqual(model.ProviderId, _changeOfEmployerNotifiedRequest.ProviderId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+            });
             return this;
         }
 
@@ -347,21 +336,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapRequestsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
-            Assert.IsNotNull(model);
-
-            Assert.AreEqual(model.CohortReference, _overlapRequest.CohortReference);
-            Assert.AreEqual(model.DraftApprenticeshipId, _overlapRequest.DraftApprenticeshipId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(model, Is.Not.Null);
+                Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
+                Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
+            });
             return this;
         }
-
-        public OverlappingTrainingDateRequestControllerTestFixture SetupOLTDWithPendingRequestsOverlapOptions(OverlapOptions overlapOption)
-        {
-            _overlapViewModel.OverlapOptions = overlapOption;
-            return this;
-        }
-
+        
         public OverlappingTrainingDateRequestControllerTestFixture GetDraftApprenticeshipOverlapAlert()
         {
             _actionResult = _controller.DraftApprenticeshipOverlapAlert(_draftApprenticeshipOverlapAlertRequest);
@@ -371,9 +356,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.IsNotNull(viewResult);
+            Assert.That(viewResult, Is.Not.Null);
             var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             return this;
         }
 

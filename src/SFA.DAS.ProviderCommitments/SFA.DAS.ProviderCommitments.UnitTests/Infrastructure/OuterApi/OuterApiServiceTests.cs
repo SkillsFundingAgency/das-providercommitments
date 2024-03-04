@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -16,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using BulkUploadValidationError = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi
 {

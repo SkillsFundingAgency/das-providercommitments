@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -116,6 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 {
                     return RedirectToAction(nameof(DraftApprenticeshipOverlapOptionsWithPendingRequest), new
                     {
+                        ProviderId = apprenticeshipDetails.ProviderId,
                         CohortReference = request.CohortReference,
                         DraftApprenticeshipHashedId = request.DraftApprenticeshipHashedId,
                         CreatedOn = pendingOverlapRequests.CreatedOn,
@@ -260,8 +258,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("overlap-alert")]
         public IActionResult DraftApprenticeshipOverlapAlert(DraftApprenticeshipOverlapAlertViewModel viewModel)
         {
-            return RedirectToAction(ControllerConstants.OverlappingTrainingDateRequestController.Actions.DraftApprenticeshipOverlapOptions, ControllerConstants.OverlappingTrainingDateRequestController.Name, new DraftApprenticeshipOverlapOptionRequest
+            return RedirectToAction(nameof(DraftApprenticeshipOverlapOptions), new DraftApprenticeshipOverlapOptionRequest
             {
+                ProviderId = viewModel.ProviderId,
                 CohortReference = viewModel.CohortReference,
                 DraftApprenticeshipHashedId = viewModel.DraftApprenticeshipHashedId,
                 ApprenticeshipHashedId = viewModel.OverlapApprenticeshipHashedId
@@ -323,14 +322,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private void RemoveStoredDraftApprenticeshipState(string draftApprenticeshipHashedId)
         {
-            if (string.IsNullOrEmpty(draftApprenticeshipHashedId))
-            {
-                TempData.Remove(nameof(AddDraftApprenticeshipViewModel));
-            }
-            else
-            {
-                TempData.Remove(nameof(EditDraftApprenticeshipViewModel));
-            }
+            TempData.Remove(string.IsNullOrEmpty(draftApprenticeshipHashedId)
+                ? nameof(AddDraftApprenticeshipViewModel)
+                : nameof(EditDraftApprenticeshipViewModel));
         }
 
         private AddDraftApprenticeshipViewModel PeekStoredAddDraftApprenticeshipState()

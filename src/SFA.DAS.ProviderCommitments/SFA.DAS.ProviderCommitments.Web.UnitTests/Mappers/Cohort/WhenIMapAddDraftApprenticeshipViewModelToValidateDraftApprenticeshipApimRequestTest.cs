@@ -1,7 +1,4 @@
-﻿using AutoFixture;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
@@ -33,105 +30,105 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenFirstNameIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.FirstName, result.FirstName);
+            Assert.That(result.FirstName, Is.EqualTo(_source.FirstName));
         }
 
         [Test]
         public async Task ThenLastNameIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.LastName, result.LastName);
+            Assert.That(result.LastName, Is.EqualTo(_source.LastName));
         }
 
         [Test]
         public async Task ThenEmailIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.Email, result.Email);
+            Assert.That(result.Email, Is.EqualTo(_source.Email));
         }
 
         [Test]
         public async Task ThenDateOfBirthIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.DateOfBirth.Date, result.DateOfBirth);
+            Assert.That(result.DateOfBirth, Is.EqualTo(_source.DateOfBirth.Date));
         }
 
         [Test]
         public async Task ThenUniqueLearnerNumberIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.Uln, result.Uln);
+            Assert.That(result.Uln, Is.EqualTo(_source.Uln));
         }
 
         [Test]
         public async Task ThenCourseCodeIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_source.CourseCode));
         }
 
         [Test]
         public async Task ThenCostIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.Cost, result.Cost);
+            Assert.That(result.Cost, Is.EqualTo(_source.Cost));
         }
 
         [Test]
         public async Task ThenStartDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.StartDate.Date, result.StartDate);
+            Assert.That(result.StartDate, Is.EqualTo(_source.StartDate.Date));
         }
 
         [Test]
         public async Task ThenEndDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.EndDate.Date, result.EndDate);
+            Assert.That(result.EndDate, Is.EqualTo(_source.EndDate.Date));
         }
 
         [Test]
         public async Task ThenOriginatorReferenceIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.Reference, result.OriginatorReference);
+            Assert.That(result.OriginatorReference, Is.EqualTo(_source.Reference));
         }
 
         [Test]
         public async Task ThenReservationIdIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ReservationId, result.ReservationId);
+            Assert.That(result.ReservationId, Is.EqualTo(_source.ReservationId));
         }
 
         [Test]
         public async Task ThenDeliveryModelIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.DeliveryModel, result.DeliveryModel);
+            Assert.That(result.DeliveryModel, Is.EqualTo(_source.DeliveryModel));
         }
 
         [Test]
         public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+            Assert.That(result.IsOnFlexiPaymentPilot, Is.EqualTo(_source.IsOnFlexiPaymentPilot));
         }
 
         [Test]
         public async Task ThenActualStartDateIsMappedCorrectly()
         {
             var result = await _mapper.Map(_source);
-            Assert.AreEqual(_source.ActualStartDate.Date, result.ActualStartDate);
+            Assert.That(result.ActualStartDate, Is.EqualTo(_source.ActualStartDate.Date));
         }
     }
 }

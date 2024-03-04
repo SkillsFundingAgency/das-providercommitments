@@ -1,20 +1,19 @@
 ﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 {
     internal class SimpleModelMapper : IModelMapper
     {
-        private readonly object[] Mappers;
+        private readonly object[] _mappers;
 
         public SimpleModelMapper(params object[] mappers)
         {
             foreach (var mapper in mappers)
                 EnsureIsMapper(mapper);
 
-            Mappers = mappers;
+            _mappers = mappers;
         }
 
         private static void EnsureIsMapper(object mapper)
@@ -44,7 +43,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers
 
         private object FindMapper(Type sourceType, Type destinationType)
         {
-            return Mappers.FirstOrDefault(mapper =>
+            return _mappers.FirstOrDefault(mapper =>
                 mapper.GetType().GetInterfaces().Any(IsAppropriateMapper));
 
             bool IsAppropriateMapper(Type mapperType)

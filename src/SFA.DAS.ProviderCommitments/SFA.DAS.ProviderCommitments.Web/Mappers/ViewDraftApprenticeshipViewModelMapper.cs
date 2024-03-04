@@ -3,7 +3,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers
 {
@@ -58,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
             return result;
         }
 
-        private string GetCourseOption(string draftApprenticeshipTrainingCourseOption)
+        private static string GetCourseOption(string draftApprenticeshipTrainingCourseOption)
         {
             return draftApprenticeshipTrainingCourseOption switch
             {

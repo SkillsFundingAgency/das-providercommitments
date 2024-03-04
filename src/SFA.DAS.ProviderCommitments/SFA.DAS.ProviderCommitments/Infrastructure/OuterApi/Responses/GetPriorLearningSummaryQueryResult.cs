@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
+﻿namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses
 {
     public class GetPriorLearningSummaryQueryResult
     {

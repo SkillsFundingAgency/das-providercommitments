@@ -1,9 +1,4 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
@@ -11,8 +6,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -51,10 +44,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
     public class WhenIPostFileUploadAmendedFileFixture
     {
-        public CohortController Sut { get; set; }
-
-        private readonly Mock<IModelMapper> _mockModelMapper;
-        private readonly Mock<ICommitmentsApiClient> _commitmentApiClient;
+        private readonly CohortController _sut;
         private readonly FileUploadAmendedFileViewModel _viewModel;
         private readonly Mock<IMediator> _mockMediator;
 
@@ -63,13 +53,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var fixture = new Fixture();
 
             _viewModel = fixture.Create<FileUploadAmendedFileViewModel>();
-            _commitmentApiClient = new Mock<ICommitmentsApiClient>();
+            var commitmentApiClient = new Mock<ICommitmentsApiClient>();
 
-            _mockModelMapper = new Mock<IModelMapper>();
+            var mockModelMapper = new Mock<IModelMapper>();
             _mockMediator = new Mock<IMediator>();
 
-            Sut = new CohortController(_mockMediator.Object, _mockModelMapper.Object, Mock.Of<ILinkGenerator>(), _commitmentApiClient.Object, 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>());
+            _sut = new CohortController(_mockMediator.Object, mockModelMapper.Object, Mock.Of<ILinkGenerator>(), commitmentApiClient.Object, 
+                        Mock.Of<IEncodingService>(),  Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public WhenIPostFileUploadAmendedFileFixture WithSelectedOption(bool selectedOption)
@@ -83,6 +73,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mockMediator.Verify(x => x.Send(It.IsAny<DeleteCachedFileCommand>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        public async Task<IActionResult> Act() => await Sut.FileUploadAmendedFile(_viewModel);
+        public async Task<IActionResult> Act() => await _sut.FileUploadAmendedFile(_viewModel);
     }
 }

@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -15,7 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
         {
             var result = validator.Validate(viewModel);
 
-            Assert.True(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -27,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 
             var result = validator.Validate(viewModel);
 
-            Assert.False(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
 
         [Test, MoqAutoData]
@@ -41,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
 
             var result = validator.Validate(viewModel);
 
-            Assert.False(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
@@ -34,12 +29,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
     [SetNavigationSection(NavigationSection.ManageApprentices)]
     public class ApprenticeController : Controller
     {
-        private readonly ICookieStorageService<IndexRequest> _cookieStorage;
+        private readonly Interfaces.ICookieStorageService<IndexRequest> _cookieStorage;
         private readonly IModelMapper _modelMapper;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
         private readonly IOuterApiService _outerApiService;
         private readonly ICacheStorageService _cacheStorage;
-
+        
         public const string ChangesApprovedFlashMessage = "Changes approved";
         public const string ChangesRejectedFlashMessage = "Changes rejected";
         public const string ChangesUndoneFlashMessage = "Changes undone";
@@ -47,8 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private const string ApprenticeUpdated = "Change saved (re-approval not required)";
         private const string ViewModelForEdit = "ViewModelForEdit";
 
-        public ApprenticeController(IModelMapper modelMapper,
-            ICookieStorageService<IndexRequest> cookieStorage,
+        public ApprenticeController(IModelMapper modelMapper, Interfaces.ICookieStorageService<IndexRequest> cookieStorage,
             ICommitmentsApiClient commitmentsApiClient,
             IOuterApiService outerApiService,
             ICacheStorageService cacheStorage)
@@ -285,7 +279,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             await ValidateChangeOfEmployerOverlap(viewModel);
 
             var request = await _modelMapper.Map<PriceRequest>(viewModel);
-            return RedirectToAction(nameof(Price), request);
+            return RedirectToAction(nameof(Price), "Apprentice", request);
         }
 
         [HttpGet]
@@ -301,7 +295,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             TempData["ChangeEmployerModel"] = JsonConvert.SerializeObject(viewModel);
-            return RedirectToRoute(RouteNames.ChangeEmployerDetails);
+            
+            return RedirectToRoute(RouteNames.ChangeEmployerDetails, new {request.ProviderId, request.ApprenticeshipHashedId});
         }
 
         [Authorize(Policy = nameof(PolicyNames.HasAccountOwnerPermission))]
@@ -373,6 +368,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var request = await _modelMapper.Map<SentRequest>(viewModel);
             TempData[nameof(ConfirmViewModel.NewEmployerName)] = viewModel.NewEmployerName;
+            
             return RedirectToRoute(RouteNames.ApprenticeSent, request);
         }
 

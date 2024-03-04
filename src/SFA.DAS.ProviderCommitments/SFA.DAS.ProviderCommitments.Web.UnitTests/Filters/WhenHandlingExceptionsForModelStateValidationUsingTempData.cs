@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -37,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             var exceptionContext = new ExceptionContext(new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()), _filters);
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
             exceptionContext.Exception = new CommitmentsApiModelException(errors);
 

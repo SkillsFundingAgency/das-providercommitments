@@ -1,7 +1,6 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
 {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices.ChangeEmployer;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -65,14 +61,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task Map_ApprenticeshipId_Is_Mapped_Correctly()
         {
             await _mapper.Map(_source);
-            Assert.AreEqual(_source.ApprenticeshipId, _apiRequest.ApprenticeshipId);
+            Assert.That(_apiRequest.ApprenticeshipId, Is.EqualTo(_source.ApprenticeshipId));
         }
 
         [Test]
         public async Task Map_ProviderId_Is_Mapped_Correctly()
         {
             await _mapper.Map(_source);
-            Assert.AreEqual(_source.ProviderId, _apiRequest.ProviderId);
+            Assert.That(_apiRequest.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
@@ -80,7 +76,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _mapper.Map(_source);
             var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
-            Assert.AreEqual(_cacheItem.Price, data.Price);
+            Assert.That(data.Price, Is.EqualTo(_cacheItem.Price));
         }
 
         [Test]
@@ -88,7 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _mapper.Map(_source);
             var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
-            Assert.AreEqual(_cacheItem.StartDate, data.StartDate.Value.ToString("MMyyyy"));
+            Assert.That(data.StartDate.Value.ToString("MMyyyy"), Is.EqualTo(_cacheItem.StartDate));
         }
 
         [Test]
@@ -96,7 +92,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _mapper.Map(_source);
             var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
-            Assert.AreEqual(_cacheItem.EndDate, data.EndDate.Value.ToString("MMyyyy"));
+            Assert.That(data.EndDate.Value.ToString("MMyyyy"), Is.EqualTo(_cacheItem.EndDate));
         }
 
         [Test]
@@ -104,7 +100,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             await _mapper.Map(_source);
             var data = _apiRequest.Data as PostCreateChangeOfEmployerRequest.Body;
-            Assert.AreEqual(true, data.HasOverlappingTrainingDates);
+            Assert.That(data.HasOverlappingTrainingDates, Is.EqualTo(true));
         }
     }
 }

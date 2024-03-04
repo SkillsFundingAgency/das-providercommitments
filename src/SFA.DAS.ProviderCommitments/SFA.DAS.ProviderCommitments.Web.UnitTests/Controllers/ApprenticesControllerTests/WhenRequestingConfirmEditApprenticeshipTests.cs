@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -31,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         public async Task VerifyViewIsReturned()
         {
             var result = await _fixture.ConfirmEditApprenticeship();
-            _fixture.VerifyViewResultIsReturned(result);
+            WhenRequestingConfirmEditApprenticeshipFixture.VerifyViewResultIsReturned(result);
         }
     }
 
@@ -39,27 +33,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         public WhenRequestingConfirmEditApprenticeshipFixture() : base()
         {
-            _controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
+            Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
         public async Task<IActionResult> ConfirmEditApprenticeship()
         {
-            return await _controller.ConfirmEditApprenticeship();
+            return await Controller.ConfirmEditApprenticeship();
         }
-
-        public void VerifyValidationApiIsCalled()
-        {
-            _mockCommitmentsApiClient.Verify(x => x.ValidateApprenticeshipForEdit(It.IsAny<ValidateApprenticeshipForEditRequest>(), CancellationToken.None), Times.Once());
-        }
-
+        
         internal void VerifyViewModelMapperIsCalled()
         {
-            _mockMapper.Verify(x => x.Map<ConfirmEditApprenticeshipViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
+            MockMapper.Verify(x => x.Map<ConfirmEditApprenticeshipViewModel>(It.IsAny<EditApprenticeshipRequestViewModel>()), Times.Once());
         }
 
-        internal void VerifyViewResultIsReturned(IActionResult result)
+        internal static void VerifyViewResultIsReturned(IActionResult result)
         {
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.That(result, Is.InstanceOf<ViewResult>());
         }
     }
 }

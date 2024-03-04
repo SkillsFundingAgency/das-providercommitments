@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Validators;
 
@@ -55,17 +54,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators
             var model = new AddDraftApprenticeshipViewModel { IsOnFlexiPaymentPilot = false, EndMonth = month, EndYear = year };
             AssertValidationResult(request => request.EndDate, model, expectedValid);
         }
-        private void AssertValidationResult<T>(Expression<Func<AddDraftApprenticeshipViewModel, T>> property, AddDraftApprenticeshipViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<AddDraftApprenticeshipViewModel, T>> property, AddDraftApprenticeshipViewModel instance, bool expectedValid)
         {
             var validator = new AddDraftApprenticeshipViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

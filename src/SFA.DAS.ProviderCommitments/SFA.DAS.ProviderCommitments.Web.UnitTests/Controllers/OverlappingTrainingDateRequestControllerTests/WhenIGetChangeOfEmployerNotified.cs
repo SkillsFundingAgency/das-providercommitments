@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrainingDateRequestControllerTests
 {
     [TestFixture]
     public class WhenIGetChangeOfChangeOfEmployerNotified

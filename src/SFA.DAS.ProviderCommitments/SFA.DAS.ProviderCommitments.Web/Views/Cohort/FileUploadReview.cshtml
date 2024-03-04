@@ -1,9 +1,7 @@
-﻿@using SFA.DAS.ProviderUrlHelper
-@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
+﻿@using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Features
 @inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
-@inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.FileUploadReviewViewModel
 
 @{
@@ -55,6 +53,7 @@
                 }
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-width-two-thirds">
                 <form method="post">
+                    <input type="hidden" asp-for="ProviderId" />
                     <div class="govuk-form-group @(ViewContext.ModelState.IsValid ? "" : "govuk-form-group--error")">
                         <fieldset class="govuk-fieldset">
                             <h2 class="govuk-heading-l govuk-!-margin-top-4">
@@ -62,7 +61,7 @@
                             </h2>
                             @Html.ValidationMessageFor(m => m.SelectedOption, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.SelectedOption) })
                             <div class="govuk-radios">
-                                @if (!AuthorizationService.IsAuthorized(ProviderFeature.RplExtended) && Model.CanApprove)
+                                @if (!await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended) && Model.CanApprove)
                                 {
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="details-approve" name="SelectedOption" type="radio" value="@FileUploadReviewOption.ApproveAndSend">
@@ -71,18 +70,18 @@
                                         </label>
                                     </div>
                                 }
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
-                                <label class="govuk-label govuk-radios__label" for="details-save">
-                                    Save all but don't send to employer(s)
-                                </label>
-                                @if (AuthorizationService.IsAuthorized(ProviderFeature.RplExtended))
-                                {
-                                    <div id="details-save-hint" class="govuk-hint govuk-radios__hint">
-                                        You will need save first and then approve the cohorts. This is because the new RPL rules still need to be implemented here.
-                                    </div>
-                                }
-                            </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="details-save" name="SelectedOption" type="radio" value="@FileUploadReviewOption.SaveButDontSend">
+                                    <label class="govuk-label govuk-radios__label" for="details-save">
+                                        Save all but don't send to employer(s)
+                                    </label>
+                                    @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
+                                    {
+                                        <div id="details-save-hint" class="govuk-hint govuk-radios__hint">
+                                            You will need save first and then approve the cohorts. This is because the new RPL rules still need to be implemented here.
+                                        </div>
+                                    }
+                                </div>
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="details-new-file" name="SelectedOption" type="radio" value="@FileUploadReviewOption.UploadAmendedFile">
                                     <label class="govuk-label govuk-radios__label" for="details-new-file">

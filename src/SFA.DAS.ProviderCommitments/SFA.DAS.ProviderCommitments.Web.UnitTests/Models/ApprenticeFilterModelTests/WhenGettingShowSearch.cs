@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests
 {
@@ -18,9 +16,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             {
                 TotalNumberOfApprenticeships = numberOfApprentices
             };
-            
+
             //Assert
-            Assert.AreEqual(expectedBool, filterModel.ShowSearch);
+            Assert.That(filterModel.ShowSearch, Is.EqualTo(expectedBool));
         }
     }
 }

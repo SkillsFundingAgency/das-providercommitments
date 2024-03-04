@@ -1,14 +1,9 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -18,17 +13,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private ConfirmEmployerViewModel _source;
         private Func<Task<CreateEmptyCohortRequest>> _act;
         private Mock<ICommitmentsApiClient> _commitmentApiClient;
-        private AccountLegalEntityResponse _accountlegalEntityResponse;
+        private AccountLegalEntityResponse _accountLegalEntityResponse;
 
         [SetUp]
         public void Arrange()
         {
             var fixture = new Fixture();
             _commitmentApiClient = new Mock<ICommitmentsApiClient>();
-             _accountlegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
+             _accountLegalEntityResponse = fixture.Create<AccountLegalEntityResponse>();
 
             _source = fixture.Create<ConfirmEmployerViewModel>();
-            _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountlegalEntityResponse);
+            _commitmentApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(_accountLegalEntityResponse);
 
             _mapper = new ConfirmEmployerViewModelToCreateEmptyCohortRequestMapper(_commitmentApiClient.Object);
 
@@ -39,21 +34,21 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public async Task ThenProviderIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
         }
 
         [Test]
         public async Task ThenAccountLegalEntityIdIsMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_source.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(result.AccountLegalEntityId, Is.EqualTo(_source.AccountLegalEntityId));
         }
 
         [Test]
         public async Task ThenAccountIdMappedCorrectly()
         {
             var result = await _act();
-            Assert.AreEqual(_accountlegalEntityResponse.AccountId, result.AccountId);
+            Assert.That(result.AccountId, Is.EqualTo(_accountLegalEntityResponse.AccountId));
         }
     }
 }

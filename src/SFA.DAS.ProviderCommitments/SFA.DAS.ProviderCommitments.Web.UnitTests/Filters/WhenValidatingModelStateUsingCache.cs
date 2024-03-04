@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -78,7 +75,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -116,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -149,9 +146,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedErrorGuidKey,
+                    new(CacheKeyConstants.CachedErrorGuidKey,
                         new StringValues(cachedErrorGuid.ToString())),
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -172,7 +169,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
 
             _cacheStorageServiceMock
@@ -196,9 +193,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
             httpContext.Request.Query = new QueryCollection(new Dictionary<string, StringValues>(
                 new List<KeyValuePair<string, StringValues>>
                 {
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedErrorGuidKey,
+                    new(CacheKeyConstants.CachedErrorGuidKey,
                         new StringValues(cachedErrorGuid.ToString())),
-                    new KeyValuePair<string, StringValues>(CacheKeyConstants.CachedModelStateGuidKey,
+                    new(CacheKeyConstants.CachedModelStateGuidKey,
                         new StringValues(modelStateGuid.ToString()))
                 }));
 
@@ -219,7 +216,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Filters
 
             var errors = new List<ErrorDetail>
             {
-                new ErrorDetail("uln", "bogus")
+                new("uln", "bogus")
             };
 
             _cacheStorageServiceMock

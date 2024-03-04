@@ -1,6 +1,4 @@
-﻿using System;
-using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using System.Collections.Generic;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort

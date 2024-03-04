@@ -1,11 +1,6 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -15,8 +10,6 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.DraftApprenticeship;
-using System.Threading;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -34,7 +27,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             result.VerifyReturnsViewModel().ViewName.Should().Be(null);
             var model = result.VerifyReturnsViewModel().WithModel<EditDraftApprenticeshipCourseViewModel>();
 
-            Assert.AreEqual(fixture.ViewModel, model);
+            Assert.That(model, Is.EqualTo(fixture.ViewModel));
         }
 
         [Test]
@@ -43,68 +36,63 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             var fixture = new WhenSelectingCourseOnEditApprenticeshipFixture()
                 .WithDraftApprenticeship();
 
-            var result = await fixture.Sut.SetCourseForEdit(fixture.ViewModel);
+            var result = await fixture.Sut.EditDraftApprenticeshipCourse(fixture.ViewModel);
             result.VerifyReturnsRedirectToActionResult().ActionName.Should().Be("SelectDeliveryModelForEdit");
         }
     }
 
     public class WhenSelectingCourseOnEditApprenticeshipFixture
     {
-        public DraftApprenticeshipController Sut { get; set; }
+        private readonly Mock<ITempDataDictionary> _tempDataMock;
+        private readonly EditDraftApprenticeshipViewModel _draftApprenticeship;
 
-        public string RedirectUrl;
-        public Mock<IModelMapper> ModelMapperMock;
-        public Mock<IAuthorizationService> AuthorizationServiceMock;
-        public Mock<ITempDataDictionary> TempDataMock;
-        public Mock<IMediator> MediatorMock;
-        public DraftApprenticeshipRequest Request;
-        public EditDraftApprenticeshipViewModel DraftApprenticeship;
-        public GetCohortResponse Cohort;
-        public EditDraftApprenticeshipCourseViewModel ViewModel;
-        public Mock<ICommitmentsApiClient> CommitmentsApiClientMock;
+        public DraftApprenticeshipController Sut { get; }
+        public DraftApprenticeshipRequest Request { get; }
+        public EditDraftApprenticeshipCourseViewModel ViewModel { get; }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture()
         {
             var fixture = new Fixture();
             Request = fixture.Create<DraftApprenticeshipRequest>();
-            DraftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            _draftApprenticeship = fixture.Build<EditDraftApprenticeshipViewModel>().Without(x => x.BirthDay)
+                .Without(x => x.BirthMonth).Without(x => x.BirthYear)
                 .Without(x => x.StartMonth).Without(x => x.StartYear).Without(x => x.StartDate)
                 .Without(x => x.EndMonth).Without(x => x.EndYear)
                 .Create();
-            Cohort = fixture.Create<GetCohortResponse>();
+            var cohort = fixture.Create<GetCohortResponse>();
             ViewModel = fixture.Create<EditDraftApprenticeshipCourseViewModel>();
 
-            ModelMapperMock = new Mock<IModelMapper>();
-            TempDataMock = new Mock<ITempDataDictionary>();
-            AuthorizationServiceMock = new Mock<IAuthorizationService>();
-            MediatorMock = new Mock<IMediator>();
+            var modelMapperMock = new Mock<IModelMapper>();
+            _tempDataMock = new Mock<ITempDataDictionary>();
+            var authorizationServiceMock = new Mock<IAuthorizationService>();
+            var mediatorMock = new Mock<IMediator>();
 
-            ModelMapperMock.Setup(x => x.Map<EditDraftApprenticeshipCourseViewModel>(It.IsAny<DraftApprenticeshipRequest>())).ReturnsAsync(ViewModel);
-                
-            CommitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
-            CommitmentsApiClientMock.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(Cohort);
+            modelMapperMock
+                .Setup(x => x.Map<EditDraftApprenticeshipCourseViewModel>(It.IsAny<DraftApprenticeshipRequest>()))
+                .ReturnsAsync(ViewModel);
+
+            var commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+            commitmentsApiClientMock.Setup(x => x.GetCohort(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(cohort);
 
             Sut = new DraftApprenticeshipController(
-                MediatorMock.Object,
-                CommitmentsApiClientMock.Object,
-                ModelMapperMock.Object,
+                mediatorMock.Object,
+                commitmentsApiClientMock.Object,
+                modelMapperMock.Object,
                 Mock.Of<IEncodingService>(),
-                AuthorizationServiceMock.Object,
+                authorizationServiceMock.Object,
                 Mock.Of<IOuterApiService>(),
-                Mock.Of<IAuthenticationService>());
-            Sut.TempData = TempDataMock.Object;
+                Mock.Of<IAuthenticationService>()
+                );
+            
+            Sut.TempData = _tempDataMock.Object;
         }
 
         public WhenSelectingCourseOnEditApprenticeshipFixture WithDraftApprenticeship()
         {
-            object asString = JsonConvert.SerializeObject(DraftApprenticeship);
-            TempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
+            object asString = JsonConvert.SerializeObject(_draftApprenticeship);
+            _tempDataMock.Setup(x => x.Peek(It.IsAny<string>())).Returns(asString);
             return this;
-        }
-
-        public void VerifyReturnsRedirect(IActionResult redirectResult)
-        {
-            redirectResult.VerifyReturnsRedirect().Url.Equals(RedirectUrl);
         }
     }
 }

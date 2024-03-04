@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -17,52 +12,52 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private const string EditApprenticeNeedReapproval = "Change saved and sent to employer to approve";
         private const string EditApprenticeshipUpdated = "Change saved (re-approval not required)";
-        private WhenPostingConfirmEditApprenticeshipTestsFixture fixture;
+        private WhenPostingConfirmEditApprenticeshipTestsFixture _fixture;
 
         [SetUp]
         public void Arrange()
         {
-            fixture = new WhenPostingConfirmEditApprenticeshipTestsFixture();
+            _fixture = new WhenPostingConfirmEditApprenticeshipTestsFixture();
         }
 
         [Test, MoqAutoData]
         public async Task AndTheEditApprenticeship_IsConfirmed_WithIntermediateUpdate_ThenRedirectToApprenticeshipDetails(ConfirmEditApprenticeshipViewModel viewModel)
         {
             viewModel.ConfirmChanges = true;
-            var result = await fixture.ConfirmEditApprenticeship(viewModel);
+            var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
 
         [Test, MoqAutoData]
         public async Task AndTheEditApprenticeship_IsConfirmed_WithIntermediateUpdate_WithCorrectFlashMessage(ConfirmEditApprenticeshipViewModel viewModel)
         {
             viewModel.ConfirmChanges = true;
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            fixture.ConfirmFlashMessageLevel();
-            fixture.ConfirmFlashMessageValue(EditApprenticeNeedReapproval);
+            _fixture.ConfirmFlashMessageLevel();
+            _fixture.ConfirmFlashMessageValue(EditApprenticeNeedReapproval);
         }
 
         [Test, MoqAutoData]
         public async Task AndTheApprenticeship_IsEdit_WithImmediateUpdate_ThenRedirectToApprenticeshipDetails(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            fixture.SetNeedReapproval(false);
+            _fixture.SetNeedReapproval(false);
 
-            var result = await fixture.ConfirmEditApprenticeship(viewModel);
+            var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
 
         [Test, MoqAutoData]
         public async Task AndTheApprenticeship_IsEdit_WithImmediateUpdate_WithCorrectFlashMessage(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            fixture.SetNeedReapproval(false);
+            _fixture.SetNeedReapproval(false);
 
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
-            fixture.ConfirmFlashMessageLevel();
-            fixture.ConfirmFlashMessageValue(EditApprenticeshipUpdated);
+            _fixture.ConfirmFlashMessageLevel();
+            _fixture.ConfirmFlashMessageValue(EditApprenticeshipUpdated);
         }
 
         [Test, MoqAutoData]
@@ -72,10 +67,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = true;
 
             //Act
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            fixture.VerifyEditApprenticeshipApiCalled();
+            _fixture.VerifyEditApprenticeshipApiCalled();
         }
 
         [Test, MoqAutoData]
@@ -85,10 +80,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = false;
 
             //Act
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            fixture.VerifyEditApprenticeshipApiNeverCalled();
+            _fixture.VerifyEditApprenticeshipApiNeverCalled();
         }
 
         [Test, MoqAutoData]
@@ -98,10 +93,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = true;
 
             //Act
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            fixture.EditApprenticeshipApiRequestMapperIsCalled(viewModel);
+            _fixture.EditApprenticeshipApiRequestMapperIsCalled(viewModel);
         }
 
         [Test, MoqAutoData]
@@ -111,10 +106,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = false;
 
             //Act
-            await fixture.ConfirmEditApprenticeship(viewModel);
+            await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            fixture.EditApprenticeshipApiRequestMapperIsNeverCalled(viewModel);
+            _fixture.EditApprenticeshipApiRequestMapperIsNeverCalled(viewModel);
         }
 
         [Test, MoqAutoData]
@@ -124,10 +119,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             viewModel.ConfirmChanges = false;
 
             //Act
-            var result = await fixture.ConfirmEditApprenticeship(viewModel);
+            var result = await _fixture.ConfirmEditApprenticeship(viewModel);
 
             //Assert
-            fixture.VerifyRedirectToDetails(viewModel, result);
+            WhenPostingConfirmEditApprenticeshipTestsFixture.VerifyRedirectToDetails(viewModel, result);
         }
     }
 
@@ -135,33 +130,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
     {
         private const string FlashMessage = "FlashMessage";
         private const string FlashMessageLevel = "FlashMessageLevel";
-        private EditApprenticeshipResponse apiResponse;
-        private EditApprenticeshipApiRequest apiRequest;
+        private readonly EditApprenticeshipResponse _apiResponse;
+        private readonly EditApprenticeshipApiRequest _apiRequest;
         private const string InfoLevel = "Info";
 
         public WhenPostingConfirmEditApprenticeshipTestsFixture()
         {
-            apiRequest = new EditApprenticeshipApiRequest();
-          //  viewModel = new ConfirmEditApprenticeshipViewModel();
-            apiResponse = new EditApprenticeshipResponse { NeedReapproval = true };
+            _apiRequest = new EditApprenticeshipApiRequest();
+            _apiResponse = new EditApprenticeshipResponse { NeedReapproval = true };
             SetUpMockCommitmentClientApi();
             SetupModelMapper();
-            _controller.TempData = new TempDataDictionary(new Mock<HttpContext>().Object, new Mock<ITempDataProvider>().Object);
+            Controller.TempData = new TempDataDictionary(new Mock<HttpContext>().Object, new Mock<ITempDataProvider>().Object);
         }
 
         private void SetUpMockCommitmentClientApi()
         {
-            _mockCommitmentsApiClient.Setup(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(apiResponse));
+            MockCommitmentsApiClient.Setup(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(_apiResponse));
         }
 
         private void SetupModelMapper()
         {
-            _mockMapper.Setup(x => x.Map<EditApprenticeshipApiRequest>(It.IsAny<ConfirmEditApprenticeshipViewModel>())).ReturnsAsync(apiRequest);
+            MockMapper.Setup(x => x.Map<EditApprenticeshipApiRequest>(It.IsAny<ConfirmEditApprenticeshipViewModel>())).ReturnsAsync(_apiRequest);
         }
 
         public Task<IActionResult> ConfirmEditApprenticeship(ConfirmEditApprenticeshipViewModel viewModel)
         {
-           return _controller.ConfirmEditApprenticeship(viewModel);
+           return Controller.ConfirmEditApprenticeship(viewModel);
         }
 
         internal void ConfirmFlashMessageValue(string editApprenticeNeedReapproval)
@@ -177,41 +171,44 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         private void VerifyTempData(string key, string value)
         {
             object valueFromTempData;
-            _controller.TempData.TryGetValue(key, out valueFromTempData);
-            Assert.AreEqual(valueFromTempData.ToString(), value);
+            Controller.TempData.TryGetValue(key, out valueFromTempData);
+            Assert.That(value, Is.EqualTo(valueFromTempData.ToString()));
         }
 
-        internal void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
+        internal static void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
         {
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.AreEqual(redirect.ActionName, "Details");
-            Assert.AreEqual(redirect.RouteValues["ProviderId"], viewModel.ProviderId);
-            Assert.AreEqual(redirect.RouteValues["ApprenticeshipHashedId"], viewModel.ApprenticeshipHashedId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(redirect.ActionName, Is.EqualTo("Details"));
+                Assert.That(viewModel.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
+                Assert.That(viewModel.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
+            });
         }
 
         internal void SetNeedReapproval(bool value)
         {
-            apiResponse.NeedReapproval = value;
+            _apiResponse.NeedReapproval = value;
         }
 
         internal void VerifyEditApprenticeshipApiCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Once);
+            MockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Once);
         }
 
         internal void VerifyEditApprenticeshipApiNeverCalled()
         {
-            _mockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Never);
+            MockCommitmentsApiClient.Verify(x => x.EditApprenticeship(It.IsAny<EditApprenticeshipApiRequest>(), CancellationToken.None), Times.Never);
         }
 
         internal void EditApprenticeshipApiRequestMapperIsCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            _mockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Once);
+            MockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Once);
         }
 
         internal void EditApprenticeshipApiRequestMapperIsNeverCalled(ConfirmEditApprenticeshipViewModel viewModel)
         {
-            _mockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Never);
+            MockMapper.Verify(x => x.Map<EditApprenticeshipApiRequest>(viewModel), Times.Never);
         }
     }
 }

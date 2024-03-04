@@ -1,10 +1,5 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -15,7 +10,6 @@ using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
@@ -55,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadValidateViewModel>();
 
-            Assert.AreEqual(fixture.ProviderId, model.ProviderId);
+            Assert.That(model.ProviderId, Is.EqualTo(fixture.ProviderId));
         }
     }
 
@@ -64,7 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public CohortController Sut { get; set; }
 
         private readonly FileUploadValidateErrorRequest _request;
-        public readonly List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> _errors;
+        public  List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError> Errors { get; set; }
         private readonly FileUploadValidateViewModel _viewModel;
         public readonly long ProviderId = 123;
         private readonly Mock<IModelMapper> _mapper;
@@ -73,7 +67,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
         public WhenGettingFileUploadValidationErrorFixture()
         {
             var fixture = new Fixture();
-            _errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
+            Errors = fixture.Create<List<CommitmentsV2.Api.Types.Responses.BulkUploadValidationError>>();
             _viewModel = fixture.Build<FileUploadValidateViewModel>()
                 .With(x => x.Attachment, Mock.Of<IFormFile>())
                 .With(x => x.ProviderId, ProviderId)
@@ -85,10 +79,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _mapper.Setup(x => x.Map<FileUploadValidateViewModel>(_request)).ReturnsAsync(() => _viewModel);
             
             Sut = new CohortController(Mock.Of<IMediator>(), _mapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
+                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
 
             _tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _tempData.Put(Constants.BulkUpload.BulkUploadErrors, _errors);
+            _tempData.Put(Constants.BulkUpload.BulkUploadErrors, Errors);
             Sut.TempData = _tempData;
         }
 

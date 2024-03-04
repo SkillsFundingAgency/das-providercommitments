@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using SFA.DAS.Authorization.CommitmentPermissions.Options;
 using SFA.DAS.Authorization.Mvc.Attributes;
 using SFA.DAS.Authorization.ProviderPermissions.Options;
@@ -14,6 +8,8 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
+using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -25,7 +21,7 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderUrlHelper;
-using CreateCohortRequest = SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort.CreateCohortRequest;
+using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 using SelectCourseViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectCourseViewModel;
 using SelectDeliveryModelViewModel = SFA.DAS.ProviderCommitments.Web.Models.Cohort.SelectDeliveryModelViewModel;
 
@@ -38,28 +34,27 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         private readonly IModelMapper _modelMapper;
         private readonly ILinkGenerator _urlHelper;
         private readonly ICommitmentsApiClient _commitmentApiClient;
-        private readonly SFA.DAS.Authorization.Services.IAuthorizationService _authorizationService;
         private readonly IEncodingService _encodingService;
         private readonly IOuterApiService _outerApiService;
+        private readonly IAuthorizationService _authorizationService;
 
         public CohortController(IMediator mediator,
             IModelMapper modelMapper,
             ILinkGenerator urlHelper,
             ICommitmentsApiClient commitmentsApiClient,
-            SFA.DAS.Authorization.Services.IAuthorizationService authorizationService,
             IEncodingService encodingService,
-            IOuterApiService outerApiService
-            )
+            IOuterApiService outerApiService,
+            IAuthorizationService authorizationService)
         {
             _mediator = mediator;
             _modelMapper = modelMapper;
             _urlHelper = urlHelper;
             _commitmentApiClient = commitmentsApiClient;
-            _authorizationService = authorizationService;
             _encodingService = encodingService;
             _outerApiService = outerApiService;
+            _authorizationService = authorizationService;
         }
-
+        
         [HttpGet]
         [Route("review", Name = RouteNames.CohortReview)]
         [Route("", Name = RouteNames.Cohort)]
@@ -111,7 +106,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             var redirectModel = await _modelMapper.Map<CreateCohortRedirectModel>(request);
 
-            var action = redirectModel.RedirectTo == CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
+            var action = redirectModel.RedirectTo ==
+                         CreateCohortRedirectModel.RedirectTarget.ChooseFlexiPaymentPilotStatus
                 ? nameof(ChoosePilotStatus)
                 : nameof(SelectCourse);
 
@@ -176,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 return View(model);
             }
 
-            request.DeliveryModel = (DeliveryModel) model.DeliveryModels.FirstOrDefault();
+            request.DeliveryModel = (DeliveryModel)model.DeliveryModels.FirstOrDefault();
             return RedirectToAction(nameof(AddDraftApprenticeship), request.CloneBaseValues());
         }
 
@@ -209,32 +205,38 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectCourse)
             {
-                return RedirectToAction(nameof(SelectCourse), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+                return RedirectToAction(nameof(SelectCourse),
+                    new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
             }
 
             if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectDeliveryModel)
             {
-                return RedirectToAction(nameof(SelectDeliveryModel), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+                return RedirectToAction(nameof(SelectDeliveryModel),
+                    new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
             }
 
             if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.SelectPilotStatus)
             {
-                return RedirectToAction(nameof(ChoosePilotStatus), new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
+                return RedirectToAction(nameof(ChoosePilotStatus),
+                    new { redirectModel.ProviderId, redirectModel.CacheKey, IsEdit = true });
             }
-            
+
             if (redirectModel.RedirectTo == AddDraftApprenticeshipRedirectModel.RedirectTarget.OverlapWarning)
             {
                 StoreDraftApprenticeshipState(model);
-                var hashedApprenticeshipId = _encodingService.Encode(redirectModel.OverlappingApprenticeshipId.Value, EncodingType.ApprenticeshipId);
+                var hashedApprenticeshipId = _encodingService.Encode(redirectModel.OverlappingApprenticeshipId.Value,
+                    EncodingType.ApprenticeshipId);
                 return RedirectToAction("DraftApprenticeshipOverlapAlert", "OverlappingTrainingDateRequest", new
                 {
+                    ProviderId = model.ProviderId,
                     CacheKey = model.CacheKey,
                     OverlapApprenticeshipHashedId = hashedApprenticeshipId,
                     ReservationId = model.ReservationId,
                     StartMonthYear = model.StartDate.MonthYear,
                     CourseCode = model.CourseCode,
                     DeliveryModel = model.DeliveryModel,
-                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId)
+                    EmployerAccountLegalEntityPublicHashedId = _encodingService.Encode(model.AccountLegalEntityId,
+                        EncodingType.PublicAccountLegalEntityId)
                 });
             }
 
@@ -249,13 +251,23 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (RecognisePriorLearningHelper.DoesDraftApprenticeshipRequireRpl(model))
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship", new { response.CohortReference, draftApprenticeshipHashedId });
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                    EncodingType.ApprenticeshipId);
+                return RedirectToAction("RecognisePriorLearning", "DraftApprenticeship",
+                    new { response.CohortReference, draftApprenticeshipHashedId, request.ProviderId });
             }
-            else if (response.HasStandardOptions)
+
+            if (response.HasStandardOptions)
             {
-                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value, EncodingType.ApprenticeshipId);
-                return RedirectToAction("SelectOptions", "DraftApprenticeship", new { model.ProviderId, DraftApprenticeshipHashedId = draftApprenticeshipHashedId, response.CohortReference });
+                var draftApprenticeshipHashedId = _encodingService.Encode(response.DraftApprenticeshipId.Value,
+                    EncodingType.ApprenticeshipId);
+                return RedirectToAction("SelectOptions", "DraftApprenticeship",
+                    new
+                    {
+                        model.ProviderId, 
+                        DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
+                        response.CohortReference
+                    });
             }
 
             return RedirectToAction(nameof(Details), new { model.ProviderId, response.CohortReference });
@@ -291,13 +303,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (model.HasNoDeclaredStandards)
                 {
-                    return RedirectToAction("NoDeclaredStandards");
+                    return RedirectToAction(nameof(NoDeclaredStandards), viewModel.ProviderId);
                 }
 
-                return Redirect(_urlHelper.ReservationsLink($"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
+                return Redirect(_urlHelper.ReservationsLink(
+                    $"{viewModel.ProviderId}/reservations/{viewModel.EmployerAccountLegalEntityPublicHashedId}/select"));
             }
 
-            return RedirectToAction("SelectEmployer", new { viewModel.ProviderId });
+            return RedirectToAction(nameof(SelectEmployer), new { viewModel.ProviderId });
         }
 
         [HttpGet]
@@ -313,13 +326,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("{cohortReference}/details/delete")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> Delete([FromServices] IAuthenticationService authenticationService, DeleteCohortViewModel viewModel)
+        public async Task<IActionResult> Delete([FromServices] IAuthenticationService authenticationService,
+            DeleteCohortViewModel viewModel)
         {
             if (viewModel.Confirm.Value)
             {
-                CommitmentsV2.Types.UserInfo userInfo = authenticationService.UserInfo;
+                UserInfo userInfo = authenticationService.UserInfo;
                 await _commitmentApiClient.DeleteCohort(viewModel.CohortId, userInfo);
-                return RedirectToAction("Review", new { viewModel.ProviderId });
+                return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
             }
 
             return RedirectToAction(nameof(Details), new { viewModel.ProviderId, viewModel.CohortReference });
@@ -335,8 +349,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
             if (viewModel.HasNoDeclaredStandards)
             {
-                return RedirectToAction("NoDeclaredStandards");
+                return RedirectToAction(nameof(NoDeclaredStandards), request.ProviderId);
             }
+
             return View(viewModel);
         }
 
@@ -354,21 +369,22 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [DasAuthorize(CommitmentOperation.AccessCohort)]
         [Authorize(Policy = nameof(PolicyNames.HasViewerOrAbovePermission))]
         [HttpPost]
-        public async Task<IActionResult> Details([FromServices] IPolicyAuthorizationWrapper authorizationService, DetailsViewModel viewModel)
+        public async Task<IActionResult> Details([FromServices] IPolicyAuthorizationWrapper authorizationService,
+            DetailsViewModel viewModel)
         {
             switch (viewModel.Selection)
             {
                 case CohortDetailsOptions.Send:
                 case CohortDetailsOptions.Approve:
-                    {
-                        await ValidateAuthorization(authorizationService);
-                        var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                        return RedirectToAction(nameof(Acknowledgement), request);
-                    }
+                {
+                    await ValidateAuthorization(authorizationService);
+                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                    return RedirectToAction(nameof(Acknowledgement), request);
+                }
                 case CohortDetailsOptions.ApprenticeRequest:
-                    {
-                        return RedirectToAction("Review", new { viewModel.ProviderId });
-                    }
+                {
+                    return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
+                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
             }
@@ -395,20 +411,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [HttpPost]
         [Route("add/entry-method")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult SelectDraftApprenticeshipsEntryMethod(SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
+        public IActionResult SelectDraftApprenticeshipsEntryMethod(
+            SelectDraftApprenticeshipsEntryMethodViewModel viewModel)
         {
             if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.BulkCsv)
             {
                 return RedirectToAction(nameof(FileUploadInform), new { ProviderId = viewModel.ProviderId });
             }
-            else if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
+
+            if (viewModel.Selection == AddDraftApprenticeshipEntryMethodOptions.Manual)
             {
-                return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney), new { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(SelectAddDraftApprenticeshipJourney),
+                    new { ProviderId = viewModel.ProviderId });
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+            throw new InvalidOperationException();
         }
 
         [HttpGet]
@@ -447,7 +463,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         public async Task<IActionResult> FileUploadValidationErrors(FileUploadValidateErrorRequest request)
         {
             var viewModel = await _modelMapper.Map<FileUploadValidateViewModel>(request);
-            if (viewModel.HasNoDeclaredStandards) return RedirectToAction("NoDeclaredStandards");
+            if (viewModel.HasNoDeclaredStandards) return RedirectToAction(nameof(NoDeclaredStandards), request.ProviderId);
             return View(viewModel);
         }
 
@@ -480,8 +496,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend)
             {
-                var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-                var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
+                var approveApiRequest =
+                    await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                var approvedResponse =
+                    await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
                 TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
                 return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
             }
@@ -496,13 +514,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 //    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
 
                 case FileUploadReviewOption.SaveButDontSend:
-                    var apiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
+                    var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                     var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                     TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), viewModel.ProviderId);
+                    return RedirectToAction(nameof(FileUploadSuccessSaveDraft), new{ viewModel.ProviderId });
 
                 default:
-                    return RedirectToAction(nameof(FileUploadAmendedFile), new FileUploadAmendedFileRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+                    return RedirectToAction(nameof(FileUploadAmendedFile),
+                        new FileUploadAmendedFileRequest
+                            { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
             }
         }
 
@@ -510,7 +530,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/success-save-draft", Name = RouteNames.SuccessSaveDraft)]
         public async Task<IActionResult> FileUploadSuccessSaveDraft(long providerId)
         {
-            var response = TempData.GetButDontRemove<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload.DraftApprenticeshipResponse);
+            var response =
+                TempData.GetButDontRemove<GetBulkUploadAddDraftApprenticeshipsResponse>(Constants.BulkUpload
+                    .DraftApprenticeshipResponse);
             var viewModel = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsViewModel>(response);
             viewModel.ProviderId = providerId;
             return View(viewModel);
@@ -520,7 +542,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Route("add/file-upload/success", Name = RouteNames.SuccessSendToEmployer)]
         public async Task<IActionResult> FileUploadSuccess(long providerId)
         {
-            var response = TempData.GetButDontRemove<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(Constants.BulkUpload.ApprovedApprenticeshipResponse);
+            var response =
+                TempData.GetButDontRemove<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(Constants.BulkUpload
+                    .ApprovedApprenticeshipResponse);
             var viewModel = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>(response);
             viewModel.ProviderId = providerId;
             return View(viewModel);
@@ -531,7 +555,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public IActionResult FileUploadDiscard(FileDiscardRequest fileDiscardRequest)
         {
-            var viewModel = new FileDiscardViewModel { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
+            var viewModel = new FileDiscardViewModel
+                { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
             return View(viewModel);
         }
 
@@ -542,10 +567,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         {
             if (viewModel.FileDiscardConfirmed != null && (bool)viewModel.FileDiscardConfirmed)
             {
-                return RedirectToAction(nameof(FileUploadReviewDelete), new FileUploadReviewDeleteRequest { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId, RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile });
+                return RedirectToAction(nameof(FileUploadReviewDelete),
+                    new FileUploadReviewDeleteRequest
+                    {
+                        ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId,
+                        RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile
+                    });
             }
 
-            return RedirectToAction(nameof(FileUploadReview), new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+            return RedirectToAction(nameof(FileUploadReview),
+                new { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
         }
 
         [HttpGet]
@@ -588,16 +619,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             if (viewModel.Confirm.Value)
             {
                 await _mediator.Send(new DeleteCachedFileCommand { CachedRequestId = viewModel.CacheRequestId });
-                return RedirectToAction(nameof(FileUploadStart), new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
+                return RedirectToAction(nameof(FileUploadStart),
+                    new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = viewModel.ProviderId });
             }
 
-            return RedirectToAction(nameof(FileUploadReview), new FileUploadReviewRequest { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
+            return RedirectToAction(nameof(FileUploadReview),
+                new FileUploadReviewRequest
+                    { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
         }
 
         [HttpGet]
         [Route("add/select-journey")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> SelectAddDraftApprenticeshipJourney(SelectAddDraftApprenticeshipJourneyRequest request)
+        public async Task<IActionResult> SelectAddDraftApprenticeshipJourney(
+            SelectAddDraftApprenticeshipJourneyRequest request)
         {
             var model = await _modelMapper.Map<SelectAddDraftApprenticeshipJourneyViewModel>(request);
             return View(model);
@@ -612,20 +647,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             {
                 return RedirectToAction(nameof(ChooseCohort), new { ProviderId = viewModel.ProviderId });
             }
-            else if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
+
+            if (viewModel.Selection == AddDraftApprenticeshipJourneyOptions.NewCohort)
             {
                 return RedirectToAction(nameof(SelectEmployer), new { ProviderId = viewModel.ProviderId });
             }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+            throw new InvalidOperationException();
         }
 
         [HttpGet]
         [Route("add/file-upload/review-cohort")]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> FileUploadReviewApprentices(FileUploadReviewApprenticeRequest reviewApprenticeRequest)
+        public async Task<IActionResult> FileUploadReviewApprentices(
+            FileUploadReviewApprenticeRequest reviewApprenticeRequest)
         {
             var viewModel = await _modelMapper.Map<FileUploadReviewApprenticeViewModel>(reviewApprenticeRequest);
             return View(viewModel);
@@ -633,7 +667,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
         private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
         {
-            var result = await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+            var result =
+                await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
 
             if (!result)
             {

@@ -1,18 +1,12 @@
 ﻿@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
-
-@if (Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
-{
-    <div class="govuk-inset-text">
-        <p id="change-of-party-status-text">You have made a change of employer request. It’s now with the new employer for review.</p>
-        <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
-    </div>
-}
-else
-{
-    <p class="govuk-notification-banner__heading">
-        <span id="change-of-party-status-text">The new employer has reviewed the change of employer request. You need to review the new details. </span>
-        <a id="change-employer-link" class="govuk-link" href="@Url.Action("ChangeEmployer", new {Model.ProviderId, Model.ApprenticeshipHashedId})">View changes</a>
+<div class="govuk-inset-text">
+    <p id="change-of-party-status-text">
+        @(Model.PendingChangeOfPartyRequestWithParty == Party.Employer
+            ? "You have made a change of employer request. It’s now with the new employer for review."
+            : "The new employer has reviewed the change of employer request. You need to review the new details.")
     </p>
-}
+    <a class="govuk-link" asp-route="@RouteNames.ChangeEmployer" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId" asp-route-providerId="@Model.ProviderId">View changes</a>
+</div>

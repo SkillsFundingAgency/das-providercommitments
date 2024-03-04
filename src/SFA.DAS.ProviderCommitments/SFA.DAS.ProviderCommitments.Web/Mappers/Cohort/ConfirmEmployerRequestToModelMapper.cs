@@ -2,7 +2,6 @@
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -10,10 +9,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
     {
         private readonly IOuterApiClient _apiClient;
 
-        public ConfirmEmployerRequestToModelMapper(IOuterApiClient apiClient)
-        {
-            _apiClient = apiClient;
-        }
+        public ConfirmEmployerRequestToModelMapper(IOuterApiClient apiClient) => _apiClient = apiClient;
 
         public async Task<ConfirmEmployerRedirectModel> Map(ConfirmEmployerViewModel source)
         {

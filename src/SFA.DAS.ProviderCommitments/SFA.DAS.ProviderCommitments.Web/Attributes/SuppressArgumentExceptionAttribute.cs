@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Attributes
+﻿namespace SFA.DAS.ProviderCommitments.Web.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class SuppressArgumentExceptionAttribute : Attribute
     {
         public string PropertyName { get; set; }

@@ -1,14 +1,11 @@
-﻿using AutoFixture;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
-using SFA.DAS.ProviderCommitments.Web.Models;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using System.Linq;
+using FluentAssertions;
 using SFA.DAS.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Features;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Mappers.DraftApprenticeship;
+using SFA.DAS.ProviderCommitments.Web.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
 {
@@ -20,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         private Mock<IAuthorizationService> _authorizationService;
         private ReservationsAddDraftApprenticeshipRequest _request;
         private GetAddDraftApprenticeshipCourseResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
 
         [SetUp]
         public void Setup()
@@ -45,42 +42,49 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeship
         public async Task EmployerName_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.EmployerName, result.EmployerName);
+            Assert.That(result.EmployerName, Is.EqualTo(_apiResponse.EmployerName));
         }
 
         [Test]
         public async Task ProviderId_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
+        }
+        
+        [Test]
+        public async Task ReservationId_Is_Mapped_Correctly()
+        {
+            var result = await _mapper.Map(_request);
+            Assert.That(result.ReservationId, Is.EqualTo(_request.ReservationId));
         }
 
         [Test]
         public async Task ShowManagingStandardsContent_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_apiResponse.IsMainProvider, result.ShowManagingStandardsContent);
+            Assert.That(result.ShowManagingStandardsContent, Is.EqualTo(_apiResponse.IsMainProvider));
         }
 
         [Test]
         public async Task Standards_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsTrue(TestHelper.EnumerablesAreEqual(_apiResponse.Standards.ToList(), result.Standards.ToList()));
+            _apiResponse.Standards.ToList().Should().BeEquivalentTo(result.Standards.ToList());
         }
 
         [Test]
         public async Task IsOnFlexiPaymentsPilot_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.IsFalse(result.IsOnFlexiPaymentsPilot);
+            Assert.That(result.IsOnFlexiPaymentsPilot, Is.False);
         }
 
         [Test]
         public async Task CourseCode_Is_Mapped_Correctly()
         {
             var result = await _mapper.Map(_request);
-            Assert.AreEqual(_request.CourseCode, result.CourseCode);
+            Assert.That(result.CourseCode, Is.EqualTo(_request.CourseCode));
         }
     }
 }

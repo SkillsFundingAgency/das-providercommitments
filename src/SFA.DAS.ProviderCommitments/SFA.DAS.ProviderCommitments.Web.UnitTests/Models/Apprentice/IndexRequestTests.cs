@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using NUnit.Framework;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice
 {
@@ -20,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice
                 PageNumber = actualPageNumber
             };
 
-            Assert.AreEqual(expectedPageNumber, request.PageNumber);
+            Assert.That(request.PageNumber, Is.EqualTo(expectedPageNumber));
         }
     }
 }

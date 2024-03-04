@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 
@@ -123,7 +118,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return reviewApprenticeDetailsForExistingCohort;
         }
 
-        private DateTime? GetValidDate(string date, string format)
+        private static DateTime? GetValidDate(string date, string format)
         {
             DateTime outDateTime;
             if (DateTime.TryParseExact(date, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out outDateTime))
@@ -131,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private int? GetFundingBandCap(GetStandardResponse course, DateTime? startDate)
+        private static int? GetFundingBandCap(GetStandardResponse course, DateTime? startDate)
         {
             if (startDate == null)
             {

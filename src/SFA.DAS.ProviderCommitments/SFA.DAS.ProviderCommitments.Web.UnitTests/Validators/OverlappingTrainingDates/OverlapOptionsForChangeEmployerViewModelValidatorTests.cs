@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate;
 
@@ -38,17 +37,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.OverlappingTraini
             AssertValidationResult(request => request.OverlapOptions, model, expectedValid);
         }
 
-        private void AssertValidationResult<T>(Expression<Func<OverlapOptionsForChangeEmployerViewModel, T>> property, OverlapOptionsForChangeEmployerViewModel instance, bool expectedValid)
+        private static void AssertValidationResult<T>(Expression<Func<OverlapOptionsForChangeEmployerViewModel, T>> property, OverlapOptionsForChangeEmployerViewModel instance, bool expectedValid)
         {
             var validator = new OverlapOptionsForChangeEmployerViewModelValidator();
+            var result = validator.TestValidate(instance);
 
             if (expectedValid)
             {
-                validator.ShouldNotHaveValidationErrorFor(property, instance);
+                result.ShouldNotHaveValidationErrorFor(property);
             }
             else
             {
-                validator.ShouldHaveValidationErrorFor(property, instance);
+                result.ShouldHaveValidationErrorFor(property);
             }
         }
     }

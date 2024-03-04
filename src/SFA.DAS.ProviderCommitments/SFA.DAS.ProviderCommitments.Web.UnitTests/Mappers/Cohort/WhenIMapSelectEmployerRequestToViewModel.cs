@@ -1,15 +1,11 @@
-﻿using Moq;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 using SFA.DAS.ProviderRelationships.Api.Client;
 using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -51,7 +47,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
         }
 
         [TestCase(true)]
@@ -69,7 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
+            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
         }
 
         [Test]
@@ -85,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result);
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result);
         }
 
 
@@ -102,7 +98,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result);
+            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result);
         }
 
         [Test]
@@ -112,7 +108,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             var result = await fixture.Act();
 
-            fixture.Assert_ListOfEmployersIsEmpty(result);
+            SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
         }
 
 
@@ -121,18 +117,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             private readonly SelectEmployerViewModelMapper _sut;
             private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
             private SelectEmployerRequest _request;
-            private readonly long _providerId;
             private GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
 
             public SelectEmployerViewModelMapperFixture()
             {
-                _providerId = 123;
-                _request = new SelectEmployerRequest { ProviderId = _providerId };
+                const long providerId = 123;
+                _request = new SelectEmployerRequest { ProviderId = providerId };
                 _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "DSFF23",
@@ -161,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 {
                     AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
                 {
-                    new AccountProviderLegalEntityDto
+                    new()
                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "ADSFF23",
@@ -171,8 +166,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountLegalEntityId = 456,
                         AccountProviderId = 234
                     },
-                     new AccountProviderLegalEntityDto
-                    {
+                     new()
+                     {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "BDSFF23",
                         AccountLegalEntityName = "BTestAccountLegalEntityName",
@@ -181,8 +176,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                         AccountLegalEntityId = 456,
                         AccountProviderId = 234
                     },
-                      new AccountProviderLegalEntityDto
-                    {
+                      new()
+                      {
                         AccountId = 123,
                         AccountLegalEntityPublicHashedId = "CDSFF23",
                         AccountLegalEntityName = "CTestAccountLegalEntityName",
@@ -227,65 +222,77 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
             {
-                Assert.AreEqual(_apiResponse.AccountProviderLegalEntities.Count(), result.AccountProviderLegalEntities.Count());
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
 
                 foreach (var entity in _apiResponse.AccountProviderLegalEntities)
                 {
-                    Assert.True(result.AccountProviderLegalEntities.Any(x =>
+                    Assert.That(result.AccountProviderLegalEntities.Any(x =>
                         x.EmployerAccountLegalEntityName == entity.AccountLegalEntityName &&
                         x.EmployerAccountLegalEntityPublicHashedId == entity.AccountLegalEntityPublicHashedId &&
                         x.EmployerAccountName == entity.AccountName &&
-                        x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId));
+                        x.EmployerAccountPublicHashedId == entity.AccountPublicHashedId), Is.True);
                 }
             }
 
-            public void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+            public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
             {
-                Assert.AreEqual(0, result.AccountProviderLegalEntities.Count());
+                Assert.That(result.AccountProviderLegalEntities, Is.Empty);
             }
 
-            internal void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
-            {
-                if (reverseSort)
-                {
-                    Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
-                    Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
-                    Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
-                }
-                else
-                {
-                    Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
-                    Assert.AreEqual("BTestAccountLegalEntityName", result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName);
-                    Assert.AreEqual("CTestAccountLegalEntityName", result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName);
-                }
-            }
-
-            internal void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
             {
                 if (reverseSort)
                 {
-                    Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
-                    Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
-                    Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
+                    });
                 }
                 else
                 {
-                    Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
-                    Assert.AreEqual("BTestAccountName", result.AccountProviderLegalEntities[1].EmployerAccountName);
-                    Assert.AreEqual("CTestAccountName", result.AccountProviderLegalEntities[2].EmployerAccountName);
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountLegalEntityName, Is.EqualTo("BTestAccountLegalEntityName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountLegalEntityName, Is.EqualTo("CTestAccountLegalEntityName"));
+                    });
                 }
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
+            internal static void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual("ATestAccountName", result.AccountProviderLegalEntities[0].EmployerAccountName);
+                if (reverseSort)
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("CTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+                    });
+                }
+                else
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[1].EmployerAccountName, Is.EqualTo("BTestAccountName"));
+                        Assert.That(result.AccountProviderLegalEntities[2].EmployerAccountName, Is.EqualTo("CTestAccountName"));
+                    });
+                }
             }
 
-            internal void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result)
             {
-                Assert.AreEqual(1, result.AccountProviderLegalEntities.Count);
-                Assert.AreEqual("ATestAccountLegalEntityName", result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName);
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo("ATestAccountName"));
+            }
+
+            internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result)
+            {
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
+                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo("ATestAccountLegalEntityName"));
             }
         }
     }

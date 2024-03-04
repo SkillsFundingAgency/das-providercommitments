@@ -1,6 +1,3 @@
-using System.Threading.Tasks;
-using AutoFixture;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
@@ -28,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         public async Task ApprenticeshipId_IsMapped()
         {
             var result = await mapper.Map(viewModel);
-            Assert.AreEqual(viewModel.ApprenticeshipId, result.ApprenticeshipId);
+            Assert.That(result.ApprenticeshipId, Is.EqualTo(viewModel.ApprenticeshipId));
         }
 
         [Test, MoqAutoData]
@@ -36,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.ApprenticeshipHashedId, result.ApprenticeshipHashedId);
+            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(viewModel.ApprenticeshipHashedId));
         }
 
         [Test, MoqAutoData]
@@ -44,7 +41,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.ProviderId, result.ProviderId);
+            Assert.That(result.ProviderId, Is.EqualTo(viewModel.ProviderId));
         }
 
         [Test, MoqAutoData]
@@ -52,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await mapper.Map(viewModel);
 
-            Assert.AreEqual(viewModel.CacheKey, result.CacheKey);
+            Assert.That(result.CacheKey, Is.EqualTo(viewModel.CacheKey));
         }
     }
 }

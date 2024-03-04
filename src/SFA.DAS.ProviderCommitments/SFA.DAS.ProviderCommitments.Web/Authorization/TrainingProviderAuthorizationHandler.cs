@@ -1,52 +1,50 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization
+namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+
+/// <summary>
+/// Interface to define contracts related to Training Provider Authorization Handlers.
+/// </summary>
+public interface ITrainingProviderAuthorizationHandler
 {
     /// <summary>
-    /// Interface to define contracts related to Training Provider Authorization Handlers.
+    /// Contract to check is the logged in Provider is a valid Training Provider. 
     /// </summary>
-    public interface ITrainingProviderAuthorizationHandler
+    /// <param name="context">AuthorizationHandlerContext.</param>
+    /// <returns>boolean.</returns>
+    Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context);
+}
+
+///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
+public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizationHandler
+{
+    private readonly IOuterApiService _outerApiService;
+
+    public TrainingProviderAuthorizationHandler(
+        IOuterApiService outerApiService)
     {
-        /// <summary>
-        /// Contract to check is the logged in Provider is a valid Training Provider. 
-        /// </summary>
-        /// <param name="context">AuthorizationHandlerContext.</param>
-        /// <returns>boolean.</returns>
-        Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context);
+        _outerApiService = outerApiService;
     }
 
-    ///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
-    public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizationHandler
+    public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
     {
-        private readonly IOuterApiService _outerApiService;
+        var ukprn = GetProviderId(context);
 
-        public TrainingProviderAuthorizationHandler(
-            IOuterApiService outerApiService)
-        {
-            _outerApiService = outerApiService;
-        }
+        //if the ukprn is invalid return false.
+        if (ukprn <= 0) return false;
 
-        public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
-        {
-            var ukprn = GetProviderId(context);
+        var providerStatusDetails = await _outerApiService.GetProviderStatus(ukprn);
 
-            //if the ukprn is invalid return false.
-            if (ukprn <= 0) return false;
+        // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
+        return providerStatusDetails is { CanAccessService: true };
+    }
 
-            var providerStatusDetails = await _outerApiService.GetProviderStatus(ukprn);
-
-            // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
-            return providerStatusDetails is { CanAccessService: true };
-        }
-
-        private static long GetProviderId(AuthorizationHandlerContext context)
-        {
-            return long.TryParse(context.User.FindFirst(c => c.Type.Equals(ProviderClaims.Ukprn))?.Value, out var providerId)
-                ? providerId
-                : 0;
-        }
+    private static long GetProviderId(AuthorizationHandlerContext context)
+    {
+        return long.TryParse(context.User.FindFirst(c => c.Type.Equals(ProviderClaims.Ukprn))?.Value, out var providerId)
+            ? providerId
+            : 0;
     }
 }

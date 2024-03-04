@@ -1,9 +1,5 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -23,20 +19,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new Fixture();
             _newEmployerName = fixture.Create<string>();
-            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
 
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             tempData[nameof(ConfirmViewModel.NewEmployerName)] = _newEmployerName;
             _sut.TempData = tempData;
         }
+        
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public void ThenNewEmployerNameIsPopulatedFromTempData()
         {
             var result = _sut.Sent() as ViewResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual(_newEmployerName, result.Model as string);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model as string, Is.EqualTo(_newEmployerName));
         }
     }
 }

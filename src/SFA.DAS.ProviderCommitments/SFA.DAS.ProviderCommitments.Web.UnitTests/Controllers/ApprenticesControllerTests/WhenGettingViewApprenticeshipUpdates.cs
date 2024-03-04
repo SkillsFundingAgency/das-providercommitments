@@ -1,12 +1,7 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+﻿using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
@@ -38,26 +33,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetViewApprenticeshipUpdatesFixture
     {
-        public ApprenticeController Sut { get; set; }
+        private readonly ApprenticeController _sut;
 
         private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
         private readonly ViewApprenticeshipUpdatesRequest _request;
-        private readonly long _providerId;
 
         public GetViewApprenticeshipUpdatesFixture()
         {
             var fixture = new Fixture();
-            _providerId = 123;
-            _request = new ViewApprenticeshipUpdatesRequest { ProviderId = _providerId, ApprenticeshipHashedId = "XYZ" };
+            const long providerId = 123;
+            _request = new ViewApprenticeshipUpdatesRequest { ProviderId = providerId, ApprenticeshipHashedId = "XYZ" };
             _modelMapperMock = new Mock<IModelMapper>();
-            _viewModel = fixture.Create<ViewApprenticeshipUpdatesViewModel>();
+            var viewModel = fixture.Create<ViewApprenticeshipUpdatesViewModel>();
 
             _modelMapperMock
                 .Setup(x => x.Map<ViewApprenticeshipUpdatesViewModel>(_request))
-                .ReturnsAsync(_viewModel);
+                .ReturnsAsync(viewModel);
 
-            Sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _sut = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
 
         public void VerifyMapperWasCalled()
@@ -65,6 +58,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock.Verify(x => x.Map<ViewApprenticeshipUpdatesViewModel>(_request));
         }
 
-        public async Task<IActionResult> Act() => await Sut.ViewApprenticeshipUpdates(_request);
+        public async Task<IActionResult> Act() => await _sut.ViewApprenticeshipUpdates(_request);
     }
 }

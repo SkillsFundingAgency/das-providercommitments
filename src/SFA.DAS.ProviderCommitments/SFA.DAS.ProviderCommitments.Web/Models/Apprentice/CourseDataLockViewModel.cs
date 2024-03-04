@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class CourseDataLockViewModel
     {

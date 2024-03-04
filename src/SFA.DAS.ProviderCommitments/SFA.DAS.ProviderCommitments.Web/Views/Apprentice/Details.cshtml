@@ -8,7 +8,7 @@
 @using SFA.DAS.ProviderCommitments.Web.Mappers
 @using SFA.DAS.Authorization.Services
 
-@inject SFA.DAS.Authorization.Services.IAuthorizationService authorisationService
+@inject IAuthorizationService AuthorisationService
 
 @{
     ViewData["Title"] = "Apprentice Details";
@@ -135,7 +135,7 @@
                     <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">
                         @Model.Status.GetDescription()</td>
                 </tr>
-                @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot))
+                @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>

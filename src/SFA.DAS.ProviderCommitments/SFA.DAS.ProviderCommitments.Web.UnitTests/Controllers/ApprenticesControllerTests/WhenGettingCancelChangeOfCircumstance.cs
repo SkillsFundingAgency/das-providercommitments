@@ -1,12 +1,6 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
 {
@@ -39,7 +33,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = _fixture.CancelChangeOfCircumstance(_request);
 
-            _fixture.VerifyRedirectToDetails(result as RedirectToActionResult);
+            WhenGettingCancelChangeOfCircumstanceFixture.VerifyRedirectToDetails(result as RedirectToActionResult);
         }
     }
 
@@ -48,17 +42,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         private Mock<ITempDataDictionary> _mockTempData;
 
-        public WhenGettingCancelChangeOfCircumstanceFixture() : base()
+        public WhenGettingCancelChangeOfCircumstanceFixture()
         {
 
             _mockTempData = new Mock<ITempDataDictionary>();
 
-            _controller.TempData = _mockTempData.Object;
+            Controller.TempData = _mockTempData.Object;
         }
 
         public IActionResult CancelChangeOfCircumstance(CancelChangeOfCircumstanceRequest request)
         {
-            return _controller.CancelChangeOfCircumstance(request);
+            return Controller.CancelChangeOfCircumstance(request);
         }
 
         public void VerifyTempDataRemoved()
@@ -66,7 +60,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _mockTempData.Verify(d => d.Remove("EditApprenticeshipRequestViewModel"), Times.Once);
         }
 
-        public void VerifyRedirectToDetails(RedirectToActionResult redirectResult)
+        public static void VerifyRedirectToDetails(RedirectToActionResult redirectResult)
         {
             redirectResult.ActionName.Should().Be("Details");
         }

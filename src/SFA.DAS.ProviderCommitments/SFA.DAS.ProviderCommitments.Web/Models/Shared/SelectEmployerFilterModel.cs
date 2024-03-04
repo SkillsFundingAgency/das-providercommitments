@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
 {
     public class SelectEmployerFilterModel
     {
@@ -26,7 +24,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
 
         public string CssClassForArrowDirection(string sortByThisField)
         {
-            string sortedByHeaderClassName = "das-table__sort";
+            var sortedByHeaderClassName = "das-table__sort";
 
             if (!string.IsNullOrWhiteSpace(CurrentlySortedByField)
                 && CurrentlySortedByField.ToLower() == sortByThisField.ToLower())
@@ -45,8 +43,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
         {
             get
             {
-                if (searchStrings != null)
-                    return searchStrings[0].ToLower();
+                if (SearchStrings != null)
+                    return SearchStrings[0].ToLower();
                 return string.Empty;
             }
         }
@@ -55,13 +53,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
         {
             get
             {
-                if (searchStrings != null && searchStrings.Length > 1)
-                    return searchStrings[1].ToLower();
+                if (SearchStrings != null && SearchStrings.Length > 1)
+                    return SearchStrings[1].ToLower();
                 return string.Empty;
             }
         }
 
-        private string[] searchStrings 
+        private string[] SearchStrings 
         {
             get
             {
@@ -70,7 +68,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Shared
                     return SearchTerm.Split(" - ");
                 }
 
-                return new string[] { };
+                return [];
             } 
         }
     }

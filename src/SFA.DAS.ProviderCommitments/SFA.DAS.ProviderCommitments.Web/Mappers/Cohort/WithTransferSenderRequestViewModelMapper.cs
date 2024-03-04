@@ -5,11 +5,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderRelationships.Api.Client;
@@ -76,7 +71,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return reviewViewModel;
         }
 
-        private DateTime GetOrderByDate(CohortSummary s)
+        private static DateTime GetOrderByDate(CohortSummary s)
         {
             return new[] { s.LatestMessageFromEmployer?.SentOn, s.LatestMessageFromProvider?.SentOn, s.CreatedOn }.Max().Value;
         }

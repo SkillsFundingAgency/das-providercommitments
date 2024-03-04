@@ -1,9 +1,4 @@
-﻿using AutoFixture;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -42,31 +37,28 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             //Assert
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileDiscardViewModel>();
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
         }
     }
 
     public class WhenGettingFileToDiscardFixture
     {
-        private CohortController _sut { get; set; }
-
+        private readonly CohortController _sut;
         private readonly FileDiscardRequest _request;
-        private readonly long _providerId = 123;
+        private const long ProviderId = 123;
         private readonly Guid _cacheRequestId = Guid.NewGuid();
-        private readonly Mock<IModelMapper> _modelMapper;
-        private readonly FileDiscardViewModel _viewModel;
 
         public WhenGettingFileToDiscardFixture()
         {
-            var fixture = new AutoFixture.Fixture();
+            var fixture = new Fixture();
 
-            _viewModel = fixture.Create<FileDiscardViewModel>();
-            _request = new FileDiscardRequest { ProviderId = _providerId, CacheRequestId = _cacheRequestId };
+            var viewModel = fixture.Create<FileDiscardViewModel>();
+            _request = new FileDiscardRequest { ProviderId = ProviderId, CacheRequestId = _cacheRequestId };
 
-            _modelMapper = new Mock<IModelMapper>();
-            _modelMapper.Setup(x => x.Map<FileDiscardViewModel>(_request)).ReturnsAsync(_viewModel);
-            _sut = new CohortController(Mock.Of<IMediator>(), _modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
-                        Mock.Of<IAuthorizationService>(), Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>());
+            var modelMapper = new Mock<IModelMapper>();
+            modelMapper.Setup(x => x.Map<FileDiscardViewModel>(_request)).ReturnsAsync(viewModel);
+            _sut = new CohortController(Mock.Of<IMediator>(), modelMapper.Object, Mock.Of<ILinkGenerator>(), Mock.Of<ICommitmentsApiClient>(), 
+                        Mock.Of<IEncodingService>(), Mock.Of<IOuterApiService>(),Mock.Of<IAuthorizationService>());
         }
 
         public IActionResult Act() => _sut.FileUploadDiscard(_request);

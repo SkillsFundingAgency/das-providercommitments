@@ -13,7 +13,7 @@
 }
 else if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
 {
-    @if (authorisationService.IsAuthorized(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+    @if (await authorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
     {
         <p class="govuk-notification-banner__heading">
             <span>ILR data mismatch: Payment for @Model.ApprenticeName can't be made until this is resolved. </span>

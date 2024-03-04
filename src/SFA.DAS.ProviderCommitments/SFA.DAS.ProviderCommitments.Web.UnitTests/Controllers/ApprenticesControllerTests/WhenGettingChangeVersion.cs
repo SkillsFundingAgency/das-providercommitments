@@ -1,10 +1,5 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -27,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         [Test]
         public async Task ThenVerifyMapperWasCalled()
         {
-            var result = await _fixture.ChangeVersion();
+            await _fixture.ChangeVersion();
 
             _fixture.VerifyMapperWasCalled();
         }
@@ -43,8 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
     public class GetChangeVersionFixture
     {
-        public ApprenticeController Controller { get; set; }
-
+        private readonly ApprenticeController Controller;
         private readonly Mock<IModelMapper> _modelMapperMock;
         private readonly ChangeVersionRequest _request;
         private readonly ChangeVersionViewModel _viewModel;
@@ -59,7 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             _modelMapperMock = new Mock<IModelMapper>();
             _modelMapperMock.Setup(m => m.Map<ChangeVersionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            Controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            Controller = new ApprenticeController(_modelMapperMock.Object, Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
             Controller.TempData = new TempDataDictionary(Mock.Of<HttpContext>(), Mock.Of<ITempDataProvider>());
         }
 
@@ -79,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var viewModel = viewResult.Model as ChangeVersionViewModel;
 
-            Assert.AreEqual(_viewModel, viewModel);
+            Assert.That(viewModel, Is.EqualTo(_viewModel));
         }
     }
 }

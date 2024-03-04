@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -43,17 +38,13 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
                 getFramework ? GetAll(cancellationToken) : GetStandards(cancellationToken)
             };
 
-
             return Task.WhenAll(tasks)
                     .ContinueWith(allTasks => allTasks.Result.SelectMany(task => task), cancellationToken);
         }
 
         private async Task<IEnumerable<TrainingProgramme>> GetStandards(CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                throw new OperationCanceledException();
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             var response = await _commitmentsApiClient.GetAllTrainingProgrammeStandards(cancellationToken);
             return response.TrainingProgrammes;
@@ -61,10 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses
 
         private async Task<IEnumerable<TrainingProgramme>> GetAll(CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                throw new OperationCanceledException();
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             var response = await _commitmentsApiClient.GetAllTrainingProgrammes(cancellationToken);
             return response.TrainingProgrammes;

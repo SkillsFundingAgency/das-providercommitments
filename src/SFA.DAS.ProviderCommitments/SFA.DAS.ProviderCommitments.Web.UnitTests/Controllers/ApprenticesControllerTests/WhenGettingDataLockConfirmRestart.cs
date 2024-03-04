@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -21,8 +17,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var fixture = new Fixture();
             _request = fixture.Create<DatalockConfirmRestartRequest>();
-            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+            _sut = new ApprenticeController(Mock.Of<IModelMapper>(), Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(), Mock.Of<ICommitmentsApiClient>(), Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
         }
+        
+        [TearDown]
+        public void TearDown() => _sut.Dispose();
 
         [Test]
         public void ThenReturnsView()
@@ -31,8 +30,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = _sut.ConfirmRestart(_request) as ViewResult;
 
             //Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(typeof(DatalockConfirmRestartViewModel), result.Model.GetType());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(DatalockConfirmRestartViewModel)));
         }
     }
 }

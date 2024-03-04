@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using WireMock.Logging;
 using WireMock.RequestBuilders;
@@ -13,7 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
     {
         private readonly WireMockServer _server;
 
-        public CommitmentsOuterApiBuilder(int port)
+        private CommitmentsOuterApiBuilder(int port)
         {
             _server = WireMockServer.Start(new WireMockServerSettings
             {
@@ -88,7 +87,7 @@ namespace SFA.DAS.ProviderCommitments.Api.FakeServers
                     Title = "",
                     EffectiveTo = DateTime.UtcNow,
                     EffectiveFrom = DateTime.UtcNow,
-                    ApprenticeshipFunding = new object[0]
+                    ApprenticeshipFunding = Array.Empty<object>()
                 }));
 
             return this;
