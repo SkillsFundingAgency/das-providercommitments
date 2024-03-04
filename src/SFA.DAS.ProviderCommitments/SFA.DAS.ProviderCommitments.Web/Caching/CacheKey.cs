@@ -74,13 +74,15 @@ public class CacheKey
             hash = (hash * 16777619) ^ PartyId.GetHashCode();
             hash = (hash * 16777619) ^ CohortId.GetHashCode();
             hash = (hash * 16777619) ^ ApprenticeshipId.GetHashCode();
-                
-            if (Options != null)
+
+            if (Options == null)
             {
-                foreach (var option in Options)
-                {
-                    hash = (hash * 16777619) ^ option.GetHashCode();
-                }
+                return hash;
+            }
+            
+            foreach (var option in Options)
+            {
+                hash = (hash * 16777619) ^ option.GetHashCode();
             }
 
             return hash;

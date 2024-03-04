@@ -5,20 +5,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 
 public static class AuthorizationContextExtensions
 {
-    internal static void AddProviderPermissionValues(this IAuthorizationContext authorizationContext, long accountLegalEntityId, long ukprn)
+    public static void AddProviderPermissionValues(this IAuthorizationContext authorizationContext, long accountLegalEntityId, long ukprn)
     {
         authorizationContext.Set(AuthorizationContextKeys.Ukprn, ukprn);
         authorizationContext.Set(AuthorizationContextKeys.AccountLegalEntityId, accountLegalEntityId);
     }
 
-    internal static void AddCommitmentPermissionValues(this IAuthorizationContext authorizationContext, long cohortId, Party party, long partyId)
+    public static void AddCommitmentPermissionValues(this IAuthorizationContext authorizationContext, long cohortId, Party party, long partyId)
     {
         authorizationContext.Set(AuthorizationContextKeys.CohortId, cohortId);
         authorizationContext.Set(AuthorizationContextKeys.Party, party);
         authorizationContext.Set(AuthorizationContextKeys.PartyId, partyId);
     }
     
-    internal static void AddApprenticeshipPermissionValues(this IAuthorizationContext authorizationContext, long apprenticeshipId, Party party, long partyId)
+    public static void AddApprenticeshipPermissionValues(this IAuthorizationContext authorizationContext, long apprenticeshipId, Party party, long partyId)
     {
         authorizationContext.Set(AuthorizationContextKeys.ApprenticeshipId, apprenticeshipId);
         authorizationContext.Set(AuthorizationContextKeys.Party, party);
@@ -31,13 +31,13 @@ public static class AuthorizationContextExtensions
         authorizationContext.Set(AuthorizationContextKeys.UserEmail, userEmail);
     }
     
-    internal static (long Ukprn, long AccountLegalEntityId) GetProviderPermissionValues(this IAuthorizationContext authorizationContext)
+    public static (long Ukprn, long AccountLegalEntityId) GetProviderPermissionValues(this IAuthorizationContext authorizationContext)
     {
         return (authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
             authorizationContext.Get<long>(AuthorizationContextKeys.AccountLegalEntityId));
     }
     
-    internal static (long Ukprn, string UserEmail) GetProviderFeatureValues(this IAuthorizationContext authorizationContext)
+    public static (long Ukprn, string UserEmail) GetProviderFeatureValues(this IAuthorizationContext authorizationContext)
     {
         return (authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
             authorizationContext.Get<string>(AuthorizationContextKeys.UserEmail));
