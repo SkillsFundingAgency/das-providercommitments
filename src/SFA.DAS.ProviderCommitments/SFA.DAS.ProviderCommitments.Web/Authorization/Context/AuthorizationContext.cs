@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 
 public class AuthorizationContext : IAuthorizationContext
 {

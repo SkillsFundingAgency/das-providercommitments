@@ -1,7 +1,7 @@
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 
 public static class AuthorizationContextExtensions
 {

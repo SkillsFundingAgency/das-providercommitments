@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Caching;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Caching;

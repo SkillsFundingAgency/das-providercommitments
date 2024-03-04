@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;
 using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Caching;
 using SFA.DAS.Testing;

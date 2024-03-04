@@ -5,6 +5,7 @@ using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Errors;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;

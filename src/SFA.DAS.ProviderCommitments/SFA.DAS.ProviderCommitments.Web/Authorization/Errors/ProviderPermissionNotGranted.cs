@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Errors;
 
 public class ProviderPermissionNotGranted : AuthorizationError
 {

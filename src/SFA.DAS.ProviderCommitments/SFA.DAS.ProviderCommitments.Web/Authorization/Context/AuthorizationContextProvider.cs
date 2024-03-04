@@ -5,7 +5,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 
 public interface IAuthorizationContextProvider
 {

@@ -8,9 +8,14 @@ public static class CommitmentPermissionsServiceRegistrations
 {
     public static IServiceCollection AddCommitmentPermissionsAuthorization(this IServiceCollection services)
     {
-        return services.AddAuthorizationHandler<ProviderAuthorizationHandler>(true)
-            .AddSingleton<IAuthorizationResultCacheConfigurationProvider, AuthorizationResultCacheConfigurationProvider>()
-            .AddSingleton(p => p.GetService<ICommitmentPermissionsApiClientFactory>().CreateClient())
-            .AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
+        services.AddAuthorizationHandler<ProviderAuthorizationHandler>(ResultsCacheType.EnableCaching);
+        
+        services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
+        
+        services.AddSingleton<IAuthorizationResultCacheConfigurationProvider, AuthorizationResultCacheConfigurationProvider>();
+        services.AddSingleton(p => p.GetService<ICommitmentPermissionsApiClientFactory>().CreateClient());
+        services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
+
+        return services;
     }
 }

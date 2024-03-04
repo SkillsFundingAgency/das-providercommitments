@@ -10,9 +10,9 @@ public interface IPolicyAuthorizationWrapper
 
 public class PolicyAuthorizationWrapper : IPolicyAuthorizationWrapper
 {
-    private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public PolicyAuthorizationWrapper(Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService)
+    public PolicyAuthorizationWrapper(IAuthorizationService authorizationService)
     {
         _authorizationService = authorizationService;
     }

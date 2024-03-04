@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Caching;
 using SFA.DAS.Testing;
 

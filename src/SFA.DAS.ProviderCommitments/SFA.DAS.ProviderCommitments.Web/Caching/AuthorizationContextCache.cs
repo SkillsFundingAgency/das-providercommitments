@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 
 namespace SFA.DAS.ProviderCommitments.Web.Caching;
 

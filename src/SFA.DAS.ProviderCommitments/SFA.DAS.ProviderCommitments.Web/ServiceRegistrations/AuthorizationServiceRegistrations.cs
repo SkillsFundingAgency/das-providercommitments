@@ -4,6 +4,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
@@ -16,6 +17,12 @@ using ProviderAuthorizationHandler = SFA.DAS.ProviderCommitments.Web.Authorizati
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
+public enum ResultsCacheType
+{
+    EnableCaching,
+    DoNotCache,
+}
+
 public static class AuthorizationPolicy
 {
     public static IServiceCollection AddAuthorizationService(this IServiceCollection services)
@@ -26,6 +33,7 @@ public static class AuthorizationPolicy
 
         services.AddSingleton<ICommitmentsAuthorisationHandler, CommitmentsAuthorisationHandler>();
         services.AddSingleton<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
+        services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
 
         services.AddTransient<IAuthorizationHandler, ProviderHandler>();
         services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
@@ -38,17 +46,15 @@ public static class AuthorizationPolicy
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
-        
-        services.AddLogging()
-            .AddMemoryCache()
-            .AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()))
-            .AddScoped<IAuthorizationService, AuthorizationService>()
-            .AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>()
-            .AddScoped<DefaultAuthorizationContextProvider>()
-            .AddScoped(p => p.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
+
+        services.AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()));
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>();
+        services.AddScoped<DefaultAuthorizationContextProvider>();
+        services.AddScoped(p => p.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
 
         services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
-        
+
         return services;
     }
 
@@ -127,7 +133,7 @@ public static class AuthorizationPolicy
         });
     }
 
-    public static IServiceCollection AddAuthorizationHandler<T>(this IServiceCollection services, bool enableAuthorizationResultCache = false) where T : class, SFA.DAS.ProviderCommitments.Web.Authorization.Handlers.IAuthorizationHandler
+    public static IServiceCollection AddAuthorizationHandler<T>(this IServiceCollection services, ResultsCacheType resultsCacheType = ResultsCacheType.DoNotCache) where T : class, SFA.DAS.ProviderCommitments.Web.Authorization.Handlers.IAuthorizationHandler
     {
         return services.AddScoped<T>().AddScoped(provider =>
         {
@@ -136,7 +142,7 @@ public static class AuthorizationPolicy
             var memoryCache = provider.GetService<IMemoryCache>();
             var logger = provider.GetService<ILogger<AuthorizationResultLogger>>();
 
-            if (enableAuthorizationResultCache)
+            if (resultsCacheType == ResultsCacheType.EnableCaching)
             {
                 authorizationHandler = new AuthorizationResultCache(authorizationHandler, authorizationResultCacheConfigurationProviders, memoryCache);
             }

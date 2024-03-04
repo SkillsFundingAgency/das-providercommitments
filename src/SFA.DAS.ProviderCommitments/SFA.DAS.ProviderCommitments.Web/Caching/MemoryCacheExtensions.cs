@@ -12,11 +12,11 @@ public static class MemoryCacheExtensions
         {
             return value;
         }
-        
+
         var cacheEntry = memoryCache.CreateEntry(key);
-                
+
         value = await valueFactory(cacheEntry).ConfigureAwait(false);
-                
+
         cacheEntry.SetValue(value);
         cacheEntry.Dispose();
 

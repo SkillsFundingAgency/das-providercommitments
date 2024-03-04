@@ -2,7 +2,7 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
 /// <summary>
 /// Interface to define contracts related to Training Provider Authorization Handlers.

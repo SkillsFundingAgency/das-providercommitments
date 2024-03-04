@@ -1,4 +1,4 @@
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 
 public static class AuthorizationContextKeys
 {
