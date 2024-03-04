@@ -13,7 +13,7 @@ public interface IAuthorizationResultCacheConfigurationProvider
 
 public class AuthorizationResultCacheConfigurationProvider : IAuthorizationResultCacheConfigurationProvider
 {
-    public Type HandlerType { get; } = typeof(AuthorizationHandler);
+    public Type HandlerType { get; } = typeof(ProviderAuthorizationHandler);
 
     public object GetCacheKey(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext)
     {

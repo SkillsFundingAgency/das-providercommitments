@@ -6,13 +6,13 @@ using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
-public class AuthorizationHandler : IAuthorizationHandler
+public class ProviderAuthorizationHandler : IAuthorizationHandler
 {
     public string Prefix => "ProviderOperation.";
         
     private readonly IProviderRelationshipsApiClient _providerRelationshipsApiClient;
 
-    public AuthorizationHandler(IProviderRelationshipsApiClient providerRelationshipsApiClient)
+    public ProviderAuthorizationHandler(IProviderRelationshipsApiClient providerRelationshipsApiClient)
     {
         _providerRelationshipsApiClient = providerRelationshipsApiClient;
     }

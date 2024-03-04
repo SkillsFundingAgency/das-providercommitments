@@ -8,7 +8,7 @@ public static class CommitmentPermissionsServiceRegistrations
 {
     public static IServiceCollection AddCommitmentPermissionsAuthorization(this IServiceCollection services)
     {
-        return services.AddAuthorizationHandler<AuthorizationHandler>(true)
+        return services.AddAuthorizationHandler<ProviderAuthorizationHandler>(true)
             .AddSingleton<IAuthorizationResultCacheConfigurationProvider, AuthorizationResultCacheConfigurationProvider>()
             .AddSingleton(p => p.GetService<ICommitmentPermissionsApiClientFactory>().CreateClient())
             .AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();

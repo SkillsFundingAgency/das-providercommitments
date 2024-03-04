@@ -37,6 +37,12 @@ public static class AuthorizationContextExtensions
             authorizationContext.Get<long>(AuthorizationContextKeys.AccountLegalEntityId));
     }
     
+    internal static (long Ukprn, string UserEmail) GetProviderFeatureValues(this IAuthorizationContext authorizationContext)
+    {
+        return (authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
+            authorizationContext.Get<string>(AuthorizationContextKeys.UserEmail));
+    }
+    
     internal static bool TryGetPermissionValues(this IAuthorizationContext authorizationContext, out long cohortId, out long apprenticeshipId, out Party party, out long partyId)
     {
         return (authorizationContext.TryGet(AuthorizationContextKeys.CohortId, out cohortId) | authorizationContext.TryGet(AuthorizationContextKeys.ApprenticeshipId, out apprenticeshipId)) &
