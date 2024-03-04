@@ -34,7 +34,7 @@ public static class AuthorizationPolicy
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
-
+        
         return services;
     }
 

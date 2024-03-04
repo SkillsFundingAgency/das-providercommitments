@@ -2,7 +2,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.Microsoft;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Client;
@@ -74,7 +73,6 @@ public class Startup
             .AddCommitmentsApiClient(_configuration)
             .AddProviderRelationshipsApiClient(_configuration)
             .AddProviderFeaturesAuthorization()
-            .AddProviderPermissionsAuthorization()
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
 
