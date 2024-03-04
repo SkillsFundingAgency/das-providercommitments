@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization.Handlers;
 
 [TestFixture]
 [Parallelizable]
-public class ProviderAuthorizationHandlerTests : FluentTest<EmployerFeaturesAuthorizationHandlerTestsFixture>
+public class ProviderAuthorizationHandlerTests : FluentTest<ProviderFeaturesAuthorizationHandlerTestsFixture>
 {
     [Test]
     public Task GetAuthorizationResult_WhenOptionsAreNotAvailable_ThenShouldReturnValidAuthorizationResult()
@@ -96,21 +96,21 @@ public class ProviderAuthorizationHandlerTests : FluentTest<EmployerFeaturesAuth
     }
 }
 
-public class EmployerFeaturesAuthorizationHandlerTestsFixture
+public class ProviderFeaturesAuthorizationHandlerTestsFixture
 {
     public List<string> Options { get; set; }
     public IAuthorizationContext AuthorizationContext { get; set; }
     public IAuthorizationHandler Handler { get; set; }
-    public Mock<IFeatureTogglesService<ProviderFeatureToggle>> FeatureTogglesService { get; set; }
+    public Mock<IFeatureTogglesService<FeatureToggle>> FeatureTogglesService { get; set; }
         
     public const long Ukprn = 1;
     public const string UserEmail = "foo@bar.com";
         
-    public EmployerFeaturesAuthorizationHandlerTestsFixture()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture()
     {
         Options = new List<string>();
         AuthorizationContext = new AuthorizationContext();
-        FeatureTogglesService = new Mock<IFeatureTogglesService<ProviderFeatureToggle>>();
+        FeatureTogglesService = new Mock<IFeatureTogglesService<FeatureToggle>>();
         Handler = new ProviderFeaturesAuthorizationHandler(FeatureTogglesService.Object);
     }
 
@@ -119,56 +119,56 @@ public class EmployerFeaturesAuthorizationHandlerTestsFixture
         return Handler.GetAuthorizationResult(Options, AuthorizationContext);
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetNonProviderFeatureOptions()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetNonProviderFeatureOptions()
     {
         Options.AddRange(new [] { "Foo", "Bar" });
 
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetAndedOptions()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetAndedOptions()
     {
         Options.AddRange(new [] { "ProviderRelationships", "Tickles" });
             
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetOredOption()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetOredOption()
     {
         Options.Add($"ProviderRelationships,ProviderRelationships");
             
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetOption()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetOption()
     {
         Options.AddRange(new [] { "ProviderRelationships" });
 
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextMissingUkprn()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextMissingUkprn()
     {
         AuthorizationContext.Set(AuthorizationContextKeys.UserEmail, UserEmail);
             
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextMissingUserEmail()
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextMissingUserEmail()
     {
         AuthorizationContext.Set(AuthorizationContextKeys.Ukprn, Ukprn);
             
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextValues(long ukprn = Ukprn, string userEmail = UserEmail)
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetAuthorizationContextValues(long ukprn = Ukprn, string userEmail = UserEmail)
     {
         AuthorizationContext.AddProviderFeatureValues(ukprn, userEmail);
             
         return this;
     }
 
-    public EmployerFeaturesAuthorizationHandlerTestsFixture SetFeatureToggle(bool isEnabled, bool? isUkprnWhitelisted = null, bool? isUserEmailWhitelisted = null)
+    public ProviderFeaturesAuthorizationHandlerTestsFixture SetFeatureToggle(bool isEnabled, bool? isUkprnWhitelisted = null, bool? isUserEmailWhitelisted = null)
     {
         var option = Options.Single();
         var whitelist = new List<ProviderFeatureToggleWhitelistItem>();
@@ -185,7 +185,7 @@ public class EmployerFeaturesAuthorizationHandlerTestsFixture
             whitelist.Add(new ProviderFeatureToggleWhitelistItem { Ukprn = isUkprnWhitelisted == true ? Ukprn : 0, UserEmails = userEmails });
         }
 
-        FeatureTogglesService.Setup(s => s.GetFeatureToggle(option)).Returns(new ProviderFeatureToggle { Feature = "ProviderRelationships", IsEnabled = isEnabled, Whitelist = whitelist });
+        FeatureTogglesService.Setup(s => s.GetFeatureToggle(option)).Returns(new FeatureToggle { Feature = "ProviderRelationships", IsEnabled = isEnabled, Whitelist = whitelist });
             
         return this;
     }

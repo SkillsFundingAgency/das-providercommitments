@@ -2,7 +2,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorization.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
 
-public class ProviderFeaturesConfiguration : IFeaturesConfiguration<ProviderFeatureToggle>
+public class ProviderFeaturesConfiguration : IFeaturesConfiguration<FeatureToggle>
 {
-    public List<ProviderFeatureToggle> FeatureToggles { get; set; }
+    public List<FeatureToggle> FeatureToggles { get; set; }
 }

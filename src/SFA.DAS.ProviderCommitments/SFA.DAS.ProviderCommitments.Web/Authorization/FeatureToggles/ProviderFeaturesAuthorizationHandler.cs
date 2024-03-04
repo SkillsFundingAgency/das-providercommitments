@@ -10,9 +10,9 @@ public class ProviderFeaturesAuthorizationHandler : IAuthorizationHandler
 {
     public string Prefix => "ProviderFeature.";
         
-    private readonly IFeatureTogglesService<ProviderFeatureToggle> _featureTogglesService;
+    private readonly IFeatureTogglesService<FeatureToggle> _featureTogglesService;
 
-    public ProviderFeaturesAuthorizationHandler(IFeatureTogglesService<ProviderFeatureToggle> featureTogglesService)
+    public ProviderFeaturesAuthorizationHandler(IFeatureTogglesService<FeatureToggle> featureTogglesService)
     {
         _featureTogglesService = featureTogglesService;
     }

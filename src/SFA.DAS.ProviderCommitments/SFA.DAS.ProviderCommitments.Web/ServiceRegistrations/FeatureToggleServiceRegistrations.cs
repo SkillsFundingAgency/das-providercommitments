@@ -9,7 +9,7 @@ public static class FeatureToggleServiceRegistrations
     public static IServiceCollection AddProviderFeatures(this IServiceCollection services)
     {
         services.AddTransient<IAuthorizationHandler, ProviderFeaturesAuthorizationHandler>();
-        services.AddTransient<IFeatureTogglesService<ProviderFeatureToggle>, FeatureTogglesService<ProviderFeaturesConfiguration, ProviderFeatureToggle>>();
+        services.AddTransient<IFeatureTogglesService<FeatureToggle>, FeatureTogglesService<ProviderFeaturesConfiguration, FeatureToggle>>();
         
         return services;
     }
