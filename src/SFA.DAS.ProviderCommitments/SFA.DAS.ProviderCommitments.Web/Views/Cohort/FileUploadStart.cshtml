@@ -12,17 +12,28 @@
 
         <partial name="_ValidationSummary" />
         <form method="post" enctype="multipart/form-data">
-            <h1 class="govuk-heading-xl">Upload a CSV file</h1>
-            <div class="govuk-form-group govuk-!-margin-top-6">
-                <label class="govuk-label" for="file-upload-1">
-                    Your CSV file should not have more than 100 rows
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="attachment">
+                    Upload a CSV file
                 </label>
+            </h1>
+            <div class="govuk-form-group govuk-!-margin-top-6">
+                <div class="govuk-hint">
+                    Your CSV file should not have more than 100 rows
+                </div>
 
-                @Html.ValidationMessageFor(m => m.Attachment, null, new { id = "error-message-" + Html.IdFor(m => m.Attachment), @class = "govuk-error-message" })
-                <input class="govuk-file-upload" id="attachment" accept=".csv" type="file" name="@Html.NameFor(m => m.Attachment)">
+                @Html.ValidationMessageFor(m => m.Attachment, null, new
+                    {
+                        id = "error-message-" + Html.IdFor(m =>
+                        m.Attachment),
+                        @class = "govuk-error-message"
+                    })
+                <input class="govuk-file-upload" id="attachment" accept=".csv" type="file"
+                    name="@Html.NameFor(m => m.Attachment)">
             </div>
 
-            <input class="button govuk-button" data-module="govuk-button" type="submit" value="Continue" id="submit-upload-apprentices">
+            <input class="button govuk-button" data-module="govuk-button" type="submit" value="Continue"
+                id="submit-upload-apprentices">
         </form>
     </div>
 </div>
