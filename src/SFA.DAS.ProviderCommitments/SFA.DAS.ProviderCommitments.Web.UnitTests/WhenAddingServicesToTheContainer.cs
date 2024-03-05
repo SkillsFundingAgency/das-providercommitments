@@ -16,7 +16,10 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.GetTrainingCourses;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -71,6 +74,19 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
     
+    [TestCase(typeof(IAuthorizationContext))]
+    [TestCase(typeof(IAuthorizationContextProvider))]
+    [TestCase(typeof(ICommitmentsAuthorisationHandler))]
+    [TestCase(typeof(IProviderAuthorizationHandler))]
+    [TestCase(typeof(IPolicyAuthorizationWrapper))]
+    [TestCase(typeof(ITrainingProviderAuthorizationHandler))]
+    [TestCase(typeof(IDefaultAuthorizationHandler))]
+    [TestCase(typeof(DefaultAuthorizationContextProvider))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved_For_Authorization_Services(Type toResolve)
+    {
+        RunTestForType(toResolve);
+    }
+    
     private static void RunTestForType(Type toResolve)
     {
         var services = new ServiceCollection();
@@ -98,6 +114,7 @@ public class WhenAddingServicesToTheContainer
         services.AddAuthorizationService();
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
+        services.AddCommitmentPermissionsAuthorization();
         services.AddMemoryCache();
         services.AddCache(mockHostEnvironment.Object, stubConfiguration);
         services.AddModelMappings();
