@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 
 namespace SFA.DAS.ProviderCommitments.Web.Extensions;
 

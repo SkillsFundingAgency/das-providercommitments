@@ -9,10 +9,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Web.Caching;
-using AuthorizationResultCache = SFA.DAS.ProviderCommitments.Web.Caching.AuthorizationResultCache;
-using AuthorizationResultLogger = SFA.DAS.ProviderCommitments.Web.Authorization.AuthorizationResultLogger;
 using IAuthorizationHandler = Microsoft.AspNetCore.Authorization.IAuthorizationHandler;
-using IAuthorizationResultCacheConfigurationProvider = SFA.DAS.ProviderCommitments.Web.Caching.IAuthorizationResultCacheConfigurationProvider;
 using ProviderAuthorizationHandler = SFA.DAS.ProviderCommitments.Web.Authorization.Provider.ProviderAuthorizationHandler;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;

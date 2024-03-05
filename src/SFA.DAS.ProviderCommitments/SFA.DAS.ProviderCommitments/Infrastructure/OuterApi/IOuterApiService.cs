@@ -41,5 +41,6 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
         Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> errors);
         Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage);
+        Task<bool> GetHasPermission(long? ukprn, long? accountLegalEntityId, string operation);
     }
 }
