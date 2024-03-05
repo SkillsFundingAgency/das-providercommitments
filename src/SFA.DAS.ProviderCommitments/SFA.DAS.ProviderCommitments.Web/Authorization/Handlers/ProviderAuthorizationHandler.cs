@@ -1,25 +1,16 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
-using ProviderPermissionNotGranted = SFA.DAS.ProviderCommitments.Web.Authorization.Errors.ProviderPermissionNotGranted;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
-public class ProviderAuthorizationHandler : IAuthorizationHandler
+public class ProviderAuthorizationHandler(IOuterApiService outerApiService) : IAuthorizationHandler
 {
     public string Prefix => "ProviderOperation.";
-        
-    private readonly IProviderRelationshipsApiClient _providerRelationshipsApiClient;
 
-    public ProviderAuthorizationHandler(IProviderRelationshipsApiClient providerRelationshipsApiClient)
-    {
-        _providerRelationshipsApiClient = providerRelationshipsApiClient;
-    }
-        
-    public async Task<AuthorizationResult> GetAuthorizationResult(IReadOnlyCollection<string> options, Interfaces.IAuthorizationContext authorizationContext)
+    public async Task<AuthorizationResult> GetAuthorizationResult(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext)
     {
         var authorizationResult = new AuthorizationResult();
 
@@ -27,22 +18,15 @@ public class ProviderAuthorizationHandler : IAuthorizationHandler
         {
             return authorizationResult;
         }
-            
+
         options.EnsureNoAndOptions();
         options.EnsureNoOrOptions();
-                
+
         var values = authorizationContext.GetProviderPermissionValues();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        var hasPermissionRequest = new HasPermissionRequest
-        {
-            Ukprn = values.Ukprn,
-            AccountLegalEntityId = values.AccountLegalEntityId,
-            Operation = operation
-        };
+        var hasPermission = await outerApiService.GetHasPermission(values.Ukprn, values.AccountLegalEntityId, operation.ToString());
 
-        var hasPermission = await _providerRelationshipsApiClient.HasPermission(hasPermissionRequest).ConfigureAwait(false);
-                
         if (!hasPermission)
         {
             authorizationResult.AddError(new ProviderPermissionNotGranted());

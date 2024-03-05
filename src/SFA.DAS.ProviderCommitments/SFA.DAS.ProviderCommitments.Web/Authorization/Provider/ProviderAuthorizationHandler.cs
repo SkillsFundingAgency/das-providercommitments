@@ -1,7 +1,5 @@
 ﻿using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
 using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
@@ -11,34 +9,19 @@ public interface IProviderAuthorizationHandler
     Task<bool> CanCreateCohort();
 }
 
-public class ProviderAuthorizationHandler : IProviderAuthorizationHandler
+public class ProviderAuthorizationHandler(IAuthorizationContext authorizationContext, IOuterApiService outerApiService)
+    : IProviderAuthorizationHandler
 {
-    private readonly ProviderRelationshipsApiClient _providerRelationshipsApiClient;
-    private readonly IAuthorizationContext _authorizationContext;
-
-    public ProviderAuthorizationHandler(ProviderRelationshipsApiClient providerRelationshipsApiClient, IAuthorizationContext authorizationContext)
-    {
-        _providerRelationshipsApiClient = providerRelationshipsApiClient;
-        _authorizationContext = authorizationContext;
-    }
-   
     public Task<bool> CanCreateCohort()
     {
         var values = GetProviderPermissionValues();
-
-        var hasPermissionRequest = new HasPermissionRequest
-        {
-            Ukprn = values.Ukprn,
-            AccountLegalEntityId = values.AccountLegalEntityId,
-            Operation = Operation.CreateCohort
-        };
-
-        return _providerRelationshipsApiClient.HasPermission(hasPermissionRequest);
+        
+        return outerApiService.GetHasPermission(values.Ukprn, values.AccountLegalEntityId, Operation.CreateCohort.ToString());
     }
     
     private (long Ukprn, long AccountLegalEntityId) GetProviderPermissionValues()
     {
-        return (_authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
-            _authorizationContext.Get<long>(AuthorizationContextKeys.AccountLegalEntityId));
+        return (authorizationContext.Get<long>(AuthorizationContextKeys.Ukprn),
+            authorizationContext.Get<long>(AuthorizationContextKeys.AccountLegalEntityId));
     }
 }
