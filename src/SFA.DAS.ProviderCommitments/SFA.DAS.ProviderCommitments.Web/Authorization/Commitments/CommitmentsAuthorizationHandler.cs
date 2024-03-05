@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing;
-using SFA.DAS.CommitmentsV2.Api.Types.Requests;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Client;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
@@ -10,47 +8,32 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 
 public class CommitmentsAuthorisationHandler : ICommitmentsAuthorisationHandler
 {
-    private readonly ICommitmentPermissionsApiClient _commitmentsApiClient;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEncodingService _encodingService;
+    private readonly IOuterApiService _outerApiService;
 
-    public CommitmentsAuthorisationHandler(
-        ICommitmentPermissionsApiClient commitmentsApiClient,
-        IHttpContextAccessor httpContextAccessor,
-        IEncodingService encodingService
+    public CommitmentsAuthorisationHandler(IHttpContextAccessor httpContextAccessor,
+        IEncodingService encodingService,
+        IOuterApiService outerApiService
     )
     {
-        _commitmentsApiClient = commitmentsApiClient;
         _httpContextAccessor = httpContextAccessor;
         _encodingService = encodingService;
+        _outerApiService = outerApiService;
     }
 
     public Task<bool> CanAccessCohort()
     {
         var permissionValues = GetPermissionValues();
 
-        var request = new CohortAccessRequest
-        {
-            CohortId = permissionValues.CohortId,
-            Party = Party.Employer,
-            PartyId = permissionValues.PartyId
-        };
-
-        return _commitmentsApiClient.CanAccessCohort(request);
+        return _outerApiService.CanAccessCohort(Party.Employer, permissionValues.PartyId, permissionValues.CohortId);
     }
     
     public Task<bool> CanAccessApprenticeship()
     {
         var permissionValues = GetPermissionValues();
-
-        var request = new ApprenticeshipAccessRequest
-        {
-            ApprenticeshipId = permissionValues.ApprenticeshipId,
-            Party = Party.Employer,
-            PartyId = permissionValues.PartyId
-        };
-
-        return _commitmentsApiClient.CanAccessApprenticeship(request);
+        
+        return _outerApiService.CanAccessApprenticeship(Party.Employer, permissionValues.PartyId, permissionValues.ApprenticeshipId);
     }
 
     private (long CohortId, long ApprenticeshipId, long PartyId) GetPermissionValues()

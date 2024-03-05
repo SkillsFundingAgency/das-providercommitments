@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
@@ -213,6 +214,24 @@ public class OuterApiService : IOuterApiService
         var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
         
         return response.HasPermission;
+    }
+
+    public async Task<bool> CanAccessApprenticeship(Party party, long partyId, long apprenticeshipId)
+    {
+        var content = new GetApprenticeshipAccessRequest(party, partyId, apprenticeshipId);
+
+        var response = await _outerApiClient.Get<GetApprenticeshipAccessResponse>(content);
+
+        return response.HasApprenticeshipAccess;
+    }
+    
+    public async Task<bool> CanAccessCohort(Party party, long partyId, long cohortId)
+    {
+        var content = new GetCohortAccessRequest(party, partyId, cohortId);
+
+        var response = await _outerApiClient.Get<GetCohortAccessResponse>(content);
+
+        return response.HasCohortAccess;
     }
 
     public static async Task<string> ReadFormFileAsync(IFormFile file)
