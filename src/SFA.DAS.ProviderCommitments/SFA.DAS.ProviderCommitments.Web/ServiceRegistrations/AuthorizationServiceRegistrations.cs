@@ -29,14 +29,14 @@ public static class AuthorizationPolicy
         services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
 
         services.AddSingleton<ICommitmentsAuthorisationHandler, CommitmentsAuthorisationHandler>();
-        services.AddSingleton<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
+        services.AddTransient<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
         services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
 
         services.AddTransient<IAuthorizationHandler, ProviderHandler>();
         services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
-        services.AddSingleton<IAuthorizationHandler, AccessApprenticeshipAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationHandler, AccessCohortAuthorizationHandler>();
-        services.AddSingleton<IAuthorizationHandler, CreateCohortAuthorizationHandler>();
+        services.AddTransient<IAuthorizationHandler, AccessApprenticeshipAuthorizationHandler>();
+        services.AddTransient<IAuthorizationHandler, AccessCohortAuthorizationHandler>();
+        services.AddTransient<IAuthorizationHandler, CreateCohortAuthorizationHandler>();
 
         services.AddTransient<IAuthorizationContext, AuthorizationContext>();
         services.AddSingleton<IAuthorizationContextProvider, AuthorizationContextProvider>();
