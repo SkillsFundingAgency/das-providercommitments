@@ -6,16 +6,24 @@ namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
 public static class CommitmentPermissionsServiceRegistrations
 {
-    public static IServiceCollection AddCommitmentPermissionsAuthorization(this IServiceCollection services)
+    public static IServiceCollection AddCommitmentPermissionsAuthorization(this IServiceCollection services, bool useLocalRegistry)
     {
+        if (useLocalRegistry)
+        {
+            services.AddTransient<ICommitmentPermissionsApiClientFactory, LocalDevApiClientFactory>();
+        }
+        else
+        {
+            services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
+        }
+
         services.AddAuthorizationHandler<ProviderAuthorizationHandler>(ResultsCacheType.EnableCaching);
         
         services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
         
         services.AddSingleton<IAuthorizationResultCacheConfigurationProvider, AuthorizationResultCacheConfigurationProvider>();
         services.AddSingleton(p => p.GetService<ICommitmentPermissionsApiClientFactory>().CreateClient());
-        services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
-
+        
         return services;
     }
 }

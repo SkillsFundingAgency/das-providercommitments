@@ -114,7 +114,7 @@ public class WhenAddingServicesToTheContainer
         services.AddAuthorizationService();
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
-        services.AddCommitmentPermissionsAuthorization();
+        services.AddCommitmentPermissionsAuthorization(useLocalRegistry:true);
         services.AddMemoryCache();
         services.AddCache(mockHostEnvironment.Object, stubConfiguration);
         services.AddModelMappings();

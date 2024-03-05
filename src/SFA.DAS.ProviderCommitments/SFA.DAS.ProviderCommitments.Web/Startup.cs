@@ -36,7 +36,7 @@ public class Startup
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
         });
-        
+
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
@@ -76,14 +76,7 @@ public class Startup
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
 
-        if (_configuration.UseLocalRegistry())
-        {
-            services.AddTransient<ICommitmentPermissionsApiClientFactory, LocalDevApiClientFactory>();
-        }
-        else
-        {
-            services.AddCommitmentPermissionsAuthorization();
-        }
+        services.AddCommitmentPermissionsAuthorization(_configuration.UseLocalRegistry());
 
         services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
