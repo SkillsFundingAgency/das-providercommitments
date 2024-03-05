@@ -33,7 +33,10 @@ public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizati
         var ukprn = GetProviderId(context);
 
         //if the ukprn is invalid return false.
-        if (ukprn <= 0) return false;
+        if (ukprn <= 0)
+        {
+            return false;
+        }
 
         var providerStatusDetails = await _outerApiService.GetProviderStatus(ukprn);
 

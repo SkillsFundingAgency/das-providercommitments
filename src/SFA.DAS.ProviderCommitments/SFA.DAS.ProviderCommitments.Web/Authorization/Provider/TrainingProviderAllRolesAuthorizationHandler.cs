@@ -55,7 +55,7 @@ public class TrainingProviderAllRolesAuthorizationHandler : AuthorizationHandler
 
         // check if the stub is activated to by-pass the validation. Mostly used for local development purpose.
         // logic to check if the provider is authorized if not redirect the user to PAS 401 un-authorized page.
-        if (!isStubProviderValidationEnabled && !(await _handler.IsProviderAuthorized(context)))
+        if (!isStubProviderValidationEnabled && !await _handler.IsProviderAuthorized(context))
         {
             currentContext?.Response.Redirect($"{_providerSharedUiConfiguration.DashboardUrl}/error/403/invalid-status");
         }
