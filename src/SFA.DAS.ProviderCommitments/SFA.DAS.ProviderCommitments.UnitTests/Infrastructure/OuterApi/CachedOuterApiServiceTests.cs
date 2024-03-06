@@ -23,7 +23,7 @@ public class CachedOuterApiServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_HasPermission_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Null(
+    public async Task HasPermission_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Not_In_Cache(
         long ukprn,
         long accountLegalEntityId,
         string operation,
@@ -47,9 +47,31 @@ public class CachedOuterApiServiceTests
         _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Once);
     }
+    
+    [Test, MoqAutoData]
+    public async Task HasPermission_Result_Is_Retrieved_From_Cache_When_In_Cache(
+        long ukprn,
+        long accountLegalEntityId,
+        string operation,
+        bool result)
+    {
+        var cacheKey = $"{nameof(CachedOuterApiService.HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
+
+        _mockCacheStorageService
+            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .ReturnsAsync(result);
+        
+        var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
+        var actual = await sut.HasPermission(ukprn, accountLegalEntityId, operation);
+
+        actual.Should().Be(result);
+
+        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
+    }
 
     [Test, MoqAutoData]
-    public async Task Then_CanAccessApprenticeship_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Null(
+    public async Task CanAccessApprenticeship_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Not_In_Cache(
         Party party,
         long partyId,
         long apprenticeshipId,
@@ -73,7 +95,29 @@ public class CachedOuterApiServiceTests
     }
     
     [Test, MoqAutoData]
-    public async Task Then_CanAccessCohort_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Null(
+    public async Task CanAccessApprenticeship_Result_Is_Retrieved_From_Cache_When_Cached(
+        Party party,
+        long partyId,
+        long apprenticeshipId,
+        bool result)
+    {
+        var cacheKey = $"{nameof(CachedOuterApiService.CanAccessApprenticeship)}.{party}.{partyId}.{apprenticeshipId}";
+
+        _mockCacheStorageService
+            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .ReturnsAsync(result);
+
+        var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
+        var actual = await sut.CanAccessApprenticeship(party, partyId, apprenticeshipId);
+
+        actual.Should().Be(result);
+
+        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task CanAccessCohort_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Not_In_Cache(
         Party party,
         long partyId,
         long cohortId,
@@ -94,5 +138,27 @@ public class CachedOuterApiServiceTests
 
         _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Once);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task CanAccessCohort_Result_Is_Retrieved_From_Cache_When_Cached(
+        Party party,
+        long partyId,
+        long cohortId,
+        bool result)
+    {
+        var cacheKey = $"{nameof(CachedOuterApiService.CanAccessCohort)}.{party}.{partyId}.{cohortId}";
+
+        _mockCacheStorageService
+            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .ReturnsAsync(result);
+
+        var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
+        var actual = await sut.CanAccessCohort(party, partyId, cohortId);
+
+        actual.Should().Be(result);
+
+        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
     }
 }
