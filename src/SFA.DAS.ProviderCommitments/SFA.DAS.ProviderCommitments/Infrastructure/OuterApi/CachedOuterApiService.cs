@@ -22,16 +22,16 @@ public interface ICachedOuterApiService
 
 public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiService outerApiService) : ICachedOuterApiService
 {
-    private const int CacheExpirationMinutes = 5;
-    
+    public const int CacheExpirationMinutes = 5;
+
     public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation)
     {
-        var cacheKey = $"{nameof(GetHasPermissionResponse)}.{ukprn}.{accountLegalEntityId}.{operation}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<GetHasPermissionResponse>(cacheKey);
+        var cacheKey = $"{nameof(HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
+        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
-            return cachedResponse.HasPermission;
+            return cachedResponse.Value;
         }
 
         var hasPermission = await outerApiService.HasPermission(ukprn, accountLegalEntityId, operation);
@@ -43,12 +43,12 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
 
     public async Task<bool> CanAccessCohort(Party party, long partyId, long cohortId)
     {
-        var cacheKey = $"{nameof(GetCohortAccessResponse)}.{party}.{partyId}.{cohortId}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<GetCohortAccessResponse>(cacheKey);
+        var cacheKey = $"{nameof(CanAccessCohort)}.{party}.{partyId}.{cohortId}";
+        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
-            return cachedResponse.HasCohortAccess;
+            return cachedResponse.Value;
         }
 
         var canAccessCohort = await outerApiService.CanAccessCohort(party, partyId, cohortId);
@@ -60,12 +60,12 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
 
     public async Task<bool> CanAccessApprenticeship(Party party, long partyId, long apprenticeshipId)
     {
-        var cacheKey = $"{nameof(GetApprenticeshipAccessResponse)}.{party}.{partyId}.{apprenticeshipId}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<GetApprenticeshipAccessResponse>(cacheKey);
+        var cacheKey = $"{nameof(CanAccessApprenticeship)}.{party}.{partyId}.{apprenticeshipId}";
+        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
-            return cachedResponse.HasApprenticeshipAccess;
+            return cachedResponse.Value;
         }
 
         var canAccessApprenticeship = await outerApiService.CanAccessApprenticeship(party, partyId, apprenticeshipId);
