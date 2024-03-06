@@ -39,6 +39,19 @@ public class CacheStorageService : ICacheStorageService
     {
         return SaveToCache(item.CacheKey.ToString(), item, expirationInHours);
     }
+    
+    /// <summary>
+    /// Returns NULL instead of throwing exception if cached item not found.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public async Task<T> SafeRetrieveFromCache<T>(string key)
+    {
+        var json = await _distributedCache.GetStringAsync(key);
+            
+        return json == null ? default : JsonConvert.DeserializeObject<T>(json);
+    }
 
     public async Task<T> RetrieveFromCache<T>(string key)
     {

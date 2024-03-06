@@ -32,7 +32,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync((bool?)null);
 
         _mockOuterApiService
@@ -44,7 +44,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Once);
     }
     
@@ -58,7 +58,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync(result);
         
         var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
@@ -66,7 +66,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
     }
 
@@ -80,7 +80,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.CanAccessApprenticeship)}.{party}.{partyId}.{apprenticeshipId}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync((bool?)null);
 
         _mockOuterApiService.Setup(x => x.CanAccessApprenticeship(party, partyId, apprenticeshipId)).ReturnsAsync(result);
@@ -90,7 +90,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Once);
     }
     
@@ -104,7 +104,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.CanAccessApprenticeship)}.{party}.{partyId}.{apprenticeshipId}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync(result);
 
         var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
@@ -112,7 +112,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
     }
     
@@ -126,7 +126,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.CanAccessCohort)}.{party}.{partyId}.{cohortId}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync((bool?)null);
 
         _mockOuterApiService.Setup(x => x.CanAccessCohort(party, partyId, cohortId)).ReturnsAsync(result);
@@ -136,7 +136,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Once);
     }
     
@@ -150,7 +150,7 @@ public class CachedOuterApiServiceTests
         var cacheKey = $"{nameof(CachedOuterApiService.CanAccessCohort)}.{party}.{partyId}.{cohortId}";
 
         _mockCacheStorageService
-            .Setup(x => x.RetrieveFromCache<bool?>(cacheKey))
+            .Setup(x => x.SafeRetrieveFromCache<bool?>(cacheKey))
             .ReturnsAsync(result);
 
         var sut = new CachedOuterApiService(_mockCacheStorageService.Object, _mockOuterApiService.Object);
@@ -158,7 +158,7 @@ public class CachedOuterApiServiceTests
 
         actual.Should().Be(result);
 
-        _mockCacheStorageService.Verify(x => x.RetrieveFromCache<bool?>(cacheKey), Times.Once);
+        _mockCacheStorageService.Verify(x => x.SafeRetrieveFromCache<bool?>(cacheKey), Times.Once);
         _mockCacheStorageService.Verify(x => x.SaveToCache(cacheKey, result, TimeSpan.FromMinutes(CachedOuterApiService.CacheExpirationMinutes)), Times.Never);
     }
 }

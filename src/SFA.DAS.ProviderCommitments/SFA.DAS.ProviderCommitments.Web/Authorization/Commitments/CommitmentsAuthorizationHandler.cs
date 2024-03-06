@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 public class CommitmentsAuthorisationHandler(
     IHttpContextAccessor httpContextAccessor,
     IEncodingService encodingService,
-    IOuterApiService cachedOuterApiService)
+    ICachedOuterApiService cachedOuterApiService)
     : ICommitmentsAuthorisationHandler
 {
     public Task<bool> CanAccessCohort()

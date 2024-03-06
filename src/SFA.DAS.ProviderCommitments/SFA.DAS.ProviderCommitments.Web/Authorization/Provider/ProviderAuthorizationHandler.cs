@@ -10,7 +10,7 @@ public interface IProviderAuthorizationHandler
     Task<bool> CanCreateCohort();
 }
 
-public class ProviderAuthorizationHandler(IAuthorizationContext authorizationContext, IOuterApiService cachedOuterApiService)
+public class ProviderAuthorizationHandler(IAuthorizationContext authorizationContext, ICachedOuterApiService cachedOuterApiService)
     : IProviderAuthorizationHandler
 {
     public async Task<bool> CanCreateCohort()

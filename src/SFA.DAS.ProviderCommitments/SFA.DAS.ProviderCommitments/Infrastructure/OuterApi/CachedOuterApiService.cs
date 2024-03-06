@@ -27,7 +27,7 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
     public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation)
     {
         var cacheKey = $"{nameof(HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
+        var cachedResponse = await cacheStorage.SafeRetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
@@ -44,7 +44,7 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
     public async Task<bool> CanAccessCohort(Party party, long partyId, long cohortId)
     {
         var cacheKey = $"{nameof(CanAccessCohort)}.{party}.{partyId}.{cohortId}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
+        var cachedResponse = await cacheStorage.SafeRetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
@@ -61,7 +61,7 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
     public async Task<bool> CanAccessApprenticeship(Party party, long partyId, long apprenticeshipId)
     {
         var cacheKey = $"{nameof(CanAccessApprenticeship)}.{party}.{partyId}.{apprenticeshipId}";
-        var cachedResponse = await cacheStorage.RetrieveFromCache<bool?>(cacheKey);
+        var cachedResponse = await cacheStorage.SafeRetrieveFromCache<bool?>(cacheKey);
 
         if (cachedResponse != null)
         {
