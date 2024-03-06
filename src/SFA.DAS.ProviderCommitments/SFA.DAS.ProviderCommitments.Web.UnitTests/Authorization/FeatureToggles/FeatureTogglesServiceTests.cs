@@ -8,24 +8,45 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization.FeatureToggles
 
 [TestFixture]
 [Parallelizable]
-public class FeatureTogglesServiceTests : FluentTest<FeatureTogglesServiceTestsFixture>
+public class FeatureTogglesServiceTests
 {
+    private FeatureTogglesServiceTestsFixture _fixture;
+
+    [SetUp]
+    public void Setup() => _fixture = new FeatureTogglesServiceTestsFixture();
+
     [Test]
     public void GetFeatureToggle_WhenFeatureToggleExistsForFeature_ThenShouldReturnFeatureToggle()
     {
-        Test(f => f.SetFeatureToggle(), f => f.GetFeatureToggle(), (f, r) => r.Should().NotBeNull().And.BeSameAs(f.FeatureToggle));
+        _fixture.SetFeatureToggle();
+
+        var result = _fixture.GetFeatureToggle();
+
+        result.Should().NotBeNull().And.BeSameAs(_fixture.FeatureToggle);
     }
-        
+
     [Test]
     public void GetFeatureToggle_WhenFeatureConfigurationIsNull_ThenShouldReturnDisabledFeatureToggle()
     {
-        Test(f => f.SetFeatureConfigurationToNull().GetFeatureToggle(), (f, r) => r.Should().NotBeNull().And.Match<FeatureToggle>(t => t.Feature == f.Feature && t.IsEnabled == false));
+        var result = _fixture
+            .SetFeatureConfigurationToNull()
+            .GetFeatureToggle();
+
+        result.Should()
+            .NotBeNull()
+            .And
+            .Match<FeatureToggle>(t => t.Feature == _fixture.Feature && !t.IsEnabled);
     }
 
     [Test]
     public void GetFeatureToggle_WhenFeatureToggleDoesNotExistForFeature_ThenShouldReturnDisabledFeatureToggle()
     {
-        Test(f => f.GetFeatureToggle(), (f, r) => r.Should().NotBeNull().And.Match<FeatureToggle>(t => t.Feature == f.Feature && t.IsEnabled == false));
+        var result = _fixture.GetFeatureToggle();
+
+        result.Should()
+            .NotBeNull()
+            .And
+            .Match<FeatureToggle>(t => t.Feature == _fixture.Feature && !t.IsEnabled);
     }
 }
 
@@ -36,7 +57,7 @@ public class FeatureTogglesServiceTestsFixture
     public FeaturesConfiguration FeaturesConfiguration { get; set; }
     public List<FeatureToggle> FeatureToggles { get; set; }
     public FeatureToggle FeatureToggle { get; set; }
-        
+
     public FeatureTogglesServiceTestsFixture()
     {
         Feature = "ProviderRelationships";
@@ -47,7 +68,7 @@ public class FeatureTogglesServiceTestsFixture
     public FeatureToggle GetFeatureToggle()
     {
         FeatureToggleService = new FeatureTogglesService<FeaturesConfiguration, FeatureToggle>(FeaturesConfiguration);
-            
+
         return FeatureToggleService.GetFeatureToggle(Feature);
     }
 
@@ -62,7 +83,7 @@ public class FeatureTogglesServiceTestsFixture
         FeatureToggle = new FeatureToggle { Feature = Feature, IsEnabled = true };
         FeatureToggles.Add(FeatureToggle);
         FeaturesConfiguration.FeatureToggles.Add(FeatureToggle);
-            
+
         return this;
     }
 }
