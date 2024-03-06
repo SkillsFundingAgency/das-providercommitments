@@ -96,7 +96,7 @@ public class OuterApiServiceTest
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.GetHasPermission(ukprn, accountLegalEntityId, operation);
+        var actual = await service.HasPermission(ukprn, accountLegalEntityId, operation);
 
         //Assert
         actual.Should().Be(apiResponse.HasPermission);

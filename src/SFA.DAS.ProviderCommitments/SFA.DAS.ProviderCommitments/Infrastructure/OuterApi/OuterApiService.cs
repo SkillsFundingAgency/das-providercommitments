@@ -203,7 +203,7 @@ public class OuterApiService : IOuterApiService
         await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
     }
 
-    public async Task<bool> GetHasPermission(long? ukprn, long? accountLegalEntityId, string operation)
+    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation)
     {
         var content = new GetHasPermissionRequest(
             ukprn,
@@ -259,13 +259,4 @@ public class OuterApiService : IOuterApiService
 
         return null;
     }
-}
-
-public interface IAuthenticationServiceForApim
-{
-    bool IsUserAuthenticated();
-    string UserName { get; }
-    string UserId { get; }
-    string UserEmail { get; }
-
 }

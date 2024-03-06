@@ -25,7 +25,7 @@ public class ProviderAuthorizationHandler(IOuterApiService outerApiService) : IA
         var values = authorizationContext.GetProviderPermissionValues();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        var hasPermission = await outerApiService.GetHasPermission(values.Ukprn, values.AccountLegalEntityId, operation.ToString());
+        var hasPermission = await outerApiService.HasPermission(values.Ukprn, values.AccountLegalEntityId, operation.ToString());
 
         if (!hasPermission)
         {

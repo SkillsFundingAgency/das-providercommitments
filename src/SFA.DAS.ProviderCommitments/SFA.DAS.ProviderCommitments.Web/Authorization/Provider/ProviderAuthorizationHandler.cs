@@ -1,4 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Interfaces;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderRelationships.Types.Models;
 
@@ -9,14 +10,14 @@ public interface IProviderAuthorizationHandler
     Task<bool> CanCreateCohort();
 }
 
-public class ProviderAuthorizationHandler(IAuthorizationContext authorizationContext, IOuterApiService outerApiService)
+public class ProviderAuthorizationHandler(IAuthorizationContext authorizationContext, ICachedOuterApiService cachedOuterApiService)
     : IProviderAuthorizationHandler
 {
-    public Task<bool> CanCreateCohort()
+    public async Task<bool> CanCreateCohort()
     {
         var values = GetProviderPermissionValues();
         
-        return outerApiService.GetHasPermission(values.Ukprn, values.AccountLegalEntityId, Operation.CreateCohort.ToString());
+        return await cachedOuterApiService.HasPermission(values.Ukprn, values.AccountLegalEntityId, Operation.CreateCohort.ToString());
     }
     
     private (long Ukprn, long AccountLegalEntityId) GetProviderPermissionValues()

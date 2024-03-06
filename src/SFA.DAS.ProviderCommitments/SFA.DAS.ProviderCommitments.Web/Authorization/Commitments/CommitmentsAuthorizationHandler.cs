@@ -1,39 +1,30 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 
-public class CommitmentsAuthorisationHandler : ICommitmentsAuthorisationHandler
+public class CommitmentsAuthorisationHandler(
+    IHttpContextAccessor httpContextAccessor,
+    IEncodingService encodingService,
+    ICachedOuterApiService cachedOuterApiService)
+    : ICommitmentsAuthorisationHandler
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IEncodingService _encodingService;
-    private readonly IOuterApiService _outerApiService;
-
-    public CommitmentsAuthorisationHandler(IHttpContextAccessor httpContextAccessor,
-        IEncodingService encodingService,
-        IOuterApiService outerApiService
-    )
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _encodingService = encodingService;
-        _outerApiService = outerApiService;
-    }
-
     public Task<bool> CanAccessCohort()
     {
         var permissionValues = GetPermissionValues();
 
-        return _outerApiService.CanAccessCohort(Party.Employer, permissionValues.PartyId, permissionValues.CohortId);
+        return cachedOuterApiService.CanAccessCohort(Party.Employer, permissionValues.PartyId, permissionValues.CohortId);
     }
     
     public Task<bool> CanAccessApprenticeship()
     {
         var permissionValues = GetPermissionValues();
         
-        return _outerApiService.CanAccessApprenticeship(Party.Employer, permissionValues.PartyId, permissionValues.ApprenticeshipId);
+        return cachedOuterApiService.CanAccessApprenticeship(Party.Employer, permissionValues.PartyId, permissionValues.ApprenticeshipId);
     }
 
     private (long CohortId, long ApprenticeshipId, long PartyId) GetPermissionValues()
@@ -72,7 +63,7 @@ public class CommitmentsAuthorisationHandler : ICommitmentsAuthorisationHandler
             return 0;
         }
 
-        if (!_encodingService.TryDecode(encodedValue, encodedType, out var id))
+        if (!encodingService.TryDecode(encodedValue, encodedType, out var id))
         {
             throw new UnauthorizedAccessException($"Failed to decode '{keyName}' value '{encodedValue}' using encoding type '{encodedType}'");
         }
@@ -84,15 +75,15 @@ public class CommitmentsAuthorisationHandler : ICommitmentsAuthorisationHandler
     {
         value = null;
 
-        if (_httpContextAccessor.HttpContext.GetRouteData().Values.TryGetValue(key, out var routeValue))
+        if (httpContextAccessor.HttpContext.GetRouteData().Values.TryGetValue(key, out var routeValue))
         {
             value = (string)routeValue;
         }
-        else if (_httpContextAccessor.HttpContext.Request.Query.TryGetValue(key, out var queryStringValue))
+        else if (httpContextAccessor.HttpContext.Request.Query.TryGetValue(key, out var queryStringValue))
         {
             value = queryStringValue;
         }
-        else if (_httpContextAccessor.HttpContext.Request.HasFormContentType && _httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
+        else if (httpContextAccessor.HttpContext.Request.HasFormContentType && httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
         {
             value = formValue;
         }
