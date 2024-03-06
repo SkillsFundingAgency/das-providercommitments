@@ -3,101 +3,159 @@ using System.Collections.Generic;
 using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Errors;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
-using SFA.DAS.Testing;
 using ProviderPermissionNotGranted = SFA.DAS.ProviderCommitments.Web.Authorization.Errors.ProviderPermissionNotGranted;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization.Services;
 
 [TestFixture]
 [Parallelizable]
-public class AuthorizationServiceTests : FluentTest<AuthorizationServiceTestsFixture>
+public class AuthorizationServiceTests
 {
+    private AuthorizationServiceTestsFixture _fixture;
+
+    [SetUp]
+    public void Setup() => _fixture = new AuthorizationServiceTestsFixture();
+
     [Test]
     public void Authorize_WhenOperationIsAuthorized_ThenShouldNotThrowException()
     {
-        Test(f => f.SetAuthorizedOptions(), f => f.Authorize(), f => { });
+        _fixture.SetAuthorizedOptions();
+        
+        var act = () => _fixture.Authorize();
+        
+        act.Should().NotThrow();
     }
 
     [Test]
     public void Authorize_WhenOperationIsUnauthorized_ThenShouldThrowException()
     {
-        TestException(f => f.SetUnauthorizedOptions(), f => f.Authorize(), (f, r) => r.Should().Throw<UnauthorizedAccessException>());
+        _fixture.SetUnauthorizedOptions();
+        
+        var act = () => _fixture.Authorize();
+        
+        act.Should().Throw<UnauthorizedAccessException>();
     }
 
     [Test]
-    public Task AuthorizeAsync_WhenOperationIsAuthorized_ThenShouldNotThrowException()
+    public void AuthorizeAsync_WhenOperationIsAuthorized_ThenShouldNotThrowException()
     {
-        return TestAsync(f => f.SetAuthorizedOptions(), f => f.AuthorizeAsync(), f => { });
+        _fixture.SetAuthorizedOptions();
+        
+        var act = async () => await _fixture.AuthorizeAsync();
+        
+        act.Should().NotThrowAsync();
     }
 
     [Test]
-    public Task AuthorizeAsync_WhenOperationIsUnauthorized_ThenShouldThrowException()
+    public void AuthorizeAsync_WhenOperationIsUnauthorized_ThenShouldThrowException()
     {
-        return TestExceptionAsync(f => f.SetUnauthorizedOptions(), f => f.AuthorizeAsync(), (f, r) => r.Should().ThrowAsync<UnauthorizedAccessException>());
+        _fixture.SetUnauthorizedOptions();
+        
+        var act = async () => await _fixture.AuthorizeAsync();
+        
+        act.Should().ThrowAsync<UnauthorizedAccessException>();
     }
 
     [Test]
-    public Task IsAuthorizedAsync_WhenOperationIsAuthorized_ThenShouldReturnTrue()
+    public async Task IsAuthorizedAsync_WhenOperationIsAuthorized_ThenShouldReturnTrue()
     {
-        return TestAsync(f => f.SetAuthorizedOptions(), f => f.IsAuthorizedAsync(), (f, r) => r.Should().BeTrue());
+        _fixture.SetAuthorizedOptions();
+        
+        var result = await _fixture.IsAuthorizedAsync();
+        
+        result.Should().BeTrue();
     }
 
     [Test]
-    public Task IsAuthorizedAsync_WhenOperationIsUnauthorized_ThenShouldReturnTrue()
+    public async Task IsAuthorizedAsync_WhenOperationIsUnauthorized_ThenShouldReturnTrue()
     {
-        return TestAsync(f => f.SetUnauthorizedOptions(), f => f.IsAuthorizedAsync(), (f, r) => r.Should().BeFalse());
+        _fixture.SetUnauthorizedOptions();
+        
+        var result = await _fixture.IsAuthorizedAsync();
+        
+        result.Should().BeFalse();
     }
 
     [Test]
     public void IsAuthorized_WhenOperationIsAuthorized_ThenShouldReturnTrue()
     {
-        Test(f => f.SetAuthorizedOptions(), f => f.IsAuthorized(), (f, r) => r.Should().BeTrue());
+        _fixture.SetAuthorizedOptions();
+        
+        var result = _fixture.IsAuthorized();
+        
+        result.Should().BeTrue();
     }
 
     [Test]
     public void IsAuthorized_WhenOperationIsUnauthorized_ThenShouldReturnTrue()
     {
-        Test(f => f.SetUnauthorizedOptions(), f => f.IsAuthorized(), (f, r) => r.Should().BeFalse());
+        _fixture.SetUnauthorizedOptions();
+        
+        var result = _fixture.IsAuthorized();
+        
+        result.Should().BeFalse();
     }
 
     [Test]
-    public Task GetAuthorizationResultAsync_WhenOperationIsAuthorized_ThenShouldReturnValidAuthorizationResult()
+    public async Task GetAuthorizationResultAsync_WhenOperationIsAuthorized_ThenShouldReturnValidAuthorizationResult()
     {
-        return TestAsync(f => f.SetAuthorizedOptions(), f => f.GetAuthorizationResultAsync(), (f, r) => r.Should().NotBeNull().And.Match<AuthorizationResult>(r2 => r2.IsAuthorized));
+        _fixture.SetAuthorizedOptions();
+        
+        var result = await _fixture.GetAuthorizationResultAsync();
+        
+        result.Should()
+            .NotBeNull()
+            .And
+            .Match<AuthorizationResult>(r2 => r2.IsAuthorized);
     }
 
     [Test]
-    public Task GetAuthorizationResultAsync_WhenOperationIsUnrecognized_ThenShouldThrowException()
+    public void GetAuthorizationResultAsync_WhenOperationIsUnrecognized_ThenShouldThrowException()
     {
-        return TestExceptionAsync(f => f.SetUnrecognizedOptions(), f => f.GetAuthorizationResultAsync(), (f, r) => r.Should().ThrowAsync<ArgumentException>());
+        _fixture.SetUnrecognizedOptions();
+        
+        var action = async () => await _fixture.GetAuthorizationResultAsync();
+        
+        action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Test]
     public void GetAuthorizationResult_WhenOperationIsAuthorized_ThenShouldReturnValidAuthorizationResult()
     {
-        Test(f => f.SetAuthorizedOptions(), f => f.GetAuthorizationResult(), (f, r) => r.Should().NotBeNull().And.Match<AuthorizationResult>(r2 => r2.IsAuthorized));
+        _fixture.SetAuthorizedOptions();
+
+        var result = _fixture.GetAuthorizationResult();
+
+        result.Should()
+            .NotBeNull()
+            .And
+            .Match<AuthorizationResult>(r2 => r2.IsAuthorized);
     }
 
     [Test]
     public void GetAuthorizationResult_WhenOperationIsUnauthorized_ThenShouldReturnInvalidAuthorizationResult()
     {
-        Test(f => f.SetUnauthorizedOptions(), f => f.GetAuthorizationResult(), (f, r) =>
-        {
-            r.Should().NotBeNull();
-            r.IsAuthorized.Should().BeFalse();
-            r.Errors.Should().HaveCount(1).And.Contain(f.ProviderPermissionNotGranted);
-        });
+        _fixture.SetUnauthorizedOptions();
+
+        var result = _fixture.GetAuthorizationResult();
+
+        result.Should().NotBeNull();
+        result.IsAuthorized.Should().BeFalse();
+        result.Errors.Should().HaveCount(1).And.Contain(_fixture.ProviderPermissionNotGranted);
     }
 
     [Test]
     public void GetAuthorizationResult_WhenOperationIsUnrecognized_ThenShouldThrowException()
     {
-        TestException(f => f.SetUnrecognizedOptions(), f => f.GetAuthorizationResult(), (f, r) => r.Should().Throw<ArgumentException>());
+        _fixture.SetUnrecognizedOptions();
+
+        var result = () => _fixture.GetAuthorizationResult();
+
+        result.Should().Throw<ArgumentException>();
     }
 }
 
