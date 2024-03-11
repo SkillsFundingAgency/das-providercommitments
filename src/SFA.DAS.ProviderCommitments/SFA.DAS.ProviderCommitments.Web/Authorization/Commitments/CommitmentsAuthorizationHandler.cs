@@ -17,33 +17,38 @@ public class CommitmentsAuthorisationHandler(
     {
         var permissionValues = GetPermissionValues();
 
-        return cachedOuterApiService.CanAccessCohort(Party.Employer, permissionValues.PartyId, permissionValues.CohortId);
+        return cachedOuterApiService.CanAccessCohort(Party.Provider, permissionValues.PartyId, permissionValues.CohortId);
     }
-    
+
     public Task<bool> CanAccessApprenticeship()
     {
         var permissionValues = GetPermissionValues();
-        
-        return cachedOuterApiService.CanAccessApprenticeship(Party.Employer, permissionValues.PartyId, permissionValues.ApprenticeshipId);
+
+        return cachedOuterApiService.CanAccessApprenticeship(Party.Provider, permissionValues.PartyId, permissionValues.ApprenticeshipId);
     }
 
     private (long CohortId, long ApprenticeshipId, long PartyId) GetPermissionValues()
     {
         var cohortId = GetCohortId();
         var apprenticeshipId = GetApprenticeshipId();
-        var accountId = GetAccountId();
+        TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var providerIdString);
 
-        if (cohortId == 0 && apprenticeshipId == 0 && accountId == 0)
+        if (!int.TryParse(providerIdString, out var providerId))
+        {
+            providerId = 0;
+        }
+
+        if (cohortId == 0 && apprenticeshipId == 0 && providerId == 0)
         {
             throw new KeyNotFoundException("At least one key of 'AccountId', 'CohortId' or 'ApprenticeshipId' should be present in the authorization context");
         }
 
-        return (cohortId, apprenticeshipId, accountId);
+        return (cohortId, apprenticeshipId, providerId);
     }
 
     private long GetAccountId()
     {
-        return GetAndDecodeValueIfExists(RouteValueKeys.AccountHashedId, EncodingType.AccountId);
+        return GetAndDecodeValueIfExists(RouteValueKeys.ProviderId, EncodingType.AccountId);
     }
 
     private long GetApprenticeshipId()
