@@ -31,24 +31,29 @@ public class CommitmentsAuthorisationHandler(
     {
         var cohortId = GetCohortId();
         var apprenticeshipId = GetApprenticeshipId();
-        TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var providerIdString);
-
-        if (!int.TryParse(providerIdString, out var providerId))
-        {
-            providerId = 0;
-        }
-
+        var providerId = GetProviderId();
+        
         if (cohortId == 0 && apprenticeshipId == 0 && providerId == 0)
         {
-            throw new KeyNotFoundException("At least one key of 'AccountId', 'CohortId' or 'ApprenticeshipId' should be present in the authorization context");
+            throw new KeyNotFoundException("At least one key of 'ProviderId', 'CohortId' or 'ApprenticeshipId' should be present in the authorization context");
         }
 
         return (cohortId, apprenticeshipId, providerId);
     }
 
-    private long GetAccountId()
+    private long GetProviderId()
     {
-        return GetAndDecodeValueIfExists(RouteValueKeys.ProviderId, EncodingType.AccountId);
+        if (!TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
+        {
+            return 0;
+        }
+
+        if (!int.TryParse(value, out var providerId))
+        {
+            providerId = 0;
+        }
+
+        return providerId;
     }
 
     private long GetApprenticeshipId()
