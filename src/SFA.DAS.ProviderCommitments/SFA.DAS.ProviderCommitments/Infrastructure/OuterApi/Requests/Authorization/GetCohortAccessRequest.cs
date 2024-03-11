@@ -5,7 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authoriza
 
 public record GetCohortAccessRequest(Party Party, long PartyId, long CohortId): IGetApiRequest
 {
-    public string GetUrl => "authorization/access-cohort";
+    public string GetUrl => "authorization/CanAccessCohort";
 }
 
 public record GetCohortAccessResponse

@@ -5,7 +5,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authoriza
 
 public record GetApprenticeshipAccessRequest(Party Party, long PartyId, long ApprenticeshipId) : IGetApiRequest
 {
-    public string GetUrl => "api/authorization/access-apprenticeship";
+    public string GetUrl => "authorization/CanAccessApprenticeship";
 }
 
 public record GetApprenticeshipAccessResponse
