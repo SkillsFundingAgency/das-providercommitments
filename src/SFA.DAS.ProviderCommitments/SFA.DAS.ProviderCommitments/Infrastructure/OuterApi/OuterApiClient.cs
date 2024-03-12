@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Types.Http;
 using SFA.DAS.ProviderCommitments.Configuration;
@@ -12,25 +13,32 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 {
     public class OuterApiClient : IOuterApiClient
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly HttpClient _httpClient;
         private readonly ApprovalsOuterApiConfiguration _config;
         private readonly ILogger<OuterApiClient> _logger;
         private const string SubscriptionKeyRequestHeaderKey = "Ocp-Apim-Subscription-Key";
         private const string VersionRequestHeaderKey = "X-Version";
 
-        public OuterApiClient(IHttpClientFactory httpClientFactory, ApprovalsOuterApiConfiguration config, ILogger<OuterApiClient> logger)
+        public OuterApiClient(
+            IHttpClientFactory httpClientFactory, 
+            ApprovalsOuterApiConfiguration config, 
+            ILogger<OuterApiClient> logger, 
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClientFactory.CreateClient();
             _config = config;
             _httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            AddHeaders();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            AddHeaders(requestMessage);
 
-            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (response.StatusCode.Equals(HttpStatusCode.NotFound))
             {
@@ -47,8 +55,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
             return default;
         }
 
-        private void AddHeaders()
+        private void AddHeaders(HttpRequestMessage httpRequestMessage)
         {
+            if (_httpContextAccessor.HttpContext.TryGetBearerToken(out var bearerToken))
+            {
+                httpRequestMessage.Headers.Add("Authorization", $"Bearer {bearerToken}");
+            }
+
             //The http handler life time is set to 5 minutes
             //hence once the headers are added they don't need added again
             if (_httpClient.DefaultRequestHeaders.Contains(SubscriptionKeyRequestHeaderKey)) return;
@@ -69,12 +82,13 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi
 
         private async Task<TResponse> PutOrPost<TResponse>(object data, HttpMethod method, string url)
         {
-            AddHeaders();
+            var requestMessage = new HttpRequestMessage(method, url);
+            AddHeaders(requestMessage);
+
             var stringContent = data != null
                 ? new StringContent(JsonConvert.SerializeObject(data), System.Text.Encoding.UTF8, "application/json")
                 : null;
 
-            var requestMessage = new HttpRequestMessage(method, url);
             requestMessage.Content = stringContent;
 
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
