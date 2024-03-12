@@ -6,6 +6,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
     public class ApprenticesFilterModel
     {
+        public long ProviderId { get; set; }
         public int PageNumber { get; set; } = 1;
         public string SearchTerm { get; set; }
         public string SelectedEmployer { get; set; }
@@ -120,7 +121,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
         private Dictionary<string, string> BuildRouteData()
         {
-            var routeData = new Dictionary<string, string>();
+            var routeData = new Dictionary<string, string> { { nameof(ProviderId), ProviderId.ToString() } };
 
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
