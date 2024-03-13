@@ -24,23 +24,39 @@
             @if (!Model.IsValidCourseCode)
             {
                 <div class="govuk-inset-text">
-                    You need to either add this training course to your <a href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")" class="govuk-link">'standards and training venues'</a> or reject the changes as you are not able to offer this training.
+                    You need to either add this training course to your <a
+                        href="@LinkGenerator.CourseManagementLink($"{Model.ProviderId}/review-your-details")"
+                        class="govuk-link">'standards and training venues'</a> or reject the changes as you are not able to
+                    offer this training.
                 </div>
             }
 
-            <partial name="ApprenticeshipUpdatesPartials/_ViewOriginalApprenticeshipForApprenticeshipUpdates" for="OriginalApprenticeship" />
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode,  "govuk-form-group--error")">
+            <partial name="ApprenticeshipUpdatesPartials/_ViewOriginalApprenticeshipForApprenticeshipUpdates"
+                for="OriginalApprenticeship" />
+            <div
+                class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode,  "govuk-form-group--error")">
                 <p>@Model.EmployerName have suggested these changes:</p>
 
-                @Html.ValidationMessageFor(m => m.IsValidCourseCode, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.IsValidCourseCode) })
-                @Html.ValidationMessageFor(m => m.ApproveAddStandardToTraining, " ", new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveAddStandardToTraining) })
+                @Html.ValidationMessageFor(m => m.IsValidCourseCode, null, new
+                    {
+                        @class = "govuk-error-message",
+                        id =
+                         "error-message-" + Html.IdFor(m => m.IsValidCourseCode)
+                    })
+                @Html.ValidationMessageFor(m => m.ApproveAddStandardToTraining, " ", new
+                    {
+                        @class =
+                         "govuk-error-message",
+                        id = "error-message-" + Html.IdFor(m => m.ApproveAddStandardToTraining)
+                    })
 
                 <partial name="ApprenticeshipUpdatesPartials/_ViewApprenticeshipUpdates" />
             </div>
 
             @if (!Model.IsValidCourseCode)
             {
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode, "govuk-form-group--error")">
+                <div
+                    class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.IsValidCourseCode, "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
@@ -49,13 +65,15 @@
                         </legend>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ApproveAddStandardToTraining" name="ApproveAddStandardToTraining" type="radio" value="true">
+                                <input class="govuk-radios__input" id="ApproveAddStandardToTraining"
+                                    name="ApproveAddStandardToTraining" type="radio" value="true">
                                 <label class="govuk-label govuk-radios__label" for="ApproveAddStandardToTraining">
                                     Add this standard to your standard training venues
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ApproveAddStandardToTraining-no" name="ApproveAddStandardToTraining" type="radio" value="false">
+                                <input class="govuk-radios__input" id="ApproveAddStandardToTraining-no"
+                                    name="ApproveAddStandardToTraining" type="radio" value="false">
                                 <label class="govuk-label govuk-radios__label" for="ApproveAddStandardToTraining-no">
                                     Reject these changes
                                 </label>
@@ -66,7 +84,8 @@
             }
             else
             {
-                <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
+                <div
+                    class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.ApproveChanges,  "govuk-form-group--error")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
@@ -74,16 +93,23 @@
                             </h2>
                         </legend>
                         <div class="govuk-radios">
-                            @Html.ValidationMessageFor(m => m.ApproveChanges, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.ApproveChanges) })
+                            @Html.ValidationMessageFor(m => m.ApproveChanges, null, new
+                                {
+                                    @class = "govuk-error-message",
+                                    id
+                                     = "error-message-" + Html.IdFor(m => m.ApproveChanges)
+                                })
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ApproveChanges" name="ApproveChanges" type="radio" value="true">
-                                <label class="govuk-label govuk-radios__label" for="AcceptChanges">
+                                <input class="govuk-radios__input" id="ApproveChanges" name="ApproveChanges" type="radio"
+                                    value="true">
+                                <label class="govuk-label govuk-radios__label" for="ApproveChanges">
                                     Yes, approve these changes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ApproveChanges-no" name="ApproveChanges" type="radio" value="false">
-                                <label class="govuk-label govuk-radios__label" for="AcceptChanges-no">
+                                <input class="govuk-radios__input" id="ApproveChanges-no" name="ApproveChanges" type="radio"
+                                    value="false">
+                                <label class="govuk-label govuk-radios__label" for="ApproveChanges-no">
                                     No, reject these changes
                                 </label>
                             </div>
@@ -96,12 +122,16 @@
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                     Continue
                 </button>
-                <a class="govuk-link govuk-link--no-visited-state" href="@Url.Action("Details", new DetailsRequest{ ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })" id="cancel-button">Cancel and return</a>
+                <a class="govuk-link govuk-link--no-visited-state"
+                    href="@Url.Action("Details", new DetailsRequest{ ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })"
+                    id="cancel-button">Cancel and return</a>
             </div>
         </form>
     </div>
 </div>
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })">Back to the apprentice details</a>
+    <a id="back-link" class="govuk-back-link"
+        href="@Url.Action("Details", new { ProviderId = Model.ProviderId, ApprenticeshipHashedId = Model.ApprenticeshipHashedId })">Back
+        to the apprentice details</a>
 }

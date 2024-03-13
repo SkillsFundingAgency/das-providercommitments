@@ -157,6 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 viewModel.Apprenticeships.Should().AllBeEquivalentTo(expectedViewModel);
                 Assert.That(viewModel, Is.Not.Null);
                 Assert.That(viewModel.ProviderId, Is.EqualTo(request.ProviderId));
+                Assert.That(viewModel.FilterModel.ProviderId, Is.EqualTo(request.ProviderId));
                 Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeshipsFound, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeshipsFound));
                 Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeshipsWithAlertsFound, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeshipsWithAlertsFound));
                 Assert.That(viewModel.FilterModel.TotalNumberOfApprenticeships, Is.EqualTo(apprenticeshipsResponse.TotalApprenticeships));

@@ -12,6 +12,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
         {
             filterModel.RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
             {
+                {nameof(filterModel.ProviderId), filterModel.ProviderId.ToString() },
                 {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
                 {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
                 {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
