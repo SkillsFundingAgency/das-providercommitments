@@ -17,17 +17,22 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEncodingService _encodingService;
     private readonly IAuthenticationService _authenticationService;
+    private readonly ILogger<AuthorizationContextProvider> _logger;
 
-    public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService)
+    public AuthorizationContextProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService, IAuthenticationService authenticationService, ILogger<AuthorizationContextProvider> logger)
     {
         _httpContextAccessor = httpContextAccessor;
         _encodingService = encodingService;
         _authenticationService = authenticationService;
+        _logger = logger;
     }
 
     public IAuthorizationContext GetAuthorizationContext()
     {
+        _logger.LogWarning("AuthorizationContextProvider executing GetAuthorizationContext().");
+        
         var authorizationContext = new AuthorizationContext();
+        
         var accountLegalEntityId = GetAccountLegalEntityId();
         var cohortId = GetCohortId();
         var draftApprenticeshipId = GetDraftApprenticeshipId();
@@ -35,6 +40,9 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
         var services = GetServices();
         var ukprn = GetUkrpn();
         var userEmail = GetUserEmail();
+        
+        _logger.LogWarning("AuthorizationContextProvider. accountLegalEntityId: {accountLegalEntityId}, cohortId: {cohortId}. draftApprenticeshipId: {draftApprenticeshipId}, apprenticeshipId: {apprenticeshipId}, services: {services}, ukprn: {ukprn}, userEmail: {userEmail}",
+            accountLegalEntityId, cohortId, draftApprenticeshipId, apprenticeshipId, services, ukprn, userEmail);
             
         if (cohortId != null)
         {
@@ -51,6 +59,7 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
             authorizationContext.Set(AuthorizationContextKeys.ApprenticeshipId, apprenticeshipId);
             if (ukprn != null)
             {
+                _logger.LogWarning("AuthorizationContextProvider executing authorizationContext.AddApprenticeshipPermissionValues().");
                 authorizationContext.AddApprenticeshipPermissionValues(apprenticeshipId.Value, Party.Provider, ukprn.Value);
             }
         }
@@ -62,16 +71,19 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
 
         if (ukprn != null && userEmail != null)
         {
+            _logger.LogWarning("AuthorizationContextProvider executing authorizationContext.AddProviderFeatureValues().");
             authorizationContext.AddProviderFeatureValues(ukprn.Value, userEmail);
         }
             
         if (accountLegalEntityId != null && ukprn != null)
         {
+            _logger.LogWarning("AuthorizationContextProvider executing authorizationContext.AddProviderPermissionValues().");
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId.Value, ukprn.Value);
         }
             
         if (cohortId != null && ukprn != null)
         {
+            _logger.LogWarning("AuthorizationContextProvider executing authorizationContext.AddCommitmentPermissionValues().");
             authorizationContext.AddCommitmentPermissionValues(cohortId.Value, Party.Provider, ukprn.Value);
         }
 
