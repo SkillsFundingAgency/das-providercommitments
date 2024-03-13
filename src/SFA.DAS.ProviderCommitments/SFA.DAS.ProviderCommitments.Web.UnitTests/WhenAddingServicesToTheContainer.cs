@@ -60,7 +60,6 @@ public class WhenAddingServicesToTheContainer
 
     [TestCase(typeof(IRequestHandler<DeleteCachedFileCommand>))]
     [TestCase(typeof(IRequestHandler<CreateCohortRequest, CreateCohortResponse>))]
-    //[TestCase(typeof(IRequestHandler<FileUploadValidateDataRequest>))]
     [TestCase(typeof(IRequestHandler<GetTrainingCoursesQueryRequest, GetTrainingCoursesQueryResponse>))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Mediator_Handlers(Type toResolve)
     {
@@ -79,11 +78,11 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
     
-    //[TestCase(typeof(IAuthorizationContext))]
+    [TestCase(typeof(IAuthorizationContext))]
     [TestCase(typeof(IAuthorizationContextProvider))]
     [TestCase(typeof(ICommitmentsAuthorisationHandler))]
-    //[TestCase(typeof(IProviderAuthorizationHandler))]
-    //[TestCase(typeof(IPolicyAuthorizationWrapper))]
+    [TestCase(typeof(IProviderAuthorizationHandler))]
+    [TestCase(typeof(IPolicyAuthorizationWrapper))]
     [TestCase(typeof(ITrainingProviderAuthorizationHandler))]
     [TestCase(typeof(IDefaultAuthorizationHandler))]
     [TestCase(typeof(IAuthorizationContextProvider))]

@@ -295,7 +295,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
             _encodingService = new Mock<IEncodingService>();
             _authenticationService = new Mock<IAuthenticationService>();
             _authorizationContextProvider = new AuthorizationContextProvider(httpContextAccessor.Object,
-                _encodingService.Object, _authenticationService.Object, Mock.Of<ILogger<AuthorizationContextProvider>>());
+                _encodingService.Object, _authenticationService.Object);
 
             _routingFeature.Setup(f => f.RouteData).Returns(_routeData);
 

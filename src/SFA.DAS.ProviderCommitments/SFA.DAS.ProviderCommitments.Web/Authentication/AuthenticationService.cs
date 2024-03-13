@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
 
         public bool IsUserAuthenticated()
         {
-            return _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+            return _httpContextAccessor.HttpContext?.User.Identity.IsAuthenticated ?? false;
         }
 
         public bool TryGetUserClaimValue(string key, out string value)

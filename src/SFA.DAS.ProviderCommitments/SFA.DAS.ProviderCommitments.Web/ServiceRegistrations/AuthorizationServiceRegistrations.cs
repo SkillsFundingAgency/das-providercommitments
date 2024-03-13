@@ -22,7 +22,7 @@ public enum ResultsCacheType
 
 public static class AuthorizationPolicy
 {
-    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services, IHostEnvironment environment)
+    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
     {
         AddAuthorizationPolicies(services);
 
@@ -52,7 +52,7 @@ public static class AuthorizationPolicy
         services.AddScoped(serviceProvider =>
         {
             var provider = serviceProvider.GetService<IAuthorizationContextProvider>();
-            return provider.GetAuthorizationContext(environment.IsDevelopment());
+            return provider.GetAuthorizationContext();
         });
 
         // services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
