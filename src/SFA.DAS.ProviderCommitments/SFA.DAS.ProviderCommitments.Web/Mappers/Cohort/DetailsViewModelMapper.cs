@@ -58,7 +58,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
             _logger.LogWarning("{TypeName} - DetailsRequest: {Request}.", nameof(DetailsViewModelMapper), JsonSerializer.Serialize(source));
 
-            var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, source.CohortId));
+            var cohortId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
+            var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, cohortId));
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
             await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
