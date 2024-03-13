@@ -62,7 +62,7 @@ public class Startup
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 
         services
-            .AddAuthorizationService()
+            .AddAuthorizationServices()
             .AddDataProtection(_configuration, _environment)
             .AddUrlHelper()
             .AddHealthChecks();

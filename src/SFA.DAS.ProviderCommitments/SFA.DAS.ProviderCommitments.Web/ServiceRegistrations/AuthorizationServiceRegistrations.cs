@@ -22,7 +22,7 @@ public enum ResultsCacheType
 
 public static class AuthorizationPolicy
 {
-    public static IServiceCollection AddAuthorizationService(this IServiceCollection services)
+    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
     {
         AddAuthorizationPolicies(services);
 
@@ -44,13 +44,18 @@ public static class AuthorizationPolicy
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
 
-        services.AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()));
+        //   services.AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()));
+        services.AddScoped<IAuthorizationContextProvider, AuthorizationContextProvider>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>();
         services.AddScoped<DefaultAuthorizationContextProvider>();
-        services.AddScoped(p => p.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
+        services.AddScoped(serviceProvider =>
+        {
+            var provider = serviceProvider.GetService<IAuthorizationContextProvider>();
+            return provider.GetAuthorizationContext();
+        });
 
-        services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
+        // services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
 
         return services;
     }

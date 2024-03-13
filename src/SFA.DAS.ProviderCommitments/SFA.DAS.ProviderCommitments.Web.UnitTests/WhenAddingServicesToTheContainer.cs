@@ -116,7 +116,7 @@ public class WhenAddingServicesToTheContainer
         services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
-        services.AddAuthorizationService();
+        services.AddAuthorizationServices();
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
         services.AddCommitmentPermissionsAuthorization(useLocalRegistry:true);
