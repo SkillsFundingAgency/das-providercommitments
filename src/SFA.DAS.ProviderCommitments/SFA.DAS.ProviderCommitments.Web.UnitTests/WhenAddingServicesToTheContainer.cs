@@ -84,7 +84,6 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IProviderAuthorizationHandler))]
     [TestCase(typeof(IPolicyAuthorizationWrapper))]
     [TestCase(typeof(ITrainingProviderAuthorizationHandler))]
-    [TestCase(typeof(IDefaultAuthorizationHandler))]
     [TestCase(typeof(IAuthorizationContextProvider))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Authorization_Services(Type toResolve)
     {

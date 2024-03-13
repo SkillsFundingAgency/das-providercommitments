@@ -47,8 +47,6 @@ public static class AuthorizationPolicy
 
         services.AddScoped<IAuthorizationContextProvider>(serviceProvider => new AuthorizationContextCache(serviceProvider.GetService<AuthorizationContextProvider>()));
         services.AddScoped<IAuthorizationService, AuthorizationService>();
-        services.AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>();
-        services.AddScoped<DefaultAuthorizationContextProvider>();
         services.AddScoped(serviceProvider => serviceProvider.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
 
         return services;
