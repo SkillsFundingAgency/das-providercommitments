@@ -22,7 +22,7 @@ public enum ResultsCacheType
 
 public static class AuthorizationPolicy
 {
-    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
+    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services, IHostEnvironment environment)
     {
         AddAuthorizationPolicies(services);
 
@@ -39,20 +39,20 @@ public static class AuthorizationPolicy
         services.AddTransient<IAuthorizationHandler, CreateCohortAuthorizationHandler>();
 
         services.AddTransient<IAuthorizationContext, AuthorizationContext>();
+        services.AddScoped<AuthorizationContextProvider>();
         services.AddSingleton<IAuthorizationContextProvider, AuthorizationContextProvider>();
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
 
-        //   services.AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<DefaultAuthorizationContextProvider>()));
-        services.AddScoped<IAuthorizationContextProvider, AuthorizationContextProvider>();
+        services.AddScoped<IAuthorizationContextProvider>(p => new AuthorizationContextCache(p.GetService<AuthorizationContextProvider>()));
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IDefaultAuthorizationHandler, DefaultAuthorizationHandler>();
         services.AddScoped<DefaultAuthorizationContextProvider>();
         services.AddScoped(serviceProvider =>
         {
             var provider = serviceProvider.GetService<IAuthorizationContextProvider>();
-            return provider.GetAuthorizationContext();
+            return provider.GetAuthorizationContext(environment.IsDevelopment());
         });
 
         // services.Decorate<IAuthorizationService, AuthorizationServiceWithDefaultHandler>();
