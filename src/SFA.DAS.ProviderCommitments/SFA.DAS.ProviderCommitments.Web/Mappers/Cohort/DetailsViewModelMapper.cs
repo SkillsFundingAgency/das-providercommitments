@@ -35,11 +35,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private readonly IPasAccountApiClient _pasAccountsApiClient;
         private readonly ITempDataStorageService _storageService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly ILogger<DetailsViewModelMapper> _logger;
 
         public DetailsViewModelMapper(ICommitmentsApiClient commitmentsApiClient, IEncodingService encodingService,
             IPasAccountApiClient pasAccountApiClient, IOuterApiClient outerApiClient, ITempDataStorageService storageService,
-            IAuthorizationService authorizationService, ILogger<DetailsViewModelMapper> logger)
+            IAuthorizationService authorizationService)
         {
             _commitmentsApiClient = commitmentsApiClient;
             _encodingService = encodingService;
@@ -47,7 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _outerApiClient = outerApiClient;
             _storageService = storageService;
             _authorizationService = authorizationService;
-            _logger = logger;
         }
 
         public async Task<DetailsViewModel> Map(DetailsRequest source)
@@ -55,8 +53,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             //clear leftover tempdata from add/edit
             //this solution should NOT use tempdata in this way
             _storageService.RemoveFromCache<EditDraftApprenticeshipViewModel>();
-
-            _logger.LogWarning("{TypeName} - DetailsRequest: {Request}.", nameof(DetailsViewModelMapper), JsonSerializer.Serialize(source));
 
             var cohortId = _encodingService.Decode(source.CohortReference, EncodingType.CohortReference);
             var cohortDetailsTask = _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(source.ProviderId, cohortId));

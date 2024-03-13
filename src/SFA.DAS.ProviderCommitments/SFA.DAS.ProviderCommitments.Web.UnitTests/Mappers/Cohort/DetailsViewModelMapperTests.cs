@@ -940,8 +940,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             _encodingService = new Mock<IEncodingService>();
             SetEncodingOfApprenticeIds();
 
-
-            _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object, _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(), providerFeatureToggle.Object, Mock.Of<ILogger<DetailsViewModelMapper>>());
+            _mapper = new DetailsViewModelMapper(CommitmentsApiClient.Object, _encodingService.Object, _pasAccountApiClient.Object, outerApiClient.Object, Mock.Of<ITempDataStorageService>(), providerFeatureToggle.Object);
             Source = _autoFixture.Create<DetailsRequest>();
         }
 
