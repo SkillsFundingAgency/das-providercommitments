@@ -30,6 +30,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        
         services.AddSingleton(_configuration);
         services.AddLogging(builder =>
         {

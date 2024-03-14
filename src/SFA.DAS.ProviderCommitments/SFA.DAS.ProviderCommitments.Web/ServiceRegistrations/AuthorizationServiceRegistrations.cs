@@ -26,11 +26,9 @@ public static class AuthorizationPolicy
     {
         AddAuthorizationPolicies(services);
 
-        services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
-
-        services.AddSingleton<ICommitmentsAuthorisationHandler, CommitmentsAuthorisationHandler>();
-        services.AddTransient<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
-        services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
+        services.AddScoped<ICommitmentsAuthorisationHandler, CommitmentsAuthorisationHandler>();
+        services.AddScoped<IProviderAuthorizationHandler, ProviderAuthorizationHandler>();
+        services.AddScoped<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
 
         services.AddTransient<IAuthorizationHandler, ProviderHandler>();
         services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
