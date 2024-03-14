@@ -38,9 +38,8 @@ public static class AuthorizationPolicy
         services.AddTransient<IAuthorizationHandler, AccessCohortAuthorizationHandler>();
         services.AddTransient<IAuthorizationHandler, CreateCohortAuthorizationHandler>();
 
-        services.AddTransient<IAuthorizationContext, AuthorizationContext>();
+        services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<AuthorizationContextProvider>();
-        services.AddSingleton<IAuthorizationContextProvider, AuthorizationContextProvider>();
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
