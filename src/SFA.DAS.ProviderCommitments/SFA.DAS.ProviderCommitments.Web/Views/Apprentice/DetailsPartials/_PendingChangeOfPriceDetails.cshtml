@@ -1,0 +1,78 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Enums
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@*
+    Pending Price Change Details for both Employer and Provider Initiated changes
+    Depending on initiator there will be differences in the layout displayed
+*@
+
+<div class="govuk-inset-text das-inset-text--highlight" id="PendingPriceChangeDetails">
+    <div class="govuk-grid-row govuk-!-margin-bottom-2">
+        
+            @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+            {
+                case ChangeInitiatedBy.Provider:
+                    <div class="govuk-grid-column-two-thirds">
+                        <h2 class="govuk-heading-m">Price changes you've requested</h2>
+                    </div>
+                    break;
+                case ChangeInitiatedBy.Employer:
+                    <div style="padding: 0 10px;">
+                        <h2 class="govuk-heading-m">Price change requested </h2>
+                        <strong class="govuk-tag govuk-tag" style=" padding:10px; width:180px;  margin-top:-50px; float:right; ">Change requested</strong>
+                    </div>
+                    break;
+            }
+
+    </div>
+
+    <table class="govuk-table">
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header"></th>
+                <th class="govuk-table__header">Current</th>
+                <th class="govuk-table__header">Requested</th>
+            </tr>
+            <tr class="govuk-table__row" id="pendingPriceChangeTrainingPriceRow">
+                <th scope="row" class="govuk-table__header">Training price</th>
+                <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
+                <td class="govuk-table__cell">
+                    @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
+                </td>
+            </tr>
+            <tr class="govuk-table__row" id="pendingPriceChangeEPAPriceRow">
+                <th scope="row" class="govuk-table__header">End-point assessment price</th>
+                <td class="govuk-table__cell">
+                    @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
+                </td>
+                <td class="govuk-table__cell">
+                    @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
+                </td>
+            </tr>
+            <tr class="govuk-table__row" id="pendingPriceChangeTotalPriceRow">
+                <th scope="row" class="govuk-table__header">Total price</th>
+                <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
+                <td class="govuk-table__cell">@Model.PendingPriceChange.Cost.ToGdsCostFormat()</td>
+            </tr>
+        </tbody>
+    </table>
+    @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+    {
+        case ChangeInitiatedBy.Provider:
+            <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
+               asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">
+                View price changes you've requested
+            </a>
+            break;
+        case ChangeInitiatedBy.Employer:
+            <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
+               asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">
+                Review price change request
+            </a>
+            break;
+    }
+
+</div>
+<br />
+
+<br />
