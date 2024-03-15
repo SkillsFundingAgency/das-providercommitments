@@ -135,7 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Cost = priceChangeDetails.Cost,
                 EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
                 TrainingPrice = priceChangeDetails.TrainingPrice,
-                ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(priceChangeDetails.Initiator)
+                PriceChangeInitiator = Enum.Parse<PriceChangeInitiator>(priceChangeDetails.Initiator)
             };
         }
 

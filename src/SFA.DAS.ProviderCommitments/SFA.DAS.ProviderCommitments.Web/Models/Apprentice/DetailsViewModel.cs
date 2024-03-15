@@ -118,6 +118,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public decimal Cost { get; set; }
         public decimal? TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
-        public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
+        public PriceChangeInitiator PriceChangeInitiator { get; set; }
     }
 }

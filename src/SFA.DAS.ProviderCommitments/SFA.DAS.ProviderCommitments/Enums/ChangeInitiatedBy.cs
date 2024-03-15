@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ProviderCommitments.Enums;
 
-public enum ChangeInitiatedBy
+public enum PriceChangeInitiator
 {
     Employer,
     Provider

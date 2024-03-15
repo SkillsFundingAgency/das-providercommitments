@@ -70,7 +70,7 @@
             }
         }
 
-        @if (Model.HasPendingPriceChange && Model.PendingPriceChange.ChangeInitiatedBy == ChangeInitiatedBy.Employer)
+        @if (Model.HasPendingPriceChange && Model.PendingPriceChange.PriceChangeInitiator == PriceChangeInitiator.Employer)
         {
             <partial name="DetailsPartials/_PendingEmployerChangeOfPriceRequestBanner" />
         }

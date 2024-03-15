@@ -8,21 +8,21 @@
 
 <div class="govuk-inset-text das-inset-text--highlight" id="PendingPriceChangeDetails">
     <div class="govuk-grid-row govuk-!-margin-bottom-2">
-        
-            @switch (Model.PendingPriceChange.ChangeInitiatedBy)
-            {
-                case ChangeInitiatedBy.Provider:
-                    <div class="govuk-grid-column-two-thirds">
-                        <h2 class="govuk-heading-m">Price changes you've requested</h2>
-                    </div>
-                    break;
-                case ChangeInitiatedBy.Employer:
-                    <div style="padding: 0 10px;">
-                        <h2 class="govuk-heading-m">Price change requested </h2>
-                        <strong class="govuk-tag govuk-tag" style=" padding:10px; width:180px;  margin-top:-50px; float:right; ">Change requested</strong>
-                    </div>
-                    break;
-            }
+
+        @switch (Model.PendingPriceChange.PriceChangeInitiator)
+        {
+            case PriceChangeInitiator.Provider:
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">Price changes you've requested</h2>
+                </div>
+                break;
+            case PriceChangeInitiator.Employer:
+                <div style="padding: 0 10px;">
+                    <h2 class="govuk-heading-m">Price change requested </h2>
+                    <strong class="govuk-tag govuk-tag" style=" padding:10px; width:180px;  margin-top:-50px; float:right; ">Change requested</strong>
+                </div>
+                break;
+        }
 
     </div>
 
@@ -36,14 +36,14 @@
             <tr class="govuk-table__row" id="pendingPriceChangeTrainingPriceRow">
                 <th scope="row" class="govuk-table__header">Training price</th>
                 <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+                @switch (Model.PendingPriceChange.PriceChangeInitiator)
                 {
-                    case ChangeInitiatedBy.Provider:
+                    case PriceChangeInitiator.Provider:
                         <td class="govuk-table__cell">
                             @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
                         </td>
                         break;
-                    case ChangeInitiatedBy.Employer:
+                    case PriceChangeInitiator.Employer:
                         <td class="govuk-table__cell">
                             -
                         </td>
@@ -56,14 +56,14 @@
                 <td class="govuk-table__cell">
                     @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
                 </td>
-                @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+                @switch (Model.PendingPriceChange.PriceChangeInitiator)
                 {
-                    case ChangeInitiatedBy.Provider:
+                    case PriceChangeInitiator.Provider:
                         <td class="govuk-table__cell">
                             @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
                         </td>
                         break;
-                    case ChangeInitiatedBy.Employer:
+                    case PriceChangeInitiator.Employer:
                         <td class="govuk-table__cell">
                             -
                         </td>
@@ -77,15 +77,15 @@
             </tr>
         </tbody>
     </table>
-    @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+    @switch (Model.PendingPriceChange.PriceChangeInitiator)
     {
-        case ChangeInitiatedBy.Provider:
+        case PriceChangeInitiator.Provider:
             <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
                asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">
                 View price changes you've requested
             </a>
             break;
-        case ChangeInitiatedBy.Employer:
+        case PriceChangeInitiator.Employer:
             <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
                asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">
                 Review price change request
