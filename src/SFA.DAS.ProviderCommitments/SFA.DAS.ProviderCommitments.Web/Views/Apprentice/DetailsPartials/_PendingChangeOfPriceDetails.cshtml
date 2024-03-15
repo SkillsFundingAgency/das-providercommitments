@@ -36,18 +36,39 @@
             <tr class="govuk-table__row" id="pendingPriceChangeTrainingPriceRow">
                 <th scope="row" class="govuk-table__header">Training price</th>
                 <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                <td class="govuk-table__cell">
-                    @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
-                </td>
+                @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+                {
+                    case ChangeInitiatedBy.Provider:
+                        <td class="govuk-table__cell">
+                            @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()
+                        </td>
+                        break;
+                    case ChangeInitiatedBy.Employer:
+                        <td class="govuk-table__cell">
+                            -
+                        </td>
+                        break;
+                }
+
             </tr>
             <tr class="govuk-table__row" id="pendingPriceChangeEPAPriceRow">
                 <th scope="row" class="govuk-table__header">End-point assessment price</th>
                 <td class="govuk-table__cell">
                     @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
                 </td>
-                <td class="govuk-table__cell">
-                    @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
-                </td>
+                @switch (Model.PendingPriceChange.ChangeInitiatedBy)
+                {
+                    case ChangeInitiatedBy.Provider:
+                        <td class="govuk-table__cell">
+                            @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()
+                        </td>
+                        break;
+                    case ChangeInitiatedBy.Employer:
+                        <td class="govuk-table__cell">
+                            -
+                        </td>
+                        break;
+                }
             </tr>
             <tr class="govuk-table__row" id="pendingPriceChangeTotalPriceRow">
                 <th scope="row" class="govuk-table__header">Total price</th>
