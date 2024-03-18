@@ -40,8 +40,8 @@ public static class AuthorizationPolicy
 
         services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<AuthorizationContextProvider>();
-        services.AddScoped<IAuthorizationContextProvider, AuthorizationContextProvider>();
-        services.AddScoped<IAuthorizationValueProvider, AuthorizationValueProvider>();
+        services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();
+        services.AddTransient<IAuthorizationValueProvider, AuthorizationValueProvider>();
         
         services.AddScoped<IAuthorizationContextProvider>(serviceProvider => new AuthorizationContextCache(serviceProvider.GetService<AuthorizationContextProvider>()));
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
