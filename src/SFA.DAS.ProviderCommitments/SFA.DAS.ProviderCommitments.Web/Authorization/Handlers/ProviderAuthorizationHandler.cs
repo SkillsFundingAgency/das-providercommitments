@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Encoding;
+﻿using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
-public class ProviderAuthorizationHandler(IOuterApiService outerApiService,
+public class ProviderAuthorizationHandler(ICachedOuterApiService cachedOuterApiService,
     IAuthenticationService authenticationService, 
     IHttpContextAccessor httpContextAccessor, 
     IEncodingService encodingService) : IAuthorizationHandler
@@ -32,7 +33,7 @@ public class ProviderAuthorizationHandler(IOuterApiService outerApiService,
         var accountLegalEntityId = GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        var hasPermission = await outerApiService.HasPermission(ukPrn, accountLegalEntityId, operation.ToString());
+        var hasPermission = await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, operation.ToString());
 
         if (!hasPermission)
         {
@@ -49,7 +50,7 @@ public class ProviderAuthorizationHandler(IOuterApiService outerApiService,
     
     private long? FindAndDecodeValue(string key, EncodingType encodingType)
     {
-        if (!TryGetValueFromHttpContext(key, out var encodedValue))
+        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(key, out var encodedValue))
         {
             return null;
         }
@@ -80,31 +81,5 @@ public class ProviderAuthorizationHandler(IOuterApiService outerApiService,
         }
 
         return ukprn;
-    }
-    
-    private bool TryGetValueFromHttpContext(string key, out string value)
-    {
-        value = null;
-
-        // for testing
-        if (httpContextAccessor.HttpContext == null)
-        {
-            return false;
-        }
-
-        if (httpContextAccessor.HttpContext.GetRouteData().Values.TryGetValue(key, out var routeValue))
-        {
-            value = (string)routeValue;
-        }
-        else if (httpContextAccessor.HttpContext.Request.Query.TryGetValue(key, out var queryStringValue))
-        {
-            value = queryStringValue;
-        }
-        else if (httpContextAccessor.HttpContext.Request.HasFormContentType && httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
-        {
-            value = formValue;
-        }
-
-        return !string.IsNullOrWhiteSpace(value);
     }
 }

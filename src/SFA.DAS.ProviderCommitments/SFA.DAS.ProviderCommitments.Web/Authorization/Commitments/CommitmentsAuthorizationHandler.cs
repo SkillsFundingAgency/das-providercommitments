@@ -3,6 +3,7 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
@@ -43,7 +44,7 @@ public class CommitmentsAuthorisationHandler(
 
     private long GetProviderId()
     {
-        if (!TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
+        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
         {
             return 0;
         }
@@ -68,7 +69,7 @@ public class CommitmentsAuthorisationHandler(
 
     private long GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
     {
-        if (!TryGetValueFromHttpContext(keyName, out var encodedValue))
+        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(keyName, out var encodedValue))
         {
             return 0;
         }
@@ -79,25 +80,5 @@ public class CommitmentsAuthorisationHandler(
         }
 
         return id;
-    }
-
-    private bool TryGetValueFromHttpContext(string key, out string value)
-    {
-        value = null;
-
-        if (httpContextAccessor.HttpContext.GetRouteData().Values.TryGetValue(key, out var routeValue))
-        {
-            value = (string)routeValue;
-        }
-        else if (httpContextAccessor.HttpContext.Request.Query.TryGetValue(key, out var queryStringValue))
-        {
-            value = queryStringValue;
-        }
-        else if (httpContextAccessor.HttpContext.Request.HasFormContentType && httpContextAccessor.HttpContext.Request.Form.TryGetValue(key, out var formValue))
-        {
-            value = formValue;
-        }
-
-        return !string.IsNullOrWhiteSpace(value);
     }
 }
