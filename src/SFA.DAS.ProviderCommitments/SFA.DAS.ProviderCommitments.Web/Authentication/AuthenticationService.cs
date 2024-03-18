@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication;
 
