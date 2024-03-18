@@ -15,7 +15,7 @@ public class ProviderAuthorizationHandler(
 {
     public async Task<bool> CanCreateCohort()
     {
-        var ukPrn = authorizationValueProvider.GetUkrpn();
+        var ukPrn = authorizationValueProvider.GetProviderId();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
 
         return await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, Operation.CreateCohort.ToString());
