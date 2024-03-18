@@ -52,11 +52,11 @@ public class AuthorizationValueProvider(
     
     public long GetUkrpn()
     {
-        if (!authenticationService.IsUserAuthenticated())
-        {
-            logger.LogWarning("AuthenticationService.IsUserAuthenticated() returned FALSE.");
-            return 0;
-        }
+        // if (!authenticationService.IsUserAuthenticated())
+        // {
+        //     logger.LogWarning("AuthenticationService.IsUserAuthenticated() returned FALSE.");
+        //     return 0;
+        // }
 
         if (!authenticationService.TryGetUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))
         {
