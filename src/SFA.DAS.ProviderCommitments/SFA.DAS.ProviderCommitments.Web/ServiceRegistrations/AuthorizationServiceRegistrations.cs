@@ -41,10 +41,12 @@ public static class AuthorizationPolicy
         services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<AuthorizationContextProvider>();
         services.AddScoped<IAuthorizationContextProvider, AuthorizationContextProvider>();
-
+        services.AddScoped<IAuthorizationValueProvider, AuthorizationValueProvider>();
+        
+        services.AddScoped<IAuthorizationContextProvider>(serviceProvider => new AuthorizationContextCache(serviceProvider.GetService<AuthorizationContextProvider>()));
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
-
+        
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped(serviceProvider => serviceProvider.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
 
@@ -134,14 +136,14 @@ public static class AuthorizationPolicy
             var authorizationResultCacheConfigurationProviders = provider.GetServices<IAuthorizationResultCacheConfigurationProvider>();
             var memoryCache = provider.GetService<IMemoryCache>();
             var logger = provider.GetService<ILogger<AuthorizationResultLogger>>();
-
+    
             if (resultsCacheType == ResultsCacheType.EnableCaching)
             {
                 authorizationHandler = new AuthorizationResultCache(authorizationHandler, authorizationResultCacheConfigurationProviders, memoryCache);
             }
-
+    
             authorizationHandler = new AuthorizationResultLogger(authorizationHandler, logger);
-
+    
             return authorizationHandler;
         });
     }

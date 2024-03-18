@@ -1,11 +1,10 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
+
+public interface IAuthorizationHandler
 {
-    public interface IAuthorizationHandler
-    {
-        string Prefix { get; }
-        Task<AuthorizationResult> GetAuthorizationResult(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext);
-    }
+    string Prefix { get; }
+    Task<AuthorizationResult> GetAuthorizationResult(IReadOnlyCollection<string> options, IAuthorizationContext authorizationContext);
 }

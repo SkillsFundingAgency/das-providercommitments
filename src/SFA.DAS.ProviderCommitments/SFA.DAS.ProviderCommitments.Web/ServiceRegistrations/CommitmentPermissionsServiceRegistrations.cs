@@ -17,8 +17,7 @@ public static class CommitmentPermissionsServiceRegistrations
             services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
         }
 
-        //services.AddAuthorizationHandler<ProviderAuthorizationHandler>(ResultsCacheType.EnableCaching);
-        services.AddScoped<ProviderAuthorizationHandler>();
+        services.AddAuthorizationHandler<ProviderAuthorizationHandler>(ResultsCacheType.EnableCaching);
         
         services.AddTransient<ICommitmentPermissionsApiClientFactory, CommitmentPermissionsApiClientFactory>();
         

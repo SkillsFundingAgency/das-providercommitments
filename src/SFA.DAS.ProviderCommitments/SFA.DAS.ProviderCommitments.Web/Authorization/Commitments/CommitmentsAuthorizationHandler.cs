@@ -9,9 +9,8 @@ using SFA.DAS.ProviderCommitments.Web.RouteValues;
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 
 public class CommitmentsAuthorisationHandler(
-    IHttpContextAccessor httpContextAccessor,
-    IEncodingService encodingService,
-    ICachedOuterApiService cachedOuterApiService)
+    ICachedOuterApiService cachedOuterApiService,
+    IAuthorizationValueProvider authorizationValueProvider)
     : ICommitmentsAuthorisationHandler
 {
     public Task<bool> CanAccessCohort()
@@ -30,9 +29,9 @@ public class CommitmentsAuthorisationHandler(
 
     private (long CohortId, long ApprenticeshipId, long PartyId) GetPermissionValues()
     {
-        var cohortId = GetCohortId();
-        var apprenticeshipId = GetApprenticeshipId();
-        var providerId = GetProviderId();
+        var cohortId = authorizationValueProvider.GetCohortId();
+        var apprenticeshipId = authorizationValueProvider.GetApprenticeshipId();
+        var providerId = authorizationValueProvider.GetProviderId();
         
         if (cohortId == 0 && apprenticeshipId == 0 && providerId == 0)
         {
@@ -40,45 +39,5 @@ public class CommitmentsAuthorisationHandler(
         }
 
         return (cohortId, apprenticeshipId, providerId);
-    }
-
-    private long GetProviderId()
-    {
-        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
-        {
-            return 0;
-        }
-
-        if (!int.TryParse(value, out var providerId))
-        {
-            providerId = 0;
-        }
-
-        return providerId;
-    }
-
-    private long GetApprenticeshipId()
-    {
-        return GetAndDecodeValueIfExists(RouteValueKeys.ApprenticeshipId, EncodingType.ApprenticeshipId);
-    }
-
-    private long GetCohortId()
-    {
-        return GetAndDecodeValueIfExists(RouteValueKeys.CohortReference, EncodingType.CohortReference);
-    }
-
-    private long GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
-    {
-        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(keyName, out var encodedValue))
-        {
-            return 0;
-        }
-
-        if (!encodingService.TryDecode(encodedValue, encodedType, out var id))
-        {
-            throw new UnauthorizedAccessException($"Failed to decode '{keyName}' value '{encodedValue}' using encoding type '{encodedType}'");
-        }
-
-        return id;
     }
 }
