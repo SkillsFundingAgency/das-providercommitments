@@ -4,21 +4,12 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication;
 
-public class AuthenticationService(IHttpContextAccessor httpContextAccessor, ILogger<AuthenticationService> logger) : IAuthenticationService, IAuthenticationServiceForApim
+public class AuthenticationService(IHttpContextAccessor httpContextAccessor) : IAuthenticationService, IAuthenticationServiceForApim
 {
     public string UserId => GetUserClaimAsString(ProviderClaims.Upn) ?? GetUserClaimAsString("sub");
     public string UserName => GetUserClaimAsString(ProviderClaims.Name) ?? GetUserClaimAsString(ProviderClaims.DisplayName);
     public string UserEmail => GetUserClaimAsString(ProviderClaims.Email) ?? GetUserClaimAsString("email");
-
-    public bool IsUserAuthenticated()
-    {
-        logger.LogWarning("AuthenticationService.IsUserAuthenticated(). HttpContextAccessor null?: {Check1}. HttpContext null?: {Check2}. IsAuthenticated: {IsAuthed}", 
-            httpContextAccessor == null,
-            httpContextAccessor.HttpContext == null,
-            httpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated);
-        
-        return httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
-    }
+    public bool IsUserAuthenticated() => httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
 
     public bool TryGetUserClaimValue(string key, out string value)
     {

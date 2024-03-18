@@ -22,11 +22,11 @@ public class ProviderAuthorizationHandler(ICachedOuterApiService cachedOuterApiS
         options.EnsureNoAndOptions();
         options.EnsureNoOrOptions();
 
-        var ukPrn = authorizationValueProvider.GetUkrpn();
+        var providerId = authorizationValueProvider.GetProviderId();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        var hasPermission = await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, operation);
+        var hasPermission = await cachedOuterApiService.HasPermission(providerId, accountLegalEntityId, operation);
 
         if (!hasPermission)
         {

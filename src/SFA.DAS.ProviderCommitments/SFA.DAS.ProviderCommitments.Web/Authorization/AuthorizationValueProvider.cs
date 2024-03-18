@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
@@ -11,14 +10,10 @@ public interface IAuthorizationValueProvider
     long GetApprenticeshipId();
     long GetCohortId();
     long? GetAccountLegalEntityId();
-    long GetUkrpn();
+    long GetProviderId();
 }
 
-public class AuthorizationValueProvider(
-    IHttpContextAccessor httpContextAccessor,
-    IEncodingService encodingService,
-    IAuthenticationService authenticationService,
-    ILogger<AuthorizationValueProvider> logger) : IAuthorizationValueProvider
+public class AuthorizationValueProvider(IHttpContextAccessor httpContextAccessor, IEncodingService encodingService) : IAuthorizationValueProvider
 {
     public long GetApprenticeshipId()
     {
@@ -28,6 +23,21 @@ public class AuthorizationValueProvider(
     public long GetCohortId()
     {
         return GetAndDecodeValueIfExists(RouteValueKeys.CohortReference, EncodingType.CohortReference);
+    }
+    
+    public long GetProviderId()
+    {
+        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
+        {
+            return 0;
+        }
+
+        if (!int.TryParse(value, out var providerId))
+        {
+            providerId = 0;
+        }
+
+        return providerId;
     }
     
     private long GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
@@ -48,27 +58,6 @@ public class AuthorizationValueProvider(
     public long? GetAccountLegalEntityId()
     {
         return FindAndDecodeValue(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
-    }
-    
-    public long GetUkrpn()
-    {
-        if (!authenticationService.IsUserAuthenticated())
-        {
-            logger.LogWarning("AuthenticationService.IsUserAuthenticated() returned FALSE.");
-            return 0;
-        }
-
-        if (!authenticationService.TryGetUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))
-        {
-            throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Ukprn}'");
-        }
-
-        if (!long.TryParse(ukprnClaimValue, out var ukprn))
-        {
-            throw new UnauthorizedAccessException($"Failed to parse value '{ukprnClaimValue}' for claim '{ProviderClaims.Ukprn}'");
-        }
-
-        return ukprn;
     }
     
     private long? FindAndDecodeValue(string key, EncodingType encodingType)

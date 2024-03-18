@@ -27,7 +27,7 @@ public class CommitmentsAuthorisationHandler(
     {
         var cohortId = authorizationValueProvider.GetCohortId();
         var apprenticeshipId = authorizationValueProvider.GetApprenticeshipId();
-        var providerId = authorizationValueProvider.GetUkrpn();
+        var providerId = authorizationValueProvider.GetProviderId();
         
         if (cohortId == 0 && apprenticeshipId == 0 && providerId == 0)
         {
