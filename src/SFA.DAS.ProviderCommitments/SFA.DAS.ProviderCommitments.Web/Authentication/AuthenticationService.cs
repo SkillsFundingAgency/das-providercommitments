@@ -14,11 +14,10 @@ public class AuthenticationService(IHttpContextAccessor httpContextAccessor, ILo
 
     public bool IsUserAuthenticated()
     {
-        logger.LogWarning("AuthenticationService.IsUserAuthenticated(). HttpContextAccessor null?: {Check1}. HttpContext null?: {Check2}. User: {User}", 
+        logger.LogWarning("AuthenticationService.IsUserAuthenticated(). HttpContextAccessor null?: {Check1}. HttpContext null?: {Check2}. IsAuthenticated: {IsAuthed}", 
             httpContextAccessor == null,
             httpContextAccessor.HttpContext == null,
-            JsonSerializer.Serialize(httpContextAccessor?.HttpContext?.User)
-            );
+            httpContextAccessor?.HttpContext?.User.Identity?.IsAuthenticated);
         
         return httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
     }
