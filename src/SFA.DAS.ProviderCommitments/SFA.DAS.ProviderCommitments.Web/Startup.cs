@@ -39,7 +39,6 @@ public class Startup
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
         });
 
-        services.AddHttpContextAccessor();
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
         services.Configure<CookiePolicyOptions>(options =>
