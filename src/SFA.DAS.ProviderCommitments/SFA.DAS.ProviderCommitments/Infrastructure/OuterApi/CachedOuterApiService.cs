@@ -10,12 +10,13 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
 public interface ICachedOuterApiService
 {
-    Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation);
+    Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation);
     Task<bool> CanAccessCohort(Party party, long partyId, long cohortId);
     Task<bool> CanAccessApprenticeship(Party party, long partyId, long apprenticeshipId);
 }
@@ -24,7 +25,7 @@ public class CachedOuterApiService(ICacheStorageService cacheStorage, IOuterApiS
 {
     public const int CacheExpirationMinutes = 5;
 
-    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation)
+    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation)
     {
         var cacheKey = $"{nameof(HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
         var cachedResponse = await cacheStorage.SafeRetrieveFromCache<bool?>(cacheKey);

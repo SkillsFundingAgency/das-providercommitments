@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderRelationships.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi;
@@ -26,7 +27,7 @@ public class CachedOuterApiServiceTests
     public async Task HasPermission_Result_Is_Retrieved_From_OuterApiService_And_Stored_To_Cache_When_Not_In_Cache(
         long ukprn,
         long accountLegalEntityId,
-        string operation,
+        Operation operation,
         bool result)
     {
         var cacheKey = $"{nameof(CachedOuterApiService.HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";
@@ -52,7 +53,7 @@ public class CachedOuterApiServiceTests
     public async Task HasPermission_Result_Is_Retrieved_From_Cache_When_In_Cache(
         long ukprn,
         long accountLegalEntityId,
-        string operation,
+        Operation operation,
         bool result)
     {
         var cacheKey = $"{nameof(CachedOuterApiService.HasPermission)}.{ukprn}.{accountLegalEntityId}.{operation}";

@@ -26,7 +26,7 @@ public class ProviderAuthorizationHandler(ICachedOuterApiService cachedOuterApiS
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        var hasPermission = await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, operation.ToString());
+        var hasPermission = await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, operation);
 
         if (!hasPermission)
         {

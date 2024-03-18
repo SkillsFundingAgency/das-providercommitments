@@ -9,6 +9,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
+using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi;
 
@@ -83,7 +84,7 @@ public class OuterApiServiceTest
     public async Task Then_HasPermission_Request_Is_Made_And_Response_Returned(
         long ukprn,
         long accountLegalEntityId,
-        string operation,
+        Operation operation,
         GetHasPermissionResponse apiResponse,
         [Frozen] Mock<IOuterApiClient> apiClient,
         OuterApiService service)

@@ -18,6 +18,6 @@ public class ProviderAuthorizationHandler(
         var ukPrn = authorizationValueProvider.GetUkrpn();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
 
-        return await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, Operation.CreateCohort.ToString());
+        return await cachedOuterApiService.HasPermission(ukPrn, accountLegalEntityId, Operation.CreateCohort);
     }
 }

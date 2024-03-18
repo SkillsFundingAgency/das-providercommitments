@@ -14,6 +14,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermi
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
@@ -203,7 +204,7 @@ public class OuterApiService : IOuterApiService
         await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
     }
 
-    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, string operation)
+    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation)
     {
         var content = new GetHasPermissionRequest(
             ukprn,
