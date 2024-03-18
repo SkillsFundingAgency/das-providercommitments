@@ -11,14 +11,14 @@ public interface IAuthorizationValueProvider
     long GetApprenticeshipId();
     long GetCohortId();
     long? GetAccountLegalEntityId();
-    long? GetUkrpn();
-    long GetProviderId();
+    long GetUkrpn();
 }
 
 public class AuthorizationValueProvider(
     IHttpContextAccessor httpContextAccessor,
     IEncodingService encodingService,
-    IAuthenticationService authenticationService) : IAuthorizationValueProvider
+    IAuthenticationService authenticationService,
+    ILogger<AuthorizationValueProvider> logger) : IAuthorizationValueProvider
 {
     public long GetApprenticeshipId()
     {
@@ -30,21 +30,6 @@ public class AuthorizationValueProvider(
         return GetAndDecodeValueIfExists(RouteValueKeys.CohortReference, EncodingType.CohortReference);
     }
     
-    public long GetProviderId()
-    {
-        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
-        {
-            return 0;
-        }
-
-        if (!int.TryParse(value, out var providerId))
-        {
-            providerId = 0;
-        }
-
-        return providerId;
-    }
-
     private long GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
     {
         if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(keyName, out var encodedValue))
@@ -65,11 +50,12 @@ public class AuthorizationValueProvider(
         return FindAndDecodeValue(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
     }
     
-    public long? GetUkrpn()
+    public long GetUkrpn()
     {
         if (!authenticationService.IsUserAuthenticated())
         {
-            return null;
+            logger.LogWarning("AuthenticationService.IsUserAuthenticated() returned FALSE.");
+            return 0;
         }
 
         if (!authenticationService.TryGetUserClaimValue(ProviderClaims.Ukprn, out var ukprnClaimValue))

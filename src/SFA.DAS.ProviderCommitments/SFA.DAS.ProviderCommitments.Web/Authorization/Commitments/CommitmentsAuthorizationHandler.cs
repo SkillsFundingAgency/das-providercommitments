@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Commitments;
 
@@ -31,7 +27,7 @@ public class CommitmentsAuthorisationHandler(
     {
         var cohortId = authorizationValueProvider.GetCohortId();
         var apprenticeshipId = authorizationValueProvider.GetApprenticeshipId();
-        var providerId = authorizationValueProvider.GetProviderId();
+        var providerId = authorizationValueProvider.GetUkrpn();
         
         if (cohortId == 0 && apprenticeshipId == 0 && providerId == 0)
         {
