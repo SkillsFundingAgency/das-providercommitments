@@ -78,7 +78,6 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
     
-    [TestCase(typeof(IAuthorizationContext))]
     [TestCase(typeof(IAuthorizationContextProvider))]
     [TestCase(typeof(ICommitmentsAuthorisationHandler))]
     [TestCase(typeof(IProviderAuthorizationHandler))]

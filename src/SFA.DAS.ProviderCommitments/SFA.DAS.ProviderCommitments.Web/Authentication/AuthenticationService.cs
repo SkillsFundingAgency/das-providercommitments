@@ -19,7 +19,7 @@ public class AuthenticationService : IAuthenticationService, IAuthenticationServ
 
     public bool IsUserAuthenticated()
     {
-        return _httpContextAccessor.HttpContext?.User.Identity.IsAuthenticated ?? false;
+        return _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
     }
 
     public bool TryGetUserClaimValue(string key, out string value)
