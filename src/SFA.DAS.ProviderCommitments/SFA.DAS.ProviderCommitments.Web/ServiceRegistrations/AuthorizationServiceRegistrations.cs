@@ -40,11 +40,11 @@ public static class AuthorizationPolicy
 
         services.AddScoped<IAuthorizationContext, AuthorizationContext>();
         services.AddScoped<AuthorizationContextProvider>();
+        services.AddScoped<IAuthorizationContextProvider, AuthorizationContextProvider>();
 
         services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
         services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
 
-        services.AddScoped<IAuthorizationContextProvider>(serviceProvider => new AuthorizationContextCache(serviceProvider.GetService<AuthorizationContextProvider>()));
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped(serviceProvider => serviceProvider.GetService<IAuthorizationContextProvider>().GetAuthorizationContext());
 
