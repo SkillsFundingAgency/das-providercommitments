@@ -11,6 +11,7 @@ using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using System.Security.Claims;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
 {

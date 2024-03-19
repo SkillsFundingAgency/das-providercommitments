@@ -4,8 +4,9 @@
 @using SFA.DAS.ProviderCommitments.Web.Extensions;
 @using SFA.DAS.CommitmentsV2.Api.Client
 @using SFA.DAS.ProviderCommitments.Extensions
+@using SFA.DAS.ProviderCommitments.Interfaces
 @using SFA.DAS.ProviderCommitments.Web.Mappers
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@inject IAuthorizationService AuthorizationService
 @inject ICommitmentsApiClient CommitmentsApiClient
 @inject ISelectDeliveryModelMapperHelper SelectDeliveryModelMapperHelper;
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit.EditApprenticeshipRequestViewModel

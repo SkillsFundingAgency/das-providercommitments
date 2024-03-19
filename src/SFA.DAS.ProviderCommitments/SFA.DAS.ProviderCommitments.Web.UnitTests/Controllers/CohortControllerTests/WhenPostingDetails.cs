@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -8,7 +9,6 @@ using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using IAuthorizationService = SFA.DAS.Authorization.Services.IAuthorizationService;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -130,7 +130,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 commitmentsApiClient.Setup(x => x.ApproveCohort(It.Is<long>(c => c == cohortId),
                         It.Is<ApproveCohortRequest>(r => r == approveCohortApiRequest), It.IsAny<CancellationToken>()))
                     .Returns(Task.CompletedTask);
-                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<System.Security.Claims.ClaimsPrincipal>(), It.IsAny<string>())).ReturnsAsync(true);
+                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<ClaimsPrincipal>(), It.IsAny<string>())).ReturnsAsync(true);
 
                 var linkGeneratorResult = autoFixture.Create<string>();
 
@@ -181,7 +181,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             internal void SetUpIsAuthorized(bool isAuthorized)
             {
-                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<System.Security.Claims.ClaimsPrincipal>(), It.IsAny<string>()))
+                _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<ClaimsPrincipal>(), It.IsAny<string>()))
                     .ReturnsAsync(isAuthorized);
             }
         }

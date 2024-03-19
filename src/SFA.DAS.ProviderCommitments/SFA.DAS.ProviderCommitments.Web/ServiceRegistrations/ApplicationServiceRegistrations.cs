@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Authorization.Context;
-using SFA.DAS.AutoConfiguration;
+﻿using SFA.DAS.AutoConfiguration;
 using SFA.DAS.CommitmentsV2.Services.Shared;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Shared.Services;
@@ -8,7 +7,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.CacheStorageService;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using SFA.DAS.ProviderUrlHelper;
@@ -23,8 +21,6 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<IModelMapper, ModelMapper>();
         
         services.AddSingleton<IAcademicYearDateProvider, AcademicYearDateProvider>();
-        services.AddTransient<IPolicyAuthorizationWrapper, PolicyAuthorizationWrapper>();
-        services.AddTransient<IAuthorizationContextProvider, AuthorizationContextProvider>();
         
         services.AddTransient<IAzureTableStorageConnectionAdapter, AzureTableStorageConnectionAdapter>();
         services.AddTransient<IEnvironmentService, EnvironmentService>();
@@ -41,6 +37,7 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<ITempDataStorageService, TempDataStorageService>();
         services.AddTransient<IOuterApiClient, OuterApiClient>();
         services.AddTransient<IOuterApiService, OuterApiService>();
+        services.AddTransient<ICachedOuterApiService, CachedOuterApiService>();
         
         services.AddTransient<IBulkUploadFileParser, BulkUploadFileParser>();
         

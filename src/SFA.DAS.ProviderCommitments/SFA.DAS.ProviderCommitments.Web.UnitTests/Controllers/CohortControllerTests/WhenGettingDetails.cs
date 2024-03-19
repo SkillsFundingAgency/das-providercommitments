@@ -1,13 +1,13 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System.Linq;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderUrlHelper;
-using System.Linq;
-using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.Authorization.Services;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortControllerTests
 {
@@ -29,9 +29,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             _fixture.VerifyViewModelIsMappedFromRequest();
         }
 
-        [TestCase(Party.Employer)]
-        [TestCase(Party.TransferSender)]
-        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithProvider(Infrastructure.OuterApi.Responses.Party withParty)
+        [TestCase(CommitmentsV2.Types.Party.Employer)]
+        [TestCase(CommitmentsV2.Types.Party.TransferSender)]
+        public async Task ThenViewModelIsReadOnlyIfCohortIsNotWithProvider(Party withParty)
         {
             _fixture.WithParty(withParty);
             await _fixture.GetDetails();
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                 _request = autoFixture.Create<DetailsRequest>();
                 _viewModel = autoFixture.Create<DetailsViewModel>();
                 _viewModel.HasNoDeclaredStandards = false;
-                _viewModel.WithParty = Infrastructure.OuterApi.Responses.Party.Employer;
+                _viewModel.WithParty = Party.Employer;
 
                 var modelMapper = new Mock<IModelMapper>();
                 modelMapper.Setup(x => x.Map<DetailsViewModel>(It.Is<DetailsRequest>(r => r == _request)))
@@ -73,7 +73,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
                      );
             }
 
-            public WhenGettingDetailsTestFixture WithParty(Infrastructure.OuterApi.Responses.Party withParty)
+            public WhenGettingDetailsTestFixture WithParty(Party withParty)
             {
                 _viewModel.WithParty = withParty;
                 return this;

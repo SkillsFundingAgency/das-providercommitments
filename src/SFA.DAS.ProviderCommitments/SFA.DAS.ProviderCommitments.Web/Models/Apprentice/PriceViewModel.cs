@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.ProviderCommitments.Web.Attributes;
 using ApprenticeshipStatus = SFA.DAS.CommitmentsV2.Types.ApprenticeshipStatus;
 using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;

@@ -2,7 +2,7 @@
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
 /// <summary>
 /// Interface to define contracts related to Training Provider Authorization Handlers.
@@ -33,7 +33,10 @@ public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizati
         var ukprn = GetProviderId(context);
 
         //if the ukprn is invalid return false.
-        if (ukprn <= 0) return false;
+        if (ukprn <= 0)
+        {
+            return false;
+        }
 
         var providerStatusDetails = await _outerApiService.GetProviderStatus(ukprn);
 

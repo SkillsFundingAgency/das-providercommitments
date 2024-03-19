@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
 {
