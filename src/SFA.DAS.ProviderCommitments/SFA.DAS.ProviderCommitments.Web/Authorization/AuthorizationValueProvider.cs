@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
@@ -25,9 +24,14 @@ public class AuthorizationValueProvider(IHttpContextAccessor httpContextAccessor
         return GetAndDecodeValueIfExists(RouteValueKeys.CohortReference, EncodingType.CohortReference);
     }
     
+    public long? GetAccountLegalEntityId()
+    {
+        return FindAndDecodeValue(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
+    }
+    
     public long GetProviderId()
     {
-        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
+        if (!TryGetValueFromHttpContext(RouteValueKeys.ProviderId, out var value))
         {
             return 0;
         }
@@ -36,13 +40,13 @@ public class AuthorizationValueProvider(IHttpContextAccessor httpContextAccessor
         {
             providerId = 0;
         }
-
+        
         return providerId;
     }
     
     private long GetAndDecodeValueIfExists(string keyName, EncodingType encodedType)
     {
-        if (!httpContextAccessor.HttpContext.TryGetValueFromHttpContext(keyName, out var encodedValue))
+        if (!TryGetValueFromHttpContext(keyName, out var encodedValue))
         {
             return 0;
         }
@@ -53,11 +57,6 @@ public class AuthorizationValueProvider(IHttpContextAccessor httpContextAccessor
         }
 
         return id;
-    }
-    
-    public long? GetAccountLegalEntityId()
-    {
-        return FindAndDecodeValue(RouteValueKeys.AccountLegalEntityPublicHashedId, EncodingType.PublicAccountLegalEntityId);
     }
     
     private long? FindAndDecodeValue(string key, EncodingType encodingType)
