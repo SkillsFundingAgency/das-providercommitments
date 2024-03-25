@@ -89,6 +89,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ShowChangeOfPriceRequestSent { get; set; }
         public bool ShowPriceChangeCancelled { get; set; }
         public bool ShowPriceChangeApproved { get; set; }
+        public bool ShowPriceChangeRejected { get; set; }
 
         public enum DataLockSummaryStatus
         {

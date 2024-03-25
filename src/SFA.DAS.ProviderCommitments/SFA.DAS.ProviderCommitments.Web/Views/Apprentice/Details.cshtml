@@ -87,6 +87,10 @@
         {
             <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
         }
+        @if (Model.ShowPriceChangeRejected)
+        {
+            <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
+        }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
