@@ -87,6 +87,10 @@
         {
             <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
         }
+        @if (Model.ShowChangeOfPriceAutoApproved)
+        {
+            <partial name="DetailsPartials/_PriceChangeAutoApprovedBanner" />
+        }
         @if (Model.ShowPriceChangeRejected)
         {
             <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
