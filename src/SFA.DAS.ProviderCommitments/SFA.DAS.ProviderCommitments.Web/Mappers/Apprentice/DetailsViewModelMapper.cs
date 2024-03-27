@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.CommitmentsV2.Api.Client;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
@@ -140,7 +134,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             {
                 Cost = priceChangeDetails.Cost,
                 EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
-                TrainingPrice = priceChangeDetails.TrainingPrice
+                TrainingPrice = priceChangeDetails.TrainingPrice,
+                PriceChangeInitiator = Enum.Parse<PriceChangeInitiator>(priceChangeDetails.Initiator)
             };
         }
 

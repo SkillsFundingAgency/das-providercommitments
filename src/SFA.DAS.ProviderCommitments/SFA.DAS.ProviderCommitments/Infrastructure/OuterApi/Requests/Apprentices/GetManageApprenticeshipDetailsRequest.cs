@@ -165,6 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
             public decimal Cost { get; set; }
             public decimal? TrainingPrice { get; set; }
             public decimal? EndPointAssessmentPrice { get; set; }
+            public string Initiator { get; set; }
         }
     }
 }
