@@ -359,24 +359,28 @@
                         </td>
                     </tr>
                 }
-                @if (Model.ActualStartDate.HasValue)
-                {
-                    <tr class="govuk-table__row">
+
+                <tr class="govuk-table__row">
+                    @if (Model.ActualStartDate.HasValue)
+                    {
                         <th scope="row" class="govuk-table__header">Actual training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()
-                        </td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                }
-                else
-                {
-                    <tr class="govuk-table__row">
+                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()</td>
+                    }
+                    else
+                    {
                         <th scope="row" class="govuk-table__header">Planned training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">
-                            @Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
-                }
+                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
+                    }
+                    <td class="govuk-table__cell">
+                        @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                        {
+                            <a id="linkChangeStartDate" asp-external-controller=""
+                               asp-external-subdomain="apprenticeshipdetails"
+                               asp-external-relativeroute="@Model.ChangeOfStartDateRoute" class="govuk-link">Change</a>
+                        }
+                    </td>
+                </tr>
+
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>

@@ -86,6 +86,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasPendingPriceChange => PendingPriceChange != null;
         public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
+        public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
         public bool ShowChangeOfPriceRequestSent { get; set; }
         public bool ShowPriceChangeCancelled { get; set; }
         public bool ShowPriceChangeApproved { get; set; }
