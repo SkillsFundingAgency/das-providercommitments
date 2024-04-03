@@ -30,23 +30,24 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
-            for (var i = 0; i < 3; i++)
+            for (var index = 0; index < 3; index++)
             {
-                pageLinks[i].Label.Should().Be($"{i + 1}");
-                pageLinks[i].AriaLabel.Should().Be($"Page {i + 1}");
-                pageLinks[i].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
-                    {
-                        {nameof(filterModel.SearchTerm), filterModel.SearchTerm },
-                        {nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer},
-                        {nameof(filterModel.SelectedCourse), filterModel.SelectedCourse},
-                        {nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString()},
-                        {nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd")},
-                        {nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd")},
-                        {nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString()},
-                        {nameof(filterModel.SortField), filterModel.SortField},
-                        {nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString()},
-                        {nameof(filterModel.PageNumber), (i+1).ToString() }
-                    });
+                pageLinks[index].Label.Should().Be($"{index + 1}");
+                pageLinks[index].AriaLabel.Should().Be($"Page {index + 1}");
+                pageLinks[index].RouteData.Should().BeEquivalentTo(new Dictionary<string, string>
+                {
+                    { nameof(filterModel.ProviderId), filterModel.ProviderId.ToString() },
+                    { nameof(filterModel.SearchTerm), filterModel.SearchTerm },
+                    { nameof(filterModel.SelectedEmployer), filterModel.SelectedEmployer },
+                    { nameof(filterModel.SelectedCourse), filterModel.SelectedCourse },
+                    { nameof(filterModel.SelectedStatus), filterModel.SelectedStatus.ToString() },
+                    { nameof(filterModel.SelectedStartDate), filterModel.SelectedStartDate.Value.ToString("yyyy-MM-dd") },
+                    { nameof(filterModel.SelectedEndDate), filterModel.SelectedEndDate.Value.ToString("yyyy-MM-dd") },
+                    { nameof(filterModel.SelectedAlert), filterModel.SelectedAlert.ToString() },
+                    { nameof(filterModel.SortField), filterModel.SortField },
+                    { nameof(filterModel.ReverseSort), filterModel.ReverseSort.ToString() },
+                    { nameof(filterModel.PageNumber), (index + 1).ToString() }
+                });
             }
         }
 
@@ -59,8 +60,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 3
             };
 
-            var pageLinks = filterModel.PageLinks.Where(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
+            var pageLinks = filterModel.PageLinks.Where(link =>
+                link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
             pageLinks[0].IsCurrent.Should().BeTrue();
@@ -77,8 +78,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 3
             };
 
-            var pageLinks = filterModel.PageLinks.Where(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
+            var pageLinks = filterModel.PageLinks.Where(link =>
+                link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
             pageLinks[0].IsCurrent.Should().BeNull();
@@ -95,8 +96,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 7
             };
 
-            var pageLinks = filterModel.PageLinks.Where(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
+            var pageLinks = filterModel.PageLinks.Where(link =>
+                link.Label.ToUpper() != "PREVIOUS"
                 && link.Label.ToUpper() != "NEXT").ToList();
 
             pageLinks[0].IsCurrent.Should().BeNull();
@@ -115,9 +116,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 3
             };
 
-            filterModel.PageLinks.Count(link => 
-                link.Label.ToUpper() != "PREVIOUS" 
-                && link.Label.ToUpper() != "NEXT")
+            filterModel.PageLinks.Count(link =>
+                    link.Label.ToUpper() != "PREVIOUS"
+                    && link.Label.ToUpper() != "NEXT")
                 .Should().Be(3);
         }
 
@@ -130,8 +131,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
                 TotalNumberOfApprenticeshipsFound = Constants.ApprenticesSearch.NumberOfApprenticesPerSearchPage * 10
             };
 
-            filterModel.PageLinks.Count(link => 
-                    link.Label.ToUpper() != "PREVIOUS" 
+            filterModel.PageLinks.Count(link =>
+                    link.Label.ToUpper() != "PREVIOUS"
                     && link.Label.ToUpper() != "NEXT")
                 .Should().Be(5);
         }
@@ -206,7 +207,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             };
 
             var pageLinks = filterModel.PageLinks.ToList();
-            
+
             pageLinks.Any(link => link.Label.ToUpper() == "PREVIOUS").Should().BeFalse();
             pageLinks.Any(link => link.Label.ToUpper() == "NEXT").Should().BeFalse();
         }
@@ -225,7 +226,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             pageLinks.Last().Label.Should().Be("Next");
             pageLinks.Last().AriaLabel.Should().Be("Next page");
             pageLinks.Last().RouteData.Should()
-                .BeEquivalentTo(pageLinks.Single(link => 
+                .BeEquivalentTo(pageLinks.Single(link =>
                     link.Label == (filterModel.PageNumber + 1).ToString()).RouteData);
         }
 
@@ -257,7 +258,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModel
             pageLinks.First().Label.Should().Be("Previous");
             pageLinks.First().AriaLabel.Should().Be("Previous page");
             pageLinks.First().RouteData.Should()
-                .BeEquivalentTo(pageLinks.Single(link => 
+                .BeEquivalentTo(pageLinks.Single(link =>
                     link.Label == "1").RouteData);
         }
 

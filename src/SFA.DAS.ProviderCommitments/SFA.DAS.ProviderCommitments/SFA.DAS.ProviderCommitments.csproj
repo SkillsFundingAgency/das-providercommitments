@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
-    <PackageReference Include="CsvHelper" Version="31.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.1.2" />
@@ -25,8 +24,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderFeatures" Version="6.0.97" />
     <PackageReference Include="SFA.DAS.Authorization.ProviderPermissions" Version="6.0.97" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Api.Client" Version="100.0.37" />
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="100.0.6" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Shared" Version="100.0.43" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Api.Client" Version="4.0.19" />

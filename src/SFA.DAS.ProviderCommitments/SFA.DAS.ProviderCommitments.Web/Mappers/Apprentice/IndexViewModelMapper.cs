@@ -19,7 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
         public async Task<IndexViewModel> Map(IndexRequest source)
         {
-            
             var response = await _client.GetApprenticeships(new GetApprenticeshipsRequest
             {
                 ProviderId = source.ProviderId,
@@ -58,6 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             var filterModel = new ApprenticesFilterModel
             {
+                ProviderId = source.ProviderId,
                 TotalNumberOfApprenticeships = response.TotalApprenticeships,
                 TotalNumberOfApprenticeshipsFound = response.TotalApprenticeshipsFound,
                 TotalNumberOfApprenticeshipsWithAlertsFound = response.TotalApprenticeshipsWithAlertsFound,
