@@ -28,6 +28,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentic
         public IEnumerable<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public PendingPriceChangeDetails PendingPriceChange { get; set; }
+        public bool? CanActualStartDateBeChanged { get; set; }
 
         public class ApprenticeshipDetails
         {
