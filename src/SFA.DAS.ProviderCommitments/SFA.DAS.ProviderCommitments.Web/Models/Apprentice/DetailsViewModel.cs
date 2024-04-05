@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Authorization.ModelBinding;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Enums;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -87,8 +88,11 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
         public bool ShowChangeOfPriceRequestSent { get; set; }
         public bool ShowPriceChangeCancelled { get; set; }
+        public bool ShowPriceChangeApproved { get; set; }
+        public bool ShowChangeOfPriceAutoApproved { get; set; }
+        public bool ShowPriceChangeRejected { get; set; }
 
-        public enum DataLockSummaryStatus
+		public enum DataLockSummaryStatus
         {
             None,
             AwaitingTriage,
@@ -117,5 +121,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public decimal Cost { get; set; }
         public decimal? TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
+        public PriceChangeInitiator PriceChangeInitiator { get; set; }
     }
 }
