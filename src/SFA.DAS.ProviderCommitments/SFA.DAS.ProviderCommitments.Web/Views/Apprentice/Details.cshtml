@@ -4,10 +4,12 @@
 @using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.Mappers
 @using SFA.DAS.Authorization.Services
+@using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @inject IAuthorizationService AuthorisationService
 
@@ -15,6 +17,7 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
+
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -79,6 +82,12 @@
         {
             <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
         }
+
+        @if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateSent))
+        {
+            <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
+        }
+
         @if (Model.ShowPriceChangeCancelled)
         {
             <partial name="DetailsPartials/_PriceChangeCancelledBanner" />

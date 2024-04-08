@@ -87,13 +87,14 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
         public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
+        public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
         public bool ShowChangeOfPriceRequestSent { get; set; }
         public bool ShowPriceChangeCancelled { get; set; }
         public bool ShowPriceChangeApproved { get; set; }
         public bool ShowChangeOfPriceAutoApproved { get; set; }
         public bool ShowPriceChangeRejected { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
-
+        public int ShowBannersFlags { get; set; } = 0;
         public enum DataLockSummaryStatus
         {
             None,
@@ -106,6 +107,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
+        }
+
+        /// <summary>
+        /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
+        /// </summary>
+        public enum Banners
+        {
+            ChangeOfStartDateSent = 1,
+            ChangeOfStartDateApproved = 2,
+            ChangeOfPriceRequestSent = 4, 
+            PriceChangeCancelled = 8, 
+            PriceChangeApproved = 16, 
+            ChangeOfPriceAutoApproved = 32, 
+            PriceChangeRejected = 64
         }
     }
 
