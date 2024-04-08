@@ -146,6 +146,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
     {
         public DateTime OriginalStartDate { get; set; }
         public DateTime PendingStartDate { get; set; }
-        public ChangeInitiatedBy PriceChangeInitiator { get; set; }
+        public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
     }
 }
