@@ -1,0 +1,37 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@using SFA.DAS.ProviderCommitments.Enums
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+
+<div class="" style="border-left: 5px solid #1d70b8; padding:10px; width:900px !important ">
+
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header app-custom-class govuk-!-width-one-third">
+                    <strong class="govuk-tag govuk-tag--yellow">Pending request</strong>
+                </th>
+                <th scope="col" class="govuk-table__header app-custom-class govuk-!-width-one-third">Current</th>
+                <th scope="col" class="govuk-table__header app-custom-class govuk-!-width-one-third">Requested </th>
+                <td class="govuk-table__cell"></td>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Training start date</th>
+                <td class="govuk-table__cell">@Model.PendingStartDateChange.OriginalStartDate</td>
+                <td class="govuk-table__cell">@Model.PendingStartDateChange.PendingStartDate</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <a class="govuk-link" href="-change-start-date-view-changes">
+        View request<span class="govuk-visually-hidden">for change of start date</span>
+    </a>
+    <a id="linkViewPendingStartDate" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
+       asp-external-relativeroute="@Model.PendingStartDateChangeRoute" class="govuk-link">
+        View request<span class="govuk-visually-hidden">for change of start date</span>
+    </a>
+
+</div>

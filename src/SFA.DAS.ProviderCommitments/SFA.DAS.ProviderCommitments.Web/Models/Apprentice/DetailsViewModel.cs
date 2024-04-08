@@ -83,6 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public PendingPriceChange PendingPriceChange { get; set; }
+        public PendingStartDateChange PendingStartDateChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;
         public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
@@ -138,6 +139,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public decimal Cost { get; set; }
         public decimal? TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
-        public PriceChangeInitiator PriceChangeInitiator { get; set; }
+        public ChangeInitiatedBy PriceChangeInitiator { get; set; }
+    }
+
+    public class PendingStartDateChange
+    {
+        public DateTime OriginalStartDate { get; set; }
+        public DateTime PendingStartDate { get; set; }
+        public ChangeInitiatedBy PriceChangeInitiator { get; set; }
     }
 }
