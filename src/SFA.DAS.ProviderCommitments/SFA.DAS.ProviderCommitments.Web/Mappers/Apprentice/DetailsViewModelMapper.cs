@@ -113,7 +113,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                     HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot,
-                    PendingPriceChange = Map(data.PendingPriceChange)
+                    PendingPriceChange = Map(data.PendingPriceChange),
+                    CanActualStartDateBeChanged = data.CanActualStartDateBeChanged
                 };
             }
             catch (Exception e)

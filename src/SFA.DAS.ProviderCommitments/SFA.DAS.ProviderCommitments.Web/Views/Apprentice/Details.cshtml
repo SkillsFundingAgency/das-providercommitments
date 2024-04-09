@@ -372,7 +372,7 @@
                         <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
                     }
                     <td class="govuk-table__cell">
-                        @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                        @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.CanActualStartDateBeChanged == true)
                         {
                             <a id="linkChangeStartDate" asp-external-controller=""
                                asp-external-subdomain="apprenticeshipdetails"
