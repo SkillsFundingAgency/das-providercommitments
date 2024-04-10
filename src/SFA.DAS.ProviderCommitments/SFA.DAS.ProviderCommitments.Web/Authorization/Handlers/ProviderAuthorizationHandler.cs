@@ -1,12 +1,14 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderRelationships.Types.Models;
+using Operation = SFA.DAS.ProviderRelationships.Types.Models.Operation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
-public class ProviderAuthorizationHandler(ICachedOuterApiService cachedOuterApiService, IAuthorizationValueProvider authorizationValueProvider) : IAuthorizationHandler
+public class ProviderAuthorizationHandler(
+    IOuterApiService outerApiService,
+    IAuthorizationValueProvider authorizationValueProvider,
+    IOperationPermissionsProvider operationPermissionsProvider) : IAuthorizationHandler
 {
     public string Prefix => "ProviderOperation.";
 
@@ -25,8 +27,25 @@ public class ProviderAuthorizationHandler(ICachedOuterApiService cachedOuterApiS
         var providerId = authorizationValueProvider.GetProviderId();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
+        
+        if (operationPermissionsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+        {
+            if (!hasPermission)
+            {
+                authorizationResult.AddError(new ProviderPermissionNotGranted());
+            }
 
-        var hasPermission = await cachedOuterApiService.HasPermission(providerId, accountLegalEntityId, operation);
+            return authorizationResult;
+        }
+
+        hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
+
+        operationPermissionsProvider.Save(new OperationPermission
+        {
+            AccountLegalEntityId = accountLegalEntityId,
+            Operation = operation,
+            HasPermission = hasPermission
+        });
 
         if (!hasPermission)
         {

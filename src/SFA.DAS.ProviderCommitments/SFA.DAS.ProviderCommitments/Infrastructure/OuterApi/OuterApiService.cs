@@ -134,6 +134,7 @@ public class OuterApiService : IOuterApiService
     {
         return await _outerApiClient.Post<CreateCohortResponse>(new PostCreateCohortRequest { Data = request });
     }
+
     public async Task<GetPriorLearningDataQueryResult> GetPriorLearningData(long providerId, long cohortId, long draftApprenticeshipId)
     {
         return await _outerApiClient.Get<GetPriorLearningDataQueryResult>(new GetPriorLearningDataQueryRequest(providerId, cohortId, draftApprenticeshipId));
@@ -213,22 +214,22 @@ public class OuterApiService : IOuterApiService
         );
 
         var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
-        
+
         return response.HasPermission;
     }
 
-    public async Task<bool> CanAccessApprenticeship(Party party, long partyId, long apprenticeshipId)
+    public async Task<bool> CanAccessApprenticeship(long partyId, long apprenticeshipId)
     {
-        var content = new GetApprenticeshipAccessRequest(party, partyId, apprenticeshipId);
+        var content = new GetApprenticeshipAccessRequest(Party.Provider, partyId, apprenticeshipId);
 
         var response = await _outerApiClient.Get<GetApprenticeshipAccessResponse>(content);
 
         return response.HasApprenticeshipAccess;
     }
-    
-    public async Task<bool> CanAccessCohort(Party party, long partyId, long cohortId)
+
+    public async Task<bool> CanAccessCohort(long partyId, long cohortId)
     {
-        var content = new GetCohortAccessRequest(party, partyId, cohortId);
+        var content = new GetCohortAccessRequest(Party.Provider, partyId, cohortId);
 
         var response = await _outerApiClient.Get<GetCohortAccessResponse>(content);
 

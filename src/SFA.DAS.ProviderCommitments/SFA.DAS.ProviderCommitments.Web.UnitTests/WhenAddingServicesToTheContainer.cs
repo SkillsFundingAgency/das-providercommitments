@@ -70,7 +70,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(ISelectCourseViewModelMapperHelper))]
     [TestCase(typeof(IOuterApiClient))]
     [TestCase(typeof(IOuterApiService))]
-    [TestCase(typeof(ICachedOuterApiService))]
+    [TestCase(typeof(IOperationPermissionsProvider))]
     [TestCase(typeof(ICacheStorageService))]
     [TestCase(typeof(IOuterApiClient))]
     public void Then_The_Dependencies_Are_Correctly_Resolved_For_Application_Services(Type toResolve)
