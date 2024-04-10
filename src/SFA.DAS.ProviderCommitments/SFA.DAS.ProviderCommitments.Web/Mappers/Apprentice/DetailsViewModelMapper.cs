@@ -150,7 +150,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new PendingStartDateChange
             {
-                OriginalStartDate = startDateChangeDetails.OriginalActualStartDate,
                 PendingStartDate = startDateChangeDetails.PendingActualStartDate,
                 ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(startDateChangeDetails.Initiator)
             };

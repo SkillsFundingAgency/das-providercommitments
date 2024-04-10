@@ -172,7 +172,6 @@ public class GetManageApprenticeshipDetailsResponse
 
     public class PendingStartDateChangeDetails
     {
-        public DateTime OriginalActualStartDate { get; set; }
         public DateTime PendingActualStartDate { get; set; }
         public string Reason { get; set; }
         public long Ukprn { get; set; }
