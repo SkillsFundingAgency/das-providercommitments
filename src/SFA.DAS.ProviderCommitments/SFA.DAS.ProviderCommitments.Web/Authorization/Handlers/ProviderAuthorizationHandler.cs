@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 public class ProviderAuthorizationHandler(
     IOuterApiService outerApiService,
     IAuthorizationValueProvider authorizationValueProvider,
-    IOperationPermissionsProvider operationPermissionsProvider) : IAuthorizationHandler
+    IOperationPermissionClaimsProvider operationPermissionClaimsProvider) : IAuthorizationHandler
 {
     public string Prefix => "ProviderOperation.";
 
@@ -28,7 +28,7 @@ public class ProviderAuthorizationHandler(
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
         
-        if (operationPermissionsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
         {
             if (!hasPermission)
             {
@@ -40,7 +40,7 @@ public class ProviderAuthorizationHandler(
 
         hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
 
-        operationPermissionsProvider.Save(new OperationPermission
+        operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,

@@ -11,7 +11,7 @@ public interface IProviderAuthorizationHandler
 public class ProviderAuthorizationHandler(
     IOuterApiService outerApiService,
     IAuthorizationValueProvider authorizationValueProvider,
-    IOperationPermissionsProvider operationPermissionsProvider)
+    IOperationPermissionClaimsProvider operationPermissionClaimsProvider)
     : IProviderAuthorizationHandler
 {
     public async Task<bool> CanCreateCohort()
@@ -21,14 +21,14 @@ public class ProviderAuthorizationHandler(
 
         const Operation operation = Operation.CreateCohort;
 
-        if (operationPermissionsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
         {
             return hasPermission;
         }
 
         hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
         
-        operationPermissionsProvider.Save(new OperationPermission
+        operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,

@@ -38,7 +38,7 @@ public static class ApplicationServiceRegistrations
         services.AddTransient<ITempDataStorageService, TempDataStorageService>();
         services.AddTransient<IOuterApiClient, OuterApiClient>();
         services.AddTransient<IOuterApiService, OuterApiService>();
-        services.AddTransient<IOperationPermissionsProvider, OperationPermissionsProvider>();
+        services.AddTransient<IOperationPermissionClaimsProvider, OperationPermissionClaimClaimsProvider>();
         
         services.AddTransient<IBulkUploadFileParser, BulkUploadFileParser>();
         

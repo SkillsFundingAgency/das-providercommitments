@@ -20,7 +20,7 @@ public class CommitmentsAuthorisationHandler(
         return await CheckForAccess(
             ProviderClaims.AccessibleCohorts, 
             permissionValues.CohortId, 
-            () => outerApiService.CanAccessCohort(permissionValues.PartyId, permissionValues.CohortId));
+            () => outerApiService.CanAccessCohort(permissionValues.ProviderId, permissionValues.CohortId));
     }
 
     public async Task<bool> CanAccessApprenticeship()
@@ -30,7 +30,7 @@ public class CommitmentsAuthorisationHandler(
         return await CheckForAccess(
             ProviderClaims.AccessibleApprenticeships, 
             permissionValues.ApprenticeshipId, 
-            () => outerApiService.CanAccessApprenticeship(permissionValues.PartyId, permissionValues.ApprenticeshipId));
+            () => outerApiService.CanAccessApprenticeship(permissionValues.ProviderId, permissionValues.ApprenticeshipId));
     }
 
     private async Task<bool> CheckForAccess(string claimType, long entityId, Func<Task<bool>> accessChecker)
@@ -91,7 +91,7 @@ public class CommitmentsAuthorisationHandler(
         return accessibleEntities != null && accessibleEntities.Any() && accessibleEntities.ContainsKey(entityId);
     }
 
-    private (long CohortId, long ApprenticeshipId, long PartyId) GetPermissionValues()
+    private (long CohortId, long ApprenticeshipId, long ProviderId) GetPermissionValues()
     {
         var cohortId = authorizationValueProvider.GetCohortId();
         var apprenticeshipId = authorizationValueProvider.GetApprenticeshipId();

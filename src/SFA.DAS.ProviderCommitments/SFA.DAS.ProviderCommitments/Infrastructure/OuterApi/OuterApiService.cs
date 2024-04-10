@@ -218,18 +218,18 @@ public class OuterApiService : IOuterApiService
         return response.HasPermission;
     }
 
-    public async Task<bool> CanAccessApprenticeship(long partyId, long apprenticeshipId)
+    public async Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId)
     {
-        var content = new GetApprenticeshipAccessRequest(Party.Provider, partyId, apprenticeshipId);
+        var content = new GetApprenticeshipAccessRequest(Party.Provider, providerId, apprenticeshipId);
 
         var response = await _outerApiClient.Get<GetApprenticeshipAccessResponse>(content);
 
         return response.HasApprenticeshipAccess;
     }
 
-    public async Task<bool> CanAccessCohort(long partyId, long cohortId)
+    public async Task<bool> CanAccessCohort(long providerId, long cohortId)
     {
-        var content = new GetCohortAccessRequest(Party.Provider, partyId, cohortId);
+        var content = new GetCohortAccessRequest(Party.Provider, providerId, cohortId);
 
         var response = await _outerApiClient.Get<GetCohortAccessResponse>(content);
 

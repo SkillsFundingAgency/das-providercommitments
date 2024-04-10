@@ -15,12 +15,12 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization;
 
-public class OperationPermissionsProviderTests
+public class OperationPermissionClaimClaimsProviderTests
 {
     [Test, MoqAutoData]
     public void ShouldSaveToNewClaim(
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        OperationPermissionsProvider sut,
+        OperationPermissionClaimClaimsProvider sut,
         OperationPermission permission)
     {
         var claimsPrinciple = new ClaimsPrincipal(new[]
@@ -46,9 +46,9 @@ public class OperationPermissionsProviderTests
     }
 
     [Test, MoqAutoData]
-    public void ShouldUpdateUpdateExistingClaim(
+    public void ShouldUpdateExistingClaim(
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        OperationPermissionsProvider sut,
+        OperationPermissionClaimClaimsProvider sut,
         List<OperationPermission> existingPermissions,
         OperationPermission permission)
     {
@@ -79,7 +79,7 @@ public class OperationPermissionsProviderTests
     [Test, MoqAutoData]
     public void ShouldReturnFalseFromTryGetWhenThereIsNoPermissionsClaims(
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        OperationPermissionsProvider sut,
+        OperationPermissionClaimClaimsProvider sut,
         long? accountLegalEntityId,
         Operation operation)
     {
@@ -106,7 +106,7 @@ public class OperationPermissionsProviderTests
     [Test, MoqAutoData]
     public void ShouldReturnTrueAndReturnResultFromTryGetWhenThereIsPermissionsClaims(
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        OperationPermissionsProvider sut,
+        OperationPermissionClaimClaimsProvider sut,
         long? accountLegalEntityId,
         Operation operation)
     {

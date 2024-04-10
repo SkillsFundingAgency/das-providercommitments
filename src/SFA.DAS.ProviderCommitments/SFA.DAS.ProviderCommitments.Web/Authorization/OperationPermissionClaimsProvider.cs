@@ -7,13 +7,13 @@ using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 
-public interface IOperationPermissionsProvider
+public interface IOperationPermissionClaimsProvider
 {
     void Save(OperationPermission operationPermission);
     bool TryGetPermission(long? accountLegalEntityId, Operation operation, out bool result);
 }
 
-public class OperationPermissionsProvider(IHttpContextAccessor httpContextAccessor) : IOperationPermissionsProvider
+public class OperationPermissionClaimClaimsProvider(IHttpContextAccessor httpContextAccessor) : IOperationPermissionClaimsProvider
 {
     public bool TryGetPermission(long? accountLegalEntityId, Operation operation, out bool result)
     {
@@ -34,7 +34,7 @@ public class OperationPermissionsProvider(IHttpContextAccessor httpContextAccess
 
         return false;
     }
-    
+
     public void Save(OperationPermission operationPermission)
     {
         var user = httpContextAccessor.HttpContext?.User;
@@ -45,20 +45,17 @@ public class OperationPermissionsProvider(IHttpContextAccessor httpContextAccess
         }
         else
         {
-            var operationPermissions = GetPermissionsFromClaims();
-            operationPermissions.Add(operationPermission);
-
-            UpdateClaim(operationPermissions);
+            UpdateClaim(operationPermission);
         }
     }
-    
+
     private List<OperationPermission> GetPermissionsFromClaims()
     {
         var user = httpContextAccessor.HttpContext?.User;
-        
+
         return JsonConvert.DeserializeObject<List<OperationPermission>>(user.GetClaimValue(ProviderClaims.OperationPermissions));
     }
-    
+
     private void AddClaim(OperationPermission operationPermission)
     {
         httpContextAccessor.HttpContext?.User.Identities.First()
@@ -67,12 +64,15 @@ public class OperationPermissionsProvider(IHttpContextAccessor httpContextAccess
             );
     }
 
-    private void UpdateClaim(IEnumerable<OperationPermission> permissions)
+    private void UpdateClaim(OperationPermission operationPermission)
     {
+        var operationPermissions = GetPermissionsFromClaims();
+        operationPermissions.Add(operationPermission);
+
         var claimsIdentity = httpContextAccessor.HttpContext?.User.Identities.First();
 
         claimsIdentity.RemoveClaim(claimsIdentity.FindFirst(x => x.Type.Equals(ProviderClaims.OperationPermissions)));
 
-        claimsIdentity.AddClaim(new Claim(ProviderClaims.OperationPermissions, JsonConvert.SerializeObject(permissions), JsonClaimValueTypes.Json));
+        claimsIdentity.AddClaim(new Claim(ProviderClaims.OperationPermissions, JsonConvert.SerializeObject(operationPermissions), JsonClaimValueTypes.Json));
     }
 }
