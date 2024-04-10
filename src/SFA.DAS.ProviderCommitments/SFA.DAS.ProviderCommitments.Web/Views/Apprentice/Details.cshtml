@@ -1,6 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -68,6 +69,11 @@
             }
         }
 
+        @if (Model.HasPendingPriceChange && Model.PendingPriceChange.PriceChangeInitiator == PriceChangeInitiator.Employer)
+        {
+            <partial name="DetailsPartials/_PendingEmployerChangeOfPriceRequestBanner" />
+        }
+
         @if (Model.ShowChangeOfPriceRequestSent)
         {
             <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
@@ -75,6 +81,18 @@
         @if (Model.ShowPriceChangeCancelled)
         {
             <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
+        }
+        @if (Model.ShowPriceChangeApproved)
+        {
+            <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
+        }
+        @if (Model.ShowChangeOfPriceAutoApproved)
+        {
+            <partial name="DetailsPartials/_PriceChangeAutoApprovedBanner" />
+        }
+        @if (Model.ShowPriceChangeRejected)
+        {
+            <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
         }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
@@ -319,8 +337,8 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
-                                <a id="change-version-link" class="govuk-link"
-                                    href="@Url.RouteUrl(RouteNames.ChangeVersion)">Change</a>
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                   asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
                     </tr>
@@ -334,8 +352,8 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
                             {
-                                <a id="change-version-link" class="govuk-link"
-                                    href="@Url.RouteUrl(RouteNames.ChangeOption)">Change</a>
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                   asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
                     </tr>
@@ -435,47 +453,7 @@
 
         @if (Model.HasPendingPriceChange)
         {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <div class="govuk-grid-row govuk-!-margin-bottom-2">
-                    <div class="govuk-grid-column-two-thirds">
-                        <h2 class="govuk-heading-m">Price changes you've requested</h2>
-                    </div>
-                </div>
-
-                <table class="govuk-table">
-                    <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header"></th>
-                            <th class="govuk-table__header">Current</th>
-                            <th class="govuk-table__header">Requested</th>
-                        </tr>
-                        <tr class="govuk-table__row" id="pendingPriceChangeTrainingPriceRow">
-                            <th scope="row" class="govuk-table__header">Training price</th>
-                            <td class="govuk-table__cell">@Model.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">
-                                @Model.PendingPriceChange.TrainingPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                        </tr>
-                        <tr class="govuk-table__row" id="pendingPriceChangeEPAPriceRow">
-                            <th scope="row" class="govuk-table__header">End-point assessment price</th>
-                            <td class="govuk-table__cell">
-                                @Model.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">
-                                @Model.PendingPriceChange.EndPointAssessmentPrice.GetValueOrDefault().ToGdsCostFormat()</td>
-                        </tr>
-                        <tr class="govuk-table__row" id="pendingPriceChangeTotalPriceRow">
-                            <th scope="row" class="govuk-table__header">Total price</th>
-                            <td class="govuk-table__cell">@Model.Cost.ToGdsCostFormat()</td>
-                            <td class="govuk-table__cell">@Model.PendingPriceChange.Cost.ToGdsCostFormat()</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <a id="linkViewPendingPrice" asp-external-controller="" asp-external-subdomain="apprenticeshipdetails"
-                    asp-external-relativeroute="@Model.PendingPriceChangeRoute" class="govuk-link">View price changes you've
-                    requested</a>
-            </div>
-            <br />
-
-            <br />
+            <partial name="DetailsPartials/_PendingChangeOfPriceDetails" />
         }
 
         @if (Model.RecognisePriorLearning != null)

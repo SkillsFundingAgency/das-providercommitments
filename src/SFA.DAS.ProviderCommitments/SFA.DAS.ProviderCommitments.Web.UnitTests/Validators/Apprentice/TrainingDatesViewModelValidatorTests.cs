@@ -89,6 +89,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Apprentice
             var model = new TrainingDatesViewModel { StartDate = startDate, CurrentStartDate = currentStartDate };
             AssertValidationResult(request => request.StartDate, model, false);
         }
+        
+        [Test]
+        public void AndStartDateIsSameAsCurrentStartDate_ThenShouldHaveNoError()
+        {
+            DateTime currentStartDate = new DateTime(2019, 1, 1);
+            MonthYearModel startDate = new MonthYearModel("");
+            startDate.Month = 1;
+            startDate.Year = 2019;
+            var model = new TrainingDatesViewModel { StartDate = startDate, CurrentStartDate = currentStartDate };
+            AssertValidationResult(request => request.StartDate, model, true);
+        }
+
 
         [TestCase("082020", null, true)]
         [TestCase("082020", "082020", false)]

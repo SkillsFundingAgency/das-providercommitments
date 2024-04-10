@@ -702,6 +702,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 Source = Fixture.Create<DetailsRequest>();
                 ApiResponse = Fixture.Create<GetManageApprenticeshipDetailsResponse>();
                 ApiResponse.Apprenticeship.ProviderId = Source.ProviderId;
+                ApiResponse.PendingPriceChange.Initiator = "Provider";
                 CohortReference = Fixture.Create<string>();
                 AgreementId = Fixture.Create<string>();
                 URL = Fixture.Create<string>();
@@ -1034,7 +1035,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 {
                     Cost = 12324,
                     EndPointAssessmentPrice = 43258,
-                    TrainingPrice = 3248
+                    TrainingPrice = 3248,
+                    Initiator = "Provider"
                 };
                 
                 return this;
