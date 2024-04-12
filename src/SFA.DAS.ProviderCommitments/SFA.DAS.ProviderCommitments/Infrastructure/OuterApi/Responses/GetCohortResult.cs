@@ -21,6 +21,5 @@
         public long AccountLegalEntityId { get; set; }
         public long CohortId { get; set; }
         public string LatestMessageCreatedByEmployer { get; set; }
-        public bool ApprenticeEmailIsRequired { get; set; }
     }
 }
