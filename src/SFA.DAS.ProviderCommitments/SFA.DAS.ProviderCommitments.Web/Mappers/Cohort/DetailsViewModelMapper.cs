@@ -247,8 +247,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
-            if ( // cohortResponse.ApprenticeEmailIsRequired &&
-                 string.IsNullOrWhiteSpace(draftApprenticeship.Email)
+            if (string.IsNullOrWhiteSpace(draftApprenticeship.Email)
                 && !cohortResponse.IsLinkedToChangeOfPartyRequest)
             {
                 return false;
