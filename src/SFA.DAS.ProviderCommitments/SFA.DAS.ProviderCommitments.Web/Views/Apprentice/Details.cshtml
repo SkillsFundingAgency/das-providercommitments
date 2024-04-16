@@ -7,7 +7,6 @@
 @using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.ProviderCommitments.Web.Mappers
 @using SFA.DAS.Authorization.Services
 @using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
@@ -347,8 +346,8 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
-                                <a id="change-version-link" class="govuk-link"
-                                    href="@Url.RouteUrl(RouteNames.ChangeVersion)">Change</a>
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                   asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
                     </tr>
@@ -362,8 +361,8 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.AllowEditApprentice && Model.HasOptions && !Model.SingleOption)
                             {
-                                <a id="change-version-link" class="govuk-link"
-                                    href="@Url.RouteUrl(RouteNames.ChangeOption)">Change</a>
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                   asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
                     </tr>
