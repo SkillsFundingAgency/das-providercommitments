@@ -15,6 +15,7 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Cookies;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
@@ -81,7 +82,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-        public async Task<IActionResult> Details(DetailsRequest request, bool showChangeOfPriceRequestSent = false, bool showPriceChangeCancelled = false, bool showPriceChangeApproved = false, bool showChangeOfPriceAutoApproved = false, bool showPriceChangeRejected = false)
+        public async Task<IActionResult> Details(DetailsRequest request, string banners = "", bool showChangeOfPriceRequestSent = false, bool showPriceChangeCancelled = false, bool showPriceChangeApproved = false, bool showChangeOfPriceAutoApproved = false, bool showPriceChangeRejected = false)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
             viewModel.ShowChangeOfPriceRequestSent = showChangeOfPriceRequestSent;
@@ -89,6 +90,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             viewModel.ShowPriceChangeApproved = showPriceChangeApproved;
             viewModel.ShowChangeOfPriceAutoApproved = showChangeOfPriceAutoApproved;
             viewModel.ShowPriceChangeRejected = showPriceChangeRejected;
+            viewModel.ShowBannersFlags = banners.PipeDelimitedToFlags<DetailsViewModel.Banners>();
             return View(viewModel);
         }
 
