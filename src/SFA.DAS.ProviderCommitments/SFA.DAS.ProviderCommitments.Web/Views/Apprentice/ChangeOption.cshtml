@@ -65,21 +65,21 @@
             Save and continue
         </button>
 
-        <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance)" id="cancel-button"> Cancel and return </a>
+        <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance, new { Model.ApprenticeshipHashedId, Model.ProviderId})" id="cancel-button"> Cancel and return </a>
     </div>
 </form>
 
 @section breadcrumb {
     @if (Model.ReturnToEdit)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.EditApprenticeship)">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.EditApprenticeship, new { Model.ApprenticeshipHashedId, Model.ProviderId})">Back</a>
     }
     else if (Model.ReturnToChangeVersion)
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeVersion)">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeVersion, new { Model.ApprenticeshipHashedId, Model.ProviderId})">Back</a>
     }
     else
     {
-        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail)">Back</a>
+        <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail, new { Model.ApprenticeshipHashedId, Model.ProviderId})">Back</a>
     }
 }
