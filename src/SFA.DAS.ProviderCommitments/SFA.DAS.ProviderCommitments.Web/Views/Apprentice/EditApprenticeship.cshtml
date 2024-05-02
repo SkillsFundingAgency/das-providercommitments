@@ -380,7 +380,7 @@
                 <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
                     Update details
                 </button>
-                <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance)" id="cancel-button">Cancel and return</a>
+                <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance, new {Model.ProviderId ,Model.ApprenticeshipHashedId })" id="cancel-button">Cancel and return</a>
             </div>
 
         </form>
@@ -388,5 +388,5 @@
 </div>
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { ProviderId = Model.ProviderId ,ApprenticeshipHashedId = Model.ApprenticeshipHashedId })">Back to apprentice details</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.Action("Details", new { Model.ProviderId, Model.ApprenticeshipHashedId })">Back to apprentice details</a>
 }
