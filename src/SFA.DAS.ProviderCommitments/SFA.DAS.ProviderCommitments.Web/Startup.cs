@@ -11,6 +11,7 @@ using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
@@ -72,6 +73,8 @@ public class Startup
             .AddDataProtection(_configuration, _environment)
             .AddUrlHelper()
             .AddHealthChecks();
+
+        BearerTokenProvider.SetSigningKey(_configuration["UserBearerTokenSigningKey"]);
 
         services
             .AddCommitmentsApiClient(_configuration)
