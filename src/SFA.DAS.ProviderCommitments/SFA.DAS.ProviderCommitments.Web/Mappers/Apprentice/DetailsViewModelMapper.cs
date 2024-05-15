@@ -113,7 +113,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PriceReducedBy = data.Apprenticeship.PriceReducedBy,
                     HasMultipleDeliveryModelOptions = data.HasMultipleDeliveryModelOptions,
                     IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot,
-                    PendingPriceChange = Map(data.PendingPriceChange)
+                    PendingPriceChange = Map(data.PendingPriceChange),
+                    PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
+                    CanActualStartDateBeChanged = data.CanActualStartDateBeChanged
                 };
             }
             catch (Exception e)
@@ -135,7 +137,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 Cost = priceChangeDetails.Cost,
                 EndPointAssessmentPrice = priceChangeDetails.EndPointAssessmentPrice,
                 TrainingPrice = priceChangeDetails.TrainingPrice,
-                PriceChangeInitiator = Enum.Parse<PriceChangeInitiator>(priceChangeDetails.Initiator)
+                PriceChangeInitiator = Enum.Parse<ChangeInitiatedBy>(priceChangeDetails.Initiator)
+            };
+        }
+
+        private static PendingStartDateChange MapPendingStartDateChange(GetManageApprenticeshipDetailsResponse.PendingStartDateChangeDetails startDateChangeDetails)
+        {
+            if (startDateChangeDetails == null)
+            {
+                return null;
+            }
+
+            return new PendingStartDateChange
+            {
+                PendingStartDate = startDateChangeDetails.PendingActualStartDate,
+                ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(startDateChangeDetails.Initiator)
             };
         }
 

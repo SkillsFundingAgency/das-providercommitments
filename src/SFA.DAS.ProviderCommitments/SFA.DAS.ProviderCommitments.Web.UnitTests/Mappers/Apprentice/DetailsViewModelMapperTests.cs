@@ -703,6 +703,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApiResponse = Fixture.Create<GetManageApprenticeshipDetailsResponse>();
                 ApiResponse.Apprenticeship.ProviderId = Source.ProviderId;
                 ApiResponse.PendingPriceChange.Initiator = "Provider";
+                ApiResponse.PendingStartDateChange.Initiator = "Provider";
                 CohortReference = Fixture.Create<string>();
                 AgreementId = Fixture.Create<string>();
                 URL = Fixture.Create<string>();

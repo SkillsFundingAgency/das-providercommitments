@@ -83,16 +83,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
         public PendingPriceChange PendingPriceChange { get; set; }
+        public PendingStartDateChange PendingStartDateChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;
+        public bool HasPendingStartDateChange => PendingStartDateChange != null;
         public string ChangeOfPriceRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}";
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
+        public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
+        public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
         public bool ShowChangeOfPriceRequestSent { get; set; }
         public bool ShowPriceChangeCancelled { get; set; }
         public bool ShowPriceChangeApproved { get; set; }
         public bool ShowChangeOfPriceAutoApproved { get; set; }
         public bool ShowPriceChangeRejected { get; set; }
-
-		public enum DataLockSummaryStatus
+        public bool? CanActualStartDateBeChanged { get; set; }
+        public int ShowBannersFlags { get; set; } = 0;
+        public enum DataLockSummaryStatus
         {
             None,
             AwaitingTriage,
@@ -104,6 +109,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
+        }
+
+        /// <summary>
+        /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
+        /// </summary>
+        public enum Banners
+        {
+            ChangeOfStartDateSent = 1,
+            ChangeOfStartDateApproved = 2,
+            ChangeOfPriceRequestSent = 4, 
+            PriceChangeCancelled = 8, 
+            PriceChangeApproved = 16, 
+            ChangeOfPriceAutoApproved = 32, 
+            PriceChangeRejected = 64
         }
     }
 
@@ -121,6 +140,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public decimal Cost { get; set; }
         public decimal? TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
-        public PriceChangeInitiator PriceChangeInitiator { get; set; }
+        public ChangeInitiatedBy PriceChangeInitiator { get; set; }
+    }
+
+    public class PendingStartDateChange
+    {
+        public DateTime PendingStartDate { get; set; }
+        public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
     }
 }
