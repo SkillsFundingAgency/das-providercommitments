@@ -146,6 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
     public class PendingStartDateChange
     {
         public DateTime PendingStartDate { get; set; }
+        public DateTime PendingEndDate { get; set; }
         public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
     }
 }
