@@ -4,9 +4,11 @@
 @using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
+@using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.Authorization.Services
+@using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @inject IAuthorizationService AuthorisationService
 
@@ -14,6 +16,7 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
+
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -69,7 +72,7 @@
             }
         }
 
-        @if (Model.HasPendingPriceChange && Model.PendingPriceChange.PriceChangeInitiator == PriceChangeInitiator.Employer)
+        @if (Model.HasPendingPriceChange && Model.PendingPriceChange.PriceChangeInitiator == ChangeInitiatedBy.Employer)
         {
             <partial name="DetailsPartials/_PendingEmployerChangeOfPriceRequestBanner" />
         }
@@ -78,6 +81,12 @@
         {
             <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
         }
+
+        @if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateSent))
+        {
+            <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
+        }
+
         @if (Model.ShowPriceChangeCancelled)
         {
             <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
@@ -337,7 +346,7 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
-                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeVersion"
                                    asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
@@ -358,24 +367,36 @@
                         </td>
                     </tr>
                 }
-                @if (Model.ActualStartDate.HasValue)
+
+                @if (!Model.HasPendingStartDateChange)
                 {
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Actual training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()
+                        @if (Model.ActualStartDate.HasValue)
+                        {
+                            <th scope="row" class="govuk-table__header">Actual training start date</th>
+                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.ActualStartDate.Value.ToGdsFormat()</td>
+                        }
+                        else
+                        {
+                            <th scope="row" class="govuk-table__header">Planned training start date</th>
+                            <td id="apprentice-start-date" class="govuk-table__cell">@Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
+                        }
+                        <td class="govuk-table__cell">
+                            @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.CanActualStartDateBeChanged == true)
+                            {
+                                <a id="linkChangeStartDate" asp-external-controller=""
+                                   asp-external-subdomain="apprenticeshipdetails"
+                                   asp-external-relativeroute="@Model.ChangeOfStartDateRoute" class="govuk-link">Change</a>
+                            }
                         </td>
-                        <td class="govuk-table__cell"></td>
                     </tr>
                 }
                 else
                 {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Planned training start date</th>
-                        <td id="apprentice-start-date" class="govuk-table__cell">
-                            @Model.StartDate.Value.ToGdsFormatWithoutDay()</td>
-                        <td class="govuk-table__cell"></td>
-                    </tr>
+                    <partial name="DetailsPartials/_PendingChangeOfStartDateDetails" />
                 }
+
+
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Planned training end date</th>
