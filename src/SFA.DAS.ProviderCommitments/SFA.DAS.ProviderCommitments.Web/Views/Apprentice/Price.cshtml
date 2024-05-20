@@ -52,15 +52,5 @@
 
 @section breadcrumb
 {
-    @{
-        var backRoute = Model.InEditMode ? RouteNames.ApprenticeConfirm : RouteNames.ApprenticeTrainingDates;
-        var backModel = new
-        {
-            Model.CacheKey,
-            apprenticeshipHashedId = Context.GetRouteValue("apprenticeshipHashedId"),
-            providerId = Context.GetRouteValue("providerId")
-        };
-    }
-
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(backRoute, backModel)">Back</a>
+    <div class="das-js-back-link"></div>
 }
