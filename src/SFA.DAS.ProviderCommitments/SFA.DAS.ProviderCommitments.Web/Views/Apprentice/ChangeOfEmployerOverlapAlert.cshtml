@@ -182,5 +182,11 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Back</a>
+    @{
+        var backLinkRouteData = routeData with
+        {
+            IsEdit = false
+        };
+    }
+<a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, backLinkRouteData)">Back</a>
 }
