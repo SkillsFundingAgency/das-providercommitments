@@ -346,7 +346,7 @@
                         <td class="govuk-table__cell das-table-cell-width-15 govuk-table__cell--numeric">
                             @if (Model.ShowChangeVersionLink && Model.AllowEditApprentice)
                             {
-                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeOption"
+                                <a id="change-version-link" class="govuk-link" asp-route="@RouteNames.ChangeVersion"
                                    asp-route-providerId="@Model.ProviderId" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId">Change</a>
                             }
                         </td>
