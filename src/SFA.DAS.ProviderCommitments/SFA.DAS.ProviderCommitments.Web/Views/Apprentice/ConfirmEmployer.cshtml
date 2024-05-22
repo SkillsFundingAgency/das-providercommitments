@@ -1,10 +1,16 @@
-﻿@using SFA.DAS.ProviderCommitments.Web.RouteValues
+﻿@using Microsoft.AspNetCore.Routing
+@using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ConfirmEmployerViewModel
 
 @{
     ViewBag.Title = "Confirm Employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm-employer";
     ViewBag.GaData.Org = Model.LegalEntityName;
+    var backRouteData = new
+    {
+        apprenticeshipHashedId = Context.GetRouteValue("apprenticeshipHashedId"),
+        providerId = Context.GetRouteValue("providerId"),
+    };
 }
 
 <div class="govuk-grid-row">
@@ -63,5 +69,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectEmployer)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectEmployer, backRouteData)">Back</a>
 }

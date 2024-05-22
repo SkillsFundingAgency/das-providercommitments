@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@using Microsoft.AspNetCore.Routing
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
@@ -14,10 +15,12 @@
 
     var isRegular = Model.DeliveryModel != DeliveryModel.PortableFlexiJob;
 
-    var changeData = new
+    var routeData = new
     {
         CacheKey = Model.CacheKey,
-        IsEdit = true
+        IsEdit = true,
+        Model.ApprenticeshipHashedId,
+        providerId = Context.GetRouteValue("providerId")
     };
     
     string DisplayDate(DateTime value) => $"{value:MMMM yyyy}";
@@ -105,7 +108,7 @@
                 <th scope="row" class="govuk-table__header">Delivery model</th>
                 <td class="govuk-table__cell">@Model.DeliveryModel.GetReferenceDataDescription()</td>
                 <td class="govuk-table__cell">
-                    <a asp-hide="@(!Model.ShowDeliveryModelChangeLink)" id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, changeData)">Change</a>
+                    <a asp-hide="@(!Model.ShowDeliveryModelChangeLink)" id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, routeData)">Change</a>
                 </td>
             </tr>
             <tr class="govuk-table__row">
@@ -113,14 +116,14 @@
                 <th asp-hide="@isRegular" scope="row" class="govuk-table__header">New employment start date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewStartDateTime)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
                 </td>
             </tr>
             <tr asp-hide="@isRegular" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">New employment end date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDateTime.Value)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
                 </td>
             </tr>
             <tr class="govuk-table__row">
@@ -128,14 +131,14 @@
                 <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Projected apprenticeship training end date</th>
                 <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
                 <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, changeData)">Change</a>
+                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
                 </td>
             </tr>
             <tr asp-hide="@isRegular" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Training price for this employment</th>
                 <td class="govuk-table__cell">@Model.NewEmploymentPrice.Value.ToGdsCostFormat()</td>
                 <td class="govuk-table__cell">
-                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
+                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
                 </td>
             </tr>
             <tr class="govuk-table__row">
@@ -143,7 +146,7 @@
                 <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
                 <td class="govuk-table__cell">@Model.NewPrice.ToGdsCostFormat()</td>
                 <td class="govuk-table__cell">
-                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, changeData)">Change</a>
+                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
                 </td>
             </tr>
             </tbody>
@@ -179,5 +182,11 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, new { Model.CacheKey, Model.ProviderId })">Back</a>
+    @{
+        var backLinkRouteData = routeData with
+        {
+            IsEdit = false
+        };
+    }
+<a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, backLinkRouteData)">Back</a>
 }
