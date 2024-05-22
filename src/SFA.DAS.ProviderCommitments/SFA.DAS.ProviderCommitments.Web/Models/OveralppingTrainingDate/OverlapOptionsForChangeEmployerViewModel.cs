@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+﻿namespace SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
 {
     public class OverlapOptionsForChangeEmployerViewModel : DraftApprenticeshipOverlapOptionViewModel
     {

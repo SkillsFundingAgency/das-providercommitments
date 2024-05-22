@@ -7,8 +7,8 @@
 @using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using SFA.DAS.Authorization.Services
 @using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService
 
 @inject IAuthorizationService AuthorisationService
 
@@ -16,7 +16,6 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
-
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">

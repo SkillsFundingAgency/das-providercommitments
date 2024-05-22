@@ -8,18 +8,18 @@
 
 @section Styles
 {
-    @RenderSection("Styles", required: false)
+    @await RenderSectionAsync("Styles", required: false)
     <link href="/css/app.css" rel="stylesheet" no-cdn />
 }
 
 @section breadcrumb
 {
-    @RenderSection("breadcrumb", required: false)
+    @await RenderSectionAsync("breadcrumb", required: false)
 }
 
 @section Scripts
 {
-    @RenderSection("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
     <script src="libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
     <script src="/js/app.js" no-cdn></script>
 }
