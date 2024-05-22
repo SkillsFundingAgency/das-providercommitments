@@ -1,25 +1,20 @@
 ﻿using AspNetCore.IServiceCollection.AddIUrlHelper;
 using FluentValidation;
 using Microsoft.Extensions.Logging.ApplicationInsights;
-using SFA.DAS.Authorization.CommitmentPermissions.Client;
-using SFA.DAS.Authorization.CommitmentPermissions.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.Mvc.Extensions;
-using SFA.DAS.Authorization.ProviderFeatures.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.ProviderPermissions.DependencyResolution.Microsoft;
-using SFA.DAS.Authorization.Services;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Client;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
+using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
-using SFA.DAS.ProviderCommitments.Web.LocalDevRegistry;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
+using LocalDevApiClientFactory = SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.LocalDevApiClientFactory;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -36,14 +31,15 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        
         services.AddSingleton(_configuration);
         services.AddLogging(builder =>
         {
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
             builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
         });
-        
-        services.AddHttpContextAccessor();
+
         services.AddMediatR(x => x.RegisterServicesFromAssemblyContaining<CreateCohortHandler>());
 
         services.Configure<CookiePolicyOptions>(options =>
@@ -54,7 +50,6 @@ public class Startup
         });
 
         services.AddConfigurationOptions(_configuration);
-        services.AddProviderFeatures();
 
         services.AddDasHealthChecks();
         services.AddProviderAuthentication(_configuration);
@@ -64,12 +59,12 @@ public class Startup
 
         services.AddDasMvc(_configuration);
         services.AddProviderUiServiceRegistration(_configuration);
+        services.AddProviderFeatures();
 
         services.AddTransient<IAuthorizationService, AuthorizationService>();
-        services.AddAuthorization<AuthorizationContextProvider>();
 
         services
-            .AddAuthorizationService()
+            .AddAuthorizationServices()
             .AddDataProtection(_configuration, _environment)
             .AddUrlHelper()
             .AddHealthChecks();
@@ -79,22 +74,13 @@ public class Startup
         services
             .AddCommitmentsApiClient(_configuration)
             .AddProviderRelationshipsApiClient(_configuration)
-            .AddProviderFeaturesAuthorization()
-            .AddProviderPermissionsAuthorization()
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
 
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
 
-        if (_configuration.UseLocalRegistry())
-        {
-            services.AddTransient<ICommitmentPermissionsApiClientFactory, LocalDevApiClientFactory>();
-        }
-        else
-        {
-            services.AddCommitmentPermissionsAuthorization();
-        }
+        services.AddCommitmentPermissionsAuthorization(_configuration.UseLocalRegistry());
 
         services.AddEncodingServices(_configuration);
         services.AddApplicationServices();
@@ -124,7 +110,6 @@ public class Startup
         }
 
         app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
-            .UseUnauthorizedAccessExceptionHandler()
             .UseHttpsRedirection()
             .UseStaticFiles()
             .UseDasHealthChecks()

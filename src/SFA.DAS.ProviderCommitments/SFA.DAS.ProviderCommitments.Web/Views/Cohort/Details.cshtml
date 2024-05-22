@@ -3,9 +3,9 @@
 @using SFA.DAS.ProviderCommitments.Web.Models.Cohort
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @using SFA.DAS.ProviderCommitments.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SFA.DAS.ProviderCommitments.Interfaces
 @using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@inject IAuthorizationService AuthorizationService
 @inject ILinkGenerator LinkGenerator;
 @model SFA.DAS.ProviderCommitments.Web.Models.Cohort.DetailsViewModel
 
@@ -249,7 +249,7 @@
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
-            <th asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+            <th asp-show="@(!course.IsOnFlexiPaymentsPilot.GetValueOrDefault())" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
@@ -262,7 +262,7 @@
             }
             else
             {
-                <th asp-show="!@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
+                <th asp-show="@(!course.IsPortableFlexiJob)" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
             }
             @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
             {
@@ -288,7 +288,7 @@
                     }
                 </td>
                 <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                <td asp-show="!@course.IsOnFlexiPaymentsPilot.GetValueOrDefault()" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
+                <td asp-show="@(!course.IsOnFlexiPaymentsPilot.GetValueOrDefault())" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                 <td class="govuk-table__cell" data-label="Training dates">
                     @if (draftApprenticeship.HasOverlappingUln)
                     {

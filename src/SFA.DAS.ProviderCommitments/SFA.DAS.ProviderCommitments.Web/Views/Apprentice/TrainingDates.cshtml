@@ -1,5 +1,4 @@
-﻿@using Microsoft.Azure.Documents.SystemFunctions
-@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
@@ -159,29 +158,6 @@
 </div>
 
 @section breadcrumb
-    {
-    @{
-        string backRoute = "";
-        if (Model.InEditMode)
-        {
-            backRoute = RouteNames.ApprenticeConfirm;
-        }
-        else if (Model.SkippedDeliveryModelSelection)
-        {
-            backRoute = RouteNames.ApprenticeConfirmEmployer;
-        }
-        else
-        {
-            backRoute = RouteNames.ApprenticeSelectDeliveryModel;
-        }
-
-        var backModel = new
-        {
-            Model.CacheKey,
-            Model.ProviderId,
-            Model.ApprenticeshipHashedId
-        };
-    }
-
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(backRoute, backModel)">Back</a>
+{
+    <div class="das-js-back-link"></div>
 }

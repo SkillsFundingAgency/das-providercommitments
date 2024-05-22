@@ -8,6 +8,12 @@
     ViewData["Title"] = "Choose an employer";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/select-employer";
     ViewBag.GaData.Org = Model.LegalEntityName;
+
+     var backRouteData = new
+     {    
+         apprenticeshipHashedId = Context.GetRouteValue("apprenticeshipHashedId"),
+         providerId = Context.GetRouteValue("providerId"),
+     }; 
 }
 
 <div class="govuk-grid-row">
@@ -97,7 +103,7 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeEmployer)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.ChangeEmployerInform, backRouteData)">Back</a>
 }
 
 <script>

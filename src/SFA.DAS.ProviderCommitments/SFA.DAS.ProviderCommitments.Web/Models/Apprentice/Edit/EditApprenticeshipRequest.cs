@@ -1,17 +1,15 @@
-﻿using SFA.DAS.Authorization.ModelBinding;
+﻿using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit
 {
-    public class EditApprenticeshipRequest : BaseApprenticeshipRequest,IAuthorizationContextModel
+    public class EditApprenticeshipRequest : BaseApprenticeshipRequest, IAuthorizationContextModel
     {
-        [FromRoute]
-        public long ApprenticeshipId { get; set; }
+        [FromRoute] public long ApprenticeshipId { get; set; }
     }
-    
+
     public class BaseApprenticeshipRequest
     {
-        [FromRoute]
-        public long ProviderId { get; set; }
+        [FromRoute] public long ProviderId { get; set; }
         public string ApprenticeshipHashedId { get; set; }
     }
 }
