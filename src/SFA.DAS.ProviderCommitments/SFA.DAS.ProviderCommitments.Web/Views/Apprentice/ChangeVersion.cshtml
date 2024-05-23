@@ -52,7 +52,7 @@
 
     <div class="govuk-button-group">
         <button class="govuk-button" data-module="govuk-button" type="submit" id="continue-button">
-            Save and continue
+            Save and continue [@Model.ApprenticeshipHashedId @Model.ProviderId]
         </button>
 
         <a class="govuk-link govuk-link--no-visited-state" href="@Url.RouteUrl(RouteNames.CancelInProgressChangeOfCircumstance, new { Model.ApprenticeshipHashedId, Model.ProviderId})" id="cancel-button">Cancel and return</a>
