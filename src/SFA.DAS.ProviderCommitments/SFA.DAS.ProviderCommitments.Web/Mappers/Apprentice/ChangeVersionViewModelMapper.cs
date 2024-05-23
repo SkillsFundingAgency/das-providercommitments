@@ -23,6 +23,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 
             return new ChangeVersionViewModel
             {
+                ProviderId = source.ProviderId,
+                ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 CurrentVersion = apprenticeship.Version,
                 StandardTitle = currentVersion.TrainingProgramme.Name,
                 StandardUrl = currentVersion.TrainingProgramme.StandardPageUrl,
