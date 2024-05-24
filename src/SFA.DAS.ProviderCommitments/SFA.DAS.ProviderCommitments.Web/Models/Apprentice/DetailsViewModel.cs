@@ -114,16 +114,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         /// <summary>
         /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
         /// </summary>
+        [Flags]
         public enum Banners : ulong
         {
-            ChangeOfStartDateSent = 1,
-            ChangeOfStartDateApproved = 2,
-            ChangeOfStartDateCancelled = 4,
-            ChangeOfPriceRequestSent = 8, 
-            PriceChangeCancelled = 16, 
-            PriceChangeApproved = 32, 
-            ChangeOfPriceAutoApproved = 64, 
-            PriceChangeRejected = 128
+            ChangeOfStartDateSent,
+            ChangeOfStartDateApproved,
+            ChangeOfStartDateCancelled,
+            ChangeOfPriceRequestSent, 
+            PriceChangeCancelled, 
+            PriceChangeApproved, 
+            ChangeOfPriceAutoApproved, 
+            PriceChangeRejected
         }
     }
 
