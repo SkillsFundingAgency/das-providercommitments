@@ -117,14 +117,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         [Flags]
         public enum Banners : ulong
         {
-            ChangeOfStartDateSent,
-            ChangeOfStartDateApproved,
-            ChangeOfStartDateCancelled,
-            ChangeOfPriceRequestSent, 
-            PriceChangeCancelled, 
-            PriceChangeApproved, 
-            ChangeOfPriceAutoApproved, 
-            PriceChangeRejected
+            None = 0,
+            ChangeOfStartDateSent = 1,
+            ChangeOfStartDateApproved = 2,
+            ChangeOfStartDateCancelled = 4,
+            ChangeOfPriceRequestSent = 8, 
+            PriceChangeCancelled = 16, 
+            PriceChangeApproved = 32, 
+            ChangeOfPriceAutoApproved = 64, 
+            PriceChangeRejected = 128
         }
     }
 
