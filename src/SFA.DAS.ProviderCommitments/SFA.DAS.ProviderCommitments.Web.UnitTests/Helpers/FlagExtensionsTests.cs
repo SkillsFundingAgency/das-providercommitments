@@ -11,22 +11,22 @@ public class FlagExtensionsTests
     public void PipeDelimitedToFlags_ShouldReturnCorrectFlags()
     {
         string pipedelimitedlist = "One|Two|Four";
-        int result = pipedelimitedlist.PipeDelimitedToFlags<TestEnum>();
-        Assert.AreEqual(7, result);
+        ulong result = pipedelimitedlist.PipeDelimitedToFlags<TestEnum>();
+        Assert.That(result, Is.EqualTo(7));
     }
 
     [Test]
     public void ToFlags_ShouldReturnCorrectFlags()
     {
         List<string> list = new List<string> { "One", "Two", "Four" };
-        int result = list.ToFlags<TestEnum>();
-        Assert.AreEqual(7, result);
+        ulong result = list.ToFlags<TestEnum>();
+        Assert.That(result, Is.EqualTo(7));
     }
 
     [Test]
     public void IsFlagSet_ShouldReturnTrue_WhenFlagIsSet()
     {
-        int flags = 7;
+        ulong flags = 7;
         bool result = flags.IsFlagSet(TestEnum.One);
         Assert.IsTrue(result);
     }
@@ -34,13 +34,13 @@ public class FlagExtensionsTests
     [Test]
     public void IsFlagSet_ShouldReturnFalse_WhenFlagIsNotSet()
     {
-        int flags = 6;
+        ulong flags = 6;
         bool result = flags.IsFlagSet(TestEnum.One);
         Assert.IsFalse(result);
     }
 }
 
-public enum TestEnum
+public enum TestEnum : ulong
 {
     None = 0,
     One = 1,

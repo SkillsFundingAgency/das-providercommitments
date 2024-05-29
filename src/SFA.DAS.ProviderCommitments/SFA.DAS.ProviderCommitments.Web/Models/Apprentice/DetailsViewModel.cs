@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ShowChangeOfPriceAutoApproved { get; set; }
         public bool ShowPriceChangeRejected { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
-        public int ShowBannersFlags { get; set; } = 0;
+        public ulong ShowBannersFlags { get; set; } = 0;
         public enum DataLockSummaryStatus
         {
             None,
@@ -114,15 +114,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         /// <summary>
         /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
         /// </summary>
-        public enum Banners
+        [Flags]
+        public enum Banners : ulong
         {
+            None = 0,
             ChangeOfStartDateSent = 1,
             ChangeOfStartDateApproved = 2,
-            ChangeOfPriceRequestSent = 4, 
-            PriceChangeCancelled = 8, 
-            PriceChangeApproved = 16, 
-            ChangeOfPriceAutoApproved = 32, 
-            PriceChangeRejected = 64
+            ChangeOfStartDateCancelled = 4,
+            ChangeOfPriceRequestSent = 8, 
+            PriceChangeCancelled = 16, 
+            PriceChangeApproved = 32, 
+            ChangeOfPriceAutoApproved = 64, 
+            PriceChangeRejected = 128
         }
     }
 

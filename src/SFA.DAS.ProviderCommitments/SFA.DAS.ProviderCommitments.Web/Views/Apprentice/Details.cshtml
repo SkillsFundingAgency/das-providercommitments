@@ -86,6 +86,11 @@
             <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
         }
 
+        @if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateCancelled))
+        {
+            <partial name="DetailsPartials/_ChangeOfStartDateCancelledBanner" />
+        }
+
         @if (Model.ShowPriceChangeCancelled)
         {
             <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
