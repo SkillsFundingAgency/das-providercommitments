@@ -1,5 +1,4 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Models
 @using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
 @model DraftApprenticeshipOverlapOptionViewModel
 
@@ -26,7 +25,7 @@
         <li>send an email from the service</li>
         }
         <li>contact the employer, if you have their details</li>
-         @if (!@Model.EnableStopRequestEmail)
+         @if (!Model.EnableStopRequestEmail)
          {
             <li><a class="govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb" target="_blank">contact the help desk</a></li>
          }

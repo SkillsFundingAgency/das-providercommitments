@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Routing;
-using SFA.DAS.Authorization.CommitmentPermissions.Context;
-using SFA.DAS.Authorization.Context;
-using SFA.DAS.Authorization.ProviderFeatures.Context;
-using SFA.DAS.Authorization.ProviderPermissions.Context;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
-namespace SFA.DAS.ProviderCommitments.Web.Authorization;
+namespace SFA.DAS.ProviderCommitments.Web.Authorization.Context;
+
+public interface IAuthorizationContextProvider
+{
+    IAuthorizationContext GetAuthorizationContext();
+}
 
 public class AuthorizationContextProvider : IAuthorizationContextProvider
 {
@@ -26,6 +28,7 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
     public IAuthorizationContext GetAuthorizationContext()
     {
         var authorizationContext = new AuthorizationContext();
+
         var accountLegalEntityId = GetAccountLegalEntityId();
         var cohortId = GetCohortId();
         var draftApprenticeshipId = GetDraftApprenticeshipId();
@@ -33,7 +36,7 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
         var services = GetServices();
         var ukprn = GetUkrpn();
         var userEmail = GetUserEmail();
-            
+
         if (cohortId != null)
         {
             authorizationContext.Set(AuthorizationContextKeys.CohortId, cohortId);
@@ -62,12 +65,12 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
         {
             authorizationContext.AddProviderFeatureValues(ukprn.Value, userEmail);
         }
-            
+
         if (accountLegalEntityId != null && ukprn != null)
         {
             authorizationContext.AddProviderPermissionValues(accountLegalEntityId.Value, ukprn.Value);
         }
-            
+
         if (cohortId != null && ukprn != null)
         {
             authorizationContext.AddCommitmentPermissionValues(cohortId.Value, Party.Provider, ukprn.Value);
@@ -105,6 +108,7 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
     {
         return FindAndDecodeValue(RouteValueKeys.ApprenticeshipId, EncodingType.ApprenticeshipId);
     }
+
     private IEnumerable<string> GetServices()
     {
         if (!_authenticationService.IsUserAuthenticated())
@@ -147,12 +151,14 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
             return null;
         }
 
-        if (!_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
+        if (_authenticationService.TryGetUserClaimValue(ProviderClaims.Email, out var userEmail))
         {
-            if (!_authenticationService.TryGetUserClaimValue("email", out userEmail))
-            {
-                throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Email}'");    
-            }
+            return userEmail;
+        }
+        
+        if (!_authenticationService.TryGetUserClaimValue("email", out userEmail))
+        {
+            throw new UnauthorizedAccessException($"Failed to get value for claim '{ProviderClaims.Email}'");
         }
 
         return userEmail;
@@ -176,7 +182,13 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
     private bool TryGetValueFromHttpContext(string key, out string value)
     {
         value = null;
-            
+
+        // for testing
+        if (_httpContextAccessor.HttpContext == null)
+        {
+            return false;
+        }
+
         if (_httpContextAccessor.HttpContext.GetRouteData().Values.TryGetValue(key, out var routeValue))
         {
             value = (string)routeValue;
@@ -190,11 +202,6 @@ public class AuthorizationContextProvider : IAuthorizationContextProvider
             value = formValue;
         }
 
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        return true;
+        return !string.IsNullOrWhiteSpace(value);
     }
 }

@@ -1,4 +1,4 @@
-using SFA.DAS.Authorization.ModelBinding;
+using SFA.DAS.ProviderCommitments.Web.ModelBinding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 

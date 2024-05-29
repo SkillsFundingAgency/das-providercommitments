@@ -1,6 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
 @using SFA.DAS.ProviderCommitments.Web.RouteValues;
-@inject SFA.DAS.Authorization.Services.IAuthorizationService AuthorizationService
+@using SFA.DAS.ProviderCommitments.Interfaces
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Check your recognised prior learning";
