@@ -82,6 +82,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
+
+        public string PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;

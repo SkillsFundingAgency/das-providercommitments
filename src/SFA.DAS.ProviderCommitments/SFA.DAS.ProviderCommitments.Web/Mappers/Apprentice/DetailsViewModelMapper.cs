@@ -115,7 +115,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     IsOnFlexiPaymentPilot = data.Apprenticeship.IsOnFlexiPaymentPilot,
                     PendingPriceChange = Map(data.PendingPriceChange),
                     PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
-                    CanActualStartDateBeChanged = data.CanActualStartDateBeChanged
+                    CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
+                    PaymentStatus = data.PaymentsFrozen == true ? "Inactive" : "Active"
                 };
             }
             catch (Exception e)
