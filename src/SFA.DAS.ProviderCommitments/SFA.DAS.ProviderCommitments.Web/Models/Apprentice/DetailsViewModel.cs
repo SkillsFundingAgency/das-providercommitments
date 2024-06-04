@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
-        public string PaymentStatus { get; set; }
+        public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;
@@ -153,5 +153,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime PendingStartDate { get; set; }
         public DateTime PendingEndDate { get; set; }
         public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
+    }
+
+    public class PaymentsStatus
+    {
+        public string Status => PaymentsFrozen ? "Inactive" : "Active";
+        public bool PaymentsFrozen { get; set; }
+        public string ReasonFrozen { get; set; }
+        public DateTime? FrozenOn { get; set; }
     }
 }

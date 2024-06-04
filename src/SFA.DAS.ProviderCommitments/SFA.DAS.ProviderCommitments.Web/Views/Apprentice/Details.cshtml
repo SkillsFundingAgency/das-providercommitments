@@ -107,6 +107,10 @@
         {
             <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
         }
+        @if (Model.PaymentStatus.PaymentsFrozen && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+        {
+            <partial name="DetailsPartials/_PaymentsFrozenBanner" />
+        }
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
@@ -176,7 +180,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Provider payments status</th>
                         <td id="provider-payments-status" class="govuk-table__cell das-table-cell-width-55">
-                            <strong class="govuk-tag govuk-tag--blue">@Model.PaymentStatus</strong>
+                            <strong class="govuk-tag govuk-tag--blue">@Model.PaymentStatus.Status</strong>
                         </td>
                     </tr>
                 }
