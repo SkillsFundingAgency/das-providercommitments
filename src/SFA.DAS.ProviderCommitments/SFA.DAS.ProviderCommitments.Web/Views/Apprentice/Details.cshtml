@@ -541,5 +541,5 @@
 </div>
 
 @section breadcrumb {
-    <a id="back-link" class="govuk-back-link" asp-route="@RouteNames.ApprenticesIndex" asp-route-fromsearch="true">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(@RouteNames.ApprenticesIndex, new {Model.ProviderId, FromSearch = true})">Back</a>
 }
