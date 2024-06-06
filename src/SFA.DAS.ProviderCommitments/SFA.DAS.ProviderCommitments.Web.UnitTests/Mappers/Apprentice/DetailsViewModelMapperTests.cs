@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -678,13 +679,37 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_fixture.Result.PaymentStatus.Status, Is.EqualTo("Inactive"));
-                Assert.That(_fixture.Result.PaymentStatus.FrozenOn, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.FrozenOn));
-                Assert.That(_fixture.Result.PaymentStatus.PaymentsFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen));
-                Assert.That(_fixture.Result.PaymentStatus.ReasonFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen));
-            });
+            _fixture.Result.PaymentStatus.Status.Should().Be("Inactive");
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentFrozenOnIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.FrozenOn.Should().Be(_fixture.ApiResponse.PaymentsStatus.FrozenOn);
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentsFrozenIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.PaymentsFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen);
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenReasonFrozenOnIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.ReasonFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen);
         }
 
         [Test]
@@ -694,13 +719,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             await _fixture.Map();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_fixture.Result.PaymentStatus.Status, Is.EqualTo("Active"));
-                Assert.That(_fixture.Result.PaymentStatus.FrozenOn, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.FrozenOn));
-                Assert.That(_fixture.Result.PaymentStatus.PaymentsFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen));
-                Assert.That(_fixture.Result.PaymentStatus.ReasonFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen));
-            });
+            _fixture.Result.PaymentStatus.Status.Should().Be("Active");
         }
 
         public class DetailsViewModelMapperFixture
