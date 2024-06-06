@@ -671,6 +671,38 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             });
         }
 
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(_fixture.Result.PaymentStatus.Status, Is.EqualTo("Inactive"));
+                Assert.That(_fixture.Result.PaymentStatus.FrozenOn, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.FrozenOn));
+                Assert.That(_fixture.Result.PaymentStatus.PaymentsFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen));
+                Assert.That(_fixture.Result.PaymentStatus.ReasonFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen));
+            });
+        }
+
+        [Test]
+        public async Task And_PaymentsAreNotFrozen_ThenPaymentStatusIsMappedCorrectly()
+        {
+            _fixture.WithoutFrozenPayments();
+
+            await _fixture.Map();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(_fixture.Result.PaymentStatus.Status, Is.EqualTo("Active"));
+                Assert.That(_fixture.Result.PaymentStatus.FrozenOn, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.FrozenOn));
+                Assert.That(_fixture.Result.PaymentStatus.PaymentsFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen));
+                Assert.That(_fixture.Result.PaymentStatus.ReasonFrozen, Is.EqualTo(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen));
+            });
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -1040,6 +1072,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     Initiator = "Provider"
                 };
                 
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithFrozenPayments()
+            {
+                ApiResponse.PaymentsStatus.PaymentsFrozen = true;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithoutFrozenPayments()
+            {
+                ApiResponse.PaymentsStatus.PaymentsFrozen = false;
                 return this;
             }
         }
