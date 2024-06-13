@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Helpers;
 using System.Collections.Generic;
+using FluentAssertions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Helpers;
 
@@ -11,36 +12,36 @@ public class FlagExtensionsTests
     public void PipeDelimitedToFlags_ShouldReturnCorrectFlags()
     {
         string pipedelimitedlist = "One|Two|Four";
-        int result = pipedelimitedlist.PipeDelimitedToFlags<TestEnum>();
-        Assert.AreEqual(7, result);
+        ulong result = pipedelimitedlist.PipeDelimitedToFlags<TestEnum>();
+        result.Should().Be(7);
     }
 
     [Test]
     public void ToFlags_ShouldReturnCorrectFlags()
     {
         List<string> list = new List<string> { "One", "Two", "Four" };
-        int result = list.ToFlags<TestEnum>();
-        Assert.AreEqual(7, result);
+        ulong result = list.ToFlags<TestEnum>();
+        result.Should().Be(7);
     }
 
     [Test]
     public void IsFlagSet_ShouldReturnTrue_WhenFlagIsSet()
     {
-        int flags = 7;
+        ulong flags = 7;
         bool result = flags.IsFlagSet(TestEnum.One);
-        Assert.IsTrue(result);
+        result.Should().BeTrue();
     }
 
     [Test]
     public void IsFlagSet_ShouldReturnFalse_WhenFlagIsNotSet()
     {
-        int flags = 6;
+        ulong flags = 6;
         bool result = flags.IsFlagSet(TestEnum.One);
-        Assert.IsFalse(result);
+        result.Should().BeFalse();
     }
 }
 
-public enum TestEnum
+public enum TestEnum : ulong
 {
     None = 0,
     One = 1,

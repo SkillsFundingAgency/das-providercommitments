@@ -30,6 +30,7 @@ public class GetManageApprenticeshipDetailsResponse
     public PendingPriceChangeDetails PendingPriceChange { get; set; }
     public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
     public bool? CanActualStartDateBeChanged { get; set; }
+    public bool? PaymentsFrozen { get; set; }
 
     public class ApprenticeshipDetails
     {
@@ -173,6 +174,7 @@ public class GetManageApprenticeshipDetailsResponse
     public class PendingStartDateChangeDetails
     {
         public DateTime PendingActualStartDate { get; set; }
+        public DateTime PendingPlannedEndDate { get; set; }
         public string Reason { get; set; }
         public long Ukprn { get; set; }
         public long AccountLegalEntityId { get; set; }

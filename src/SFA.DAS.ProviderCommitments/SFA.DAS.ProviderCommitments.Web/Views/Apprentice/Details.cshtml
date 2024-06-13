@@ -86,6 +86,11 @@
             <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
         }
 
+        @if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateCancelled))
+        {
+            <partial name="DetailsPartials/_ChangeOfStartDateCancelledBanner" />
+        }
+
         @if (Model.ShowPriceChangeCancelled)
         {
             <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
@@ -164,6 +169,15 @@
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Simplified payments pilot</th>
                         <td id="apprenticeship-payment-pilot" class="govuk-table__cell das-table-cell-width-55">
                             @Model.IsOnFlexiPaymentPilotDisplay</td>
+                    </tr>
+                }
+                @if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header das-table-cell-width-45">Provider payments status</th>
+                        <td id="provider-payments-status" class="govuk-table__cell das-table-cell-width-55">
+                            <strong class="govuk-tag govuk-tag--blue">@Model.PaymentStatus</strong>
+                        </td>
                     </tr>
                 }
                 <tr class="govuk-table__row">

@@ -2,30 +2,30 @@
 
 public static class FlagExtensions
 {
-    public static int PipeDelimitedToFlags<T>(this string pipedelimitedlist) where T: Enum
+    public static ulong PipeDelimitedToFlags<T>(this string pipedelimitedlist) where T: Enum
     {
         if(string.IsNullOrEmpty(pipedelimitedlist))
         {
-            return 0;
+            return (ulong)0;
         }
 
         var list = pipedelimitedlist.Split('|').ToList();
         return list.ToFlags<T>();
     }
 
-    public static int ToFlags<T>(this List<string> list) where T : Enum
+    public static ulong ToFlags<T>(this List<string> list) where T : Enum
     {
-        var flags = 0;
+        var flags = (ulong)0;
         foreach (var item in list)
         {
-            flags |= (int)Enum.Parse(typeof(T), item);
+            flags |= (ulong)Enum.Parse(typeof(T), item, true);
         }
         return flags;
     }
 
-    public static bool IsFlagSet<T>(this int flags, T flag) where T : Enum
+    public static bool IsFlagSet<T>(this ulong flags, T flag) where T : Enum
     {
-        var checkFlag = (int)(object)flag;
+        var checkFlag = (ulong)(object)flag;
         var andFlag = flags & checkFlag;
 
         if(andFlag != 0)
