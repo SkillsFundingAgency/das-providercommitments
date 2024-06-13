@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderCommitments.Web.Helpers;
 using System.Collections.Generic;
+using FluentAssertions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Helpers;
 
@@ -12,7 +13,7 @@ public class FlagExtensionsTests
     {
         string pipedelimitedlist = "One|Two|Four";
         ulong result = pipedelimitedlist.PipeDelimitedToFlags<TestEnum>();
-        Assert.That(result, Is.EqualTo(7));
+        result.Should().Be(7);
     }
 
     [Test]
@@ -20,7 +21,7 @@ public class FlagExtensionsTests
     {
         List<string> list = new List<string> { "One", "Two", "Four" };
         ulong result = list.ToFlags<TestEnum>();
-        Assert.That(result, Is.EqualTo(7));
+        result.Should().Be(7);
     }
 
     [Test]
@@ -28,7 +29,7 @@ public class FlagExtensionsTests
     {
         ulong flags = 7;
         bool result = flags.IsFlagSet(TestEnum.One);
-        Assert.IsTrue(result);
+        result.Should().BeTrue();
     }
 
     [Test]
@@ -36,7 +37,7 @@ public class FlagExtensionsTests
     {
         ulong flags = 6;
         bool result = flags.IsFlagSet(TestEnum.One);
-        Assert.IsFalse(result);
+        result.Should().BeFalse();
     }
 }
 
