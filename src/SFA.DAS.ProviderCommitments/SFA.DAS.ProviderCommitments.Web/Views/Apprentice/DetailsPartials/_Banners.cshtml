@@ -1,0 +1,98 @@
+﻿@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.ProviderCommitments.Enums
+@using SFA.DAS.ProviderCommitments.Web.Helpers
+@using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
+@using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+@if (Model.ShowActionRequiredBanner)
+{
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+         data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Action required
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                @if (Model.HasEmployerPendingUpdate)
+                {
+                    <partial name="DetailsPartials/_PendingEmployerUpdateBanner" />
+                }
+
+                @if (Model.HasPendingChangeOfPartyRequest && Model.PendingChangeOfPartyRequestWithParty ==
+               Party.Provider)
+                {
+                    <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
+                }
+
+                @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.HasUnresolvedDataLocks)
+                {
+                    <partial name="DetailsPartials/_DataLockBanner" />
+                }
+            </p>
+        </div>
+    </div>
+}
+
+@if (Model.ShowChangesToThisApprenticeshipBanner)
+{
+    <h2 class="govuk-heading-m">Changes to this apprenticeship</h2>
+
+    @if (Model.HasProviderPendingUpdate)
+    {
+        <partial name="DetailsPartials/_PendingProviderUpdateBanner" />
+    }
+
+    @if (Model.HasPendingChangeOfPartyRequest && Model.PendingChangeOfPartyRequestWithParty == Party.Employer)
+    {
+        <partial name="DetailsPartials/_PendingChangeOfPartyRequestBanner" />
+    }
+
+    @if (Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.AwaitingTriage)
+    {
+        <partial name="DetailsPartials/_DataLockBanner" />
+    }
+}
+
+@if (Model.HasPendingPriceChange && Model.PendingPriceChange.PriceChangeInitiator == ChangeInitiatedBy.Employer)
+{
+    <partial name="DetailsPartials/_PendingEmployerChangeOfPriceRequestBanner" />
+}
+
+@if (Model.ShowChangeOfPriceRequestSent)
+{
+    <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
+}
+
+@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateSent))
+{
+    <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
+}
+
+@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateCancelled))
+{
+    <partial name="DetailsPartials/_ChangeOfStartDateCancelledBanner" />
+}
+
+@if (Model.ShowPriceChangeCancelled)
+{
+    <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
+}
+@if (Model.ShowPriceChangeApproved)
+{
+    <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
+}
+@if (Model.ShowChangeOfPriceAutoApproved)
+{
+    <partial name="DetailsPartials/_PriceChangeAutoApprovedBanner" />
+}
+@if (Model.ShowPriceChangeRejected)
+{
+    <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
+}
+@if (Model.PaymentStatus.PaymentsFrozen && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+{
+    <partial name="DetailsPartials/_PaymentsFrozenBanner" />
+}
