@@ -8,6 +8,7 @@ using SFA.DAS.CommitmentsV2.Shared.Models;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.Provider.Shared.UI.Models.Flags;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
@@ -80,15 +81,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-        public async Task<IActionResult> Details(DetailsRequest request, string banners = "", bool showChangeOfPriceRequestSent = false, bool showPriceChangeCancelled = false, bool showPriceChangeApproved = false, bool showChangeOfPriceAutoApproved = false, bool showPriceChangeRejected = false)
+        public async Task<IActionResult> Details(DetailsRequest request, ApprenticeDetailsBanners banners = 0)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
-            viewModel.ShowChangeOfPriceRequestSent = showChangeOfPriceRequestSent;
-            viewModel.ShowPriceChangeCancelled = showPriceChangeCancelled;
-            viewModel.ShowPriceChangeApproved = showPriceChangeApproved;
-            viewModel.ShowChangeOfPriceAutoApproved = showChangeOfPriceAutoApproved;
-            viewModel.ShowPriceChangeRejected = showPriceChangeRejected;
-            viewModel.ShowBannersFlags = banners.PipeDelimitedToFlags<DetailsViewModel.Banners>();
+            viewModel.ShowBannersFlags = banners;
             return View(viewModel);
         }
 

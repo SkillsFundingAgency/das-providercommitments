@@ -2,6 +2,7 @@
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Enums;
+using SFA.DAS.Provider.Shared.UI.Models.Flags;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -98,7 +99,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ShowChangeOfPriceAutoApproved { get; set; }
         public bool ShowPriceChangeRejected { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
-        public ulong ShowBannersFlags { get; set; } = 0;
+        public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
         public enum DataLockSummaryStatus
         {
             None,
@@ -111,23 +112,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
-        }
-
-        /// <summary>
-        /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
-        /// </summary>
-        [Flags]
-        public enum Banners : ulong
-        {
-            None = 0,
-            ChangeOfStartDateSent = 1,
-            ChangeOfStartDateApproved = 2,
-            ChangeOfStartDateCancelled = 4,
-            ChangeOfPriceRequestSent = 8, 
-            PriceChangeCancelled = 16, 
-            PriceChangeApproved = 32, 
-            ChangeOfPriceAutoApproved = 64, 
-            PriceChangeRejected = 128
         }
     }
 
