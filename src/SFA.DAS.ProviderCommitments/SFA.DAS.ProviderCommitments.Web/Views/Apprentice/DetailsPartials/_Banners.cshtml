@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.CommitmentsV2.Types
+@using SFA.DAS.Provider.Shared.UI.Models.Flags
 @using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -66,29 +67,29 @@
     <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
 }
 
-@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateSent))
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfStartDateSent))
 {
     <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
 }
 
-@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateCancelled))
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfStartDateCancelled))
 {
     <partial name="DetailsPartials/_ChangeOfStartDateCancelledBanner" />
 }
 
-@if (Model.ShowPriceChangeCancelled)
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceCancelled))
 {
     <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
 }
-@if (Model.ShowPriceChangeApproved)
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceApproved))
 {
     <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
 }
-@if (Model.ShowChangeOfPriceAutoApproved)
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceAutoApproved))
 {
     <partial name="DetailsPartials/_PriceChangeAutoApprovedBanner" />
 }
-@if (Model.ShowPriceChangeRejected)
+@if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceRejected))
 {
     <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
 }

@@ -23,14 +23,7 @@
     <div class="govuk-grid-column-two-thirds">
        
         <partial name="DetailsPartials/_Banners" />
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceRequestSent))
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfStartDateSent))
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfStartDateCancelled))
-
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.PriceChangeCancelled))
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.PriceChangeApproved))
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.ChangeOfPriceAutoApproved))
-        @if (Model.ShowBannersFlags.IsFlagSet(ApprenticeDetailsBanners.PriceChangeRejected))
+        
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
