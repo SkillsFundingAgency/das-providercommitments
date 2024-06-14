@@ -93,11 +93,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
         public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
         public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
-        public bool ShowChangeOfPriceRequestSent { get; set; }
-        public bool ShowPriceChangeCancelled { get; set; }
-        public bool ShowPriceChangeApproved { get; set; }
-        public bool ShowChangeOfPriceAutoApproved { get; set; }
-        public bool ShowPriceChangeRejected { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
         public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
         public enum DataLockSummaryStatus

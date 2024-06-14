@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.Provider.Shared.UI.Models.Flags;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -58,9 +59,9 @@ public class ApprenticeControllerTestFixtureBase
         Controller.TempData = MockTempData.Object;
     }
 
-    public async Task<ApprenticeControllerTestFixtureBase> GetDetails()
+    public async Task<ApprenticeControllerTestFixtureBase> GetDetails(ApprenticeDetailsBanners banners = 0)
     {
-        _actionResult = await Controller.Details(_detailsRequest);
+        _actionResult = await Controller.Details(_detailsRequest, banners);
         return this;
     }
 
@@ -76,6 +77,16 @@ public class ApprenticeControllerTestFixtureBase
         Assert.That(viewResult, Is.Not.Null);
         var model = viewResult.Model as DetailsViewModel;
         Assert.That(model, Is.Not.Null);
+        return this;
+    }
+
+    public ApprenticeControllerTestFixtureBase VerifyBannerFlagsAreMapped(ApprenticeDetailsBanners expectedBanners)
+    {
+        var viewResult = _actionResult as ViewResult;
+        Assert.That(viewResult, Is.Not.Null);
+        var model = viewResult.Model as DetailsViewModel;
+        Assert.That(model, Is.Not.Null);
+        Assert.That(model.ShowBannersFlags, Is.EqualTo(expectedBanners));
         return this;
     }
 }
