@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
@@ -83,9 +84,10 @@ public class ApprenticeControllerTestFixtureBase
     {
         var viewResult = _actionResult as ViewResult;
         Assert.That(viewResult, Is.Not.Null);
+        viewResult.Should().NotBeNull();
         var model = viewResult.Model as DetailsViewModel;
-        Assert.That(model, Is.Not.Null);
-        Assert.That(model.ShowBannersFlags, Is.EqualTo(expectedBanners));
+        model.Should().NotBeNull();
+        model.ShowBannersFlags.Should().Be(expectedBanners);
         return this;
     }
 }
