@@ -22,7 +22,7 @@
     <div class="govuk-grid-column-two-thirds">
        
         <partial name="DetailsPartials/_Banners" />
-
+        
         <h1 class="govuk-heading-xl">@Model.ApprenticeName</h1>
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)

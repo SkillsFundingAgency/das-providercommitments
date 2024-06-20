@@ -1,8 +1,7 @@
 ﻿@using SFA.DAS.CommitmentsV2.Types
 @using SFA.DAS.ProviderCommitments.Enums
-@using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
-@using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using SFA.DAS.ProviderCommitments.Web.Models.Shared
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
 @if (Model.ShowActionRequiredBanner)
@@ -61,37 +60,46 @@
     <partial name="DetailsPartials/_PendingEmployerChangeOfPriceRequestBanner" />
 }
 
-@if (Model.ShowChangeOfPriceRequestSent)
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfPriceRequestSent))
 {
     <partial name="DetailsPartials/_ChangeOfPriceRequestSentBanner" />
 }
 
-@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateSent))
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfStartDateSent))
 {
     <partial name="DetailsPartials/_ChangeOfStartDateRequestSentBanner" />
 }
 
-@if (Model.ShowBannersFlags.IsFlagSet(Banners.ChangeOfStartDateCancelled))
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfStartDateCancelled))
 {
-    <partial name="DetailsPartials/_ChangeOfStartDateCancelledBanner" />
+    var changeOfStartDateCancelledBannerModel = new SuccessBannerModel("startdate-change-cancelled-banner", "Your request to change the start date has been cancelled", "The employer has been notified.");
+    <partial name="DetailsPartials/_SuccessBanner" model="changeOfStartDateCancelledBannerModel" />
 }
 
-@if (Model.ShowPriceChangeCancelled)
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfPriceCancelled))
 {
-    <partial name="DetailsPartials/_PriceChangeCancelledBanner" />
+    var changeOfPriceCancelledBannerModel = new SuccessBannerModel("price-change-cancelled-banner", "Your request to change the price has been cancelled", "");
+    <partial name="DetailsPartials/_SuccessBanner" model="changeOfPriceCancelledBannerModel" />
 }
-@if (Model.ShowPriceChangeApproved)
+
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfPriceApproved))
 {
-    <partial name="DetailsPartials/_PriceChangeApprovedBanner" />
+    var changeOfPriceApprovedBannerModel = new SuccessBannerModel("change-of-price-approved-banner", "Changes Approved", "The Employer has been notified of the approval.");
+    <partial name="DetailsPartials/_SuccessBanner" model="changeOfPriceApprovedBannerModel" />
 }
-@if (Model.ShowChangeOfPriceAutoApproved)
+
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfPriceAutoApproved))
 {
-    <partial name="DetailsPartials/_PriceChangeAutoApprovedBanner" />
+    var changeOfPriceAutoApprovedBannerModel = new SuccessBannerModel("change-of-price-auto-approved-banner", "Training and end-point assessment prices have been updated", "");
+    <partial name="DetailsPartials/_SuccessBanner" model="changeOfPriceAutoApprovedBannerModel" />
 }
-@if (Model.ShowPriceChangeRejected)
+
+@if (Model.ShowBannersFlags.HasFlag(ApprenticeDetailsBanners.ChangeOfPriceRejected))
 {
-    <partial name="DetailsPartials/_PriceChangeRejectedBanner" />
+    var changeOfPriceRejectedBannerModel = new SuccessBannerModel("change-of-price-rejected-banner", "Price change rejected", "The employer has been notified that you have rejected their change of price request.");
+    <partial name="DetailsPartials/_SuccessBanner" model="changeOfPriceRejectedBannerModel" />
 }
+
 @if (Model.PaymentStatus.PaymentsFrozen && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
 {
     <partial name="DetailsPartials/_PaymentsFrozenBanner" />

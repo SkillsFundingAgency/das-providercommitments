@@ -1,4 +1,8 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
+﻿
+
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
 
 [TestFixture]
 public class WhenGettingApprenticeDetails
@@ -25,5 +29,14 @@ public class WhenGettingApprenticeDetails
         await _fixture.GetDetails();
 
         _fixture.VerifyDetailViewReturned();
+    }
+
+    [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved)]
+    [TestCase(ApprenticeDetailsBanners.ChangeOfPriceApproved | ApprenticeDetailsBanners.ChangeOfStartDateSent)]
+    public async Task ThenBannerFlagsAreMapped(ApprenticeDetailsBanners banners)
+    {
+        await _fixture.GetDetails(banners);
+
+        _fixture.VerifyBannerFlagsAreMapped(banners);
     }
 }
