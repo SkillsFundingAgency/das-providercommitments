@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
 
         [Display(Name = "Day")]
         [SuppressArgumentException(nameof(DateOfBirth), "The Date of birth is not valid")]
-        public int? BirthDay { get => DateOfBirth.Day ; set => DateOfBirth.Day = value; }
+        public int? BirthDay { get => DateOfBirth.Day; set => DateOfBirth.Day = value; }
 
         [Display(Name = "Month")]
         [SuppressArgumentException(nameof(DateOfBirth), "The Date of birth is not valid")]
@@ -157,9 +157,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public int? EmploymentEndYear { get => EmploymentEndDate.Year; set => EmploymentEndDate.Year = value; }
 
         [Display(Name = "Total agreed apprenticeship price (excluding VAT)")]
-        [SuppressArgumentException(nameof(Cost), "Total agreed apprenticeship price must be 7 numbers or fewer")]
+        [IntegerLengthCheck(nameof(Cost), "Total agreed apprenticeship price (excluding VAT)", 7)]
         public int? Cost { get; set; }
-
+     
         [Display(Name = "Training Price")]
         [SuppressArgumentException(nameof(TrainingPrice), "Training price must be a whole number")]
         public int? TrainingPrice { get; set; }
@@ -178,7 +178,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public TrainingProgramme[] Courses { get; set; }
         public bool IsContinuation { get; set; }
         public bool HasStandardOptions { get; set; }
-        public string TrainingCourseOption { get ; set ; }
+        public string TrainingCourseOption { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public bool? RecognisePriorLearning { get; set; }
         public int? DurationReducedBy { get; set; }

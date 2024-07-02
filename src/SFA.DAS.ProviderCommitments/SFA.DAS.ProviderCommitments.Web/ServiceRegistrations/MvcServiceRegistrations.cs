@@ -28,7 +28,8 @@ public static class MvcServiceRegistrations
                 options.AddProviderCommitmentsValidation();
                 options.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
                 options.ModelBinderProviders.Insert(0, new SuppressArgumentExceptionModelBinderProvider());
-                options.ModelBinderProviders.Insert(1, new AuthorizationModelBinderProvider());
+                options.ModelBinderProviders.Insert(1, new IntegerLengthCheckModelBinderProvider());
+                options.ModelBinderProviders.Insert(2, new AuthorizationModelBinderProvider());
             })
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()
