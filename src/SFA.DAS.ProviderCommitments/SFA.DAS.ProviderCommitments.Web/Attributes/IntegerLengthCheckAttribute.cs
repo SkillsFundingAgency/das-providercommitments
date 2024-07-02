@@ -3,10 +3,10 @@
     [AttributeUsage(AttributeTargets.Property)]
     public class IntegerLengthCheckAttribute : Attribute
     {
-        public string PropertyName { get; set; }
-        public string DisplayName { get; set; }
-        public int MaxNumberOfDigits { get; set; }
-        public string CustomLengthErrorMessage { get; set; }
+        public string PropertyName { get; private set; }
+        public string DisplayName { get; private set; }
+        public int MaxNumberOfDigits { get; private set; }
+        public string CustomLengthErrorMessage { get; private set; }
 
         public IntegerLengthCheckAttribute(string propertyName, string displayName, int maxNumberOfDigits)
         {

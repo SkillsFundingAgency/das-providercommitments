@@ -80,7 +80,7 @@ namespace SFA.DAS.ProviderCommitments.Web.ModelBinding
             return numDigits > maxDigits;
         }
 
-        public static int? TryParseNullableInt(string input)
+        private static int? TryParseNullableInt(string input)
         {
             if (string.IsNullOrEmpty(input))
             {
