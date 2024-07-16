@@ -120,10 +120,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             }
             vm.OriginalApprenticeship.Version = apprenticeship.Version;
 
-            if (source.TrainingName != apprenticeship.CourseName)
+            if (source.CourseCode != apprenticeship.CourseCode)
             {
-                vm.CourseName = source.TrainingName;
+                var courseDetails = !string.IsNullOrEmpty(source.Version)
+                    ? await _commitmentApi.GetTrainingProgrammeVersionByCourseCodeAndVersion(source.CourseCode, source.Version)
+                    : await _commitmentApi.GetTrainingProgramme(source.CourseCode);
+                vm.CourseCode = source.CourseCode;
+                vm.CourseName = courseDetails?.TrainingProgramme.Name;
             }
+            
+            vm.OriginalApprenticeship.CourseCode = apprenticeship.CourseCode;
             vm.OriginalApprenticeship.CourseName = apprenticeship.CourseName;
 
             vm.Option = source.Option == string.Empty ? "TBC" : source.Option;
