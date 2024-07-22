@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -115,17 +115,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public class SelectEmployerViewModelMapperFixture
         {
             private readonly SelectEmployerViewModelMapper _sut;
-            private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
+            private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClientMock;
             private SelectEmployerRequest _request;
-            private GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
+            private GetProviderAccountLegalEntitiesResponse _apiResponse;
 
             public SelectEmployerViewModelMapperFixture()
             {
                 const long providerId = 123;
                 _request = new SelectEmployerRequest { ProviderId = providerId };
-                _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+                _apiResponse = new GetProviderAccountLegalEntitiesResponse()
                 {
-                    AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
+                    AccountProviderLegalEntities = new List<GetProviderAccountLegalEntityItem>
                 {
                     new()
                     {
@@ -140,21 +140,19 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 }
                 };
 
-                _providerRelationshipsApiClientMock = new Mock<IProviderRelationshipsApiClient>();
-                _providerRelationshipsApiClientMock
-                    .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                        It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                        CancellationToken.None))
-                    .ReturnsAsync(() => _apiResponse);
+                _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
+                _approvalsOuterApiClientMock
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(_apiResponse);
 
-                _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object);
+                _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object);
             }
 
             public SelectEmployerViewModelMapperFixture AddListOfAccountProviderLegalEntities()
             {
-                _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+                _apiResponse = new GetProviderAccountLegalEntitiesResponse
                 {
-                    AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
+                    AccountProviderLegalEntities = new List<GetProviderAccountLegalEntityItem>
                 {
                     new()
                     {
@@ -203,21 +201,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
-                _providerRelationshipsApiClientMock
-                    .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                        It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                        CancellationToken.None))
-                    .ReturnsAsync(new GetAccountProviderLegalEntitiesWithPermissionResponse());
+                _approvalsOuterApiClientMock
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
 
                 return this;
             }
 
             public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
             {
-                _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                    It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y =>
-                        y.Ukprn == _request.ProviderId &&
-                        y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
+                _approvalsOuterApiClientMock.Verify(
+                    x => x.GetProviderAccountLegalEntities((int)_request.ProviderId, Operation.CreateCohort.ToString(),
+                        It.IsAny<string>()), Times.Once);
             }
 
             public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)

@@ -10,11 +10,11 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 

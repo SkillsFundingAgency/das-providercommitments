@@ -3,33 +3,32 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Web.Extensions;
-using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
+using SFA.DAS.ProviderCommitments.Web.Extensions;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
     public class WithTransferSenderRequestViewModelMapper : IMapper<CohortsByProviderRequest, WithTransferSenderViewModel>
     {
         private readonly ICommitmentsApiClient _commitmentsApiClient;
-        private readonly IProviderRelationshipsApiClient _providerRelationshipsApiClient;
+        private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
         private readonly IUrlHelper _urlHelper;
         private readonly IPasAccountApiClient _pasAccountApiClient;
         private readonly IEncodingService _encodingService;
 
         public WithTransferSenderRequestViewModelMapper(
             ICommitmentsApiClient commitmentApiClient,
-            IProviderRelationshipsApiClient providerRelationshipsApiClient,
+            IApprovalsOuterApiClient approvalsOuterApiClient,
             IUrlHelper urlHelper,
             IPasAccountApiClient pasAccountApiClient,
             IEncodingService encodingSummary)
         {
             _commitmentsApiClient = commitmentApiClient;
-            _providerRelationshipsApiClient = providerRelationshipsApiClient;
+            _approvalsOuterApiClient = approvalsOuterApiClient;
             _urlHelper = urlHelper;
             _pasAccountApiClient = pasAccountApiClient;
             _encodingService = encodingSummary;
@@ -40,12 +39,12 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderAgreementStatus providerAgreementStatus)>
                 GetData()
             {
-                var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest {ProviderId = source.ProviderId});
-                var hasRelationshipTask = _providerRelationshipsApiClient.HasRelationshipWithPermission(new HasRelationshipWithPermissionRequest {Ukprn = source.ProviderId, Operation = Operation.CreateCohort});
+                var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
+                var hasRelationshipTask = _approvalsOuterApiClient.GetHasPermission(source.ProviderId, null, Operation.CreateCohort);
                 var providerAgreement = _pasAccountApiClient.GetAgreement(source.ProviderId);
 
                 await Task.WhenAll(getCohortsTask, hasRelationshipTask);
-                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result, providerAgreement.Result.Status);
+                return (getCohortsTask.Result.Cohorts, hasRelationshipTask.Result.HasPermission, providerAgreement.Result.Status);
             }
 
             var (cohorts, hasRelationship, providerAgreementStatus) = await GetData();
@@ -84,39 +83,39 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             switch (sortField)
             {
                 case "Employer":
-                {
-                    if (reverse)
+                    {
+                        if (reverse)
+                            return cohorts
+                                .OrderByDescending(c => c.EmployerName)
+                                .ThenBy(c => c.DateSentToEmployer.Date)
+                                .ThenBy(c => c.CohortReference);
+
                         return cohorts
-                            .OrderByDescending(c => c.EmployerName)
+                            .OrderBy(c => c.EmployerName)
                             .ThenBy(c => c.DateSentToEmployer.Date)
                             .ThenBy(c => c.CohortReference);
-
-                    return cohorts
-                        .OrderBy(c => c.EmployerName)
-                        .ThenBy(c => c.DateSentToEmployer.Date)
-                        .ThenBy(c => c.CohortReference);
-                }
+                    }
 
                 case "CohortReference":
-                {
-                    return reverse
-                        ? cohorts.OrderByDescending(c => c.CohortReference)
-                        : cohorts.OrderBy(c => c.CohortReference);
-                }
+                    {
+                        return reverse
+                            ? cohorts.OrderByDescending(c => c.CohortReference)
+                            : cohorts.OrderBy(c => c.CohortReference);
+                    }
 
                 case "DateSentToEmployer":
-                {
-                    if (reverse)
+                    {
+                        if (reverse)
+                            return cohorts
+                                .OrderByDescending(c => c.DateSentToEmployer.Date)
+                                .ThenBy(c => c.EmployerName)
+                                .ThenBy(c => c.CohortReference);
+
                         return cohorts
-                            .OrderByDescending(c => c.DateSentToEmployer.Date)
+                            .OrderBy(c => c.DateSentToEmployer.Date)
                             .ThenBy(c => c.EmployerName)
                             .ThenBy(c => c.CohortReference);
-
-                    return cohorts
-                        .OrderBy(c => c.DateSentToEmployer.Date)
-                        .ThenBy(c => c.EmployerName)
-                        .ThenBy(c => c.CohortReference);
-                }
+                    }
             }
 
             return cohorts

@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using Operation = SFA.DAS.ProviderRelationships.Types.Models.Operation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
@@ -27,7 +27,7 @@ public class ProviderAuthorizationHandler(
         var providerId = authorizationValueProvider.GetProviderId();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
-        
+
         if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
         {
             if (!hasPermission)

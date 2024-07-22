@@ -4,10 +4,12 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
+using Party = SFA.DAS.CommitmentsV2.Types.Party;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -64,30 +66,32 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
     public class WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture
     {
         private Mock<ICommitmentsApiClient> _commitmentsApiClient;
-        private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClient;
+        private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClient;
         private readonly SelectAddDraftApprenticeshipJourneyRequest _request;
         private SelectAddDraftApprenticeshipJourneyViewModel _viewModel;
         private SelectAddDraftApprenticeshipJourneyRequestViewModelMapper _mapper;
         private readonly bool _hasCreateCohortPermission;
+        private readonly GetHasPermissionResponse _hasPermissionResponse;
 
         private const long ProviderId = 1;
         private readonly DateTime _now = DateTime.Now;
-        
+
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture()
         {
             _hasCreateCohortPermission = true;
+            _hasPermissionResponse.HasPermission = _hasCreateCohortPermission;
 
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
 
-            _providerRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
-            _providerRelationshipsApiClient
-                .Setup(p => p.HasRelationshipWithPermission(It.IsAny<HasRelationshipWithPermissionRequest>(), CancellationToken.None))
-                .ReturnsAsync(_hasCreateCohortPermission);
+            _approvalsOuterApiClient = new Mock<IApprovalsOuterApiClient>();
+            _approvalsOuterApiClient
+                .Setup(p => p.GetHasPermission(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<Operation>()))
+                .ReturnsAsync(_hasPermissionResponse);
         }
 
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture SetUp()
         {
-            _mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(_commitmentsApiClient.Object, _providerRelationshipsApiClient.Object);
+            _mapper = new SelectAddDraftApprenticeshipJourneyRequestViewModelMapper(_commitmentsApiClient.Object, _approvalsOuterApiClient.Object);
             return this;
         }
 

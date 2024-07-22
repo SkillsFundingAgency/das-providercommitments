@@ -2,11 +2,11 @@
 using System.Linq;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 {
@@ -67,12 +67,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
     public class SelectEmployerViewModelMapperFixture
     {
         private readonly SelectEmployerViewModelMapper _sut;
-        private readonly Mock<IProviderRelationshipsApiClient> _providerRelationshipsApiClientMock;
+        private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClientMock;
         private readonly Mock<ICommitmentsApiClient> _commitmentApiClientMock;
         private readonly SelectEmployerRequest _request;
         private readonly long _accountLegalEntityId;
         private readonly long _apprenticeshipId;
-        private readonly GetAccountProviderLegalEntitiesWithPermissionResponse _apiResponse;
+        private readonly GetProviderAccountLegalEntitiesResponse _apiResponse;
 
         public GetApprenticeshipResponse GetApprenticeshipApiResponse { get; }
 
@@ -82,9 +82,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _accountLegalEntityId = 457;
             _apprenticeshipId = 1;
             _request = new SelectEmployerRequest { ProviderId = providerId, ApprenticeshipId = _apprenticeshipId };
-            _apiResponse = new GetAccountProviderLegalEntitiesWithPermissionResponse
+            _apiResponse = new GetProviderAccountLegalEntitiesResponse
             {
-                AccountProviderLegalEntities = new List<AccountProviderLegalEntityDto>
+                AccountProviderLegalEntities = new List<GetProviderAccountLegalEntityItem>
                 {
                     new()
                     {
@@ -115,11 +115,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 EmployerName = "TestName"
             };
 
-            _providerRelationshipsApiClientMock = new Mock<IProviderRelationshipsApiClient>();
-            _providerRelationshipsApiClientMock
-                .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                    It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                    CancellationToken.None))
+            _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
+            _approvalsOuterApiClientMock
+                .Setup(x => x.GetProviderAccountLegalEntities(
+                    It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(_apiResponse);
 
             _commitmentApiClientMock = new Mock<ICommitmentsApiClient>();
@@ -127,7 +126,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _commitmentApiClientMock.Setup(x => x.GetApprenticeship(_apprenticeshipId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(GetApprenticeshipApiResponse);
 
-            _sut = new SelectEmployerViewModelMapper(_providerRelationshipsApiClientMock.Object, _commitmentApiClientMock.Object);
+            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object, _commitmentApiClientMock.Object);
         }
 
         public async Task<SelectEmployerViewModel> Act() => await _sut.Map(_request);
@@ -135,21 +134,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
         public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
         {
-            _providerRelationshipsApiClientMock
-                .Setup(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                    It.IsAny<GetAccountProviderLegalEntitiesWithPermissionRequest>(),
-                    CancellationToken.None))
-                .ReturnsAsync(new GetAccountProviderLegalEntitiesWithPermissionResponse());
+            _approvalsOuterApiClientMock
+                .Setup(x => x.GetProviderAccountLegalEntities(
+                    It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
 
             return this;
         }
 
         public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
         {
-            _providerRelationshipsApiClientMock.Verify(x => x.GetAccountProviderLegalEntitiesWithPermission(
-                It.Is<GetAccountProviderLegalEntitiesWithPermissionRequest>(y =>
-                    y.Ukprn == _request.ProviderId &&
-                    y.Operation == Operation.CreateCohort), CancellationToken.None), Times.Once);
+            _approvalsOuterApiClientMock.Verify(x => x.GetProviderAccountLegalEntities(
+                (int)_request.ProviderId, Operation.CreateCohort.ToString(), It.IsAny<string>()), Times.Once);
         }
 
         public void Verify_CommitmentApiClientWasCalled_Once()

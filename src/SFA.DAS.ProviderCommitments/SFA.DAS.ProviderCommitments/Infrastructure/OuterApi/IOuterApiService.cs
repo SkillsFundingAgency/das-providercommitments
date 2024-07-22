@@ -5,8 +5,8 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Types.Models;
 using AddDraftApprenticeshipResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.AddDraftApprenticeshipResponse;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.CreateCohortResponse;
 

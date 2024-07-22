@@ -1,6 +1,7 @@
-﻿using SFA.DAS.ProviderRelationships.Types.Models;
+﻿
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
-namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
+namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 
 public record GetHasPermissionRequest(long? UkPrn, long? AccountLegalEntityId, Operation Operation) : IGetApiRequest
 {

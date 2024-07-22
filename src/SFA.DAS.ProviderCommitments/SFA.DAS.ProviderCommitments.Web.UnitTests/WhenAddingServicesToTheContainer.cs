@@ -18,14 +18,12 @@ using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
-using SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Services;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
-using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests;
 
@@ -45,7 +43,6 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(CommitmentsClientApiConfiguration))]
     [TestCase(typeof(ApprovalsOuterApiConfiguration))]
     [TestCase(typeof(CommitmentPermissionsApiClientConfiguration))]
-    [TestCase(typeof(ProviderRelationshipsApiConfiguration))]
     [TestCase(typeof(ProviderFeaturesConfiguration))]
     [TestCase(typeof(ZenDeskConfiguration))]
     [TestCase(typeof(DataProtectionConnectionStrings))]
@@ -77,7 +74,7 @@ public class WhenAddingServicesToTheContainer
     {
         RunTestForType(toResolve);
     }
-    
+
     [TestCase(typeof(IAuthorizationContextProvider))]
     [TestCase(typeof(ICommitmentsAuthorisationHandler))]
     [TestCase(typeof(IProviderAuthorizationHandler))]
@@ -89,7 +86,7 @@ public class WhenAddingServicesToTheContainer
     {
         RunTestForType(toResolve);
     }
-    
+
     private static void RunTestForType(Type toResolve)
     {
         var services = new ServiceCollection();
@@ -117,16 +114,15 @@ public class WhenAddingServicesToTheContainer
         services.AddAuthorizationServices();
         services.AddConfigurationOptions(stubConfiguration);
         services.AddProviderAuthentication(stubConfiguration);
-        services.AddCommitmentPermissionsAuthorization(useLocalRegistry:true);
+        services.AddCommitmentPermissionsAuthorization(useLocalRegistry: true);
         services.AddMemoryCache();
         services.AddCache(mockHostEnvironment.Object, stubConfiguration);
         services.AddModelMappings();
         services.AddApprovalsOuterApiClient();
-        services.AddProviderRelationshipsApiClient(stubConfiguration);
         services.AddTransient<IValidator<CreateCohortRequest>, CreateCohortValidator>();
         services.AddTransient<IAuthenticationServiceForApim, AuthenticationService>();
         services.AddProviderFeatures();
-        
+
         services.AddTransient<IAuthorizationService, AuthorizationService>();
 
         services
@@ -144,7 +140,7 @@ public class WhenAddingServicesToTheContainer
 
         services.AddDasMvc(stubConfiguration);
     }
-    
+
     private static IConfigurationRoot GenerateStubConfiguration()
     {
         var configSource = new MemoryConfigurationSource

@@ -1,21 +1,21 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
-using SFA.DAS.ProviderRelationships.Api.Client;
-using SFA.DAS.ProviderRelationships.Types.Dtos;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
     public class SelectEmployerViewModelMapper : IMapper<SelectEmployerRequest, SelectEmployerViewModel>
     {
-        private readonly IProviderRelationshipsApiClient _providerRelationshipsApiClient;
+        private readonly IApprovalsOuterApiClient _approvalsOuterApiClient;
         private readonly ICommitmentsApiClient _commitmentsApiClient;
 
-        public SelectEmployerViewModelMapper(IProviderRelationshipsApiClient providerRelationshipsApiClient, ICommitmentsApiClient commitmentsApiClient)
+        public SelectEmployerViewModelMapper(IApprovalsOuterApiClient approvalsOuterApiClient, ICommitmentsApiClient commitmentsApiClient)
         {
-            _providerRelationshipsApiClient = providerRelationshipsApiClient;
+            _approvalsOuterApiClient = approvalsOuterApiClient;
             _commitmentsApiClient = commitmentsApiClient;
         }
 
@@ -25,15 +25,15 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var legalEntities = await GetLegalEntitiesWithCreatePermission(source.ProviderId);
             var apprenticeship = await apprenticeshipTask;
 
-            var accountProviderLegalEntities = legalEntities
+            var accountProviderLegalEntities = legalEntities.AccountProviderLegalEntities
                 .Where(x => x.AccountLegalEntityId != apprenticeship.AccountLegalEntityId)
                 .Select(x => new AccountProviderLegalEntityViewModel
-                    {
-                        EmployerAccountLegalEntityName = x.AccountLegalEntityName,
-                        EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
-                        EmployerAccountName = x.AccountName,
-                        EmployerAccountPublicHashedId = x.AccountPublicHashedId
-                    })
+                {
+                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                    EmployerAccountName = x.AccountName,
+                    EmployerAccountPublicHashedId = x.AccountPublicHashedId
+                })
                 .ToList();
 
             var filterModel = new SelectEmployerFilterModel
@@ -56,21 +56,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             };
         }
 
-        private async Task<IEnumerable<AccountProviderLegalEntityDto>> GetLegalEntitiesWithCreatePermission(long providerId)
+        private async Task<GetProviderAccountLegalEntitiesResponse> GetLegalEntitiesWithCreatePermission(long providerId)
         {
-            var result = await _providerRelationshipsApiClient.GetAccountProviderLegalEntitiesWithPermission(
-                new GetAccountProviderLegalEntitiesWithPermissionRequest
-                {
-                    Ukprn = providerId,
-                    Operation = Operation.CreateCohort
-                });
+            var result = await _approvalsOuterApiClient.GetProviderAccountLegalEntities(
+                    (int)providerId,
+                    Operation.CreateCohort.ToString(),
+                    ""
+                );
 
             if (result?.AccountProviderLegalEntities == null)
             {
-                return new List<AccountProviderLegalEntityDto>();
+                return new GetProviderAccountLegalEntitiesResponse();
             }
 
-            return result.AccountProviderLegalEntities;
+            return result;
         }
 
         private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)

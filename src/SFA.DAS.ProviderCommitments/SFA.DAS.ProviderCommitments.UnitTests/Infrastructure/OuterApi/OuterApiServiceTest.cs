@@ -1,15 +1,15 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.Testing.AutoFixture;
-using System.Threading.Tasks;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
-using SFA.DAS.ProviderRelationships.Types.Models;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi;
 
@@ -51,7 +51,7 @@ public class OuterApiServiceTest
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.CanAccessApprenticeship( partyId, apprenticeshipId);
+        var actual = await service.CanAccessApprenticeship(partyId, apprenticeshipId);
 
         //Assert
         actual.Should().Be(apiResponse.HasApprenticeshipAccess);
