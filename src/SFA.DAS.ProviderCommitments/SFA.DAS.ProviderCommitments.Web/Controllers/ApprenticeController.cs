@@ -424,7 +424,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
             }
 
             var apprenticeship = await _commitmentsApiClient.GetApprenticeship(viewModel.ApprenticeshipId);
-            var triggerCalculate = viewModel.CourseCode != apprenticeship.CourseCode || apprenticeship.StartDate < viewModel.StartDate.Date.Value;
+            var triggerCalculate = viewModel.CourseCode != apprenticeship.CourseCode || 
+                                   apprenticeship.StartDate < viewModel.StartDate.Date.Value;
 
             if (triggerCalculate)
             {
@@ -432,7 +433,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
 
                 if (int.TryParse(viewModel.CourseCode, out var standardId))
                 {
-                    var standardVersionResponse = await _commitmentsApiClient.GetCalculatedTrainingProgrammeVersion(standardId, viewModel.StartDate.Date.Value);
+                    var standardVersionResponse = await _commitmentsApiClient.GetCalculatedTrainingProgrammeVersion(standardId,
+                        viewModel.StartDate.Date.Value);
 
                     trainingProgramme = standardVersionResponse.TrainingProgramme;
                 }
@@ -444,7 +446,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 }
 
                 viewModel.Version = trainingProgramme.Version;
-                viewModel.TrainingName = trainingProgramme.Name;
                 viewModel.HasOptions = trainingProgramme.Options.Any();
             }
 
