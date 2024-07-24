@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var legalEntities = await GetLegalEntitiesWithCreatePermission(source.ProviderId);
             var apprenticeship = await apprenticeshipTask;
 
-            var accountProviderLegalEntities = legalEntities.AccountProviderLegalEntities
+            var accountProviderLegalEntities = legalEntities
                 .Where(x => x.AccountLegalEntityId != apprenticeship.AccountLegalEntityId)
                 .Select(x => new AccountProviderLegalEntityViewModel
                 {
@@ -56,20 +56,21 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             };
         }
 
-        private async Task<GetProviderAccountLegalEntitiesResponse> GetLegalEntitiesWithCreatePermission(long providerId)
+        private async Task<IEnumerable<GetProviderAccountLegalEntityItem>> GetLegalEntitiesWithCreatePermission(
+            long providerId)
         {
             var result = await _approvalsOuterApiClient.GetProviderAccountLegalEntities(
-                    (int)providerId,
-                    Operation.CreateCohort.ToString(),
-                    ""
-                );
+                (int)providerId,
+                Operation.CreateCohort.ToString(),
+                ""
+            );
 
-            if (result?.AccountProviderLegalEntities == null)
+            if (result == null)
             {
-                return new GetProviderAccountLegalEntitiesResponse();
+                return new List<GetProviderAccountLegalEntityItem>();
             }
 
-            return result;
+            return result.AccountProviderLegalEntities;
         }
 
         private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)

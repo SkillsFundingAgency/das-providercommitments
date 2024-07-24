@@ -165,7 +165,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
                     .ReturnsAsync(() => _getAccountsApiResponse);
 
                 _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
@@ -213,8 +213,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
 
                 return this;
             }

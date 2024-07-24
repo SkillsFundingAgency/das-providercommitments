@@ -79,13 +79,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture()
         {
             _hasCreateCohortPermission = true;
-            _hasPermissionResponse.HasPermission = _hasCreateCohortPermission;
+            _hasPermissionResponse = new GetHasPermissionResponse { HasPermission = _hasCreateCohortPermission };
 
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
 
             _approvalsOuterApiClient = new Mock<IApprovalsOuterApiClient>();
             _approvalsOuterApiClient
-                .Setup(p => p.GetHasPermission(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<Operation>()))
+                .Setup(p => p.GetHasPermission(It.IsAny<long>(), null, It.IsAny<Operation>()))
                 .ReturnsAsync(_hasPermissionResponse);
         }
 

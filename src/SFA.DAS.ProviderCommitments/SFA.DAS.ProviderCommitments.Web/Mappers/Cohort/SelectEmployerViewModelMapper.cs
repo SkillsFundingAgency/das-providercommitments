@@ -40,13 +40,20 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private async Task<List<AccountProviderLegalEntityViewModel>> GetAccountProviderLegalEntities(SelectEmployerRequest source)
         {
-            return (await GetLegalEntitiesWithCreatePermission(source.ProviderId)).AccountProviderLegalEntities.Select(x => new AccountProviderLegalEntityViewModel
+            var result = (await GetLegalEntitiesWithCreatePermission(source.ProviderId));
+
+            if (result.AccountProviderLegalEntities != null && result.AccountProviderLegalEntities.Any())
             {
-                EmployerAccountLegalEntityName = x.AccountLegalEntityName,
-                EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
-                EmployerAccountName = x.AccountName,
-                EmployerAccountPublicHashedId = x.AccountPublicHashedId,
-            }).ToList();
+                return result.AccountProviderLegalEntities.Select(x => new AccountProviderLegalEntityViewModel
+                {
+                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                    EmployerAccountName = x.AccountName,
+                    EmployerAccountPublicHashedId = x.AccountPublicHashedId,
+                }).ToList();
+            }
+
+            return new List<AccountProviderLegalEntityViewModel>();
         }
 
         private static List<AccountProviderLegalEntityViewModel> ApplySort(List<AccountProviderLegalEntityViewModel> accountProviderLegalEntities, SelectEmployerFilterModel filterModel)

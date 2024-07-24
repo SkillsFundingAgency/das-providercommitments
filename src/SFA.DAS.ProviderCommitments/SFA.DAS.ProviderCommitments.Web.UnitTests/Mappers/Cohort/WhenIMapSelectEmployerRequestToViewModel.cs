@@ -142,7 +142,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
                     .ReturnsAsync(_apiResponse);
 
                 _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object);
@@ -186,6 +186,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                     }
                 }
                 };
+                _approvalsOuterApiClientMock
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .ReturnsAsync(_apiResponse);
 
                 return this;
             }
@@ -202,8 +205,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
 
                 return this;
             }

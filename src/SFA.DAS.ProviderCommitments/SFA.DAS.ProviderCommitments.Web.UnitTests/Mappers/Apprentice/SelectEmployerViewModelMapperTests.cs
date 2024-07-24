@@ -118,7 +118,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
             _approvalsOuterApiClientMock
                 .Setup(x => x.GetProviderAccountLegalEntities(
-                    It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                    It.IsAny<int>(), It.IsAny<string>(), ""))
                 .ReturnsAsync(_apiResponse);
 
             _commitmentApiClientMock = new Mock<ICommitmentsApiClient>();
@@ -136,8 +136,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             _approvalsOuterApiClientMock
                 .Setup(x => x.GetProviderAccountLegalEntities(
-                    It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
+                    It.IsAny<int>(), It.IsAny<string>(), ""))
+                .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
 
             return this;
         }
