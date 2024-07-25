@@ -20,5 +20,5 @@ public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest﻿
         _operations = string.Join('&', operations.Select(o => $"operations={(int)o}"));
     }
 
-    public string GetUrl => ""; //$"accountproviderlegalentities?ukprn={_ukprn}&accounthashedid={_accountHashedId}&{_operations}";
+    public string GetUrl => $"providerpermissions/account-provider-legal-entities?ukprn={_ukprn}&{_operations}&accounthashedid={_accountHashedId}";
 }
