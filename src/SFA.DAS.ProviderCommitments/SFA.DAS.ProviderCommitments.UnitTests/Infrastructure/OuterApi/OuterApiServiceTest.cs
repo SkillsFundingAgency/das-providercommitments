@@ -81,21 +81,20 @@ public class OuterApiServiceTest
     [Test, MoqAutoData]
     public async Task Then_HasPermission_Request_Is_Made_And_Response_Returned(
         long ukprn,
-        long accountLegalEntityId,
         Operation operation,
         GetHasPermissionResponse apiResponse,
         [Frozen] Mock<IOuterApiClient> apiClient,
         OuterApiService service)
     {
         //Arrange
-        var request = new GetHasPermissionRequest(ukprn, accountLegalEntityId, operation);
+        var request = new GetHasRelationshipWithPermissionRequest(ukprn, operation);
         apiClient.Setup(x =>
                 x.Get<GetHasPermissionResponse>(
-                    It.Is<GetHasPermissionRequest>(c => c.GetUrl.Equals(request.GetUrl))))
+                    It.Is<GetHasRelationshipWithPermissionRequest>(c => c.GetUrl.Equals(request.GetUrl))))
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.HasPermission(ukprn, accountLegalEntityId, operation);
+        var actual = await service.HasRelationshipWithPermission(ukprn, operation);
 
         //Assert
         actual.Should().Be(apiResponse.HasPermission);

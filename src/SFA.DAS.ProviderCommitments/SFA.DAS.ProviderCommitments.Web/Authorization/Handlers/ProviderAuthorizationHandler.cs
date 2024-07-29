@@ -28,9 +28,9 @@ public class ProviderAuthorizationHandler(
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
 
-        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasRelationshipWithPermission))
         {
-            if (!hasPermission)
+            if (!hasRelationshipWithPermission)
             {
                 authorizationResult.AddError(new ProviderPermissionNotGranted());
             }
@@ -38,16 +38,16 @@ public class ProviderAuthorizationHandler(
             return authorizationResult;
         }
 
-        hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
+        hasRelationshipWithPermission = await outerApiService.HasRelationshipWithPermission(providerId, operation);
 
         operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,
-            HasPermission = hasPermission
+            HasPermission = hasRelationshipWithPermission
         });
 
-        if (!hasPermission)
+        if (!hasRelationshipWithPermission)
         {
             authorizationResult.AddError(new ProviderPermissionNotGranted());
         }

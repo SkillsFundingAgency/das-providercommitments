@@ -205,11 +205,10 @@ public class OuterApiService : IOuterApiService
         await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
     }
 
-    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation)
+    public async Task<bool> HasRelationshipWithPermission(long? ukprn, Operation operation)
     {
-        var content = new GetHasPermissionRequest(
+        var content = new GetHasRelationshipWithPermissionRequest(
             ukprn,
-            accountLegalEntityId,
             operation
         );
 

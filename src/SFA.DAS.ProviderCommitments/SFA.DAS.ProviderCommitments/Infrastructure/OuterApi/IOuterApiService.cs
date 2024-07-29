@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
         Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> errors);
         Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage);
-        Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation);
+        Task<bool> HasRelationshipWithPermission(long? ukprn, Operation operation);
         Task<bool> CanAccessCohort(long providerId, long cohortId);
         Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
     }
