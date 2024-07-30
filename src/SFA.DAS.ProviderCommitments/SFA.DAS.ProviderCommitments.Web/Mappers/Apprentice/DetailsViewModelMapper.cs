@@ -7,6 +7,7 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -116,7 +117,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingPriceChange = Map(data.PendingPriceChange),
                     PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
                     CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
-                    PaymentStatus = Map(data.PaymentsStatus)
+                    PaymentStatus = Map(data.PaymentsStatus),
+                    LearnerStatus = data.LearnerStatus
                 };
             }
             catch (Exception e)
