@@ -85,7 +85,7 @@
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
-        "configNames": "SFA.DAS.ProviderCommitments,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding"
+        "configNames": "SFA.DAS.ProviderCommitments.Web,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding"
     },
     "resources": [
         {
