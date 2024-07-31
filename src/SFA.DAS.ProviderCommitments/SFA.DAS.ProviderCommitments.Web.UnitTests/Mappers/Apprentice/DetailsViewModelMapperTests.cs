@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -252,6 +253,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             await _fixture.Map();
 
             Assert.That(_fixture.Result.AllowEditApprentice, Is.EqualTo(expectedAllowEditApprentice));
+        }
+
+        [TestCase(LearnerStatus.WaitingToStart, "Waiting to start")]
+        [TestCase(LearnerStatus.InLearning, "In learning")]
+        [TestCase(LearnerStatus.BreakInLearning, "Break in learning")]
+        [TestCase(LearnerStatus.Withdrawn, "Withdrawn")]
+        [TestCase(LearnerStatus.Completed, "Completed")]
+        public async Task ThenLearnerStatusIsMappedCorrectly(LearnerStatus status, string statusText)
+        {
+            _fixture
+                .WithApprenticeshipFlexiPilotStatus(true)
+                .WithLearnerStatus(status);
+
+            await _fixture.Map();
+
+            Assert.That(_fixture.Result.LearnerStatus.GetDescription(), Is.EqualTo(statusText));
         }
 
         [TestCase(null)]
@@ -847,6 +864,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 ApprenticeshipStatus status)
             {
                 ApiResponse.Apprenticeship.Status = status;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithLearnerStatus(LearnerStatus status)
+            {
+                ApiResponse.LearnerStatus = status;
                 return this;
             }
 
