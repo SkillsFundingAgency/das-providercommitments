@@ -67,6 +67,13 @@
             "type": "string",
             "defaultValue": "[utcNow()]"
         },
+        "logAnalyticsSubscriptionId": {
+            "type": "string",
+            "defaultValue": "[subscription().subscriptionId]"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
+        },
         "minimumTlsVersion": {
             "type": "string",
             "defaultValue": "TLS1_2"
@@ -274,7 +281,7 @@
             ]
         },
         {
-            "apiVersion": "2017-08-01",
+            "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
@@ -290,6 +297,9 @@
                     },
                     "attachedService": {
                         "value": "[variables('appServiceName')]"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
                     }
                 }
             },
