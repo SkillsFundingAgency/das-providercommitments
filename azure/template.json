@@ -51,9 +51,9 @@
         "cdnUrl": {
             "type": "string"
         },
-        "containerNameArray": {
-            "type": "array"
-        },
+        // "containerNameArray": {
+        //     "type": "array"
+        // },
         "sharedApimName": {
             "type": "string"
         },
@@ -73,17 +73,17 @@
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
-        },
-        "minimumTlsVersion": {
-            "type": "string",
-            "defaultValue": "TLS1_2"
         }
+        // "minimumTlsVersion": {
+        //     "type": "string",
+        //     "defaultValue": "TLS1_2"
+        // }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
+        // "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         "configNames": "SFA.DAS.ProviderCommitments.Web,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding"
     },
@@ -120,65 +120,65 @@
                 }
             }
         },
-        {
-            "apiVersion": "2021-04-01",
-            "name": "[concat(variables('storageAccountName'), '-', parameters('utcValue'))]",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'storage-account-arm.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "storageAccountName": {
-                        "value": "[variables('storageAccountName')]"
-                    },
-                    "allowSharedKeyAccess": {
-                        "value": true
-                    },
-                    "minimumTlsVersion": {
-                        "value": "[parameters('minimumTlsVersion')]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('resourceGroupName')]"
-            ]
-        },
-        {
-            "apiVersion": "2021-04-01",
-            "name": "[concat(variables('storageAccountName'), '-container', parameters('containerNameArray')[copyIndex()], '-', parameters('utcValue'))]",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('containerNameArray')), 0)]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'), 'storage-container.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "storageAccountName": {
-                        "value": "[variables('storageAccountName')]"
-                    },
-                    "containerName": {
-                        "value": "[parameters('containerNameArray')[copyIndex()]]"
-                    },
-                    "publicAccess": {
-                        "value": "None"
-                    }
-                }
-            },
-            "copy": {
-                "name": "containercopy",
-                "count": "[length(parameters('containerNameArray'))]"
-            },
-            "dependsOn": [
-                "[concat(variables('storageAccountName'), '-', parameters('utcValue'))]"
-            ]
-        },
+        // {
+        //     "apiVersion": "2021-04-01",
+        //     "name": "[concat(variables('storageAccountName'), '-', parameters('utcValue'))]",
+        //     "resourceGroup": "[variables('resourceGroupName')]",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "templateLink": {
+        //             "uri": "[concat(variables('deploymentUrlBase'), 'storage-account-arm.json')]",
+        //             "contentVersion": "1.0.0.0"
+        //         },
+        //         "parameters": {
+        //             "storageAccountName": {
+        //                 "value": "[variables('storageAccountName')]"
+        //             },
+        //             "allowSharedKeyAccess": {
+        //                 "value": true
+        //             },
+        //             "minimumTlsVersion": {
+        //                 "value": "[parameters('minimumTlsVersion')]"
+        //             }
+        //         }
+        //     },
+        //     "dependsOn": [
+        //         "[variables('resourceGroupName')]"
+        //     ]
+        // },
+        // {
+        //     "apiVersion": "2021-04-01",
+        //     "name": "[concat(variables('storageAccountName'), '-container', parameters('containerNameArray')[copyIndex()], '-', parameters('utcValue'))]",
+        //     "resourceGroup": "[variables('resourceGroupName')]",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "condition": "[greater(length(parameters('containerNameArray')), 0)]",
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "templateLink": {
+        //             "uri": "[concat(variables('deploymentUrlBase'), 'storage-container.json')]",
+        //             "contentVersion": "1.0.0.0"
+        //         },
+        //         "parameters": {
+        //             "storageAccountName": {
+        //                 "value": "[variables('storageAccountName')]"
+        //             },
+        //             "containerName": {
+        //                 "value": "[parameters('containerNameArray')[copyIndex()]]"
+        //             },
+        //             "publicAccess": {
+        //                 "value": "None"
+        //             }
+        //         }
+        //     },
+        //     "copy": {
+        //         "name": "containercopy",
+        //         "count": "[length(parameters('containerNameArray'))]"
+        //     },
+        //     "dependsOn": [
+        //         "[concat(variables('storageAccountName'), '-', parameters('utcValue'))]"
+        //     ]
+        // },
         {
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-certificate-', parameters('utcValue'))]",
@@ -312,10 +312,10 @@
         "AppServiceName": {
             "type": "string",
             "value": "[variables('appServiceName')]"
-        },
-        "StorageAccountName": {
-            "type": "string",
-            "value": "[variables('storageAccountName')]"
         }
+        // "StorageAccountName": {
+        //     "type": "string",
+        //     "value": "[variables('storageAccountName')]"
+        // }
     }
 }
