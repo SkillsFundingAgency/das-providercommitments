@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Enums;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
