@@ -263,13 +263,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         [TestCase(LearnerStatus.Completed, "Completed")]
         public async Task ThenLearnerStatusIsMappedCorrectly(LearnerStatus status, string statusText)
         {
+            // Arrange
             _fixture
                 .WithApprenticeshipFlexiPilotStatus(true)
                 .WithLearnerStatus(status);
 
+            // Act
             await _fixture.Map();
 
-            Assert.That(_fixture.Result.LearnerStatus.GetDescription(), Is.EqualTo(statusText));
+            // Assert
+            var mappedStatus = _fixture.Result.LearnerStatus.GetDescription();
+            mappedStatus.Should().Be(statusText);
         }
 
         [TestCase(null)]
