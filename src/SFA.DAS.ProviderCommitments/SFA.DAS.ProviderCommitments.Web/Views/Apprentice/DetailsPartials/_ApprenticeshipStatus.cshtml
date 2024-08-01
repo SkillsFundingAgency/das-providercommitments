@@ -1,0 +1,21 @@
+﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
+
+@if (Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+{
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header das-table-cell-width-45">Learner Status</th>
+        <td id="apprenticeship-learner-status" class="govuk-table__cell das-table-cell-width-55">
+            @Model.LearnerStatus.GetDescription()
+        </td>
+    </tr>
+}
+else
+{
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
+        <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">
+            @Model.Status.GetDescription()
+        </td>
+    </tr>
+}
