@@ -35,3 +35,4 @@ jobs:
     displayName: 'Publish Artifact'
     inputs:
       PathtoPublish: '$(build.artifactstagingdirectory)/publish'
+      artifactName: ${{ parameters.SolutionBaseName }}
