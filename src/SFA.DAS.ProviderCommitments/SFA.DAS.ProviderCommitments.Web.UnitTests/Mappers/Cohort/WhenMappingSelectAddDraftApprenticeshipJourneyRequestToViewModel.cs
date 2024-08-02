@@ -5,7 +5,6 @@ using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -71,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         private SelectAddDraftApprenticeshipJourneyViewModel _viewModel;
         private SelectAddDraftApprenticeshipJourneyRequestViewModelMapper _mapper;
         private readonly bool _hasCreateCohortPermission;
-        private readonly GetHasPermissionResponse _hasPermissionResponse;
+        private readonly GetHasRelationshipWithPermissionResponse _hasPermissionResponse;
 
         private const long ProviderId = 1;
         private readonly DateTime _now = DateTime.Now;
@@ -79,13 +78,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         public WhenMappingSelectAddDraftApprenticeshipJourneyRequestToViewModelFixture()
         {
             _hasCreateCohortPermission = true;
-            _hasPermissionResponse = new GetHasPermissionResponse { HasPermission = _hasCreateCohortPermission };
+            _hasPermissionResponse = new GetHasRelationshipWithPermissionResponse { HasPermission = _hasCreateCohortPermission };
 
             _request = new SelectAddDraftApprenticeshipJourneyRequest { ProviderId = ProviderId };
 
             _approvalsOuterApiClient = new Mock<IApprovalsOuterApiClient>();
             _approvalsOuterApiClient
-                .Setup(p => p.GetHasPermission(It.IsAny<long>(), null, It.IsAny<Operation>()))
+                .Setup(p => p.GetHasRelationshipWithPermission(It.IsAny<long>()))
                 .ReturnsAsync(_hasPermissionResponse);
         }
 

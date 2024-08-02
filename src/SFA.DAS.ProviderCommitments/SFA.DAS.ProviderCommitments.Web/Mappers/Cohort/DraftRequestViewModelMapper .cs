@@ -5,7 +5,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -39,7 +38,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             async Task<(CohortSummary[] Cohorts, bool HasRelationship, ProviderAgreementStatus providerAgreementStatus)> GetData()
             {
                 var getCohortsTask = _commitmentsApiClient.GetCohorts(new GetCohortsRequest { ProviderId = source.ProviderId });
-                var hasRelationshipTask = _approvalsOuterApiClient.GetHasPermission(source.ProviderId, null, Operation.CreateCohort);
+                var hasRelationshipTask = _approvalsOuterApiClient.GetHasRelationshipWithPermission(source.ProviderId);
                 var providerAgreement = _pasAccountApiClient.GetAgreement(source.ProviderId);
 
                 await Task.WhenAll(getCohortsTask, hasRelationshipTask);

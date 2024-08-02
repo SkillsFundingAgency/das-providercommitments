@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure
@@ -22,14 +21,17 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 ($"providers/{providerId}/courses?trainingCode={courseCode}&accountLegalEntityId={accountLegalEntityId}",
                 cancellationToken: cancellationToken);
         }
-        public Task<GetHasPermissionResponse> GetHasPermission(long? ukPrn, long? accountLegalEntityId, Operation operation)
+
+        public async Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn)
         {
-            throw new System.NotImplementedException();
+            var result = await _client.Get<GetHasRelationshipWithPermissionResponse>($"providerpermissions/has-relationship-with-permission?ukprn={ukprn}");
+            return result;
         }
 
-        public Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int? ukprn, string operations, string accountHashedId)
+        public async Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn)
         {
-            throw new System.NotImplementedException();
+            var result = await _client.Get<GetProviderAccountLegalEntitiesResponse>($"providerpermissions/account-provider-legal-entities?ukprn={ukprn}");
+            return result;
         }
     }
 }

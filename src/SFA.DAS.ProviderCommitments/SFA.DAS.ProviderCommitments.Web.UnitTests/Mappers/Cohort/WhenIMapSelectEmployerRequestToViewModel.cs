@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -142,7 +141,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
                 _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
                     .ReturnsAsync(_apiResponse);
 
                 _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object);
@@ -187,7 +186,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
                 }
                 };
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
                     .ReturnsAsync(_apiResponse);
 
                 return this;
@@ -205,7 +204,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
                     .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
 
                 return this;
@@ -214,13 +213,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             public void Verify_ProviderRelationshipsApiClientWasCalled_Once()
             {
                 _approvalsOuterApiClientMock.Verify(
-                    x => x.GetProviderAccountLegalEntities((int)_request.ProviderId, Operation.CreateCohort.ToString(),
-                        It.IsAny<string>()), Times.Once);
+                    x => x.GetProviderAccountLegalEntities((int)_request.ProviderId), Times.Once);
             }
 
             public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
             {
-                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(_apiResponse.AccountProviderLegalEntities.Count()));
+                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(_apiResponse.AccountProviderLegalEntities.Count));
 
                 foreach (var entity in _apiResponse.AccountProviderLegalEntities)
                 {

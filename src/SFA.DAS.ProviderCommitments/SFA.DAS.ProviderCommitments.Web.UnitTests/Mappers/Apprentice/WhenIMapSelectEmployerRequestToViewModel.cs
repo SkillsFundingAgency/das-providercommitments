@@ -4,7 +4,6 @@ using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -165,7 +164,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
                 _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
                     .ReturnsAsync(() => _getAccountsApiResponse);
 
                 _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
@@ -213,7 +212,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
             {
                 _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>(), It.IsAny<string>(), ""))
+                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
                     .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
 
                 return this;
@@ -222,8 +221,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public void Verify_ProviderRelationshipsApiClientWasCalled_Once(long providerId)
             {
                 _approvalsOuterApiClientMock.Verify(
-                    x => x.GetProviderAccountLegalEntities((int)providerId, Operation.CreateCohort.ToString(),
-                        It.IsAny<string>()), Times.Once);
+                    x => x.GetProviderAccountLegalEntities((int)providerId), Times.Once);
             }
 
             public void Verify_CommitmentsApiClientWasCalled_Once(long apprenticeshipId)

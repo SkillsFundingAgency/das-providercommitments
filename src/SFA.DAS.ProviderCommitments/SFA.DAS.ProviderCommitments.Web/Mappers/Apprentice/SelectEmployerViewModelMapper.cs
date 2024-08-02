@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
@@ -59,11 +58,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
         private async Task<IEnumerable<GetProviderAccountLegalEntityItem>> GetLegalEntitiesWithCreatePermission(
             long providerId)
         {
-            var result = await _approvalsOuterApiClient.GetProviderAccountLegalEntities(
-                (int)providerId,
-                Operation.CreateCohort.ToString(),
-                ""
-            );
+            var result = await _approvalsOuterApiClient.GetProviderAccountLegalEntities((int)providerId);
 
             if (result == null)
             {
