@@ -107,7 +107,7 @@ stages:
 #   variables:
 #   - group: PROD Management Resources
 #   - group: PROD Shared Resources
-#   - group: PROD das-employer-rat-web
+#   - group: PROD das-providercommitments
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
@@ -121,6 +121,7 @@ stages:
 #   variables:
 #   - group: MO Management Resources
 #   - group: MO Shared Resources
+#   - group: MO das-providercommitments
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
