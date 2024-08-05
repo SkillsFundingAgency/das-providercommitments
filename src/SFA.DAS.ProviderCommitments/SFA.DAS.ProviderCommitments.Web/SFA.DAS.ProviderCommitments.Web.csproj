@@ -39,10 +39,9 @@
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
         <PackageReference Include="SFA.DAS.PAS.Account.Api.ClientV2" Version="17267.0.559" />
         <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.559" />
-        <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.7" />
 
 
-    </ItemGroup>
+	</ItemGroup>
 
 
     <ItemGroup>

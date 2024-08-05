@@ -41,6 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Status { get ; private set ; }
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
+        [Name("Standard version")]
+        public string StandardVersion { get; private set; }
 
         public ApprenticeshipDetailsCsvModel Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model, IEncodingService encodingService)
         {
@@ -62,6 +64,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 PausedDate = model.PauseDate != DateTime.MinValue ? model.PauseDate.ToGdsFormatWithoutDay() : "",
                 TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}",
                 DeliveryModel = model.DeliveryModel.ToDescription(),
+                StandardVersion = model.TrainingCourseVersion
             };
         }
 

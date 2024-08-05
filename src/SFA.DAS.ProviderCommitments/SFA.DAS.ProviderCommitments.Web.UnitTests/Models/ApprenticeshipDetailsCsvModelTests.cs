@@ -46,6 +46,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         }
 
         [Test, AutoData]
+        public void Then_Maps_StandardVersion(
+           GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           [Frozen] Mock<IEncodingService> encodingService,
+           ApprenticeshipDetailsCsvModel model)
+        {
+            var result = model.Map(source, encodingService.Object);
+
+            result.StandardVersion.Should().Be(source.TrainingCourseVersion);
+        }
+
+        [Test, AutoData]
         public void Then_Maps_CourseName(
             GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
