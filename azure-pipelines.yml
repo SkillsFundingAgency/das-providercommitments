@@ -58,6 +58,7 @@ stages:
       Environment: AT
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -72,6 +73,7 @@ stages:
       Environment: TEST
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -86,6 +88,7 @@ stages:
       Environment: TEST2
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -100,6 +103,7 @@ stages:
       Environment: PP
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 # - stage: Deploy_PROD
 #   dependsOn: Build
@@ -114,6 +118,7 @@ stages:
 #       Environment: PROD
 #       SolutionBaseName: $(SolutionBaseName)
 #       ServiceConnection: SFA-DIG-Prod-ARM
+#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 # - stage: Deploy_MO
 #   dependsOn: Build
@@ -128,6 +133,7 @@ stages:
 #       Environment: MO
 #       SolutionBaseName: $(SolutionBaseName)
 #       ServiceConnection: SFA-ASM-ModelOffice-ARM
+#       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -142,3 +148,4 @@ stages:
       Environment: DEMO
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
