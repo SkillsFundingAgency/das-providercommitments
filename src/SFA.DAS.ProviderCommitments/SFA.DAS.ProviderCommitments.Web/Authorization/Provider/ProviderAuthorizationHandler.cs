@@ -1,5 +1,5 @@
-﻿using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderRelationships.Types.Models;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
+using SFA.DAS.ProviderCommitments.Interfaces;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
@@ -21,20 +21,20 @@ public class ProviderAuthorizationHandler(
 
         const Operation operation = Operation.CreateCohort;
 
-        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasRelationshipWithPermission))
         {
-            return hasPermission;
+            return hasRelationshipWithPermission;
         }
 
-        hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
-        
+        hasRelationshipWithPermission = await outerApiService.HasRelationshipWithPermission(providerId, operation);
+
         operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,
-            HasPermission = hasPermission,
+            HasPermission = hasRelationshipWithPermission,
         });
 
-        return hasPermission;
+        return hasRelationshipWithPermission;
     }
 }

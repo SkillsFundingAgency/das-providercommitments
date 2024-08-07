@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.ProviderCommitments.Authorization;
 using SFA.DAS.ProviderCommitments.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using Operation = SFA.DAS.ProviderRelationships.Types.Models.Operation;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Handlers;
 
@@ -27,10 +27,10 @@ public class ProviderAuthorizationHandler(
         var providerId = authorizationValueProvider.GetProviderId();
         var accountLegalEntityId = authorizationValueProvider.GetAccountLegalEntityId();
         var operation = options.Select(o => o.ToEnum<Operation>()).Single();
-        
-        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
+
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasRelationshipWithPermission))
         {
-            if (!hasPermission)
+            if (!hasRelationshipWithPermission)
             {
                 authorizationResult.AddError(new ProviderPermissionNotGranted());
             }
@@ -38,16 +38,16 @@ public class ProviderAuthorizationHandler(
             return authorizationResult;
         }
 
-        hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId, operation);
+        hasRelationshipWithPermission = await outerApiService.HasRelationshipWithPermission(providerId, operation);
 
         operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,
-            HasPermission = hasPermission
+            HasPermission = hasRelationshipWithPermission
         });
 
-        if (!hasPermission)
+        if (!hasRelationshipWithPermission)
         {
             authorizationResult.AddError(new ProviderPermissionNotGranted());
         }

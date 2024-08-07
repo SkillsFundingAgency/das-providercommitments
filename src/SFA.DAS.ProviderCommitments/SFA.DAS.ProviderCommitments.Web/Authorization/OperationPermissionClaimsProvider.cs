@@ -2,8 +2,8 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 
