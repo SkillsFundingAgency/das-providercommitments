@@ -74,11 +74,9 @@
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Status</th>
-                    <td id="apprenticeship-status" class="govuk-table__cell das-table-cell-width-55">
-                        @Model.Status.GetDescription()</td>
-                </tr>
+
+                <partial name="DetailsPartials/_ApprenticeshipStatus" />
+
                 @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
                 {
                     <tr class="govuk-table__row">
