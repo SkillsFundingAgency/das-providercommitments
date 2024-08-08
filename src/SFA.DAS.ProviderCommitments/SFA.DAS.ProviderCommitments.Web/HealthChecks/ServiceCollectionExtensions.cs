@@ -8,12 +8,11 @@ namespace SFA.DAS.ProviderCommitments.Web.HealthChecks
         public static IServiceCollection AddDasHealthChecks(this IServiceCollection services)
         {
             services.AddHealthChecks()
-                .AddCheck<CommitmentsApiHealthCheck>("Commitments API Health Check")
-                .AddCheck<ProviderRelationshipsApiHealthCheck>("Provider Relationships API Health Check");
+                .AddCheck<CommitmentsApiHealthCheck>("Commitments API Health Check");
 
             return services;
         }
-        
+
         public static IApplicationBuilder UseDasHealthChecks(this IApplicationBuilder app)
         {
             return app.UseHealthChecks("/health", new HealthCheckOptions
