@@ -3,7 +3,6 @@ using SFA.DAS.PAS.Account.Api.ClientV2.Configuration;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
-using SFA.DAS.ProviderRelationships.Api.Client.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
 
@@ -17,14 +16,13 @@ public static class ConfigurationServiceRegistrations
         services.AddConfigurationFor<CommitmentsClientApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
         services.AddConfigurationFor<ApprovalsOuterApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
         services.AddConfigurationFor<CommitmentPermissionsApiClientConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
-        services.AddConfigurationFor<ProviderRelationshipsApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderRelationshipsApiConfiguration);
-        services.AddConfigurationFor<ProviderFeaturesConfiguration>(configuration,ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
-        services.AddConfigurationFor<ZenDeskConfiguration>(configuration,ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
-        services.AddConfigurationFor<DataProtectionConnectionStrings>(configuration,ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
-        services.AddConfigurationFor<BulkUploadFileValidationConfiguration>(configuration,ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
-        services.AddConfigurationFor<ProviderSharedUIConfiguration>(configuration,ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
-        services.AddConfigurationFor<BlobStorageSettings>(configuration,ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
-        services.AddConfigurationFor<PasAccountApiConfiguration>(configuration,ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration);
+        services.AddConfigurationFor<ProviderFeaturesConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.FeaturesConfiguration);
+        services.AddConfigurationFor<ZenDeskConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ZenDeskConfiguration);
+        services.AddConfigurationFor<DataProtectionConnectionStrings>(configuration, ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
+        services.AddConfigurationFor<BulkUploadFileValidationConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
+        services.AddConfigurationFor<ProviderSharedUIConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
+        services.AddConfigurationFor<BlobStorageSettings>(configuration, ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
+        services.AddConfigurationFor<PasAccountApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration);
 
         return services;
     }
