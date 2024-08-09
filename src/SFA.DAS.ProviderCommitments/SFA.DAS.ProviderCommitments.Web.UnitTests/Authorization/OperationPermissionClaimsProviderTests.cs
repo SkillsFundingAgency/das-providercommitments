@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
 using SFA.DAS.DfESignIn.Auth.Extensions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
-using SFA.DAS.ProviderRelationships.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization;
@@ -102,7 +102,7 @@ public class OperationPermissionClaimClaimsProviderTests
             result.Should().BeFalse();
         }
     }
-    
+
     [Test, MoqAutoData]
     public void ShouldReturnTrueAndReturnResultFromTryGetWhenThereIsPermissionsClaims(
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
@@ -111,7 +111,7 @@ public class OperationPermissionClaimClaimsProviderTests
         Operation operation)
     {
         const bool hasPermission = true;
-        
+
         var claimsPrinciple = new ClaimsPrincipal(new[]
         {
             new ClaimsIdentity(new[]
@@ -131,7 +131,7 @@ public class OperationPermissionClaimClaimsProviderTests
 
         var httpContext = new DefaultHttpContext(new FeatureCollection()) { User = claimsPrinciple };
         httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-        
+
         var actual = sut.TryGetPermission(accountLegalEntityId, operation, out var result);
 
         using (new AssertionScope())
