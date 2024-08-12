@@ -12,7 +12,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTr
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
@@ -205,12 +204,16 @@ public class OuterApiService : IOuterApiService
         await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
     }
 
-    public async Task<bool> HasRelationshipWithPermission(long? ukprn, Operation operation)
+    public async Task<bool> HasPermission(long ukprn, long? accountLegalEntityId)
     {
-        var content = new GetHasRelationshipWithPermissionRequest(
-            ukprn,
-            operation
-        );
+        var content = new GetHasPermissionRequest(ukprn, accountLegalEntityId.GetValueOrDefault());
+        var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
+        return response.HasPermission;
+    }
+
+    public async Task<bool> HasRelationshipWithPermission(long? ukprn)
+    {
+        var content = new GetHasRelationshipWithPermissionRequest(ukprn);
 
         var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
 

@@ -8,7 +8,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi;
@@ -81,20 +80,19 @@ public class OuterApiServiceTest
     [Test, MoqAutoData]
     public async Task Then_HasPermission_Request_Is_Made_And_Response_Returned(
         long ukprn,
-        Operation operation,
         GetHasPermissionResponse apiResponse,
         [Frozen] Mock<IOuterApiClient> apiClient,
         OuterApiService service)
     {
         //Arrange
-        var request = new GetHasRelationshipWithPermissionRequest(ukprn, operation);
+        var request = new GetHasRelationshipWithPermissionRequest(ukprn);
         apiClient.Setup(x =>
                 x.Get<GetHasPermissionResponse>(
                     It.Is<GetHasRelationshipWithPermissionRequest>(c => c.GetUrl.Equals(request.GetUrl))))
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.HasRelationshipWithPermission(ukprn, operation);
+        var actual = await service.HasRelationshipWithPermission(ukprn);
 
         //Assert
         actual.Should().Be(apiResponse.HasPermission);

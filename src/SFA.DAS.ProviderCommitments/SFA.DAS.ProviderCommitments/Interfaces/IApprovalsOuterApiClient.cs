@@ -10,6 +10,8 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
             long accountLegalEntityId,
             CancellationToken cancellationToken = default);
 
+        Task<GetHasPermissionResponse> GetHasPermission(long ukprn, long accountLegalEntityId);
+
         Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
 
         Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);

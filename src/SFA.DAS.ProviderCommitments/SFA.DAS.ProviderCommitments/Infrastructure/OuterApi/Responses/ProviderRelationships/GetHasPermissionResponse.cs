@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships
 {
-    public class GetHasRelationshipWithPermissionResponse
+    public class GetHasPermissionResponse
     {
         [JsonPropertyName(nameof(HasPermission))]
         public bool HasPermission { get; set; }
