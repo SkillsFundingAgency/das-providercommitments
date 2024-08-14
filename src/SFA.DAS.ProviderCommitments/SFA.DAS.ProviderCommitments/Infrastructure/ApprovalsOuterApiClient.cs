@@ -22,6 +22,12 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure
                 cancellationToken: cancellationToken);
         }
 
+        public async Task<GetHasPermissionResponse> GetHasPermission(long ukprn, long accountLegalEntityId)
+        {
+            var result = await _client.Get<GetHasPermissionResponse>($"providerpermissions/has-relationship-with-permission?ukprn={ukprn}&accountLegalEntityId={accountLegalEntityId}");
+            return result;
+        }
+
         public async Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn)
         {
             var result = await _client.Get<GetHasRelationshipWithPermissionResponse>($"providerpermissions/has-relationship-with-permission?ukprn={ukprn}");
