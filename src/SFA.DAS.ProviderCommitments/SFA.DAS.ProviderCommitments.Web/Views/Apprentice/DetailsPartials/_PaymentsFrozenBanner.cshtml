@@ -1,0 +1,18 @@
+﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
+
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+	<div class="govuk-notification-banner__header">
+		<h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+			Important
+		</h2>
+	</div>
+	<div class="govuk-notification-banner__content">
+		<p class="govuk-notification-banner__heading"> Employer has set provider payments to Inactive</p>
+		<p class="govuk-body">Payments were set to inactive on the @Model.PaymentStatus.FrozenOn.Value.ToGdsFormat().</p>
+		@if(!string.IsNullOrEmpty(Model.PaymentStatus.ReasonFrozen))
+        {
+			<p class="govuk-body">Reason: @Model.PaymentStatus.ReasonFrozen</p>
+		}
+	</div>
+</div>
