@@ -1,15 +1,14 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading.Tasks;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Authorization;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.UnitTests.Infrastructure.OuterApi;
 
@@ -51,7 +50,7 @@ public class OuterApiServiceTest
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.CanAccessApprenticeship( partyId, apprenticeshipId);
+        var actual = await service.CanAccessApprenticeship(partyId, apprenticeshipId);
 
         //Assert
         actual.Should().Be(apiResponse.HasApprenticeshipAccess);
@@ -81,21 +80,19 @@ public class OuterApiServiceTest
     [Test, MoqAutoData]
     public async Task Then_HasPermission_Request_Is_Made_And_Response_Returned(
         long ukprn,
-        long accountLegalEntityId,
-        Operation operation,
         GetHasPermissionResponse apiResponse,
         [Frozen] Mock<IOuterApiClient> apiClient,
         OuterApiService service)
     {
         //Arrange
-        var request = new GetHasPermissionRequest(ukprn, accountLegalEntityId, operation);
+        var request = new GetHasRelationshipWithPermissionRequest(ukprn);
         apiClient.Setup(x =>
                 x.Get<GetHasPermissionResponse>(
-                    It.Is<GetHasPermissionRequest>(c => c.GetUrl.Equals(request.GetUrl))))
+                    It.Is<GetHasRelationshipWithPermissionRequest>(c => c.GetUrl.Equals(request.GetUrl))))
             .ReturnsAsync(apiResponse);
 
         //Act
-        var actual = await service.HasPermission(ukprn, accountLegalEntityId, operation);
+        var actual = await service.HasRelationshipWithPermission(ukprn);
 
         //Assert
         actual.Should().Be(apiResponse.HasPermission);

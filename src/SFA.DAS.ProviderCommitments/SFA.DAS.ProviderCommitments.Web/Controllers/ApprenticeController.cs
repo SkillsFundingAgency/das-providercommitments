@@ -80,15 +80,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
         }
 
         [Route("{apprenticeshipHashedId}", Name = RouteNames.ApprenticeDetail)]
-        public async Task<IActionResult> Details(DetailsRequest request, string banners = "", bool showChangeOfPriceRequestSent = false, bool showPriceChangeCancelled = false, bool showPriceChangeApproved = false, bool showChangeOfPriceAutoApproved = false, bool showPriceChangeRejected = false)
+        public async Task<IActionResult> Details(DetailsRequest request, ApprenticeDetailsBanners banners = 0)
         {
             var viewModel = await _modelMapper.Map<DetailsViewModel>(request);
-            viewModel.ShowChangeOfPriceRequestSent = showChangeOfPriceRequestSent;
-            viewModel.ShowPriceChangeCancelled = showPriceChangeCancelled;
-            viewModel.ShowPriceChangeApproved = showPriceChangeApproved;
-            viewModel.ShowChangeOfPriceAutoApproved = showChangeOfPriceAutoApproved;
-            viewModel.ShowPriceChangeRejected = showPriceChangeRejected;
-            viewModel.ShowBannersFlags = banners.PipeDelimitedToFlags<DetailsViewModel.Banners>();
+            viewModel.ShowBannersFlags = banners;
             return View(viewModel);
         }
 

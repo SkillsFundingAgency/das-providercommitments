@@ -83,7 +83,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
 
-        public string PaymentStatus { get; set; }
+        public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
         public bool HasPendingPriceChange => PendingPriceChange != null;
@@ -92,13 +92,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string PendingPriceChangeRoute => $"provider/{ProviderId}/ChangeOfPrice/{ApprenticeshipHashedId}/pending";
         public string ChangeOfStartDateRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}";
         public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
-        public bool ShowChangeOfPriceRequestSent { get; set; }
-        public bool ShowPriceChangeCancelled { get; set; }
-        public bool ShowPriceChangeApproved { get; set; }
-        public bool ShowChangeOfPriceAutoApproved { get; set; }
-        public bool ShowPriceChangeRejected { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
-        public ulong ShowBannersFlags { get; set; } = 0;
+        public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
         public enum DataLockSummaryStatus
         {
             None,
@@ -111,23 +106,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             Restart,
             Update,
             Both
-        }
-
-        /// <summary>
-        /// Flags for displaying banners. Note that these are bit flags and should be powers of 2.
-        /// </summary>
-        [Flags]
-        public enum Banners : ulong
-        {
-            None = 0,
-            ChangeOfStartDateSent = 1,
-            ChangeOfStartDateApproved = 2,
-            ChangeOfStartDateCancelled = 4,
-            ChangeOfPriceRequestSent = 8, 
-            PriceChangeCancelled = 16, 
-            PriceChangeApproved = 32, 
-            ChangeOfPriceAutoApproved = 64, 
-            PriceChangeRejected = 128
         }
     }
 
@@ -153,5 +131,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public DateTime PendingStartDate { get; set; }
         public DateTime PendingEndDate { get; set; }
         public ChangeInitiatedBy ChangeInitiatedBy { get; set; }
+    }
+
+    public class PaymentsStatus
+    {
+        public string Status => PaymentsFrozen ? "Inactive" : "Active";
+        public bool PaymentsFrozen { get; set; }
+        public string ReasonFrozen { get; set; }
+        public DateTime? FrozenOn { get; set; }
     }
 }
