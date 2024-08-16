@@ -694,14 +694,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             });
         }
 
-        [Test]
-        public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly()
+        [TestCase(LearnerStatus.WaitingToStart, "Inactive")]
+        [TestCase(LearnerStatus.InLearning, "Active")]
+        public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly(LearnerStatus learnerStatus, string expectedPaymentStatus)
         {
-            _fixture.WithFrozenPayments();
+            _fixture
+                .WithFrozenPayments()
+                .WithLearnerStatus(learnerStatus);
 
             await _fixture.Map();
 
-            _fixture.Result.PaymentStatus.Status.Should().Be("Inactive");
+            _fixture.Result.PaymentStatus.Status.Should().Be(expectedPaymentStatus);
         }
 
         [Test]
