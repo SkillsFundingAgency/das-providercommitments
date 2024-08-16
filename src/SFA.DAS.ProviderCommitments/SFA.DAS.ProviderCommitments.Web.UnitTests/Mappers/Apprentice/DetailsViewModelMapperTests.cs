@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -671,6 +672,56 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             });
         }
 
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.Status.Should().Be("Inactive");
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentFrozenOnIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.FrozenOn.Should().Be(_fixture.ApiResponse.PaymentsStatus.FrozenOn);
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenPaymentsFrozenIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.PaymentsFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.PaymentsFrozen);
+        }
+
+        [Test]
+        public async Task And_PaymentsAreFrozen_ThenReasonFrozenOnIsMappedCorrectly()
+        {
+            _fixture.WithFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.ReasonFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen);
+        }
+
+        [Test]
+        public async Task And_PaymentsAreNotFrozen_ThenPaymentStatusIsMappedCorrectly()
+        {
+            _fixture.WithoutFrozenPayments();
+
+            await _fixture.Map();
+
+            _fixture.Result.PaymentStatus.Status.Should().Be("Active");
+        }
+
         public class DetailsViewModelMapperFixture
         {
             private DetailsViewModelMapper _sut;
@@ -1040,6 +1091,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                     Initiator = "Provider"
                 };
                 
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithFrozenPayments()
+            {
+                ApiResponse.PaymentsStatus.PaymentsFrozen = true;
+                return this;
+            }
+
+            public DetailsViewModelMapperFixture WithoutFrozenPayments()
+            {
+                ApiResponse.PaymentsStatus.PaymentsFrozen = false;
                 return this;
             }
         }

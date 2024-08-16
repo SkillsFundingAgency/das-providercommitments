@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ProviderCommitments.Interfaces
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+
+namespace SFA.DAS.ProviderCommitments.Interfaces
 {
     public interface IApprovalsOuterApiClient
     {
@@ -7,5 +9,11 @@
             string courseCode,
             long accountLegalEntityId,
             CancellationToken cancellationToken = default);
+
+        Task<GetHasPermissionResponse> GetHasPermission(long ukprn, long accountLegalEntityId);
+
+        Task<GetProviderAccountLegalEntitiesResponse> GetProviderAccountLegalEntities(int ukprn);
+
+        Task<GetHasRelationshipWithPermissionResponse> GetHasRelationshipWithPermission(long ukprn);
     }
 }

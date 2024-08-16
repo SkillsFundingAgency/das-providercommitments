@@ -10,11 +10,10 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Provider;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderPermissions;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.ProviderRelationships;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Types.Models;
 
 namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 
@@ -205,13 +204,16 @@ public class OuterApiService : IOuterApiService
         await _outerApiClient.Put<object>(new PutFileUploadUpdateLogRequest(fileUploadLogId, content));
     }
 
-    public async Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation)
+    public async Task<bool> HasPermission(long ukprn, long? accountLegalEntityId)
     {
-        var content = new GetHasPermissionRequest(
-            ukprn,
-            accountLegalEntityId,
-            operation
-        );
+        var content = new GetHasPermissionRequest(ukprn, accountLegalEntityId.GetValueOrDefault());
+        var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
+        return response.HasPermission;
+    }
+
+    public async Task<bool> HasRelationshipWithPermission(long? ukprn)
+    {
+        var content = new GetHasRelationshipWithPermissionRequest(ukprn);
 
         var response = await _outerApiClient.Get<GetHasPermissionResponse>(content);
 
