@@ -53,6 +53,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                     EndPointAssessmentPrice = apiResponse.EndPointAssessmentPrice,
                     Reference = apiResponse.ProviderReference,
                     IsContinuation = apiResponse.IsContinuation,
+                    OriginalStartDate = apiResponse.OriginalStartDate,
                     TrainingCourseOption = apiResponse.TrainingCourseOption == string.Empty ? "-1" : apiResponse.TrainingCourseOption,
                     DeliveryModel = (DeliveryModel?) apiResponse.DeliveryModel,
                     EmploymentPrice = apiResponse.EmploymentPrice,

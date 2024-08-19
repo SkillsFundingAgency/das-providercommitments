@@ -8,11 +8,18 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
     {
         public Task<UpdateDraftApprenticeshipApimRequest> Map(EditDraftApprenticeshipViewModel source)
         {
+            DateTime? startDate = source.StartDate?.Date;
+
+            if (source.IsContinuation && source.OriginalStartDate.HasValue)
+            {
+                startDate = source.OriginalStartDate.Value;
+            }
+
             int? GetCost()
             {
                 if (source.IsOnFlexiPaymentPilot is not true) return source.Cost;
                 if (source.TrainingPrice is null && source.EndPointAssessmentPrice is null) return source.Cost ?? null;
-                
+
                 return source.TrainingPrice.GetValueOrDefault() + source.EndPointAssessmentPrice.GetValueOrDefault();
             }
 
@@ -28,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 Cost = GetCost(),
                 TrainingPrice = source.TrainingPrice,
                 EndPointAssessmentPrice = source.EndPointAssessmentPrice,
-                StartDate = source.StartDate?.Date,
+                StartDate = startDate,
                 ActualStartDate = source.ActualStartDate?.Date,
                 EndDate = source.EndDate.Date,
                 Reference = source.Reference,
