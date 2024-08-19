@@ -21,20 +21,20 @@ public class ProviderAuthorizationHandler(
 
         const Operation operation = Operation.CreateCohort;
 
-        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasRelationshipWithPermission))
+        if (operationPermissionClaimsProvider.TryGetPermission(accountLegalEntityId, operation, out var hasPermission))
         {
-            return hasRelationshipWithPermission;
+            return hasPermission;
         }
 
-        hasRelationshipWithPermission = await outerApiService.HasRelationshipWithPermission(providerId, operation);
+        hasPermission = await outerApiService.HasPermission(providerId, accountLegalEntityId);
 
         operationPermissionClaimsProvider.Save(new OperationPermission
         {
             AccountLegalEntityId = accountLegalEntityId,
             Operation = operation,
-            HasPermission = hasRelationshipWithPermission,
+            HasPermission = hasPermission,
         });
 
-        return hasRelationshipWithPermission;
+        return hasPermission;
     }
 }
