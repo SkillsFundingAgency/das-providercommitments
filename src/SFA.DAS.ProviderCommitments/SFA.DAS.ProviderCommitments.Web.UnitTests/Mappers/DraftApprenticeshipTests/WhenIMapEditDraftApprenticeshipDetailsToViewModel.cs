@@ -212,6 +212,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.DraftApprenticeshipT
         }
 
         [Test]
+        public async Task ThenOriginalStartDateIsMappedCorrectly()
+        {
+            var result = await _act();
+            Assert.That(result.OriginalStartDate, Is.EqualTo(_apiResponse.OriginalStartDate));
+        }
+
+        [Test]
         public async Task ThenTheTrainingCourseOptionIsMapped()
         {
             var result = await _act();

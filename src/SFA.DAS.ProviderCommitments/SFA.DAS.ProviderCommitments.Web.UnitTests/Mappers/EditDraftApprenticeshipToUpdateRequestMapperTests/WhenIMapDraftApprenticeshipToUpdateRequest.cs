@@ -143,10 +143,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.EditDraftApprentices
         }
 
         [Test]
-        public async Task ThenStartDateIsMappedCorrectly()
-        {
+        public async Task ThenStartDateIsMappedCorrectlyIfNotContinuation()
+        {            
+            _source.IsContinuation = false;
             var result = await _act();
             Assert.That(result.StartDate, Is.EqualTo(_source.StartDate.Date));
+        }
+
+         [Test]
+        public async Task ThenStartDateIsMappedCorrectlyIfIsContinuation()
+        {
+            var originalStartDate = new DateTime(2020, 01, 01);
+            _source.IsContinuation = true;
+            _source.OriginalStartDate = originalStartDate;
+
+            var result = await _act();
+            Assert.That(result.StartDate, Is.EqualTo(originalStartDate));
         }
 
         [Test]
