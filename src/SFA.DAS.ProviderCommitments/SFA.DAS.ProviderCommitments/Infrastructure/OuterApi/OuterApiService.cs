@@ -154,6 +154,11 @@ public class OuterApiService : IOuterApiService
         return await _outerApiClient.Get<GetCohortDetailsResponse>(new GetCohortDetailsRequest(providerId, cohortId));
     }
 
+    public async Task<PostApprenticeshipsCSVResponse> GetApprenticeshipsCSV(PostApprenticeshipsCSVRequest request)
+    {
+      return await _outerApiClient.Post<PostApprenticeshipsCSVResponse>(request);
+    }
+
     // <inherit-doc />
     public async Task<ProviderAccountResponse> GetProviderStatus(long ukprn)
     {
@@ -262,5 +267,5 @@ public class OuterApiService : IOuterApiService
         }
 
         return null;
-    }
+    }  
 }
