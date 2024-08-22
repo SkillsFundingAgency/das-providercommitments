@@ -4,7 +4,7 @@
 
 <div class="govuk-inset-text">
     <p id="change-of-party-status-text">
-        @if (Model.Status == ApprenticeshipStatus.Live && Model.PendingChangeOfPartyRequestWithParty == Party.Provider)
+        @if (Model.HasPendingOverlappingTrainingDateRequest && Model.PendingChangeOfPartyRequestWithParty == Party.Provider)
         {
             @:The change of employer request cannot be approved until the overlapping date has been resolved. You can view or edit the new details and send it to the new employer for review.
         }
