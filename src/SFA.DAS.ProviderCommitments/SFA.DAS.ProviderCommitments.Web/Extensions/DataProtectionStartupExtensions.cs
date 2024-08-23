@@ -27,7 +27,7 @@ public static class DataProtectionStartupExtensions
             .Connect($"{redisConnectionString},{dataProtectionKeysDatabase}");
 
         services.AddDataProtection()
-            .SetApplicationName("das-providercommitments-web")
+            .SetApplicationName("das-provider-web")
             .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
 
         return services;
