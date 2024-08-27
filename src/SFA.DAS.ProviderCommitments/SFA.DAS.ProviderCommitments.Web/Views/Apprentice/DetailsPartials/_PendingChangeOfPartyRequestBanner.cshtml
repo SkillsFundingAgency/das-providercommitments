@@ -2,18 +2,16 @@
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 
-<div class="govuk-inset-text">
-    <p id="change-of-party-status-text">
-        @if (Model.HasPendingOverlappingTrainingDateRequest && Model.PendingChangeOfPartyRequestWithParty == Party.Provider)
-        {
-            @:The change of employer request cannot be approved until the overlapping date has been resolved. You can view or edit the new details and send it to the new employer for review.
-        }
-        else
-        {
-            @(Model.PendingChangeOfPartyRequestWithParty == Party.Employer
-                ? "You have made a change of employer request. It’s now with the new employer for review."
-                : "The new employer has reviewed the change of employer request. You need to review the new details.")
-        }
-    </p>
-    <a class="govuk-link" asp-route="@RouteNames.ChangeEmployer" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId" asp-route-providerId="@Model.ProviderId">View changes</a>
-</div>
+<p id="change-of-party-status-text">
+    @if (Model.HasPendingOverlappingTrainingDateRequest && Model.PendingChangeOfPartyRequestWithParty == Party.Provider)
+    {
+        @:The change of employer request cannot be approved until the overlapping date has been resolved. You can view or edit the new details and send it to the new employer for review.
+    }
+    else
+    {
+        @(Model.PendingChangeOfPartyRequestWithParty == Party.Employer
+            ? "You have made a change of employer request. It’s now with the new employer for review."
+            : "The new employer has reviewed the change of employer request. You need to review the new details.")
+    }
+</p>
+<a class="govuk-link" asp-route="@RouteNames.ChangeEmployer" asp-route-apprenticeshipHashedId="@Model.ApprenticeshipHashedId" asp-route-providerId="@Model.ProviderId">View changes</a>
