@@ -116,7 +116,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingPriceChange = Map(data.PendingPriceChange),
                     PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
                     CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
-                    PaymentStatus = data.PaymentsFrozen == true ? "Inactive" : "Active"
+                    PaymentStatus = Map(data.PaymentsStatus)
                 };
             }
             catch (Exception e)
@@ -154,6 +154,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 PendingStartDate = startDateChangeDetails.PendingActualStartDate,
                 PendingEndDate = startDateChangeDetails.PendingPlannedEndDate,
                 ChangeInitiatedBy = Enum.Parse<ChangeInitiatedBy>(startDateChangeDetails.Initiator)
+            };
+        }
+
+        private static PaymentsStatus Map(GetManageApprenticeshipDetailsResponse.PaymentsStatusDetails source)
+        {
+            return new PaymentsStatus
+            {
+                PaymentsFrozen = source.PaymentsFrozen,
+                ReasonFrozen = source.ReasonFrozen,
+                FrozenOn = source.FrozenOn
             };
         }
 

@@ -3,7 +3,6 @@ using FluentValidation;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Client;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -14,7 +13,6 @@ using SFA.DAS.ProviderCommitments.Web.Exceptions;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.HealthChecks;
 using SFA.DAS.ProviderCommitments.Web.ServiceRegistrations;
-using LocalDevApiClientFactory = SFA.DAS.ProviderCommitments.Web.LocalDevRegistry.LocalDevApiClientFactory;
 
 namespace SFA.DAS.ProviderCommitments.Web;
 
@@ -32,7 +30,7 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        
+
         services.AddSingleton(_configuration);
         services.AddLogging(builder =>
         {
@@ -73,7 +71,6 @@ public class Startup
 
         services
             .AddCommitmentsApiClient(_configuration)
-            .AddProviderRelationshipsApiClient(_configuration)
             .AddApprovalsOuterApiClient()
             .AddProviderApprenticeshipsApiClient(_configuration);
 

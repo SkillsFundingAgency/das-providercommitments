@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ProviderRelationships.Types.Models;
+﻿using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization;
 

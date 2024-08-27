@@ -6,7 +6,6 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenti
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Types.Models;
 using AddDraftApprenticeshipResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.AddDraftApprenticeshipResponse;
 using CreateCohortResponse = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.CreateCohortResponse;
 
@@ -42,7 +41,8 @@ namespace SFA.DAS.ProviderCommitments.Interfaces
         Task<long> CreateFileUploadLog(long providerId, IFormFile attachment, List<CsvRecord> csvRecords);
         Task AddValidationMessagesToFileUploadLog(long providerId, long fileUploadLogId, List<Infrastructure.OuterApi.ErrorHandling.BulkUploadValidationError> errors);
         Task AddUnhandledExceptionToFileUploadLog(long providerId, long fileUploadLogId, string errorMessage);
-        Task<bool> HasPermission(long? ukprn, long? accountLegalEntityId, Operation operation);
+        Task<bool> HasPermission(long ukprn, long? accountLegalEntityId);
+        Task<bool> HasRelationshipWithPermission(long? ukprn);
         Task<bool> CanAccessCohort(long providerId, long cohortId);
         Task<bool> CanAccessApprenticeship(long providerId, long apprenticeshipId);
     }

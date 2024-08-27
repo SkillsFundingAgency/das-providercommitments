@@ -9,9 +9,10 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ProviderRelationships;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
-using SFA.DAS.ProviderRelationships.Api.Client;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 {
@@ -79,12 +80,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         }
 
         [Test]
-        public void Then_DateCreated_IsMapped_Correctly() 
-        { 
+        public void Then_DateCreated_IsMapped_Correctly()
+        {
             _fixture.Map();
             _fixture.Verify_DateCreated_Is_Mapped();
         }
-        
+
         [TestCase("", false, "2_Encoded", "1_Encoded")]
         [TestCase("Employer", false, "2_Encoded", "1_Encoded")]
         [TestCase("Employer", true, "1_Encoded", "2_Encoded")]
@@ -121,7 +122,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             commitmentsApiClient.Setup(c => c.GetCohorts(It.Is<GetCohortsRequest>(r => r.ProviderId == ProviderId), CancellationToken.None)).ReturnsAsync(_getCohortsResponse);
             _encodingService.Setup(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference)).Returns((long y, EncodingType z) => y + "_Encoded");
 
-            var providerRelationshipsApiClient = new Mock<IProviderRelationshipsApiClient>();
+            var approvalsOuterApiClient = new Mock<IApprovalsOuterApiClient>();
+            approvalsOuterApiClient.Setup(x => x.GetHasRelationshipWithPermission(It.IsAny<long>()))
+                .ReturnsAsync(new GetHasRelationshipWithPermissionResponse { HasPermission = true });
 
             var pasAccountApiClient = new Mock<IPasAccountApiClient>();
             pasAccountApiClient.Setup(x => x.GetAgreement(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => new ProviderAgreement { Status = ProviderAgreementStatus.Agreed });
@@ -129,7 +132,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
             var urlHelper = new Mock<IUrlHelper>();
             urlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns<UrlActionContext>((ac) => $"http://{ac.Controller}/{ac.Action}/");
 
-            _mapper = new WithTransferSenderRequestViewModelMapper(commitmentsApiClient.Object, providerRelationshipsApiClient.Object, urlHelper.Object, pasAccountApiClient.Object, _encodingService.Object);
+            _mapper = new WithTransferSenderRequestViewModelMapper(commitmentsApiClient.Object, approvalsOuterApiClient.Object, urlHelper.Object, pasAccountApiClient.Object, _encodingService.Object);
         }
 
         public WhenMappingTransferSenderRequestToViewModelFixture Map()
