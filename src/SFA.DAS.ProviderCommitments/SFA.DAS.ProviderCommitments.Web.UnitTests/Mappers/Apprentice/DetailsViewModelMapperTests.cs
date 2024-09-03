@@ -711,7 +711,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         }
 
         [TestCase(LearnerStatus.WaitingToStart, "Inactive")]
-        [TestCase(LearnerStatus.InLearning, "Active")]
+        [TestCase(LearnerStatus.InLearning, "Inactive")]
         public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly(LearnerStatus learnerStatus, string expectedPaymentStatus)
         {
             _fixture
