@@ -1,13 +1,10 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.CommitmentsV2.Types
-@using SFA.DAS.ProviderCommitments.Enums
 @using SFA.DAS.ProviderCommitments.Features
 @using SFA.DAS.ProviderCommitments.Web.Extensions
-@using SFA.DAS.ProviderCommitments.Web.Helpers
 @using SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 @using SFA.DAS.ProviderCommitments.Web.RouteValues
-@using static SFA.DAS.ProviderCommitments.Web.Models.Apprentice.DetailsViewModel
 @using IAuthorizationService = SFA.DAS.ProviderCommitments.Interfaces.IAuthorizationService
 
 @inject IAuthorizationService AuthorisationService
@@ -16,6 +13,13 @@
     ViewData["Title"] = "Apprentice Details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/details";
     ViewBag.GaData.Org = Model.Employer;
+
+    var paymentStatusTagClass = Model.PaymentStatus.Status switch
+    {
+        "Inactive" => "govuk-tag--red",
+        "Active" => "govuk-tag--blue",
+        _ => "govuk-tag--blue" // default
+    };
 }
 
 <div class="govuk-grid-row govuk-!-margin-bottom-2">
@@ -90,7 +94,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header das-table-cell-width-45">Provider payments status</th>
                         <td id="provider-payments-status" class="govuk-table__cell das-table-cell-width-55">
-                            <strong class="govuk-tag govuk-tag--blue">@Model.PaymentStatus.Status</strong>
+                            <strong class="govuk-tag @paymentStatusTagClass">@Model.PaymentStatus</strong>
                         </td>
                     </tr>
                 }
