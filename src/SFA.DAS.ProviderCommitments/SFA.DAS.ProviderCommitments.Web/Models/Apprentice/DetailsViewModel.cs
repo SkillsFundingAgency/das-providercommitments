@@ -36,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasEmployerPendingUpdate { get; set; }
         public DataLockSummaryStatus DataLockStatus { get; set; }
         public bool HasPendingChangeOfPartyRequest { get; set; }
+        public bool HasPendingOverlappingTrainingDateRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
         public bool HasContinuation { get; set; }
         public bool ShowChangeEmployerLink => !HasContinuation && Status != ApprenticeshipStatus.Completed;
