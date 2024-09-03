@@ -56,6 +56,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 var pendingChangeOfPartyRequest = data.ChangeOfPartyRequests.SingleOrDefault(x =>
                     x.OriginatingParty == Party.Provider && x.Status == ChangeOfPartyRequestStatus.Pending);
 
+                var pendingOverlappingTrainingDate = data.OverlappingTrainingDateRequest.SingleOrDefault(x =>
+                    x.Status == OverlappingTrainingDateRequestStatus.Pending);
+
                 return new DetailsViewModel
                 {
                     ProviderId = source.ProviderId,
@@ -88,6 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PauseDate = data.Apprenticeship.PauseDate,
                     CompletionDate = data.Apprenticeship.CompletionDate,
                     HasPendingChangeOfPartyRequest = pendingChangeOfPartyRequest != null,
+                    HasPendingOverlappingTrainingDateRequest = pendingOverlappingTrainingDate != null,
                     PendingChangeOfPartyRequestWithParty = pendingChangeOfPartyRequest?.WithParty,
                     HasContinuation = data.Apprenticeship.HasContinuation,
                     ShowChangeVersionLink = await HasNewerVersions(data.Apprenticeship),

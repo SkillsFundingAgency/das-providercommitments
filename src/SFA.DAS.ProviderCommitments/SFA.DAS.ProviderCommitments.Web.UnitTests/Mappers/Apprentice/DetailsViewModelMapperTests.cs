@@ -534,7 +534,23 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
 
             Assert.That(_fixture.Result.HasPendingChangeOfPartyRequest, Is.False);
         }
-        
+      
+        [TestCase(null, false)]
+        [TestCase(OverlappingTrainingDateRequestStatus.Resolved, false)]
+        [TestCase(OverlappingTrainingDateRequestStatus.Rejected, false)]
+        [TestCase(OverlappingTrainingDateRequestStatus.Pending, true)]
+        public async Task ThenHasPendingOverlappingTrainingDateRequestIsMappedCorrectly(OverlappingTrainingDateRequestStatus? status, bool expectHasPending)
+        {
+            if (status.HasValue)
+            {
+                _fixture.WithOverlappingTrainingDateRequests(status.Value);
+            }
+
+            await _fixture.Map();
+
+            Assert.That(_fixture.Result.HasPendingOverlappingTrainingDateRequest, Is.EqualTo(expectHasPending));
+        }
+
         [TestCase(true, false)]
         [TestCase(false, true)]
         public async Task ThenShowChangeEmployerLinkIsMappedCorrectly(bool hasContination, bool expected)
@@ -755,6 +771,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
             public IEnumerable<GetManageApprenticeshipDetailsResponse.ApprenticeshipUpdate> ApprenticeshipUpdates { get; private set; }
             public IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> DataLocks { get; private set; }
             public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest> ChangeOfPartyRequests { get; private set; }
+            public IEnumerable<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequests{ get; private set; }
             public IEnumerable<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink> ChangeOfEmployerChain { get; private set; }
             public GetNewerTrainingProgrammeVersionsResponse GetNewerTrainingProgrammeVersionsResponse { get; private set; }
             public GetTrainingProgrammeResponse GetTrainingProgrammeByStandardUIdResponse { get; private set; }
@@ -789,11 +806,13 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 DataLocks = new List<GetManageApprenticeshipDetailsResponse.DataLock>();
                 ChangeOfPartyRequests = new List<GetManageApprenticeshipDetailsResponse.ChangeOfPartyRequest>();
                 ChangeOfEmployerChain = new List<GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink>();
+                OverlappingTrainingDateRequests = new List<ApprenticeshipOverlappingTrainingDateRequest>();
 
                 ApiResponse.ApprenticeshipUpdates = ApprenticeshipUpdates;
                 ApiResponse.DataLocks = DataLocks;
                 ApiResponse.ChangeOfPartyRequests = ChangeOfPartyRequests;
                 ApiResponse.ChangeOfEmployerChain = ChangeOfEmployerChain;
+                ApiResponse.OverlappingTrainingDateRequest = OverlappingTrainingDateRequests;
 
                 GetNewerTrainingProgrammeVersionsResponse = new GetNewerTrainingProgrammeVersionsResponse()
                 {
@@ -1026,6 +1045,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                 _encodingService.Setup(x => x.Encode(It.Is<long>(id => id == newApprenticeshipId), EncodingType.ApprenticeshipId))
                     .Returns(EncodedNewApprenticeshipId);
 
+                return this;
+            }
+            
+            public DetailsViewModelMapperFixture WithOverlappingTrainingDateRequests(OverlappingTrainingDateRequestStatus status)
+            {
+                var draftApprenticeshipId = Fixture.Create<long>();
+                var previousApprenticeshipId = Fixture.Create<long>();
+
+                ApiResponse.OverlappingTrainingDateRequest = new List<ApprenticeshipOverlappingTrainingDateRequest>
+                    {
+                        new()
+                        {
+                            Id = 1,
+                            DraftApprenticeshipId = draftApprenticeshipId,
+                            PreviousApprenticeshipId = previousApprenticeshipId,
+                            Status = status,
+                            ResolutionType = null,
+                            ActionedOn = null
+                        }
+                    };
+              
                 return this;
             }
 
