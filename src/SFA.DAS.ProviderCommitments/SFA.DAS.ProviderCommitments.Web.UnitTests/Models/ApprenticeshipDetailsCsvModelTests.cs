@@ -5,6 +5,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -14,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
     {
         [Test, MoqAutoData]
         public void Then_Maps_ApprenticeName(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -25,7 +26,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Uln(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -36,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_EmployerName(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -47,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_CourseName(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -58,7 +59,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PlannedStartDate(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -69,7 +70,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PlannedEndDate(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -80,7 +81,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_PausedDate(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -90,7 +91,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         }
         [Test, AutoData]
         public void Then_Maps_Empty_If_No_PausedDate(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -102,7 +103,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_DateOfBirth(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -112,7 +113,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_Maps_ApprenticeConfirmation(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+        public void Then_Maps_ApprenticeConfirmation(PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -122,7 +123,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_Maps_Null_ApprenticeConfirmation(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+        public void Then_Maps_Null_ApprenticeConfirmation(PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -134,7 +135,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Status(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -145,7 +146,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Reference(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -156,7 +157,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_Your_Reference(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -167,7 +168,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, AutoData]
         public void Then_Maps_TotalAgreedPrice(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -179,7 +180,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         [Test, AutoData]
         public void Then_Maps_AgreementId(
             string agreementId,
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -191,7 +192,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
         [Test, MoqAutoData]
         public void Then_Maps_Alerts(
-            GetApprenticeshipsResponse.ApprenticeshipDetailsResponse source,
+           PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
             [Frozen] Mock<IEncodingService> encodingService,
             ApprenticeshipDetailsCsvModel model)
         {
@@ -214,7 +215,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
         public void Then_Maps_DeliveryModel(DeliveryModel deliveryModel, string desc)
         {
             var f = new Fixture();
-            var source = f.Build<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse>()
+            var source = f.Build<PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse>()
                 .With(x => x.DeliveryModel, deliveryModel).Create();
         
             var encodingService = new Mock<IEncodingService>();

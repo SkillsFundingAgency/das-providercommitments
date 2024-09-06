@@ -3,6 +3,7 @@ using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
@@ -41,8 +42,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string Status { get ; private set ; }
         [Name("Alerts")]
         public string Alerts { get ; private set ; }
+        [Name("Standard version")]
+        public string StandardVersion { get; private set; }
 
-        public ApprenticeshipDetailsCsvModel Map(GetApprenticeshipsResponse.ApprenticeshipDetailsResponse model, IEncodingService encodingService)
+        public ApprenticeshipDetailsCsvModel Map(PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse model, IEncodingService encodingService)
         {
             return new ApprenticeshipDetailsCsvModel
             {
@@ -62,6 +65,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
                 PausedDate = model.PauseDate != DateTime.MinValue ? model.PauseDate.ToGdsFormatWithoutDay() : "",
                 TotalAgreedPrice = $"{model.TotalAgreedPrice.Value as object:n0}",
                 DeliveryModel = model.DeliveryModel.ToDescription(),
+                StandardVersion = model.TrainingCourseVersion
             };
         }
 
