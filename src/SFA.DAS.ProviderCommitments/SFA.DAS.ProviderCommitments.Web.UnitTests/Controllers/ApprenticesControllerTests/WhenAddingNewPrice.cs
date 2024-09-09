@@ -32,7 +32,7 @@ public class WhenAddingNewPrice
         var result = await fixture.Sut.Price(fixture.PriceRequest) as ViewResult;
 
         result.Should().NotBeNull();
-        Assert.That(result.Model.GetType(), Is.EqualTo(typeof(PriceViewModel)));
+        result.Model.GetType().Should().Be(typeof(PriceViewModel));
     }
 
     [Test]     
@@ -84,7 +84,7 @@ public class WhenAddingNewPrice
         var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
         result.Should().NotBeNull();
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
+        result.RouteName.Should().Be(RouteNames.ChangeEmployerOverlapAlert);
     }  
         
     [Test]     
@@ -94,7 +94,7 @@ public class WhenAddingNewPrice
         var result = await fixture.AndStoppedJourneyEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
         result.Should().NotBeNull();
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ApprenticeConfirm));          
+        result.RouteName.Should().Be(RouteNames.ApprenticeConfirm);          
     } 
         
     [Test]
@@ -104,7 +104,7 @@ public class WhenAddingNewPrice
         var result = await fixture.AndStoppedJourneyInEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
         result.Should().NotBeNull();
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
+        result.RouteName.Should().Be(RouteNames.ChangeEmployerOverlapAlert);
     }
 }
 

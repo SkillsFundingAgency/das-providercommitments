@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+﻿using System;
+using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
@@ -20,7 +21,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             try
             {
                 await _fixture.PostToSelectStandard();
-                Assert.Fail("Should have thrown exception");
+                throw new Exception("Should have thrown exception");
             }
             catch (CommitmentsApiModelException e)
             {

@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             //Assert           
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.That(redirect.ActionName, Is.EqualTo("FileUploadReviewDelete"));
+            redirect.ActionName.Should().Be("FileUploadReviewDelete");
         }
 
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             //Assert           
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.That(redirect.ActionName, Is.EqualTo("FileUploadReview"));
+            redirect.ActionName.Should().Be("FileUploadReview");
         }
     }
 

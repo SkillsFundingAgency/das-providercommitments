@@ -82,7 +82,7 @@ public class WhenPostingDeleteConfirmation
         //Assert           
         var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
         flashMessage.Should().NotBeNull();;
-        Assert.That(flashMessage, Is.EqualTo(DraftApprenticeshipController.DraftApprenticeDeleted));
+        flashMessage.Should().Be(DraftApprenticeshipController.DraftApprenticeDeleted);
     }
 
     [Test]
@@ -126,8 +126,8 @@ public class WhenPostingDeleteConfirmation
         var redirect = result.VerifyReturnsRedirectToActionResult();
         using (new AssertionScope())
         {
-            Assert.That(redirect.ActionName, Is.EqualTo("Details"));
-            Assert.That(redirect.ControllerName, Is.EqualTo("Cohort"));
+            redirect.ActionName.Should().Be("Details");
+            redirect.ControllerName.Should().Be("Cohort");
         }
     }
 

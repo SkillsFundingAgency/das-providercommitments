@@ -73,7 +73,7 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
         viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
-        Assert.That(viewModel, Is.EqualTo(_viewModel));
+        viewModel.Should().Be(_viewModel);
     }
 
     public void VerifyViewModelIsEquivalentToTempViewModel(ViewResult viewResult)
@@ -83,5 +83,4 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
         viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
         _tempViewModel.Should().BeEquivalentTo(viewModel);
     }
-
 }

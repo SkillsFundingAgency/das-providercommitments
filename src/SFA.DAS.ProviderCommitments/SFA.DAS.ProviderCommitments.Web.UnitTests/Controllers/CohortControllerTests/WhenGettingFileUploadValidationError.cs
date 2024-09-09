@@ -49,7 +49,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadValidateViewModel>();
 
-            Assert.That(model.ProviderId, Is.EqualTo(fixture.ProviderId));
+            model.ProviderId.Should().Be(fixture.ProviderId);
         }
     }
 

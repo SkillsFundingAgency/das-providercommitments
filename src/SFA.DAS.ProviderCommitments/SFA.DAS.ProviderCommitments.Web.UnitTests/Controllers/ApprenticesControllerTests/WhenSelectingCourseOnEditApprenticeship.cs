@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             result.VerifyReturnsViewModel().ViewName.Should().Be(null);
             var model = result.VerifyReturnsViewModel().WithModel<EditApprenticeshipCourseViewModel>();
 
-            Assert.That(model, Is.EqualTo(fixture.CourseViewModel));
+            model.Should().Be(fixture.CourseViewModel);
         }
 
         [Test]

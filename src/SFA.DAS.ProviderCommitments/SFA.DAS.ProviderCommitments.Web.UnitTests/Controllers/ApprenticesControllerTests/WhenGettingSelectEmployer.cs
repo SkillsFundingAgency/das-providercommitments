@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = await fixture.Act() as ViewResult;
 
             result.Should().NotBeNull();
-            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(SelectEmployerViewModel)));
+            result.Model.GetType().Should().Be(typeof(SelectEmployerViewModel));
         }
     }
 

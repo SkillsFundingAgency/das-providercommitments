@@ -12,119 +12,118 @@ using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 using SFA.DAS.ProviderCommitments.Web.RouteValues;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
+
+[TestFixture]
+public class WhenPostingViewApprenticeshipUpdates
 {
-    [TestFixture]
-    public class WhenPostingViewApprenticeshipUpdates
+    private WhenPostingViewApprenticeshipUpdatesFixture _fixture;
+
+    [SetUp]
+    public void Arrange()
     {
-        private WhenPostingViewApprenticeshipUpdatesFixture _fixture;
+        _fixture = new WhenPostingViewApprenticeshipUpdatesFixture();
+    }
 
-        [SetUp]
-        public void Arrange()
+    [Test]
+    public async Task WithUndoChanges_UndoChanges_Is_Called()
+    {
+        _fixture = _fixture.WithUndoChanges();
+
+        await _fixture.Act();
+
+        _fixture.VerifyUndoChangesCalled();
+    }
+
+    [Test]
+    public async Task WithUndoChanges_Changes_Undone_Message_Is_Stored_In_TempData()
+    {
+        _fixture = _fixture.WithUndoChanges();
+
+        await _fixture.Act();
+
+        _fixture.VerifyChangesUndoneFlashMessageStoredInTempData();
+    }
+
+    [Test]
+    public async Task WithUndoChanges_RedirectToSent()
+    {
+        _fixture = _fixture.WithUndoChanges();
+
+        var result = await _fixture.Act();
+
+        result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
+    }
+
+    [Test]
+    public async Task WithLeaveChanges_RedirectToSent()
+    {
+        _fixture = _fixture.WithLeaveChanges();
+
+        var result = await _fixture.Act();
+
+        result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
+    }
+
+    internal class WhenPostingViewApprenticeshipUpdatesFixture
+    {
+        private readonly ApprenticeController _sut;
+        private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
+        private readonly Mock<ICommitmentsApiClient> _apiClient;
+        private Mock<IAuthenticationService> AuthenticationService { get; }
+
+        public WhenPostingViewApprenticeshipUpdatesFixture()
         {
-            _fixture = new WhenPostingViewApprenticeshipUpdatesFixture();
+            _apiClient = new Mock<ICommitmentsApiClient>();
+            _apiClient.Setup(x => x.UndoApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<UndoApprenticeshipUpdatesRequest>(),
+                It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var modelMapper = new Mock<IModelMapper>();
+
+            _viewModel = new ViewApprenticeshipUpdatesViewModel
+            {
+                ApprenticeshipId = 123,
+                ApprenticeshipHashedId = "DF34WG2",
+                ProviderId = 2342
+            };
+
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            var autoFixture = new Fixture();
+            var userInfo = autoFixture.Create<UserInfo>();
+            AuthenticationService = new Mock<IAuthenticationService>();
+            AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
+
+            _sut = new ApprenticeController(modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
+
+            _sut.TempData = tempData;
         }
 
-        [Test]
-        public async Task WithUndoChanges_UndoChanges_Is_Called()
+        public Task<IActionResult> Act() => _sut.ViewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);
+
+        public WhenPostingViewApprenticeshipUpdatesFixture WithUndoChanges()
         {
-            _fixture = _fixture.WithUndoChanges();
-
-            await _fixture.Act();
-
-            _fixture.VerifyUndoChangesCalled();
+            _viewModel.UndoChanges = true;
+            return this;
         }
 
-        [Test]
-        public async Task WithUndoChanges_Changes_Undone_Message_Is_Stored_In_TempData()
+        public WhenPostingViewApprenticeshipUpdatesFixture WithLeaveChanges()
         {
-            _fixture = _fixture.WithUndoChanges();
-
-            await _fixture.Act();
-
-            _fixture.VerifyChangesUndoneFlashMessageStoredInTempData();
+            _viewModel.UndoChanges = false;
+            return this;
         }
 
-        [Test]
-        public async Task WithUndoChanges_RedirectToSent()
+        public void VerifyUndoChangesCalled()
         {
-            _fixture = _fixture.WithUndoChanges();
-
-            var result = await _fixture.Act();
-
-            result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
+            _apiClient.Verify(x => x.UndoApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
+                It.Is<UndoApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
+                It.IsAny<CancellationToken>()));
         }
 
-        [Test]
-        public async Task WithLeaveChanges_RedirectToSent()
+        public void VerifyChangesUndoneFlashMessageStoredInTempData()
         {
-            _fixture = _fixture.WithLeaveChanges();
-
-            var result = await _fixture.Act();
-
-            result.VerifyReturnsRedirectToRouteResult().WithRouteName(RouteNames.ApprenticeDetail);
-        }
-
-        internal class WhenPostingViewApprenticeshipUpdatesFixture
-        {
-            private readonly ApprenticeController _sut;
-            private readonly ViewApprenticeshipUpdatesViewModel _viewModel;
-            private readonly Mock<ICommitmentsApiClient> _apiClient;
-            private Mock<IAuthenticationService> AuthenticationService { get; }
-
-            public WhenPostingViewApprenticeshipUpdatesFixture()
-            {
-                _apiClient = new Mock<ICommitmentsApiClient>();
-                _apiClient.Setup(x => x.UndoApprenticeshipUpdates(It.IsAny<long>(), It.IsAny<UndoApprenticeshipUpdatesRequest>(),
-                    It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-                var modelMapper = new Mock<IModelMapper>();
-
-                _viewModel = new ViewApprenticeshipUpdatesViewModel
-                {
-                    ApprenticeshipId = 123,
-                    ApprenticeshipHashedId = "DF34WG2",
-                    ProviderId = 2342
-                };
-
-                var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-                var autoFixture = new Fixture();
-                var userInfo = autoFixture.Create<UserInfo>();
-                AuthenticationService = new Mock<IAuthenticationService>();
-                AuthenticationService.Setup(x => x.UserInfo).Returns(userInfo);
-
-                _sut = new ApprenticeController(modelMapper.Object, Mock.Of<SFA.DAS.ProviderCommitments.Interfaces.ICookieStorageService<IndexRequest>>(), _apiClient.Object, Mock.Of<IOuterApiService>(), Mock.Of<ICacheStorageService>());
-
-                _sut.TempData = tempData;
-            }
-
-            public Task<IActionResult> Act() => _sut.ViewApprenticeshipUpdates(AuthenticationService.Object, _viewModel);
-
-            public WhenPostingViewApprenticeshipUpdatesFixture WithUndoChanges()
-            {
-                _viewModel.UndoChanges = true;
-                return this;
-            }
-
-            public WhenPostingViewApprenticeshipUpdatesFixture WithLeaveChanges()
-            {
-                _viewModel.UndoChanges = false;
-                return this;
-            }
-
-            public void VerifyUndoChangesCalled()
-            {
-                _apiClient.Verify(x => x.UndoApprenticeshipUpdates(It.Is<long>(id => id == _viewModel.ApprenticeshipId),
-                    It.Is<UndoApprenticeshipUpdatesRequest>(o => o.UserInfo != null),
-                    It.IsAny<CancellationToken>()));
-            }
-
-            public void VerifyChangesUndoneFlashMessageStoredInTempData()
-            {
-                var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                flashMessage.Should().NotBeNull();
-                Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesUndoneFlashMessage));
-            }
+            var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
+            flashMessage.Should().NotBeNull();
+            flashMessage.Should().Be(ApprenticeController.ChangesUndoneFlashMessage);
         }
     }
 }

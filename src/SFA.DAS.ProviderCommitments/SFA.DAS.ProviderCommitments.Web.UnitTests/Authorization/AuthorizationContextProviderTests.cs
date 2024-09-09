@@ -185,7 +185,8 @@ public class AuthorizationContextProviderTests
     {
         _fixture.SetAuthenticatedUser().SetInvalidUkprn();
 
-        Assert.Throws<UnauthorizedAccessException>(() => _fixture.GetAuthorizationContext());
+        var action = () => _fixture.GetAuthorizationContext();
+        action.Should().Throw<UnauthorizedAccessException>();
     }
 
     [Test]

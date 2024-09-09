@@ -150,7 +150,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEnableEmployerRequestEmail(bool enabled)
         {
-            Assert.That(enabled, Is.EqualTo(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail));
+            enabled.Should().Be(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail);
             return this;
         }
 
@@ -159,7 +159,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             var viewResult = _actionResult as ViewResult;
             viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.That(model.DraftApprenticeshipHashedId, Is.EqualTo(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId));
+            model.DraftApprenticeshipHashedId.Should().Be(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId);
             return this;
         }
 
@@ -297,8 +297,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             using (new AssertionScope())
             {
                 model.Should().NotBeNull();
-                Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
-                Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+               _employerNotifiedRequest.CohortReference.Should().Be(model.CohortReference);
+               _employerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
             }
             return this;
         }
@@ -311,7 +311,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             using (new AssertionScope())
             {
                 model.Should().NotBeNull();
-                Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
+                _changeOfEmployerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
             }
             return this;
         }
@@ -342,8 +342,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
             using (new AssertionScope())
             {
                 model.Should().NotBeNull();
-                Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
-                Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
+                _overlapRequest.CohortReference.Should().Be(model.CohortReference);
+                _overlapRequest.DraftApprenticeshipId.Should().Be(model.DraftApprenticeshipId);
             }
             return this;
         }
