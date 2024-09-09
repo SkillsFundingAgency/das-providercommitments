@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
+﻿using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers;

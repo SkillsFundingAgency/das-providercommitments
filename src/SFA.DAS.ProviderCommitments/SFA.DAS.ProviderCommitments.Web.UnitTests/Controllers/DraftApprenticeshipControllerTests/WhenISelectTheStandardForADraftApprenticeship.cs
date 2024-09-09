@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Api.Types.Validation;
+﻿using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {

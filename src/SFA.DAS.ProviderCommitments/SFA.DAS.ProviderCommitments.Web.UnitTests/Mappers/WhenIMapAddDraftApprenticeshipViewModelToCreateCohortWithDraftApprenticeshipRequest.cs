@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Web.Mappers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 

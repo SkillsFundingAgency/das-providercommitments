@@ -2,7 +2,6 @@
 using SFA.DAS.ProviderCommitments.Web.Helpers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using System;
-using FluentAssertions;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Helpers;
 

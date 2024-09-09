@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderCommitments.Web.Authentication;

@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

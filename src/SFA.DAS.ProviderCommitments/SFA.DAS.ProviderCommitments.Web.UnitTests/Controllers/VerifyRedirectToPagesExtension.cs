@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
 {
     internal static class VerifyRedirectToPagesExtension
     {

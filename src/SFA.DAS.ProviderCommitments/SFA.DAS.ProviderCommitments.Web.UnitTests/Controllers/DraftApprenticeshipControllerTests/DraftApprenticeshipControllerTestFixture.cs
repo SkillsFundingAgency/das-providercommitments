@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;

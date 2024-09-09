@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.ApprenticeFilterModelTests;
 
