@@ -96,7 +96,7 @@ public class WhenICheckForMultipleDeliveryCourses
     public async Task ThenReturnsTrueWhenMultipleDeliveryModelsExist()
     {
         var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-        Assert.That(result, Is.True);
+        result.Should().BeTrue();
     }
 
     [Test]
@@ -104,6 +104,6 @@ public class WhenICheckForMultipleDeliveryCourses
     {
         _response.DeliveryModels = new List<DeliveryModel> {DeliveryModel.Regular};
         var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-        Assert.That(result, Is.False);
+        result.Should().BeTrue();
     }
 }

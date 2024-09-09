@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions.Execution;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
@@ -56,11 +57,11 @@ public class WhenMappingBulkUploadApiResponseToFileUpldValidateViewModelTests
     [Test]
     public void EmployerName_Is_Mapped()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _result.BulkUploadValidationErrors.First().RowNumber.Should().Be(1);
             _result.BulkUploadValidationErrors.Last().RowNumber.Should().Be(2);
-        });
+        }
     }
 
     [Test]
@@ -72,46 +73,46 @@ public class WhenMappingBulkUploadApiResponseToFileUpldValidateViewModelTests
     [Test]
     public void ApprenticeName_Is_Mapped()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _result.BulkUploadValidationErrors.First().ApprenticeName.Should().Be(_errors.First().ApprenticeName);
             _result.BulkUploadValidationErrors.Last().ApprenticeName.Should().Be(_errors.Last().ApprenticeName);
-        });
+        }
     }
 
     [Test]
     public void Uln_Is_Mapped()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _result.BulkUploadValidationErrors.First().Uln.Should().Be(_errors.First().Uln);
             _result.BulkUploadValidationErrors.Last().Uln.Should().Be(_errors.Last().Uln);
-        });
+        }
     }
 
     [Test]
     public void Error_Text_Are_Mapped()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _result.BulkUploadValidationErrors.First().PropertyErrors.First().ErrorText.Should().Be(_errors.First().Errors.First().ErrorText);
             _result.BulkUploadValidationErrors.First().PropertyErrors.Last().ErrorText.Should().Be(_errors.First().Errors.Last().ErrorText);
 
             _result.BulkUploadValidationErrors.Last().PropertyErrors.First().ErrorText.Should().Be(_errors.Last().Errors.First().ErrorText);
             _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().ErrorText.Should().Be(_errors.Last().Errors.Last().ErrorText);
-        });
+        }
     }
 
     [Test]
     public void Error_Property_Are_Mapped()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _result.BulkUploadValidationErrors.First().PropertyErrors.First().Property.Should().Be(_errors.First().Errors.First().Property);
             _result.BulkUploadValidationErrors.First().PropertyErrors.Last().Property.Should().Be(_errors.First().Errors.Last().Property);
 
             _result.BulkUploadValidationErrors.Last().PropertyErrors.First().Property.Should().Be(_errors.Last().Errors.First().Property);
             _result.BulkUploadValidationErrors.Last().PropertyErrors.Last().Property.Should().Be(_errors.Last().Errors.Last().Property);
-        });
+        }
     }
 }

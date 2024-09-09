@@ -338,7 +338,7 @@ public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsF
         var csvRecord = _csvRecords.FirstOrDefault(x => x.CohortRef == cohortRef);
         var cohortDetails = _result.FileUploadCohortDetails[0];
 
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             $"{csvRecord.GivenNames} {csvRecord.FamilyName}".Should().Be(cohortDetails.Name);
             csvRecord.EmailAddress.Should().Be(cohortDetails.Email);
@@ -347,7 +347,7 @@ public class WhenMappingReviewApprenticeRequestToReviewApprenticeViewModelTestsF
             decimal.Parse(csvRecord.TotalPrice).Should().Be(cohortDetails.Price);
             _trainingProgramme.Title.Should().Be(cohortDetails.TrainingCourse);
             _trainingProgramme.ApprenticeshipFunding.FirstOrDefault().MaxEmployerLevyCap.Should().Be(cohortDetails.FundingBandCap);
-        });
+        }
     }
 
     internal void VerifyExistingCohortDetailsMappedCorrectly()

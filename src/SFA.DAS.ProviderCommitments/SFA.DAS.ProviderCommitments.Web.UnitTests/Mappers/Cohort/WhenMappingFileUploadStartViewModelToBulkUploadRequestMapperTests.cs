@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions.Execution;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
@@ -69,11 +70,11 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
     [Test]
     public void CommandIsReturnedWithProviderIdAndRplDataExtended()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _apiRequest.RplDataExtended.Should().BeTrue();
             _apiRequest.ProviderId.Should().Be(_viewModel.ProviderId);
-        });
+        }
     }
 
 

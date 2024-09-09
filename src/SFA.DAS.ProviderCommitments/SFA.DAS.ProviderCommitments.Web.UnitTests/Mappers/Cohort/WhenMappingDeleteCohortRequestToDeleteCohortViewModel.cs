@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Types;
@@ -144,12 +145,12 @@ public class WhenMappingDeleteCohortRequestToDeleteCohortViewModelFixture
 
     internal void Verify_ApprenticeshipTrainingProgrammeAreMappedCorrectly()
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "2 Course1").Should().BeTrue();
             _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Count.Should().Be(2);
             _deleteCohortViewModel.ApprenticeshipTrainingProgrammes.Any(x => x == "1 Course2").Should().BeTrue();
-        });
+        }
     }
 
     internal void Verify_ProviderId_IsMapped()

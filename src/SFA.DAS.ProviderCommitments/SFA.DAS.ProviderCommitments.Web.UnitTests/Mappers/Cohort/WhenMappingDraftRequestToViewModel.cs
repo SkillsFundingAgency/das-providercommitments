@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -147,59 +148,59 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_OnlyTheCohorts_InDraftWithProvider_Are_Mapped()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 _draftViewModel.Cohorts.Count().Should().Be(2);
                 GetCohortInReviewViewModel(5).Should().NotBeNull();
                 GetCohortInReviewViewModel(6).Should().NotBeNull();
-            });
+            }
         }
 
         public void Verify_CohortReference_Is_Mapped()
         {
             _encodingService.Verify(x => x.Encode(It.IsAny<long>(), EncodingType.CohortReference), Times.Exactly(2));
 
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 GetCohortInReviewViewModel(5).CohortReference.Should().Be("5_Encoded");
                 GetCohortInReviewViewModel(6).CohortReference.Should().Be("6_Encoded");
-            });
+            }
         }
 
         public void Verify_EmployerName_Is_Mapped()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 GetCohortInReviewViewModel(5).EmployerName.Should().Be("Employer5");
                 GetCohortInReviewViewModel(6).EmployerName.Should().Be("Employer6");
-            });
+            }
         }
 
         public void Verify_NumberOfApprentices_Are_Mapped()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 GetCohortInReviewViewModel(5).NumberOfApprentices.Should().Be(500);
                 GetCohortInReviewViewModel(6).NumberOfApprentices.Should().Be(600);
-            });
+            }
         }
 
         public void Verify_Ordered_By_DateCreatedAscending()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 _draftViewModel.Cohorts.First().EmployerName.Should().Be("Employer5");
                 _draftViewModel.Cohorts.Last().EmployerName.Should().Be("Employer6");
-            });
+            }
         }
 
         public void Verify_DateCreated_Is_Mapped()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 GetCohortInReviewViewModel(5).DateCreated.Should().Be(_now.AddMinutes(-2));
                 GetCohortInReviewViewModel(6).DateCreated.Should().Be(_now.AddMinutes(-1));
-            });
+            }
         }
 
         public void Verify_ProviderId_IsMapped()
@@ -209,11 +210,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 _draftViewModel.Cohorts.First().CohortReference.Should().Be(firstId);
                 _draftViewModel.Cohorts.Last().CohortReference.Should().Be(lastId);
-            });
+            }
         }
 
         private GetCohortsResponse CreateGetCohortsResponse()
