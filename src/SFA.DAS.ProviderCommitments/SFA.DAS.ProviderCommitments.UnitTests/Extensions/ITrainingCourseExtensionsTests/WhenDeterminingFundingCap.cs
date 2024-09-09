@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -47,7 +48,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectCap));
+        result.Should().Be(expectCap);
     }
 
     [TestCase("2020-01-01", 0, Description = "Before funding band")]
@@ -77,7 +78,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectCap));
+        result.Should().Be(expectCap);
     }
 
     [TestCase("2018-07-01", 1, Description = "Within first open-start funding band")]
@@ -109,7 +110,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectCap));
+        result.Should().Be(expectCap);
     }
 
     [TestCase("2018-07-31", 0, Description = "Before first funding band")]
@@ -152,7 +153,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectCap));
+        result.Should().Be(expectCap);
     }
 
     [TestCase("2018-08-01", 1, Description = "Within first open-start funding band")]
@@ -191,7 +192,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectCap));
+        result.Should().Be(expectCap);
     }
 
     [Test]
@@ -204,7 +205,7 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(new DateTime(2018, 05, 15));
 
         //Assert
-        Assert.That(result, Is.EqualTo(0));
+        result.Should().Be(0);
     }
 
     [Test]
@@ -214,6 +215,6 @@ public class WhenDeterminingFundingCap
         var result = _course.FundingCapOn(new DateTime(2018, 7, 31, 23, 59, 59));
 
         //Assert
-        Assert.That(result, Is.EqualTo(5000));
+        result.Should().Be(5000);
     }
 }

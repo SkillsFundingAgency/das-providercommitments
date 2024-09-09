@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;
@@ -215,11 +216,11 @@ public class WhenCreateCohortRequestIsHandled
         {
             if (hasOptions)
             {
-                Assert.That(_result.DraftApprenticeshipId, Is.Not.Null);    
+                _result.DraftApprenticeshipId.Should().NotBeNull();    
             }
             else
             {
-                Assert.That(_result.DraftApprenticeshipId, Is.Null);
+                _result.DraftApprenticeshipId.Should().BeNull();
             }
                 
             return this;

@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
@@ -26,6 +27,6 @@ public class WhenDeterminingWhetherACourseIsActive
         var result = course.IsActiveOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectIsActive));
+        result.Should().Be(expectIsActive);
     }
 }

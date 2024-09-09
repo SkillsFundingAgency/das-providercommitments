@@ -1,29 +1,29 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
+﻿using FluentAssertions;
+using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Cohort;
+
+public class FileUploadReviewApprenticeDetailsTests
 {
-    public class FileUploadReviewApprenticeDetailsTests
+    private ReviewApprenticeDetailsForFileUploadCohort _fileUploadReviewApprenticeDetails;
+
+    [SetUp]
+    public void Arrange()
     {
-        private ReviewApprenticeDetailsForFileUploadCohort _fileUploadReviewApprenticeDetails;
+        _fileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
+    }
 
-        [SetUp]
-        public void Arrange()
-        {
-            _fileUploadReviewApprenticeDetails  = new ReviewApprenticeDetailsForFileUploadCohort();
-        }
+    [TestCase(1000, 900, true)]
+    [TestCase(800, 900, false)]
+    [TestCase(800, 800, false)]
+    public void TestExceedsFundingBandCap(int price, int fundingCap, bool fundingCapExceeded)
+    {
+        //Act
+        _fileUploadReviewApprenticeDetails.Price = price;
+        _fileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
 
-        [TestCase(1000, 900, true)]
-        [TestCase(800, 900, false)]
-        [TestCase(800, 800, false)]
-        public void TestExceedsFundingBandCap(int price, int fundingCap, bool fundingCapExceeded)
-        {
-            //Act
-            _fileUploadReviewApprenticeDetails.Price = price;
-            _fileUploadReviewApprenticeDetails.FundingBandCap = fundingCap;
-
-            //Assert
-            var result = _fileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
-            Assert.That(fundingCapExceeded, Is.EqualTo(result));
-        }
+        //Assert
+        var result = _fileUploadReviewApprenticeDetails.ExceedsFundingBandCap;
+        result.Should().Be(fundingCapExceeded);
     }
 }
