@@ -1,21 +1,21 @@
-﻿using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+﻿using FluentAssertions;
+using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models.Apprentice;
+
+public class IndexRequestTests
 {
-    public class IndexRequestTests
+    [TestCase(0,1)]
+    [TestCase(1,1)]
+    [TestCase(2,2)]
+    [TestCase(-1,1)]
+    public void Then_Page_Number_Is_Not_Set_Below_One(int actualPageNumber, int expectedPageNumber)
     {
-        [TestCase(0,1)]
-        [TestCase(1,1)]
-        [TestCase(2,2)]
-        [TestCase(-1,1)]
-        public void Then_Page_Number_Is_Not_Set_Below_One(int actualPageNumber, int expectedPageNumber)
+        var request = new IndexRequest
         {
-            var request = new IndexRequest
-            {
-                PageNumber = actualPageNumber
-            };
+            PageNumber = actualPageNumber
+        };
 
-            Assert.That(request.PageNumber, Is.EqualTo(expectedPageNumber));
-        }
+        request.PageNumber.Should().Be(expectedPageNumber);
     }
 }

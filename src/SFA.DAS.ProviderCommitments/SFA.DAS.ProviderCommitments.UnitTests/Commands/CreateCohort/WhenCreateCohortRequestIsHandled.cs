@@ -205,13 +205,13 @@ public class WhenCreateCohortRequestIsHandled
 
         public CreateCohortHandlerFixture VerifyCohortIdWasReturned()
         {
-            Assert.That(_result.CohortId, Is.EqualTo(_apiResponse.CohortId));
+            _result.CohortId.Should().Be(_apiResponse.CohortId);
             return this;
         }
             
         public CreateCohortHandlerFixture VerifyCohortReferenceWasReturned()
         {
-            Assert.That(_result.CohortReference, Is.EqualTo(_apiResponse.CohortReference));
+            _result.CohortReference.Should().Be(_apiResponse.CohortReference);
             return this;
         }
 
