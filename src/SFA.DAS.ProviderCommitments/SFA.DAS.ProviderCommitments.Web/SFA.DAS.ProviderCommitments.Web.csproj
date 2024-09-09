@@ -31,7 +31,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.13" />
-        <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
 
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
