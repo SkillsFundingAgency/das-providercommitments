@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var result = _sut.ConfirmRestart(_request) as ViewResult;
 
             //Assert
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
             Assert.That(result.Model.GetType(), Is.EqualTo(typeof(DatalockConfirmRestartViewModel)));
         }
     }

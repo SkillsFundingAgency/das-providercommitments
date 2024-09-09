@@ -287,7 +287,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
                 var result = _actionResult as RedirectToActionResult;
-                Assert.That(result, Is.Not.Null);
+                result.Should().NotBeNull();
                 result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
                 return this;
             }
@@ -310,8 +310,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult();
                 var result = _actionResult as RedirectToActionResult;
-                Assert.That(result, Is.Not.Null);
-                Assert.That(result.ActionName, Is.Not.SameAs("RecognisePriorLearning"));
+                result.Should().NotBeNull();
+                result.ActionName.Should().NotBe("RecognisePriorLearning");
             }
 
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmailSent()

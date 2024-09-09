@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -451,22 +452,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
 
         public DraftApprenticeshipControllerTestFixture VerifyEditDraftApprenticeshipViewModelIsSentToViewResult()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
-                Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<EditDraftApprenticeshipViewModel>());
-            });
+                _actionResult.Should().BeAssignableTo<ViewResult>();
+                ((ViewResult)_actionResult).Model.Should().BeAssignableTo<EditDraftApprenticeshipViewModel>();
+            }
 
             return this;
         }
 
         public DraftApprenticeshipControllerTestFixture VerifyViewDraftApprenticeshipViewModelIsSentToViewResult()
         {
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(_actionResult, Is.InstanceOf<ViewResult>());
-                Assert.That(((ViewResult)_actionResult).Model, Is.InstanceOf<ViewDraftApprenticeshipViewModel>());
-            });
+                _actionResult.Should().BeAssignableTo<ViewResult>();
+                ((ViewResult)_actionResult).Model.Should().BeAssignableTo<ViewDraftApprenticeshipViewModel>();
+            }
 
             return this;
         }
@@ -586,10 +587,10 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public DraftApprenticeshipControllerTestFixture VerifySelectOptionsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             Assert.That(viewResult.ViewName, Is.EqualTo("SelectStandardOption"));
             var model = viewResult.Model as ViewSelectOptionsViewModel;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             return this;
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Types;
@@ -61,11 +62,11 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
             var redirect = result as RedirectToActionResult;
 
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
                 Assert.That(_request.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
                 Assert.That(_request.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
-            });
+            }
         }
     }
 }

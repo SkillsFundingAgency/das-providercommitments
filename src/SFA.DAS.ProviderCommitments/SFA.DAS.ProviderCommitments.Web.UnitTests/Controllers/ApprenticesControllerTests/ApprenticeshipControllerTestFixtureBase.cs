@@ -73,16 +73,16 @@ public class ApprenticeControllerTestFixtureBase
     public ApprenticeControllerTestFixtureBase VerifyDetailViewReturned()
     {
         var viewResult = _actionResult as ViewResult;
-        Assert.That(viewResult, Is.Not.Null);
+        viewResult.Should().NotBeNull();
         var model = viewResult.Model as DetailsViewModel;
-        Assert.That(model, Is.Not.Null);
+        model.Should().NotBeNull();
         return this;
     }
 
     public ApprenticeControllerTestFixtureBase VerifyBannerFlagsAreMapped(ApprenticeDetailsBanners expectedBanners)
     {
         var viewResult = _actionResult as ViewResult;
-        Assert.That(viewResult, Is.Not.Null);
+        viewResult.Should().NotBeNull();
         viewResult.Should().NotBeNull();
         var model = viewResult.Model as DetailsViewModel;
         model.Should().NotBeNull();

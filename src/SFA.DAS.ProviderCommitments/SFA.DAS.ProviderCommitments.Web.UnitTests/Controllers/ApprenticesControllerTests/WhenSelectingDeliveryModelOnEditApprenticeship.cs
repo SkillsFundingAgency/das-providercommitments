@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
         }
 
         [Test]

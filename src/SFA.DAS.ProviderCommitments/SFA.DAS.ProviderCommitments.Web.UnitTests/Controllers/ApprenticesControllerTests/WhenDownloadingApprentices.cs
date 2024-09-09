@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using AutoFixture.NUnit3;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -40,12 +41,12 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var actualFileResult = actual as FileResult;
 
             //Assert
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(actualFileResult, Is.Not.Null);
+                actualFileResult.Should().NotBeNull();
                 Assert.That(actualFileResult.FileDownloadName, Is.EqualTo(expectedCsvContent.Name));
                 Assert.That(actualFileResult.ContentType, Is.EqualTo(expectedCsvContent.ContentType));
-            });
+            }
         }
     }
 

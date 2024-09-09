@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             var result = _sut.Sent() as ViewResult;
 
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
             Assert.That(result.Model as string, Is.EqualTo(_newEmployerName));
         }
     }

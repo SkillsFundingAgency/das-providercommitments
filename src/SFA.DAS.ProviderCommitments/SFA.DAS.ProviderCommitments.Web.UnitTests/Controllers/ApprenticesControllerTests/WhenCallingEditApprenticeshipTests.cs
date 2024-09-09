@@ -72,7 +72,7 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
     {
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
-        Assert.That(viewModel, Is.InstanceOf<EditApprenticeshipRequestViewModel>());
+        viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
         Assert.That(viewModel, Is.EqualTo(_viewModel));
     }
 
@@ -80,7 +80,7 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
     {
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
-        Assert.That(viewModel, Is.InstanceOf<EditApprenticeshipRequestViewModel>());
+        viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
         _tempViewModel.Should().BeEquivalentTo(viewModel);
     }
 

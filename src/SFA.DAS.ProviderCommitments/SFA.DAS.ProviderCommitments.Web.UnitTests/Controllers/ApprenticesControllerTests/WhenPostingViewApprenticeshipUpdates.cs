@@ -122,7 +122,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyChangesUndoneFlashMessageStoredInTempData()
             {
                 var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-                Assert.That(flashMessage, Is.Not.Null);
+                flashMessage.Should().NotBeNull();
                 Assert.That(flashMessage, Is.EqualTo(ApprenticeController.ChangesUndoneFlashMessage));
             }
         }

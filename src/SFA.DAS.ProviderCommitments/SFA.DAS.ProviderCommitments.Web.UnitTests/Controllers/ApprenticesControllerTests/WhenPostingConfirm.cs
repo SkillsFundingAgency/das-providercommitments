@@ -88,7 +88,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             public void VerifyNewEmployerNameIsStoredInTempData()
             {
                 var newEmployerName = _sut.TempData[nameof(ConfirmViewModel.NewEmployerName)] as string;
-                Assert.That(newEmployerName, Is.Not.Null);
+                newEmployerName.Should().NotBeNull();
                 Assert.That(newEmployerName, Is.EqualTo(_viewModel.NewEmployerName));
             }
         }
