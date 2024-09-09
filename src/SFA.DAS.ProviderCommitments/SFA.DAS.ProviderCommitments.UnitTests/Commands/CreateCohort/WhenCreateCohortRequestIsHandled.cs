@@ -40,7 +40,10 @@ public class WhenCreateCohortRequestIsHandled
     public void ThenIfTheRequestIsInvalidThenAnExceptionIsThrown()
     {
         _fixture.SetupValidationFailure();
-        Assert.ThrowsAsync<ValidationException>(() => _fixture.Act());
+        
+       var action = () => _fixture.Act();
+       
+       action.Should().ThrowAsync<ValidationException>();
     }
 
     [Test]
