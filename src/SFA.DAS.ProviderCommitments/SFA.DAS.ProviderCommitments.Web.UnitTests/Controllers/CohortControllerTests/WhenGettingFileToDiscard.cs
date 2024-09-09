@@ -36,7 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             //Assert
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileDiscardViewModel>();
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
         }
     }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using AutoFixture.Dsl;
+using FluentAssertions.Execution;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -567,11 +568,11 @@ public class DetailsViewModelMapperTests
             .SetupChangeOfPartyScenario()
             .Map();
 
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             result.Courses.First().DraftApprenticeships.First().FundingBandCap.Should().Be(1000);
             result.Courses.First().DraftApprenticeships.First().ExceedsFundingBandCap.Should().Be(true);
-        });
+        }
     }
 
     [Test]
@@ -583,14 +584,14 @@ public class DetailsViewModelMapperTests
         var result = await fixture.Map();
         var course = result.Courses.FirstOrDefault(x => x.DraftApprenticeships.Any(y => y.Id == apprenticeshipId));
 
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             course.Should().NotBeNull();
             course.EmailOverlaps.Should().NotBeNull();
             course.EmailOverlaps.NumberOfEmailOverlaps.Should().Be(1);
             course.DraftApprenticeships.Count(x => x.HasOverlappingEmail).Should().Be(1);
             course.DraftApprenticeships.First(x => x.HasOverlappingEmail).Id.Should().Be(apprenticeshipId);
-        });
+        }
     }
 
     [Test]
@@ -603,7 +604,7 @@ public class DetailsViewModelMapperTests
         var result = await fixture.Map();
         var course = result.Courses.FirstOrDefault();
 
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             course.Should().NotBeNull();
             course.EmailOverlaps.Should().NotBeNull();
@@ -611,7 +612,7 @@ public class DetailsViewModelMapperTests
             course.DraftApprenticeships.Count(x => x.HasOverlappingEmail).Should().Be(2);
             course.DraftApprenticeships.First(x => x.Id == apprenticeshipId1).HasOverlappingEmail.Should().BeTrue();
             course.DraftApprenticeships.First(x => x.Id == apprenticeshipId2).HasOverlappingEmail.Should().BeTrue();
-        });
+        }
     }
 
     [Test]
@@ -1061,7 +1062,7 @@ public class DetailsViewModelMapperTestsFixture
 
     public static void AssertEquality(DraftApprenticeshipDto source, CohortDraftApprenticeshipViewModel result)
     {
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
             result.Id.Should().Be(source.Id);
             result.FirstName.Should().Be(source.FirstName);
@@ -1077,7 +1078,7 @@ public class DetailsViewModelMapperTestsFixture
             result.EndDate.Should().Be(source.EndDate);
             result.DraftApprenticeshipHashedId.Should().Be($"X{source.Id}X");
             result.IsOnFlexiPaymentPilot.Should().Be(source.IsOnFlexiPaymentPilot);
-        });
+        }
     }
 
     public static void AssertSequenceOrder<T>(List<T> expected, List<T> actual, Func<T, T, bool> evaluator)

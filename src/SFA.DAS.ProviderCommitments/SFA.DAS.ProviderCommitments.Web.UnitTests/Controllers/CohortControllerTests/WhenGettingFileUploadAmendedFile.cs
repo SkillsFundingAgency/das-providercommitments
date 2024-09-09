@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
 
             var model = viewResult.VerifyReturnsViewModel().WithModel<FileUploadAmendedFileViewModel>();
 
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
         }
     }
 

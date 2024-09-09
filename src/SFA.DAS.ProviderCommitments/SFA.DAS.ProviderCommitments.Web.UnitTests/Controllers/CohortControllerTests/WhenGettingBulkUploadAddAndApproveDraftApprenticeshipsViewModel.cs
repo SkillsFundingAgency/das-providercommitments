@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             var model = viewResult.VerifyReturnsViewModel().WithModel<BulkUploadAddAndApproveDraftApprenticeshipsViewModel>();
 
             //Assert
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
         }
 
         [Test]

@@ -2,6 +2,7 @@
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Error;
 using System;
+using FluentAssertions.Execution;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerTests;
 
@@ -35,13 +36,13 @@ public class ErrorControllerTest
         var result = (ViewResult)_sut.Error(403);
         result.ViewName.Should().Be("403");
 
-        Assert.That(result, Is.Not.Null);
+        result.Should().NotBeNull();
         var actualModel = result?.Model as Error403ViewModel;
         
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
-            Assert.That(actualModel?.HelpPageLink, Is.EqualTo(helpLink));
-            Assert.That(_useDfESignIn, Is.EqualTo(actualModel?.UseDfESignIn));
-        });
+            actualModel?.HelpPageLink.Should().Be(helpLink);
+            _useDfESignIn.Should().Be((bool)actualModel?.UseDfESignIn);
+        }
     }
 }
