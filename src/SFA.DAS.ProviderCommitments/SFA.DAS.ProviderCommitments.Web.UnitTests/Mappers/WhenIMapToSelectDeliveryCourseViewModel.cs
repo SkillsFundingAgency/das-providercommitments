@@ -104,6 +104,6 @@ public class WhenICheckForMultipleDeliveryCourses
     {
         _response.DeliveryModels = new List<DeliveryModel> {DeliveryModel.Regular};
         var result = await _mapper.HasMultipleDeliveryModels(_providerId, _courseCode, "PALID");
-        result.Should().BeTrue();
+        result.Should().BeFalse();
     }
 }
