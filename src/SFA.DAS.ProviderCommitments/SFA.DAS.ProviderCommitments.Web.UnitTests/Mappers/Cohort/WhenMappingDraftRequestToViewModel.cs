@@ -149,9 +149,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_draftViewModel.Cohorts.Count(), Is.EqualTo(2));
-                Assert.That(GetCohortInReviewViewModel(5), Is.Not.Null);
-                Assert.That(GetCohortInReviewViewModel(6), Is.Not.Null);
+                _draftViewModel.Cohorts.Count().Should().Be(2);
+                GetCohortInReviewViewModel(5).Should().NotBeNull();
+                GetCohortInReviewViewModel(6).Should().NotBeNull();
             });
         }
 
@@ -161,8 +161,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
 
             Assert.Multiple(() =>
             {
-                Assert.That(GetCohortInReviewViewModel(5).CohortReference, Is.EqualTo("5_Encoded"));
-                Assert.That(GetCohortInReviewViewModel(6).CohortReference, Is.EqualTo("6_Encoded"));
+                GetCohortInReviewViewModel(5).CohortReference.Should().Be("5_Encoded");
+                GetCohortInReviewViewModel(6).CohortReference.Should().Be("6_Encoded");
             });
         }
 
@@ -170,8 +170,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.Multiple(() =>
             {
-                Assert.That(GetCohortInReviewViewModel(5).EmployerName, Is.EqualTo("Employer5"));
-                Assert.That(GetCohortInReviewViewModel(6).EmployerName, Is.EqualTo("Employer6"));
+                GetCohortInReviewViewModel(5).EmployerName.Should().Be("Employer5");
+                GetCohortInReviewViewModel(6).EmployerName.Should().Be("Employer6");
             });
         }
 
@@ -179,8 +179,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.Multiple(() =>
             {
-                Assert.That(GetCohortInReviewViewModel(5).NumberOfApprentices, Is.EqualTo(500));
-                Assert.That(GetCohortInReviewViewModel(6).NumberOfApprentices, Is.EqualTo(600));
+                GetCohortInReviewViewModel(5).NumberOfApprentices.Should().Be(500);
+                GetCohortInReviewViewModel(6).NumberOfApprentices.Should().Be(600);
             });
         }
 
@@ -188,8 +188,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_draftViewModel.Cohorts.First().EmployerName, Is.EqualTo("Employer5"));
-                Assert.That(_draftViewModel.Cohorts.Last().EmployerName, Is.EqualTo("Employer6"));
+                _draftViewModel.Cohorts.First().EmployerName.Should().Be("Employer5");
+                _draftViewModel.Cohorts.Last().EmployerName.Should().Be("Employer6");
             });
         }
 
@@ -197,22 +197,22 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
         {
             Assert.Multiple(() =>
             {
-                Assert.That(GetCohortInReviewViewModel(5).DateCreated, Is.EqualTo(_now.AddMinutes(-2)));
-                Assert.That(GetCohortInReviewViewModel(6).DateCreated, Is.EqualTo(_now.AddMinutes(-1)));
+                GetCohortInReviewViewModel(5).DateCreated.Should().Be(_now.AddMinutes(-2));
+                GetCohortInReviewViewModel(6).DateCreated.Should().Be(_now.AddMinutes(-1));
             });
         }
 
         public void Verify_ProviderId_IsMapped()
         {
-            Assert.That(_draftViewModel.ProviderId, Is.EqualTo(ProviderId));
+            _draftViewModel.ProviderId.Should().Be(ProviderId);
         }
 
         public void Verify_Sort_IsApplied(string firstId, string lastId)
         {
             Assert.Multiple(() =>
             {
-                Assert.That(_draftViewModel.Cohorts.First().CohortReference, Is.EqualTo(firstId));
-                Assert.That(_draftViewModel.Cohorts.Last().CohortReference, Is.EqualTo(lastId));
+                _draftViewModel.Cohorts.First().CohortReference.Should().Be(firstId);
+                _draftViewModel.Cohorts.Last().CohortReference.Should().Be(lastId);
             });
         }
 
