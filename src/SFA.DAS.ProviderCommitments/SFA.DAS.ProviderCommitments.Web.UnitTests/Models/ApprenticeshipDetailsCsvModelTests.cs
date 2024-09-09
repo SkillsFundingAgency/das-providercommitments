@@ -23,6 +23,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
 
             result.ApprenticeName.Should().Be($"{source.FirstName} {source.LastName}");
         }
+        
+        public void Then_Maps_Email(
+            PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
+            [Frozen] Mock<IEncodingService> encodingService,
+            ApprenticeshipDetailsCsvModel model)
+        {
+            var result = model.Map(source,encodingService.Object);
+
+            result.Email.Should().Be(source.Email);
+        }
 
         [Test, AutoData]
         public void Then_Maps_Uln(
