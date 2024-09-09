@@ -208,7 +208,8 @@ public class WhenIMapCreateCohortRequest
         _mockCommitmentsApiClient.Setup(x => x.GetAccountLegalEntity(It.IsAny<long>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((AccountLegalEntityResponse)null);
 
-        Assert.ThrowsAsync<Exception>(() => _act());
+        var action = () => _act();
+        action.Should().ThrowAsync<Exception>();
     }
 
     [Test]

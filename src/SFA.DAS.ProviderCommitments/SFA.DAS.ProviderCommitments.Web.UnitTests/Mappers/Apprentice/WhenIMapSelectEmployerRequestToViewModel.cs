@@ -8,145 +8,145 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Shared;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
+
+[TestFixture]
+public class WhenIMapSelectEmployerRequestToViewModel
 {
-    [TestFixture]
-    public class WhenIMapSelectEmployerRequestToViewModel
+    [Test]
+    public async Task ThenCallsProviderRelationshipsApiClient()
     {
-        [Test]
-        public async Task ThenCallsProviderRelationshipsApiClient()
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(456);
+
+        await fixture.Map(new SelectEmployerRequest { ProviderId = 456 });
+
+        fixture.Verify_ProviderRelationshipsApiClientWasCalled_Once(456);
+    }
+
+    [Test]
+    public async Task ThenCallsCommitmentsApiClient()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(456);
+
+        await fixture.Map(new SelectEmployerRequest { ApprenticeshipId = 123 });
+
+        fixture.Verify_CommitmentsApiClientWasCalled_Once(123);
+    }
+
+    [Test]
+    public async Task ThenCorrectlyMapsApiResponseToViewModel()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(456);
+
+        var result = await fixture.Map(new SelectEmployerRequest());
+
+        fixture.Assert_SelectEmployerViewModelCorrectlyMapped(result);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ThenSortIsAppliedCorrectlyForEmployerName(bool reverseSort)
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(456);
+
+        var result = await fixture.Map(new SelectEmployerRequest
         {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(456);
+            ProviderId = 123,
+            SortField = SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst,
+            ReverseSort = reverseSort
+        });
 
-            await fixture.Map(new SelectEmployerRequest { ProviderId = 456 });
+        SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
+    }
 
-            fixture.Verify_ProviderRelationshipsApiClientWasCalled_Once(456);
-        }
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ThenSortIsAppliedCorrectlyForEmployerAccountName(bool reverseSort)
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(456);
 
-        [Test]
-        public async Task ThenCallsCommitmentsApiClient()
+        var result = await fixture.Map(new SelectEmployerRequest
         {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(456);
+            ProviderId = 123,
+            SortField = SelectEmployerFilterModel.EmployerAccountNameConst,
+            ReverseSort = reverseSort
+        });
 
-            await fixture.Map(new SelectEmployerRequest { ApprenticeshipId = 123 });
+        SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
+    }
 
-            fixture.Verify_CommitmentsApiClientWasCalled_Once(123);
-        }
+    [Test]
+    public async Task ThenFilterIsAppliedCorrectlyForEmployerAccountName()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(458);
 
-        [Test]
-        public async Task ThenCorrectlyMapsApiResponseToViewModel()
+        var result = await fixture.Map(new SelectEmployerRequest
         {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(456);
+            ProviderId = 123,
+            SearchTerm = "atestaccountname"
+        });
 
-            var result = await fixture.Map(new SelectEmployerRequest());
+        SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result, "ATestAccountName");
+    }
 
-            fixture.Assert_SelectEmployerViewModelCorrectlyMapped(result);
-        }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenSortIsAppliedCorrectlyForEmployerName(bool reverseSort)
+    [Test]
+    public async Task ThenFilterIsAppliedCorrectlyForEmployerName()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
+            .WithApprenticeship(458);
+
+        var result = await fixture.Map(new SelectEmployerRequest
         {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(456);
+            ProviderId = 123,
+            SearchTerm = "atestaccountlegal"
+        });
 
-            var result = await fixture.Map(new SelectEmployerRequest
+        SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result, "ATestAccountLegalEntityName");
+    }
+
+    [Test]
+    public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
+    {
+        var fixture = new SelectEmployerViewModelMapperFixture()
+            .WithNoMatchingEmployers()
+            .WithApprenticeship(456);
+
+        var result = await fixture.Map(new SelectEmployerRequest
+        {
+            ProviderId = 123,
+            SearchTerm = "atestaccountlegal"
+        });
+
+        SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
+    }
+
+    public class SelectEmployerViewModelMapperFixture
+    {
+        private readonly SelectEmployerViewModelMapper _sut;
+        private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClientMock;
+        private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
+        private GetProviderAccountLegalEntitiesResponse _getAccountsApiResponse;
+        private GetApprenticeshipResponse _getApprenticeshipApiResponse;
+
+        public SelectEmployerViewModelMapperFixture()
+        {
+            _getAccountsApiResponse = new GetProviderAccountLegalEntitiesResponse()
             {
-                ProviderId = 123,
-                SortField = SelectEmployerFilterModel.EmployerAccountLegalEntityNameConst,
-                ReverseSort = reverseSort
-            });
-
-            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerName(result, reverseSort);
-        }
-
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ThenSortIsAppliedCorrectlyForEmployerAccountName(bool reverseSort)
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(456);
-
-            var result = await fixture.Map(new SelectEmployerRequest
-            {
-                ProviderId = 123,
-                SortField = SelectEmployerFilterModel.EmployerAccountNameConst,
-                ReverseSort = reverseSort
-            });
-
-            SelectEmployerViewModelMapperFixture.Assert_SortIsAppliedCorrectlyForEmployerAccountName(result, reverseSort);
-        }
-
-        [Test]
-        public async Task ThenFilterIsAppliedCorrectlyForEmployerAccountName()
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(458);
-
-            var result = await fixture.Map(new SelectEmployerRequest
-            {
-                ProviderId = 123,
-                SearchTerm = "atestaccountname"
-            });
-
-            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerAccountName(result, "ATestAccountName");
-        }
-
-
-        [Test]
-        public async Task ThenFilterIsAppliedCorrectlyForEmployerName()
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithListOfAccountProviderLegalEntities(new List<(string Prefix, long AccountLegalEntityId)> { ("A", 456), ("B", 457), ("C", 458) })
-                .WithApprenticeship(458);
-
-            var result = await fixture.Map(new SelectEmployerRequest
-            {
-                ProviderId = 123,
-                SearchTerm = "atestaccountlegal"
-            });
-
-            SelectEmployerViewModelMapperFixture.Assert_FilterIsAppliedCorrectlyForEmployerName(result, "ATestAccountLegalEntityName");
-        }
-
-        [Test]
-        public async Task ThenCorrectlyMapsEmptyApiResponseToViewModel()
-        {
-            var fixture = new SelectEmployerViewModelMapperFixture()
-                .WithNoMatchingEmployers()
-                .WithApprenticeship(456);
-
-            var result = await fixture.Map(new SelectEmployerRequest
-            {
-                ProviderId = 123,
-                SearchTerm = "atestaccountlegal"
-            });
-
-            SelectEmployerViewModelMapperFixture.Assert_ListOfEmployersIsEmpty(result);
-        }
-
-        public class SelectEmployerViewModelMapperFixture
-        {
-            private readonly SelectEmployerViewModelMapper _sut;
-            private readonly Mock<IApprovalsOuterApiClient> _approvalsOuterApiClientMock;
-            private readonly Mock<ICommitmentsApiClient> _commitmentsApiClientMock;
-            private GetProviderAccountLegalEntitiesResponse _getAccountsApiResponse;
-            private GetApprenticeshipResponse _getApprenticeshipApiResponse;
-
-            public SelectEmployerViewModelMapperFixture()
-            {
-                _getAccountsApiResponse = new GetProviderAccountLegalEntitiesResponse()
-                {
-                    AccountProviderLegalEntities = new List<GetProviderAccountLegalEntityItem>
+                AccountProviderLegalEntities = new List<GetProviderAccountLegalEntityItem>
                 {
                     new()
                     {
@@ -159,134 +159,132 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
                         AccountProviderId = 234
                     }
                 }
-                };
+            };
 
-                _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
-                _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
-                    .ReturnsAsync(() => _getAccountsApiResponse);
+            _approvalsOuterApiClientMock = new Mock<IApprovalsOuterApiClient>();
+            _approvalsOuterApiClientMock
+                .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
+                .ReturnsAsync(() => _getAccountsApiResponse);
 
-                _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
-                _commitmentsApiClientMock
-                    .Setup(x => x.GetApprenticeship(It.IsAny<long>(), CancellationToken.None))
-                    .ReturnsAsync(() => _getApprenticeshipApiResponse);
+            _commitmentsApiClientMock = new Mock<ICommitmentsApiClient>();
+            _commitmentsApiClientMock
+                .Setup(x => x.GetApprenticeship(It.IsAny<long>(), CancellationToken.None))
+                .ReturnsAsync(() => _getApprenticeshipApiResponse);
 
-                _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object, _commitmentsApiClientMock.Object);
-            }
+            _sut = new SelectEmployerViewModelMapper(_approvalsOuterApiClientMock.Object, _commitmentsApiClientMock.Object);
+        }
 
-            public SelectEmployerViewModelMapperFixture WithListOfAccountProviderLegalEntities(List<(string Prefix, long AccountLegalEntityId)> legalEntities)
+        public SelectEmployerViewModelMapperFixture WithListOfAccountProviderLegalEntities(List<(string Prefix, long AccountLegalEntityId)> legalEntities)
+        {
+            _getAccountsApiResponse = new GetProviderAccountLegalEntitiesResponse()
             {
-                _getAccountsApiResponse = new GetProviderAccountLegalEntitiesResponse()
-                {
-                    AccountProviderLegalEntities = legalEntities
-                        .Select(x => new GetProviderAccountLegalEntityItem()
-                        {
-                            AccountId = 123,
-                            AccountLegalEntityPublicHashedId = $"{x.Prefix}DSFF23",
-                            AccountLegalEntityName = $"{x.Prefix}TestAccountLegalEntityName",
-                            AccountPublicHashedId = $"{x.Prefix}DFKFK66",
-                            AccountName = $"{x.Prefix}TestAccountName",
-                            AccountLegalEntityId = x.AccountLegalEntityId,
-                            AccountProviderId = 234
-                        })
-                        .ToList()
-                };
-
-                return this;
-            }
-
-            public SelectEmployerViewModelMapperFixture WithApprenticeship(long accountLegalEntityId)
-            {
-                _getApprenticeshipApiResponse = new GetApprenticeshipResponse
-                {
-                    AccountLegalEntityId = accountLegalEntityId
-                };
-
-                return this;
-            }
-
-            public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest selectEmployerRequest) => await _sut.Map(selectEmployerRequest);
-
-
-            public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
-            {
-                _approvalsOuterApiClientMock
-                    .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
-                    .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
-
-                return this;
-            }
-
-            public void Verify_ProviderRelationshipsApiClientWasCalled_Once(long providerId)
-            {
-                _approvalsOuterApiClientMock.Verify(
-                    x => x.GetProviderAccountLegalEntities((int)providerId), Times.Once);
-            }
-
-            public void Verify_CommitmentsApiClientWasCalled_Once(long apprenticeshipId)
-            {
-                _commitmentsApiClientMock.Verify(x => x.GetApprenticeship(
-                    It.Is<long>(y => y == apprenticeshipId), CancellationToken.None), Times.Once);
-            }
-
-            public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
-            {
-                var accountProviderLegalEntities = _getAccountsApiResponse.AccountProviderLegalEntities
-                    .Where(x => x.AccountLegalEntityId != _getApprenticeshipApiResponse.AccountLegalEntityId)
-                    .Select(x => new AccountProviderLegalEntityViewModel
+                AccountProviderLegalEntities = legalEntities
+                    .Select(x => new GetProviderAccountLegalEntityItem()
                     {
-                        EmployerAccountLegalEntityName = x.AccountLegalEntityName,
-                        EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
-                        EmployerAccountName = x.AccountName,
-                        EmployerAccountPublicHashedId = x.AccountPublicHashedId
+                        AccountId = 123,
+                        AccountLegalEntityPublicHashedId = $"{x.Prefix}DSFF23",
+                        AccountLegalEntityName = $"{x.Prefix}TestAccountLegalEntityName",
+                        AccountPublicHashedId = $"{x.Prefix}DFKFK66",
+                        AccountName = $"{x.Prefix}TestAccountName",
+                        AccountLegalEntityId = x.AccountLegalEntityId,
+                        AccountProviderId = 234
                     })
-                    .ToList();
+                    .ToList()
+            };
 
-                accountProviderLegalEntities.Should().BeEquivalentTo(result.AccountProviderLegalEntities);
-            }
+            return this;
+        }
 
-            public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+        public SelectEmployerViewModelMapperFixture WithApprenticeship(long accountLegalEntityId)
+        {
+            _getApprenticeshipApiResponse = new GetApprenticeshipResponse
             {
-                Assert.That(result.AccountProviderLegalEntities, Is.Empty);
-            }
+                AccountLegalEntityId = accountLegalEntityId
+            };
 
-            internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
-            {
-                if (reverseSort)
+            return this;
+        }
+
+        public async Task<SelectEmployerViewModel> Map(SelectEmployerRequest selectEmployerRequest) => await _sut.Map(selectEmployerRequest);
+
+
+        public SelectEmployerViewModelMapperFixture WithNoMatchingEmployers()
+        {
+            _approvalsOuterApiClientMock
+                .Setup(x => x.GetProviderAccountLegalEntities(It.IsAny<int>()))
+                .ReturnsAsync((GetProviderAccountLegalEntitiesResponse)null);
+
+            return this;
+        }
+
+        public void Verify_ProviderRelationshipsApiClientWasCalled_Once(long providerId)
+        {
+            _approvalsOuterApiClientMock.Verify(
+                x => x.GetProviderAccountLegalEntities((int)providerId), Times.Once);
+        }
+
+        public void Verify_CommitmentsApiClientWasCalled_Once(long apprenticeshipId)
+        {
+            _commitmentsApiClientMock.Verify(x => x.GetApprenticeship(
+                It.Is<long>(y => y == apprenticeshipId), CancellationToken.None), Times.Once);
+        }
+
+        public void Assert_SelectEmployerViewModelCorrectlyMapped(SelectEmployerViewModel result)
+        {
+            var accountProviderLegalEntities = _getAccountsApiResponse.AccountProviderLegalEntities
+                .Where(x => x.AccountLegalEntityId != _getApprenticeshipApiResponse.AccountLegalEntityId)
+                .Select(x => new AccountProviderLegalEntityViewModel
                 {
-                    result.AccountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName).Should().BeInDescendingOrder();
-                }
-                else
-                {
-                    result.AccountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName).Should().BeInAscendingOrder();
-                }
-            }
+                    EmployerAccountLegalEntityName = x.AccountLegalEntityName,
+                    EmployerAccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
+                    EmployerAccountName = x.AccountName,
+                    EmployerAccountPublicHashedId = x.AccountPublicHashedId
+                })
+                .ToList();
 
-            internal static void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
-            {
-                if (reverseSort)
-                {
-                    result.AccountProviderLegalEntities
-                        .Select(x => x.EmployerAccountName).Should().BeInDescendingOrder();
-                }
-                else
-                {
-                    result.AccountProviderLegalEntities.Select(x => x.EmployerAccountName).Should().BeInAscendingOrder();
-                }
-            }
+            accountProviderLegalEntities.Should().BeEquivalentTo(result.AccountProviderLegalEntities);
+        }
 
-            internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
-            {
-                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
-                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountName, Is.EqualTo(employerAccountName));
-            }
+        public static void Assert_ListOfEmployersIsEmpty(SelectEmployerViewModel result)
+        {
+            result.AccountProviderLegalEntities.Should().BeEmpty();
+        }
 
-            internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
+        internal static void Assert_SortIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, bool reverseSort)
+        {
+            if (reverseSort)
             {
-                Assert.That(result.AccountProviderLegalEntities, Has.Count.EqualTo(1));
-                Assert.That(result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName, Is.EqualTo(employerName));
+                result.AccountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName).Should().BeInDescendingOrder();
             }
+            else
+            {
+                result.AccountProviderLegalEntities.Select(x => x.EmployerAccountLegalEntityName).Should().BeInAscendingOrder();
+            }
+        }
+
+        internal static void Assert_SortIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, bool reverseSort)
+        {
+            if (reverseSort)
+            {
+                result.AccountProviderLegalEntities
+                    .Select(x => x.EmployerAccountName).Should().BeInDescendingOrder();
+            }
+            else
+            {
+                result.AccountProviderLegalEntities.Select(x => x.EmployerAccountName).Should().BeInAscendingOrder();
+            }
+        }
+
+        internal static void Assert_FilterIsAppliedCorrectlyForEmployerAccountName(SelectEmployerViewModel result, string employerAccountName)
+        {
+            result.AccountProviderLegalEntities.Count.Should().Be(1);
+            result.AccountProviderLegalEntities[0].EmployerAccountName.Should().Be(employerAccountName);
+        }
+
+        internal static void Assert_FilterIsAppliedCorrectlyForEmployerName(SelectEmployerViewModel result, string employerName)
+        {
+            result.AccountProviderLegalEntities.Count.Should().Be(1);
+            result.AccountProviderLegalEntities[0].EmployerAccountLegalEntityName.Should().Be(employerName);
         }
     }
 }
-
