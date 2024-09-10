@@ -82,10 +82,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
-
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
-
         public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
@@ -139,7 +137,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
     public class PaymentsStatus
     {
-        public string Status => PaymentsFrozen ? "Inactive" : "Active";
+        public string Status { get; set; }
         public bool PaymentsFrozen { get; set; }
         public string ReasonFrozen { get; set; }
         public DateTime? FrozenOn { get; set; }
