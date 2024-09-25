@@ -3,47 +3,46 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
+
+[TestFixture]
+public class WhenIMapSelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModel
 {
-    [TestFixture]
-    public class WhenIMapSelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModel
+    private SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper _mapper;
+    private EditApprenticeshipRequestViewModel _request;
+    private Mock<IOuterApiClient> _outerApiClient;
+    private GetEditApprenticeshipDeliveryModelResponse _apiResponse;
+
+    [SetUp]
+    public void Arrange()
     {
-        private SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper _mapper;
-        private EditApprenticeshipRequestViewModel _request;
-        private Mock<IOuterApiClient> _outerApiClient;
-        private GetEditApprenticeshipDeliveryModelResponse _apiResponse;
+        var fixture = new Fixture();
+        _request = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
+            .Without(x => x.StartDate).Without(x => x.StartMonth).Without(x => x.StartYear)
+            .Without(x => x.EndDate).Without(x => x.EndMonth).Without(x => x.EndYear).Create();
 
-        [SetUp]
-        public void Arrange()
-        {
-            var fixture = new Fixture();
-            _request = fixture.Build<EditApprenticeshipRequestViewModel>().Without(x => x.BirthDay).Without(x => x.BirthMonth).Without(x => x.BirthYear)
-                .Without(x => x.StartDate).Without(x => x.StartMonth).Without(x => x.StartYear)
-                .Without(x => x.EndDate).Without(x => x.EndMonth).Without(x => x.EndYear).Create();
+        _outerApiClient = new Mock<IOuterApiClient>();
+        _apiResponse = fixture.Create<GetEditApprenticeshipDeliveryModelResponse>();
+        _outerApiClient.Setup(x =>
+                x.Get<GetEditApprenticeshipDeliveryModelResponse>(
+                    It.Is<GetEditApprenticeshipDeliveryModelRequest>(r =>
+                        r.ApprenticeshipId == _request.ApprenticeshipId)))
+            .ReturnsAsync(() => _apiResponse);
 
-            _outerApiClient = new Mock<IOuterApiClient>();
-            _apiResponse = fixture.Create<GetEditApprenticeshipDeliveryModelResponse>();
-            _outerApiClient.Setup(x =>
-                    x.Get<GetEditApprenticeshipDeliveryModelResponse>(
-                        It.Is<GetEditApprenticeshipDeliveryModelRequest>(r =>
-                            r.ApprenticeshipId == _request.ApprenticeshipId)))
-                .ReturnsAsync(() => _apiResponse);
+        _mapper = new SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(_outerApiClient.Object);
+    }
 
-            _mapper = new SelectDeliveryModelViewModelFromEditApprenticeshipRequestViewModelMapper(_outerApiClient.Object);
-        }
+    [Test]
+    public async Task Then_DeliveryModels_Is_Mapped_Correctly()
+    {
+        var result = await _mapper.Map(_request);
+        result.DeliveryModels.Should().BeEquivalentTo(_apiResponse.DeliveryModels);
+    }
 
-        [Test]
-        public async Task Then_DeliveryModels_Is_Mapped_Correctly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.That(result.DeliveryModels, Is.EqualTo(_apiResponse.DeliveryModels));
-        }
-
-        [Test]
-        public async Task Then_DeliveryModel_Is_Mapped_Correctly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.That(result.DeliveryModel, Is.EqualTo((SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel) _request.DeliveryModel));
-        }
+    [Test]
+    public async Task Then_DeliveryModel_Is_Mapped_Correctly()
+    {
+        var result = await _mapper.Map(_request);
+        result.DeliveryModel.Should().Be((Infrastructure.OuterApi.Types.DeliveryModel)_request.DeliveryModel);
     }
 }

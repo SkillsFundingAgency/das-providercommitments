@@ -1,5 +1,4 @@
 using CsvHelper.Configuration.Attributes;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -12,6 +11,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
     {
         [Name("Apprentice name")]
         public string ApprenticeName { get ; private set ; }
+        [Name("Apprentice email address")]
+        public string Email { get ; private set ; }
         [Name("ULN")]
         public string Uln { get ; private set ; }
         [Name("Employer")]
@@ -50,6 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
             return new ApprenticeshipDetailsCsvModel
             {
                 ApprenticeName = $"{model.FirstName} {model.LastName}",
+                Email = model.Email,
                 Uln = model.Uln,
                 Employer = model.EmployerName,
                 CourseName = model.CourseName,

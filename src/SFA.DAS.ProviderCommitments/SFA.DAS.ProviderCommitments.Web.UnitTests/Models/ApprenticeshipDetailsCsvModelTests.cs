@@ -1,7 +1,5 @@
 ﻿using System;
 using AutoFixture.NUnit3;
-using FluentAssertions;
-using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
@@ -22,6 +20,17 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Models
             var result = model.Map(source,encodingService.Object);
 
             result.ApprenticeName.Should().Be($"{source.FirstName} {source.LastName}");
+        }
+        
+        [Test, MoqAutoData]
+        public void Then_Maps_Email(
+            PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse source,
+            [Frozen] Mock<IEncodingService> encodingService,
+            ApprenticeshipDetailsCsvModel model)
+        {
+            var result = model.Map(source,encodingService.Object);
+
+            result.Email.Should().Be(source.Email);
         }
 
         [Test, AutoData]

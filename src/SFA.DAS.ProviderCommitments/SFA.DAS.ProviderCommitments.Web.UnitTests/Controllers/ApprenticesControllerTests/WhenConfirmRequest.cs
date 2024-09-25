@@ -25,8 +25,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             var fixture = new WhenConfirmRequestFixture();
             var result = await fixture.Sut.Confirm(fixture.ChangeOfEmployerRequest) as ViewResult;
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Model.GetType(), Is.EqualTo(typeof(ConfirmViewModel)));
+            result.Should().NotBeNull();
+            result.Model.GetType().Should().Be(typeof(ConfirmViewModel));
         }
     }
 

@@ -2,54 +2,53 @@ using SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
+
+public class OverlapOptionsForChangeEmployerRequestMapperTests
 {
-    public class OverlapOptionsForChangeEmployerRequestMapperTests
+    private OverlapOptionsForChangeEmployerRequestMapper _mapper;
+    private ChangeOfEmployerOverlapAlertViewModel _viewModel;
+
+    [SetUp]
+    public void SetUp()
     {
-        private OverlapOptionsForChangeEmployerRequestMapper mapper;
-        ChangeOfEmployerOverlapAlertViewModel viewModel;
+        var fixture = new Fixture();
 
-        [SetUp]
-        public void SetUp()
-        {
-            var fixture = new Fixture();
+        _viewModel = fixture.Build<ChangeOfEmployerOverlapAlertViewModel>()
+            .With(x => x.DetailsAcknowledgement, true)
+            .Create();
 
-            viewModel = fixture.Build<ChangeOfEmployerOverlapAlertViewModel>()
-                .With(x => x.DetailsAcknowledgement, true)
-                .Create();
+        _mapper = new OverlapOptionsForChangeEmployerRequestMapper();
+    }
 
-            mapper = new OverlapOptionsForChangeEmployerRequestMapper();
-        }
+    [Test, MoqAutoData]
+    public async Task ApprenticeshipId_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
+        result.ApprenticeshipId.Should().Be(_viewModel.ApprenticeshipId);
+    }
 
-        [Test, MoqAutoData]
-        public async Task ApprenticeshipId_IsMapped()
-        {
-            var result = await mapper.Map(viewModel);
-            Assert.That(result.ApprenticeshipId, Is.EqualTo(viewModel.ApprenticeshipId));
-        }
+    [Test, MoqAutoData]
+    public async Task ApprenticeshipHashedId_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
 
-        [Test, MoqAutoData]
-        public async Task ApprenticeshipHashedId_IsMapped()
-        {
-            var result = await mapper.Map(viewModel);
+        result.ApprenticeshipHashedId.Should().Be(_viewModel.ApprenticeshipHashedId);
+    }
 
-            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(viewModel.ApprenticeshipHashedId));
-        }
+    [Test, MoqAutoData]
+    public async Task ProviderId_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
 
-        [Test, MoqAutoData]
-        public async Task ProviderId_IsMapped()
-        {
-            var result = await mapper.Map(viewModel);
+        result.ProviderId.Should().Be(_viewModel.ProviderId);
+    }
 
-            Assert.That(result.ProviderId, Is.EqualTo(viewModel.ProviderId));
-        }
+    [Test, MoqAutoData]
+    public async Task CacheKey_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
 
-        [Test, MoqAutoData]
-        public async Task CacheKey_IsMapped()
-        {
-            var result = await mapper.Map(viewModel);
-
-            Assert.That(result.CacheKey, Is.EqualTo(viewModel.CacheKey));
-        }
+        result.CacheKey.Should().Be(_viewModel.CacheKey);
     }
 }

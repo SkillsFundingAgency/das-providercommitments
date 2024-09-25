@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
-using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Features;

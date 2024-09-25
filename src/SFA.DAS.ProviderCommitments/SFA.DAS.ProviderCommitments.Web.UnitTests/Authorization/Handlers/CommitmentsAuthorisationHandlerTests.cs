@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Security.Claims;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;

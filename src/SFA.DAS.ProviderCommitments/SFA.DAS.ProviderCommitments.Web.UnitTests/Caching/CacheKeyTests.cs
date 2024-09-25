@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Types;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Context;
 using SFA.DAS.ProviderCommitments.Web.Caching;
 
@@ -74,38 +73,52 @@ public class CacheKeyTests
         var hash1 = k1.GetHashCode();
         var hash2 = k2.GetHashCode();
 
-        Assert.That(hash1, expectToBeTheSame ? Is.EqualTo(hash2) : Is.Not.EqualTo(hash2));
+        if (expectToBeTheSame)
+        {
+            hash1.Should().Be(hash2);
+        }
+        else
+        {
+            hash1.Should().NotBe(hash2);
+        }
     }
 
     private static void CheckEquality(CacheKey k1, CacheKey k2, bool expectToBeTheSame)
     {
-        Assert.That(k1, expectToBeTheSame ? Is.EqualTo(k2) : Is.Not.EqualTo(k2));
+        if (expectToBeTheSame)
+        {
+            k1.Should().Be(k2);
+        }
+        else
+        {
+            k1.Should().NotBe(k2);
+        }
     }
 
     private static void CheckEqualityOperator(CacheKey k1, CacheKey k2, bool expectToBeTheSame)
     {
         if (expectToBeTheSame)
         {
-            Assert.That(k1, Is.EqualTo(k2));
-            Assert.That(k1, Is.EqualTo(k2));
+            k1.Should().Be(k2);
+            k1.Should().Be(k2);
         }
         else
         {
-            Assert.That(k1, Is.Not.EqualTo(k2));
-            Assert.That(k1, Is.Not.EqualTo(k2));
+            k1.Should().NotBe(k2);
+            k1.Should().NotBe(k2);
         }
     }
 
     private static CacheKey CreateCachedKeyFromString(string s)
     {
-        var parts = s.Split(new []{':'}, StringSplitOptions.RemoveEmptyEntries);
+        var parts = s.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length != 5)
         {
             throw new InvalidOperationException($"The test string should be in the format \"<party-type>:<party-id>:<cohort-id>:<option-1>,<option-2>...<option-n>\"");
         }
 
-        var options = parts[4].Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries);
+        var options = parts[4].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         var apprenticeshipId = GetAsInt(parts, 3);
         var cohortId = GetAsInt(parts, 2);
         var party = (Party)GetAsInt(parts, 0);

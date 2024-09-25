@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             try
             {
                 fixture.Sut.SetDeliveryModelForEdit(fixture.ViewModel);
-                Assert.Fail("Should have had exception thrown");
+                throw new Exception("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
             {

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -36,7 +34,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular, DeliveryModel.PortableFlexiJob });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
         }
 
         [Test]
@@ -48,7 +46,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
                 .WithDeliveryModels(new List<DeliveryModel> { DeliveryModel.Regular });
 
             var result = await fixture.Sut.SelectDeliveryModelForEdit(fixture.Request) as ViewResult;
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
         }
 
         [Test]

@@ -31,8 +31,8 @@ public class WhenAddingNewPrice
 
         var result = await fixture.Sut.Price(fixture.PriceRequest) as ViewResult;
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Model.GetType(), Is.EqualTo(typeof(PriceViewModel)));
+        result.Should().NotBeNull();
+        result.Model.GetType().Should().Be(typeof(PriceViewModel));
     }
 
     [Test]     
@@ -83,8 +83,8 @@ public class WhenAddingNewPrice
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = status } };
         var result = await fixture.Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
+        result.Should().NotBeNull();
+        result.RouteName.Should().Be(RouteNames.ChangeEmployerOverlapAlert);
     }  
         
     [Test]     
@@ -93,8 +93,8 @@ public class WhenAddingNewPrice
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = {ApprenticeshipStatus = ApprenticeshipStatus.Stopped } };
         var result = await fixture.AndStoppedJourneyEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ApprenticeConfirm));          
+        result.Should().NotBeNull();
+        result.RouteName.Should().Be(RouteNames.ApprenticeConfirm);          
     } 
         
     [Test]
@@ -103,8 +103,8 @@ public class WhenAddingNewPrice
         var fixture = new WhenAddingNewPriceFixture { PriceViewModel = { ApprenticeshipStatus = ApprenticeshipStatus.Stopped } };
         var result = await fixture.AndStoppedJourneyInEligableForChangeOfEmployer().Sut.Price(fixture.PriceViewModel) as RedirectToRouteResult;
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.RouteName, Is.EqualTo(RouteNames.ChangeEmployerOverlapAlert));
+        result.Should().NotBeNull();
+        result.RouteName.Should().Be(RouteNames.ChangeEmployerOverlapAlert);
     }
 }
 

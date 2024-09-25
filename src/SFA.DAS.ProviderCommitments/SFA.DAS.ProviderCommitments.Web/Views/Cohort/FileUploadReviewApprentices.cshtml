@@ -27,60 +27,62 @@
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Total apprentices</dt>
-                    <dd id="total-apprentices" class="govuk-summary-list__value">@Model.FileUploadTotalApprenticesText <br /> @Model.ExistingCohortTotalApprenticesText</dd> 
+                    <dd id="total-apprentices" class="govuk-summary-list__value">
+                        @Model.FileUploadTotalApprenticesText <br/> @Model.ExistingCohortTotalApprenticesText
+                    </dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Total cost</dt>
                     <dd id="total-cost" class="govuk-summary-list__value">@Model.TotalCost.FormatCost()</dd>
                 </div>
-        </dl>
+            </dl>
+        </div>
     </div>
-</div>
 
-@if (!string.IsNullOrWhiteSpace(Model.CohortRef))
-{
+    @if (!string.IsNullOrWhiteSpace(Model.CohortRef))
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h3 class="govuk-heading-s">Message from employer:</h3>
+                <div class="govuk-inset-text">
+                    @Model.MessageFromEmployerText
+                </div>
+            </div>
+        </div>
+    }
+
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h3 class="govuk-heading-s">Message from employer:</h3>
-            <div class="govuk-inset-text">
-                @Model.MessageFromEmployerText
+        <div class="govuk-grid-column-full">
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            <!-- NEW APPRENTICES FROM FILEUPLOAD-->
+            <div class="group-header">
+                <h2 class="govuk-heading-m group-title">New apprentices to be added from CSV file</h2>
             </div>
-        </div>
-    </div>
-}
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+            @if (!String.IsNullOrEmpty(@Model.FundingBandTextForFileUploadCohorts))
+            {
+                <div class="govuk-inset-text das-inset-text--highlight">
+                    <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandTextForFileUploadCohorts</h3>
+                    <p>
+                        @Model.FundingBandInsetTextForFileUploadCohorts <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands" rel="noopener">funding band maximum</a>.
+                        You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
+                    </p>
+                </div>
+            }
 
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-        <!-- NEW APPRENTICES FROM FILEUPLOAD-->
-        <div class="group-header">
-            <h2 class="govuk-heading-m group-title">New apprentices to be added from CSV file</h2>
-        </div>
-
-        @if (!String.IsNullOrEmpty(@Model.FundingBandTextForFileUploadCohorts))
-        {
-            <div class="govuk-inset-text das-inset-text--highlight">
-                <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandTextForFileUploadCohorts</h3>
-                <p>
-                    @Model.FundingBandInsetTextForFileUploadCohorts <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands"  rel="noopener">funding band maximum</a>.
-                    You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
-                </p>
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    If you need to correct any records, you need to amend the data in your LMS, then upload your CSV file again.
+                </strong>
             </div>
-        }
-
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                If you need to correct any records, you need to amend the data in your LMS, then upload your CSV file again.
-            </strong>
-        </div>
 
 
-        <table class="govuk-table" id="FileUploadApprenticesTable" aria-label="NewApprentices">
-            <thead class="govuk-table__head">
+            <table class="govuk-table" id="FileUploadApprenticesTable" aria-label="NewApprentices">
+                <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Name</th>
                     <th scope="col" class="govuk-table__header">Apprenticeship <br>training course</th>
@@ -90,9 +92,9 @@
                     <th scope="col" class="govuk-table__header">Training dates</th>
                     <th scope="col" class="govuk-table__header">Price</th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody class="govuk-table__body govuk-!-font-size-16">
+                <tbody class="govuk-table__body govuk-!-font-size-16">
 
                 @foreach (var fileUploadApprentice in Model.FileUploadCohortDetails)
                 {
@@ -103,7 +105,7 @@
                         <td id="fileupload-apprentice-dob" class="govuk-table__cell">@fileUploadApprentice.DateOfBirth</td>
                         <td id="fileupload-apprentice-email" class="govuk-table__cell">@fileUploadApprentice.Email</td>
                         <td id="fileupload-apprentice-training-dates" class="govuk-table__cell">@fileUploadApprentice.TrainingDates</td>
-                        <td id="fileupload-apprentice-cost" class="govuk-table__cell">                            
+                        <td id="fileupload-apprentice-cost" class="govuk-table__cell">
                             @if (fileUploadApprentice.ExceedsFundingBandCap)
                             {
                                 <span class="das-table-cell--highlight">
@@ -118,30 +120,30 @@
                     </tr>
                 }
 
-            </tbody>
-        </table>
-        <!-- END NEW APPRENTICES FROM FILEUPLOAD-->
+                </tbody>
+            </table>
+            <!-- END NEW APPRENTICES FROM FILEUPLOAD-->
 
-        <!-- EXISTING APPRENTICES -->
-        @if (Model.ExistingCohortDetails.Count > 0)
-        { 
-            <div class="group-header">
-                <h2 class="govuk-heading-m group-title govuk-!-margin-top-8">Apprentices previously added to this cohort </h2>
-            </div>
-
-            @if (!String.IsNullOrEmpty(@Model.FundingBandTextForExistingCohorts))
+            <!-- EXISTING APPRENTICES -->
+            @if (Model.ExistingCohortDetails.Count > 0)
             {
-                <div class="govuk-inset-text das-inset-text--highlight">
-                    <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandTextForExistingCohorts</h3>
-                    <p>
-                        @Model.FundingBandInsetTextForExistingCohorts <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands" rel="noopener">funding band maximum</a>.
-                        You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
-                    </p>
+                <div class="group-header">
+                    <h2 class="govuk-heading-m group-title govuk-!-margin-top-8">Apprentices previously added to this cohort </h2>
                 </div>
-            }
 
-            <table class="govuk-table" id="ExistingApprenticesTable" aria-label="ExistingApprentices">
-                <thead class="govuk-table__head">
+                @if (!String.IsNullOrEmpty(@Model.FundingBandTextForExistingCohorts))
+                {
+                    <div class="govuk-inset-text das-inset-text--highlight">
+                        <h3 id="funding-band-text" class="govuk-heading-s">@Model.FundingBandTextForExistingCohorts</h3>
+                        <p>
+                            @Model.FundingBandInsetTextForExistingCohorts <a target="_blank" href="https://www.gov.uk/government/publications/apprenticeship-funding-bands" rel="noopener">funding band maximum</a>.
+                            You'll need to ask the employer to pay the difference directly to you - this can't be funded from their account.
+                        </p>
+                    </div>
+                }
+
+                <table class="govuk-table" id="ExistingApprenticesTable" aria-label="ExistingApprentices">
+                    <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header">Name</th>
                         <th scope="col" class="govuk-table__header">Apprenticeship <br>training course</th>
@@ -151,9 +153,9 @@
                         <th scope="col" class="govuk-table__header">Training dates</th>
                         <th scope="col" class="govuk-table__header">Price</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody class="govuk-table__body govuk-!-font-size-16">
+                    <tbody class="govuk-table__body govuk-!-font-size-16">
 
                     @foreach (var existingApprentice in Model.ExistingCohortDetails)
                     {
@@ -178,10 +180,11 @@
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        }
-        <!-- END EXISTING APPRENTICES -->
+                    </tbody>
+                </table>
+            }
+            <!-- END EXISTING APPRENTICES -->
+        </div>
     </div>
 </div>
 
