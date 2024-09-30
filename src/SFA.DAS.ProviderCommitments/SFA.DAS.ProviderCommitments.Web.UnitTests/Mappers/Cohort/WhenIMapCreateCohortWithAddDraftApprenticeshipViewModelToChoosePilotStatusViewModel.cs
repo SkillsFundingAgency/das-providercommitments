@@ -5,61 +5,60 @@ using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 using ChoosePilotStatusOptions = SFA.DAS.ProviderCommitments.Web.Models.ChoosePilotStatusOptions;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
+
+[TestFixture]
+public class SelectPilotStatusViewModelMapperTests
 {
-    [TestFixture]
-    public class SelectPilotStatusViewModelMapperTests
+    private SelectPilotStatusViewModelMapper _mapper;
+    private SelectPilotStatusRequest _request;
+    private Mock<ICacheStorageService> _cacheStorage;
+    private CreateCohortCacheItem _cacheItem;
+
+    [SetUp]
+    public void Arrange()
     {
-        private SelectPilotStatusViewModelMapper _mapper;
-        private SelectPilotStatusRequest _request;
-        private Mock<ICacheStorageService> _cacheStorage;
-        private CreateCohortCacheItem _cacheItem;
+        var fixture = new Fixture();
+        _request = fixture.Create<SelectPilotStatusRequest>();
 
-        [SetUp]
-        public void Arrange()
-        {
-            var fixture = new Fixture();
-            _request = fixture.Create<SelectPilotStatusRequest>();
+        _cacheItem = fixture.Create<CreateCohortCacheItem>();
 
-            _cacheItem = fixture.Create<CreateCohortCacheItem>();
+        _cacheStorage = new Mock<ICacheStorageService>();
+        _cacheStorage.Setup(x =>
+                x.RetrieveFromCache<CreateCohortCacheItem>(It.Is<Guid>(key => key == _request.CacheKey)))
+            .ReturnsAsync(_cacheItem);
 
-            _cacheStorage = new Mock<ICacheStorageService>();
-            _cacheStorage.Setup(x =>
-                    x.RetrieveFromCache<CreateCohortCacheItem>(It.Is<Guid>(key => key == _request.CacheKey)))
-                .ReturnsAsync(_cacheItem);
+        _mapper = new SelectPilotStatusViewModelMapper(_cacheStorage.Object);
+    }
 
-            _mapper = new SelectPilotStatusViewModelMapper(_cacheStorage.Object);
-        }
+    [TestCase(true, ChoosePilotStatusOptions.Pilot)]
+    [TestCase(false, ChoosePilotStatusOptions.NonPilot)]
+    [TestCase(null, null)]
+    public async Task ThenPilotStatusIsMappedCorrectly(bool? pilotStatus, ChoosePilotStatusOptions? expectedOption)
+    {
+        _cacheItem.IsOnFlexiPaymentPilot = pilotStatus;
+        var result = await _mapper.Map(_request);
+        result.Selection.Should().Be(expectedOption);
+    }
 
-        [TestCase(true, ChoosePilotStatusOptions.Pilot)]
-        [TestCase(false, ChoosePilotStatusOptions.NonPilot)]
-        [TestCase(null, null)]
-        public async Task ThenPilotStatusIsMappedCorrectly(bool? pilotStatus, ChoosePilotStatusOptions? expectedOption)
-        {
-            _cacheItem.IsOnFlexiPaymentPilot = pilotStatus;
-            var result = await _mapper.Map(_request);
-            Assert.That(result.Selection, Is.EqualTo(expectedOption));
-        }
+    [Test]
+    public async Task ThenCacheKeyIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_request);
+        result.CacheKey.Should().Be(_request.CacheKey);
+    }
 
-        [Test]
-        public async Task ThenCacheKeyIsMappedCorrectly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.That(result.CacheKey, Is.EqualTo(_request.CacheKey));
-        }
+    [Test]
+    public async Task ThenIsEditIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_request);
+        result.IsEdit.Should().Be(_request.IsEdit);
+    }
 
-        [Test]
-        public async Task ThenIsEditIsMappedCorrectly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.That(result.IsEdit, Is.EqualTo(_request.IsEdit));
-        }
-
-        [Test]
-        public async Task ThenProviderIdIsMappedCorrectly()
-        {
-            var result = await _mapper.Map(_request);
-            Assert.That(result.ProviderId, Is.EqualTo(_request.ProviderId));
-        }
+    [Test]
+    public async Task ThenProviderIdIsMappedCorrectly()
+    {
+        var result = await _mapper.Map(_request);
+        result.ProviderId.Should().Be(_request.ProviderId);
     }
 }

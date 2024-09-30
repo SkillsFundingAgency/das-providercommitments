@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
@@ -31,6 +32,6 @@ public class WhenDeterminingTheStatusOfACourseOnSpecificDate
         var result = course.IsActiveOn(effectiveDate);
 
         //Assert
-        Assert.That(result, Is.EqualTo(expectStatus));
+        result.Should().Be(expectStatus);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
@@ -155,7 +156,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         public Task<IActionResult> ConfirmEditApprenticeship(ConfirmEditApprenticeshipViewModel viewModel)
         {
-           return Controller.ConfirmEditApprenticeship(viewModel);
+            return Controller.ConfirmEditApprenticeship(viewModel);
         }
 
         internal void ConfirmFlashMessageValue(string editApprenticeNeedReapproval)
@@ -172,18 +173,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
         {
             object valueFromTempData;
             Controller.TempData.TryGetValue(key, out valueFromTempData);
-            Assert.That(value, Is.EqualTo(valueFromTempData.ToString()));
+            value.Should().Be(valueFromTempData.ToString());
         }
 
         internal static void VerifyRedirectToDetails(ConfirmEditApprenticeshipViewModel viewModel, IActionResult result)
         {
             var redirect = result.VerifyReturnsRedirectToActionResult();
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(redirect.ActionName, Is.EqualTo("Details"));
-                Assert.That(viewModel.ProviderId, Is.EqualTo(redirect.RouteValues["ProviderId"]));
-                Assert.That(viewModel.ApprenticeshipHashedId, Is.EqualTo(redirect.RouteValues["ApprenticeshipHashedId"]));
-            });
+                redirect.ActionName.Should().Be("Details");
+                viewModel.ProviderId.Should().Be(long.Parse(redirect.RouteValues["ProviderId"].ToString()));
+                viewModel.ApprenticeshipHashedId.Should().Be(redirect.RouteValues["ApprenticeshipHashedId"].ToString());
+            }
         }
 
         internal void SetNeedReapproval(bool value)

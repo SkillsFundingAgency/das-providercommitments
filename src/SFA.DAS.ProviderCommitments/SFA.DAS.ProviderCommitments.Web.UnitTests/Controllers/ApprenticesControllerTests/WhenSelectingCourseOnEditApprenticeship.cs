@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
             result.VerifyReturnsViewModel().ViewName.Should().Be(null);
             var model = result.VerifyReturnsViewModel().WithModel<EditApprenticeshipCourseViewModel>();
 
-            Assert.That(model, Is.EqualTo(fixture.CourseViewModel));
+            model.Should().Be(fixture.CourseViewModel);
         }
 
         [Test]

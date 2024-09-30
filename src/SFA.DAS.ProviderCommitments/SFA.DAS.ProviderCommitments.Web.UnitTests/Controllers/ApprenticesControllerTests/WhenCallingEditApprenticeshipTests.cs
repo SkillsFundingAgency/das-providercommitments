@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
@@ -73,16 +72,15 @@ public class WhenCallingEditApprenticeshipTestsFixture : ApprenticeControllerTes
     {
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
-        Assert.That(viewModel, Is.InstanceOf<EditApprenticeshipRequestViewModel>());
-        Assert.That(viewModel, Is.EqualTo(_viewModel));
+        viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
+        viewModel.Should().Be(_viewModel);
     }
 
     public void VerifyViewModelIsEquivalentToTempViewModel(ViewResult viewResult)
     {
         var viewModel = viewResult.Model as EditApprenticeshipRequestViewModel;
 
-        Assert.That(viewModel, Is.InstanceOf<EditApprenticeshipRequestViewModel>());
+        viewModel.Should().BeAssignableTo<EditApprenticeshipRequestViewModel>();
         _tempViewModel.Should().BeEquivalentTo(viewModel);
     }
-
 }

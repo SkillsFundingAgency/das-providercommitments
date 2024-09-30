@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Validation;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -7,7 +7,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 
@@ -52,7 +51,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
             try
             {
                 var result = await fixture.Sut.SetDeliveryModel(fixture.ViewModel);
-                Assert.Fail("Should have had exception thrown");
+                throw new Exception("Should have had exception thrown");
             }
             catch (CommitmentsApiModelException e)
             {

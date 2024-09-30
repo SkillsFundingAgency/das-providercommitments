@@ -60,7 +60,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.DraftApprentices
         public void AndWhenSavingFailsDueToValidationItShouldThrowCommitmentsApiModelException()
         {
             _fixture.SetupUpdatingToThrowCommitmentsApiException();
-            Assert.ThrowsAsync<CommitmentsApiModelException>(async () => await _fixture.PostToEditDraftApprenticeship());
+            var action =() => _fixture.PostToEditDraftApprenticeship();
+            action.Should().ThrowAsync<CommitmentsApiModelException>();
         }
 
         [Test]

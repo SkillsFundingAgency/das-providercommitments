@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;

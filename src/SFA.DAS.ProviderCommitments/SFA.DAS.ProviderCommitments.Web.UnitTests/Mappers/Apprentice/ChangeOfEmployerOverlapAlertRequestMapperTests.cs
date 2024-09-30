@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_fixture.ViewModel.ApprenticeshipHashedId));
+            result.ApprenticeshipHashedId.Should().Be(_fixture.ViewModel.ApprenticeshipHashedId);
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.That(result.ProviderId, Is.EqualTo(_fixture.ViewModel.ProviderId));
+            result.ProviderId.Should().Be(_fixture.ViewModel.ProviderId);
         }
 
         [Test]
@@ -38,9 +38,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
         {
             var result = await _fixture.Act();
 
-            Assert.That(result.CacheKey, Is.EqualTo(_fixture.ViewModel.CacheKey));
+            result.CacheKey.Should().Be(_fixture.ViewModel.CacheKey);
         }
-
 
         [Test]
         public async Task ThenPricesArePersistedToCache()
