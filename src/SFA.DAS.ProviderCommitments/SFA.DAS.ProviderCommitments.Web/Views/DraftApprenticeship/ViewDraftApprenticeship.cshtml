@@ -187,7 +187,7 @@
                                 Total off-the-job training time for this apprenticeship standard
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.TrainingTotalHours.Value.ToString("N0") @PluraliseString(Model.DurationReducedByHours.Value, "hour")
+                                @Model.TrainingTotalHours.Value.ToString("N0") @PluraliseString(Model.TrainingTotalHours.Value, "hour")
                             </dd>
                         </div>
                     }
