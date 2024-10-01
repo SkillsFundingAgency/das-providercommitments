@@ -9,5 +9,4 @@ public class ProviderFeature
     public const string ManageApprenticesV2WithoutPrefix = "ManageApprenticesV2";
     public const string OverlappingTrainingDateWithoutPrefix = "OverlappingTrainingDateRequest";
     public const string FlexiblePaymentsPilot = Prefix + "FlexiblePaymentsPilot";
-    public const string RplExtended = Prefix + "RPL2";
 }

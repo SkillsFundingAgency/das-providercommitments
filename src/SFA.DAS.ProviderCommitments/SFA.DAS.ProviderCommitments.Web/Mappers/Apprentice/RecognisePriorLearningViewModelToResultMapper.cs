@@ -27,7 +27,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     DurationReducedBy = source.ReducedDuration,
                     PriceReducedBy = source.ReducedPrice,
                     DurationReducedByHours = source.DurationReducedByHours,
-                    Rpl2Mode = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended)
+                    // TODO: Removed Rpl2Mode
+                    Rpl2Mode = true
                 });
 
             var apprenticeship = _commitmentsApiClient.GetDraftApprenticeship(

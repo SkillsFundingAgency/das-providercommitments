@@ -682,7 +682,6 @@ public class CohortController : Controller
     private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
     {
         var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
-        bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
         var response = await _mediator.Send(bulkValidate);
         return response.LogId;
     }

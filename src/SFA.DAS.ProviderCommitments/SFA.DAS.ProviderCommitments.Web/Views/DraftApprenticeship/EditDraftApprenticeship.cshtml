@@ -11,15 +11,7 @@
     ViewBag.GaData.Vpv = "/unapproved/cohort/apprentices/edit";
     ViewBag.GaData.Org = Model.Employer;
 
-    bool rplStillNeedsConsideration;
-    if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended))
-    {
-        rplStillNeedsConsideration = Model.RecognisingPriorLearningExtendedStillNeedsToBeConsidered;
-    }
-    else
-    {
-        rplStillNeedsConsideration = Model.RecognisingPriorLearningStillNeedsToBeConsidered;
-    }
+    bool rplStillNeedsConsideration = Model.RecognisingPriorLearningExtendedStillNeedsToBeConsidered;
 }
 
 <div class="govuk-grid-row">

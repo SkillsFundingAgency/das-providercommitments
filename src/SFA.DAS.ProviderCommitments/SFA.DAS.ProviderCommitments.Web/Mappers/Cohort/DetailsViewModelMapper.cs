@@ -264,19 +264,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
-            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
             {
-                if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
-                {
-                    return false;
-                }
+                return false;
             }
 
             if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()

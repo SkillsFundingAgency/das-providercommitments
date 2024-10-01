@@ -60,7 +60,6 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
         _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
         _authorizationService = new Mock<IAuthorizationService>();
-        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
 
         _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object, _authorizationService.Object);
 

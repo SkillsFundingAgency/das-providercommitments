@@ -40,7 +40,7 @@ public class FileUploadMapperBaseTests
         _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
 
         Sut = new FileUploadMapperBase(EncodingService.Object, _outerApiService.Object);
-        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
     }
 
     [Test]
@@ -200,7 +200,7 @@ public class FileUploadMapperBaseTests
             .With(x => x.DurationReducedBy, durationReducedBy)
             .CreateMany(2).ToList();
 
-        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
 
         foreach (var record in CsvRecords)
         {
@@ -228,7 +228,7 @@ public class FileUploadMapperBaseTests
         var source = CsvRecords.First();
         source.GivenNames = inputValue;
 
-        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
 
         var result = Result.First(x => x.Uln == source.ULN);
 
@@ -244,7 +244,7 @@ public class FileUploadMapperBaseTests
         var source = CsvRecords.First();
         source.FamilyName = inputValue;
 
-        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
 
         var result = Result.First(x => x.Uln == source.ULN);
 
@@ -279,7 +279,7 @@ public class FileUploadMapperBaseTests
             .With(x=>x.DurationReducedBy, durationReducedBy)
             .CreateMany(2).ToList();
 
-        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1);
 
         foreach (var record in CsvRecords)
         {
