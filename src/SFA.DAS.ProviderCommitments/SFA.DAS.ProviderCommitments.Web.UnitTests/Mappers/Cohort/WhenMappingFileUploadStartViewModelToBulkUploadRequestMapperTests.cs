@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions.Execution;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
