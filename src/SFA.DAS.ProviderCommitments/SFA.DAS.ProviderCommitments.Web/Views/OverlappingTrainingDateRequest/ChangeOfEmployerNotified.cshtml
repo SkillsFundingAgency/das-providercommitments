@@ -2,8 +2,8 @@
 @model ChangeOfEmployerNotifiedViewModel
 
 @{
-    ViewData["Title"] = "DraftApprenticeships";
-    ViewBag.GaData.Vpv = "/unapproved/add/cohortReference/employer-notified";
+    ViewData["Title"] = "Stop date request has been sent";
+    ViewBag.GaData.Vpv = "/unapproved/OverlappingTrainingDateRequest/change-of-employer-notified";
 }
 
 <div class="govuk-grid-row">
@@ -11,15 +11,17 @@
       <partial name="_ValidationSummary" />
       <div class="govuk-panel govuk-panel--confirmation">
          <h1 class="govuk-panel__title">
-            Employer notified to confirm changes
+           Stop date request has been sent
          </h1>
       </div>
+        <p>You have chosen a stop date request email to be sent to the previous employer.</p>
       <h2 class="govuk-heading-m">What happens next</h2>
       <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
          <li>
-            an email has been sent to the employer requesting they update their records for this apprentice: this can take up to 2 weeks to action
+             an email has been sent to the previous employer requesting they update their records for this apprentice; they are given 2 weeks to action this
          </li>
-         <li>you will be notified once the employer has amended or rejected changes for this ULN</li>
+         <li>we will send a reminder to the previous employer in 1 week</li>
+         <li>yyou will be notified once the employer has amended or rejected changes for this apprentice</li>
          <li>you cannot approve this apprentice request until the overlapping date has been resolved</li>
       </ul>
       <form method="post">
@@ -33,13 +35,13 @@
                   <div class="govuk-radios__item">
                      <input class="govuk-radios__input" id="radio-view-all-cohorts" name="NextAction" type="radio" value="@NextAction.ViewAllCohorts" data-aria-controls="conditional-approve">
                      <label class="govuk-label govuk-radios__label" for="radio-view-all-cohorts">
-                      View all my cohorts
+                         View apprentice details
                      </label>
                   </div>                            
                   <div class="govuk-radios__item">
                      <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ViewDashBoard" data-aria-controls="conditional-approve">
                      <label class="govuk-label govuk-radios__label" for="radio-view-dashboard">
-                      Go back to the main dashboard
+                         Return to dashboard
                      </label>
                   </div>
                </div>
