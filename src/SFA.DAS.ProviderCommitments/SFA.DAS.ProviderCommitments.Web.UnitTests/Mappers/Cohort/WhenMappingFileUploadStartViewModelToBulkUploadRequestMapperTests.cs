@@ -66,15 +66,13 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
     }
 
     [Test]
-    public void CommandIsReturnedWithProviderIdAndRplDataExtended()
+    public void CommandIsReturnedWithProviderId()
     {
         using (new AssertionScope())
         {
-            _apiRequest.RplDataExtended.Should().BeTrue();
             _apiRequest.ProviderId.Should().Be(_viewModel.ProviderId);
         }
     }
-
 
     [Test]
     public void CommandIsReturnedFromCacheWithLogIdAsExpected()

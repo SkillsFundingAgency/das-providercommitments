@@ -222,21 +222,19 @@ public class WhenRecognisingPriorLearning
             fixture.DataViewModel.DraftApprenticeshipHashedId);
     }
 
-    //[TestCase, MoqAutoData]
-    //public async Task
-    //    After_submitting_prior_learning_data_and_no_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
-    //{
-    //    var fixture = new WhenRecognisingPriorLearningFixture()
-    //        .WithoutStandardOptions()
-    //        .WithRplSummary(false, false)
-    //        .WithRplCreatePriorLearningDataResponse(true, false);
+    [TestCase, MoqAutoData]
+    public async Task
+        After_submitting_prior_learning_data_and_no_standards_and_no_rpl_error_then_dont_show_RPL_summary_page()
+    {
+        var fixture = new WhenRecognisingPriorLearningFixture()
+            .WithoutStandardOptions()
+            .WithRplSummary(false, false)
+            .WithRplCreatePriorLearningDataResponse(true, false);
 
-    //    var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
+        var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-    //    result.VerifyRedirectsToSelectOptionsPage(
-    //        fixture.DataViewModel.ProviderId,
-    //        fixture.DataViewModel.CohortReference);
-    //}
+        result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
+    }
 
     [TestCase, MoqAutoData]
     public async Task
