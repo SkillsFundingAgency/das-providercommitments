@@ -14,8 +14,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Validators.Cohort;
 [TestFixture]
 public class FileUploadStartViewModelValidatorTests
 {
-    private const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,DurationReducedBy,PriceReducedBy";
-    private const string RplExtendedHeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
+    private const string HeaderLine = "CohortRef,AgreementID,ULN,FamilyName,GivenNames,DateOfBirth,EmailAddress,StdCode,StartDate,EndDate,TotalPrice,EPAOrgID,ProviderRef,RecognisePriorLearning,TrainingTotalHours,TrainingHoursReduction,IsDurationReducedByRPL,DurationReducedBy,PriceReducedBy";
 
     private Mock<IFormFile> _file;
     private BulkUploadFileValidationConfiguration _csvConfiguration;
@@ -150,10 +149,10 @@ public class FileUploadStartViewModelValidatorTests
     public async Task ShouldCheckRplExtendedColumns()
     {
         var builder = new StringBuilder();
-        builder.AppendLine(RplExtendedHeaderLine);
+        builder.AppendLine(HeaderLine);
         for (var i = 1; i < 99; i++)
         {
-            builder.AppendLine(RplExtendedHeaderLine);
+            builder.AppendLine(HeaderLine);
         }
         var fileContents = builder.ToString();
 
