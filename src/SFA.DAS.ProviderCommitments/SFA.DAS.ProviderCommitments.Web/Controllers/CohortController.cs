@@ -498,7 +498,7 @@ public class CohortController : Controller
             var approvedResponse =
                 await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
             TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
-            return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+            return RedirectToAction(nameof(FileUploadSuccess), new { viewModel.ProviderId });
         }
 
         switch (viewModel.SelectedOption)
