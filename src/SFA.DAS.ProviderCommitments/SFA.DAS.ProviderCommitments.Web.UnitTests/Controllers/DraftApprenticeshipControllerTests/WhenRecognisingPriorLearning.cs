@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.DraftApprenticeship;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -137,66 +136,10 @@ public class WhenRecognisingPriorLearning
                 )));
     }
 
-    [TestCase(1, 1, null)]
-    [TestCase(2, null, null)]
-    [TestCase(null, 3, null)]
-    [TestCase(null, null, 10)]
-    [TestCase(null, null, 30)]
-    public async Task When_previously_entered_details_then_map_them(int? durationReducedBy, int? priceReducedBy,
-        int? durationReducedByHours)
-    {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithPreviousDetails(durationReducedBy, priceReducedBy, durationReducedByHours);
-
-        var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.Request);
-
-        var model = result.VerifyReturnsViewModel().WithModel<PriorLearningDetailsViewModel>();
-        model.ReducedDuration.Should().Be(durationReducedBy);
-        model.ReducedPrice.Should().Be(priceReducedBy);
-        model.DurationReducedByHours.Should().Be(durationReducedByHours);
-    }
-
-    [Test]
-    public async Task When_accessing_RecognisePriorLearningDetails_if_is_in_rpl_enhanced_mode_Then_Redirect()
-    {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithRpl2Mode();
-
-        var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.Request);
-
-        result.VerifyRedirectsToRecognisePriorLearningDataPage(fixture.Request.DraftApprenticeshipHashedId);
-    }
-
-    [Test]
-    public async Task When_Saving_Rpl_version_1_data_then_redirect_to_Cohort_page()
-    {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithoutStandardOptions()
-            .ChoosePriorLearning(false);
-
-        var result = await fixture.Sut.RecognisePriorLearningDetails(fixture.DetailsViewModel);
-
-        result.VerifyRedirectsToCohortDetailsPage(
-            fixture.DetailsViewModel.ProviderId,
-            fixture.DetailsViewModel.CohortReference);
-    }
-
-    [Test]
-    public async Task When_accessing_RecognisePriorLearningData_if_is_not_in_rpl_enhanced_mode()
-    {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithRplSummary(false, false);
-
-        var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
-
-        result.VerifyRedirectsToRecognisePriorLearningDetailsPage(fixture.Request.DraftApprenticeshipHashedId);
-    }
-
     [Test]
     public async Task When_accessing_RecognisePriorLearningData_if_is_in_rpl_enhanced_mode()
     {
-        var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithRpl2Mode();
+        var fixture = new WhenRecognisingPriorLearningFixture();
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
 
@@ -208,7 +151,6 @@ public class WhenRecognisingPriorLearning
         When_accessing_RecognisePriorLearningData_and_old_rpl_data_rpl_duration_is_0_then_change_to_null_and_False()
     {
         var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithRpl2Mode()
             .WithRpl1Data(0, 1000);
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.Request);
@@ -269,11 +211,10 @@ public class WhenRecognisingPriorLearning
     }
 
     [TestCase, MoqAutoData]
-    [Ignore("Ignore")]
     public async Task After_submitting_prior_learning_bad_data_then_show_RPL_summary_page()
     {
         var fixture = new WhenRecognisingPriorLearningFixture()
-            .WithRplDataResult(false, true);
+            .WithRplCreatePriorLearningDataResponse(false, true);
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
@@ -288,13 +229,11 @@ public class WhenRecognisingPriorLearning
         var fixture = new WhenRecognisingPriorLearningFixture()
             .WithoutStandardOptions()
             .WithRplSummary(false, false)
-            .WithRplDataResult(true, true);
+            .WithRplCreatePriorLearningDataResponse(true, false);
 
         var result = await fixture.Sut.RecognisePriorLearningData(fixture.DataViewModel);
 
-        result.VerifyRedirectsToCohortDetailsPage(
-            fixture.DataViewModel.ProviderId,
-            fixture.DataViewModel.CohortReference);
+        result.VerifyRedirectsToSelectOptionsPage(fixture.DataViewModel.DraftApprenticeshipHashedId);
     }
 
     [TestCase, MoqAutoData]
@@ -461,12 +400,6 @@ public class WhenRecognisingPriorLearningFixture
             Mock.Of<IAuthenticationService>());
     }
 
-    internal WhenRecognisingPriorLearningFixture WithRpl2Mode()
-    {
-        AuthorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
-        return this;
-    }
-
     internal WhenRecognisingPriorLearningFixture WithoutPreviousSelection()
     {
         Apprenticeship.RecognisePriorLearning = null;
@@ -534,7 +467,7 @@ public class WhenRecognisingPriorLearningFixture
 
     internal WhenRecognisingPriorLearningFixture WithRplDataResult(bool hasStandardOptions, bool rplPriceReductionError)
     {
-        RplDataResult.HasStandardOptions = hasStandardOptions;
+        RplCreatePriorLearningDataResponse.HasStandardOptions = hasStandardOptions;
         RplDataResult.RplPriceReductionError = rplPriceReductionError;
         return this;
     }

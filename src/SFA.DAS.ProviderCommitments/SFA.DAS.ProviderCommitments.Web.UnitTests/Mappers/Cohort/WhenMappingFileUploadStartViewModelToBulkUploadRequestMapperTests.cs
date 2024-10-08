@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions.Execution;
 using SFA.DAS.Encoding;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -60,7 +59,6 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
         _encodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(2);
 
         _authorizationService = new Mock<IAuthorizationService>();
-        _authorizationService.Setup(x => x.IsAuthorizedAsync(ProviderFeature.RplExtended)).ReturnsAsync(true);
 
         _mapper = new FileUploadReviewViewModelToBulkUploadAddDraftApprenticeshipsRequestMapper(_cacheService.Object, _encodingService.Object, _outerApiService.Object, _authorizationService.Object);
 
@@ -68,15 +66,13 @@ public class WhenMappingFileUploadStartViewModelToBulkUploadRequestMapperTests
     }
 
     [Test]
-    public void CommandIsReturnedWithProviderIdAndRplDataExtended()
+    public void CommandIsReturnedWithProviderId()
     {
         using (new AssertionScope())
         {
-            _apiRequest.RplDataExtended.Should().BeTrue();
             _apiRequest.ProviderId.Should().Be(_viewModel.ProviderId);
         }
     }
-
 
     [Test]
     public void CommandIsReturnedFromCacheWithLogIdAsExpected()
