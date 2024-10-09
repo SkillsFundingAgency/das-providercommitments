@@ -7,6 +7,9 @@ using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
+using SFA.DAS.CommitmentsV2.Shared.Extensions;
+using Azure;
+using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
 {
@@ -120,7 +123,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                     PendingPriceChange = Map(data.PendingPriceChange),
                     PendingStartDateChange = MapPendingStartDateChange(data.PendingStartDateChange),
                     CanActualStartDateBeChanged = data.CanActualStartDateBeChanged,
-                    PaymentStatus = Map(data.PaymentsStatus)
+                    PaymentStatus = Map(data),
+                    LearnerStatus = data.LearnerStatus
                 };
             }
             catch (Exception e)
@@ -161,14 +165,17 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             };
         }
 
-        private static PaymentsStatus Map(GetManageApprenticeshipDetailsResponse.PaymentsStatusDetails source)
+        private static PaymentsStatus Map(GetManageApprenticeshipDetailsResponse source)
         {
-            return new PaymentsStatus
+            var paymentsStatusData = source.PaymentsStatus;
+            var paymentStatus = new PaymentsStatus
             {
-                PaymentsFrozen = source.PaymentsFrozen,
-                ReasonFrozen = source.ReasonFrozen,
-                FrozenOn = source.FrozenOn
+                Status = source.LearnerStatus == LearnerStatus.WaitingToStart || paymentsStatusData.PaymentsFrozen ? "Inactive" : "Active",
+                PaymentsFrozen = paymentsStatusData.PaymentsFrozen,
+                ReasonFrozen = paymentsStatusData.ReasonFrozen,
+                FrozenOn = paymentsStatusData.FrozenOn
             };
+            return paymentStatus;
         }
 
         private static DetailsViewModel.TriageOption CalcTriageStatus(bool hasHadDataLockSuccess, IEnumerable<GetManageApprenticeshipDetailsResponse.DataLock> dataLocks)

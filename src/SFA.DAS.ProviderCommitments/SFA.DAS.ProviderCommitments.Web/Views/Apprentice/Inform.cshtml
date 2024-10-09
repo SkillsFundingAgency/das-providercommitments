@@ -10,22 +10,22 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">What you'll need</h1>
+        <h1 class="govuk-heading-l">Change of employer</h1>
 
-        <p class="govuk-body">If an apprentice you're training needs to move to a new employer, you should:</p>
+            <p class="govuk-body">Before you change an apprentice's employer, you'll need to:</p>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>speak to the new employer to agree new training dates and price</li>
-            <li>ask the new employer to give you <a id="permission-link" class="govuk-body govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider-" target="_blank">permission</a> to move the apprentice to their apprenticeship service account</li>
+            <li>get <a id="permission-link" class="govuk-body govuk-link" href="https://help.apprenticeships.education.gov.uk/hc/en-gb/articles/360009563399-Training-provider-permissions-training-provider-" target="_blank">permissions</a> from the new employer to move the apprentice to their account</li>
+                <li>agree the new training start and planned end dates</li>
+                <li>agree the remaining costs of training</li>
+                <li>check the apprentice's details are correct</li>
         </ul>
 
-        <p class="govuk-body">Once you've agreed these details, you can change the employer.</p>
+            <p class="govuk-body">
+                If the new employer does not pay the apprenticeship levy, they will not need to reserve new funding.
+            </p>
 
-        <p class="govuk-body">Non-levy employers will not need apprenticeship funding reserved when taking on an apprentice from another employer.</p>
-
-        <a id="change-the-employer-button" class="govuk-button" href="@Url.Action("SelectEmployer", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Change the employer</a>
-
-        <p><a id="cancel-link" class="govuk-body govuk-link" href="@Url.Action("Details", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Cancel</a></p>
+        <a id="change-the-employer-button" class="govuk-button" href="@Url.Action("SelectEmployer", new { @Model.ProviderId, @Model.ApprenticeshipHashedId })">Continue</a>
 
     </div>
 </div>
