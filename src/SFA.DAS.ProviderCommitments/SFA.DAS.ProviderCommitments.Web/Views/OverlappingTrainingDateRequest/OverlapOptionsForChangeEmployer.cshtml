@@ -1,29 +1,26 @@
 ﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate
+@using SFA.DAS.CommitmentsV2.Types;
 @model OverlapOptionsForChangeEmployerViewModel
 
 @{
-    ViewData["Title"] = "This apprentice already has an existing apprenticeship record";
+    ViewBag.Title = "Planned start date overlaps with existing training";
     ViewBag.GaData.Vpv = "/unapproved/add/apprenticeship/overlap-options-change-employer";
+
+    var radioHeading = Model.Status == ApprenticeshipStatus.Stopped ? "Do you want to update a stop date?" : "Do you want to send a stop date request?";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary"/>
-        <h1 class="govuk-heading-xl">This apprentice already has an existing apprenticeship record</h1>
-        <p>The planned start date overlaps with existing training for the same apprentice.  This may be because:</p>
-        <h2 class="govuk-heading-m">An existing apprenticeship ended or completed early</h2>
+        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+        <p>The planned start date overlaps with existing training for the same apprentice.</p>
+        <p>This may be because:</p>    
         <ul class="govuk-list govuk-list--bullet">
-            <li>the employer has not updated the stop date</li>
-            <li>the employer has entered an incorrect stop date</li>
+            <li>the previous employer has not updated the stop date</li>
+            <li>this apprentice has an existing apprenticeship record that is still live</li>
         </ul>
-        
-        <p>To request a stop date you can:</p>
-        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
-            <li>send an email from the service</li>
-            <li>contact the employer, if you have their details</li>          
-        </ul>
-
+              
         <form method="post">
             <input type="hidden" asp-for="DraftApprenticeshipHashedId" value="@Model.DraftApprenticeshipHashedId"/>
             <input type="hidden" asp-for="ApprenticeshipId" value="@Model.ApprenticeshipId" />
@@ -34,7 +31,7 @@
             <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.OverlapOptions, "govuk-form-group--error")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">What would you like to do?</h3>
+                        <h3 class="govuk-fieldset__heading">@radioHeading</h3>
                     </legend>
                     
                     @Html.ValidationMessageFor(m => m.OverlapOptions, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.OverlapOptions) })
@@ -42,21 +39,21 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="overlap-option-1" name="OverlapOptions" type="radio" value="@OverlapOptions.SendStopRequest" aria-describedby="hint-previous-employer">
                             <label class="govuk-label govuk-radios__label" for="overlap-option-1">
-                                Send a stop request email from the service
+                                Yes, send a stop date request from the service
                             </label>
                             <div id="hint-previous-employer" class="govuk-hint govuk-radios__hint">
-                                This can take up to 2 weeks for the previous employer to action.
-                            </div>
-                        </div>                        
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="overlap-option-2" name="OverlapOptions" type="radio" value="@OverlapOptions.CompleteActionLater" aria-describedby="hint-details-deleted">
-                            <label class="govuk-label govuk-radios__label" for="overlap-option-2">
-                                I'll add the apprentice again later
-                            </label>
-                            <div id="hint-details-deleted" class="govuk-hint govuk-radios__hint">
-                                The details entered for this apprentice will be deleted.
+                                It can take up to 2 weeks for the previous employer to action this.
                             </div>
                         </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="overlap-option-2" name="OverlapOptions" type="radio" value="@OverlapOptions.ContactTheEmployer" aria-describedby="hint-saved-cohort">
+                            <label class="govuk-label govuk-radios__label" for="overlap-option-2">
+                                No, I’ll change the employer later
+                            </label>
+                            <div id="hint-saved-cohort" class="govuk-hint govuk-radios__hint">
+                                The details entered for this apprentice will not be saved. Go back to view apprentice details.
+                            </div>
+                        </div>                       
                     </div>
                 </fieldset>
             </div>
