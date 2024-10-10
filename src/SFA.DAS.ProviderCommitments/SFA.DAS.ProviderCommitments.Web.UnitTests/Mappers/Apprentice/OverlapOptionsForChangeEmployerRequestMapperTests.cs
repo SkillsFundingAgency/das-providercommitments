@@ -51,4 +51,12 @@ public class OverlapOptionsForChangeEmployerRequestMapperTests
 
         result.CacheKey.Should().Be(_viewModel.CacheKey);
     }
+    
+    [Test, MoqAutoData]
+    public async Task ApprenticeshipStatus_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
+
+        result.Status.Should().Be(_viewModel.Status);
+    }
 }

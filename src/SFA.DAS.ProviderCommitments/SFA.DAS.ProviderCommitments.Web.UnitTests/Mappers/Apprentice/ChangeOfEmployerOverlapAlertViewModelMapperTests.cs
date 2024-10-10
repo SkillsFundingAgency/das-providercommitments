@@ -82,6 +82,14 @@ public class ChangeOfEmployerOverlapAlertViewModelMapperTests
     }
 
     [Test]
+    public async Task ThenStatusIsMapped()
+    {
+        var result = await _fixture.Map();
+
+        result.Status.Should().Be(_fixture.getApprenticeshipResponse.Status);
+    }
+
+    [Test]
     public async Task ThenOldPriceIsMapped()
     {
         var result = await _fixture.Map();
