@@ -7,305 +7,304 @@ using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Mappers.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Cohort;
+
+[TestFixture]
+public class FileUploadMapperBaseTests
 {
-    [TestFixture]
-    public class FileUploadMapperBaseTests
+    public List<CsvRecord> CsvRecords { get; set; }
+    public List<BulkUploadAddDraftApprenticeshipRequest> Result { get; set; }
+    public FileUploadMapperBase Sut { get; set; }
+    public Fixture Fixture { get; set; }
+    public Mock<IEncodingService> EncodingService { get; set; }
+    private Mock<IOuterApiService> _outerApiService;
+    private GetCohortResult _cohortResult;
+
+    [SetUp]
+    public void Setup()
     {
-        public List<CsvRecord> CsvRecords { get; set; }
-        public List<BulkUploadAddDraftApprenticeshipRequest> Result { get; set; }
-        public FileUploadMapperBase Sut { get; set; }
-        public Fixture Fixture { get; set; }
-        public Mock<IEncodingService> EncodingService { get; set; }
-        private Mock<IOuterApiService> _outerApiService;
-        private GetCohortResult _cohortResult;
+        Fixture = new Fixture();
+        EncodingService = new Mock<IEncodingService>();
+        EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
+        EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
 
-        [SetUp]
-        public void Setup()
+        CsvRecords = Fixture.Build<CsvRecord>()
+            .With(x => x.DateOfBirth, "2000-02-02")
+            .With(x => x.StartDate, "2021-03-04")
+            .With(x => x.EndDate, "2022-04")
+            .With(x => x.TotalPrice, "1000")
+            .CreateMany(2).ToList();
+
+        _cohortResult = Fixture.Create<GetCohortResult>();
+        _outerApiService = new Mock<IOuterApiService>();
+        _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
+
+        Sut = new FileUploadMapperBase(EncodingService.Object, _outerApiService.Object);
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+    }
+
+    [Test]
+    public void VerifyUlnIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            Fixture = new Fixture();
-            EncodingService = new Mock<IEncodingService>();
-            EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.PublicAccountLegalEntityId)).Returns(() => 2);
-            EncodingService.Setup(x => x.Decode(It.IsAny<string>(), EncodingType.CohortReference)).Returns(() => 1);
-
-            CsvRecords = Fixture.Build<CsvRecord>()
-                .With(x => x.DateOfBirth, "2000-02-02")
-                .With(x => x.StartDate, "2021-03-04")
-                .With(x => x.EndDate, "2022-04")
-                .With(x => x.TotalPrice, "1000")
-                .CreateMany(2).ToList();
-
-            _cohortResult = Fixture.Create<GetCohortResult>();
-            _outerApiService = new Mock<IOuterApiService>();
-            _outerApiService.Setup(x => x.GetCohort(It.IsAny<long>())).ReturnsAsync((long cohortId) => { _cohortResult.TransferSenderId = cohortId + 1; return _cohortResult; });
-
-            Sut = new FileUploadMapperBase(EncodingService.Object, _outerApiService.Object);
-            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+            var result = Result.Where(x => x.Uln == record.ULN);
+            result.Count().Should().Be(1);
         }
+    }
 
-        [Test]
-        public void VerifyUlnIsMapped()
+    [Test]
+    public void VerifyFirstNameIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.Where(x => x.Uln == record.ULN);
-                Assert.That(result.Count(), Is.EqualTo(1));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.FirstName.Should().Be(record.GivenNames);
         }
+    }
 
-        [Test]
-        public void VerifyFirstNameIsMapped()
+    [Test]
+    public void VerifyLastNameIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.FirstName, Is.EqualTo(record.GivenNames));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.LastName.Should().Be(record.FamilyName);
         }
+    }
 
-        [Test]
-        public void VerifyLastNameIsMapped()
+    [Test]
+    public void VerifyDobIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.LastName, Is.EqualTo(record.FamilyName));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.DateOfBirthAsString.Should().Be(record.DateOfBirth);
         }
+    }
 
-        [Test]
-        public void VerifyDobIsMapped()
+    [Test]
+    public void VerifyStartDateIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.DateOfBirthAsString, Is.EqualTo(record.DateOfBirth));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.StartDateAsString.Should().Be(record.StartDate);
         }
+    }
 
-        [Test]
-        public void VerifyStartDateIsMapped()
+    [Test]
+    public void VerifyEndDateIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.StartDateAsString, Is.EqualTo(record.StartDate));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.EndDateAsString.Should().Be(record.EndDate);
         }
+    }
 
-        [Test]
-        public void VerifyEndDateIsMapped()
+    [Test]
+    public void VerifyCostIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.EndDateAsString, Is.EqualTo(record.EndDate));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.CostAsString.Should().Be(record.TotalPrice);
         }
+    }
 
-        [Test]
-        public void VerifyCostIsMapped()
+    [Test]
+    public void VerifyProviderRefIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.CostAsString, Is.EqualTo(record.TotalPrice));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.ProviderRef.Should().Be(record.ProviderRef);
         }
+    }
 
-        [Test]
-        public void VerifyProviderRefIsMapped()
+    [Test]
+    public void VerifyCourseCodeIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.ProviderRef, Is.EqualTo(record.ProviderRef));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.CourseCode.Should().Be(record.StdCode);
         }
+    }
 
-        [Test]
-        public void VerifyCourseCodeIsMapped()
+    [Test]
+    public void VerifyLegalEntityIdIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.CourseCode, Is.EqualTo(record.StdCode));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.LegalEntityId.Should().Be(2);
         }
+    }
 
-        [Test]
-        public void VerifyLegalEntityIdIsMapped()
+    [Test]
+    public void VerifyCohortIdIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.LegalEntityId, Is.EqualTo(2));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.CohortId.Should().Be(1);
         }
+    }
 
-        [Test]
-        public void VerifyCohortIdIsMapped()
+    [Test]
+    public void VerifyTransferSenderIdIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.CohortId, Is.EqualTo(1));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.TransferSenderId.Should().Be(result.CohortId + 1);
         }
+    }
 
-        [Test]
-        public void VerifyTransferSenderIdIsMapped()
+    [Test]
+    public void VerifyRecognisePriorLearningIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.TransferSenderId, Is.EqualTo((result.CohortId + 1)));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.RecognisePriorLearningAsString.Should().Be(record.RecognisePriorLearning);
         }
+    }
 
-        [Test]
-        public void VerifyRecognisePriorLearningIsMapped()
+    [Test]
+    public void VerifyDurationReducedByIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.RecognisePriorLearningAsString, Is.EqualTo(record.RecognisePriorLearning));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.DurationReducedByAsString.Should().Be(record.DurationReducedBy);
         }
+    }
 
-        [Test]
-        public void VerifyDurationReducedByIsMapped()
+    [TestCase(null, null, null)]
+    [TestCase(null, "200", "200")]
+    [TestCase(null, "0", null)]
+    [TestCase("TRUE", "200", "200")]
+    [TestCase("TRUE", "0", "0")]
+    [TestCase("FALSE", "0", "0")]
+    public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    {
+        CsvRecords = Fixture.Build<CsvRecord>()
+            .With(x => x.DateOfBirth, "2000-02-02")
+            .With(x => x.StartDate, "2021-03-04")
+            .With(x => x.EndDate, "2022-04")
+            .With(x => x.TotalPrice, "1000")
+            .With(x => x.IsDurationReducedByRPL, isDurationReducedByRpl)
+            .With(x => x.DurationReducedBy, durationReducedBy)
+            .CreateMany(2).ToList();
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
+
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.DurationReducedByAsString, Is.EqualTo(record.DurationReducedBy));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            expectedValue.Should().Be(result.DurationReducedByAsString);
         }
+    }
 
-        [TestCase(null, null, null)]
-        [TestCase(null, "200", "200")]
-        [TestCase(null, "0", null)]
-        [TestCase("TRUE", "200", "200")]
-        [TestCase("TRUE", "0", "0")]
-        [TestCase("FALSE", "0", "0")]
-        public void VerifyDurationReducedByIsMappedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    [Test]
+    public void VerifyPriceReducedByIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            CsvRecords = Fixture.Build<CsvRecord>()
-                .With(x => x.DateOfBirth, "2000-02-02")
-                .With(x => x.StartDate, "2021-03-04")
-                .With(x => x.EndDate, "2022-04")
-                .With(x => x.TotalPrice, "1000")
-                .With(x => x.IsDurationReducedByRPL, isDurationReducedByRpl)
-                .With(x => x.DurationReducedBy, durationReducedBy)
-                .CreateMany(2).ToList();
-
-            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
-
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(expectedValue, Is.EqualTo(result.DurationReducedByAsString));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.PriceReducedByAsString.Should().Be(record.PriceReducedBy);
         }
+    }
 
-        [Test]
-        public void VerifyPriceReducedByIsMapped()
+    [TestCase(" Test ", "Test")]
+    [TestCase(" Test Me ", "Test Me")]
+    [TestCase(" Test\tMe ", "Test Me")]
+    [TestCase(" \tTest\tMe\t", "Test Me")]
+    public void VerifyTabsAndSpacesAreTrimmedFromFirstName(string inputValue, string expectedResult)
+    {
+        var source = CsvRecords.First();
+        source.GivenNames = inputValue;
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+
+        var result = Result.First(x => x.Uln == source.ULN);
+
+        result.FirstName.Should().Be(expectedResult);
+    }
+
+    [TestCase(" Test ", "Test")]
+    [TestCase(" Test Me ", "Test Me")]
+    [TestCase(" Test\tMe ", "Test Me")]
+    [TestCase(" \tTest\tMe\t", "Test Me")]
+    public void VerifyTabsAndSpacesAreTrimmedFromLastName(string inputValue, string expectedResult)
+    {
+        var source = CsvRecords.First();
+        source.FamilyName = inputValue;
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
+
+        var result = Result.First(x => x.Uln == source.ULN);
+
+        result.LastName.Should().Be(expectedResult);
+    }
+
+    [Test]
+    public void VerifyIsDurationReducedByRplIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.PriceReducedByAsString, Is.EqualTo(record.PriceReducedBy));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.IsDurationReducedByRPLAsString.Should().Be(record.IsDurationReducedByRPL);
         }
+    }
 
-        [TestCase(" Test ", "Test")]
-        [TestCase(" Test Me ", "Test Me")]
-        [TestCase(" Test\tMe ", "Test Me")]
-        [TestCase(" \tTest\tMe\t", "Test Me")]
-        public void VerifyTabsAndSpacesAreTrimmedFromFirstName(string inputValue, string expectedResult)
+    [TestCase(null, null, null)]
+    [TestCase(null, "200", "TRUE")]
+    [TestCase("TRUE", "200", "TRUE")]
+    [TestCase("FALSE", "200", "FALSE")]
+    [TestCase("FALSE", null, "FALSE")]
+    [TestCase("XXX", null, "XXX")]
+    [TestCase(null, "0", "FALSE")]
+    public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
+    {
+        CsvRecords = Fixture.Build<CsvRecord>()
+            .With(x => x.DateOfBirth, "2000-02-02")
+            .With(x => x.StartDate, "2021-03-04")
+            .With(x => x.EndDate, "2022-04")
+            .With(x => x.TotalPrice, "1000")
+            .With(x=>x.IsDurationReducedByRPL, isDurationReducedByRpl)
+            .With(x=>x.DurationReducedBy, durationReducedBy)
+            .CreateMany(2).ToList();
+
+        Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
+
+        foreach (var record in CsvRecords)
         {
-            var source = CsvRecords.First();
-            source.GivenNames = inputValue;
-
-            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
-
-            var result = Result.First(x => x.Uln == source.ULN);
-
-            Assert.That(result.FirstName, Is.EqualTo(expectedResult));
+            var result = Result.First(x => x.Uln == record.ULN);
+            expectedValue.Should().Be(result.IsDurationReducedByRPLAsString);
         }
+    }
 
-        [TestCase(" Test ", "Test")]
-        [TestCase(" Test Me ", "Test Me")]
-        [TestCase(" Test\tMe ", "Test Me")]
-        [TestCase(" \tTest\tMe\t", "Test Me")]
-        public void VerifyTabsAndSpacesAreTrimmedFromLastName(string inputValue, string expectedResult)
+    [Test]
+    public void VerifyTrainingTotalHoursIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            var source = CsvRecords.First();
-            source.FamilyName = inputValue;
-
-            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, false);
-
-            var result = Result.First(x => x.Uln == source.ULN);
-
-            Assert.That(result.LastName, Is.EqualTo(expectedResult));
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.TrainingTotalHoursAsString.Should().Be(record.TrainingTotalHours);
         }
+    }
 
-        [Test]
-        public void VerifyIsDurationReducedByRplIsMapped()
+    [Test]
+    public void VerifyTrainingHoursReductionIsMapped()
+    {
+        foreach (var record in CsvRecords)
         {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.IsDurationReducedByRPLAsString, Is.EqualTo(record.IsDurationReducedByRPL));
-            }
-        }
-
-        [TestCase(null, null, null)]
-        [TestCase(null, "200", "TRUE")]
-        [TestCase("TRUE", "200", "TRUE")]
-        [TestCase("FALSE", "200", "FALSE")]
-        [TestCase("FALSE", null, "FALSE")]
-        [TestCase("XXX", null, "XXX")]
-        [TestCase(null, "0", "FALSE")]
-        public void VerifyIsDurationReducedByRplIsDefaultedCorrectlyWhenExtendedRplIsOn(string isDurationReducedByRpl, string durationReducedBy, string expectedValue)
-        {
-            CsvRecords = Fixture.Build<CsvRecord>()
-                .With(x => x.DateOfBirth, "2000-02-02")
-                .With(x => x.StartDate, "2021-03-04")
-                .With(x => x.EndDate, "2022-04")
-                .With(x => x.TotalPrice, "1000")
-                .With(x=>x.IsDurationReducedByRPL, isDurationReducedByRpl)
-                .With(x=>x.DurationReducedBy, durationReducedBy)
-                .CreateMany(2).ToList();
-
-            Result = Sut.ConvertToBulkUploadApiRequest(CsvRecords, 1, true);
-
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(expectedValue, Is.EqualTo(result.IsDurationReducedByRPLAsString));
-            }
-        }
-
-        [Test]
-        public void VerifyTrainingTotalHoursIsMapped()
-        {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.TrainingTotalHoursAsString, Is.EqualTo(record.TrainingTotalHours));
-            }
-        }
-
-        [Test]
-        public void VerifyTrainingHoursReductionIsMapped()
-        {
-            foreach (var record in CsvRecords)
-            {
-                var result = Result.First(x => x.Uln == record.ULN);
-                Assert.That(result.TrainingHoursReductionAsString, Is.EqualTo(record.TrainingHoursReduction));
-            }
+            var result = Result.First(x => x.Uln == record.ULN);
+            result.TrainingHoursReductionAsString.Should().Be(record.TrainingHoursReduction);
         }
     }
 }

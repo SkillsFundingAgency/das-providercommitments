@@ -4,64 +4,63 @@ using System;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Services.Cache;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Mappers.Apprentice;
+
+[TestFixture]
+public class ConfirmRequestMapperTests
 {
-    [TestFixture]
-    public class ConfirmRequestMapperTests
+    private ConfirmRequestMapper _mapper;
+    private PriceViewModel _source;
+    private Func<Task<ConfirmRequest>> _act;
+    private Mock<ICacheStorageService> _cacheStorage;
+    private ChangeEmployerCacheItem _cacheItem;
+
+    [SetUp]
+    public void Arrange()
     {
-        private ConfirmRequestMapper _mapper;
-        private PriceViewModel _source;
-        private Func<Task<ConfirmRequest>> _act;
-        private Mock<ICacheStorageService> _cacheStorage;
-        private ChangeEmployerCacheItem _cacheItem;
+        var fixture = new Fixture();
+        _source = fixture.Create<PriceViewModel>();
 
-        [SetUp]
-        public void Arrange()
-        {
-            var fixture = new Fixture();
-            _source = fixture.Create<PriceViewModel>();
+        _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
+        _cacheStorage = new Mock<ICacheStorageService>();
+        _cacheStorage.Setup(x =>
+                x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == _source.CacheKey)))
+            .ReturnsAsync(_cacheItem);
 
-            _cacheItem = fixture.Create<ChangeEmployerCacheItem>();
-            _cacheStorage = new Mock<ICacheStorageService>();
-            _cacheStorage.Setup(x =>
-                    x.RetrieveFromCache<ChangeEmployerCacheItem>(It.Is<Guid>(k => k == _source.CacheKey)))
-                .ReturnsAsync(_cacheItem);
+        _mapper = new ConfirmRequestMapper(Mock.Of<ILogger<ConfirmRequestMapper>>(), _cacheStorage.Object);
 
-            _mapper = new ConfirmRequestMapper(Mock.Of<ILogger<ConfirmRequestMapper>>(), _cacheStorage.Object);
+        _act = async () => await _mapper.Map(TestHelper.Clone(_source));
+    }
 
-            _act = async () => await _mapper.Map(TestHelper.Clone(_source));
-        }
+    [Test]
+    public async Task ThenProviderIdMappedCorrectly()
+    {
+        var result = await _act();
+        result.ProviderId.Should().Be(_source.ProviderId);
+    }
 
-        [Test]
-        public async Task ThenProviderIdMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.That(result.ProviderId, Is.EqualTo(_source.ProviderId));
-        }
+    [Test]
+    public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
+    {
+        var result = await _act();
+        result.ApprenticeshipHashedId.Should().Be(_source.ApprenticeshipHashedId);
+    }
 
-        [Test]
-        public async Task ThenApprenticeshipHashedIdIsMappedCorrectly()
-        {
-            var result = await _act();
-            Assert.That(result.ApprenticeshipHashedId, Is.EqualTo(_source.ApprenticeshipHashedId));
-        }
+    [Test]
+    public async Task ThenPriceIsPersistedToCache()
+    {
+        await _act();
+        _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(key => key == _cacheItem.Key),
+            It.Is<ChangeEmployerCacheItem>(i => i.Price == _source.Price),
+            It.IsAny<int>()));
+    }
 
-        [Test]
-        public async Task ThenPriceIsPersistedToCache()
-        {
-            await _act();
-            _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(key => key == _cacheItem.Key),
-                It.Is<ChangeEmployerCacheItem>(i => i.Price == _source.Price),
-                It.IsAny<int>()));
-        }
-
-        [Test]
-        public async Task ThenEmploymentPriceIsPersistedToCache()
-        {
-            await _act();
-            _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(key => key == _cacheItem.Key),
-                It.Is<ChangeEmployerCacheItem>(i => i.EmploymentPrice == _source.EmploymentPrice),
-                It.IsAny<int>()));
-        }
+    [Test]
+    public async Task ThenEmploymentPriceIsPersistedToCache()
+    {
+        await _act();
+        _cacheStorage.Verify(x => x.SaveToCache(It.Is<Guid>(key => key == _cacheItem.Key),
+            It.Is<ChangeEmployerCacheItem>(i => i.EmploymentPrice == _source.EmploymentPrice),
+            It.IsAny<int>()));
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -10,7 +9,6 @@ using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
@@ -289,7 +287,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult().WithActionName("SelectOptions");
                 var result = _actionResult as RedirectToActionResult;
-                Assert.That(result, Is.Not.Null);
+                result.Should().NotBeNull();
                 result.RouteValues["DraftApprenticeshipHashedId"].Should().Be(_draftApprenticeshipHashedId);
                 return this;
             }
@@ -312,8 +310,8 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.CohortController
             {
                 _actionResult.VerifyReturnsRedirectToActionResult();
                 var result = _actionResult as RedirectToActionResult;
-                Assert.That(result, Is.Not.Null);
-                Assert.That(result.ActionName, Is.Not.SameAs("RecognisePriorLearning"));
+                result.Should().NotBeNull();
+                result.ActionName.Should().NotBe("RecognisePriorLearning");
             }
 
             public UnapprovedControllerTestFixture VerifyOverlappingTrainingDateRequestEmailSent()
