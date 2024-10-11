@@ -58,6 +58,14 @@ public class ChangeOfEmployerOverlapAlertViewModelMapperTests
     }
 
     [Test]
+    public async Task ThenUlnIsMapped()
+    {
+        var result = await _fixture.Map();
+
+        result.Uln.Should().Be(_fixture.getApprenticeshipResponse.Uln);
+    }
+
+    [Test]
     public async Task ThenStopDateIsMapped()
     {
         var result = await _fixture.Map();

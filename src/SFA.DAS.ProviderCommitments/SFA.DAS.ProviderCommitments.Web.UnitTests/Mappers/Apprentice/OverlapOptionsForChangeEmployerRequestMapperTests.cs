@@ -15,7 +15,6 @@ public class OverlapOptionsForChangeEmployerRequestMapperTests
         var fixture = new Fixture();
 
         _viewModel = fixture.Build<ChangeOfEmployerOverlapAlertViewModel>()
-            .With(x => x.DetailsAcknowledgement, true)
             .Create();
 
         _mapper = new OverlapOptionsForChangeEmployerRequestMapper();

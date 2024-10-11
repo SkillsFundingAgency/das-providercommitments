@@ -7,7 +7,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeOfEmployerOverlapAlertViewModel
 
 @{
-    ViewBag.Title = "There may be a problem with the proposed training details";
+    ViewBag.Title = "Confirm dates before sending your request";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
     ViewBag.GaData.Org = Model.OldEmployerName;
     var hasStopDate = Model.StopDate.HasValue;
@@ -28,8 +28,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
-
+        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+        <p>
+            Check you have entered the correct training dates and the correct
+            apprentice details.
+        </p>
         @if (Model.ExceedsFundingBandCap)
         {
             <div class="govuk-inset-text das-inset-text--highlight">
@@ -48,6 +51,11 @@
                 <td class="govuk-table__cell das-table-cell-width-40">@Model.ApprenticeName</td>
                 <td class="govuk-table__cell">&nbsp;</td>
             </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Unique learner number</th>
+                    <td class="govuk-table__cell das-table-cell-width-40">@Model.Uln</td>
+                    <td class="govuk-table__cell">&nbsp;</td>
+                </tr>
             </tbody>
         </table>
         <h2 class="govuk-heading-m govuk-!-margin-top-9">Current details</h2>
@@ -162,20 +170,6 @@
     <input type="hidden" asp-for="ProviderId"/>
     <input type="hidden" asp-for="Status"/>
 
-    <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DetailsAcknowledgement, " govuk-form-group--error")">
-        <fieldset class="govuk-fieldset">
-
-            @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
-            <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
-                    <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
-                        Yes, these details are correct
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-    </div>
     <button id="confirm-button" type="Submit" class="govuk-button">
         Save and send
     </button>
