@@ -15,7 +15,6 @@ public class OverlapOptionsForChangeEmployerRequestMapperTests
         var fixture = new Fixture();
 
         _viewModel = fixture.Build<ChangeOfEmployerOverlapAlertViewModel>()
-            .With(x => x.DetailsAcknowledgement, true)
             .Create();
 
         _mapper = new OverlapOptionsForChangeEmployerRequestMapper();
@@ -50,5 +49,13 @@ public class OverlapOptionsForChangeEmployerRequestMapperTests
         var result = await _mapper.Map(_viewModel);
 
         result.CacheKey.Should().Be(_viewModel.CacheKey);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task ApprenticeshipStatus_IsMapped()
+    {
+        var result = await _mapper.Map(_viewModel);
+
+        result.Status.Should().Be(_viewModel.Status);
     }
 }
