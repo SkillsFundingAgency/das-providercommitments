@@ -2,6 +2,8 @@
 using SFA.DAS.CommitmentsV2.Shared.Extensions;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Enums;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Apprentices;
+using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 {
@@ -34,6 +36,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool HasEmployerPendingUpdate { get; set; }
         public DataLockSummaryStatus DataLockStatus { get; set; }
         public bool HasPendingChangeOfPartyRequest { get; set; }
+        public bool HasPendingOverlappingTrainingDateRequest { get; set; }
         public Party? PendingChangeOfPartyRequestWithParty { get; set; }
         public bool HasContinuation { get; set; }
         public bool ShowChangeEmployerLink => !HasContinuation && Status != ApprenticeshipStatus.Completed;
@@ -79,10 +82,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public int? PriceReducedBy { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
-
         public string IsOnFlexiPaymentPilotDisplay =>
             IsOnFlexiPaymentPilot.HasValue && IsOnFlexiPaymentPilot.Value ? "Yes" : "No";
-
         public PaymentsStatus PaymentStatus { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
@@ -94,6 +95,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string PendingStartDateChangeRoute => $"provider/{ProviderId}/ChangeOfStartDate/{ApprenticeshipHashedId}/pending";
         public bool? CanActualStartDateBeChanged { get; set; }
         public ApprenticeDetailsBanners ShowBannersFlags { get; set; } = 0;
+        public LearnerStatus LearnerStatus { get; set; }
         public enum DataLockSummaryStatus
         {
             None,
@@ -135,7 +137,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
 
     public class PaymentsStatus
     {
-        public string Status => PaymentsFrozen ? "Inactive" : "Active";
+        public string Status { get; set; }
         public bool PaymentsFrozen { get; set; }
         public string ReasonFrozen { get; set; }
         public DateTime? FrozenOn { get; set; }

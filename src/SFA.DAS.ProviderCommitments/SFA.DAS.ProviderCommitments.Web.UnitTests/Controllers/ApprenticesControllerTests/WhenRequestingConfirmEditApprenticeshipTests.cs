@@ -48,7 +48,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesContr
 
         internal static void VerifyViewResultIsReturned(IActionResult result)
         {
-            Assert.That(result, Is.InstanceOf<ViewResult>());
+            result.Should().BeAssignableTo<ViewResult>();
         }
     }
 }

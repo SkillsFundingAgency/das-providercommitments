@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentAssertions.Execution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
@@ -6,7 +7,6 @@ using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
@@ -81,8 +81,8 @@ public class WhenPostingDeleteConfirmation
 
         //Assert           
         var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-        Assert.That(flashMessage, Is.Not.Null);
-        Assert.That(flashMessage, Is.EqualTo(DraftApprenticeshipController.DraftApprenticeDeleted));
+        flashMessage.Should().NotBeNull();;
+        flashMessage.Should().Be(DraftApprenticeshipController.DraftApprenticeDeleted);
     }
 
     [Test]
@@ -110,7 +110,7 @@ public class WhenPostingDeleteConfirmation
 
         //Assert           
         var flashMessage = _sut.TempData[ITempDataDictionaryExtensions.FlashMessageTempDataKey] as string;
-        Assert.That(flashMessage, Is.Null);
+        flashMessage.Should().BeNull();
     }
 
     [Test]
@@ -124,11 +124,11 @@ public class WhenPostingDeleteConfirmation
 
         //Assert           
         var redirect = result.VerifyReturnsRedirectToActionResult();
-        Assert.Multiple(() =>
+        using (new AssertionScope())
         {
-            Assert.That(redirect.ActionName, Is.EqualTo("Details"));
-            Assert.That(redirect.ControllerName, Is.EqualTo("Cohort"));
-        });
+            redirect.ActionName.Should().Be("Details");
+            redirect.ControllerName.Should().Be("Cohort");
+        }
     }
 
     [Test]

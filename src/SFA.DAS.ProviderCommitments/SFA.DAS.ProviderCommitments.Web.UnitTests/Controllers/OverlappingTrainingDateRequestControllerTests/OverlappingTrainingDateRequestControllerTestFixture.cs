@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SFA.DAS.CommitmentsV2.Api.Client;
@@ -149,16 +150,16 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEnableEmployerRequestEmail(bool enabled)
         {
-            Assert.That(enabled, Is.EqualTo(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail));
+            enabled.Should().Be(((_actionResult as ViewResult).Model as DraftApprenticeshipOverlapOptionViewModel).EnableStopRequestEmail);
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyWhenGettingOverlappingTrainingDate_ModelIsMapped()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.That(model.DraftApprenticeshipHashedId, Is.EqualTo(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId));
+            model.DraftApprenticeshipHashedId.Should().Be(_draftApprenticeshipOverlapOptionRequest.DraftApprenticeshipHashedId);
             return this;
         }
 
@@ -171,18 +172,18 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapOptionsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionViewModel;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapOptionsForChangeEmployerViewModelViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as OverlapOptionsForChangeEmployerViewModel;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             return this;
         }
 
@@ -291,27 +292,27 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as EmployerNotifiedViewModel;
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(model, Is.Not.Null);
-                Assert.That(_employerNotifiedRequest.CohortReference, Is.EqualTo(model.CohortReference));
-                Assert.That(_employerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
-            });
+                model.Should().NotBeNull();
+               _employerNotifiedRequest.CohortReference.Should().Be(model.CohortReference);
+               _employerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
+            }
             return this;
         }
 
         public OverlappingTrainingDateRequestControllerTestFixture VerifyChangeOfEmployerNotifiedViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as ChangeOfEmployerNotifiedViewModel;
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(model, Is.Not.Null);
-                Assert.That(_changeOfEmployerNotifiedRequest.ProviderId, Is.EqualTo(model.ProviderId));
-            });
+                model.Should().NotBeNull();
+                _changeOfEmployerNotifiedRequest.ProviderId.Should().Be(model.ProviderId);
+            }
             return this;
         }
 
@@ -336,14 +337,14 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyOverlapRequestsViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapOptionWithPendingRequestViewModel;
-            Assert.Multiple(() =>
+            using (new AssertionScope())
             {
-                Assert.That(model, Is.Not.Null);
-                Assert.That(_overlapRequest.CohortReference, Is.EqualTo(model.CohortReference));
-                Assert.That(_overlapRequest.DraftApprenticeshipId, Is.EqualTo(model.DraftApprenticeshipId));
-            });
+                model.Should().NotBeNull();
+                _overlapRequest.CohortReference.Should().Be(model.CohortReference);
+                _overlapRequest.DraftApprenticeshipId.Should().Be(model.DraftApprenticeshipId);
+            }
             return this;
         }
         
@@ -356,9 +357,9 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
         public OverlappingTrainingDateRequestControllerTestFixture VerifyDraftApprenticeshipOverlapAlertViewReturned()
         {
             var viewResult = _actionResult as ViewResult;
-            Assert.That(viewResult, Is.Not.Null);
+            viewResult.Should().NotBeNull();
             var model = viewResult.Model as DraftApprenticeshipOverlapAlertViewModel;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             return this;
         }
 

@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using FluentAssertions;
 using SFA.DAS.ProviderCommitments.Web.Authorization.FeatureToggles;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Models;
-using SFA.DAS.Testing;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization.FeatureToggles;
 

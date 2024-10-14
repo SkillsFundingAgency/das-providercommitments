@@ -5,76 +5,72 @@ using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice;
 using SFA.DAS.ProviderCommitments.Web.Models.Apprentice.Edit;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ApprenticesControllerTests;
+
+public class WhenGettingChangeOption
 {
-    public class WhenGettingChangeOption
+    private GetChangeOptionFixture _fixture;
+
+    [SetUp]
+    public void Arrange() => _fixture = new GetChangeOptionFixture();
+
+    [Test]
+    public async Task ThenVerifyMapperWasCalled()
     {
-        private GetChangeOptionFixture _fixture;
+        await _fixture.ChangeOption();
 
-        [SetUp]
-        public void Arrange()
-        {
-            _fixture = new GetChangeOptionFixture();
-        }
-
-        [Test]
-        public async Task ThenVerifyMapperWasCalled()
-        {
-            await _fixture.ChangeOption();
-
-            _fixture.VerifyMapperWasCalled();
-        }
-
-        [Test]
-        public async Task ThenReturnsViewModel()
-        {
-            var result = await _fixture.ChangeOption();
-
-            _fixture.VerifyViewModel(result as ViewResult);
-        }
+        _fixture.VerifyMapperWasCalled();
     }
 
-    public class GetChangeOptionFixture
+    [Test]
+    public async Task ThenReturnsViewModel()
     {
-        private readonly ApprenticeController _controller;
-        private readonly Mock<IModelMapper> _modelMapperMock;
-        private readonly ChangeOptionRequest _request;
-        private readonly ChangeOptionViewModel _viewModel;
+        var result = await _fixture.ChangeOption();
 
-        public GetChangeOptionFixture()
-        {
-            var fixture = new Fixture();
+        _fixture.VerifyViewModel(result as ViewResult);
+    }
+}
 
-            _request = fixture.Create<ChangeOptionRequest>();
-            _viewModel = fixture.Create<ChangeOptionViewModel>();
+public class GetChangeOptionFixture
+{
+    private readonly ApprenticeController _controller;
+    private readonly Mock<IModelMapper> _modelMapperMock;
+    private readonly ChangeOptionRequest _request;
+    private readonly ChangeOptionViewModel _viewModel;
 
-            _modelMapperMock = new Mock<IModelMapper>();
-            _modelMapperMock.Setup(m => m.Map<ChangeOptionViewModel>(_request)).ReturnsAsync(_viewModel);
+    public GetChangeOptionFixture()
+    {
+        var fixture = new Fixture();
 
-            _controller = new ApprenticeController(_modelMapperMock.Object,
-                Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
-                Mock.Of<ICommitmentsApiClient>(), 
-                Mock.Of<IOuterApiService>(), 
-                Mock.Of<ICacheStorageService>());
-        }
+        _request = fixture.Create<ChangeOptionRequest>();
+        _viewModel = fixture.Create<ChangeOptionViewModel>();
 
-        public async Task<IActionResult> ChangeOption()
-        {
-            var result = await _controller.ChangeOption(_request);
+        _modelMapperMock = new Mock<IModelMapper>();
+        _modelMapperMock.Setup(m => m.Map<ChangeOptionViewModel>(_request)).ReturnsAsync(_viewModel);
 
-            return result as ViewResult;
-        }
+        _controller = new ApprenticeController(_modelMapperMock.Object,
+            Mock.Of<Interfaces.ICookieStorageService<IndexRequest>>(),
+            Mock.Of<ICommitmentsApiClient>(), 
+            Mock.Of<IOuterApiService>(), 
+            Mock.Of<ICacheStorageService>());
+    }
 
-        public void VerifyMapperWasCalled()
-        {
-            _modelMapperMock.Verify(m => m.Map<ChangeOptionViewModel>(_request));
-        }
+    public async Task<IActionResult> ChangeOption()
+    {
+        var result = await _controller.ChangeOption(_request);
 
-        public void VerifyViewModel(ViewResult viewResult)
-        {
-            var viewModel = viewResult.Model as ChangeOptionViewModel;
+        return result as ViewResult;
+    }
 
-            Assert.That(viewModel, Is.EqualTo(_viewModel));
-        }
+    public void VerifyMapperWasCalled()
+    {
+        _modelMapperMock.Verify(m => m.Map<ChangeOptionViewModel>(_request));
+    }
+
+    public void VerifyViewModel(ViewResult viewResult)
+    {
+        var viewModel = viewResult.Model as ChangeOptionViewModel;
+
+        viewModel.Should().Be(_viewModel);
     }
 }

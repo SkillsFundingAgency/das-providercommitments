@@ -1,61 +1,60 @@
-﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers
+﻿namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers;
+
+internal static class IActionResultTestExtensions
 {
-    internal static class IActionResultTestExtensions
+    public static ViewResult VerifyReturnsViewModel(this IActionResult result)
     {
-        public static ViewResult VerifyReturnsViewModel(this IActionResult result)
-        {
-            return result.VerifyResponseObjectType<ViewResult>();
-        }
+        return result.VerifyResponseObjectType<ViewResult>();
+    }
 
-        public static RedirectResult VerifyReturnsRedirect(this IActionResult result)
-        {
-            return result.VerifyResponseObjectType<RedirectResult>();
-        }
+    public static RedirectResult VerifyReturnsRedirect(this IActionResult result)
+    {
+        return result.VerifyResponseObjectType<RedirectResult>();
+    }
 
-        public static RedirectToActionResult VerifyReturnsRedirectToActionResult(this IActionResult result)
-        {
-            return result.VerifyResponseObjectType<RedirectToActionResult>();
-        }
+    public static RedirectToActionResult VerifyReturnsRedirectToActionResult(this IActionResult result)
+    {
+        return result.VerifyResponseObjectType<RedirectToActionResult>();
+    }
 
-        public static RedirectToRouteResult VerifyReturnsRedirectToRouteResult(this IActionResult result)
-        {
-            return result.VerifyResponseObjectType<RedirectToRouteResult>();
-        }
+    public static RedirectToRouteResult VerifyReturnsRedirectToRouteResult(this IActionResult result)
+    {
+        return result.VerifyResponseObjectType<RedirectToRouteResult>();
+    }
 
-        public static RedirectToActionResult WithActionName(this RedirectToActionResult result, string expectedName)
-        {
-            Assert.That(result.ActionName, Is.EqualTo(expectedName));
-            return result;
-        }
+    public static RedirectToActionResult WithActionName(this RedirectToActionResult result, string expectedName)
+    {
+        result.ActionName.Should().Be(expectedName);
+        return result;
+    }
 
-        public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
-        {
-            Assert.That(result.ControllerName, Is.EqualTo(expectedName));
-            return result;
-        }
+    public static RedirectToActionResult WithControllerName(this RedirectToActionResult result, string expectedName)
+    {
+        result.ControllerName.Should().Be(expectedName);
+        return result;
+    }
 
-        public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
-        {
-            Assert.That(result.RouteName, Is.EqualTo(expectedName));
-            return result;
-        }
+    public static RedirectToRouteResult WithRouteName(this RedirectToRouteResult result, string expectedName)
+    {
+        result.RouteName.Should().Be(expectedName);
+        return result;
+    }
 
-        private static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
-        {
-            Assert.That(result is TExpectedResponseType, Is.True, $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
-            return (TExpectedResponseType)result;
-        }
+    private static TExpectedResponseType VerifyResponseObjectType<TExpectedResponseType>(this IActionResult result) where TExpectedResponseType : IActionResult
+    {
+        (result is TExpectedResponseType).Should().BeTrue( $"Expected response type {typeof(TExpectedResponseType)} but got {result.GetType()}");
+        return (TExpectedResponseType)result;
+    }
 
-        public static RedirectResult WithUrl(this RedirectResult result, string expectedUrl)
-        {
-            Assert.That(result.Url, Is.EqualTo(expectedUrl));
-            return result;
-        }
+    public static RedirectResult WithUrl(this RedirectResult result, string expectedUrl)
+    {
+        result.Url.Should().Be(expectedUrl);
+        return result;
+    }
 
-        public static TExpectedModel WithModel<TExpectedModel>(this ViewResult result) where TExpectedModel : class
-        {
-            Assert.That(result.Model, Is.InstanceOf<TExpectedModel>());
-            return result.Model as TExpectedModel;
-        }
+    public static TExpectedModel WithModel<TExpectedModel>(this ViewResult result) where TExpectedModel : class
+    {
+        result.Model.Should().BeAssignableTo<TExpectedModel>();
+        return result.Model as TExpectedModel;
     }
 }

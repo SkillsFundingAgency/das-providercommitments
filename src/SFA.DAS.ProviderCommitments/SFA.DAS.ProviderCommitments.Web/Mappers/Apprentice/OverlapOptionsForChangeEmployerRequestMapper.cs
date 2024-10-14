@@ -14,7 +14,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                 ProviderId = source.ProviderId,
                 ApprenticeshipHashedId = source.ApprenticeshipHashedId,
                 ApprenticeshipId = source.ApprenticeshipId,
-                CacheKey = source.CacheKey
+                CacheKey = source.CacheKey,
+                Status = source.Status
             }
             );
         }

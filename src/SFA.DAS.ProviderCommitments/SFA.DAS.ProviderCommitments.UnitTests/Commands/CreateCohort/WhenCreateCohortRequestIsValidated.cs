@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using FluentValidation.Results;
 using NUnit.Framework;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
@@ -30,7 +31,7 @@ public class WhenCreateCohortRequestIsValidated
     public void ThenAValidRequestValidatesSuccessfully()
     {
         var result = _act();
-        Assert.That(result.IsValid, Is.True);
+        result.IsValid.Should().BeTrue();
     }
 
     [Test]
@@ -38,7 +39,7 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.ProviderId = 0;
         var result = _act();
-        Assert.That(result.IsValid, Is.False);
+        result.IsValid.Should().BeFalse();
     }
 
     [Test]
@@ -46,7 +47,7 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.ReservationId = Guid.Empty;
         var result = _act();
-        Assert.That(result.IsValid, Is.False);
+        result.IsValid.Should().BeFalse();
     }
 
 
@@ -55,6 +56,6 @@ public class WhenCreateCohortRequestIsValidated
     {
         _validRequest.AccountLegalEntityId = 0;
         var result = _act();
-        Assert.That(result.IsValid, Is.False);
+        result.IsValid.Should().BeFalse();
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;
@@ -39,7 +40,10 @@ public class WhenCreateCohortRequestIsHandled
     public void ThenIfTheRequestIsInvalidThenAnExceptionIsThrown()
     {
         _fixture.SetupValidationFailure();
-        Assert.ThrowsAsync<ValidationException>(() => _fixture.Act());
+        
+       var action = () => _fixture.Act();
+       
+       action.Should().ThrowAsync<ValidationException>();
     }
 
     [Test]
@@ -201,13 +205,13 @@ public class WhenCreateCohortRequestIsHandled
 
         public CreateCohortHandlerFixture VerifyCohortIdWasReturned()
         {
-            Assert.That(_result.CohortId, Is.EqualTo(_apiResponse.CohortId));
+            _result.CohortId.Should().Be(_apiResponse.CohortId);
             return this;
         }
             
         public CreateCohortHandlerFixture VerifyCohortReferenceWasReturned()
         {
-            Assert.That(_result.CohortReference, Is.EqualTo(_apiResponse.CohortReference));
+            _result.CohortReference.Should().Be(_apiResponse.CohortReference);
             return this;
         }
 
@@ -215,11 +219,11 @@ public class WhenCreateCohortRequestIsHandled
         {
             if (hasOptions)
             {
-                Assert.That(_result.DraftApprenticeshipId, Is.Not.Null);    
+                _result.DraftApprenticeshipId.Should().NotBeNull();    
             }
             else
             {
-                Assert.That(_result.DraftApprenticeshipId, Is.Null);
+                _result.DraftApprenticeshipId.Should().BeNull();
             }
                 
             return this;

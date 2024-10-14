@@ -96,7 +96,7 @@ public class WhenAddingServicesToTheContainer
         var provider = services.BuildServiceProvider();
         var type = provider.GetService(toResolve);
 
-        Assert.That(type, Is.Not.Null);
+        type.Should().NotBeNull();
     }
 
     private static void SetupServiceCollection(IServiceCollection services)
