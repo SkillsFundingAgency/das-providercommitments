@@ -7,7 +7,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Validators.FileUpload;
 public class FileUploadValidationHelper
 {
     private readonly BulkUploadFileValidationConfiguration _csvConfiguration;
-    private const int EXTENDEDRPLCOLUMNCOUNT = 19;
+    private const int EXTENDEDRPLCOLUMNCOUNT = 22;
 
     public FileUploadValidationHelper(BulkUploadFileValidationConfiguration config)
     {
@@ -115,7 +115,7 @@ public class FileUploadValidationHelper
             return false;
         }
 
-        return firstlineData.Length != EXTENDEDRPLCOLUMNCOUNT || BulkUploadFileRequirements.IsRplExtendedUpload(firstlineData);
+        return firstlineData.Length != EXTENDEDRPLCOLUMNCOUNT;
     }
 
     private static (string[] firstlineData, int rowCount) ReadFile(IFormFile file)

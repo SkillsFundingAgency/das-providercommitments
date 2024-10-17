@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             _outerApiService = outerApiService;
         }
 
-        public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId, bool extendedRpl)
+        public List<BulkUploadAddDraftApprenticeshipRequest> ConvertToBulkUploadApiRequest(List<CsvRecord> csvRecords, long providerId)
         {
             return csvRecords.Select((csvRecord, index) =>
             {
@@ -44,21 +44,16 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     RecognisePriorLearningAsString = csvRecord.RecognisePriorLearning,
                     TrainingTotalHoursAsString = csvRecord.TrainingTotalHours,
                     TrainingHoursReductionAsString = csvRecord.TrainingHoursReduction,
-                    IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(csvRecord, extendedRpl),
-                    DurationReducedByAsString = BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(csvRecord, extendedRpl),
+                    IsDurationReducedByRPLAsString = DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(csvRecord),
+                    DurationReducedByAsString = BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(csvRecord),
                     PriceReducedByAsString = csvRecord.PriceReducedBy,
                 };
 
             }).ToList();
         }
 
-        private static string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord, bool extendedRpl)
+        private static string DefaultIsDurationReducedByRplToAppropriateValueIfNotSetBasedOnDurationReducedByValue(CsvRecord csvRecord)
         {
-            if (!extendedRpl)
-            {
-                return csvRecord.IsDurationReducedByRPL;
-            }
-
             if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
             {
                 return csvRecord.IsDurationReducedByRPL;
@@ -77,13 +72,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             return null;
         }
 
-        private static string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord, bool extendedRpl)
+        private static string BlankDurationReducedByIfItsSetToZeroAndIsDurationReducedByRplIsNotSet(CsvRecord csvRecord)
         {
-            if (!extendedRpl)
-            {
-                return csvRecord.DurationReducedBy;
-            }
-
             if (!string.IsNullOrWhiteSpace(csvRecord.IsDurationReducedByRPL))
             {
                 return csvRecord.DurationReducedBy;

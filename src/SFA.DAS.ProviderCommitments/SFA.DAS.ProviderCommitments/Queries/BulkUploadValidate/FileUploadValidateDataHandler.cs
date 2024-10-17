@@ -1,6 +1,5 @@
 ﻿using System;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.ErrorHandling;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
@@ -29,7 +28,6 @@ namespace SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate
            
             var apiRequest = await _modelMapper.Map<BulkUploadValidateApimRequest>(request);
             apiRequest.FileUploadLogId = await _client.CreateFileUploadLog(request.ProviderId, request.Attachment, request.CsvRecords);
-            apiRequest.RplDataExtended = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
             try
             {
                 await _client.ValidateBulkUploadRequest(apiRequest);
