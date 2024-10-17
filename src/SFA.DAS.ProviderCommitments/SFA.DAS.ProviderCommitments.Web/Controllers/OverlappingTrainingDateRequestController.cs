@@ -50,7 +50,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers
                 ApprenticeshipId = request.ApprenticeshipId,
                 ApprenticeshipHashedId = request.ApprenticeshipHashedId,
                 ProviderId = request.ProviderId,
-                CacheKey = request.CacheKey
+                CacheKey = request.CacheKey,
+                Status = request.Status
             };
 
             return View(viewModel);

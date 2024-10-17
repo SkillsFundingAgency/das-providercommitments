@@ -54,6 +54,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                         EncodingType.PublicAccountLegalEntityId),
                     OldEmployerName = data.Apprenticeship.EmployerName,
                     ApprenticeName = $"{data.Apprenticeship.FirstName} {data.Apprenticeship.LastName}",
+                    Uln = data.Apprenticeship.Uln,
                     StopDate = data.Apprenticeship.StopDate,
                     OldStartDate = data.Apprenticeship.StartDate.Value,
                     OldEndDate = data.Apprenticeship.EndDate,
@@ -71,6 +72,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                         (cacheItem.SkippedDeliveryModelSelection && (int)cacheItem.DeliveryModel !=
                                             (int)data.Apprenticeship.DeliveryModel),
                     ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
+                    Status = data.Apprenticeship.Status,
                     CacheKey = source.CacheKey
                 };
             }

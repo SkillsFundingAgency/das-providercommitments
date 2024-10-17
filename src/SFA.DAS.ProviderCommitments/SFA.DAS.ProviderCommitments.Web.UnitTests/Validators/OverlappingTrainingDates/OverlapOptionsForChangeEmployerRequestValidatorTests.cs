@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using FluentValidation.TestHelper;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.ProviderCommitments.Web.Models.OveralppingTrainingDate;
 using SFA.DAS.ProviderCommitments.Web.Validators.OverlappingTrainingDate;
 
@@ -15,6 +16,15 @@ public class OverlapOptionsForChangeEmployerRequestValidatorTests
         var request = new OverlapOptionsForChangeEmployerRequest { ProviderId = providerId };
 
         AssertValidationResult(x => x.ProviderId, request, expectedValid);
+    }
+
+    [TestCase(ApprenticeshipStatus.Live, true)]
+    [TestCase(ApprenticeshipStatus.Stopped, true)]
+    public void ThenStatusIsValidated(ApprenticeshipStatus status, bool expectedValid)
+    {
+        var request = new OverlapOptionsForChangeEmployerRequest { Status = status };
+
+        AssertValidationResult(x => x.Status, request, expectedValid);
     }
 
     [TestCase("", false)]
