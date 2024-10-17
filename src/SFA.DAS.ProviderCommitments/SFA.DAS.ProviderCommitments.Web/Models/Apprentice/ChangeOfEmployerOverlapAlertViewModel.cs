@@ -13,11 +13,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public string ApprenticeshipHashedId { get; set; }
         public long ApprenticeshipId { get; set; }
         public DeliveryModel DeliveryModel { get; set; }
-
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm these details are correct")]
-        public bool DetailsAcknowledgement { get; set; }
-
         public string ApprenticeName { get; set; }
+        public string Uln { get; set; }
         public string OldEmployerName { get; set; }
         public DateTime OldStartDate { get; set; }
         public DateTime OldEndDate { get; set; }
@@ -66,5 +63,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Apprentice
         public bool ShowDeliveryModel { get; set; }
         public bool ShowDeliveryModelChangeLink { get; set; }
         public CommitmentsV2.Types.DeliveryModel OldDeliveryModel { get; set; }
+        public CommitmentsV2.Types.ApprenticeshipStatus Status { get; set; }
     }
 }
