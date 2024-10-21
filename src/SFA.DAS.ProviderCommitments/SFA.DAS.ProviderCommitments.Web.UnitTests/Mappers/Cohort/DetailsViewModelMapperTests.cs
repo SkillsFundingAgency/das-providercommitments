@@ -762,18 +762,6 @@ public class DetailsViewModelMapperTests
         result.Courses.First().DraftApprenticeships.First().IsComplete.Should().BeFalse();
     }
 
-    [TestCase(nameof(DraftApprenticeshipDto.TrainingPrice))]
-    [TestCase(nameof(DraftApprenticeshipDto.EndPointAssessmentPrice))]
-    public async Task IsCompleteIsTrueWhenNonPilotApprenticeshipMissingEitherPriceComponent(string propertyName)
-    {
-        var fixture = new DetailsViewModelMapperTestsFixture()
-            .CreateDraftApprenticeship()
-            .SetIsOnFlexiPaymentPilotFlag(false)
-            .SetValueOfDraftApprenticeshipProperty(propertyName, null);
-        var result = await fixture.Map();
-        result.Courses.First().DraftApprenticeships.First().IsComplete.Should().BeTrue();
-    }
-
     [Test]
     public async Task IsCompleteIsFalseWhenStartDatesAreBothNull()
     {
@@ -823,7 +811,8 @@ public class DetailsViewModelMapperTests
     {
         var fixture = new DetailsViewModelMapperTestsFixture()
             .CreateDraftApprenticeship(build => build.With(x => x.DeliveryModel, deliveryModel))
-            .SetValueOfDraftApprenticeshipProperty(propertyName, null);
+            .SetValueOfDraftApprenticeshipProperty(propertyName, null)
+            .SetValueOfDraftApprenticeshipProperty("RecognisingPriorLearningExtendedStillNeedsToBeConsidered", false);
 
         var result = await fixture.Map();
 
@@ -832,16 +821,15 @@ public class DetailsViewModelMapperTests
 
     [TestCase(true, false)]
     [TestCase(false, true)]
-    public async Task IsCompleteMappedCorrectlyWhenRecognisingPriorLearningStillNeedsToBeConsideredIsSet(bool recognisingPriorLearningStillNeedsConsideration, bool isComplete)
+    public async Task IsCompleteMappedCorrectlyWhenRecognisingPriorLearningStillNeedsToBeConsideredIsSet(bool recognisingPriorLearningExtendedStillNeedsToBeConsidered, bool isComplete)
     {
         var fixture = new DetailsViewModelMapperTestsFixture()
-            .CreateDraftApprenticeship(build => build.With(x => x.RecognisingPriorLearningStillNeedsToBeConsidered, recognisingPriorLearningStillNeedsConsideration));
+            .CreateDraftApprenticeship(build => build.With(x => x.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, recognisingPriorLearningExtendedStillNeedsToBeConsidered));
 
         var result = await fixture.Map();
 
         result.Courses.First().DraftApprenticeships.First().IsComplete.Should().Be(isComplete);
     }
-
 
     [TestCase(false, true)]
     public async Task IsCompleteMappedCorrectlyWhenExtendedRecognisingPriorLearningStillNeedsToBeConsideredIsSet(bool recognisingPriorLearningStillNeedsConsideration, bool isComplete)

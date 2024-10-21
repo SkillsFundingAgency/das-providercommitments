@@ -6,7 +6,6 @@ using SFA.DAS.Http;
 using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
@@ -14,7 +13,6 @@ using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
 using System.Net;
-using System.Text.Json;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
@@ -264,19 +262,9 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                 return false;
             }
 
-            if (_authorizationService.IsAuthorized(ProviderFeature.RplExtended))
+            if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
             {
-                if (draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered)
-                {
-                    return false;
-                }
+                return false;
             }
 
             if (draftApprenticeship.IsOnFlexiPaymentPilot.GetValueOrDefault()
