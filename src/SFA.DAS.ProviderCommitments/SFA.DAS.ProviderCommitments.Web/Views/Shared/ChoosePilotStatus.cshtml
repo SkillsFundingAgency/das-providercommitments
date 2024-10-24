@@ -1,7 +1,7 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.ChoosePilotStatusViewModel
 
 @{
-    ViewData["Title"] = "Will this apprentice be part of the Simplified Payments pilot?";
+    ViewData["Title"] = "Will this apprentice be part of the Payments Simplification private Beta?";
 }
 
 <div class="govuk-grid-row">
@@ -15,12 +15,12 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                             <h1 class="govuk-fieldset__heading">
-                                Will this apprentice be part of the Simplified Payments pilot?
+                                Will this apprentice be part of the Payments Simplification private Beta?
                             </h1>
                         </legend>
                         
                         <div class="govuk-hint">
-                            To be eligible for the simplified payment pilot, an apprenticeship must start after 13 March 2023
+                            To be eligible for the Payments Simplification private Beta, an apprenticeship must start after 1 November 2024.
                         </div>
                         
                         @Html.ValidationMessageFor(m => m.Selection, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Selection) })
