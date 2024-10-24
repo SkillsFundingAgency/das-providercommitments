@@ -8,8 +8,8 @@
 		</h2>
 	</div>
 	<div class="govuk-notification-banner__content">
-		<p class="govuk-notification-banner__heading"> Employer has set provider payments to Inactive</p>
-		<p class="govuk-body">Payments were set to inactive on the @Model.PaymentStatus.FrozenOn.Value.ToGdsFormat().</p>
+		<p class="govuk-notification-banner__heading"> Employer has set provider payments to "Withheld"</p>
+		<p class="govuk-body">Payments were set to withheld on the @Model.PaymentStatus.FrozenOn.Value.ToGdsFormat().</p>
 		@if(!string.IsNullOrEmpty(Model.PaymentStatus.ReasonFrozen))
         {
 			<p class="govuk-body">Reason: @Model.PaymentStatus.ReasonFrozen</p>

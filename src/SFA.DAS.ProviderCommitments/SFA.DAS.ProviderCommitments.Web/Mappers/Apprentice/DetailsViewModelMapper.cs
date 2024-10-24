@@ -170,7 +170,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
             var paymentsStatusData = source.PaymentsStatus;
             var paymentStatus = new PaymentsStatus
             {
-                Status = source.LearnerStatus == LearnerStatus.WaitingToStart || paymentsStatusData.PaymentsFrozen ? "Inactive" : "Active",
+                Status = source.PaymentsStatus.PaymentsFrozen ? "Withheld" : source.LearnerStatus == LearnerStatus.WaitingToStart ? "Inactive" : "Active",
                 PaymentsFrozen = paymentsStatusData.PaymentsFrozen,
                 ReasonFrozen = paymentsStatusData.ReasonFrozen,
                 FrozenOn = paymentsStatusData.FrozenOn
