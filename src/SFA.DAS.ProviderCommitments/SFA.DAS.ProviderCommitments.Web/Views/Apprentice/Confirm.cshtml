@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.CommitmentsV2.Shared.Extensions
+﻿@using Microsoft.AspNetCore.Routing
+@using SFA.DAS.CommitmentsV2.Shared.Extensions
 @using SFA.DAS.ProviderCommitments.Extensions
 @using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types
 @using SFA.DAS.ProviderCommitments.Web.Extensions
@@ -15,7 +16,9 @@
     var changeData = new
     {
         CacheKey = Model.CacheKey,
-        IsEdit = true
+        IsEdit = true,
+        Model.ApprenticeshipHashedId,
+        ProviderId = Context.GetRouteValue("providerId")
     };
     
     string DisplayDate(DateTime value) => $"{value:MMMM yyyy}";

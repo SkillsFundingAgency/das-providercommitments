@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions.Execution;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
+using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
@@ -687,20 +689,24 @@ public class DetailsViewModelMapperTests
         }
     }
 
-    [Test]
-    public async Task And_PaymentsAreFrozen_ThenPaymentStatusIsMappedCorrectly()
+    [TestCase(false, true, "Inactive")]
+    [TestCase(true, false, "Withheld")]
+    [TestCase(false, false, "Active")]
+    [TestCase(true, true, "Withheld")]
+    public async Task ThenPaymentStatusIsMappedCorrectly(bool paymentsFrozen, bool waitingToStart, string expectedStatus)
     {
-        _fixture.WithFrozenPayments();
+        _fixture.WithPaymentsFrozenSetTo(paymentsFrozen);
+        _fixture.WithLearnerStatusSetTo(waitingToStart ? LearnerStatus.WaitingToStart : LearnerStatus.InLearning);
 
         await _fixture.Map();
 
-        _fixture.Result.PaymentStatus.Status.Should().Be("Inactive");
+        _fixture.Result.PaymentStatus.Status.Should().Be(expectedStatus);
     }
 
     [Test]
     public async Task And_PaymentsAreFrozen_ThenPaymentFrozenOnIsMappedCorrectly()
     {
-        _fixture.WithFrozenPayments();
+        _fixture.WithPaymentsFrozenSetTo(true);
 
         await _fixture.Map();
 
@@ -710,7 +716,7 @@ public class DetailsViewModelMapperTests
     [Test]
     public async Task And_PaymentsAreFrozen_ThenPaymentsFrozenIsMappedCorrectly()
     {
-        _fixture.WithFrozenPayments();
+        _fixture.WithPaymentsFrozenSetTo(true);
 
         await _fixture.Map();
 
@@ -720,21 +726,11 @@ public class DetailsViewModelMapperTests
     [Test]
     public async Task And_PaymentsAreFrozen_ThenReasonFrozenOnIsMappedCorrectly()
     {
-        _fixture.WithFrozenPayments();
+        _fixture.WithPaymentsFrozenSetTo(true);
 
         await _fixture.Map();
 
         _fixture.Result.PaymentStatus.ReasonFrozen.Should().Be(_fixture.ApiResponse.PaymentsStatus.ReasonFrozen);
-    }
-
-    [Test]
-    public async Task And_PaymentsAreNotFrozen_ThenPaymentStatusIsMappedCorrectly()
-    {
-        _fixture.WithoutFrozenPayments();
-
-        await _fixture.Map();
-
-        _fixture.Result.PaymentStatus.Status.Should().Be("Active");
     }
 
     public class DetailsViewModelMapperFixture
@@ -1133,15 +1129,15 @@ public class DetailsViewModelMapperTests
             return this;
         }
 
-        public DetailsViewModelMapperFixture WithFrozenPayments()
+        public DetailsViewModelMapperFixture WithPaymentsFrozenSetTo(bool paymentsFrozen)
         {
-            ApiResponse.PaymentsStatus.PaymentsFrozen = true;
+            ApiResponse.PaymentsStatus.PaymentsFrozen = paymentsFrozen;
             return this;
         }
 
-        public DetailsViewModelMapperFixture WithoutFrozenPayments()
+        public DetailsViewModelMapperFixture WithLearnerStatusSetTo(LearnerStatus learnerStatus)
         {
-            ApiResponse.PaymentsStatus.PaymentsFrozen = false;
+            ApiResponse.LearnerStatus = learnerStatus;
             return this;
         }
     }
