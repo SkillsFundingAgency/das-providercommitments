@@ -37,11 +37,18 @@
                 To do this change you need to contact us at <a class="govuk-link" href="mailto:payments.beta@education.gov.uk">payments.beta@education.gov.uk</a>.
                 We aim to respond within 5 working days.
             </div>
-        }
+        }        
 
         @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
-            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
+            @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                <partial name="DetailsPartials/_HelpWithPaymentsPilot" />
+            }
+            else
+            {
+                <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
+            }
         }
 
         @if (Model.ConfirmationStatus == ConfirmationStatus.Overdue)
