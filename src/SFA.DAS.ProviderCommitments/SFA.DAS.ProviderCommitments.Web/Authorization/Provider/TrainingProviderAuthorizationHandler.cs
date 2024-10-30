@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 
@@ -18,16 +19,8 @@ public interface ITrainingProviderAuthorizationHandler
 }
 
 ///<inheritdoc cref="ITrainingProviderAuthorizationHandler"/>
-public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizationHandler
+public class TrainingProviderAuthorizationHandler(IOuterApiService outerApiService, ICacheStorageService cacheStorageService) : ITrainingProviderAuthorizationHandler
 {
-    private readonly IOuterApiService _outerApiService;
-
-    public TrainingProviderAuthorizationHandler(
-        IOuterApiService outerApiService)
-    {
-        _outerApiService = outerApiService;
-    }
-
     public async Task<bool> IsProviderAuthorized(AuthorizationHandlerContext context)
     {
         var ukprn = GetProviderId(context);
@@ -38,7 +31,15 @@ public class TrainingProviderAuthorizationHandler : ITrainingProviderAuthorizati
             return false;
         }
 
-        var providerStatusDetails = await _outerApiService.GetProviderStatus(ukprn);
+        var providerStatusDetails = await cacheStorageService.SafeRetrieveFromCache<ProviderAccountResponse>(nameof(ProviderAccountResponse));
+        if (providerStatusDetails is null)
+        {
+            providerStatusDetails = await outerApiService.GetProviderStatus(ukprn);
+            if (providerStatusDetails != null)
+            {
+                await cacheStorageService.SaveToCache(nameof(ProviderAccountResponse), providerStatusDetails, 1);
+            }
+        }
 
         // Condition to check if the Provider Details has permission to access Apprenticeship Services based on the property value "CanAccessApprenticeshipService" set to True.
         return providerStatusDetails is { CanAccessService: true };
