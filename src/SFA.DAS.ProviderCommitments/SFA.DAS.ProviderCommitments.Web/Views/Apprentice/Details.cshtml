@@ -32,16 +32,22 @@
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
         {
-            <div class="govuk-inset-text">                
-                This apprentice is part of the Payments Simplification private Beta, which does not yet support changes to employer.
-                To do this change you need to contact us at <a class="govuk-link" href="mailto:payments.beta@education.gov.uk">payments.beta@education.gov.uk</a>.
+            <div class="govuk-inset-text">                                
+                This apprentice is part of the Payments Simplification private Beta. To change these details, you need to contact <a class="govuk-link" href="mailto:payments.beta@education.gov.uk">payments.beta@education.gov.uk</a>.
                 We aim to respond within 5 working days.
             </div>
-        }
+        }        
 
         @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
         {
-            <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
+            @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
+            {
+                <partial name="DetailsPartials/_HelpWithPaymentsPilot" />
+            }
+            else
+            {
+                <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
+            }
         }
 
         @if (Model.ConfirmationStatus == ConfirmationStatus.Overdue)
