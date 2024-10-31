@@ -2,6 +2,7 @@
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
+using SFA.DAS.ProviderCommitments.Web.Filters;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
 
@@ -30,14 +31,15 @@ public class TrainingProviderAuthorizationHandler(IOuterApiService outerApiServi
         {
             return false;
         }
+        var cacheKey = string.Format(CacheKeyConstants.ProviderAccountResponseKey, ukprn);
 
-        var providerStatusDetails = await cacheStorageService.SafeRetrieveFromCache<ProviderAccountResponse>(nameof(ProviderAccountResponse));
+        var providerStatusDetails = await cacheStorageService.SafeRetrieveFromCache<ProviderAccountResponse>(cacheKey);
         if (providerStatusDetails is null)
         {
             providerStatusDetails = await outerApiService.GetProviderStatus(ukprn);
             if (providerStatusDetails != null)
             {
-                await cacheStorageService.SaveToCache(nameof(ProviderAccountResponse), providerStatusDetails, 1);
+                await cacheStorageService.SaveToCache(cacheKey, providerStatusDetails, 1);
             }
         }
 
