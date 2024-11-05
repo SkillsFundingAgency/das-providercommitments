@@ -7,49 +7,49 @@
 }
 
 <div class="govuk-grid-row">
-   <div class="govuk-grid-column-two-thirds">
-      <partial name="_ValidationSummary" />
-      <div class="govuk-panel govuk-panel--confirmation">
-         <h1 class="govuk-panel__title">
-           Stop date request has been sent
-         </h1>
-      </div>
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ValidationSummary"/>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Stop date request has been sent
+            </h1>
+        </div>
         <p>You have chosen a stop date request email to be sent to the previous employer.</p>
-      <h2 class="govuk-heading-m">What happens next</h2>
-      <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
-         <li>
-             an email has been sent to the previous employer requesting they update their records for this apprentice; they are given 2 weeks to action this
-         </li>
-         <li>we will send a reminder to the previous employer in 1 week</li>
-         <li>you will be notified once the employer has amended or rejected changes for this apprentice</li>
-         <li>you cannot approve this apprentice request until the overlapping date has been resolved</li>
-      </ul>
-      <form method="post">
-         <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-               <legend class="govuk-fieldset__legend govuk-fieldset__legend--m ">
-                  What do you want to do next?
-               </legend>
-               @Html.ValidationMessageFor(m => m.NextAction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.NextAction) })
-               <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-                  <div class="govuk-radios__item">
-                     <input class="govuk-radios__input" id="radio-view-all-cohorts" name="NextAction" type="radio" value="@NextAction.ViewAllCohorts" data-aria-controls="conditional-approve">
-                     <label class="govuk-label govuk-radios__label" for="radio-view-all-cohorts">
-                         View apprentice details
-                     </label>
-                  </div>                            
-                  <div class="govuk-radios__item">
-                     <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ViewDashBoard" data-aria-controls="conditional-approve">
-                     <label class="govuk-label govuk-radios__label" for="radio-view-dashboard">
-                         Return to dashboard
-                     </label>
-                  </div>
-               </div>
-            </fieldset>
-         </div>
-         <button class="govuk-button" data-module="govuk-button" type="submit">
-          Continue
-         </button>
-      </form>
-   </div>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
+            <li>
+                an email has been sent to the previous employer requesting they update their records for this apprentice; they are given 2 weeks to action this
+            </li>
+            <li>we will send a reminder to the previous employer in 1 week</li>
+            <li>you will be notified once the employer has amended or rejected changes for this apprentice</li>
+            <li>you cannot approve this apprentice request until the overlapping date has been resolved</li>
+        </ul>
+        <form method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m ">
+                        What do you want to do next?
+                    </legend>
+                    @Html.ValidationMessageFor(m => m.NextAction, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.NextAction) })
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radio-view-all-cohorts" name="NextAction" type="radio" value="@NextAction.ViewAllCohorts" data-aria-controls="conditional-approve">
+                            <label class="govuk-label govuk-radios__label" for="radio-view-all-cohorts">
+                                View apprentice details
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radio-view-dashboard" name="NextAction" type="radio" value="@NextAction.ViewDashBoard" data-aria-controls="conditional-approve">
+                            <label class="govuk-label govuk-radios__label" for="radio-view-dashboard">
+                                Return to dashboard
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <button class="govuk-button" data-module="govuk-button" type="submit">
+                Continue
+            </button>
+        </form>
+    </div>
 </div>
