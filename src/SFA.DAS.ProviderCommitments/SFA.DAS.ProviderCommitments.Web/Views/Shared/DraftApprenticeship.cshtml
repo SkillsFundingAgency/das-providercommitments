@@ -230,7 +230,7 @@ else
     </dl>
 }
 
-<h1 class="govuk-heading-l  govuk-!-margin-top-9">Apprentice training details</h1>
+<h2 class="govuk-heading-l govuk-!-margin-top-9">Apprentice training dates</h2>
 
 @if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
 {
@@ -362,6 +362,31 @@ else
         </fieldset>
     </div>
 }
+
+<h2 class="govuk-heading-l govuk-!-margin-top-9">Apprenticeship price</h2>
+
+<p class="govuk-body">
+    The total apprenticeship price covers training and end-point assessment costs, calculated automatically from your figures.
+</p>
+
+<details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            What to do if you don't know the end-point assessment price
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        <p>
+            If you haven't selected an end-point assessment organisation (EPAO) or finalised the contract, you can enter a nominal value of £1 for the end-point assessment.
+            <br />
+            Adjust the training price to reflect this. For example, if training costs £9,000, enter £8,999 for training and £1 for the end-point assessment.
+            <br />
+            You can update both prices during the apprenticeship once the end-point assessment price is confirmed.
+            <br />
+            Any increase in the total price will need employer approval.
+        </p>
+    </div>
+</details>
 
 @if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
 {
