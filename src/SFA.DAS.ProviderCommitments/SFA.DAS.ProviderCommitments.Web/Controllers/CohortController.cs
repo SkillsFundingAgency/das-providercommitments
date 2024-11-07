@@ -6,7 +6,6 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
-using SFA.DAS.ProviderCommitments.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -492,24 +491,13 @@ public class CohortController : Controller
     [ServiceFilter(typeof(HandleBulkUploadValidationErrorsAttribute))]
     public async Task<IActionResult> FileUploadReview(FileUploadReviewViewModel viewModel)
     {
-        if (viewModel.SelectedOption == FileUploadReviewOption.ApproveAndSend)
-        {
-            var approveApiRequest =
-                await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-            var approvedResponse =
-                await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
-            TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
-            return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
-        }
-
         switch (viewModel.SelectedOption)
         {
-            // TODO re-add this route when the Add/Approve feature is turned back on
-            //case FileUploadReviewOption.ApproveAndSend:
-            //    var approveApiRequest = await _modelMapper.Map<Infrastructure.OuterApi.Requests.BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
-            //    var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
-            //    TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
-            //    return RedirectToAction(nameof(FileUploadSuccess), viewModel.ProviderId);
+            case FileUploadReviewOption.ApproveAndSend:
+                var approveApiRequest = await _modelMapper.Map<BulkUploadAddAndApproveDraftApprenticeshipsRequest>(viewModel);
+                var approvedResponse = await _outerApiService.BulkUploadAddAndApproveDraftApprenticeships(approveApiRequest);
+                TempData.Put(Constants.BulkUpload.ApprovedApprenticeshipResponse, approvedResponse);
+                return RedirectToAction(nameof(FileUploadSuccess), new { viewModel.ProviderId });
 
             case FileUploadReviewOption.SaveButDontSend:
                 var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
@@ -682,7 +670,6 @@ public class CohortController : Controller
     private async Task<long> ValidateBulkUploadData(long providerId, IFormFile attachment)
     {
         var bulkValidate = new FileUploadValidateDataRequest { Attachment = attachment, ProviderId = providerId };
-        bulkValidate.RplDataExtended = await _authorizationService.IsAuthorizedAsync(ProviderFeature.RplExtended);
         var response = await _mediator.Send(bulkValidate);
         return response.LogId;
     }

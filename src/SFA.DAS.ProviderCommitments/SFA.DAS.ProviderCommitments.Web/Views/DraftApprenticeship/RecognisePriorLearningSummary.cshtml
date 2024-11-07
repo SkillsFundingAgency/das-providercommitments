@@ -1,4 +1,5 @@
 ﻿@model SFA.DAS.ProviderCommitments.Web.Models.PriorLearningSummaryViewModel
+@using Microsoft.AspNetCore.Routing
 @using SFA.DAS.ProviderCommitments.Web.RouteValues;
 @using SFA.DAS.ProviderCommitments.Interfaces
 @inject IAuthorizationService AuthorizationService
@@ -7,6 +8,13 @@
     ViewData["Title"] = "Check your recognised prior learning";
     ViewBag.ValidationOrder = "";
     ViewBag.GaData.Vpv = "/unapproved/apprenticeship/prior-learning-summary";
+   
+    var routeData = new
+    {
+        Model.CohortReference,
+        Model.ProviderId,
+        Model.DraftApprenticeshipHashedId
+    };
 }
 
 <div class="govuk-grid-row">
@@ -50,7 +58,7 @@
                         @Model.TrainingTotalHours.GetValueOrDefault().ToString("N0") hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData, routeData)">
                             Change
                         </a>
                     </dd>
@@ -63,7 +71,7 @@
                         @Model.DurationReducedByHours.GetValueOrDefault().ToString("N0") hours
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData, routeData)">
                             Change
                         </a>
                     </dd>
@@ -76,7 +84,7 @@
                         £@Model.PriceReducedBy.GetValueOrDefault().ToString("N0")
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">
+                        <a class="govuk-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData, routeData)">
                             Change
                         </a>
                     </dd>
@@ -136,5 +144,5 @@
 
 @section breadcrumb
 {
-    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData)">Back</a>
+    <a id="back-link" class="govuk-back-link" href="@Url.RouteUrl(RouteNames.RecognisePriorLearningData, routeData)">Back</a>
 }

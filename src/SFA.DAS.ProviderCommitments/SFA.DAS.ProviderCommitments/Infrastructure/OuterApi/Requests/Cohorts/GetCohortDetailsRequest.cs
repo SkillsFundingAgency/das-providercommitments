@@ -84,6 +84,7 @@ namespace SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts
         public bool? RecognisePriorLearning { get; set; }
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
+        //TODO These need to be combined
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
