@@ -16,8 +16,9 @@
 
     var paymentStatusTagClass = Model.PaymentStatus.Status switch
     {
-        "Inactive" => "govuk-tag--red",
+        "Inactive" => "govuk-tag--grey",
         "Active" => "govuk-tag--blue",
+        "Withheld" => "govuk-tag--red",
         _ => "govuk-tag--blue" // default
     };
 }
@@ -31,15 +32,10 @@
 
         @if (await AuthorisationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && Model.IsOnFlexiPaymentPilot.GetValueOrDefault() && Model.DataLockStatus == DetailsViewModel.DataLockSummaryStatus.None)
         {
-            <div class="govuk-inset-text">
-                This apprentice is part of the simplified payments pilot. To change these details, you must contact <a
-                    class="govuk-link"
-                    href="mailto:simplifiedpaymentspilot@education.gov.uk">simplifiedpaymentspilot@education.gov.uk</a>. We
-                aim to respond within 2 working days.
-            </div>
-        }
+            <partial name="DetailsPartials/_PaymentsSimplificationPrivateBetaInformation" />
+        }        
 
-        @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed)
+        @if (Model.ShowChangeEmployerLink && Model.Status != ApprenticeshipStatus.Completed && !Model.IsOnFlexiPaymentPilot.GetValueOrDefault())
         {
             <partial name="DetailsPartials/_HelpWithChangeOfCircumstances" />
         }
