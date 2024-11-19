@@ -32,6 +32,7 @@ public class Startup
         services.AddHttpContextAccessor();
 
         services.AddSingleton(_configuration);
+
         services.AddLogging(builder =>
         {
             builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);

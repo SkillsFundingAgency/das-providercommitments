@@ -230,10 +230,10 @@ else
     </dl>
 }
 
-<h1 class="govuk-heading-l  govuk-!-margin-top-9">Apprentice training details</h1>
-
 @if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
 {
+    <h2 class="govuk-heading-l govuk-!-margin-top-9">Apprenticeship training dates</h2>
+
     <div id="actual-start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.ActualStartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="actual-start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -271,6 +271,8 @@ else
 }
 else
 {
+    <h1 class="govuk-heading-l  govuk-!-margin-top-9">Apprentice training details</h1>
+
     <div id="start-date-section" class="govuk-form-group  @Html.AddClassIfPropertyInError(x => x.StartDate, "govuk-form-group--error")">
         <fieldset class="govuk-fieldset" aria-describedby="start-date-hint" role="group">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -365,6 +367,31 @@ else
 
 @if (Model.IsOnFlexiPaymentPilot.HasValue && Model.IsOnFlexiPaymentPilot.Value)
 {
+    <h2 class="govuk-heading-l govuk-!-margin-top-9">Apprenticeship price</h2>
+
+    <p class="govuk-body">
+        The total apprenticeship price covers training and end-point assessment costs, calculated automatically from your figures.
+    </p>
+
+    <details class="govuk-details govuk-!-margin-top-4" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                What to do if you don't know the end-point assessment price
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                If you haven't selected an end-point assessment organisation (EPAO) or finalised the contract, you can enter a nominal value of £1 for the end-point assessment.
+                <br /><br />
+                Adjust the training price to reflect this. For example, if training costs £9,000, enter £8,999 for training and £1 for the end-point assessment.
+                <br /><br />
+                You can update both prices during the apprenticeship once the end-point assessment price is confirmed.
+                <br /><br />
+                Any increase in the total price will need employer approval.
+            </p>
+        </div>
+    </details>
+
     <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.Cost, "govuk-form-group--error")">
         @Html.ValidationMessageFor(m => m.Cost, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.Cost) })
 
