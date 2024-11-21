@@ -150,7 +150,7 @@ public class WhenAddingServicesToTheContainer
                 new("SFA.DAS.Encoding",
                     "{\"Encodings\": [{\"EncodingType\": \"AccountId\",\"Salt\": \"and vinegar\",\"MinHashLength\": 32,\"Alphabet\": \"46789BCDFGHJKLMNPRSTVWXY\"}]}"),
 
-                new("APPINSIGHTS_INSTRUMENTATIONKEY", "test"),
+                new("APPLICATIONINSIGHTS_CONNECTION_STRING", "test"),
 
                 new("AuthenticationSettings:MetadataAddress", "https://test.com/"),
                 new("AuthenticationSettings:Wtrealm", "https://test.com/"),
