@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
@@ -49,19 +48,19 @@ public class WhenPostingDetails
     }
 
     [Test]
-    public void And_User_DoesNot_Have_Permission_To_Approve_Then_UnAuthorizedException_IsThrown()
+    public async Task And_User_DoesNot_Have_Permission_To_Approve_Then_Redirected_To_Error()
     {
         _fixture.SetUpIsAuthorized(false);
-        var action = () => _fixture.Post(CohortDetailsOptions.Approve);
-        action.Should().ThrowAsync<UnauthorizedAccessException>();
+        await _fixture.Post(CohortDetailsOptions.Approve);
+        _fixture.VerifyRedirectedToError(403);
     }
 
     [Test]
-    public void And_User_DoesNot_Have_Permission_To_Send_Then_UnAuthorizedException_IsThrown()
+    public async Task And_User_DoesNot_Have_Permission_To_Send_Then_Redirected_To_Error()
     {
         _fixture.SetUpIsAuthorized(false);
-        var action = () => _fixture.Post(CohortDetailsOptions.Send);
-        action.Should().ThrowAsync<UnauthorizedAccessException>();
+        await _fixture.Post(CohortDetailsOptions.Send);
+        _fixture.VerifyRedirectedToError(403);
     }
 
     [Test]
@@ -141,7 +140,7 @@ public class WhenPostingDetails
             _controller = new CohortController(Mock.Of<IMediator>(),
                 _modelMapper.Object,
                 linkGenerator.Object,
-                commitmentsApiClient.Object, 
+                commitmentsApiClient.Object,
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
                 Mock.Of<IAuthorizationService>());
@@ -150,7 +149,7 @@ public class WhenPostingDetails
         public async Task Post(CohortDetailsOptions option)
         {
             _viewModel.Selection = option;
-              
+
             _result = await _controller.Details(_policyAuthorizationWrapper.Object, _viewModel);
         }
 
@@ -184,6 +183,15 @@ public class WhenPostingDetails
         {
             _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<ClaimsPrincipal>(), It.IsAny<string>()))
                 .ReturnsAsync(isAuthorized);
+        }
+
+        public void VerifyRedirectedToError(int statusCode)
+        {
+            _result.Should().BeAssignableTo<RedirectToActionResult>();
+            var redirect = (RedirectToActionResult)_result;
+            redirect.ControllerName.Should().Be("Error");
+            redirect.ActionName.Should().Be("Error");
+            redirect.RouteValues["statusCode"].Should().Be(statusCode);
         }
     }
 }
