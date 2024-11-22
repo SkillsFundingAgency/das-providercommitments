@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -374,10 +375,7 @@ public class CohortController : Controller
             case CohortDetailsOptions.Send:
             case CohortDetailsOptions.Approve:
                 {
-                    if (!await ValidateAuthorization(authorizationService))
-                    {
-                        return RedirectToAction("Error", "Error", new { statusCode = 403 });
-                    }
+                    await ValidateUserIsAuthorizedToAct(authorizationService);
                     var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
                     return RedirectToAction(nameof(Acknowledgement), request);
                 }
@@ -655,9 +653,15 @@ public class CohortController : Controller
         return View(viewModel);
     }
 
-    private async Task<bool> ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
+    private async Task ValidateUserIsAuthorizedToAct(IPolicyAuthorizationWrapper authorizationService)
     {
-        return await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+        var result =
+            await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
+
+        if (!result)
+        {
+            throw new UnauthorizedOptionException();
+        }
     }
 
     private void StoreDraftApprenticeshipState(AddDraftApprenticeshipViewModel model)

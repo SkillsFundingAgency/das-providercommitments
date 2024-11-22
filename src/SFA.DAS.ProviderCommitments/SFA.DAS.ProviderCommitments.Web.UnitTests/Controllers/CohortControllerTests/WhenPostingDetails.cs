@@ -1,8 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -48,19 +50,19 @@ public class WhenPostingDetails
     }
 
     [Test]
-    public async Task And_User_DoesNot_Have_Permission_To_Approve_Then_Redirected_To_Error()
+    public void And_User_DoesNot_Have_Permission_To_Approve_Then_UnauthorizedOptionException_IsThrown()
     {
         _fixture.SetUpIsAuthorized(false);
-        await _fixture.Post(CohortDetailsOptions.Approve);
-        _fixture.VerifyRedirectedToError(403);
+        var action = () => _fixture.Post(CohortDetailsOptions.Approve);
+        action.Should().ThrowAsync<UnauthorizedOptionException>();
     }
 
     [Test]
-    public async Task And_User_DoesNot_Have_Permission_To_Send_Then_Redirected_To_Error()
+    public void And_User_DoesNot_Have_Permission_To_Send_Then_UnauthorizedOptionException_IsThrown()
     {
         _fixture.SetUpIsAuthorized(false);
-        await _fixture.Post(CohortDetailsOptions.Send);
-        _fixture.VerifyRedirectedToError(403);
+        var action = () => _fixture.Post(CohortDetailsOptions.Send);
+        action.Should().ThrowAsync<UnauthorizedOptionException>();
     }
 
     [Test]
@@ -183,15 +185,6 @@ public class WhenPostingDetails
         {
             _policyAuthorizationWrapper.Setup(x => x.IsAuthorized(It.IsAny<ClaimsPrincipal>(), It.IsAny<string>()))
                 .ReturnsAsync(isAuthorized);
-        }
-
-        public void VerifyRedirectedToError(int statusCode)
-        {
-            _result.Should().BeAssignableTo<RedirectToActionResult>();
-            var redirect = (RedirectToActionResult)_result;
-            redirect.ControllerName.Should().Be("Error");
-            redirect.ActionName.Should().Be("Error");
-            redirect.RouteValues["statusCode"].Should().Be(statusCode);
         }
     }
 }

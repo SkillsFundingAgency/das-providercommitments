@@ -13,6 +13,7 @@
         }
 
         public bool UseDfESignIn { get; set; }
+        public bool IsPostRequest { get; set; } = false;
         public string HelpPageLink => $"https://{_integrationUrlPart}services.signin.education.gov.uk/approvals/select-organisation?action=request-service";
     }
 }

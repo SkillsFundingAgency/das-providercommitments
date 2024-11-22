@@ -17,11 +17,11 @@ public class ErrorControllerTest
     public void TearDown() => _sut.Dispose();
 
     [Test]
-    [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
-    [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
-    [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
-    [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service")]
-    public void Then_The_Page_Returns_HelpLink(string env, string helpLink)
+    [TestCase("test", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
+    [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
+    [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
+    [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
+    public void Then_The_Page_Returns_HelpLink(string env, string helpLink, bool isPostRequest)
     {
         var fixture = new Fixture();
 
@@ -33,7 +33,7 @@ public class ErrorControllerTest
         _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
         _configuration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(_useDfESignIn));
         
-        var result = (ViewResult)_sut.Error(403);
+        var result = (ViewResult)_sut.Error(403, isPostRequest);
         result.ViewName.Should().Be("403");
 
         result.Should().NotBeNull();
@@ -43,6 +43,7 @@ public class ErrorControllerTest
         {
             actualModel?.HelpPageLink.Should().Be(helpLink);
             _useDfESignIn.Should().Be((bool)actualModel?.UseDfESignIn);
+            actualModel?.IsPostRequest.Should().Be(isPostRequest);
         }
     }
 }
