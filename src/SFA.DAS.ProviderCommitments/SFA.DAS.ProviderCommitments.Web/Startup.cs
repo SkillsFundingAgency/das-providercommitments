@@ -107,7 +107,8 @@ public class Startup
             app.UseHsts();
         }
 
-        app.UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
+        app.ConfigureCustomExceptionMiddleware()
+            .UseStatusCodePagesWithReExecute("/error", "?statuscode={0}")
             .UseHttpsRedirection()
             .UseStaticFiles()
             .UseDasHealthChecks()
@@ -115,7 +116,6 @@ public class Startup
             .UseAuthentication()
             .UseRouting()
             .UseAuthorization()
-            .ConfigureCustomExceptionMiddleware()
             .UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute())
             .UseHealthChecks("/health-check");
     }
