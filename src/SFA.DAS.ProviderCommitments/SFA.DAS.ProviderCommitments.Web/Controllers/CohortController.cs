@@ -660,7 +660,7 @@ public class CohortController : Controller
 
         if (!result)
         {
-            throw new UnauthorizedOptionException();
+            throw new UnauthorizedActionException();
         }
     }
 

@@ -11,7 +11,7 @@ public class ErrorController(IConfiguration configuration) : Controller
 {
     [Route("error/error")]
     [Route("error/{statuscode?}")]
-    public IActionResult Error(int? statusCode, bool isPostRequest = false)
+    public IActionResult Error(int? statusCode, bool isActionRequest = false)
     {       
         var useDfESignIn = configuration.UseDfeSignIn();
 
@@ -19,7 +19,7 @@ public class ErrorController(IConfiguration configuration) : Controller
         {
             403 => View("403", new Error403ViewModel(
                 configuration["ResourceEnvironmentName"])
-            { UseDfESignIn = useDfESignIn, IsPostRequest = isPostRequest }),
+            { UseDfESignIn = useDfESignIn, IsActionRequest = isActionRequest }),
             404 => View(statusCode.ToString()),
             _ => View()
         };

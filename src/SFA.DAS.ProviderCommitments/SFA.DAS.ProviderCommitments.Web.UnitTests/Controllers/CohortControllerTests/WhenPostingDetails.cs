@@ -54,7 +54,7 @@ public class WhenPostingDetails
     {
         _fixture.SetUpIsAuthorized(false);
         var action = () => _fixture.Post(CohortDetailsOptions.Approve);
-        action.Should().ThrowAsync<UnauthorizedOptionException>();
+        action.Should().ThrowAsync<UnauthorizedActionException>();
     }
 
     [Test]
@@ -62,7 +62,7 @@ public class WhenPostingDetails
     {
         _fixture.SetUpIsAuthorized(false);
         var action = () => _fixture.Post(CohortDetailsOptions.Send);
-        action.Should().ThrowAsync<UnauthorizedOptionException>();
+        action.Should().ThrowAsync<UnauthorizedActionException>();
     }
 
     [Test]

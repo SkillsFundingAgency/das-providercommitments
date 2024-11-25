@@ -21,7 +21,7 @@ public class ErrorControllerTest
     [TestCase("pp", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", true)]
     [TestCase("local", "https://test-services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
     [TestCase("prd", "https://services.signin.education.gov.uk/approvals/select-organisation?action=request-service", false)]
-    public void Then_The_Page_Returns_HelpLink(string env, string helpLink, bool isPostRequest)
+    public void Then_The_Page_Returns_HelpLink(string env, string helpLink, bool isActionRequest)
     {
         var fixture = new Fixture();
 
@@ -33,7 +33,7 @@ public class ErrorControllerTest
         _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
         _configuration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(_useDfESignIn));
         
-        var result = (ViewResult)_sut.Error(403, isPostRequest);
+        var result = (ViewResult)_sut.Error(403, isActionRequest);
         result.ViewName.Should().Be("403");
 
         result.Should().NotBeNull();
@@ -43,7 +43,7 @@ public class ErrorControllerTest
         {
             actualModel?.HelpPageLink.Should().Be(helpLink);
             _useDfESignIn.Should().Be((bool)actualModel?.UseDfESignIn);
-            actualModel?.IsPostRequest.Should().Be(isPostRequest);
+            actualModel?.IsActionRequest.Should().Be(isActionRequest);
         }
     }
 }

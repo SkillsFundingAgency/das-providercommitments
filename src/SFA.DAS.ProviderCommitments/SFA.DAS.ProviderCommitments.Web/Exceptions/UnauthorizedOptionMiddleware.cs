@@ -10,9 +10,9 @@ public class UnauthorizedOptionMiddleware(RequestDelegate next)
         {
             await next(context);
         }
-        catch (UnauthorizedOptionException)
+        catch (UnauthorizedActionException)
         {
-            var redirectUrl = $"/error/403?isPostRequest=true";
+            var redirectUrl = $"/error/403?isActionRequest=true";
             context.Response.Redirect(redirectUrl);
         }
     }
