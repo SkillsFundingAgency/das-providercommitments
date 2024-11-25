@@ -10,8 +10,9 @@
         @if (Model.UseDfESignIn)
         {
             <div class="hgroup">
-                <h1>@(Model.IsPostRequest ? "You need a different service role to perform this action" 
-                    : "You need a different service role to view this page")</h1>
+                <h1 class="govuk-heading-xl">
+                    @(Model.IsPostRequest ? "You need a different service role to perform this action"
+                        : "You need a different service role to view this page")</h1>
             </div>
             <div class="inner">
                 <p>
