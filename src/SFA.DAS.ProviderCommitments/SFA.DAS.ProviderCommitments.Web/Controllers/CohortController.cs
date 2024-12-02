@@ -6,6 +6,7 @@ using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderCommitments.Application.Commands.BulkUpload;
 using SFA.DAS.ProviderCommitments.Application.Commands.CreateCohort;
+using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Queries.BulkUploadValidate;
@@ -51,7 +52,7 @@ public class CohortController : Controller
         _outerApiService = outerApiService;
         _authorizationService = authorizationService;
     }
-        
+
     [HttpGet]
     [Route("review", Name = RouteNames.CohortReview)]
     [Route("", Name = RouteNames.Cohort)]
@@ -125,7 +126,7 @@ public class CohortController : Controller
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public async Task<IActionResult> SelectCourse(SelectCourseRequest request)
     {
-        var model = await _modelMapper.Map<SelectCourseViewModel>(request);           
+        var model = await _modelMapper.Map<SelectCourseViewModel>(request);
         return View(model);
     }
 
@@ -261,7 +262,7 @@ public class CohortController : Controller
             return RedirectToAction("SelectOptions", "DraftApprenticeship",
                 new
                 {
-                    model.ProviderId, 
+                    model.ProviderId,
                     DraftApprenticeshipHashedId = draftApprenticeshipHashedId,
                     response.CohortReference
                 });
@@ -373,15 +374,15 @@ public class CohortController : Controller
         {
             case CohortDetailsOptions.Send:
             case CohortDetailsOptions.Approve:
-            {
-                await ValidateAuthorization(authorizationService);
-                var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
-                return RedirectToAction(nameof(Acknowledgement), request);
-            }
+                {
+                    await ValidateUserIsAuthorizedToAct(authorizationService);
+                    var request = await _modelMapper.Map<AcknowledgementRequest>(viewModel);
+                    return RedirectToAction(nameof(Acknowledgement), request);
+                }
             case CohortDetailsOptions.ApprenticeRequest:
-            {
-                return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
-            }
+                {
+                    return RedirectToAction(nameof(Review), new { viewModel.ProviderId });
+                }
             default:
                 throw new ArgumentOutOfRangeException(nameof(viewModel.Selection));
         }
@@ -503,12 +504,12 @@ public class CohortController : Controller
                 var apiRequest = await _modelMapper.Map<BulkUploadAddDraftApprenticeshipsRequest>(viewModel);
                 var response = await _outerApiService.BulkUploadDraftApprenticeships(apiRequest);
                 TempData.Put(Constants.BulkUpload.DraftApprenticeshipResponse, response);
-                return RedirectToAction(nameof(FileUploadSuccessSaveDraft), new{ viewModel.ProviderId });
+                return RedirectToAction(nameof(FileUploadSuccessSaveDraft), new { viewModel.ProviderId });
 
             default:
                 return RedirectToAction(nameof(FileUploadAmendedFile),
                     new FileUploadAmendedFileRequest
-                        { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
+                    { ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId });
         }
     }
 
@@ -542,7 +543,7 @@ public class CohortController : Controller
     public IActionResult FileUploadDiscard(FileDiscardRequest fileDiscardRequest)
     {
         var viewModel = new FileDiscardViewModel
-            { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
+        { CacheRequestId = fileDiscardRequest.CacheRequestId, ProviderId = fileDiscardRequest.ProviderId };
         return View(viewModel);
     }
 
@@ -556,7 +557,8 @@ public class CohortController : Controller
             return RedirectToAction(nameof(FileUploadReviewDelete),
                 new FileUploadReviewDeleteRequest
                 {
-                    ProviderId = viewModel.ProviderId, CacheRequestId = viewModel.CacheRequestId,
+                    ProviderId = viewModel.ProviderId,
+                    CacheRequestId = viewModel.CacheRequestId,
                     RedirectTo = FileUploadReviewDeleteRedirect.SuccessDiscardFile
                 });
         }
@@ -611,7 +613,7 @@ public class CohortController : Controller
 
         return RedirectToAction(nameof(FileUploadReview),
             new FileUploadReviewRequest
-                { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
+            { CacheRequestId = viewModel.CacheRequestId, ProviderId = viewModel.ProviderId });
     }
 
     [HttpGet]
@@ -651,14 +653,14 @@ public class CohortController : Controller
         return View(viewModel);
     }
 
-    private async Task ValidateAuthorization(IPolicyAuthorizationWrapper authorizationService)
+    private async Task ValidateUserIsAuthorizedToAct(IPolicyAuthorizationWrapper authorizationService)
     {
         var result =
             await authorizationService.IsAuthorized(User, PolicyNames.HasContributorWithApprovalOrAbovePermission);
 
         if (!result)
         {
-            throw new UnauthorizedAccessException("User not allowed");
+            throw new UnauthorizedActionException();
         }
     }
 
