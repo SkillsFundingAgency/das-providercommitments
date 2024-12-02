@@ -1,94 +1,134 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
-using SFA.DAS.Testing.AutoFixture;
-using System.Security.Claims;
 using SFA.DAS.ProviderCommitments.Web.Authorization.Provider;
+using SFA.DAS.ProviderCommitments.Web.Filters;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization
+namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Authorization;
+
+public class WhenHandlingTrainingProviderAuthorization
 {
-    public class WhenHandlingTrainingProviderAuthorization
+    private Mock<IHttpContextAccessor> _httpContextAccessor;
+    private AuthorizationHandlerContext _context;
+    private ClaimsPrincipal _claimsPrincipal;
+    private Mock<ICacheStorageService> _cacheStorageService;
+    private Mock<IOuterApiService> _outerApiService;
+    private TrainingProviderAuthorizationHandler _authorizationHandler;
+    private TrainingProviderAllRolesRequirement _requirement;
+    private static readonly int _ukprn = 123;
+    private readonly string _cacheKey = string.Format(CacheKeyConstants.ProviderAccountResponseKey, _ukprn.ToString());
+
+    [SetUp]
+    public void SetUp()
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_ProviderStatus_Is_Valid_And_True_Returned(
-            long ukprn,
-            ProviderAccountResponse apiResponse,
-            [Frozen] Mock<IOuterApiService> outerApiService,
-            [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-            TrainingProviderAllRolesRequirement requirement,
-            TrainingProviderAuthorizationHandler handler)
-        {
-            //Arrange
-            apiResponse.CanAccessService = true;
-            var claim = new Claim(ProviderClaims.Ukprn, ukprn.ToString());
-            var claimsPrinciple = new ClaimsPrincipal(new[] { new ClaimsIdentity(new[] { claim }) });
-            var context = new AuthorizationHandlerContext(new[] { requirement }, claimsPrinciple, null);
-            var responseMock = new FeatureCollection();
-            var httpContext = new DefaultHttpContext(responseMock);
-            httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
+        _httpContextAccessor = new Mock<IHttpContextAccessor>();
+        _cacheStorageService = new Mock<ICacheStorageService>();
+        _outerApiService = new Mock<IOuterApiService>();
+        _requirement = new TrainingProviderAllRolesRequirement();
+        _authorizationHandler = new TrainingProviderAuthorizationHandler(_outerApiService.Object, _cacheStorageService.Object);
+
+        var claim = new Claim(ProviderClaims.Ukprn, _ukprn.ToString());
+        _claimsPrincipal = new ClaimsPrincipal([new ClaimsIdentity([claim])]);
+        _context = new AuthorizationHandlerContext([_requirement], _claimsPrincipal, null);
+
+        var responseMock = new FeatureCollection();
+        var httpContext = new DefaultHttpContext(responseMock);
+        _httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
+    }
 
 
-            outerApiService.Setup(x => x.GetProviderStatus(ukprn)).ReturnsAsync(apiResponse);
+    [Test, MoqAutoData]
+    public async Task Then_The_ProviderStatus_Is_Valid_And_True_Returned_When_Cache_Returns_Null(ProviderAccountResponse apiResponse)
+    {
+        //Arrange
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<ProviderAccountResponse>(_cacheKey))
+                           .ReturnsAsync((ProviderAccountResponse)null);
 
-            //Act
-            var actual = await handler.IsProviderAuthorized(context);
+        apiResponse.CanAccessService = true;
 
-            //Assert
-            actual.Should().BeTrue();
-        }
+        _outerApiService.Setup(x => x.GetProviderStatus(_ukprn)).ReturnsAsync(apiResponse);
 
-        [Test, MoqAutoData]
-        public async Task Then_The_ProviderDetails_Is_InValid_And_False_Returned(
-            long ukprn,
-            ProviderAccountResponse apiResponse,
-            [Frozen] Mock<IOuterApiService> outerApiService,
-            [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-            TrainingProviderAllRolesRequirement requirement,
-            TrainingProviderAuthorizationHandler handler)
-        {
-            //Arrange
-            apiResponse.CanAccessService = false;
-            var claim = new Claim(ProviderClaims.Ukprn, ukprn.ToString());
-            var claimsPrinciple = new ClaimsPrincipal(new[] { new ClaimsIdentity(new[] { claim }) });
-            var context = new AuthorizationHandlerContext(new[] { requirement }, claimsPrinciple, null);
-            var responseMock = new FeatureCollection();
-            var httpContext = new DefaultHttpContext(responseMock);
-            httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-            outerApiService.Setup(x => x.GetProviderStatus(ukprn)).ReturnsAsync(apiResponse);
+        //Act
+        var actual = await _authorizationHandler.IsProviderAuthorized(_context);
 
-            //Act
-            var actual = await handler.IsProviderAuthorized(context);
+        //Assert
+        actual.Should().BeTrue();
+        _cacheStorageService.Verify(x => x.SaveToCache(_cacheKey, apiResponse, 1), Times.Once);
 
-            //Assert
-            actual.Should().BeFalse();
-        }
+    }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_ProviderDetails_Is_Null_And_False_Returned(
-            long ukprn,
-            [Frozen] Mock<IOuterApiService> outerApiService,
-            [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-            TrainingProviderAllRolesRequirement requirement,
-            TrainingProviderAuthorizationHandler handler)
-        {
-            //Arrange
-            var claim = new Claim(ProviderClaims.Ukprn, ukprn.ToString());
-            var claimsPrinciple = new ClaimsPrincipal(new[] { new ClaimsIdentity(new[] { claim }) });
-            var context = new AuthorizationHandlerContext(new[] { requirement }, claimsPrinciple, null);
-            var responseMock = new FeatureCollection();
-            var httpContext = new DefaultHttpContext(responseMock);
-            httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-            outerApiService.Setup(x => x.GetProviderStatus(ukprn)).ReturnsAsync((ProviderAccountResponse)null!);
+    [Test, MoqAutoData]
+    public async Task Then_The_ProviderDetails_Is_InValid_And_False_Returned_When_Cache_Returns_Null(ProviderAccountResponse apiResponse)
+    {
+        //Arrange
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<ProviderAccountResponse>(_cacheKey))
+                           .ReturnsAsync((ProviderAccountResponse)null);
 
-            //Act
-            var actual = await handler.IsProviderAuthorized(context);
+        apiResponse.CanAccessService = false;
 
-            //Assert
-            actual.Should().BeFalse();
-        }
+        _outerApiService.Setup(x => x.GetProviderStatus(_ukprn)).ReturnsAsync(apiResponse);
+
+        //Act
+        var actual = await _authorizationHandler.IsProviderAuthorized(_context);
+
+        //Assert
+        actual.Should().BeFalse();
+        _cacheStorageService.Verify(x => x.SaveToCache(_cacheKey, apiResponse, 1), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_ProviderDetails_Is_Null_And_False_Returned_When_Cache_Returns_Null()
+    {
+        //Arrange
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<ProviderAccountResponse>(_cacheKey))
+                         .ReturnsAsync((ProviderAccountResponse)null);
+
+        _outerApiService.Setup(x => x.GetProviderStatus(_ukprn)).ReturnsAsync((ProviderAccountResponse)null!);
+
+        //Act
+        var actual = await _authorizationHandler.IsProviderAuthorized(_context);
+
+        //Assert
+        actual.Should().BeFalse();
+        _cacheStorageService.Verify(x => x.SaveToCache(_cacheKey, It.IsAny<ProviderAccountResponse>(), 1), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Returns_True_If_Cache_Contains_Data_Is_Valid(ProviderAccountResponse cachedResponse)
+    {
+        // Arrange
+        cachedResponse.CanAccessService = true;
+
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<ProviderAccountResponse>(_cacheKey))
+                           .ReturnsAsync(cachedResponse);
+
+        // Act
+        var result = await _authorizationHandler.IsProviderAuthorized(_context);
+
+        // Assert
+        result.Should().BeTrue();
+        _outerApiService.Verify(x => x.GetProviderStatus(It.IsAny<int>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Returns_False_If_Cache_Contains_Data_Is_InValid(ProviderAccountResponse cachedResponse)
+    {
+        // Arrange
+        cachedResponse.CanAccessService = false;
+
+        _cacheStorageService.Setup(x => x.SafeRetrieveFromCache<ProviderAccountResponse>(_cacheKey))
+                           .ReturnsAsync(cachedResponse);
+
+        // Act
+        var result = await _authorizationHandler.IsProviderAuthorized(_context);
+
+        // Assert
+        result.Should().BeFalse();
+        _outerApiService.Verify(x => x.GetProviderStatus(It.IsAny<int>()), Times.Never);
     }
 }
