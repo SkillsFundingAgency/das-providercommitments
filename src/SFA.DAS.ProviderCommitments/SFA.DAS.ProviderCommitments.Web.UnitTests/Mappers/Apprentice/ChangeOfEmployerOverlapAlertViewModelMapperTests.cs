@@ -150,6 +150,14 @@ public class ChangeOfEmployerOverlapAlertViewModelMapperTests
         result.NewPrice.Should().Be(_fixture.cacheItem.Price);
     }
 
+     [Test]
+    public async Task ThenProviderIdIsMapped()
+    {
+        var result = await _fixture.Map();
+
+        result.ProviderId.Should().Be(_fixture.request.ProviderId);
+    }
+
     [Test]
     public async Task ThenNewEmploymentPriceIsMapped()
     {
