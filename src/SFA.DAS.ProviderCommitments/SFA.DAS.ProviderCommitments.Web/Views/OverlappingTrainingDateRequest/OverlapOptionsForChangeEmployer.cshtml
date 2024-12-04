@@ -14,11 +14,10 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ValidationSummary"/>
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
-        <p>The planned start date overlaps with existing training for the same apprentice.</p>
-        <p>This may be because:</p>    
+        <p>The dates may be overlapping because:</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>the previous employer has not updated the stop date</li>
-            <li>this apprentice has an existing apprenticeship record that is still live</li>
+            <li>the previous employer has not added or updated the stop date</li>
+            <li>the previous employer has entered an incorrect stop date</li>
         </ul>
               
         <form method="post">
@@ -39,10 +38,10 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="overlap-option-1" name="OverlapOptions" type="radio" value="@OverlapOptions.SendStopRequest" aria-describedby="hint-previous-employer">
                             <label class="govuk-label govuk-radios__label" for="overlap-option-1">
-                                Yes, send a stop date request from the service
+                                Yes, send a stop date request to the previous employer
                             </label>
                             <div id="hint-previous-employer" class="govuk-hint govuk-radios__hint">
-                                It can take up to 2 weeks for the previous employer to action this.
+                                A draft apprenticeship record will be saved and the employer will have 2 weeks the action the changes
                             </div>
                         </div>
                         <div class="govuk-radios__item">
@@ -58,7 +57,7 @@
                 </fieldset>
             </div>
             <button class="govuk-button" data-module="govuk-button">
-                Continue
+                Submit
             </button>
         </form>
     </div>
