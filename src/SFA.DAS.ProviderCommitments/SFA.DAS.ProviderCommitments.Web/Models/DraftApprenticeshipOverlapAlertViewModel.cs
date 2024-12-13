@@ -13,9 +13,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string DraftApprenticeshipHashedId { get; set; }
         public string OverlapApprenticeshipHashedId { get; set; }
 
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm these details are correct")]
-        public bool DetailsAcknowledgement { get; set; }
-
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Uln { get; set; }

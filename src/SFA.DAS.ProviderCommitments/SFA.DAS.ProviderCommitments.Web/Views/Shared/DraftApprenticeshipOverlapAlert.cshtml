@@ -22,77 +22,79 @@
 
         <partial name="_ValidationSummary"/>
 
-        <h1 class="govuk-heading-xl">There may be a problem with the proposed training details</h1>
+        <h1 class="govuk-heading-xl">Confirm details</h1>
 
-        <h2 class="govuk-heading-m">Proposed training details</h2>
-        <p>Check you have entered the correct ULN, check the dates you have entered are correct.</p>
+        <p>Check you have entered the apprentice details and training dates.</p>
 
-        <div>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Planned start date
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.StartDate.ToString("Y")
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a id="change-startdate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Projected finish date
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.EndDate.ToString("Y")
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a id="change-enddate-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Unique learner number
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.Uln
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a id="change-uln-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Apprentice name
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.FirstName @Model.LastName
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a id="change-name-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
-                    </dd>
-                </div>
-            </dl>
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                        Apprentice details
+                </h2>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <a id="change-details-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </li>               
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Apprentice name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.FirstName @Model.LastName
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Unique learner number
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Uln
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    Proposed training dates
+                </h2>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(Model.ChangeURLRoute, routeData)">Change</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                           Planned start date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.StartDate.ToString("Y")
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Planned training end date
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.EndDate.ToString("Y")
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </div>
 
         <form method="post">
-            <div class="govuk-form-group @Html.AddClassIfPropertyInError(x => x.DetailsAcknowledgement, " govuk-form-group--error")">
-                <fieldset class="govuk-fieldset">
-                    <input type="hidden" asp-for="DraftApprenticeshipHashedId"/>
-                    <input type="hidden" asp-for="CohortReference"/>
-                    <input type="hidden" asp-for="ProviderId"/>
-                    @Html.ValidationMessageFor(m => m.DetailsAcknowledgement, null, new { @class = "govuk-error-message", id = "error-message-" + Html.IdFor(m => m.DetailsAcknowledgement) })
-                    <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="checkbox-acknowledgement" name="DetailsAcknowledgement" type="checkbox" value="true">
-                            <label class="govuk-label govuk-checkboxes__label" for="checkbox-acknowledgement">
-                                Yes, these details are correct
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+            <input type="hidden" asp-for="DraftApprenticeshipHashedId" />
+            <input type="hidden" asp-for="CohortReference" />
+            <input type="hidden" asp-for="ProviderId" />
             <button class="govuk-button" data-module="govuk-button">
                 Continue
             </button>
