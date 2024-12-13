@@ -73,7 +73,8 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Apprentice
                                             (int)data.Apprenticeship.DeliveryModel),
                     ShowDeliveryModelChangeLink = !cacheItem.SkippedDeliveryModelSelection,
                     Status = data.Apprenticeship.Status,
-                    CacheKey = source.CacheKey
+                    CacheKey = source.CacheKey,
+                    ProviderId = source.ProviderId
                 };
             }
             catch (Exception e)

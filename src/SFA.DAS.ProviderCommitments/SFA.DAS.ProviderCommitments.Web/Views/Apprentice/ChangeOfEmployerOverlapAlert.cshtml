@@ -7,7 +7,7 @@
 @model SFA.DAS.ProviderCommitments.Web.Models.Apprentice.ChangeOfEmployerOverlapAlertViewModel
 
 @{
-    ViewBag.Title = "Confirm dates before sending your request";
+    ViewBag.Title = "Confirm details";
     ViewBag.GaData.Vpv = "/apprentices/apprentice/change-employer/confirm";
     ViewBag.GaData.Org = Model.OldEmployerName;
     var hasStopDate = Model.StopDate.HasValue;
@@ -30,8 +30,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
         <p>
-            Check you have entered the correct training dates and the correct
-            apprentice details.
+            Check you have entered the apprentice details and training dates.
         </p>
         @if (Model.ExceedsFundingBandCap)
         {
@@ -43,122 +42,225 @@
                 </p>
             </div>
         }
-
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Apprentice name</th>
-                <td class="govuk-table__cell das-table-cell-width-40">@Model.ApprenticeName</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header das-table-cell-width-45">Unique learner number</th>
-                    <td class="govuk-table__cell das-table-cell-width-40">@Model.Uln</td>
-                    <td class="govuk-table__cell">&nbsp;</td>
-                </tr>
-            </tbody>
-        </table>
-        <h2 class="govuk-heading-m govuk-!-margin-top-9">Current details</h2>
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">Employer</th>
-                <td class="govuk-table__cell das-table-cell-width-40">@Model.OldEmployerName</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-hide="@(!Model.ShowDeliveryModel)" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Delivery model</th>
-                <td class="govuk-table__cell">@Model.OldDeliveryModel.ToDescription()</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th asp-show="@isRegular" scope="row" class="govuk-table__header">Training start date</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Current employment start date</th>
-                <td class="govuk-table__cell">@DisplayDate(Model.OldStartDate)</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-show="@isRegular" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Training end date</th>
-                <td class="govuk-table__cell">@DisplayDate(Model.OldEndDate)</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-hide="@isRegular" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Current employment end date</th>
-                <td asp-show="@Model.OldEmploymentEndDate.HasValue" class="govuk-table__cell">@DisplayDate(Model.OldEmploymentEndDate.Value)</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-hide="hasStopDate == false" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Stop applies from</th>
-                <td class="govuk-table__cell">@stopDateString</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-hide="@isRegular" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Training price for this employment</th>
-                <td class="govuk-table__cell">@Model.OldEmploymentPrice?.ToGdsCostFormat()</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                <td class="govuk-table__cell">@Model.OldPrice.ToGdsCostFormat()</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            </tbody>
-        </table>
-        <h2 class="govuk-heading-m govuk-!-margin-top-9">Requested changes</h2>
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header das-table-cell-width-45">New employer</th>
-                <td class="govuk-table__cell das-table-cell-width-40">@Model.NewEmployerName</td>
-                <td class="govuk-table__cell">&nbsp;</td>
-            </tr>
-            <tr asp-hide="@(!Model.ShowDeliveryModel)" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Delivery model</th>
-                <td class="govuk-table__cell">@Model.DeliveryModel.GetReferenceDataDescription()</td>
-                <td class="govuk-table__cell">
-                    <a asp-hide="@(!Model.ShowDeliveryModelChangeLink)" id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, routeData)">Change</a>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th asp-show="@isRegular" scope="row" class="govuk-table__header">New training start date</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">New employment start date</th>
-                <td class="govuk-table__cell">@DisplayDate(Model.NewStartDateTime)</td>
-                <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
-                </td>
-            </tr>
-            <tr asp-hide="@isRegular" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">New employment end date</th>
-                <td class="govuk-table__cell">@DisplayDate(Model.NewEmploymentEndDateTime.Value)</td>
-                <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th asp-show="@isRegular" scope="row" class="govuk-table__header">New training end date</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Projected apprenticeship training end date</th>
-                <td class="govuk-table__cell">@DisplayDate(Model.NewEndDateTime)</td>
-                <td class="govuk-table__cell">
-                    <a id="change-dates-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
-                </td>
-            </tr>
-            <tr asp-hide="@isRegular" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Training price for this employment</th>
-                <td class="govuk-table__cell">@Model.NewEmploymentPrice.Value.ToGdsCostFormat()</td>
-                <td class="govuk-table__cell">
-                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th asp-show="@isRegular" scope="row" class="govuk-table__header">New agreed apprenticeship price</th>
-                <th asp-hide="@isRegular" scope="row" class="govuk-table__header">Total agreed apprenticeship price</th>
-                <td class="govuk-table__cell">@Model.NewPrice.ToGdsCostFormat()</td>
-                <td class="govuk-table__cell">
-                    <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    Apprentice details
+                </h2>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <a id="change-details-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeDetail, new { Model.ApprenticeshipHashedId, Model.ProviderId})">Change</a>
+                    </li>                 
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Apprentice Name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.ApprenticeName
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Unique learner number
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Uln
+                        </dd>                       
+                    </div>                    
+                </dl>
+            </div>
+        </div>
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    Current training details
+                </h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Employer
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.OldEmployerName
+                        </dd>
+                    </div>
+                    @if (Model.ShowDeliveryModel)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Delivery model
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.OldDeliveryModel.ToDescription()
+                            </dd>
+                        </div>
+                    }                    
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @(isRegular? "Training start date" :"Current employment start date")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @DisplayDate(Model.OldStartDate)
+                        </dd>
+                    </div>
+                    @if (isRegular)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Training end date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @DisplayDate(Model.OldEndDate)
+                            </dd>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Current employment end date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @(@Model.OldEmploymentEndDate.HasValue ? @DisplayDate(Model.OldEmploymentEndDate.Value) : "")
+                            </dd>
+                        </div>
+                    }
+                    @if (hasStopDate)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Stop applies from
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @stopDateString
+                            </dd>
+                        </div>
+                    }
+                    @if (!isRegular)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Training price for this employment
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.OldEmploymentPrice?.ToGdsCostFormat()
+                            </dd>
+                        </div>
+                    }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Total agreed apprenticeship price
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.OldPrice.ToGdsCostFormat()
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                   Requested training details
+                </h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            New employer
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.NewEmployerName
+                        </dd>                      
+                    </div>
+                    @if (Model.ShowDeliveryModel)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Delivery model
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                               @Model.DeliveryModel.GetReferenceDataDescription()
+                            </dd>
+                            @if (Model.ShowDeliveryModelChangeLink)
+                            {
+                                <dd class="govuk-summary-list__actions">
+                                    <a id="change-delivery-model-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeSelectDeliveryModel, routeData)">Change</a>
+                                </dd>
+                            }
+                        </div>
+                    }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @(isRegular ? "New training start date" : "New employment start date")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @DisplayDate(Model.NewStartDateTime)
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a id="change-dates-link-start" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
+                        </dd>
+                    </div>
+                    @if (!isRegular)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                New employment end date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @DisplayDate(Model.NewEmploymentEndDateTime.Value)
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a id="change-dates-link-irregular" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
+                            </dd>
+                        </div>
+                    }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @(isRegular ? "New training end date" : "Projected apprenticeship training end date")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @DisplayDate(Model.NewEndDateTime)
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a id="change-dates-link-end" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticeTrainingDates, routeData)">Change</a>
+                        </dd>
+                    </div>
+                    @if (!isRegular)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Training price for this employment
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.NewEmploymentPrice.Value.ToGdsCostFormat()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a id="change-price-link-irregular" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
+                            </dd>
+                        </div>
+                    }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @(isRegular ? "New agreed apprenticeship price" : "Total agreed apprenticeship price")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.NewPrice.ToGdsCostFormat()
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a id="change-price-link" class="govuk-link" href="@Url.RouteUrl(RouteNames.ApprenticePrice, routeData)">Change</a>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>       
     </div>
 </div>
 
@@ -171,7 +273,7 @@
     <input type="hidden" asp-for="Status"/>
 
     <button id="confirm-button" type="Submit" class="govuk-button">
-        Save and send
+        Save and continue
     </button>
 </form>
 
