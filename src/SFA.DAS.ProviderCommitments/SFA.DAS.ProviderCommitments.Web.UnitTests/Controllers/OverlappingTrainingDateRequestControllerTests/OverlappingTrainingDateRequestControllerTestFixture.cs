@@ -86,7 +86,7 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.OverlappingTrain
 
             _draftApprenticeshipOverlapOptionViewModel = new DraftApprenticeshipOverlapOptionViewModel
             {
-                OverlapOptions = OverlapOptions.CompleteActionLater,
+                OverlapOptions = OverlapOptions.SendStopRequest,
                 ProviderId = 2,
             };
 
