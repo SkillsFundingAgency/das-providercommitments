@@ -6,6 +6,8 @@
         {
             app.UseMiddleware<CreateCohortCacheItemNotFoundExceptionMiddleware>();
             app.UseMiddleware<ChangeEmployerCacheItemNotFoundExceptionMiddleware>();
+            app.UseMiddleware<UnauthorizedAccessExceptionMiddleware>();
+            app.UseMiddleware<UnauthorizedOptionMiddleware>();
             return app;
         }
     }

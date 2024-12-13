@@ -7,20 +7,19 @@ namespace SFA.DAS.ProviderCommitments.Web.Controllers;
 
 [AllowAnonymous]
 [HideNavigationBar(hideAccountHeader: false, hideNavigationLinks: true)]
-public class ErrorController : Controller
+public class ErrorController(IConfiguration configuration) : Controller
 {
-    private readonly IConfiguration _configuration;
-    public ErrorController(IConfiguration configuration) => _configuration = configuration;
-
     [Route("error/error")]
     [Route("error/{statuscode?}")]
-    public IActionResult Error(int? statusCode)
-    {
-        var useDfESignIn = _configuration.UseDfeSignIn();
+    public IActionResult Error(int? statusCode, bool isActionRequest = false)
+    {       
+        var useDfESignIn = configuration.UseDfeSignIn();
 
         return statusCode switch
         {
-            403 => View("403", new Error403ViewModel(_configuration["ResourceEnvironmentName"]) { UseDfESignIn = useDfESignIn }),
+            403 => View("403", new Error403ViewModel(
+                configuration["ResourceEnvironmentName"])
+            { UseDfESignIn = useDfESignIn, IsActionRequest = isActionRequest }),
             404 => View(statusCode.ToString()),
             _ => View()
         };

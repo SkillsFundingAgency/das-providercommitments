@@ -4,6 +4,7 @@ using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Requests;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
+using SFA.DAS.ProviderCommitments.Exceptions;
 using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Authorization;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
@@ -49,19 +50,19 @@ public class WhenPostingDetails
     }
 
     [Test]
-    public void And_User_DoesNot_Have_Permission_To_Approve_Then_UnAuthorizedException_IsThrown()
+    public void And_User_DoesNot_Have_Permission_To_Approve_Then_UnauthorizedOptionException_IsThrown()
     {
         _fixture.SetUpIsAuthorized(false);
         var action = () => _fixture.Post(CohortDetailsOptions.Approve);
-        action.Should().ThrowAsync<UnauthorizedAccessException>();
+        action.Should().ThrowAsync<UnauthorizedActionException>();
     }
 
     [Test]
-    public void And_User_DoesNot_Have_Permission_To_Send_Then_UnAuthorizedException_IsThrown()
+    public void And_User_DoesNot_Have_Permission_To_Send_Then_UnauthorizedOptionException_IsThrown()
     {
         _fixture.SetUpIsAuthorized(false);
         var action = () => _fixture.Post(CohortDetailsOptions.Send);
-        action.Should().ThrowAsync<UnauthorizedAccessException>();
+        action.Should().ThrowAsync<UnauthorizedActionException>();
     }
 
     [Test]
@@ -141,7 +142,7 @@ public class WhenPostingDetails
             _controller = new CohortController(Mock.Of<IMediator>(),
                 _modelMapper.Object,
                 linkGenerator.Object,
-                commitmentsApiClient.Object, 
+                commitmentsApiClient.Object,
                 Mock.Of<IEncodingService>(),
                 Mock.Of<IOuterApiService>(),
                 Mock.Of<IAuthorizationService>());
@@ -150,7 +151,7 @@ public class WhenPostingDetails
         public async Task Post(CohortDetailsOptions option)
         {
             _viewModel.Selection = option;
-              
+
             _result = await _controller.Details(_policyAuthorizationWrapper.Object, _viewModel);
         }
 
