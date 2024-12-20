@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers
                 DeliveryModel = source.DeliveryModel,
                 ReservationId = source.ReservationId.Value,
                 StartMonthYear = source.StartMonthYear,
-                IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentsPilot
+                IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot
             });
         }
     }

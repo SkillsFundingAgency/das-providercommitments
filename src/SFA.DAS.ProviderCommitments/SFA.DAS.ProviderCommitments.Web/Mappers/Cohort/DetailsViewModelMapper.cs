@@ -1,4 +1,5 @@
-﻿using SFA.DAS.CommitmentsV2.Api.Client;
+﻿using System.Net;
+using SFA.DAS.CommitmentsV2.Api.Client;
 using SFA.DAS.CommitmentsV2.Api.Types.Responses;
 using SFA.DAS.CommitmentsV2.Shared.Interfaces;
 using SFA.DAS.Encoding;
@@ -7,21 +8,20 @@ using SFA.DAS.PAS.Account.Api.ClientV2;
 using SFA.DAS.PAS.Account.Api.Types;
 using SFA.DAS.ProviderCommitments.Extensions;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi;
+using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.OverlappingTrainingDateRequest;
 using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses;
+using SFA.DAS.ProviderCommitments.Interfaces;
 using SFA.DAS.ProviderCommitments.Web.Models;
 using SFA.DAS.ProviderCommitments.Web.Models.Cohort;
 using SFA.DAS.ProviderCommitments.Web.Services;
-using System.Net;
-using SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts;
-using SFA.DAS.ProviderCommitments.Interfaces;
+using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
 using ApprenticeshipEmployerType = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.ApprenticeshipEmployerType;
+using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
+using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
 using LastAction = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.LastAction;
 using Party = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.Party;
 using TransferApprovalStatus = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Responses.TransferApprovalStatus;
-using ApprenticeshipEmailOverlap = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.ApprenticeshipEmailOverlap;
-using DraftApprenticeshipDto = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Requests.Cohorts.DraftApprenticeshipDto;
-using DeliveryModel = SFA.DAS.ProviderCommitments.Infrastructure.OuterApi.Types.DeliveryModel;
 
 namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 {
@@ -57,7 +57,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             var agreementStatusTask = _pasAccountsApiClient.GetAgreement(source.ProviderId);
 
             await Task.WhenAll(cohortDetailsTask, agreementStatusTask);
-           
+
             var agreementStatus = await agreementStatusTask;
             var cohortDetails = await cohortDetailsTask;
 
@@ -172,7 +172,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             {
                 return "Under review with employer";
             }
-            
+
             if (cohort.LastAction == LastAction.Approve)
             {
                 return "With Employer for approval";
@@ -189,7 +189,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
                     CourseCode = course.Key.CourseCode,
                     CourseName = course.Key.CourseName,
                     DeliveryModel = course.Key.DeliveryModel,
-                    IsOnFlexiPaymentsPilot = course.Key.IsOnFlexiPaymentPilot,
+                    IsOnFlexiPaymentPilot = course.Key.IsOnFlexiPaymentPilot,
                     DraftApprenticeships = course
                         // Sort before on raw properties rather than use displayName property post select for performance reasons
                         .OrderBy(a => a.FirstName)
@@ -231,7 +231,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
 
         private bool IsDraftApprenticeshipComplete(DraftApprenticeshipDto draftApprenticeship, GetCohortDetailsResponse cohortResponse)
         {
-            if(string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
+            if (string.IsNullOrWhiteSpace(draftApprenticeship.FirstName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.LastName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.CourseName)
                 || string.IsNullOrWhiteSpace(draftApprenticeship.Uln))
@@ -291,7 +291,7 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
         private async Task SetOverlappingTrainingDateRequest(IReadOnlyCollection<CohortDraftApprenticeshipViewModel> draftApprenticeships)
         {
             var overlapRequestQueryResultsTasks = new List<Task<GetOverlapRequestQueryResult>>();
-            foreach (var draftApprenticeship in draftApprenticeships) 
+            foreach (var draftApprenticeship in draftApprenticeships)
             {
                 if (!string.IsNullOrWhiteSpace(draftApprenticeship.ULN) && draftApprenticeship.StartDate.HasValue && draftApprenticeship.EndDate.HasValue)
                 {
@@ -301,10 +301,10 @@ namespace SFA.DAS.ProviderCommitments.Web.Mappers.Cohort
             }
 
             await Task.WhenAll(overlapRequestQueryResultsTasks);
-            
+
             foreach (var task in overlapRequestQueryResultsTasks)
             {
-                 var result = task.Result;
+                var result = task.Result;
 
                 if (result != null && result.DraftApprenticeshipId.HasValue)
                 {

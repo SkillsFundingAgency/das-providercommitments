@@ -101,9 +101,9 @@ public class WhenIMapReservationAddDraftApprenticeshipRequestToAddDraftApprentic
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
         var result = await _mapper.Map(_source);
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentsPilot);
+        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
 }

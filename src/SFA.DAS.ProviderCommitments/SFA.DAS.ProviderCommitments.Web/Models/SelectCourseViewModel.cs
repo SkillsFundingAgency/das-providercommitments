@@ -17,6 +17,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models
         public string CourseCode { get; set; }
         public string StartMonthYear { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
-        public bool? IsOnFlexiPaymentsPilot { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }

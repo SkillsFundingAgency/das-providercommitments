@@ -81,9 +81,9 @@ public class WhenIMapSelectCourseViewModelToCreateCohortWithDraftApprenticeshipR
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
         var result = await _act();
-        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentsPilot);
+        result.IsOnFlexiPaymentPilot.Should().Be(_source.IsOnFlexiPaymentPilot);
     }
 }

@@ -33,14 +33,14 @@ public class AddDraftApprenticeshipCourseViewModelMapper : IMapper<ReservationsA
             ProviderId = source.ProviderId,
             ReservationId = source.ReservationId,
             EmployerName = apiResponse.EmployerName,
-            IsOnFlexiPaymentsPilot = source.IsOnFlexiPaymentsPilot,
+            IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
             ShowManagingStandardsContent = apiResponse.IsMainProvider,
             Standards = apiResponse.Standards.Select(x => new Standard { CourseCode = x.CourseCode, Name = x.Name })
         };
 
         if (!await _authorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot))
         {
-            result.IsOnFlexiPaymentsPilot = false;
+            result.IsOnFlexiPaymentPilot = false;
         }
 
         return result;
