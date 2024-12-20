@@ -38,7 +38,7 @@ public class WhenIMapSelectDeliveryModelViewModelMapperFromReservationsAddDraftA
     public async Task TheParamsArePassedInCorrectly()
     {
         await _mapper.Map(_request);
-        _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _getCohortResponse.AccountLegalEntityId, _request.DeliveryModel, _request.IsOnFlexiPaymentsPilot));
+        _helper.Verify(x=>x.Map(_request.ProviderId, _request.CourseCode, _getCohortResponse.AccountLegalEntityId, _request.DeliveryModel, _request.IsOnFlexiPaymentPilot));
     }
 
     [Test]

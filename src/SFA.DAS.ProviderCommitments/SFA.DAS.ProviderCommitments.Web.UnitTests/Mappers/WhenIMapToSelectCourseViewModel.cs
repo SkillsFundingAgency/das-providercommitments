@@ -16,7 +16,7 @@ public class WhenIMapToSelectCourseViewModel
     private GetTrainingCoursesQueryResponse _trainingCourses;
     private int _accountLegalEntityId;
     private string _courseCode;
-    private bool? _isOnFlexiPaymentsPilot;
+    private bool? _isOnFlexiPaymentPilot;
 
     [SetUp]
     public void Arrange()
@@ -24,7 +24,7 @@ public class WhenIMapToSelectCourseViewModel
         var fixture = new Fixture();
         _accountLegalEntityId = fixture.Create<int>();
         _courseCode = fixture.Create<string>();
-        _isOnFlexiPaymentsPilot = fixture.Create<bool?>();
+        _isOnFlexiPaymentPilot = fixture.Create<bool?>();
 
         _ale = fixture.Create<AccountLegalEntityResponse>();
         _trainingCourses = fixture.Create<GetTrainingCoursesQueryResponse>();
@@ -45,21 +45,21 @@ public class WhenIMapToSelectCourseViewModel
     [Test]
     public async Task ThenCourseCodeIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
         result.CourseCode.Should().Be(_courseCode);
     }
 
     [Test]
     public async Task ThenCoursesAreReturnedCorrectly()
     {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
         result.Courses.Should().BeEquivalentTo(_trainingCourses.TrainingCourses);
     }
 
     [Test]
-    public async Task ThenIsOnFlexiPaymentsPilotIsMappedCorrectly()
+    public async Task ThenIsOnFlexiPaymentPilotIsMappedCorrectly()
     {
-        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentsPilot);
-        result.IsOnFlexiPaymentsPilot.Should().Be(_isOnFlexiPaymentsPilot);
+        var result = await _mapper.Map(_courseCode, _accountLegalEntityId, _isOnFlexiPaymentPilot);
+        result.IsOnFlexiPaymentPilot.Should().Be(_isOnFlexiPaymentPilot);
     }
 }

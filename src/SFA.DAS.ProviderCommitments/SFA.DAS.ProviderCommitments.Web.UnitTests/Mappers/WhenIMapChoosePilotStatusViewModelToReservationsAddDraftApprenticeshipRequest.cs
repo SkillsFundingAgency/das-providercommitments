@@ -72,6 +72,6 @@ public class WhenIMapChoosePilotStatusViewModelToReservationsAddDraftApprentices
     {
         _source.Selection = option;
         var result = await _act();
-        result.IsOnFlexiPaymentsPilot.Should().Be(expected);
+        result.IsOnFlexiPaymentPilot.Should().Be(expected);
     }
 }

@@ -73,10 +73,10 @@ public class AddDraftApprenticeshipCourseViewModelMapperTests
     }
 
     [Test]
-    public async Task IsOnFlexiPaymentsPilot_Is_Mapped_Correctly()
+    public async Task IsOnFlexiPaymentPilot_Is_Mapped_Correctly()
     {
         var result = await _mapper.Map(_request);
-        result.IsOnFlexiPaymentsPilot.Should().BeFalse();
+        result.IsOnFlexiPaymentPilot.Should().BeFalse();
     }
 
     [Test]

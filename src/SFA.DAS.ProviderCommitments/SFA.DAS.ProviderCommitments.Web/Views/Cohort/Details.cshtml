@@ -145,7 +145,7 @@
         {
             <span class="govuk-tag">Flexi-Job Agency</span>
         }
-        @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+        @if (course.IsOnFlexiPaymentPilot.GetValueOrDefault())
         {
             <span class="govuk-tag">Simplified Payments Pilot</span>
         }
@@ -245,12 +245,12 @@
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header das-table-cell-width-25">Name</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-15">Unique learner number</th>
-            <th asp-show="@(!course.IsOnFlexiPaymentsPilot.GetValueOrDefault())" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
+            <th asp-show="@(!course.IsOnFlexiPaymentPilot.GetValueOrDefault())" scope="col" class="govuk-table__header das-table-cell-width-10">Date of birth</th>
             <th scope="col" class="govuk-table__header das-table-cell-width-@(course.IsPortableFlexiJob ? "15" : "30")">Training dates</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Employment end date</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-15">Training price for this employment</th>
             <th asp-show="@course.IsPortableFlexiJob" scope="col" class="govuk-table__header das-table-cell-width-10">Total training price</th>
-            @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+            @if (course.IsOnFlexiPaymentPilot.GetValueOrDefault())
             {
                 <th scope="col" class="govuk-table__header das-table-cell-width-20">Training price</th>
                 <th scope="col" class="govuk-table__header das-table-cell-width-20">End-point assessment price</th>
@@ -260,7 +260,7 @@
             {
                 <th asp-show="@(!course.IsPortableFlexiJob)" scope="col" class="govuk-table__header das-table-cell-width-20">Price</th>
             }
-            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+            @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentPilot.GetValueOrDefault())
             {
                 <th scope="col" class="govuk-table__header das-table-cell-width-10">Pilot</th>
             }
@@ -284,7 +284,7 @@
                     }
                 </td>
                 <td class="govuk-table__cell" data-label="Unique learner number">@(string.IsNullOrWhiteSpace(draftApprenticeship.ULN) ? "-" : draftApprenticeship.ULN)</td>
-                <td asp-show="@(!course.IsOnFlexiPaymentsPilot.GetValueOrDefault())" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
+                <td asp-show="@(!course.IsOnFlexiPaymentPilot.GetValueOrDefault())" class="govuk-table__cell" data-label="Date of birth">@draftApprenticeship.DisplayDateOfBirth</td>
                 <td class="govuk-table__cell" data-label="Training dates">
                     @if (draftApprenticeship.HasOverlappingUln)
                     {
@@ -303,7 +303,7 @@
                 <td asp-show="@course.IsPortableFlexiJob" class="govuk-table__cell" data-label="Training price for this employment">
                     @draftApprenticeship.DisplayEmploymentPrice
                 </td>
-                @if (course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                @if (course.IsOnFlexiPaymentPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="Training price">
                         @if (draftApprenticeship.DisplayTrainingPrice == null)
@@ -358,7 +358,7 @@
                         }
                     </td>
                 }
-                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentsPilot.GetValueOrDefault())
+                @if (await AuthorizationService.IsAuthorizedAsync(ProviderFeature.FlexiblePaymentsPilot) && !course.IsOnFlexiPaymentPilot.GetValueOrDefault())
                 {
                     <td class="govuk-table__cell" data-label="IsOnFlexiPaymentPilot">
                         @draftApprenticeship.DisplayIsPilot

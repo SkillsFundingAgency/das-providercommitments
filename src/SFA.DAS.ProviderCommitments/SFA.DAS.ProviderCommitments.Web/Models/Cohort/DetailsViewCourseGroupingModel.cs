@@ -19,6 +19,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Models.Cohort
         public bool ErrorEmailOverlapsDisplayed { get; set; }
         public bool ErrorFundingBandExcessDisplayed { get; set; }
         public int RplErrors { get; set; }
-        public bool? IsOnFlexiPaymentsPilot { get; set; }
+        public bool? IsOnFlexiPaymentPilot { get; set; }
     }
 }
