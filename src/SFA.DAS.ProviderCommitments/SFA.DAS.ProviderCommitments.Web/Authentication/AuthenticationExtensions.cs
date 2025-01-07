@@ -2,11 +2,9 @@
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.Extensions.Options;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Enums;
-using SFA.DAS.ProviderCommitments.Configuration;
 
 namespace SFA.DAS.ProviderCommitments.Web.Authentication
 {
@@ -22,21 +20,13 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             }
             else
             {
-                var useDfeSignIn = config.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-                if (useDfeSignIn)
-                {
-                    services.AddAndConfigureDfESignInAuthentication(
+                services.AddAndConfigureDfESignInAuthentication(
                         config,
                         CookieAuthName,
                         typeof(CustomServiceRole),
                         ClientName.ProviderRoatp,
                         "/signout",
                         "");
-                }
-                else
-                {
-                    services.AddProviderIdamsAuthentication(config);
-                }
             }
 
             return services;
@@ -56,39 +46,6 @@ namespace SFA.DAS.ProviderCommitments.Web.Authentication
             return services;
         }
 
-        private static IServiceCollection AddProviderIdamsAuthentication(this IServiceCollection services, IConfiguration config)
-        {
-            var authenticationSettings = config.GetSection(ProviderCommitmentsConfigurationKeys.AuthenticationSettings).Get<AuthenticationSettings>();
-
-            services.AddAuthentication(sharedOptions =>
-                {
-                    sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                })
-                .AddWsFederation(options =>
-                {
-                    options.MetadataAddress = authenticationSettings.MetadataAddress;
-                    options.Wtrealm = authenticationSettings.Wtrealm;
-                    options.Events.OnSecurityTokenValidated = OnSecurityTokenValidated;
-                }).AddCookie(options =>
-                {
-                    options.AccessDeniedPath = "/Error/403";
-                    options.CookieManager = new ChunkingCookieManager {ChunkSize = 3000};
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    options.ReturnUrlParameter = "/Home/Index";
-                });
-            return services;
-        }
-
-        private static Task OnSecurityTokenValidated(SecurityTokenValidatedContext context)
-        {
-            var claims = context.Principal.Claims;
-            var ukprn = claims.FirstOrDefault(claim => claim.Type == (ProviderClaims.Ukprn))?.Value;
-
-            return Task.CompletedTask;
-        }
-        
         public class ProviderStubAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
         {
             private readonly IHttpContextAccessor _httpContextAccessor;

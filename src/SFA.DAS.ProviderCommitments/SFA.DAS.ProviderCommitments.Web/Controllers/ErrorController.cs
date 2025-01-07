@@ -13,13 +13,11 @@ public class ErrorController(IConfiguration configuration) : Controller
     [Route("error/{statuscode?}")]
     public IActionResult Error(int? statusCode, bool isActionRequest = false)
     {       
-        var useDfESignIn = configuration.UseDfeSignIn();
-
         return statusCode switch
         {
             403 => View("403", new Error403ViewModel(
                 configuration["ResourceEnvironmentName"])
-            { UseDfESignIn = useDfESignIn, IsActionRequest = isActionRequest }),
+            { IsActionRequest = isActionRequest }),
             404 => View(statusCode.ToString()),
             _ => View()
         };

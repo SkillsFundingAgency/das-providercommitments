@@ -10,7 +10,6 @@ namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerT
 public class ErrorControllerTest
 {
     private Mock<IConfiguration> _configuration;
-    private bool _useDfESignIn;
     private ErrorController _sut;
     
     [TearDown]
@@ -25,13 +24,10 @@ public class ErrorControllerTest
     {
         var fixture = new Fixture();
 
-        _useDfESignIn = fixture.Create<bool>();
-
         _configuration = new Mock<IConfiguration>();
         _sut = new ErrorController(_configuration.Object);
             
         _configuration.Setup(x => x["ResourceEnvironmentName"]).Returns(env);
-        _configuration.Setup(x => x["UseDfESignIn"]).Returns(Convert.ToString(_useDfESignIn));
         
         var result = (ViewResult)_sut.Error(403, isActionRequest);
         result.ViewName.Should().Be("403");
@@ -42,7 +38,6 @@ public class ErrorControllerTest
         using (new AssertionScope())
         {
             actualModel?.HelpPageLink.Should().Be(helpLink);
-            _useDfESignIn.Should().Be((bool)actualModel?.UseDfESignIn);
             actualModel?.IsActionRequest.Should().Be(isActionRequest);
         }
     }

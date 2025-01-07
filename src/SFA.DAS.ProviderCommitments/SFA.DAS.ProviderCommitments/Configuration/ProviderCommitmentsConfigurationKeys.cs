@@ -14,5 +14,4 @@ public static class ProviderCommitmentsConfigurationKeys
     public const string ProviderSharedUIConfiguration = "ProviderSharedUIConfiguration";
     public const string BulkUploadFileValidationConfiguration = "BulkUploadFileValidationConfiguration";
     public const string ProviderAccountApiConfiguration = "ProviderAccountApiConfiguration";
-    public const string UseDfeSignIn = "UseDfeSignIn";
 }
