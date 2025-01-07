@@ -186,6 +186,11 @@ public class WhenAddingServicesToTheContainer
 
                 new("BlobStorage:ConnectionString", "test"),
                 new("BlobStorage:BulkUploadContainer", "test"),
+                
+                new("DfEOidcConfiguration:APIServiceUrl", "https://test.com"),
+                new("DfEOidcConfiguration:BaseUrl", "https://test.com"),
+                new("DfEOidcConfiguration:Scopes", "ABC123"),
+                new("ResourceEnvironmentName", "test"),
             }
         };
 
