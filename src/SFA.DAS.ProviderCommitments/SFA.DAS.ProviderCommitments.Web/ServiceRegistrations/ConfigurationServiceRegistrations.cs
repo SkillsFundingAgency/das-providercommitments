@@ -12,7 +12,6 @@ public static class ConfigurationServiceRegistrations
     {
         services.AddOptions();
 
-        services.AddConfigurationFor<AuthenticationSettings>(configuration, ProviderCommitmentsConfigurationKeys.AuthenticationSettings);
         services.AddConfigurationFor<CommitmentsClientApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
         services.AddConfigurationFor<ApprovalsOuterApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ApprovalsOuterApiConfiguration);
         services.AddConfigurationFor<CommitmentPermissionsApiClientConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.CommitmentsClientApiConfiguration);
@@ -21,7 +20,7 @@ public static class ConfigurationServiceRegistrations
         services.AddConfigurationFor<DataProtectionConnectionStrings>(configuration, ProviderCommitmentsConfigurationKeys.DataProtectionConnectionStrings);
         services.AddConfigurationFor<BulkUploadFileValidationConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.BulkUploadFileValidationConfiguration);
         services.AddConfigurationFor<ProviderSharedUIConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderSharedUIConfiguration);
-        services.AddConfigurationFor<BlobStorageSettings>(configuration, ProviderCommitmentsConfigurationKeys.BlobStorageSetttings);
+        services.AddConfigurationFor<BlobStorageSettings>(configuration, ProviderCommitmentsConfigurationKeys.BlobStorageSettings);
         services.AddConfigurationFor<PasAccountApiConfiguration>(configuration, ProviderCommitmentsConfigurationKeys.ProviderAccountApiConfiguration);
 
         return services;

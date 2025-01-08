@@ -39,7 +39,6 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
 
-    [TestCase(typeof(AuthenticationSettings))]
     [TestCase(typeof(CommitmentsClientApiConfiguration))]
     [TestCase(typeof(ApprovalsOuterApiConfiguration))]
     [TestCase(typeof(CommitmentPermissionsApiClientConfiguration))]
