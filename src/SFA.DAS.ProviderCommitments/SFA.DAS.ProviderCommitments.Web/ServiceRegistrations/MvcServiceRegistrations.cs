@@ -31,7 +31,6 @@ public static class MvcServiceRegistrations
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()
             .EnableCookieBanner()
-            .SetDfESignInConfiguration(true)
             .AddZenDeskSettings(configuration)
             .AddControllersAsServices();
 
