@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Controllers;
 using SFA.DAS.ProviderCommitments.Web.Models.Error;
-using System;
 using FluentAssertions.Execution;
 
 namespace SFA.DAS.ProviderCommitments.Web.UnitTests.Controllers.ErrorControllerTests;
