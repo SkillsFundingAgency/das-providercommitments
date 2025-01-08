@@ -151,10 +151,6 @@ public class WhenAddingServicesToTheContainer
 
                 new("APPLICATIONINSIGHTS_CONNECTION_STRING", "test"),
 
-                new("AuthenticationSettings:MetadataAddress", "https://test.com/"),
-                new("AuthenticationSettings:Wtrealm", "https://test.com/"),
-                new("AuthenticationSettings:UseStub", "true/"),
-
                 new("CommitmentsClientApi:IdentifierUri", "https://test.com/"),
                 new("CommitmentsClientApi:ApiBaseUrl", "https://test.com/"),
 
@@ -188,7 +184,7 @@ public class WhenAddingServicesToTheContainer
                 
                 new("DfEOidcConfiguration:APIServiceUrl", "https://test.com"),
                 new("DfEOidcConfiguration:BaseUrl", "https://test.com"),
-                new("DfEOidcConfiguration:Scopes", "ABC123"),
+                new("DfEOidcConfiguration:Scopes", "ABC 123 456 789"),
                 new("ResourceEnvironmentName", "test"),
             }
         };
