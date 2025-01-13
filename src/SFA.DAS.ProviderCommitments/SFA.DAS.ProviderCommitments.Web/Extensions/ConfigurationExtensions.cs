@@ -34,10 +34,4 @@ public static class ConfigurationExtensions
 
         return config.Build();
     }
-
-    public static bool UseDfeSignIn(this IConfiguration configuration)
-    {
-        return configuration["UseDfESignIn"] != null && configuration["UseDfESignIn"]
-            .Equals("true", StringComparison.CurrentCultureIgnoreCase);
-    }
 }

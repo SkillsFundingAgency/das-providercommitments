@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using SFA.DAS.CommitmentsV2.Shared.Filters;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
-using SFA.DAS.ProviderCommitments.Configuration;
 using SFA.DAS.ProviderCommitments.Web.Authentication;
 using SFA.DAS.ProviderCommitments.Web.Extensions;
 using SFA.DAS.ProviderCommitments.Web.Filters;
@@ -19,8 +18,6 @@ public static class MvcServiceRegistrations
 {
     public static IServiceCollection AddDasMvc(this IServiceCollection services, IConfiguration configuration)
     {
-        var useDfeSignIn = configuration.GetSection(ProviderCommitmentsConfigurationKeys.UseDfeSignIn).Get<bool>();
-
         services.AddMvc(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
@@ -34,7 +31,6 @@ public static class MvcServiceRegistrations
             .SetDefaultNavigationSection(NavigationSection.YourCohorts)
             .EnableGoogleAnalytics()
             .EnableCookieBanner()
-            .SetDfESignInConfiguration(useDfeSignIn)
             .AddZenDeskSettings(configuration)
             .AddControllersAsServices();
 
