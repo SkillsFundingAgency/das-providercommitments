@@ -39,7 +39,6 @@ public class WhenAddingServicesToTheContainer
         RunTestForType(toResolve);
     }
 
-    [TestCase(typeof(AuthenticationSettings))]
     [TestCase(typeof(CommitmentsClientApiConfiguration))]
     [TestCase(typeof(ApprovalsOuterApiConfiguration))]
     [TestCase(typeof(CommitmentPermissionsApiClientConfiguration))]
@@ -152,10 +151,6 @@ public class WhenAddingServicesToTheContainer
 
                 new("APPLICATIONINSIGHTS_CONNECTION_STRING", "test"),
 
-                new("AuthenticationSettings:MetadataAddress", "https://test.com/"),
-                new("AuthenticationSettings:Wtrealm", "https://test.com/"),
-                new("AuthenticationSettings:UseStub", "true/"),
-
                 new("CommitmentsClientApi:IdentifierUri", "https://test.com/"),
                 new("CommitmentsClientApi:ApiBaseUrl", "https://test.com/"),
 
@@ -186,6 +181,11 @@ public class WhenAddingServicesToTheContainer
 
                 new("BlobStorage:ConnectionString", "test"),
                 new("BlobStorage:BulkUploadContainer", "test"),
+                
+                new("DfEOidcConfiguration:APIServiceUrl", "https://test.com"),
+                new("DfEOidcConfiguration:BaseUrl", "https://test.com"),
+                new("DfEOidcConfiguration:Scopes", "ABC 123 456 789"),
+                new("ResourceEnvironmentName", "test"),
             }
         };
 
